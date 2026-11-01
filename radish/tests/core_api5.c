@@ -129,15 +129,25 @@ int main(int argc,char **argv)
    VkInstance instance=VK_NULL_HANDLE;
    INSTANCE_FN(CreateInstance);
    VkApplicationInfo app={.sType=VK_STRUCTURE_TYPE_APPLICATION_INFO,.apiVersion=VK_API_VERSION_1_0};
-   const char *instance_extensions[]={VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME};
+   const char *instance_extensions[]={VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME,
+      VK_KHR_DEVICE_GROUP_CREATION_EXTENSION_NAME,VK_KHR_EXTERNAL_MEMORY_CAPABILITIES_EXTENSION_NAME};
    VkInstanceCreateInfo ici={.sType=VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,.pApplicationInfo=&app,
-      .enabledExtensionCount=1,.ppEnabledExtensionNames=instance_extensions};
+      .enabledExtensionCount=3,.ppEnabledExtensionNames=instance_extensions};
    SUCCESS(CreateInstance(&ici,NULL,&instance));
    INSTANCE_FN(EnumeratePhysicalDevices); INSTANCE_FN(GetPhysicalDeviceMemoryProperties);
    INSTANCE_FN(GetPhysicalDeviceProperties); INSTANCE_FN(CreateDevice);
    INSTANCE_FN(GetDeviceProcAddr); INSTANCE_FN(DestroyInstance);
    uint32_t count=1; VkPhysicalDevice physical;
    SUCCESS(EnumeratePhysicalDevices(instance,&count,&physical)); REQUIRE(count==1);
+   PFN_vkEnumeratePhysicalDeviceGroupsKHR enumerate_groups=(PFN_vkEnumeratePhysicalDeviceGroupsKHR)gipa(instance,"vkEnumeratePhysicalDeviceGroupsKHR");
+   REQUIRE(enumerate_groups);
+   uint32_t group_count=0; SUCCESS(enumerate_groups(instance,&group_count,NULL)); REQUIRE(group_count==1);
+   VkPhysicalDeviceGroupProperties group_properties={.sType=VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GROUP_PROPERTIES};
+   group_count=0; REQUIRE(enumerate_groups(instance,&group_count,&group_properties)==VK_INCOMPLETE && group_count==0);
+   group_count=1; SUCCESS(enumerate_groups(instance,&group_count,&group_properties));
+   REQUIRE(group_count==1 && group_properties.physicalDeviceCount==1 && group_properties.physicalDevices[0]==physical && !group_properties.subsetAllocation);
+   VkDeviceGroupDeviceCreateInfo group_create={.sType=VK_STRUCTURE_TYPE_DEVICE_GROUP_DEVICE_CREATE_INFO,
+      .physicalDeviceCount=1,.pPhysicalDevices=&physical};
    VkPhysicalDeviceMemoryProperties memory_properties;
    GetPhysicalDeviceMemoryProperties(physical,&memory_properties);
    VkPhysicalDeviceProperties properties;
@@ -148,7 +158,7 @@ int main(int argc,char **argv)
       .queueCount=1,.pQueuePriorities=&priority};
    const char *extensions[]={VK_KHR_DESCRIPTOR_UPDATE_TEMPLATE_EXTENSION_NAME,VK_KHR_MAINTENANCE_3_EXTENSION_NAME,
       VK_KHR_BIND_MEMORY_2_EXTENSION_NAME,VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME};
-   VkDeviceCreateInfo dci={.sType=VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+   VkDeviceCreateInfo dci={.sType=VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,.pNext=&group_create,
       .queueCreateInfoCount=1,.pQueueCreateInfos=&qci,.enabledExtensionCount=4,.ppEnabledExtensionNames=extensions};
    VkDevice device;
    SUCCESS(CreateDevice(physical,&dci,NULL,&device));
@@ -165,10 +175,28 @@ int main(int argc,char **argv)
    REQUIRE(aliases.GetDescriptorSetLayoutSupport && aliases.CreateDescriptorUpdateTemplate && aliases.DestroyDescriptorUpdateTemplate && aliases.UpdateDescriptorSetWithTemplate && aliases.BindBufferMemory2 && aliases.GetBufferMemoryRequirements2);
    PFN_vkGetPhysicalDeviceProperties2KHR properties2=(PFN_vkGetPhysicalDeviceProperties2KHR)gipa(instance,"vkGetPhysicalDeviceProperties2KHR");
    REQUIRE(properties2);
-   VkPhysicalDeviceMaintenance3Properties maintenance={.sType=VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES};
+   VkPhysicalDeviceIDProperties ids={.sType=VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES};
+   VkPhysicalDeviceMaintenance3Properties maintenance={.sType=VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES,.pNext=&ids};
    VkPhysicalDeviceProperties2 properties_chain={.sType=VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2,.pNext=&maintenance};
    properties2(physical,&properties_chain);
    REQUIRE(maintenance.maxPerSetDescriptors==1024 && maintenance.maxMemoryAllocationSize==UINT32_MAX-4095ull);
+   uint8_t zeros[VK_UUID_SIZE]={0};
+   REQUIRE(memcmp(ids.deviceUUID,zeros,VK_UUID_SIZE) && memcmp(ids.driverUUID,zeros,VK_UUID_SIZE));
+   REQUIRE(memcmp(ids.deviceUUID,ids.driverUUID,VK_UUID_SIZE) && !ids.deviceLUIDValid);
+   VkPhysicalDeviceIDProperties repeat_ids=ids;
+   properties2(physical,&properties_chain);
+   REQUIRE(!memcmp(ids.deviceUUID,repeat_ids.deviceUUID,VK_UUID_SIZE) && !memcmp(ids.driverUUID,repeat_ids.driverUUID,VK_UUID_SIZE));
+   PFN_vkGetPhysicalDeviceExternalBufferPropertiesKHR external_buffer=(PFN_vkGetPhysicalDeviceExternalBufferPropertiesKHR)gipa(instance,"vkGetPhysicalDeviceExternalBufferPropertiesKHR");
+   PFN_vkGetPhysicalDeviceImageFormatProperties2KHR image_properties=(PFN_vkGetPhysicalDeviceImageFormatProperties2KHR)gipa(instance,"vkGetPhysicalDeviceImageFormatProperties2KHR");
+   REQUIRE(external_buffer && image_properties);
+   VkPhysicalDeviceExternalImageFormatInfo external_image={.sType=VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO,.handleType=VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT};
+   VkPhysicalDeviceImageFormatInfo2 image_info={.sType=VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_FORMAT_INFO_2,.pNext=&external_image,.format=VK_FORMAT_R32_UINT,.type=VK_IMAGE_TYPE_2D,.tiling=VK_IMAGE_TILING_LINEAR,.usage=VK_IMAGE_USAGE_STORAGE_BIT};
+   VkExternalImageFormatProperties external_image_result={.sType=VK_STRUCTURE_TYPE_EXTERNAL_IMAGE_FORMAT_PROPERTIES};
+   VkImageFormatProperties2 image_result={.sType=VK_STRUCTURE_TYPE_IMAGE_FORMAT_PROPERTIES_2,.pNext=&external_image_result};
+   REQUIRE(image_properties(physical,&image_info,&image_result)==VK_ERROR_FORMAT_NOT_SUPPORTED);
+   external_image.handleType=0; SUCCESS(image_properties(physical,&image_info,&image_result));
+   REQUIRE(!external_image_result.externalMemoryProperties.externalMemoryFeatures && !external_image_result.externalMemoryProperties.exportFromImportedHandleTypes && !external_image_result.externalMemoryProperties.compatibleHandleTypes);
+   puts("API5 group/ID/external-image PASS: singleton enumeration/create, stable nonzero UUIDs, no external sharing");
    puts("API5 KHR aliases reachable: templates/layout support/bind memory2/memory requirements2/properties2");
    const struct vk_device_dispatch_table *d=&aliases;
    const struct vk_physical_device_dispatch_table *pd=&rd_physical_device_from_handle(physical)->vk.dispatch_table;
@@ -184,7 +212,7 @@ int main(int argc,char **argv)
       .usage=VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,.handleType=VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT};
    VkExternalBufferProperties external={.sType=VK_STRUCTURE_TYPE_EXTERNAL_BUFFER_PROPERTIES};
    memset(&external.externalMemoryProperties,0xff,sizeof(external.externalMemoryProperties));
-   pd->GetPhysicalDeviceExternalBufferProperties(physical,&external_info,&external);
+   external_buffer(physical,&external_info,&external);
    REQUIRE(external.externalMemoryProperties.externalMemoryFeatures==0 &&
            external.externalMemoryProperties.exportFromImportedHandleTypes==0 &&
            external.externalMemoryProperties.compatibleHandleTypes==external_info.handleType);
@@ -214,11 +242,14 @@ int main(int argc,char **argv)
       .flags=VK_PIPELINE_CREATE_DISPATCH_BASE_BIT,
       .stage={.sType=VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,.stage=VK_SHADER_STAGE_COMPUTE_BIT,
               .module=module,.pName="main"},.layout=layout};
-   VkPipeline pipeline;
-   SUCCESS(d->CreateComputePipelines(device,VK_NULL_HANDLE,1,&pci,NULL,&pipeline));
+   VkPipeline pipeline[2];
+   SUCCESS(d->CreateComputePipelines(device,VK_NULL_HANDLE,1,&pci,NULL,&pipeline[0]));
+   pci.flags |= VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT;
+   SUCCESS(d->CreateComputePipelines(device,VK_NULL_HANDLE,1,&pci,NULL,&pipeline[1]));
+   REQUIRE(rd_pipeline_from_handle(pipeline[1])->variant->shader_options.nir_options.disable_optimizations);
    d->DestroyShaderModule(device,module,NULL);
    if (argc==4) {
-      d->DestroyPipeline(device,pipeline,NULL); d->DestroyPipelineLayout(device,layout,NULL);
+      for (unsigned i=0;i<2;i++) d->DestroyPipeline(device,pipeline[i],NULL); d->DestroyPipelineLayout(device,layout,NULL);
       d->DestroyDescriptorSetLayout(device,set_layout,NULL); d->DestroyDevice(device,NULL);
       DestroyInstance(instance,NULL); dlclose(lib);
       puts("PASS API5 compile-only: query checks and pipeline creation; no probe dispatch"); return 0;
@@ -303,7 +334,7 @@ int main(int argc,char **argv)
          .buffer=input.buffer,.offset=16,.size=sizeof(saved)};
       d->CmdPipelineBarrier(commands[1],VK_PIPELINE_STAGE_TRANSFER_BIT,VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
          0,0,NULL,1,&barrier,0,NULL);
-      d->CmdBindPipeline(commands[1],VK_PIPELINE_BIND_POINT_COMPUTE,pipeline);
+      d->CmdBindPipeline(commands[1],VK_PIPELINE_BIND_POINT_COMPUTE,pipeline[round]);
       d->CmdBindDescriptorSets(commands[1],VK_PIPELINE_BIND_POINT_COMPUTE,layout,0,1,&set,0,NULL);
       d->CmdPushConstants(commands[1],layout,VK_SHADER_STAGE_COMPUTE_BIT,0,sizeof(params),&params);
       d->CmdDispatchBase(commands[1],3,4,5,NX,NY,NZ);
@@ -353,9 +384,10 @@ int main(int argc,char **argv)
       d->UnmapMemory(device,stores[i]->memory); d->DestroyBuffer(device,stores[i]->buffer,NULL);
       d->FreeMemory(device,stores[i]->memory,NULL);
    }
-   d->DestroyPipeline(device,pipeline,NULL); d->DestroyPipelineLayout(device,layout,NULL);
+   for (unsigned i=0;i<2;i++) d->DestroyPipeline(device,pipeline[i],NULL); d->DestroyPipelineLayout(device,layout,NULL);
    d->DestroyDescriptorSetLayout(device,set_layout,NULL); d->DestroyDevice(device,NULL);
    DestroyInstance(instance,NULL); dlclose(lib);
+   puts("PASS NOOPT: second pipeline preserves full base-grid oracle with optional optimizations disabled");
    puts("PASS API5: two real base-grid executions, secondary copy/reset/reuse, templates, layout support and external query");
    return 0;
 }

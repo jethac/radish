@@ -1,5 +1,15 @@
 # Radish status
 
+## 2026-11-02: additional compute behavior, robustness still failing
+
+ICD4605a727 passes public singleton device-group creation/enumeration and external-memory capability queries, native resources, five BASIC shapes (including3×5×3), and actual pipeline-owned private/constant storage. The storage shader checks128 exact words while consuming2KiB private storage per invocation and a16KiB constant table. These four suites pass in7.743s,16.1MiB,zero swap; no GPU faults and both services active.
+
+ICDf66ee860 separately passes the same4,160-invocation API5 oracle with normal compilation and `DISABLE_OPTIMIZATION`. The source supplies a per-pipeline compiler path, not only flag acceptance. Instance extensions `VK_KHR_device_group_creation` and `VK_KHR_external_memory_capabilities` are now public; external import/export features remain zero. Device extension `VK_KHR_device_group` remains withheld pending its remaining obligations.
+
+The seventh incremental patch, `0044-radish-compute-contract-wip.patch`, includes these changes, bounds-lowering work and normal error propagation for impossible barrier residency. Robustness is explicitly incomplete and remains unadvertised: after two compiler fixes, ICD846939c6 executes the first bounds case but returns zero for a valid large storage-texel read. Remaining cases are unattempted; the876ms run has no GPU fault. All prior failures remain recorded. Depth consumption, broader workgroup legality and CTS coverage also remain open; performance work is paused.
+
+See [the checkpoint](CORE_API_0044.md) for artifact boundaries and reproduction.
+
 ## 2026-11-02 (JST): subgroup BASIC mapping correction passes
 
 The pairedbc8ec8e2 artifact passes all four logical workgroups32/33/8×8/128.

@@ -4,7 +4,7 @@
 
 enum { GUARD=16, MAX_LOCAL=128, OUTPUT_WORDS=2*GUARD+16*MAX_LOCAL, EXCHANGE_WORDS=40 };
 struct storage { VkBuffer buffer; VkDeviceMemory memory; uint32_t *map; size_t words; };
-static const uint32_t locals[][3]={{32,1,1},{33,1,1},{8,8,1},{128,1,1}};
+static const uint32_t locals[][3]={{32,1,1},{33,1,1},{8,8,1},{128,1,1},{3,5,3}};
 
 static uint32_t poison(size_t i, unsigned test)
 {
@@ -147,8 +147,8 @@ int main(int argc,char **argv)
    SUCCESS(d->CreateShaderModule(device,&smci,NULL,&module)); free(code);
    VkSpecializationMapEntry entries[3];
    for (unsigned i=0;i<3;i++) entries[i]=(VkSpecializationMapEntry){.constantID=i,.offset=4*i,.size=4};
-   VkPipeline pipelines[4]={0};
-   for (unsigned test=0;test<4;test++) {
+   VkPipeline pipelines[5]={0};
+   for (unsigned test=0;test<5;test++) {
       VkSpecializationInfo spec={.mapEntryCount=3,.pMapEntries=entries,.dataSize=12,.pData=locals[test]};
       VkComputePipelineCreateInfo pci={.sType=VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO,
          .stage={.sType=VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,.stage=VK_SHADER_STAGE_COMPUTE_BIT,
@@ -169,10 +169,10 @@ int main(int argc,char **argv)
    }
    d->DestroyShaderModule(device,module,NULL);
    if (argc==4) {
-      for (unsigned i=0;i<4;i++) d->DestroyPipeline(device,pipelines[i],NULL);
+      for (unsigned i=0;i<5;i++) d->DestroyPipeline(device,pipelines[i],NULL);
       d->DestroyPipelineLayout(device,layout,NULL); d->DestroyDescriptorSetLayout(device,set_layout,NULL);
       d->DestroyDevice(device,NULL); DestroyInstance(instance,NULL); dlclose(lib);
-      puts("PASS BASIC compile-only: four pipelines, no probe storage or commands"); return 0;
+      puts("PASS BASIC compile-only: five pipelines, no probe storage or commands"); return 0;
    }
    struct storage output={0},exchange={0};
    REQUIRE(storage_create(d,device,&memory_properties,OUTPUT_WORDS*4,&output)==0);
@@ -205,7 +205,7 @@ int main(int argc,char **argv)
    VkQueue queue; d->GetDeviceQueue(device,0,0,&queue);
    VkFenceCreateInfo fci={.sType=VK_STRUCTURE_TYPE_FENCE_CREATE_INFO}; VkFence fence;
    SUCCESS(d->CreateFence(device,&fci,NULL,&fence));
-   for (unsigned test=0;test<4;test++) {
+   for (unsigned test=0;test<5;test++) {
       for (size_t i=0;i<output.words;i++) output.map[i]=poison(i,test);
       for (size_t i=0;i<exchange.words;i++) exchange.map[i]=poison(i,test);
       SUCCESS(d->FlushMappedMemoryRanges(device,2,ranges));
@@ -252,7 +252,7 @@ int main(int argc,char **argv)
       d->UnmapMemory(device,stores[i]->memory); d->DestroyBuffer(device,stores[i]->buffer,NULL);
       d->FreeMemory(device,stores[i]->memory,NULL);
    }
-   for (unsigned i=0;i<4;i++) d->DestroyPipeline(device,pipelines[i],NULL);
+   for (unsigned i=0;i<5;i++) d->DestroyPipeline(device,pipelines[i],NULL);
    d->DestroyPipelineLayout(device,layout,NULL); d->DestroyDescriptorSetLayout(device,set_layout,NULL);
    d->DestroyDevice(device,NULL); DestroyInstance(instance,NULL); dlclose(lib);
    puts("PASS BASIC: partial/multiple subgroup IDs, converged/divergent elect, shared and buffer barriers/atomics, full records and guards");

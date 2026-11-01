@@ -1,0 +1,97 @@
+{
+  "driver_sha256": "4605a7277d2fb08099ba42518577f9733401d8bce3cd7123c955aac787bef694",
+  "status": "partial_success",
+  "compile_passed": [
+    "api5",
+    "resources",
+    "subgroup",
+    "storage"
+  ],
+  "functional_passed": [
+    "api5",
+    "resources",
+    "subgroup",
+    "storage"
+  ],
+  "compile_failed": {
+    "robust": "VK_ERROR_FEATURE_NOT_PRESENT -8, before tensors"
+  },
+  "RBA_executed": false,
+  "subgroup_cases": [
+    [
+      32,
+      1,
+      1
+    ],
+    [
+      33,
+      1,
+      1
+    ],
+    [
+      8,
+      8,
+      1
+    ],
+    [
+      128,
+      1,
+      1
+    ],
+    [
+      3,
+      5,
+      3
+    ]
+  ],
+  "private_storage": {
+    "private_per_fiber_bytes": 2048,
+    "private_per_sp_bytes": 2097152,
+    "constant_bytes": 16384,
+    "exact_output_words": 128,
+    "retained_inputs_and_guards": true
+  },
+  "public_capabilities": [
+    "singletongroupenumeration/create",
+    "externalbufferquery",
+    "externalimagequery",
+    "nonzero stabledevice/driverUUID"
+  ],
+  "service_seconds": 7.743,
+  "peak_mib": 16.1,
+  "swap_mib": 0,
+  "faults": false,
+  "services_active": true,
+  "capture": "WORK/core-compute-0044-robust-storage-capabilities/probe",
+  "run_log_sha256": "9b9f86752789042e5100f04d68f772ab4952e0b8b68795add4b4df06bd089319",
+  "later_noopt": {
+    "driver_sha256": "f66ee860336e06377fe7cbc38eabbf7fa70eaa1e2d74e1ed27df240ad9da46b1",
+    "functional_passed": [
+      "API5 original pipeline",
+      "API5 DISABLE_OPTIMIZATION pipeline"
+    ],
+    "records_per_pipeline": 4160,
+    "service_seconds": 0.93,
+    "peak_mib": 7.3,
+    "swap_mib": 0,
+    "gpu_faults": false,
+    "services_active": true,
+    "robustness": "compile assertion; no tensor execution",
+    "capture": "WORK/core-compute-0044-atomic-noopt/probe"
+  },
+  "latest_robustness": {
+    "driver_sha256": "846939c6d70c8826d3947a3006a23ace4e43dc576d2c564b76ab05147a0bd42e",
+    "compile": "passed after typed atomic metadata and clone bookkeeping fixes",
+    "functional": "failed case0/range1 output word54: zero instead of0x410b7e90; remaining3cases unattempted",
+    "feature_advertised": false,
+    "service_seconds": 0.876,
+    "peak_mib": 13.7,
+    "swap_mib": 0,
+    "gpu_faults": false,
+    "services_active": true,
+    "capture": "WORK/core-compute-0044-rba-clone/probe"
+  },
+  "next_log_sha256": "9b9f86752789042e5100f04d68f772ab4952e0b8b68795add4b4df06bd089319",
+  "noopt_log_sha256": "052babed38fecacdb25eaed12d7f001056332f62adb070d4472d8cc36cbca186",
+  "robust_log_sha256": "a8d67ea0d55dbdc14b2ff076583a30ed224d852aa39cda647a4b45896ca4b6ed"
+}

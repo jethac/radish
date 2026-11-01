@@ -1,0 +1,673 @@
+--- a/src/freedreno/ir3/ir3.c
++++ b/src/freedreno/ir3/ir3.c
+@@ -292,7 +292,7 @@
+             "Compute shader (%s) which has workgroup barrier cannot be used "
+             "because it's impossible to have enough concurrent waves.",
+             v->name);
+-         exit(1);
++         return 0;
+       }
+ 
+       /* Due to round_robin_errata we may be unable to support forward progress
+@@ -304,7 +304,7 @@
+                "Compute shader (%s) requires forward progress but uses more "
+                "than 8 waves.",
+                v->name);
+-            exit(1);
++            return 0;
+          }
+          max_waves = MIN2(max_waves, 8);
+       }
+--- a/src/freedreno/ir3/ir3_compiler_nir.c
++++ b/src/freedreno/ir3/ir3_compiler_nir.c
+@@ -1804,7 +1804,9 @@
+    info.flags |= flags;
+    assert(nir_src_as_uint(intr->src[1]) == 0);
+    lod = create_immed(b, 0);
+-   sam = emit_sam(ctx, OPC_GETSIZE, info, dst_type, 0b1111, lod, NULL);
++   bool buffer = nir_intrinsic_image_dim(intr) == GLSL_SAMPLER_DIM_BUF;
++   sam = emit_sam(ctx, buffer ? OPC_GETBUF : OPC_GETSIZE, info, dst_type,
++                  0b1111, buffer ? NULL : lod, NULL);
+ 
+    /* Array size actually ends up in .w rather than .z. This doesn't
+     * matter for miplevel 0, but for higher mips the value in z is
+@@ -6110,13 +6112,16 @@
+       progress = false;
+ 
+       /* the folding doesn't seem to work reliably on a4xx */
+-      if (ctx->compiler->gen != 4)
++      if (!so->shader_options.nir_options.disable_optimizations && ctx->compiler->gen != 4)
+          progress |= IR3_PASS(ir, ir3_cf, so);
+       progress |= IR3_PASS(ir, ir3_cp, so, true);
+-      progress |= IR3_PASS(ir, ir3_cse);
++      if (!so->shader_options.nir_options.disable_optimizations)
++         progress |= IR3_PASS(ir, ir3_cse);
+       progress |= IR3_PASS(ir, ir3_dce, so);
+-      progress |= IR3_PASS(ir, ir3_opt_predicates, so);
+-      progress |= IR3_PASS(ir, ir3_shared_fold);
++      if (!so->shader_options.nir_options.disable_optimizations) {
++         progress |= IR3_PASS(ir, ir3_opt_predicates, so);
++         progress |= IR3_PASS(ir, ir3_shared_fold);
++      }
+    } while (progress);
+ 
+    progress = IR3_PASS(ir, ir3_create_alias_tex_regs);
+@@ -6200,7 +6205,8 @@
+ 
+    IR3_PASS(ir, ir3_remove_noop_subreg_moves);
+    IR3_PASS(ir, ir3_postsched, so);
+-   IR3_PASS(ir, ir3_merge_rpt, so);
++   if (!so->shader_options.nir_options.disable_optimizations)
++      IR3_PASS(ir, ir3_merge_rpt, so);
+ 
+    IR3_PASS(ir, ir3_legalize_relative);
+    IR3_PASS(ir, ir3_lower_subgroups);
+--- a/src/freedreno/ir3/ir3_nir.c
++++ b/src/freedreno/ir3/ir3_nir.c
+@@ -319,11 +319,14 @@
+       progress |= OPT(s, nir_opt_copy_prop);
+       progress |= OPT(s, nir_opt_deref);
+       progress |= OPT(s, nir_opt_dce);
+-      progress |= OPT(s, nir_opt_cse);
+-
+-      progress |= OPT(s, nir_opt_find_array_copies);
+-      progress |= OPT(s, nir_opt_copy_prop_vars);
+-      progress |= OPT(s, nir_opt_dead_write_vars);
++      if (!options->disable_optimizations)
++         progress |= OPT(s, nir_opt_cse);
++
++      if (!options->disable_optimizations) {
++         progress |= OPT(s, nir_opt_find_array_copies);
++         progress |= OPT(s, nir_opt_copy_prop_vars);
++         progress |= OPT(s, nir_opt_dead_write_vars);
++      }
+       progress |= OPT(s, nir_split_struct_vars, nir_var_function_temp);
+       progress |= OPT(s, nir_opt_shrink_stores, true);
+       progress |= OPT(s, nir_shrink_vec_array_vars, nir_var_function_temp | nir_var_mem_shared);
+@@ -331,16 +334,17 @@
+       static int gcm = -1;
+       if (gcm == -1)
+          gcm = debug_get_num_option("GCM", 0);
+-      if (gcm == 1)
++      if (!options->disable_optimizations && gcm == 1)
+          progress |= OPT(s, nir_opt_gcm, true);
+-      else if (gcm == 2)
++      else if (!options->disable_optimizations && gcm == 2)
+          progress |= OPT(s, nir_opt_gcm, false);
+       nir_opt_peephole_select_options peephole_select_options = {
+          .limit = 16,
+          .indirect_load_ok = true,
+          .expensive_alu_ok = true,
+       };
+-      progress |= OPT(s, nir_opt_peephole_select, &peephole_select_options);
++      if (!options->disable_optimizations)
++         progress |= OPT(s, nir_opt_peephole_select, &peephole_select_options);
+       progress |= OPT(s, nir_opt_intrinsics);
+       /* NOTE: GS lowering inserts an output var with varying slot that
+        * is larger than VARYING_SLOT_MAX (ie. GS_VERTEX_FLAGS_IR3),
+@@ -352,7 +356,7 @@
+        * fp16/int16 for frag and compute, skip phi precision lowering
+        * for other stages.
+        */
+-      if (is_compute_or_frag(s->info.stage)) {
++      if (!options->disable_optimizations && is_compute_or_frag(s->info.stage)) {
+          progress |= OPT(s, nir_opt_phi_precision);
+       }
+       progress |= OPT(s, nir_opt_fp_math_ctrl);
+@@ -361,7 +365,8 @@
+       progress |= OPT(s, nir_lower_pack);
+       progress |= OPT(s, nir_lower_bit_size, ir3_lower_bit_size, NULL);
+       progress |= OPT(s, nir_opt_constant_folding);
+-      progress |= OPT(s, nir_opt_uub, &options->opt_uub_options);
++      if (!options->disable_optimizations)
++         progress |= OPT(s, nir_opt_uub, &options->opt_uub_options);
+ 
+       const nir_opt_offsets_options offset_options = {
+          /* How large an offset we can encode in the instr's immediate field.
+@@ -378,7 +383,8 @@
+          .cb_data = compiler,
+          .allow_offset_wrap_cb = ir3_nir_allow_base_offset_wrap,
+       };
+-      progress |= OPT(s, nir_opt_offsets, &offset_options);
++      if (!options->disable_optimizations)
++         progress |= OPT(s, nir_opt_offsets, &offset_options);
+ 
+       if (lower_flrp != 0) {
+          OPT(s, nir_lower_flrp, lower_flrp, false /* always_precise */);
+@@ -390,7 +396,7 @@
+       }
+ 
+       progress |= OPT(s, nir_opt_dead_cf);
+-      if (OPT(s, nir_opt_loop)) {
++      if (!options->disable_optimizations && OPT(s, nir_opt_loop)) {
+          progress |= true;
+          /* If nir_opt_loop makes progress, then we need to clean
+           * things up if we want any hope of nir_opt_if or nir_opt_loop_unroll
+@@ -400,7 +406,8 @@
+          OPT(s, nir_opt_dce);
+       }
+       progress |= OPT(s, nir_opt_if, nir_opt_if_optimize_phi_true_false);
+-      progress |= OPT(s, nir_opt_loop_unroll);
++      if (!options->disable_optimizations)
++         progress |= OPT(s, nir_opt_loop_unroll);
+       progress |= OPT(s, nir_opt_phi_to_bool);
+       progress |= OPT(s, nir_opt_remove_phis);
+       progress |= OPT(s, nir_opt_undef);
+@@ -802,9 +809,12 @@
+    }
+ 
+    OPT(s, nir_lower_is_helper_invocation);
+-   OPT(s, nir_opt_combine_barriers, NULL, NULL);
+-
+-   struct ir3_optimize_options optimize_options = {};
++   if (!options->disable_optimizations)
++      OPT(s, nir_opt_combine_barriers, NULL, NULL);
++
++   struct ir3_optimize_options optimize_options = {
++      .disable_optimizations = options->disable_optimizations,
++   };
+    ir3_optimize_loop(compiler, &optimize_options, s);
+ 
+    /* do idiv lowering after first opt loop to get a chance to propagate
+@@ -813,7 +823,7 @@
+    nir_lower_idiv_options idiv_options = {
+       .allow_fp16 = true,
+    };
+-   bool progress = OPT(s, nir_opt_idiv_const, 8);
++   bool progress = !options->disable_optimizations && OPT(s, nir_opt_idiv_const, 8);
+    progress |= OPT(s, nir_lower_idiv, &idiv_options);
+ 
+    /* Remove unused components from IO loads. */
+@@ -831,7 +841,8 @@
+       .robust_modes = options->robust_modes,
+       .cb_data = compiler,
+    };
+-   progress |= OPT(s, nir_opt_load_store_vectorize, &vectorize_opts);
++   if (!options->disable_optimizations)
++      progress |= OPT(s, nir_opt_load_store_vectorize, &vectorize_opts);
+ 
+    if (progress)
+       ir3_optimize_loop(compiler, &optimize_options, s);
+@@ -1137,7 +1148,9 @@
+    if (compiler->gen >= 6)
+       OPT(s, ir3_nir_lower_ssbo_size, compiler->options.storage_16bit ? 1 : 2);
+ 
+-   struct ir3_optimize_options optimize_options = {};
++   struct ir3_optimize_options optimize_options = {
++      .disable_optimizations = shader->options.nir_options.disable_optimizations,
++   };
+    ir3_optimize_loop(compiler, &optimize_options, s);
+ }
+ 
+@@ -1608,12 +1621,14 @@
+     * progress.
+     */
+    struct ir3_optimize_options optimize_options = {
++      .disable_optimizations = options->disable_optimizations,
+       .opt_uub_options = {
+          .opt_imul = true,
+       },
+    };
+ 
+-   progress |= OPT(s, nir_opt_uub, &optimize_options.opt_uub_options);
++   if (!options->disable_optimizations)
++      progress |= OPT(s, nir_opt_uub, &optimize_options.opt_uub_options);
+ 
+    /* Cleanup code leftover from lowering passes before opt_preamble */
+    if (progress) {
+@@ -1631,7 +1646,7 @@
+     * have to lower the preamble after UBO lowering so that UBO lowering can
+     * insert instructions in the preamble to push UBOs.
+     */
+-   if (so->compiler->has_preamble &&
++   if (!options->disable_optimizations && so->compiler->has_preamble &&
+        !(ir3_shader_debug & IR3_DBG_NOPREAMBLE))
+       progress |= OPT(s, ir3_nir_opt_preamble, so);
+ 
+@@ -1642,7 +1657,8 @@
+     * multiplies to get hoisted to preamble, which would get scattered with
+     * non-uniform calculations post reassociation.
+     */
+-   progress |= OPT(s, nir_opt_reassociate_matrix_mul);
++   if (!options->disable_optimizations)
++      progress |= OPT(s, nir_opt_reassociate_matrix_mul);
+ 
+    /* TODO: ldg.k might also work on a6xx */
+    if (so->compiler->gen >= 7)
+@@ -1653,7 +1669,7 @@
+ 
+    progress |= OPT(s, ir3_nir_lower_ubo_loads, so);
+ 
+-   if (so->compiler->gen >= 7 &&
++   if (!options->disable_optimizations && so->compiler->gen >= 7 &&
+        !(ir3_shader_debug & (IR3_DBG_NOPREAMBLE | IR3_DBG_NODESCPREFETCH)))
+       progress |= OPT(s, ir3_nir_opt_prefetch_descriptors, so);
+ 
+@@ -1694,7 +1710,7 @@
+     * produce fnegs, and if so then we need to keep running to squash
+     * fneg(fneg(a)).
+     */
+-   bool more_late_algebraic = true;
++   bool more_late_algebraic = !options->disable_optimizations;
+    while (more_late_algebraic) {
+       more_late_algebraic = OPT(s, nir_opt_algebraic_late);
+       if (!more_late_algebraic && so->compiler->gen >= 5) {
+@@ -1734,7 +1750,8 @@
+       OPT(s, nir_opt_cse);
+    }
+ 
+-   OPT(s, nir_opt_sink, nir_move_const_undef);
++   if (!options->disable_optimizations)
++      OPT(s, nir_opt_sink, nir_move_const_undef);
+ 
+    if (ir3_shader_debug & IR3_DBG_DISASM) {
+       mesa_logi("----------------------");
+--- a/src/freedreno/ir3/ir3_nir.h
++++ b/src/freedreno/ir3/ir3_nir.h
+@@ -66,6 +66,7 @@
+ 
+ struct ir3_optimize_options {
+    nir_opt_uub_options opt_uub_options;
++   bool disable_optimizations;
+ };
+ bool ir3_optimize_loop(struct ir3_compiler *compiler,
+                        struct ir3_optimize_options *options, nir_shader *s);
+--- a/src/freedreno/ir3/ir3_shader.c
++++ b/src/freedreno/ir3/ir3_shader.c
+@@ -193,6 +193,10 @@
+ 
+    ir3_collect_info(v);
+ 
++   if (ir3_shader_compute(v) && v->has_barrier &&
++       info->max_waves < ir3_get_waves_per_wg(v, info->double_threadsize))
++      return NULL;
++
+    if (v->constant_data_size) {
+       /* Make sure that where we're about to place the constant_data is safe
+        * to indirectly upload from.
+@@ -452,6 +456,8 @@
+ assemble_variant(struct ir3_shader_variant *v, bool internal)
+ {
+    v->bin = ir3_shader_assemble(v);
++   if (!v->bin)
++      return;
+ 
+    unsigned char blake3[BLAKE3_KEY_LEN + 1];
+ 
+--- a/src/freedreno/ir3/ir3_shader.h
++++ b/src/freedreno/ir3/ir3_shader.h
+@@ -613,6 +613,7 @@
+     * conservative.
+     */
+    nir_variable_mode robust_modes;
++   uint32_t disable_optimizations;
+ };
+ 
+ struct ir3_shader_options {
+--- a/src/freedreno/radish/meson.build
++++ b/src/freedreno/radish/meson.build
+@@ -11,7 +11,7 @@
+ libvulkan_radish = shared_library(
+   'vulkan_radish',
+   ['rd_instance.c', 'rd_device.c', 'rd_memory.c', 'rd_descriptor.c', 'rd_pipeline.c',
+-   'rd_command.c', 'rd_nir_resources.c', 'rd_resources.c', 'rd_transfer.c', 'rd_image.c',
++   'rd_command.c', 'rd_nir_resources.c', 'rd_nir_robust.c', 'rd_resources.c', 'rd_transfer.c', 'rd_image.c',
+    'rd_event.c', 'rd_query.c', 'rd_queue.c', rd_entrypoints, freedreno_xml_header_files],
+   include_directories : [inc_freedreno, inc_include, inc_src],
+   link_with : [libfreedreno_drm, libfreedreno_ir3, libfreedreno_layout],
+--- a/src/freedreno/radish/rd_device.c
++++ b/src/freedreno/radish/rd_device.c
+@@ -65,6 +65,11 @@
+                 const VkAllocationCallbacks *allocator, VkDevice *out)
+ {
+    VK_FROM_HANDLE(rd_physical_device, physical, handle);
++   const VkDeviceGroupDeviceCreateInfo *group =
++      vk_find_struct_const(info->pNext, DEVICE_GROUP_DEVICE_CREATE_INFO);
++   if (group && group->physicalDeviceCount &&
++       (group->physicalDeviceCount != 1 || group->pPhysicalDevices[0] != handle))
++      return VK_ERROR_INITIALIZATION_FAILED;
+    if (info->queueCreateInfoCount != 1 ||
+        info->pQueueCreateInfos[0].queueFamilyIndex != 0 ||
+        info->pQueueCreateInfos[0].queueCount != 1 ||
+--- a/src/freedreno/radish/rd_instance.c
++++ b/src/freedreno/radish/rd_instance.c
+@@ -1,6 +1,8 @@
+ #include "rd_private.h"
+ 
+ #include "util/os_misc.h"
++#include "util/build_id.h"
++#include "freedreno_uuid.h"
+ #include "util/u_memory.h"
+ #include "vk_util.h"
+ #include <fcntl.h>
+@@ -21,6 +23,8 @@
+ 
+ static const struct vk_instance_extension_table rd_instance_extensions = {
+    .KHR_get_physical_device_properties2 = true,
++   .KHR_device_group_creation = true,
++   .KHR_external_memory_capabilities = true,
+ };
+ 
+ static const struct vk_device_extension_table rd_device_extensions = {
+@@ -86,6 +90,7 @@
+    }
+    uint64_t gpu_id = 0;
+    int ret = fd_pipe_get_param(pipe, FD_GPU_ID, &gpu_id);
++   const struct fd_dev_id dev_id = *fd_pipe_dev_id(pipe);
+    fd_pipe_del(pipe);
+    if (ret || gpu_id != 506) {
+       fd_device_del(fd);
+@@ -112,6 +117,10 @@
+       .subgroupSupportedStages = VK_SHADER_STAGE_COMPUTE_BIT,
+       .subgroupSupportedOperations = VK_SUBGROUP_FEATURE_BASIC_BIT,
+       .maxMemoryAllocationCount = 4096,
++      .bufferImageGranularity = 64,
++      .discreteQueuePriorities = 1,
++      .optimalBufferCopyOffsetAlignment = 1,
++      .optimalBufferCopyRowPitchAlignment = 1,
+       .maxPerSetDescriptors = 1024,
+       .maxMemoryAllocationSize = UINT32_MAX - 4095ull,
+       .maxImageDimension1D = 4096,
+@@ -152,6 +161,12 @@
+       .maxComputeWorkGroupInvocations = 128,
+       .maxComputeWorkGroupSize = {128, 128, 64},
+    };
++   fd_get_device_uuid(properties.deviceUUID, &dev_id);
++   fd_get_driver_uuid(properties.driverUUID);
++   const struct build_id_note *build_id = build_id_find_nhdr_for_addr(rd_try_create_physical);
++   if (build_id && build_id_length(build_id) >= VK_UUID_SIZE)
++      memcpy(properties.driverUUID, build_id_data(build_id), VK_UUID_SIZE);
++   properties.deviceNodeMask = 1;
+    snprintf(properties.deviceName, sizeof(properties.deviceName),
+             "Radish Adreno 506 (experimental compute)");
+    const struct vk_features features = { .pipelineStatisticsQuery = true };
+--- a/src/freedreno/radish/rd_nir_resources.c
++++ b/src/freedreno/radish/rd_nir_resources.c
+@@ -190,6 +190,12 @@
+    case nir_intrinsic_image_deref_atomic:
+    case nir_intrinsic_image_deref_atomic_swap:
+       access = true;
++      if (nir_intrinsic_format(intr) == PIPE_FORMAT_NONE) {
++         nir_variable *variable = nir_deref_instr_get_variable(nir_src_as_deref(intr->src[0]));
++         if (variable && (variable->data.image.format == PIPE_FORMAT_R32_UINT ||
++                          variable->data.image.format == PIPE_FORMAT_R32_SINT))
++            nir_intrinsic_set_format(intr, variable->data.image.format);
++      }
+       if ((nir_intrinsic_format(intr) != PIPE_FORMAT_R32_UINT &&
+            nir_intrinsic_format(intr) != PIPE_FORMAT_R32_SINT) || intr->def.bit_size != 32) {
+          state->failed = true;
+--- a/src/freedreno/radish/rd_nir_resources.h
++++ b/src/freedreno/radish/rd_nir_resources.h
+@@ -26,4 +26,6 @@
+    rd_nir_resource_resolver resolve, void *data,
+    struct rd_nir_resource_usage *usage);
+ 
++bool rd_nir_lower_robust_buffers(struct nir_shader *shader);
++
+ #endif
+--- /dev/null
++++ b/src/freedreno/radish/rd_nir_robust.c
+@@ -0,0 +1,182 @@
++#include "rd_nir_resources.h"
++#include "compiler/nir/nir_builder.h"
++
++struct rd_robust_state { bool failed; };
++
++static nir_def *
++rd_access_valid(nir_builder *b, nir_def *offset, nir_def *size,
++                  uint32_t component_offset, uint32_t bytes)
++{
++   nir_def *part = nir_iadd_imm(b, offset, component_offset);
++   nir_def *valid = nir_iand(b, nir_uge_imm(b, size, bytes),
++      nir_uge(b, nir_iadd_imm(b, size, -(int32_t)bytes), part));
++   if (component_offset)
++      valid = nir_iand(b, valid, nir_ule_imm(b, offset, UINT32_MAX - component_offset));
++   return valid;
++}
++
++static bool
++rd_robust_load(nir_builder *b, nir_intrinsic_instr *intr,
++                 struct rd_robust_state *state)
++{
++   if (intr->def.bit_size != 32 || intr->src[1].ssa->bit_size != 32 ||
++       nir_intrinsic_offset_shift(intr)) {
++      state->failed = true;
++      return false;
++   }
++   nir_def *index = intr->src[0].ssa, *offset = intr->src[1].ssa;
++   nir_def *size = nir_get_ssbo_size(b, 32, index);
++   nir_def *parts[NIR_MAX_VEC_COMPONENTS];
++   nir_def *zero = nir_imm_int(b, 0);
++   uint32_t alignment = MAX2(1, nir_intrinsic_align_mul(intr));
++   for (uint32_t i = 0; i < intr->def.num_components; i++) {
++      uint32_t added = i * 4;
++      nir_def *valid = rd_access_valid(b, offset, size, added, 4);
++      nir_push_if(b, valid);
++      nir_def *value = nir_load_ssbo(b, 1, 32, index, nir_iadd_imm(b, offset, added),
++         .access = nir_intrinsic_access(intr) & ~(ACCESS_CAN_REORDER | ACCESS_CAN_SPECULATE),
++         .align_mul = alignment,
++         .align_offset = (nir_intrinsic_align_offset(intr) + added) % alignment);
++      nir_pop_if(b, NULL);
++      parts[i] = nir_if_phi(b, value, zero);
++   }
++   nir_def_replace(&intr->def, nir_vec(b, parts, intr->def.num_components));
++   return true;
++}
++
++static bool
++rd_robust_store(nir_builder *b, nir_intrinsic_instr *intr,
++                  struct rd_robust_state *state)
++{
++   if (nir_src_bit_size(intr->src[0]) != 32 || intr->src[2].ssa->bit_size != 32) {
++      state->failed = true;
++      return false;
++   }
++   nir_def *index = intr->src[1].ssa, *offset = intr->src[2].ssa;
++   nir_def *size = nir_get_ssbo_size(b, 32, index);
++   uint32_t mask = nir_intrinsic_write_mask(intr);
++   uint32_t alignment = MAX2(1, nir_intrinsic_align_mul(intr));
++   for (uint32_t i = 0; i < intr->num_components; i++) {
++      if (!(mask & (1u << i)))
++         continue;
++      uint32_t added = i * 4;
++      nir_def *valid = rd_access_valid(b, offset, size, added, 4);
++      nir_push_if(b, valid);
++      nir_store_ssbo(b, nir_channel(b, intr->src[0].ssa, i), index,
++         nir_iadd_imm(b, offset, added), .write_mask = 1,
++         .access = nir_intrinsic_access(intr), .align_mul = alignment,
++         .align_offset = (nir_intrinsic_align_offset(intr) + added) % alignment);
++      nir_pop_if(b, NULL);
++   }
++   nir_instr_remove(&intr->instr);
++   return true;
++}
++
++static void
++rd_robust_clone(nir_builder *b, nir_intrinsic_instr *intr, nir_def *valid)
++{
++   bool destination = nir_intrinsic_infos[intr->intrinsic].has_dest;
++   nir_def *zero = destination ? nir_imm_zero(b, intr->def.num_components, intr->def.bit_size) : NULL;
++   nir_push_if(b, valid);
++   nir_instr *clone = nir_instr_clone(b->shader, &intr->instr);
++   if (nir_intrinsic_has_access(nir_instr_as_intrinsic(clone)))
++      nir_intrinsic_set_access(nir_instr_as_intrinsic(clone),
++         nir_intrinsic_access(nir_instr_as_intrinsic(clone)) &
++         ~(ACCESS_CAN_REORDER | ACCESS_CAN_SPECULATE));
++   nir_builder_instr_insert(b, clone);
++   nir_pop_if(b, NULL);
++   if (destination) {
++      nir_def_replace(&intr->def, nir_if_phi(b, nir_instr_def(clone), zero));
++   } else {
++      nir_instr_remove(&intr->instr);
++   }
++}
++
++static bool
++rd_robust_atomic(nir_builder *b, nir_intrinsic_instr *intr,
++                   struct rd_robust_state *state)
++{
++   if (intr->def.bit_size != 32 || intr->src[1].ssa->bit_size != 32) {
++      state->failed = true;
++      return false;
++   }
++   nir_def *size = nir_get_ssbo_size(b, 32, intr->src[0].ssa);
++   rd_robust_clone(b, intr, rd_access_valid(b, intr->src[1].ssa, size, 0, 4));
++   return true;
++}
++
++static bool
++rd_robust_image_buffer(nir_builder *b, nir_intrinsic_instr *intr)
++{
++   if (nir_intrinsic_image_dim(intr) != GLSL_SAMPLER_DIM_BUF)
++      return false;
++   nir_def *size = nir_image_size(b, 1, 32, intr->src[0].ssa, nir_imm_int(b, 0),
++      .image_dim = GLSL_SAMPLER_DIM_BUF, .image_array = false);
++   nir_def *valid = nir_ult(b, nir_channel(b, intr->src[1].ssa, 0), size);
++   rd_robust_clone(b, intr, valid);
++   return true;
++}
++
++static bool
++rd_robust_texture_buffer(nir_builder *b, nir_tex_instr *tex,
++                           struct rd_robust_state *state)
++{
++   if (tex->sampler_dim != GLSL_SAMPLER_DIM_BUF || tex->op != nir_texop_txf)
++      return false;
++   int coordinate = nir_tex_instr_src_index(tex, nir_tex_src_coord);
++   if (coordinate < 0 || tex->src[coordinate].src.ssa->bit_size != 32) {
++      state->failed = true;
++      return false;
++   }
++   nir_def *coord = tex->src[coordinate].src.ssa;
++   nir_tex_instr *size = nir_tex_instr_create(b->shader, 1);
++   size->op = nir_texop_txs;
++   size->sampler_dim = GLSL_SAMPLER_DIM_BUF;
++   size->dest_type = nir_type_uint32;
++   size->texture_index = tex->texture_index;
++   size->src[0].src_type = nir_tex_src_lod;
++   size->src[0].src = nir_src_for_ssa(nir_imm_int(b, 0));
++   nir_def_init(&size->instr, &size->def, 1, 32);
++   nir_builder_instr_insert(b, &size->instr);
++   nir_def *valid = nir_ult(b, coord, &size->def);
++   nir_def *safe_coord = nir_bcsel(b, valid, coord, nir_imm_int(b, 0));
++   nir_tex_instr *clone = nir_instr_as_tex(nir_instr_clone(b->shader, &tex->instr));
++   nir_builder_instr_insert(b, &clone->instr);
++   nir_src_rewrite(&clone->src[coordinate].src, safe_coord);
++   nir_def *zero = nir_imm_zero(b, tex->def.num_components, tex->def.bit_size);
++   nir_def_replace(&tex->def, nir_bcsel(b, valid, &clone->def, zero));
++   return true;
++}
++
++static bool
++rd_robust_instruction(nir_builder *b, nir_instr *instr, void *data)
++{
++   struct rd_robust_state *state = data;
++   if (state->failed)
++      return false;
++   b->cursor = nir_before_instr(instr);
++   if (instr->type == nir_instr_type_tex)
++      return rd_robust_texture_buffer(b, nir_instr_as_tex(instr), state);
++   if (instr->type != nir_instr_type_intrinsic)
++      return false;
++   nir_intrinsic_instr *intr = nir_instr_as_intrinsic(instr);
++   switch (intr->intrinsic) {
++   case nir_intrinsic_load_ssbo: return rd_robust_load(b, intr, state);
++   case nir_intrinsic_store_ssbo: return rd_robust_store(b, intr, state);
++   case nir_intrinsic_ssbo_atomic:
++   case nir_intrinsic_ssbo_atomic_swap: return rd_robust_atomic(b, intr, state);
++   case nir_intrinsic_image_load:
++   case nir_intrinsic_image_store:
++   case nir_intrinsic_image_atomic:
++   case nir_intrinsic_image_atomic_swap: return rd_robust_image_buffer(b, intr);
++   default: return false;
++   }
++}
++
++bool
++rd_nir_lower_robust_buffers(nir_shader *shader)
++{
++   struct rd_robust_state state = {0};
++   nir_shader_instructions_pass(shader, rd_robust_instruction, nir_metadata_none, &state);
++   return !state.failed;
++}
+--- a/src/freedreno/radish/rd_pipeline.c
++++ b/src/freedreno/radish/rd_pipeline.c
+@@ -186,7 +186,7 @@
+ 
+ VkResult
+ rd_compile_pipeline(struct rd_device *device, struct rd_pipeline *pipeline,
+-                     const VkPipelineShaderStageCreateInfo *stage)
++                     const VkPipelineShaderStageCreateInfo *stage, VkPipelineCreateFlags flags)
+ {
+    const struct spirv_to_nir_options spirv_options = {
+       .ubo_addr_format = nir_address_format_32bit_index_offset,
+@@ -196,7 +196,7 @@
+       .min_ubo_alignment = 16, .min_ssbo_alignment = 4,
+    };
+    nir_shader *nir = NULL;
+-   VkResult result = vk_pipeline_shader_stage_to_nir(&device->vk, 0, stage,
++   VkResult result = vk_pipeline_shader_stage_to_nir(&device->vk, flags, stage,
+       &spirv_options, ir3_get_compiler_options(device->compiler), NULL, &nir);
+    if (result != VK_SUCCESS)
+       return result;
+@@ -243,6 +243,10 @@
+       return VK_ERROR_FEATURE_NOT_PRESENT;
+    }
+    pipeline->linear_subgroups = rd_uses_subgroups(nir);
++   if (device->vk.enabled_features.robustBufferAccess && !rd_nir_lower_robust_buffers(nir)) {
++      ralloc_free(nir);
++      return VK_ERROR_FEATURE_NOT_PRESENT;
++   }
+    const struct nir_lower_compute_system_values_options sysvals = {
+       .has_base_workgroup_id = true,
+    };
+@@ -258,6 +262,8 @@
+    ir3_nir_lower_io_vars_to_temporaries(nir);
+    ir3_nir_lower_io(nir);
+    struct ir3_shader_options options = {
++      .nir_options.robust_modes = device->vk.enabled_features.robustBufferAccess ? nir_var_mem_ssbo : 0,
++      .nir_options.disable_optimizations = flags & VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT,
+       .api_wavesize = IR3_SINGLE_ONLY,
+       .api_subgroup_size = 16,
+       .workgroup_resident_threads = pipeline->linear_subgroups ?
+@@ -377,7 +383,8 @@
+       if (infos[i].stage.stage != VK_SHADER_STAGE_COMPUTE_BIT ||
+           layout->set_count > RD_MAX_SETS ||
+           (infos[i].flags & ~(VK_PIPELINE_CREATE_DISPATCH_BASE_BIT |
+-             VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT | VK_PIPELINE_CREATE_DERIVATIVE_BIT))) {
++             VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT | VK_PIPELINE_CREATE_DERIVATIVE_BIT |
++             VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT))) {
+          failure = VK_ERROR_FEATURE_NOT_PRESENT;
+          continue;
+       }
+@@ -388,7 +395,7 @@
+          continue;
+       }
+       pipeline->layout = vk_pipeline_layout_ref(layout);
+-      VkResult result = rd_compile_pipeline(device, pipeline, &infos[i].stage);
++      VkResult result = rd_compile_pipeline(device, pipeline, &infos[i].stage, infos[i].flags);
+       if (result != VK_SUCCESS) {
+          rd_destroy_pipeline(device, pipeline, allocator);
+          failure = result;
+--- a/src/freedreno/radish/rd_private.h
++++ b/src/freedreno/radish/rd_private.h
+@@ -212,7 +212,7 @@
+                              const struct rd_dispatch *dispatch);
+ VkResult rd_queue_submit(struct vk_queue *queue, struct vk_queue_submit *submit);
+ VkResult rd_compile_pipeline(struct rd_device *device, struct rd_pipeline *pipeline,
+-                             const VkPipelineShaderStageCreateInfo *stage);
++                             const VkPipelineShaderStageCreateInfo *stage, VkPipelineCreateFlags flags);
+ void rd_wake_device_waiters(struct vk_device *device);
+ VkResult rd_sync_wait_many(struct vk_device *device, uint32_t count,
+                            const struct vk_sync_wait *waits,
+--- a/src/freedreno/radish/rd_resources.c
++++ b/src/freedreno/radish/rd_resources.c
+@@ -410,7 +410,7 @@
+          A5XX_TEX_SAMP_0_WRAP_T(rd_sampler_wrap(sampler->address_mode_v)) |
+          A5XX_TEX_SAMP_0_WRAP_R(rd_sampler_wrap(sampler->address_mode_w)) |
+          A5XX_TEX_SAMP_0_LOD_BIAS(CLAMP(sampler->mip_lod_bias, -16.0f, 15.99609375f));
+-      word1 = COND(sampler->compare_enable, A5XX_TEX_SAMP_1_COMPARE_FUNC(sampler->compare_op)) |
++      word1 = COND(sampler->compare_enable, A5XX_TEX_SAMP_1_COMPARE_FUNC((enum adreno_compare_func)sampler->compare_op)) |
+          COND(sampler->unnormalized_coordinates, A5XX_TEX_SAMP_1_UNNORM_COORDS) |
+          A5XX_TEX_SAMP_1_MIN_LOD(CLAMP(sampler->min_lod, 0.0f, 15.99609375f)) |
+          A5XX_TEX_SAMP_1_MAX_LOD(CLAMP(sampler->max_lod, 0.0f, 15.99609375f));

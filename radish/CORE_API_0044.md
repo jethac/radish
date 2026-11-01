@@ -1,5 +1,15 @@
 # Core compute implementation: checkpoint 0044
 
+## 2026-11-02: additional compute behavior, robustness still failing
+
+ICD4605a727 passes public singleton device-group creation/enumeration and external-memory capability queries, native resources, five BASIC shapes (including3×5×3), and actual pipeline-owned private/constant storage. The storage shader checks128 exact words while consuming2KiB private storage per invocation and a16KiB constant table. These four suites pass in7.743s,16.1MiB,zero swap; no GPU faults and both services active.
+
+ICDf66ee860 separately passes the same4,160-invocation API5 oracle with normal compilation and `DISABLE_OPTIMIZATION`. The source supplies a per-pipeline compiler path, not only flag acceptance. Instance extensions `VK_KHR_device_group_creation` and `VK_KHR_external_memory_capabilities` are now public; external import/export features remain zero. Device extension `VK_KHR_device_group` remains withheld pending its remaining obligations.
+
+The seventh incremental patch, `0044-radish-compute-contract-wip.patch`, includes these changes, bounds-lowering work and normal error propagation for impossible barrier residency. Robustness is explicitly incomplete and remains unadvertised: after two compiler fixes, ICD846939c6 executes the first bounds case but returns zero for a valid large storage-texel read. Remaining cases are unattempted; the876ms run has no GPU fault. All prior failures remain recorded. Depth consumption, broader workgroup legality and CTS coverage also remain open; performance work is paused.
+
+See [the separate artifact results](results/core-api-0044-compute-contract.json). Apply this patch after the previous six0044 increments. The existing builder now also produces `storage`; `--suite storage` selects it, and `--suite api5` selects the two compiler modes. These portable selections are host-checked adaptations of the recorded private fixed command lists. No complete Vulkan1.1/conformance claim is made.
+
 The latest A506 batch passes API5, events/queries and native resources on ICD
 `61bad8227b07355bd174f1d7255ce0a3545ce8562fb006bea1ee626d696c52be`.
 Public KHR aliases now exercise descriptor templates, layout support,
@@ -57,7 +67,7 @@ budget. It does not solve the earlier legal-workgroup/shared-memory failures.
 
 ## Consolidated reproduction
 
-Apply the six0044 incremental patches in order to the documented0042 Mesa
+Apply the seven0044 incremental patches in order to the documented0042 Mesa
 stack and build the isolated driver. Build probes against its matching internal
 ABI:
 

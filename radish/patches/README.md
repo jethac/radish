@@ -610,3 +610,5 @@ d468a7b2dcadda77b4e06a286eba806aac28c6222f0f3ec9e8330cddf8dba657  0035-ncnn-inst
 | `0044-radish-depth-consumers-wip.patch` | After0044 descriptor/backports WIP | D16/D32 native sampling/compare, depth views/barriers and matching-format image copies. Builds; depth consumer execution remains unqualified. Separate color copy/clear run completes40 representative command paths, not conformance. |
 
 | `0044-radish-subgroup-linear-wip.patch` | After0044 depth consumers WIP | Preserve logical compute IDs while flattening BASIC physical workgroups; conservative resident-thread guard. Four focused cases pass; compute BASIC exposed after review. Broader legal workgroup/CTS gaps remain. |
+
+| `0044-radish-compute-contract-wip.patch` | After subgroup-linear0044 | Public singleton/external capabilities, actual private/constant and five BASIC cases, per-pipeline noopt pass; RBA code is WIP, first valid texel read fails and feature remains false. |
