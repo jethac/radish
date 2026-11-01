@@ -23,23 +23,31 @@ a separate driver, with its own a5xx resource bindings and command emission.
 
 - Private ICD loading, buffer compute, descriptors, transfers, shared memory
   and synchronization have targeted device checks.
-- ncnn runs the Kokoro neural core with GPU operations and three CPU
-  deconvolution fallbacks. A complete FP32 output comparison passes.
-- On the fixed full-size fixture, fused normalization and tiled convolutions
-  reduce warm GPU core extraction from **101.275 s to 74.318 s**. The same
-  graph takes **32.079 s** on the optimized six-thread ncnn CPU path. These
-  are neural-core timings, not complete text-to-speech latency; the new GPU
-  result contains one warm extraction, the CPU mean contains two.
-- Fresh tablet-generated inputs at a different sequence length pass the GPU
-  core and waveform comparisons: **38.845 s** for 205,942 core outputs and
-  **97.96 dB SNR** for 46,800 audio samples. This is a staged chain with host
-  reference preparation between stages, not a measured end-to-end runtime.
+- A private executable now runs fresh Kokoro frontend/source, ncnn core and
+  waveform synthesis entirely on the tablet. Shape hints come from graph
+  metadata; inference no longer needs host calibration between stages.
+- The neural core uses GPU operations and three CPU deconvolution fallbacks.
+  Full core and waveform comparisons pass at two input lengths, including
+  all 127,800 samples of the full-length output at **98.36 dB SNR**.
+
+| Measurement | GPU path | Packed six-thread CPU |
+| --- | ---: | ---: |
+| Fixed full-size core, warm extraction | **69.678 s** | **32.079 s** |
+| Fresh full-length synthesis, including startup | **84.223 s** | **39.790 s** |
+
+The warm GPU figure is one extraction; the CPU mean is two. Complete synthesis
+figures are single startup runs, with byte-identical frontend boundary inputs.
+Full GPU synthesis peaks at **457.2 MiB with zero swap**; no new GPU faults,
+and both appliance services remain active. GPU inference remains slower than
+CPU. Resident warm synthesis and sustained thermal behavior remain unmeasured.
+
+- Fused FP32 normalization and tiled convolution, now including dilation 3/5,
+  reduce fixed-core warm GPU time from 101.275 s to 69.678 s. The tiled path
+  executes 53 matrix-product commands; compiled register-budget checks remain
+  in place.
 - Explicit mixed-storage conversion and FP32 normalization remove the NaNs
   from packed FP16 inference, but full-model and waveform accuracy still fail.
   FP32 remains the validated path.
-- The opt-in tiled kernel now passes the full model. It accelerates 37
-  convolutions; extending it to the remaining dilated convolutions is next.
-  The driver rejects shaders beyond A506's measured register budget.
 
 This is an experimental compute-only ICD. It does not provide graphics or
 presentation, and it has no Vulkan 1.0 or 1.1 conformance claim. Supported,
@@ -79,7 +87,11 @@ kept outside the repository.
    glslang `780b6a209132dc74e99458f62ebe5fa7e57c41cf`. Set `RADISH_NCNN` to
    that checkout. `build-loader.sh` prepares the loader/toolchain and
    `build-ncnn.sh` applies or verifies the supported patch stack.
-4. Read [NOTES.md](radish/NOTES.md) and the chosen device runner before running
+4. For the private Kokoro runtime, `radish/scripts/build-runtime.sh` builds the
+   combined executable. The required private model exports, device runner and
+   exact-boundary validation commands are in
+   [RUNTIME_INTEGRATION.md](radish/RUNTIME_INTEGRATION.md).
+5. Read [NOTES.md](radish/NOTES.md) and the chosen device runner before running
    it. Select the device with `RADISH_SERIAL` and use an explicit private ICD.
    Set `RADISH_DEVICE_LOCK` to the same absolute lock-file path used by every
    other workspace accessing that tablet. Its default is this checkout's

@@ -23,6 +23,7 @@ limits and validation scope. Published checkpoints remain experimental; publicat
 | `0015-ncnn-radish-mixed-storage.patch` | Same ncnn base plus 0006 | Opt-in GPU storage conversions; FP32 norm islands remove diagnosed NaNs, but packed full core and waveform accuracy still fail |
 | `0016-radish-register-budget-cumulative.patch` | Same Mesa base as 0001 | Current driver; includes 0012 and rejects combined full/half register footprints beyond the measured A506 budget before shader upload |
 | `0017-ncnn-conv1d-shared-a-transpose.patch` | After 0014 in the ordered Conv1D stack | Both builds/operator/full fused FP32 core/waveform pass; 76.534312 s first/74.317956 s warm (one warm), versus same-graph CPU 32.079044 s (two warm); GPU remains slower |
+| `0018-ncnn-conv1d-tiled-dilation.patch` | After 0017 in the ordered Conv1D stack | Extends only dilation1/3/5; operator/full fused FP32 core/waveform pass; 69.862470 s first/69.678044 s warm, 416.7 MiB/zero swap, no faults |
 
 To reconstruct the current driver, make a separate checkout/worktree at the
 Mesa base, read its `AGENTS.md`, and apply 0016 with `git apply` instead of
@@ -33,9 +34,9 @@ sysroot/build environment paths and private loader procedure are in `NOTES.md`.
 
 The pinned ncnn/glslang checkout is separate. `../scripts/build-ncnn.sh` applies
 0005 if applicable, accepts an already-applied patch, migrates the exact earlier
-0002 adaptation, then applies/verifies 0006, 0008, 0010, 0011 and candidates 0013–0015/0017.
+0002 adaptation, then applies/verifies 0006, 0008, 0010, 0011 and candidates 0013–0015/0017/0018.
 The first candidate build stopped at overlapping earlier-patch verification.
-The build script accepts exact ordered 0010/0011/0013/0014/0017 Conv1D prefixes
+The build script accepts exact ordered 0010/0011/0013/0014/0017/0018 Conv1D prefixes
 and 0006/0015 net.cpp prefixes, rejecting unrelated edits. This preserves the
 source check despite overlapping patch contexts. Canonical and SIMPLEOMP builds
 pass with revised 0013/0014, 0015 and incremental 0017. Set
@@ -180,4 +181,5 @@ d1081b712ae8a4518b494ced59c7c1ba5fa1da501e3758e33030ddfb22d14695  0014-ncnn-conv
 53edb9f05fea4eb13cc7d489178ecda63bcc9a5febed5502962f185d063dea10  0015-ncnn-radish-mixed-storage.patch
 fc4095829ad35385e505d4e233c12657cd54fe7dc50d88566f1a1c512f167598  0016-radish-register-budget-cumulative.patch
 f9e2c39cfab97fbcc58a34c1464af42d4f0b9be08ce1a14dc2f494fe40322d06  0017-ncnn-conv1d-shared-a-transpose.patch
+e89d516bca15980a599f96e797b7726546913b05b370bac87a3ac88c8ebc9695  0018-ncnn-conv1d-tiled-dilation.patch
 ```

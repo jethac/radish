@@ -1,5 +1,6 @@
 // Standalone CPU Kokoro frontend/source capture. No listener or GPU changes.
 // Build against the pinned ORT C API24 headers; load the runtime explicitly.
+#include "kokoro_frontend.h"
 #include <onnxruntime_c_api.h>
 
 #include <cerrno>
@@ -20,6 +21,9 @@
 #include <sys/syscall.h>
 #include <unistd.h>
 #include <vector>
+
+namespace {
+using radish_frontend::Timing;
 
 static_assert(ORT_API_VERSION == 24, "use the pinned ORT API24 headers");
 static_assert(sizeof(float) == 4 && std::numeric_limits<float>::is_iec559, "requires IEEE FP32");
@@ -117,7 +121,6 @@ struct Tensor {
     std::vector<int64_t> shape;
     std::vector<float> values;
 };
-struct Timing { double load = 0, run = 0; };
 
 class Runtime {
     void* library = nullptr;
@@ -156,6 +159,8 @@ public:
             check(api->AddSessionConfigEntry(options, "session.inter_op.allow_spinning", "0"));
         } catch (...) { cleanup(); throw; }
     }
+    Runtime(const Runtime&) = delete;
+    Runtime& operator=(const Runtime&) = delete;
     ~Runtime() { cleanup(); }
     void cleanup() {
         if (api) {
@@ -237,37 +242,25 @@ public:
     }
 };
 
-static int number(const char* text, int upper, const char* name) {
-    char* end = nullptr; errno = 0;
-    const long value = std::strtol(text, &end, 10);
-    require(errno == 0 && end != text && *end == '\0' && value >= 1 && value <= upper,
-            std::string("invalid ") + name);
-    return int(value);
-}
+} // namespace
 
-int main(int argc, char** argv) {
-    try {
-        require(argc >= 5, "Usage: kokoro-frontend FRONTEND_ONLY.onnx SOURCE.onnx INPUT_DIR NEW_OUTPUT [--ort-lib FILE] [--threads1..6] [--max-frames1..4096]");
-        const std::string frontend = argv[1], source = argv[2], input = argv[3], output = argv[4];
-        std::string library = "/usr/local/lib/straylight-listen/libonnxruntime.so";
-        int threads = 4, max_frames = 4096;
-        for (int i = 5; i < argc; i += 2) {
-            require(i + 1 < argc, "missing option value");
-            if (!std::strcmp(argv[i], "--ort-lib")) library = argv[i+1];
-            else if (!std::strcmp(argv[i], "--threads")) threads = number(argv[i+1], 6, "threads");
-            else if (!std::strcmp(argv[i], "--max-frames")) max_frames = number(argv[i+1], 4096, "max-frames");
-            else throw std::runtime_error(std::string("unknown option: ") + argv[i]);
-        }
-        const uint16_t endian = 1;
-        require(*reinterpret_cast<const unsigned char*>(&endian) == 1, "raw captures require little-endian host");
-        std::vector<int64_t> ids = read_raw<int64_t>(path(input, "ids.i64"), 3, 512);
-        std::vector<float> style = read_raw<float>(path(input, "style.f32"), 256, 256);
-        std::vector<float> speed = read_raw<float>(path(input, "speed.f32"), 1, 1);
-        require(ids.front() == 0 && ids.back() == 0, "token IDs require both zero pads");
-        for (size_t i = 1; i + 1 < ids.size(); ++i) require(ids[i] >= 1 && ids[i] <= 177, "invalid Kokoro token ID");
-        finite(style, "style"); finite(speed, "speed"); require(speed[0] > 0, "speed must be positive");
-        OutputDirectory directory(output);
-        const double started = now();
+namespace radish_frontend {
+Boundary generate_frontend(const std::string& library, const std::string& frontend,
+                           const std::string& source, const std::string& input,
+                           int max_frames, int threads) {
+    require(max_frames >= 1 && max_frames <= 4096, "invalid max-frames");
+    require(threads >= 1 && threads <= 6, "invalid threads");
+    const uint16_t endian = 1;
+    require(*reinterpret_cast<const unsigned char*>(&endian) == 1, "raw captures require little-endian host");
+    std::vector<int64_t> ids = read_raw<int64_t>(path(input, "ids.i64"), 3, 512);
+    std::vector<float> style = read_raw<float>(path(input, "style.f32"), 256, 256);
+    std::vector<float> speed = read_raw<float>(path(input, "speed.f32"), 1, 1);
+    require(ids.front() == 0 && ids.back() == 0, "token IDs require both zero pads");
+    for (size_t i = 1; i + 1 < ids.size(); ++i) require(ids[i] >= 1 && ids[i] <= 177, "invalid Kokoro token ID");
+    finite(style, "style"); finite(speed, "speed"); require(speed[0] > 0, "speed must be positive");
+    const double started = now();
+    Boundary boundary;
+    {
         Runtime runtime(library, threads);
         OrtHandle<OrtValue> token_tensor = runtime.tensor(ids.data(), ids.size()*sizeof(int64_t), {1, int64_t(ids.size())}, ONNX_TENSOR_ELEMENT_DATA_TYPE_INT64);
         OrtHandle<OrtValue> style_tensor = runtime.tensor(style.data(), style.size()*sizeof(float), {1, 256}, ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT);
@@ -302,25 +295,84 @@ int main(int argc, char** argv) {
                                                   source_time, size_t(22*frames));
         require(harmonic[0].shape == std::vector<int64_t>({1, samples, 1}) &&
                 harmonic[1].shape == std::vector<int64_t>({1, 22, frames}), "unexpected harmonic source shape");
-        const double generated = now() - started;
-        directory.write("ids.i64", ids); directory.write("style.f32", style); directory.write("speed.f32", speed);
-        directory.write("asr.f32", front[0].values); directory.write("f0.f32", front[1].values);
-        directory.write("n.f32", front[2].values); directory.write("durations.f32", front[3].values);
-        directory.write("har.f32", harmonic[1].values);
-        std::ostringstream report;
-        report << std::setprecision(17) << "{\n  \"format\": \"radish-kokoro-frontend-boundary-v1\",\n"
-               << "  \"ort_version\": " << quote(runtime.version) << ", \"ort_api\": 24,\n"
-               << "  \"ort_library\": " << quote(library) << ",\n  \"frontend_graph\": " << quote(frontend)
-               << ",\n  \"source_graph\": " << quote(source) << ",\n  \"input_directory\": " << quote(input) << ",\n"
-               << "  \"threads\": " << threads << ", \"optimization\": \"disabled\",\n"
-               << "  \"tokens_with_pads\": " << ids.size() << ", \"T\": " << t << ", \"frames\": " << frames
-               << ", \"samples\": " << samples << ", \"sample_rate\": 24000,\n"
-               << "  \"frontend\": {\"load_seconds\": " << front_time.load << ", \"run_seconds\": " << front_time.run << "},\n"
-               << "  \"source\": {\"load_seconds\": " << source_time.load << ", \"run_seconds\": " << source_time.run << "},\n"
-               << "  \"boundary_seconds\": " << generated << ",\n"
-               << "  \"scope\": \"Fresh CPU frontend/source boundary only; CPU core references, shape hints, GPU and waveform validation remain separate.\"\n}\n";
-        const std::string manifest = report.str(); directory.write("frontend.json", manifest.data(), manifest.size());
-        directory.publish();
+        boundary.T = t; boundary.frames = frames; boundary.samples = samples;
+        boundary.asr = std::move(front[0].values); boundary.f0 = std::move(front[1].values);
+        boundary.n = std::move(front[2].values); boundary.durations = std::move(front[3].values);
+        boundary.har = std::move(harmonic[1].values);
+        boundary.ort_version = runtime.version;
+        boundary.frontend_time = front_time; boundary.source_time = source_time;
+    }
+    boundary.boundary_seconds = now() - started;
+    boundary.ids = std::move(ids); boundary.style = std::move(style); boundary.speed = speed[0];
+    boundary.ort_library = library; boundary.frontend_graph = frontend; boundary.source_graph = source;
+    boundary.input_directory = input; boundary.threads = threads;
+    return boundary;
+}
+
+void export_boundary(const Boundary& boundary, const std::string& output) {
+    OutputDirectory directory(output);
+    const std::vector<int64_t>& ids = boundary.ids;
+    const std::vector<float>& style = boundary.style;
+    const std::string& library = boundary.ort_library;
+    const std::string& frontend = boundary.frontend_graph;
+    const std::string& source = boundary.source_graph;
+    const std::string& input = boundary.input_directory;
+    const Timing& front_time = boundary.frontend_time;
+    const Timing& source_time = boundary.source_time;
+    const int64_t t = boundary.T, frames = boundary.frames, samples = boundary.samples;
+    const int threads = boundary.threads;
+    const double generated = boundary.boundary_seconds;
+    directory.write("ids.i64", ids); directory.write("style.f32", style); directory.write("speed.f32", &boundary.speed, sizeof(boundary.speed));
+    directory.write("asr.f32", boundary.asr); directory.write("f0.f32", boundary.f0);
+    directory.write("n.f32", boundary.n); directory.write("durations.f32", boundary.durations);
+    directory.write("har.f32", boundary.har);
+    std::ostringstream report;
+    report << std::setprecision(17) << "{\n  \"format\": \"radish-kokoro-frontend-boundary-v1\",\n"
+           << "  \"ort_version\": " << quote(boundary.ort_version) << ", \"ort_api\": 24,\n"
+           << "  \"ort_library\": " << quote(library) << ",\n  \"frontend_graph\": " << quote(frontend)
+           << ",\n  \"source_graph\": " << quote(source) << ",\n  \"input_directory\": " << quote(input) << ",\n"
+           << "  \"threads\": " << threads << ", \"optimization\": \"disabled\",\n"
+           << "  \"tokens_with_pads\": " << ids.size() << ", \"T\": " << t << ", \"frames\": " << frames
+           << ", \"samples\": " << samples << ", \"sample_rate\": 24000,\n"
+           << "  \"frontend\": {\"load_seconds\": " << front_time.load << ", \"run_seconds\": " << front_time.run << "},\n"
+           << "  \"source\": {\"load_seconds\": " << source_time.load << ", \"run_seconds\": " << source_time.run << "},\n"
+           << "  \"boundary_seconds\": " << generated << ",\n"
+           << "  \"scope\": \"Fresh CPU frontend/source boundary only; CPU core references, shape hints, GPU and waveform validation remain separate.\"\n}\n";
+    const std::string manifest = report.str(); directory.write("frontend.json", manifest.data(), manifest.size());
+    directory.publish();
+}
+} // namespace radish_frontend
+
+#ifndef RADISH_FRONTEND_NO_MAIN
+static int number(const char* text, int upper, const char* name) {
+    char* end = nullptr; errno = 0;
+    const long value = std::strtol(text, &end, 10);
+    require(errno == 0 && end != text && *end == '\0' && value >= 1 && value <= upper,
+            std::string("invalid ") + name);
+    return int(value);
+}
+
+int main(int argc, char** argv) {
+    try {
+        require(argc >= 5, "Usage: kokoro-frontend FRONTEND_ONLY.onnx SOURCE.onnx INPUT_DIR NEW_OUTPUT [--ort-lib FILE] [--threads1..6] [--max-frames1..4096]");
+        const std::string frontend = argv[1], source = argv[2], input = argv[3], output = argv[4];
+        std::string library = "/usr/local/lib/straylight-listen/libonnxruntime.so";
+        int threads = 4, max_frames = 4096;
+        for (int i = 5; i < argc; i += 2) {
+            require(i + 1 < argc, "missing option value");
+            if (!std::strcmp(argv[i], "--ort-lib")) library = argv[i+1];
+            else if (!std::strcmp(argv[i], "--threads")) threads = number(argv[i+1], 6, "threads");
+            else if (!std::strcmp(argv[i], "--max-frames")) max_frames = number(argv[i+1], 4096, "max-frames");
+            else throw std::runtime_error(std::string("unknown option: ") + argv[i]);
+        }
+        struct stat output_info;
+        require(!output.empty() && output.back() != '/', "output must name a new directory without a trailing slash");
+        require(lstat(output.c_str(), &output_info) != 0 && errno == ENOENT, "output already exists or cannot be inspected");
+        const radish_frontend::Boundary boundary = radish_frontend::generate_frontend(library, frontend, source, input, max_frames, threads);
+        radish_frontend::export_boundary(boundary, output);
+        const int64_t t = boundary.T, frames = boundary.frames, samples = boundary.samples;
+        const Timing& source_time = boundary.source_time;
+        const double generated = boundary.boundary_seconds;
         std::printf("PASS: fresh boundary T=%lld frames=%lld samples=%lld source_load=%.6fs source_run=%.6fs total=%.6fs output=%s\n",
                     static_cast<long long>(t), static_cast<long long>(frames), static_cast<long long>(samples),
                     source_time.load, source_time.run, generated, output.c_str());
@@ -330,3 +382,5 @@ int main(int argc, char** argv) {
         return 1;
     }
 }
+
+#endif

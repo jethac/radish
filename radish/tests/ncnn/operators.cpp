@@ -165,11 +165,13 @@ bool matches(double actual, double expected, int channel, int position, double& 
 }
 
 int conv_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
-              int width, int input_channels, int output_channels, int kernel, bool compile_only, bool tiled_case = false)
+              int width, int input_channels, int output_channels, int kernel, bool compile_only,
+              bool tiled_case = false, int dilation = 1)
 {
-    std::printf("CASE Convolution1D: width=%d in=%d out=%d kernel=%d valid stride=1 dilation=1\n",
-                width, input_channels, output_channels, kernel);
-    const int output_width = width - kernel + 1;
+    std::printf("CASE Convolution1D: width=%d in=%d out=%d kernel=%d valid stride=1 dilation=%d\n",
+                width, input_channels, output_channels, kernel, dilation);
+    const int output_width = width - dilation * (kernel - 1);
+    CHECK(output_width > 0);
     ncnn::Mat input(width, input_channels);
     ncnn::Mat model[2] = {ncnn::Mat(output_channels * input_channels * kernel), ncnn::Mat(output_channels)};
     CHECK(!input.empty() && !model[0].empty() && !model[1].empty());
@@ -188,7 +190,7 @@ int conv_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
     ncnn::ParamDict params;
     params.set(0, output_channels);
     params.set(1, kernel);
-    params.set(2, 1); // dilation
+    params.set(2, dilation);
     params.set(3, 1); // stride
     params.set(4, 0); // left padding
     params.set(15, 0); // right padding
@@ -261,7 +263,7 @@ int conv_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
             double product_magnitude = 0;
             for (int c = 0; c < input_channels; ++c)
                 for (int k = 0; k < kernel; ++k) {
-                    const double product = static_cast<double>(input.row<float>(c)[x + k]) * model[0][(o * input_channels + c) * kernel + k];
+                    const double product = static_cast<double>(input.row<float>(c)[x + k * dilation]) * model[0][(o * input_channels + c) * kernel + k];
                     expected += product;
                     product_magnitude += std::fabs(product);
                 }
@@ -369,6 +371,7 @@ int main(int argc, char** argv)
     // Flush each stage so a driver hang still leaves a useful device-side log.
     std::setvbuf(stdout, 0, _IONBF, 0);
     bool conv = false, inner = false, compile_only = false, smoke = false, fp16_packed = false, tiled_only = false;
+    int dilation = 1;
     for (int i = 1; i < argc; ++i) {
         if (!std::strcmp(argv[i], "--conv")) conv = true;
         else if (!std::strcmp(argv[i], "--inner")) inner = true;
@@ -376,10 +379,21 @@ int main(int argc, char** argv)
         else if (!std::strcmp(argv[i], "--smoke")) smoke = true;
         else if (!std::strcmp(argv[i], "--fp16-packed")) fp16_packed = true;
         else if (!std::strcmp(argv[i], "--tiled-only")) tiled_only = true;
+        else if (!std::strcmp(argv[i], "--dilation3") || !std::strcmp(argv[i], "--dilation5")) {
+            if (dilation != 1) {
+                std::fputs("select at most one of --dilation3 or --dilation5\n", stderr);
+                return 1;
+            }
+            dilation = !std::strcmp(argv[i], "--dilation3") ? 3 : 5;
+        }
         else {
-            std::fprintf(stderr, "Usage: %s [--conv] [--inner] [--compile-only] [--smoke] [--fp16-packed] | --tiled-only [--compile-only]\n", argv[0]);
+            std::fprintf(stderr, "Usage: %s [--conv] [--inner] [--compile-only] [--smoke] [--fp16-packed] | --tiled-only [--compile-only] [--dilation3 | --dilation5]\n", argv[0]);
             return 1;
         }
+    }
+    if (dilation != 1 && !tiled_only) {
+        std::fputs("--dilation3 and --dilation5 require --tiled-only\n", stderr);
+        return 1;
     }
     if (tiled_only && (conv || inner || smoke || fp16_packed)) {
         std::fputs("--tiled-only is FP32 and cannot be combined with --conv, --inner, --smoke or --fp16-packed\n", stderr);
@@ -422,7 +436,7 @@ int main(int argc, char** argv)
     Allocators allocators(device, opt);
     CHECK(opt.blob_vkallocator && opt.staging_vkallocator);
 
-    if (tiled_only) CHECK(conv_case(device, opt, 213, 128, 128, 11, compile_only, true) == 0);
+    if (tiled_only) CHECK(conv_case(device, opt, 213, 128, 128, 11, compile_only, true, dilation) == 0);
     if (conv) {
         CHECK(conv_case(device, opt, 33, 3, 5, 3, compile_only) == 0);
         if (!smoke) {

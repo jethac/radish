@@ -1,22 +1,26 @@
 # Kokoro runtime integration audit
 
-2026-11-01: the standalone CPU frontend and harmonic source now run on the
-tablet from token IDs/style/speed, producing a fresh T=78 boundary. Its exact
-bytes have matching host ORT decoder/tail references, and the tablet GPU core
-and portable waveform tail both pass on that boundary. This completes the
-staged T=78 chain with host reference generation and shape capture between
-device stages. A single executable and live application integration remain
-unfinished. Fixed-core and separate waveform evidence is recorded in
+2026-11-01: one private tablet executable now runs CPU frontend/source, metadata
+shape propagation, the FP32 Vulkan core and the portable waveform tail from
+token IDs/style/speed. Complete T=78 and T=213 runs take **43.652206 s** and
+**84.223461 s** synthesis time, with **343.6MiB** and **457.2MiB** peak memory,
+zero swap and no new GPU fault. Every core value and waveform sample passes
+the unchanged gates against host ORT references computed afterward from each
+run's exact eight boundary files. No host work occurs between inference stages.
+The six-thread CPU baseline also passes T213 in **39.789900 s**, using identical
+boundary tensors; Vulkan remains slower. Resident reuse, cancellation and live
+application integration remain unfinished.
+Earlier staged and fixed-core evidence is retained below and in
 [NOTES.md](NOTES.md).
 
-## Proposed route
+## Implemented route
 
-Keep harmonic generation in the existing CPU ONNX Runtime frontend, return its
+Keep harmonic generation in the CPU ONNX Runtime frontend, return its
 `har` tensor with `asr`, F0, N and durations, feed those tensors plus style into
 ncnn, then run the portable CPU waveform tail. This reuses an existing runtime
 and the original source graph; no new GPU feature is needed.
 
-Start with a private benchmark and the FP32 frontend from the original model.
+The private benchmark uses the FP32 frontend from the original model.
 The existing production frontend is uint8 and would introduce a separate model
 quality comparison. Do not change the live listener or its services for bring-up.
 
@@ -219,43 +223,210 @@ the existing accuracy gates. Host CPU reference generation and ncnn shape
 capture were interleaved between device stages; these stage timings therefore
 do not establish single-executable synthesis latency or combined memory use.
 
+## Integrated runtime and metadata shapes
+
+`tests/kokoro_shapes.{h,cpp}` implements `radish::infer_kokoro_shapes(param,T)`
+without weights, tensor execution or ncnn dependencies. It seeds the five
+inputs from T and applies the audited operators' padding, stride, dilation,
+reshape, slice, concat and broadcast rules with checked integer arithmetic.
+Unsupported or ambiguous parameters, malformed graphs and overflow fail.
+Existing `-23330` hints are replaced, retaining every other parameter token,
+layer, blob and weight order, including the 58 style projection annotations.
+The caller separately verifies graph and weight hashes. The interface accepts
+T=1..4096; that bound does not imply measured model accuracy at every length.
+
+Independent comparisons against actual CPU captures match **all 1739 blobs**
+of the original 1368-layer layout at both T78 and T213, and **all 1307 blobs**
+of the fused 1098-layer InstanceNorm graph at both lengths. The rank-three
+normalization reshapes are included. The isolated fused T78 CPU run also passes
+the original full-output gate: max error 4.50611115e-5, relative RMS
+4.16033117e-7, zero mismatches. Shape formulas come from operation metadata,
+not interpolation between captured lengths. The old host shape-capture
+assembler remains useful as an independent check; it is no longer part of
+integrated synthesis. Upstream `ModelWriter::shape_inference()` would execute
+an Extractor for each blob and is not used here.
+
+The callable interfaces are `radish_frontend::generate_frontend()` and
+`export_boundary()` in `tests/kokoro_frontend.{h,cpp}`, and
+`radish_waveform::load_tail()` / `synthesize()` in
+`tests/kokoro_waveform.{h,cpp}`. They share the validated implementations with
+the standalone commands. The frontend returns owned vectors and releases ORT
+values, sessions and the runtime before GPU allocation. The tail retains the
+pinned inverse basis, window and double-precision arithmetic.
+
+`tests/ncnn/kokoro_runtime.cpp` joins these modules with the existing ncnn
+helpers. It generates one boundary, rebuilds all logical shape hints for the
+actual T, loads the fused graph, checks its 1307 loaded hints, and runs FP32
+core inference. It destroys the Net, GPU allocators and device before the CPU
+tail. Thus a new invocation with a different T gets new hints and pipelines;
+there is no cross-input resident Net cache. `--repeat N` reuses one boundary
+and loaded Net for N extractions, then applies the tail once to the last result.
+It measures loaded-core reuse, not N complete requests or changing shapes.
+`--cpu-packed` selects a separate CPU invocation; a numerical comparison must
+still establish identical boundaries or use the preserved-boundary references.
+
+The output is an atomically published new directory containing `boundary/`
+(eight raw files and `frontend.json`), `core.f32`, `waveform.f32`, and
+`runtime.json`. `synthesis_seconds` includes frontend creation/destruction,
+shape propagation, core loading/all extractions/destruction and one tail,
+excluding output publication. Load, extraction, scope and tail times are also
+recorded separately. Generating an output alone does not establish accuracy.
+
+### Artifact pins and device wrapper
+
+`scripts/build-runtime.sh` builds the standalone frontend and the
+`build-ncnn-simpleomp/radish-kokoro-runtime` target using the pinned ORT headers.
+The device wrapper verifies these immutable artifacts before staging:
+
+| Artifact | SHA256 |
+| --- | --- |
+| Pure frontend, 111933749 bytes | `56ba27008352a2191b631ebbf269bf4506d690a1b83d8ff8ff5524b11291ddd3` |
+| Harmonic source, 13810 bytes | `4bdcb9f2f54d6efbfdcefce384300352933cc71fa562930f23eaeb3443528fd2` |
+| Fused T213 parameter template | `6499e4996cea79d28e9c72caab1e2f0ca7d9fab4420a6f198c7e197fb06d347f` |
+| Core weights, 213042160 bytes | `0f77cf77ff79a7724662f2e79a4d50284eb498abb2e519469a188e33f6c051ae` |
+| Portable tail, 1936 bytes | `e04b5c7b07c51b98b8883ba4feb753dbcb5bad9260fc93d009aa7fd577e80749` |
+| Private Vulkan loader, 703696 bytes | `75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a` |
+
+`scripts/device-runtime.sh` also records the current executable, driver, ICD,
+input and environment hashes in private evidence. It stages the pinned loader
+as `libvulkan.so.1` beside the private driver. The deliberately compact ICD
+causes ncnn SIMPLEVK to load that Vulkan loader, which then reads
+`VK_DRIVER_FILES`; its library search path does not depend on a system loader.
+The installed ORT library remains read-only. Existing device core weights are
+hash-checked and reused, or uploaded once to a new shared hash-named asset.
+
+Each run has exclusive device and host output directories. The shared lock
+honors `RADISH_DEVICE_LOCK`. The wrapper requires 832MiB available memory and
+enough disk for payload, bounded outputs and reserve (at least 256MiB), then
+uses MemoryMax640M, SwapMax128M and RuntimeMax300s. It preserves both services,
+checks new GPU faults, and records service, memory and disk evidence. Defaults
+are four ncnn/ORT threads, `RADISH_NCNN_TILED=1`, batch4, shared-groups8,
+shared32/mixed-storage0, pipeline-cache1, trace/profile1. These values and all
+overrides are recorded. No production service files are replaced.
+
+### Reproduction and same-boundary validation
+
+From the repository root, with the pinned private inputs, exported graphs,
+fused graph/weights and tail prepared under WORK:
+
+```bash
+export RADISH_WORK=/run/media/jethac/Shared/radish
+PY="$PWD/streams/tts/downloads/kokoro-venv/bin/python"
+bash radish/scripts/build-runtime.sh
+bash radish/scripts/device-runtime.sh runtime-short review-short --vulkan
+bash radish/scripts/device-runtime.sh runtime-full review-full --vulkan
+```
+
+Labels must be new; prior outputs are never overwritten. `--repeat 2` requests
+two loaded-core extractions within the same process, and `--cpu-packed` is an
+alternative backend. The default maximum decoder T is 512 (`--max-frames`),
+independent of the derived core frame count `120*T+1`.
+
+After a device run finishes, import its preserved boundary and validate the
+complete outputs. For the short command above:
+
+```bash
+CAPTURE="$RADISH_WORK/kokoro-runtime-short-single-vulkan-review-short"
+REFERENCE="$RADISH_WORK/kokoro-runtime-single-review-short-reference"
+"$PY" radish/scripts/import-kokoro-device-boundary.py \
+  "$CAPTURE/boundary" "$RADISH_WORK/kokoro-runtime-models" "$REFERENCE"
+"$PY" radish/scripts/validate-kokoro-runtime.py \
+  "$CAPTURE" "$REFERENCE" "$RADISH_WORK/runtime-single-review-short-validation.json"
+```
+
+The wrapper supplies importer-compatible `boundary/device-capture.json` plus
+`device-runtime.json`. The importer copies all eight boundary arrays exactly
+and generates only decoder/tail references; it never recomputes frontend/source.
+Validation checks the frozen output and evidence hashes, reference provenance,
+all eight raw-file identities, exact output lengths and unchanged core/waveform
+gates. This work happens after device synthesis and is excluded from its time.
+It compares the original decoder/tail on the tablet boundary, without claiming
+identity to a separate unsplit original-model execution.
+
+### Complete-run evidence
+
+`runtime-integrated-host-short-validation.json` records a full host T78 pass:
+205942 core values, max error **3.81469727e-5**, relative RMS **4.69385446e-7**;
+46800 waveform samples, max error **1.07027590e-5**, SNR **102.704341dB**;
+zero mismatches. All eight frontend files match the existing host reference
+inputs exactly. This is host integration correctness, not tablet performance.
+
+The complete tablet runs are `kokoro-runtime-short-single-vulkan-first` and
+`kokoro-runtime-full-single-vulkan-first`, with logs
+`runtime-single-{short,full}-first.log` and reports
+`runtime-single-{short,full}-first-validation.json`. ORT1.28.2 generates each
+boundary on the tablet; host ORT1.31.1 supplies references afterward. All eight
+raw arrays are byte-identical between each device capture and its reference
+inputs. Both runs use four ncnn and four ORT threads.
+
+| Stage | Vulkan T78 | Vulkan T213 |
+| --- | ---: | ---: |
+| Frontend/source, including ORT cleanup | 8.364384 s | 6.130650 s |
+| Metadata propagation, 1307 blobs | 0.038182 s | 0.031212 s |
+| Core cold load | 9.727086 s | 9.669170 s |
+| Core extraction, including transfers | 25.190135 s | 67.889310 s |
+| Entire core scope, including load/destruction | 35.187278 s | 77.893781 s |
+| Waveform tail | 0.038283 s | 0.103361 s |
+| Synthesis total | **43.652206 s** | **84.223461 s** |
+| Through output publication | 43.656357 s | 84.231595 s |
+| Service wall time | 43.711 s | 84.317 s |
+| Peak memory / swap | 343.6MiB / zero | 457.2MiB / zero |
+
+Core load/extraction are components of core scope and must not be added to it
+again. Both services remain active and no new GPU fault is recorded for either
+run. Full-output accuracy is:
+
+| Output | T78 | T213 |
+| --- | --- | --- |
+| Core values | 205942 | 562342 |
+| Core max error / relative RMS | 1.05142593e-4 / 9.27539488e-7 | 1.02996826e-4 / 7.81135939e-7 |
+| Waveform samples | 46800 | 127800 |
+| Waveform max error / SNR | 1.47223473e-5 / 96.917732dB | 9.19587910e-6 / 98.355163dB |
+| Core / waveform mismatches | zero / zero | zero / zero |
+
+There is no host calibration or reference generation between inference stages.
+
+The equivalent full T213 `--cpu-packed --threads 6` run uses four ORT threads
+and the same fused graph in
+`kokoro-runtime-full-single-cpu-packed-cpu-first`. Its log is
+`runtime-single-full-cpu-first.log`; strict validation is recorded in
+`runtime-single-full-cpu-first-validation.json`. The independent
+`runtime-single-full-cpu-gpu-boundary-identity.json` records identical SHA256s
+for all eight frontend input/output files across the CPU and Vulkan runs.
+
+| CPU-packed T213 stage | Time |
+| --- | ---: |
+| Frontend/source, including ORT cleanup | 5.736043 s |
+| Metadata propagation | 0.031603 s |
+| Core cold load | 1.144992 s |
+| Core extraction | 32.626909 s |
+| Entire core scope, including load/destruction | 33.855854 s |
+| Waveform tail | 0.102624 s |
+| Synthesis total | **39.789900 s** |
+| Through publication / service wall time | 39.807908 s / 40.049 s |
+
+CPU peak memory is **461.2MiB**, with zero swap, both services active and no new
+GPU fault. All **562342 core values** pass, max error **3.62396240e-4**, relative
+RMS **2.51363812e-6**; all **127800 waveform samples** pass, max error
+**5.05000353e-5**, SNR **88.225028dB**, with zero mismatches in either output.
+These are separate first-process runs with verified identical boundaries, not a
+sustained or resident benchmark. The Vulkan path is functionally complete for
+these inputs but has not beaten the six-thread CPU baseline.
+
 ## Remaining integration work
 
-The next runtime implementation should remove the host calibration step with a
-small metadata-only shape pass over the pinned layout graph. Its 17 operator
-kinds have integer shape rules; seed the five inputs from T, propagate each
-operation's actual padding/stride/dilation/reshape/broadcast rules, and append
-standard `-23330` hints before `Net::load_param_mem`. Require exact agreement
-with all 1739 existing T78/T213 captured shapes. Do not infer formulas by fitting
-those two observations. Upstream `ModelWriter::shape_inference()` executes an
-Extractor for every blob, so it does not remove calibration costs.
-
-Carry the validated InstanceNorm graph and tiled-kernel options into that
-executable as well. After matching the original graph's hints, validate the
-1307-blob fused graph, including its rank-three normalization reshapes. Removing
-host calibration must preserve the measured graph optimizations.
-
-Then factor the existing frontend/source, ncnn extraction and portable tail into
-one private executable, keeping tensors in memory and releasing ORT sessions
-before GPU allocation. An optional sequential CPU comparison must reuse the
-same boundary. Start with one Net for the actual T and rebuild on a T change;
-measure resident reuse, combined memory, cold/warm latency and cancellation
-before treating it as an application backend.
-
-- Replace per-input host shape capture with validated propagation from graph
-  metadata and T, then run frontend, ncnn and tail in one private executable.
-  Keep the existing staged references as the baseline. Full T213 tablet
-  frontend/source execution remains unmeasured.
-- For every new T, keep shape hints and compiled specializations matched to
-  actual dimensions. T78 device success does not justify reusing its hints at
-  another length or claiming arbitrary-length compatibility.
-- Add the ncnn handoff and portable tail to a private executable before wiring
-  an application backend. Reuse the existing frontend/token/style/duration
-  interfaces; keep generated weights and model graphs out of the repository.
-- Measure combined memory, cold/warm latency and cancellation. The resident
-  frontend adds memory beyond current core-only measurements. Initially,
-  generating boundaries and releasing the ORT session before GPU inference can
-  isolate memory costs; it does not establish resident production performance.
+- Retain full-output checks across additional supported inputs and lengths.
+  Complete T78/T213 success, T bounds and metadata formulas alone do not
+  establish arbitrary-input accuracy.
+- Measure loaded-core repeats, cold/warm behavior and sustained throughput.
+  Resident frontend/core reuse across requests and changing T is not implemented;
+  a future cache must keep dimensions, hints and compiled pipelines consistent.
+- Add and measure cancellation and cleanup behavior before application wiring.
+  Current bounded one-shot processes do not establish production cancellation
+  or memory use with simultaneously resident frontend and core sessions.
+- Integrate the existing token/style/duration interfaces into the live application
+  only after these private-runtime checks. Models, weights and generated captures
+  remain outside the public repository.
 
 Keep device locking, bounded sessions, both live services and fault inspection
-requirements from [GOAL.md](GOAL.md). This audit does not complete M5 or M6.
+requirements from [GOAL.md](GOAL.md). This evidence does not complete M5 or M6.

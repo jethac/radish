@@ -1,3 +1,4 @@
+#include "kokoro_waveform.h"
 #include <algorithm>
 #include <array>
 #include <chrono>
@@ -15,7 +16,10 @@
 
 namespace {
 constexpr size_t channels=22,bins=11,fixture_frames=25561,kernel=20,hop=5,trim=10;
+#ifndef RADISH_WAVEFORM_NO_MAIN
 constexpr double absolute_tolerance=2e-4,relative_tolerance=2e-3,minimum_snr=50.0;
+#endif
+using radish_waveform::Tail;
 struct FileCloser { void operator()(FILE* file) const { std::fclose(file); } };
 using File=std::unique_ptr<FILE,FileCloser>;
 using Clock=std::chrono::steady_clock;
@@ -31,22 +35,11 @@ size_t checked_multiply(size_t a,size_t b) {
     require(b==0 || a<=std::numeric_limits<size_t>::max()/b,"runtime tensor size overflow");
     return a*b;
 }
-size_t file_bytes(const char* path) {
-    struct stat info;
-    require(stat(path,&info)==0 && S_ISREG(info.st_mode) && info.st_size>0,
-            std::string("invalid or missing input: ")+path);
-    require(static_cast<uintmax_t>(info.st_size)<=std::numeric_limits<size_t>::max(),"input file exceeds addressable size");
-    return static_cast<size_t>(info.st_size);
-}
 struct RuntimeShape {
     size_t frames,samples,total;
 };
-RuntimeShape read_shape(const char* path,bool runtime_frames) {
-    const size_t bytes=file_bytes(path);
-    require(bytes%(channels*sizeof(float))==0,"core file must contain 22 complete FP32 channels");
-    const size_t frames=bytes/(channels*sizeof(float));
+RuntimeShape checked_shape(size_t frames) {
     require(frames>1 && frames<=static_cast<size_t>(std::numeric_limits<int>::max())/channels,"core frame count exceeds checked tensor limits");
-    require(runtime_frames || frames==fixture_frames,"non-fixture core length requires --runtime-frames");
     const size_t samples=checked_multiply(frames-1,hop);
     require(samples<=std::numeric_limits<size_t>::max()-kernel,"waveform size overflow");
     const size_t total=samples+kernel;
@@ -54,6 +47,22 @@ RuntimeShape read_shape(const char* path,bool runtime_frames) {
     checked_multiply(samples,sizeof(float));
     return {frames,samples,total};
 }
+#ifndef RADISH_WAVEFORM_NO_MAIN
+size_t file_bytes(const char* path) {
+    struct stat info;
+    require(stat(path,&info)==0 && S_ISREG(info.st_mode) && info.st_size>0,
+            std::string("invalid or missing input: ")+path);
+    require(static_cast<uintmax_t>(info.st_size)<=std::numeric_limits<size_t>::max(),"input file exceeds addressable size");
+    return static_cast<size_t>(info.st_size);
+}
+RuntimeShape read_shape(const char* path,bool runtime_frames) {
+    const size_t bytes=file_bytes(path);
+    require(bytes%(channels*sizeof(float))==0,"core file must contain 22 complete FP32 channels");
+    const size_t frames=bytes/(channels*sizeof(float));
+    require(runtime_frames || frames==fixture_frames,"non-fixture core length requires --runtime-frames");
+    return checked_shape(frames);
+}
+#endif
 File open_file(const char* path,const char* mode) {
     File file(std::fopen(path,mode));
     require(bool(file),std::string("cannot open ")+path);
@@ -73,6 +82,7 @@ float little_float(const unsigned char* p) {
     std::memcpy(&value,&bits,sizeof(value));
     return value;
 }
+#ifndef RADISH_WAVEFORM_NO_MAIN
 std::vector<float> read_floats(const char* path,size_t count) {
     const size_t bytes_count=checked_multiply(count,sizeof(float));
     std::vector<float> values(count);
@@ -85,11 +95,7 @@ std::vector<float> read_floats(const char* path,size_t count) {
     }
     return values;
 }
-struct Tail {
-    float scale,threshold;
-    std::array<float,channels*kernel> basis;
-    std::array<float,kernel> window;
-};
+#endif
 Tail read_tail(const char* path) {
     std::array<unsigned char,1936> bytes;
     read_exact(path,bytes.data(),bytes.size());
@@ -117,12 +123,14 @@ Tail read_tail(const char* path) {
     }
     return tail;
 }
+#ifndef RADISH_WAVEFORM_NO_MAIN
 double cpu_time() {
     struct rusage usage;
     require(getrusage(RUSAGE_SELF,&usage)==0,"getrusage failed");
     return usage.ru_utime.tv_sec+usage.ru_stime.tv_sec+(usage.ru_utime.tv_usec+usage.ru_stime.tv_usec)*1e-6;
 }
-std::vector<double> waveform(const std::vector<float>& core,const Tail& tail,const RuntimeShape& shape) {
+#endif
+std::vector<double> waveform(const float* core,const Tail& tail,const RuntimeShape& shape) {
     const size_t frames=shape.frames;
     std::vector<double> result(shape.total,0.0);
     // Reverse frames preserves the exported sample-major overlap-add order.
@@ -150,6 +158,7 @@ std::vector<double> waveform(const std::vector<float>& core,const Tail& tail,con
     }
     return result;
 }
+#ifndef RADISH_WAVEFORM_NO_MAIN
 void write_waveform(const char* path,const std::vector<double>& values,size_t samples) {
     const std::string temporary=std::string(path)+".tmp";
     File file=open_file(temporary.c_str(),"wbx");
@@ -174,8 +183,28 @@ void write_waveform(const char* path,const std::vector<double>& values,size_t sa
         throw;
     }
 }
+#endif
 } // namespace
 
+namespace radish_waveform {
+Tail load_tail(const std::string& path) {
+    return read_tail(path.c_str());
+}
+std::vector<float> synthesize(const float* core, size_t count, size_t frames, const Tail& tail) {
+    const RuntimeShape shape=checked_shape(frames);
+    require(core && count==checked_multiply(channels,frames), "core count does not match frame count");
+    for(size_t i=0;i<count;++i) require(std::isfinite(core[i]), "nonfinite core input");
+    require(tail.scale==4.f && tail.threshold==std::numeric_limits<float>::min(), "unexpected scale or threshold");
+    for(float value:tail.basis) require(std::isfinite(value), "nonfinite inverse basis");
+    for(float value:tail.window) require(std::isfinite(value) && value>=0, "invalid window normalization");
+    const std::vector<double> full=waveform(core,tail,shape);
+    std::vector<float> output(shape.samples);
+    for(size_t i=0;i<shape.samples;++i) output[i]=static_cast<float>(full[trim+i]);
+    return output;
+}
+} // namespace radish_waveform
+
+#ifndef RADISH_WAVEFORM_NO_MAIN
 int main(int argc,char** argv) {
     const bool runtime_frames=argc==6 && !std::strcmp(argv[1],"--runtime-frames");
     if(argc!=5 && !runtime_frames) {
@@ -199,13 +228,13 @@ int main(int argc,char** argv) {
         const RuntimeShape shape=read_shape(core_path,runtime_frames);
         const size_t samples=shape.samples;
         require(file_bytes(reference_path)==checked_multiply(samples,sizeof(float)),"waveform reference length does not match runtime core");
-        Tail tail=read_tail(tail_path);
+        Tail tail=radish_waveform::load_tail(tail_path);
         std::vector<float> core=read_floats(core_path,checked_multiply(channels,shape.frames));
         std::vector<float> reference=read_floats(reference_path,samples);
         std::printf("waveform dimensions: %zu core frames, %zu samples%s\n",shape.frames,samples,runtime_frames?" (runtime frame override)":"");
         const double before_cpu=cpu_time();
         const auto start=Clock::now();
-        std::vector<double> result=waveform(core,tail,shape);
+        std::vector<double> result=waveform(core.data(),tail,shape);
         const double wall=std::chrono::duration<double>(Clock::now()-start).count();
         const double cpu=cpu_time()-before_cpu;
         double signal_power=0,error_power=0,max_error=0;
@@ -230,3 +259,5 @@ int main(int argc,char** argv) {
         return 1;
     }
 }
+
+#endif

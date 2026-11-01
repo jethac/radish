@@ -338,14 +338,27 @@ required.
   first/warm, both full-reference passes with identical output SHA; 417.8 MiB/zero
   swap, no faults. Same-graph packed CPU first 32.326136 s then 32.025450/32.132638 s
   passes all outputs; warm mean 32.079044 s, 444.4 MiB/zero swap.
-- [ ] Audit the 16 dilation3/5 convolutions still on the default path
-  (19.495 s command wall), retaining shape/register/output gates for any narrow
-  tiled dilation extension. The 37 tiled commands improve 41.813→26.625 s;
-  those totals include submission/wait overhead.
-- [ ] Connect and time the separately validated runtime phases and collect
-  sustained controlled measurements; one GPU warm sample and two CPU samples
-  do not establish end-to-end performance.
+- [x] Extend tiled convolution to dilation3/5 with incremental0018; compiled
+  16-full/0-half register footprint and both full operator references pass.
+  Full fused core first/warm69.862470/69.678044s, all562342 values pass,
+  416.7MiB/zero swap/no faults; waveform127800 samples passes at98.036838dB.
+- [x] Replace CPU shape calibration with metadata-only propagation; all original
+  1739 and fused1307 shapes match CPU captures atT78/T213. Factor callable
+  frontend/tail/ncnn helpers and build one runtime; hostT78 full outputs pass.
+- [x] Connect and time runtime phases in one private process: fresh tablet T78
+  completes in 43.652206 s, including core 25.190135 s; 343.6 MiB/zero swap,
+  no faults. All 205942 core values and 46800 audio samples pass exact-boundary
+  references; waveform SNR 96.917732 dB. No host calibration during inference.
+- [x] Measure fresh full T213 synthesis: GPU 84.223461 s including startup,
+  all 562342 core values and 127800 samples pass; 457.2 MiB/zero swap/no faults.
+  Equivalent six-thread packed CPU synthesis takes 39.789900 s; all eight
+  frontend boundary files match the GPU run byte-for-byte.
+- [ ] Measure resident reuse, cancellation and sustained behavior; single
+  startup runs do not establish a warm runtime win.
+- [ ] Audit narrow pack4 metadata aliases for normalization reshapes before
+  removing copies; retain scalar/padding cases and normal refcount lifetimes.
+  Then consider the 48 measured five-operation Snake activation chains.
 - [ ] Attribute remaining convolution, reduction and CPU fallback costs; compare
   equivalent warm work against an optimized CPU baseline before declaring a win.
-  Current warm command wall time includes 64.539 s convolution and 13.784 s
-  reductions; GPU performance still trails the CPU.
+  Use the current fused+dilation profile; earlier unfused convolution/reduction
+  totals are historical. GPU performance still trails the CPU.

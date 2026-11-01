@@ -13,14 +13,22 @@ EXTRA_ENV=
 TAG=operators
 TILED_ONLY=0
 OTHER_SELECTION=0
+DILATION=1
 for arg in "$@"; do
     case $arg in
         --conv|--inner|--smoke|--fp16-packed) TAG+=-${arg#--}; OTHER_SELECTION=1 ;;
         --tiled-only) TAG+=-tiled-only; TILED_ONLY=1 ;;
+        --dilation3|--dilation5)
+            [[ $DILATION == 1 ]] || { echo 'select at most one of --dilation3 or --dilation5' >&2; exit 2; }
+            DILATION=${arg#--dilation}; TAG+=-dilation$DILATION ;;
         --compile-only) TAG+=-compile; EXTRA_ENV='--setenv=IR3_SHADER_DEBUG=disasm' ;;
-        *) echo 'usage: device-operators.sh [--conv] [--inner] [--compile-only] [--smoke] [--fp16-packed] | --tiled-only [--compile-only]' >&2; exit 2 ;;
+        *) echo 'usage: device-operators.sh [--conv] [--inner] [--compile-only] [--smoke] [--fp16-packed] | --tiled-only [--compile-only] [--dilation3 | --dilation5]' >&2; exit 2 ;;
     esac
 done
+if [[ $DILATION != 1 && $TILED_ONLY != 1 ]]; then
+    echo '--dilation3 and --dilation5 require --tiled-only' >&2
+    exit 2
+fi
 if [[ $TILED_ONLY == 1 && $OTHER_SELECTION == 1 ]]; then
     echo '--tiled-only is FP32 and cannot be combined with --conv, --inner, --smoke or --fp16-packed' >&2
     exit 2

@@ -1,0 +1,45 @@
+--- a/src/layer/vulkan/convolution1d_vulkan.cpp
++++ b/src/layer/vulkan/convolution1d_vulkan.cpp
+@@ -114,7 +114,8 @@
+                        && vkdev->info.max_workgroup_invocations() >= 128
+                        && vkdev->info.max_workgroup_size_x() >= 16 && vkdev->info.max_workgroup_size_y() >= 8
+                        && opt.use_packing_layout && elempack == 4 && out_elempack == 4
+-                       && stride_w == 1 && dilation_w == 1 && (num_input * maxk) % 32 == 0
++                       && stride_w == 1 && (dilation_w == 1 || dilation_w == 3 || dilation_w == 5)
++                       && (num_input * maxk) % 32 == 0
+                        && num_input * maxk <= 3584
+                        && num_output % 64 == 0 && activation_type == 0
+                        && !opt.use_fp16_packed && !opt.use_fp16_storage
+@@ -131,11 +132,12 @@
+         // order. Keep one reference until upload instead of a second packing.
+         weight_data_packed = weight_data;
+ 
+-        std::vector<vk_specialization_type> specializations(4);
++        std::vector<vk_specialization_type> specializations(5);
+         specializations[0].i = kernel_w;
+         specializations[1].i = num_input;
+         specializations[2].i = num_output;
+         specializations[3].i = bias_term;
++        specializations[4].i = dilation_w;
+ 
+         pipeline_convolution1d_gemm = new Pipeline(vkdev);
+         pipeline_convolution1d_gemm->set_local_size_xyz(16, 8, 1);
+--- a/src/layer/vulkan/shader/convolution1d_radish_tiled.comp
++++ b/src/layer/vulkan/shader/convolution1d_radish_tiled.comp
+@@ -6,6 +6,7 @@
+ layout(constant_id = 1) const int num_input = 32;
+ layout(constant_id = 2) const int num_output = 64;
+ layout(constant_id = 3) const int bias_term = 0;
++layout(constant_id = 4) const int dilation_w = 1;
+ 
+ layout(binding = 0) readonly buffer weights { vec4 weight_data[]; };
+ layout(binding = 1) readonly buffer bottom_blob { float bottom_blob_data[]; };
+@@ -25,7 +26,7 @@
+ vec4 load_input(int k, int x)
+ {
+     const int ci = k / kernel_w;
+-    const int tap = k - ci * kernel_w;
++    const int tap = (k - ci * kernel_w) * dilation_w;
+     const int base = (ci / 4) * p.w * 4 + ci % 4;
+     vec4 v = vec4(0.f);
+     if (x < p.outw) v.x = bottom_blob_data[base + (x + tap) * 4];

@@ -7,15 +7,17 @@ including 16 KiB shared reductions, transfers, dependent compute and bounded
 3D dispatch subdivision. Recovery now propagates DEVICE_LOST. ncnn ReLU,
 32-thread means, Conv1D K3/K7/K11 and InnerProduct pass full GPU output checks.
 The fixed Kokoro neural core passes all 562342 outputs. A guarded FP32
-InstanceNorm+tiled graph now passes first/warm extractions in 76.534/74.318 s,
+InstanceNorm+tiled graph now passes first/warm extractions in 69.862/69.678 s,
 including input/output transfer, and its device waveform passes all 127800
 samples. The same fused graph's packed six-thread CPU warm mean is 32.079 s:
-the GPU remains about 2.3 times slower, despite a 26.6% reduction from the prior
+the GPU remains about 2.17 times slower, despite a 31.2% reduction from the prior
 graph's 101.275 s warm extraction. GPU evidence has one warm iteration; CPU has
-two. These are core measurements, not live end-to-end latency. Fresh host frontend/source inputs also
-pass the T=78 GPU core and all 46800 device waveform samples. A separate tablet
-frontend/source run produces fresh T=78 inputs in 4.665 s; integrated timing
-remains open. The physical64 complex-reduction hang remains unresolved;
+two. These are core measurements. The new single-process runtime completes
+fresh tablet T=78 synthesis in 43.652 s including frontend startup/release,
+metadata-only shapes, GPU core load/extraction and waveform tail. All 205942
+core values and 46800 audio samples pass against references from its exact
+captured boundary; peak 343.6 MiB, zero swap, no new faults. No host calibration
+or reference preparation occurs between its inference phases. The physical64 complex-reduction hang remains unresolved;
 the backend uses 32 threads. A separate compiled-register guard now rejects
 programs beyond the measured register budget before upload.
 Packed-FP16 conversion/ReLU, all five Conv1D/InnerProduct fixtures, all 18 means,
@@ -27,8 +29,8 @@ Neither failed run is an accepted performance result. The revised tiled FP32
 convolution fits 16 full registers and passes its complete operator fixture;
 17.920 ms versus 18.809 ms for the default kernel improves to 10.868 ms after
 the shared-A transpose. The full tiled model passes all 562342 outputs in
-both first/warm extractions, with 37 tiled math commands and a passing waveform.
-Live end-to-end integration and a performance win remain unproven. API
+both first/warm extractions, now including dilation 3/5, with a passing waveform.
+A performance win and sustained runtime behavior remain unproven. API
 advertisement and conformance status are unchanged.
 
 - Mesa worktree `/run/media/jethac/Shared/radish/mesa`, branch `radish/main`,
@@ -138,23 +140,25 @@ advertisement and conformance status are unchanged.
 
 ## Next
 
-Continue from the passing FP32 InstanceNorm+tiled core and waveform:
-74.317956 s GPU warm versus 32.079044 s packed CPU warm mean. The GPU has one
-warm sample and CPU two; sustained/end-to-end evidence is still missing.
-The next source priority is 16 dilation3/5 convolutions still using the default
-path, totaling 19.495 s of command wall time. The 37 eligible tiled convolutions
-fall from 41.813 to 26.625 s; those measurements include submission/wait costs.
-Audit a narrow dilation extension without changing gates or claiming it works
-before compiler/output validation. Shared32 remains rejected at 198.453 s.
-Mixed-storage 0015 removes
-the localized packed NaNs, but full core and waveform accuracy still fail;
-retain FP32 as the accepted path. Fresh T=78 GPU core/waveform and separate
-tablet frontend/source execution pass. Connect and measure those phases without
-counting saved-input runs as live end-to-end results. M6 and sustained thermal
-behavior remain open.
+Continue from the passing FP32 InstanceNorm+tiled+dilation core and waveform:
+69.678044 s GPU warm versus 32.079044 s packed CPU warm mean. The GPU has one
+warm sample and CPU two; sustained end-to-end evidence remains open. Incremental
+0018 now covers the 16 dilation3/5 convolutions, with unchanged operator/model
+accuracy gates and no new faults. Profile the remaining convolution and
+pointwise/normalization costs before choosing the next kernel change.
 
-The harmonic-source audit and proposed frontend integration are in
-[RUNTIME_INTEGRATION.md](RUNTIME_INTEGRATION.md); live integration remains pending.
+The new metadata-only shape pass matches every original and fused shape at
+T78/T213. The integrated frontend/core/tail executable builds for host and
+AArch64; its host T78 full core and waveform pass against identical boundary
+inputs. Short tablet synthesis and its same-boundary reference validation pass;
+full T213 synthesis and the equivalent CPU startup measurement also complete.
+Both complete output gates pass. Pursue the measured remaining costs and
+sustained behavior. Shared32 remains rejected for latency; packed FP16 remains rejected
+for accuracy. Keep FP32 as the accepted path. Give performance updates about
+every five minutes during active work.
+
+The harmonic-source audit and complete runtime measurements are in
+[RUNTIME_INTEGRATION.md](RUNTIME_INTEGRATION.md).
 
 The identical reduction shader still hangs at physical64. M3 also needs the
 outstanding API/synchronization checks and device execution of the prepared CTS
@@ -615,6 +619,7 @@ Current `kokoro-reference-original.f32` SHA256:
 `cf90b53cf7427b2b97ac47da41fc2d174d64eb1c21e0ca7240d543fbf58bcdff`.
 The 1936-byte `kokoro-tail.bin` SHA256:
 `e04b5c7b07c51b98b8883ba4feb753dbcb5bad9260fc93d009aa7fd577e80749`.
+
 
 ## Left on device
 
@@ -1095,3 +1100,92 @@ Cleanup: remove only `/var/tmp/radish` under the device lock when no tests run.
   and `known-gaps.txt` record reviewed bounded cases and exclusions.
   `FIRST_RUN_PLAN.json` prepares a capped queue-properties smoke run. No device
   CTS case has executed; build/caselist preparation is not conformance evidence.
+
+## Dilation extension and integrated runtime checkpoint
+
+Incremental 0018 appends dilation as specialization ID4 and changes only the
+input tap offset, retaining the existing FP32/packing/stride/output gates,
+K/weight order, shared layout and unconditional barriers. Dilation 3/5 compile
+at local 16x8, 16 full/0 half registers, 950 instructions, 1156 dwords and four
+loops. Each operator uses six tiles and passes every output at the unchanged
+2e-5 absolute/relative gate: 23424 values/max 7.09755113e-6 for dilation 3 and
+20864/max 1.641165e-5 for dilation 5. Math dispatch wall times are 8.648155/8.673573 ms;
+these single fixtures do not establish model latency. Logs are
+`operators-tiled-dilation{3,5}-{compile,execute}0018.log`.
+
+`core-instancenorm-tiled-dilation-repeat2.log` records cold load 9.357 s,
+69.862470 s first and 69.678044 s warm. Both 562342-value comparisons pass,
+max error 0.000129699707, relative RMS 7.72155564e-7, zero mismatches.
+The process uses 416.7 MiB peak and zero swap; both services stay active and no
+new GPU fault is recorded. Relative to 0017's 74.317956 s warm sample, this is
+6.24% less time; warm sample count remains one for each variant. The same fused
+CPU graph's 32.079044 s warm mean remains faster. These are core timings.
+
+The resulting waveform also passes all 127800 samples in 0.103231 s, max error
+1.21463973e-5, SNR 98.036838 dB, zero mismatches, 6.5 MiB peak/zero swap and no faults
+(`core-instancenorm-tiled-dilation-waveform-device.log`).
+
+`kokoro_shapes.cpp` propagates metadata without running tensors. Original
+1739 shapes and fused 1307 shapes match CPU captures byte-for-byte at both T78
+and T213, while preserving every non-hint parameter and layer/blob order.
+`runtime-integrated-host-short-first.log` exercises the complete new runtime
+with fresh host frontend/source, inferred shapes, packed CPU core and portable
+tail. All eight boundary files match the existing host T78 reference exactly;
+all 205942 core values pass (max 3.81469727e-5), and all 46800 waveform samples pass
+(max 1.07027590e-5, SNR 102.704341 dB). This is host correctness evidence, not tablet
+performance. The runtime stages no intermediate tensors to disk before core
+execution and destroys ORT before loading ncnn weights. Generation and accuracy
+validation are separate; an output file alone is not an accuracy pass.
+
+### First complete tablet synthesis
+
+`runtime-single-short-first.log` runs the fresh frontend/source, metadata-only
+shape propagation, GPU core and waveform in one private process. It accepts
+T78 inputs and emits 46800 samples without host work between inference phases.
+Timings: frontend including ORT destruction 8.364384 s; all 1307 shape hints
+0.038182 s; core load 9.727086 s; core extraction/transfers 25.190135 s; core
+scope including load/cleanup 35.187278 s; tail 0.038283 s. Total synthesis is
+43.652206 s, through publication 43.656357 s, service wall 43.711 s. Peak memory
+is 343.6 MiB with zero swap, no new GPU faults and both live services active.
+
+`runtime-single-short-first-validation.json` binds the generated output hashes,
+run manifest and device evidence to a reference using all eight exact captured
+boundary files. All 205942 core outputs pass (max 0.000105142593, relative RMS
+9.27539488e-7), as do all 46800 audio samples (max 1.47223473e-5, SNR 96.917732 dB).
+The tablet frontend uses ORT 1.28.2; post-run CPU references use ORT 1.31.1 only
+for decoder/tail, without recomputing frontend/source. Neither tolerance changed.
+This is one complete startup run, not a resident warm or sustained measurement.
+
+The private runner explicitly stages and hash-checks its Vulkan loader as well
+as the selected ICD. A review caught the initially missing loader before device
+execution. It also records immutable generated-output identities; changing even
+one captured core byte is rejected before the accuracy comparison can run.
+
+### Full-length synthesis and equivalent CPU baseline
+
+`runtime-single-full-first.log` extends the same executable to fresh T213
+inputs. Frontend including ORT release takes 6.130650 s; metadata 0.031212 s;
+core load 9.669170 s; GPU extraction/transfers 67.889310 s. Complete synthesis
+is 84.223461 s, through publication 84.231595 s and service wall 84.317 s.
+Peak memory is 457.2 MiB with zero swap, both services active and no new faults.
+`runtime-single-full-first-validation.json` passes all 562342 core values
+(max 0.000102996826, relative RMS 7.81135939e-7) and all 127800 waveform samples
+(max 9.19587910e-6, SNR 98.355163 dB), with unchanged gates. This uses fresh
+frontend/source values, so its first core timing does not replace the fixed
+fixture's 69.678044 s warm benchmark.
+
+`runtime-single-full-cpu-first.log` runs the same executable with packed FP32
+CPU and six ncnn threads, retaining four frontend threads. Frontend 5.736043 s,
+metadata 0.031603 s, core load 1.144992 s, core extraction 32.626909 s, tail
+0.102624 s; synthesis 39.789900 s, through publication 39.807908 s, service
+40.049 s. Peak memory 461.2 MiB, zero swap, both services active, no faults.
+All eight generated frontend boundary files match the GPU run byte-for-byte
+(`runtime-single-full-cpu-gpu-boundary-identity.json`). These are one startup
+run per backend, not controlled repeated thermal or resident-runtime results.
+GPU full synthesis is about 2.12 times slower; the performance goal stays open.
+
+`runtime-single-full-cpu-first-validation.json` also passes all 562342 CPU core
+values (max 0.000362396240, relative RMS 2.51363812e-6) and all 127800 waveform
+samples (max 5.05000353e-5, SNR 88.225028 dB), with zero mismatches. Both backend
+measurements therefore have complete same-boundary reference gates. Warm
+resident synthesis, cancellation and sustained thermal measurements remain open.
