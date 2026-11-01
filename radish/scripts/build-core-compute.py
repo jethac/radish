@@ -34,7 +34,8 @@ def main():
              ('event-query', 'core_events_queries.c', 'core-events-queries.comp', 'vulkan1.0'),
              ('resources', 'core_resources.c', 'core-resources.comp', 'vulkan1.0'),
              ('subgroup', 'core_subgroup_basic.c', 'core-subgroup-basic.comp', 'vulkan1.1'),
-             ('storage', 'core_shader_storage.c', 'core-shader-storage.comp', 'vulkan1.0')]
+             ('storage', 'core_shader_storage.c', 'core-shader-storage.comp', 'vulkan1.0'),
+             ('robust', 'core_robust_buffers.c', 'core-robust-buffers.comp', 'vulkan1.0')]
     records = {}
     for name, cfile, glsl, target in units:
         source = top / 'radish/tests' / cfile

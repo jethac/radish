@@ -1,5 +1,13 @@
 # Radish status
 
+## 2026-11-02: public singleton groups and core robust buffers pass
+
+ICD448cc118 passes the three targeted suites: two4,160-invocation normal/noopt pipelines through public device-group dispatch/mask aliases with a DeviceIndex-zero oracle; two resource rounds with a full-image singleton split bind and compatible R32_SFLOAT-to-UINT storage view; and all four robust-buffer cases with1/3/12/16-byte ranges, dynamic offsets, partial vectors, writes/add/CAS,40001-element texel buffers and exact backing guards. Service2.005s,14.3MiB,zero swap; no new faults and both services active.
+
+`VK_KHR_device_group` is now exposed for the actual single device. The peer-memory alias is checked but not called: Vulkan requires distinct local/remote indices, which a singleton cannot supply. Core `robustBufferAccess` is promoted after source review and these checks. The measured helper locally set the supported-feature field before ordinary CreateDevice enablement; the published helper requests the public feature directly. This property/helper adaptation is host-checked, not a separate device result. RBA2, null descriptors and general image robustness are not claimed.
+
+See [checkpoint/result](CORE_API_0044.md) for exact source pairing and limits.
+
 ## 2026-11-02: additional compute behavior, robustness still failing
 
 ICD4605a727 passes public singleton device-group creation/enumeration and external-memory capability queries, native resources, five BASIC shapes (including3×5×3), and actual pipeline-owned private/constant storage. The storage shader checks128 exact words while consuming2KiB private storage per invocation and a16KiB constant table. These four suites pass in7.743s,16.1MiB,zero swap; no GPU faults and both services active.

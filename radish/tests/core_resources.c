@@ -53,13 +53,16 @@ static int storage_create(const struct vk_device_dispatch_table *d,VkDevice devi
 }
 static int image_create(const struct vk_device_dispatch_table *d,VkDevice device,
    const VkPhysicalDeviceMemoryProperties *properties,VkFormat format,unsigned width,
-   unsigned height,VkImageUsageFlags usage,struct image *image)
+   unsigned height,VkImageUsageFlags usage,struct image *image,bool split)
 {
    VkImageCreateInfo ci={.sType=VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,.imageType=VK_IMAGE_TYPE_2D,
       .format=format,.extent={width,height,1},.mipLevels=1,.arrayLayers=1,
       .samples=VK_SAMPLE_COUNT_1_BIT,.tiling=VK_IMAGE_TILING_LINEAR,
       .usage=usage|VK_IMAGE_USAGE_TRANSFER_SRC_BIT|VK_IMAGE_USAGE_TRANSFER_DST_BIT,
       .initialLayout=VK_IMAGE_LAYOUT_UNDEFINED};
+   ci.flags=VK_IMAGE_CREATE_ALIAS_BIT|VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT;
+   if (format==VK_FORMAT_R32_UINT) ci.format=VK_FORMAT_R32_SFLOAT;
+   if (split) { ci.flags|=VK_IMAGE_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT; ci.tiling=VK_IMAGE_TILING_OPTIMAL; }
    SUCCESS(d->CreateImage(device,&ci,NULL,&image->image));
    VkImageMemoryRequirementsInfo2 ri={.sType=VK_STRUCTURE_TYPE_IMAGE_MEMORY_REQUIREMENTS_INFO_2,.image=image->image};
    VkMemoryRequirements2 rr={.sType=VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2};
@@ -72,12 +75,18 @@ static int image_create(const struct vk_device_dispatch_table *d,VkDevice device
    VkMemoryAllocateInfo ai={.sType=VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
       .allocationSize=r.alignment+r.size+64,.memoryTypeIndex=type};
    SUCCESS(d->AllocateMemory(device,&ai,NULL,&image->memory));
-   VkBindImageMemoryInfo bind={.sType=VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_INFO,.image=image->image,.memory=image->memory,.memoryOffset=r.alignment};
+   VkRect2D rectangle={{0,0},{width,height}};
+   VkBindImageMemoryDeviceGroupInfo group={.sType=VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_DEVICE_GROUP_INFO,
+      .splitInstanceBindRegionCount=split?1:0,.pSplitInstanceBindRegions=split?&rectangle:NULL};
+   VkBindImageMemoryInfo bind={.sType=VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_INFO,.pNext=&group,.image=image->image,.memory=image->memory,.memoryOffset=r.alignment};
    SUCCESS(d->BindImageMemory2(device,1,&bind));
    SUCCESS(d->MapMemory(device,image->memory,0,VK_WHOLE_SIZE,0,(void **)&image->map));
    image->words=ai.allocationSize/4; image->binding_words=r.alignment/4;
    VkImageSubresource sub={.aspectMask=VK_IMAGE_ASPECT_COLOR_BIT}; VkSubresourceLayout layout;
-   d->GetImageSubresourceLayout(device,image->image,&sub,&layout);
+   if (!split) { d->GetImageSubresourceLayout(device,image->image,&sub,&layout); } else {
+      struct rd_image *internal=rd_image_from_handle(image->image);
+      layout=(VkSubresourceLayout){.offset=internal->levels[0].offset,.rowPitch=internal->levels[0].row_pitch};
+   }
    REQUIRE(layout.offset==0 && !(layout.rowPitch%4) && layout.rowPitch>=width*4);
    image->width=width; image->height=height; image->row_words=layout.rowPitch/4;
    VkImageViewCreateInfo vi={.sType=VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,.image=image->image,
@@ -199,8 +208,8 @@ int main(int argc,char **argv)
    PFN_vkGetInstanceProcAddr gipa=(PFN_vkGetInstanceProcAddr)dlsym(lib,"vk_icdGetInstanceProcAddr"); REQUIRE(gipa);
    VkInstance instance=VK_NULL_HANDLE; INSTANCE_FN(CreateInstance);
    VkApplicationInfo app={.sType=VK_STRUCTURE_TYPE_APPLICATION_INFO,.apiVersion=VK_API_VERSION_1_0};
-   const char *iex[]={VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME};
-   VkInstanceCreateInfo ici={.sType=VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,.pApplicationInfo=&app,.enabledExtensionCount=1,.ppEnabledExtensionNames=iex};
+   const char *iex[]={VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME,VK_KHR_DEVICE_GROUP_CREATION_EXTENSION_NAME};
+   VkInstanceCreateInfo ici={.sType=VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,.pApplicationInfo=&app,.enabledExtensionCount=2,.ppEnabledExtensionNames=iex};
    SUCCESS(CreateInstance(&ici,NULL,&instance));
    INSTANCE_FN(EnumeratePhysicalDevices); INSTANCE_FN(GetPhysicalDeviceMemoryProperties);
    INSTANCE_FN(GetPhysicalDeviceProperties); INSTANCE_FN(GetPhysicalDeviceFormatProperties);
@@ -218,8 +227,8 @@ int main(int argc,char **argv)
    REQUIRE((fp.bufferFeatures & (VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT|VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT))==
       (VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT|VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT));
    float priority=1; VkDeviceQueueCreateInfo qci={.sType=VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,.queueCount=1,.pQueuePriorities=&priority};
-   const char *dex[]={VK_KHR_BIND_MEMORY_2_EXTENSION_NAME,VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME};
-   VkDeviceCreateInfo dci={.sType=VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,.queueCreateInfoCount=1,.pQueueCreateInfos=&qci,.enabledExtensionCount=2,.ppEnabledExtensionNames=dex};
+   const char *dex[]={VK_KHR_BIND_MEMORY_2_EXTENSION_NAME,VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME,VK_KHR_DEVICE_GROUP_EXTENSION_NAME};
+   VkDeviceCreateInfo dci={.sType=VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,.queueCreateInfoCount=1,.pQueueCreateInfos=&qci,.enabledExtensionCount=3,.ppEnabledExtensionNames=dex};
    VkDevice device; SUCCESS(CreateDevice(physical,&dci,NULL,&device));
    struct rd_device *inside=rd_device_from_handle(device);
    PFN_vkGetDeviceProcAddr gdpa=(PFN_vkGetDeviceProcAddr)gipa(instance,"vkGetDeviceProcAddr"); REQUIRE(gdpa);
@@ -283,9 +292,9 @@ int main(int argc,char **argv)
       VK_BUFFER_USAGE_TRANSFER_SRC_BIT,VK_BUFFER_USAGE_TRANSFER_SRC_BIT,VK_BUFFER_USAGE_TRANSFER_DST_BIT,VK_BUFFER_USAGE_TRANSFER_DST_BIT};
    for (unsigned i=0;i<BUFFER_COUNT;i++) REQUIRE(storage_create(d,device,&memory_properties,sizes[i],usages[i],&stores[i])==0);
    struct image images[3]={0};
-   REQUIRE(image_create(d,device,&memory_properties,VK_FORMAT_R32_UINT,NX,NY,VK_IMAGE_USAGE_STORAGE_BIT,&images[0])==0);
-   REQUIRE(image_create(d,device,&memory_properties,VK_FORMAT_R32_SFLOAT,4,4,VK_IMAGE_USAGE_SAMPLED_BIT,&images[1])==0);
-   REQUIRE(image_create(d,device,&memory_properties,VK_FORMAT_R32_UINT,NX,NY,VK_IMAGE_USAGE_STORAGE_BIT,&images[2])==0);
+   REQUIRE(image_create(d,device,&memory_properties,VK_FORMAT_R32_UINT,NX,NY,VK_IMAGE_USAGE_STORAGE_BIT,&images[0],false)==0);
+   REQUIRE(image_create(d,device,&memory_properties,VK_FORMAT_R32_SFLOAT,4,4,VK_IMAGE_USAGE_SAMPLED_BIT,&images[1],false)==0);
+   REQUIRE(image_create(d,device,&memory_properties,VK_FORMAT_R32_UINT,NX,NY,VK_IMAGE_USAGE_STORAGE_BIT,&images[2],true)==0);
    VkBufferView views[2]; REQUIRE(buffer_view(d,device,stores[SOURCE_TEXELS].buffer,&views[0])==0);
    REQUIRE(buffer_view(d,device,stores[TARGET_TEXELS].buffer,&views[1])==0);
    VkDescriptorPoolSize pools[8]={{VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,1},{VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,1},
@@ -400,6 +409,7 @@ int main(int argc,char **argv)
    for (unsigned i=0;i<2;i++) d->DestroyDescriptorSetLayout(device,sl[i],NULL);
    for (unsigned i=0;i<2;i++) d->DestroySampler(device,samplers[i],NULL);
    d->DestroyDevice(device,NULL); DestroyInstance(instance,NULL); dlclose(lib);
+   puts("PASS IMAGE_GROUP: full singleton split copy/clear/readback and mutable R32_SFLOAT-to-UINT storage view");
    puts("PASS RESOURCE: UBO/dynamic offsets/late updates/compatible layouts/typed texels/images/nearest+linear/image copy+clear exact/guards");
    return 0;
 }

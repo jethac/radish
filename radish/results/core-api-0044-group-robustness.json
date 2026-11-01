@@ -1,0 +1,93 @@
+{
+  "status": "passed",
+  "driver": {
+    "bytes": 48551440,
+    "sha256": "448cc118d9e961c6af28b8fb9dd197c6a171d2328b49166e3ec396a504311874"
+  },
+  "capture": "WORK/core-compute-0044-group-bounds/probe",
+  "run_log": {
+    "bytes": 7069,
+    "sha256": "6b01e1ba885951e39bc11b56291b24f40f0645f3bdd76c9045250dca6688ea11"
+  },
+  "payload": {
+    "api5.spv": {
+      "bytes": 4760,
+      "sha256": "4076cc8c6a97bfce04c8f9c10bda1f3d69b794d49697ee800d34ec082e9b65ca"
+    },
+    "robust": {
+      "bytes": 714368,
+      "sha256": "cc04e34af342403f2218c3cd3afa2a6dabb2af7b089eb21e5c2e5555f506fa42"
+    },
+    "resources": {
+      "bytes": 683784,
+      "sha256": "57f4322d40f697580468c3d83ca9bef3f859603cb2c1241967dab2c58cbb4a54"
+    },
+    "resources.spv": {
+      "bytes": 6868,
+      "sha256": "681812746fe27cfbe5dc44728dbededd62758bd6c61a35aca616ac5121987ae0"
+    },
+    "robust.spv": {
+      "bytes": 6492,
+      "sha256": "080526d997f35eb5992519f281f21c52c2eafb8997f3708c58b83652fa2d8160"
+    },
+    "api5": {
+      "bytes": 682976,
+      "sha256": "6d9c89acf1655f9fd5b6e93de7e4176e99b3acf9b0cbdd036c239ab2776cfe2a"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 48551440,
+      "sha256": "448cc118d9e961c6af28b8fb9dd197c6a171d2328b49166e3ec396a504311874"
+    }
+  },
+  "source_snapshot": "checkpoint-group-source",
+  "public_patch": {
+    "bytes": 13582,
+    "sha256": "30f535b9c92bfb42266d0449961eed53835d8586574e5899b83298e49aac4f6b"
+  },
+  "public_source_difference": "Only robustBufferAccess supported-feature promotion after source and actual review. Measured helper locally enabled support before ordinary CreateDevice feature request.",
+  "suites": {
+    "api5": {
+      "records_per_round": 4160,
+      "rounds": 2,
+      "normal_and_noopt": true,
+      "public_KHR_aliases": [
+        "CmdDispatchBaseKHR",
+        "CmdSetDeviceMaskKHR"
+      ],
+      "device_index_zero_oracle": true,
+      "allocate_bind_begin_submit_mask": 1,
+      "peer_memory_alias": "available; not invoked because single-device group has no legal distinct indices"
+    },
+    "resources": {
+      "rounds": 2,
+      "records": 85,
+      "words_per_round": 1360,
+      "mutable_view": "R32_SFLOAT image/R32_UINT storage view",
+      "full_split": "optimal2D one-level one-layer full rectangle; clear/copy/readback exact",
+      "input_allocation_guards": true
+    },
+    "robust": {
+      "ranges": [
+        1,
+        3,
+        12,
+        16
+      ],
+      "outputs_per_case": 40,
+      "dynamic_offset": 32,
+      "texel_elements": 40001,
+      "read_write_add_compare_exchange": true,
+      "vector_tails_negative_large_offsets": true,
+      "all_five_allocations_exact": true,
+      "RBA2_claimed": false
+    }
+  },
+  "conditions": {
+    "service_seconds": 2.005,
+    "peak_mib": 14.3,
+    "swap_mib": 0,
+    "new_gpu_faults": false,
+    "services_active": true
+  },
+  "scope": "Focused compute semantics, not full Vulkan1.1 or CTS conformance. Prior failures remain separate; performance paused."
+}

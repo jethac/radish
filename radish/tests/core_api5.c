@@ -48,10 +48,13 @@ static int storage_create(const struct vk_device_dispatch_table *d, VkDevice dev
           (properties->memoryTypes[i].propertyFlags&flags)==flags) { type=i; break; }
    }
    REQUIRE(type!=UINT32_MAX);
+   VkMemoryAllocateFlagsInfo mask={.sType=VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_FLAGS_INFO,.flags=VK_MEMORY_ALLOCATE_DEVICE_MASK_BIT,.deviceMask=1};
    VkMemoryAllocateInfo allocation={.sType=VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-      .allocationSize=requirements.size,.memoryTypeIndex=type};
+      .pNext=&mask,.allocationSize=requirements.size,.memoryTypeIndex=type};
    SUCCESS(d->AllocateMemory(device,&allocation,NULL,&s->memory));
-   VkBindBufferMemoryInfo binding={.sType=VK_STRUCTURE_TYPE_BIND_BUFFER_MEMORY_INFO,.buffer=s->buffer,.memory=s->memory};
+   uint32_t index=0;
+   VkBindBufferMemoryDeviceGroupInfo group={.sType=VK_STRUCTURE_TYPE_BIND_BUFFER_MEMORY_DEVICE_GROUP_INFO,.deviceIndexCount=1,.pDeviceIndices=&index};
+   VkBindBufferMemoryInfo binding={.sType=VK_STRUCTURE_TYPE_BIND_BUFFER_MEMORY_INFO,.pNext=&group,.buffer=s->buffer,.memory=s->memory};
    SUCCESS(d->BindBufferMemory2(device,1,&binding));
    SUCCESS(d->MapMemory(device,s->memory,0,VK_WHOLE_SIZE,0,(void **)&s->map));
    s->words=requirements.size/4;
@@ -157,15 +160,19 @@ int main(int argc,char **argv)
    VkDeviceQueueCreateInfo qci={.sType=VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
       .queueCount=1,.pQueuePriorities=&priority};
    const char *extensions[]={VK_KHR_DESCRIPTOR_UPDATE_TEMPLATE_EXTENSION_NAME,VK_KHR_MAINTENANCE_3_EXTENSION_NAME,
-      VK_KHR_BIND_MEMORY_2_EXTENSION_NAME,VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME};
+      VK_KHR_BIND_MEMORY_2_EXTENSION_NAME,VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME,VK_KHR_DEVICE_GROUP_EXTENSION_NAME};
    VkDeviceCreateInfo dci={.sType=VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,.pNext=&group_create,
-      .queueCreateInfoCount=1,.pQueueCreateInfos=&qci,.enabledExtensionCount=4,.ppEnabledExtensionNames=extensions};
+      .queueCreateInfoCount=1,.pQueueCreateInfos=&qci,.enabledExtensionCount=5,.ppEnabledExtensionNames=extensions};
    VkDevice device;
    SUCCESS(CreateDevice(physical,&dci,NULL,&device));
    PFN_vkGetDeviceProcAddr gdpa=GetDeviceProcAddr;
    DEVICE_FN(CmdExecuteCommands);
    struct rd_device *inside_device=rd_device_from_handle(device);
    struct vk_device_dispatch_table aliases=inside_device->vk.dispatch_table;
+   aliases.CmdDispatchBase=(PFN_vkCmdDispatchBase)gdpa(device,"vkCmdDispatchBaseKHR");
+   aliases.CmdSetDeviceMask=(PFN_vkCmdSetDeviceMask)gdpa(device,"vkCmdSetDeviceMaskKHR");
+   REQUIRE(aliases.CmdDispatchBase && aliases.CmdSetDeviceMask && gdpa(device,"vkGetDeviceGroupPeerMemoryFeaturesKHR"));
+   puts("API5 device-group aliases reachable; peer-memory call unexercised: singleton has no distinct indices");
    aliases.GetDescriptorSetLayoutSupport=(PFN_vkGetDescriptorSetLayoutSupport)gdpa(device,"vkGetDescriptorSetLayoutSupportKHR");
    aliases.CreateDescriptorUpdateTemplate=(PFN_vkCreateDescriptorUpdateTemplate)gdpa(device,"vkCreateDescriptorUpdateTemplateKHR");
    aliases.DestroyDescriptorUpdateTemplate=(PFN_vkDestroyDescriptorUpdateTemplate)gdpa(device,"vkDestroyDescriptorUpdateTemplateKHR");
@@ -321,8 +328,9 @@ int main(int argc,char **argv)
       SUCCESS(d->ResetCommandBuffer(commands[0],0));
       SUCCESS(d->ResetCommandBuffer(commands[1],0));
       VkCommandBufferInheritanceInfo inheritance={.sType=VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO};
+      VkDeviceGroupCommandBufferBeginInfo begin_group={.sType=VK_STRUCTURE_TYPE_DEVICE_GROUP_COMMAND_BUFFER_BEGIN_INFO,.deviceMask=1};
       VkCommandBufferBeginInfo begin={.sType=VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-         .flags=VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,.pInheritanceInfo=&inheritance};
+         .pNext=&begin_group,.flags=VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,.pInheritanceInfo=&inheritance};
       SUCCESS(d->BeginCommandBuffer(commands[1],&begin));
       uint32_t updates[12],saved[12];
       for (unsigned i=0;i<12;i++) saved[i]=updates[i]=0x12340000u+round*0x1000u+i*37u;
@@ -334,6 +342,7 @@ int main(int argc,char **argv)
          .buffer=input.buffer,.offset=16,.size=sizeof(saved)};
       d->CmdPipelineBarrier(commands[1],VK_PIPELINE_STAGE_TRANSFER_BIT,VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
          0,0,NULL,1,&barrier,0,NULL);
+      d->CmdSetDeviceMask(commands[1],1);
       d->CmdBindPipeline(commands[1],VK_PIPELINE_BIND_POINT_COMPUTE,pipeline[round]);
       d->CmdBindDescriptorSets(commands[1],VK_PIPELINE_BIND_POINT_COMPUTE,layout,0,1,&set,0,NULL);
       d->CmdPushConstants(commands[1],layout,VK_SHADER_STAGE_COMPUTE_BIT,0,sizeof(params),&params);
@@ -361,7 +370,9 @@ int main(int argc,char **argv)
               !memcmp(pc[1].dispatch.grid,params.grid,12));
       uint64_t before=inside_device->submit_count;
       SUCCESS(d->ResetFences(device,1,&fence));
-      VkSubmitInfo submit={.sType=VK_STRUCTURE_TYPE_SUBMIT_INFO,.commandBufferCount=1,.pCommandBuffers=&commands[0]};
+      uint32_t submit_mask=1;
+      VkDeviceGroupSubmitInfo group_submit={.sType=VK_STRUCTURE_TYPE_DEVICE_GROUP_SUBMIT_INFO,.commandBufferCount=1,.pCommandBufferDeviceMasks=&submit_mask};
+      VkSubmitInfo submit={.sType=VK_STRUCTURE_TYPE_SUBMIT_INFO,.pNext=&group_submit,.commandBufferCount=1,.pCommandBuffers=&commands[0]};
       printf("API5 ROUND_BEGIN round=%u template=%s grid=65,2,2 base=3,4,5\n",round,round?"zero-stride":"unaligned-strided"); fflush(stdout);
       SUCCESS(d->QueueSubmit(queue,1,&submit,fence));
       SUCCESS(d->WaitForFences(device,1,&fence,VK_TRUE,5000000000ull));
@@ -387,6 +398,7 @@ int main(int argc,char **argv)
    for (unsigned i=0;i<2;i++) d->DestroyPipeline(device,pipeline[i],NULL); d->DestroyPipelineLayout(device,layout,NULL);
    d->DestroyDescriptorSetLayout(device,set_layout,NULL); d->DestroyDevice(device,NULL);
    DestroyInstance(instance,NULL); dlclose(lib);
+   puts("PASS DEVICE_GROUP: public dispatch/mask, allocation/bind/begin/submit masks and DeviceIndex zero oracle");
    puts("PASS NOOPT: second pipeline preserves full base-grid oracle with optional optimizations disabled");
    puts("PASS API5: two real base-grid executions, secondary copy/reset/reuse, templates, layout support and external query");
    return 0;

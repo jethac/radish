@@ -1,0 +1,51 @@
+#version 450
+layout(local_size_x=1,local_size_y=1,local_size_z=1) in;
+layout(set=0,binding=0,std430) buffer Results { uint r[]; };
+layout(set=0,binding=1,std140) uniform Source { uvec4 source; };
+layout(set=0,binding=2,std430) coherent volatile buffer Data { uvec4 value; };
+layout(set=0,binding=3,std430) coherent volatile buffer Words { uint words[]; };
+layout(set=0,binding=4) uniform usamplerBuffer input_texels;
+layout(set=0,binding=5,r32ui) coherent volatile uniform uimageBuffer target_texels;
+void main()
+{
+   r[0]=source.x; r[1]=source.y; r[2]=source.z; r[3]=source.w;
+   r[4]=value.x; r[5]=value.y; r[6]=value.z; r[7]=value.w;
+   value.xz=uvec2(0x50100001u,0x50300003u);
+   value.y=0x50200002u;
+   memoryBarrierBuffer();
+   r[8]=atomicAdd(value.w,5u);
+   r[9]=atomicCompSwap(value.x,0x50100001u,0x70100001u);
+   r[10]=atomicAdd(words[0xffffffffu],1u);
+   r[11]=atomicCompSwap(words[0xfffffffeu],0u,0xbadc0deu);
+   words[0xffffffffu]=0xbadc0001u;
+   words[4]=0xbadc0002u;
+   memoryBarrierBuffer();
+   r[12]=words[0xffffffffu];
+   r[13]=words[0x3fffffffu];
+   r[14]=words[4];
+   r[15]=uint(textureSize(input_texels));
+   r[16]=texelFetch(input_texels,0).r;
+   r[17]=texelFetch(input_texels,32752).r;
+   r[18]=texelFetch(input_texels,40000).r;
+   r[19]=texelFetch(input_texels,40001).r;
+   r[20]=texelFetch(input_texels,-1).r;
+   r[21]=uint(imageSize(target_texels));
+   r[22]=imageLoad(target_texels,32752).r;
+   r[23]=imageLoad(target_texels,40000).r;
+   r[24]=imageLoad(target_texels,40001).r;
+   r[25]=imageLoad(target_texels,-1).r;
+   imageStore(target_texels,40000,uvec4(0x77700001u,0,0,0));
+   imageStore(target_texels,40001,uvec4(0xbadc0003u,0,0,0));
+   imageStore(target_texels,-1,uvec4(0xbadc0004u,0,0,0));
+   memoryBarrierImage();
+   r[26]=imageAtomicAdd(target_texels,32752,7u);
+   r[27]=imageAtomicCompSwap(target_texels,40000,0x77700001u,0x77700003u);
+   r[28]=imageAtomicAdd(target_texels,40001,1u);
+   r[29]=imageAtomicCompSwap(target_texels,-1,0u,0xbadc0005u);
+   memoryBarrierBuffer(); memoryBarrierImage();
+   r[30]=value.x; r[31]=value.y; r[32]=value.z; r[33]=value.w;
+   r[34]=imageLoad(target_texels,32752).r;
+   r[35]=imageLoad(target_texels,40000).r;
+   r[36]=uint(words.length());
+   r[37]=0x507033ceu; r[38]=gl_GlobalInvocationID.x; r[39]=0x0044abcdu;
+}

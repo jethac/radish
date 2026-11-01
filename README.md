@@ -25,7 +25,7 @@ a separate driver, with its own a5xx resource bindings and command emission.
 its Vulkan1.0/1.1 compute execution and resource gaps. The latest
 [0044 checkpoint](radish/CORE_API_0044.md) passes API, event/query and
 UBO/dynamic/image-resource suites, including public KHR aliases. A subsequent logical-to-physical mapping correction passes all four focused
-BASIC cases, followed by a fifth3D case, and compute BASIC is now exposed. Actual private/constant storage and normal/disabled-optimization pipelines pass their exact output checks. Robustness remains unadvertised after a valid texel-read failure; source fixes continue. Broader execution/CTS coverage
+BASIC cases, followed by a fifth3D case, and compute BASIC is now exposed. Actual private/constant storage and normal/disabled-optimization pipelines pass their exact output checks. Core robust-buffer checks now pass after correcting typed texel bounds, and robustBufferAccess is exposed. Public singleton device-group paths, full-image split binding and mutable views also pass focused checks. Broader execution/CTS coverage
 remains incomplete. All40 original command paths now have representative execution evidence;
 this is WIP, not a version or conformance claim. Broader semantics and limits
 remain active work. The inference results below are the previous qualified

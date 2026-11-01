@@ -1,5 +1,15 @@
 # Core compute implementation: checkpoint 0044
 
+## 2026-11-02: public singleton groups and core robust buffers pass
+
+ICD448cc118 passes the three targeted suites: two4,160-invocation normal/noopt pipelines through public device-group dispatch/mask aliases with a DeviceIndex-zero oracle; two resource rounds with a full-image singleton split bind and compatible R32_SFLOAT-to-UINT storage view; and all four robust-buffer cases with1/3/12/16-byte ranges, dynamic offsets, partial vectors, writes/add/CAS,40001-element texel buffers and exact backing guards. Service2.005s,14.3MiB,zero swap; no new faults and both services active.
+
+`VK_KHR_device_group` is now exposed for the actual single device. The peer-memory alias is checked but not called: Vulkan requires distinct local/remote indices, which a singleton cannot supply. Core `robustBufferAccess` is promoted after source review and these checks. The measured helper locally set the supported-feature field before ordinary CreateDevice enablement; the published helper requests the public feature directly. This property/helper adaptation is host-checked, not a separate device result. RBA2, null descriptors and general image robustness are not claimed.
+
+Apply the eighth increment `0044-radish-device-group-robustness-wip.patch` after the compute-contract increment. The valid large storage-texel failure was fixed by separating sampler count encoding from native typed-UAV bounds coordinates while retaining the original byte address and software range checks. Earlier compiler and execution failures remain recorded. [Exact artifact/result](results/core-api-0044-group-robustness.json).
+
+Existing `build-core-compute.py` now builds `robust`; use `device-core-compute.py ... --suite robust` for that bounded consumer, or `--suite api5`/`resources` for the group paths. The full compute contract, legal-workgroup behavior, depth consumption and broader CTS remain incomplete. Performance remains paused.
+
 ## 2026-11-02: additional compute behavior, robustness still failing
 
 ICD4605a727 passes public singleton device-group creation/enumeration and external-memory capability queries, native resources, five BASIC shapes (including3×5×3), and actual pipeline-owned private/constant storage. The storage shader checks128 exact words while consuming2KiB private storage per invocation and a16KiB constant table. These four suites pass in7.743s,16.1MiB,zero swap; no GPU faults and both services active.
@@ -67,7 +77,7 @@ budget. It does not solve the earlier legal-workgroup/shared-memory failures.
 
 ## Consolidated reproduction
 
-Apply the seven0044 incremental patches in order to the documented0042 Mesa
+Apply the eight0044 incremental patches in order to the documented0042 Mesa
 stack and build the isolated driver. Build probes against its matching internal
 ABI:
 
