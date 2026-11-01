@@ -53,19 +53,22 @@ Single observations and memory pressure limit the comparison. The CPU reference
 uses the earlier equivalent unfused graph and remains faster. Sustained behavior
 and live application integration remain unmeasured.
 
-GPU saturation is also unproven. The frozen pre-fusion audit finds the dominant
-58 tiled convolutions deliver **10.9 useful GFLOP/s on command wall time**;
-only 1.2% of their issued arithmetic is padding. Attainable GPU arithmetic,
-physical bandwidth and occupancy still need measurement. The next work targets
-those limits and the dominant convolution losses. A CPU win will not close the
-goal by itself.
+GPU saturation remains unproven. The dominant 58 tiled convolutions delivered
+**10.9 useful GFLOP/s on command wall time**, with only 1.2% padding overhead.
+The qualified timer measures one unchanged convolution at **7.161 ms GPU queued
+elapsed**. A separate fixed calibration now achieves median **21.32 GFLOP/s**
+for FP32 arithmetic and **4.30 GB/s logical read+write** for vec4 copying after
+deferring CPU downloads. These are observed lower bounds, not hardware ceilings
+or physical DRAM counters; workload and packet geometry differ from convolution.
+All outputs, guards and GPU input readbacks pass. The model has no new speedup
+from this diagnostic. See [GPU_TIMING.md](radish/GPU_TIMING.md) and
+[GPU_CALIBRATION.md](radish/GPU_CALIBRATION.md).
 
-The new default-off timing diagnostic is qualified on one unchanged convolution:
-**7.161 ms GPU queued elapsed**, 90.8% of its matching submit-to-completion
-interval. All twelve outputs pass and match exactly; paired timing overhead
-stays within the planned budget. This establishes measurement, not saturation
-or a new model speedup. Arithmetic and bandwidth calibration follow. See
-[GPU_TIMING.md](radish/GPU_TIMING.md) for scope and reproduction.
+The conservative per-group register guard does not establish total physical
+capacity, and compiler wave estimates do not establish occupancy. The next
+proposed experiment reuses immutable state within existing tiled submissions
+while retaining every wait, EXEC and flush. It is not implemented. A CPU win
+alone will not close the performance goal.
 
 A tablet cancellation probe preserves the completed request and discards the
 second request after its active GPU core finishes. Exit follows the cancel marker
@@ -121,6 +124,7 @@ build and test scripts retain their relative paths.
 | [radish/VULKAN_AUDIT.md](radish/VULKAN_AUDIT.md) | Vulkan 1.0/1.1 gaps |
 | [radish/RUNTIME_INTEGRATION.md](radish/RUNTIME_INTEGRATION.md) | Fresh-input Kokoro integration and remaining work |
 | [radish/GPU_TIMING.md](radish/GPU_TIMING.md) | Qualified GPU elapsed diagnostic, results and reproduction |
+| [radish/GPU_CALIBRATION.md](radish/GPU_CALIBRATION.md) | Measured arithmetic/copy rates, raw correctness and reproduction |
 
 ## Building and running
 
@@ -130,7 +134,7 @@ kept outside the repository.
 
 1. Check out Mesa at `ddabdd0e36bd2f5e0c8e6bd21c3d1da7e34c1230` in a
    separate worktree. Apply
-   `radish/patches/0036-radish-gpu-elapsed-cumulative.patch` to that base.
+   `radish/patches/0037-radish-gpu-calibration-cumulative.patch` to that base.
    Earlier cumulative Mesa patches are historical alternatives, not a series.
 2. Set `RADISH_WORK` to the scratch/build directory, `RADISH_MESA` to the Mesa
    checkout, `RADISH_SYSROOT` to the aarch64 sysroot and `RADISH_VENV` to the

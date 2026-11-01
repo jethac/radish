@@ -42,9 +42,17 @@ limits and validation scope. Published checkpoints remain experimental; publicat
 | `0034-ncnn-instancenorm-outplace.patch` | After 0019 and 0028 in the normalization stack | Default-off named pack4 input alias plus disjoint normalization output removes 49 copies; same-binary warm 38.467278→37.058738 s, exact output bytes, all four fresh core/wave references pass |
 | `0035-ncnn-instancenorm-coefficients.patch` | After 0034 in the normalization stack | Guarded coefficient helper for opt-in project NormAffineSnake; 42 fused chains, exact output bytes, fixed warm 35.730754 s and four full core/wave references pass |
 | `0036-radish-gpu-elapsed-cumulative.patch` | Same Mesa base as 0001; alternative to 0032 | Default-off bounded GPU timestamp diagnostic for one accepted eight-chunk convolution; six valid samples, unchanged output bytes and counts, paired perturbation budget passes; no public query support or model performance change |
+| `0037-radish-gpu-calibration-cumulative.patch` | Same Mesa base as 0001; alternative to 0036 | Default-off fixed MAD/vec4-copy elapsed calibration; ten valid samples and full exact output/guard/input checks; deferred-readback medians 21.3185 GFLOP/s and 4.3011 logical read+write GB/s, without a ceiling or model-speedup claim |
+
+0037 is cumulative and preserves 0036's convolution class and all model dispatch
+policies. Apply it instead of another cumulative Mesa patch. SHA256
+`56273f3da2569c3c3c95d877fac5f81fc2bb876cb9f800699efb9659d17f60b6`.
+Canonical builds pass; model measurements/global device ICD remain on 0032.
+Calibration used private ICD `393383ce…a2900`; canonical ICD
+`2f4fde0e…1b1682` has only host-build evidence. See `../GPU_CALIBRATION.md`.
 
 To reconstruct the accepted driver checkpoint, make a separate checkout/worktree at the
-Mesa base, read its `AGENTS.md`, and apply 0036 with `git apply` instead of
+Mesa base, read its `AGENTS.md`, and apply 0037 with `git apply` instead of
 earlier cumulative Mesa patches. Set
 `RADISH_MESA` to that checkout and run `../scripts/build.sh`. Preserve the AC8
 checkout and use the shared scratch disk for source/build outputs. The existing

@@ -1,5 +1,48 @@
 # Radish status
 
+## 2026-11-02 (JST): arithmetic and copy calibration
+
+Default-off diagnostic 0037 measures two fixed non-barrier kernels without
+changing model scheduling or API advertisement. Deferred-readback v2 achieves
+a measured median **21.318502 GFLOP/s** for exact FP32 arithmetic and
+**4.301106 GB/s logical read+write** for a 13,087,232-byte vec4 copy. Measured
+GPU intervals are 12.591666 ms (12.515416–12.688177) and 6.085520 ms
+(5.969062–6.153281). These are observed lower bounds for these workloads, not
+hardware ceilings, physical bandwidth, occupancy or a model gain. Full-core
+warm remains 35.730754 s and CPU remains faster. See `GPU_CALIBRATION.md`.
+
+V1 passed every numerical check, but per-call CPU downloads introduced
+86.54–129.94 ms inter-submit gaps and copy GPU intervals varied 5.69–24.44 ms.
+V2 reduces those gaps to 0.362–0.557 ms by deferring all ten downloads until
+the ten compute waits finish; shaders,
+native programs, geometry, poisoned destinations and complete raw/oracle checks
+remain identical. Both use local16x8/grid4x2, one EXEC/chunk/submit per call.
+V2 has ten valid timers, all 163,840 MAD values and 65,436,160 copy output bytes
+exact, all guards/input readbacks preserved, 303.4 MiB/zero swap, 2.196 s service
+time, no new faults and both services active. Two warmups and three measured
+calls per kind remain a bounded observation.
+
+The cumulative patch and canonical builds pass; the optional public helper is
+byte-identical to the measured v2 binary. The portable runner has source/host
+checks; device execution used its frozen private predecessor. Canonical ICD
+`2f4fde0e…1b1682` is a host-built artifact; measured ICD is `393383ce…a2900`.
+The globally staged device driver remains 0032.
+
+The v1 device raw/results alone were archived after matching two verified host
+copies, with metadata and restore script in
+`gpu-calibration-implementation-0037-snn5enhu/device-raw-v1-archive/`; original
+host evidence remains in `gpu-calibration-probe-3jtdz6ll/probe-first/raw/`.
+V2 evidence is `gpu-calibration-deferred-dkyybh_d/`; independent audits are
+`gpu-calibration-review-0037-vw40_8ne/` and
+`gpu-calibration-deferred-review-zj15oy0d/`.
+
+Correction: 2048 full units is the driver's conservative complete-group
+admission accounting, not established physical register capacity. Compiler
+wave estimates do not measure residency. Next proposed mechanism is reuse of
+immutable program/descriptor state within existing tiled submits, preserving
+every WFI, constant/base update, EXEC, flush and wait. It is not implemented;
+the earlier flat X2 result limits expectations.
+
 ## 2026-11-02 (JST): GPU elapsed timing qualified
 
 Default-off driver checkpoint 0036 measures the accepted C128/K11/W213

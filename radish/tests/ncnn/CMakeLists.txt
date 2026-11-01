@@ -40,3 +40,8 @@ add_executable(radish-gpu-elapsed EXCLUDE_FROM_ALL gpu_elapsed_probe.cpp)
 target_link_libraries(radish-gpu-elapsed PRIVATE ncnn)
 target_include_directories(radish-gpu-elapsed PRIVATE ${NCNN_SOURCE}/src/layer)
 target_compile_options(radish-gpu-elapsed PRIVATE -ffp-contract=off -Wall -Wextra -Werror)
+
+add_executable(radish-gpu-calibration EXCLUDE_FROM_ALL gpu_calibration_probe.cpp)
+target_link_libraries(radish-gpu-calibration PRIVATE ncnn)
+target_include_directories(radish-gpu-calibration PRIVATE ${NCNN_SOURCE}/src/layer)
+target_compile_options(radish-gpu-calibration PRIVATE -ffp-contract=off -Wall -Wextra -Werror)
