@@ -1949,3 +1949,47 @@ match prior GPU output (`runtime-full-planar-pad64-0026-boundary-identity.json`)
 Full synthesis63.320730 s is close to0023's63.528396 s; this is not a broad startup
 latency win. PLANAR stays off; preserve earlier checkpoints and single-observation
 limits. Sustained/resident execution and cancellation remain open.
+
+### Candidate 0027: two tiled X groups per EXEC
+
+`0027-radish-tiled-x2-cumulative.patch` adds explicit
+`RADISH_TILED_GROUPS_X=2`, default1. The gate requires A506, local16x8x1,
+barrier/four loops, 16 KiB shared, no private storage, single threadsize,
+at most16 full/no half registers, four descriptors, native instrlen31 and
+gridX>=2. It is a resource fingerprint, not shader identity. Only X groups pair;
+Y/Z remain single, odd X tails execute once, and each submit is capped at four
+EXEC chunks. Existing1/2 chunk requests stay1/2; tiled-batch8 becomes at most4
+paired chunks. Per-EXEC WFI/flush, fence waits and fault checks are unchanged.
+
+Targeted driver build and all14-file reconstruction pass
+(`tiled-x2-0027-reconstruction-i5z4h0kg/reconstruction.json`). Patch SHA256
+`adc9ae8506e91abbacea3674a416b1e907672fecf60eb7c62dbe7c319367f6a1`;
+ICD `36666edbfb9759d6e53b5389103f7ccee2e907444b85fa630aca968c8d8af0f8`.
+Padded dilation1/3/5 with groups2/batch1 pass all27264 outputs each, expected four
+math chunks/submits, unchanged numeric gates and no faults/services active.
+Dilation5 math is9.147232 ms; dilation1/batch4 also passes at7.991756 ms with
+four math chunks in one submit. Logs: `operators-planar-x2-0027-first.log`,
+`operators-planar-x2-0027-d{3,5}-batch1.log` and
+`operators-planar-x2-0027-d1-batch4.log`.
+
+Full repeat2 passes in `core-snake-planar-x2-0027-repeat2.log`: cold9.022 s,
+first45.621586/warm47.975705 s, all562342 outputs at unchanged gates
+(max0.000129699707/RMS7.72155564e-7), no faults/services active. Output SHA256
+`0550fe07becc684c3dc7b0113bfef0b4e3c87ff8d888acf779e98de4d8af18e4` matches the
+prior fixed core exactly; existing waveform evidence applies without a new tail
+run. Peak417.4 MiB plus25.3 MiB swap, versus0026's zero swap. Warm latency
+is1.042779 s/2.2218% above0026's46.932926 s; this single comparison is confounded
+by swap. The53 tiled math commands show no measured win:24.073201017→24.095025469 s
+(+0.021824452 s), despite chunks25944→13024. Their submissions remain essentially
+unchanged3255→3256 because paired EXEC batches are capped at4; the extra submit
+comes from the C512 odd-X case. All1745 retained
+command signatures match; their wall time grows19.118974956→19.942358953 s
+(+0.823383997 s), including0.120398485 s more padding. Most of the whole-wall
+increase is outside the changed math, so this is not an isolated X2 cost result.
+The faster first extraction is also mainly retained timing variation: math saves
+only0.087728326 s while the other1745 commands save2.656098631 s. First/warm
+maps and source-backed ownership are retained in
+`warm-planar-x2-result-0027-nf2vcmi7/REPORT.md`.
+Keep0026/groups1 as the performance recommendation;0027 remains an opt-in narrow
+correctness capability. No fresh-runtime repeat is required for this non-winning
+candidate, and no performance acceptance/default change is claimed.

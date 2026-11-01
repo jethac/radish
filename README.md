@@ -54,6 +54,11 @@ remains disabled by default: select `RADISH_NCNN_PLANAR=1`, ordered ncnn patches
 0024/0026 and cumulative Mesa patch 0025. Full core and waveform bytes remain
 identical to the preceding GPU implementation at both measured input lengths.
 
+Cumulative Mesa patch 0027 also validates optional pairs of convolution
+workgroups with `RADISH_TILED_GROUPS_X=2`. Full output remains identical, but
+the affected math time stays near 24.1 s and establishes no performance gain.
+The recommended setting remains one workgroup; the measurements above use it.
+
 - Fused FP32 normalization and tiled convolution, including dilation 3/5,
   guarded output reshape aliases, sequential submission batching and Snake
   activation fusion reduce fixed-core warm GPU time from 101.275 s to 49.429 s.

@@ -61,6 +61,8 @@ PROFILE=${RADISH_PROFILE:-1}
 BATCH=${RADISH_BATCH_CHUNKS:-4}
 TILED_BATCH=${RADISH_TILED_BATCH_CHUNKS:-8}
 [[ $TILED_BATCH =~ ^(1|2|4|8)$ ]] || { echo 'RADISH_TILED_BATCH_CHUNKS must be 1, 2, 4 or 8' >&2; exit 2; }
+TILED_GROUPS_X=${RADISH_TILED_GROUPS_X:-1}
+[[ $TILED_GROUPS_X == 1 || $TILED_GROUPS_X == 2 ]] || { echo 'RADISH_TILED_GROUPS_X must be 1 or 2' >&2; exit 2; }
 GROUPS_PER_CHUNK=${RADISH_SHARED_GROUPS:-8}
 for toggle in "$TILED" "$TILED32" "$SHARED32" "$MIXED" "$CACHE" "$TRACE" "$PROFILE" "$RESHAPE_ALIAS"; do
     [[ $toggle == 0 || $toggle == 1 ]] || { echo 'Radish toggles must be 0 or 1' >&2; exit 2; }
@@ -70,15 +72,17 @@ SOURCE=$WORK/kokoro-$KIND
 TAG=runtime-$KIND-$BACKEND-$RUN
 [[ $CORE_GRAPH != snake ]] || TAG+=-snake
 [[ $PLANAR == 0 ]] || TAG+=-planar
+[[ $TILED_GROUPS_X == 1 ]] || TAG+=-tiled-groups-x$TILED_GROUPS_X
 UNIT=radish-$TAG
 REMOTE=/var/tmp/radish/$TAG
 OUTPUT=$WORK/kokoro-$KIND-single-$BACKEND-$RUN
 [[ $CORE_GRAPH != snake ]] || OUTPUT+=-snake
 [[ $PLANAR == 0 ]] || OUTPUT+=-planar
+[[ $TILED_GROUPS_X == 1 ]] || OUTPUT+=-tiled-groups-x$TILED_GROUPS_X
 [[ ! -e $OUTPUT && ! -L $OUTPUT ]] || { echo 'host output already exists' >&2; exit 2; }
 mkdir -p "$WORK/evidence"
 [[ ! -e $WORK/evidence/$TAG-inputs.json && ! -e $WORK/evidence/$TAG.txt && ! -e $WORK/evidence/$TAG-icd.json ]] || { echo 'run label already has evidence' >&2; exit 2; }
-python3 - "$SOURCE" "$MODELS" "$TEMPLATE" "$BINARY" "$DRIVER" "$TAIL" "$WORK/evidence/$TAG-inputs.json" "$WORK/evidence/$TAG-icd.json" "$REMOTE" "$BACKEND" "$THREADS" "$ORT_THREADS" "$MAX_FRAMES" "$REPEAT" "$TILED" "$SHARED32" "$MIXED" "$CACHE" "$TRACE" "$PROFILE" "$BATCH" "$GROUPS_PER_CHUNK" "$RESHAPE_ALIAS" "$TILED32" "$TILED_BATCH" "$LOADER" "$CORE_GRAPH" "$TOP/radish/scripts/validate-kokoro-snake-fixture.py" "$PLANAR" <<'PY'
+python3 - "$SOURCE" "$MODELS" "$TEMPLATE" "$BINARY" "$DRIVER" "$TAIL" "$WORK/evidence/$TAG-inputs.json" "$WORK/evidence/$TAG-icd.json" "$REMOTE" "$BACKEND" "$THREADS" "$ORT_THREADS" "$MAX_FRAMES" "$REPEAT" "$TILED" "$SHARED32" "$MIXED" "$CACHE" "$TRACE" "$PROFILE" "$BATCH" "$GROUPS_PER_CHUNK" "$RESHAPE_ALIAS" "$TILED32" "$TILED_BATCH" "$LOADER" "$CORE_GRAPH" "$TOP/radish/scripts/validate-kokoro-snake-fixture.py" "$PLANAR" "$TILED_GROUPS_X" <<'PY'
 import hashlib, importlib.util, json, pathlib, sys
 source, models, template, binary, driver, tail, output, icd = map(pathlib.Path, sys.argv[1:9])
 loader=pathlib.Path(sys.argv[26])
@@ -135,6 +139,7 @@ assets['icd']={'path':str(icd.resolve()),**asset(icd)}
 names=['RADISH_NCNN_TILED','RADISH_NCNN_SHARED32','RADISH_NCNN_MIXED_STORAGE','RADISH_NCNN_PIPELINE_CACHE','RADISH_NCNN_TRACE','RADISH_PROFILE','RADISH_BATCH_CHUNKS','RADISH_SHARED_GROUPS','RADISH_NCNN_RESHAPE_ALIAS','RADISH_NCNN_TILED32','RADISH_TILED_BATCH_CHUNKS']
 environment=dict(zip(names,sys.argv[15:26]))
 environment['RADISH_NCNN_PLANAR']=sys.argv[29]
+environment['RADISH_TILED_GROUPS_X']=sys.argv[30]
 environment['VK_DRIVER_FILES']=remote+'/radish_icd.json'
 frontend_inputs={'format':'radish-kokoro-device-frontend-inputs-v1','source_sha256':pin,
     'input_directory':str(source.resolve()),'runtime_manifest':asset(source/'runtime.json'),
@@ -285,8 +290,8 @@ done
 verify_remote_graphs "$WORK/evidence/$TAG-graphs-before.txt"
 for file in ids.i64 style.f32 speed.f32; do "${ADB[@]}" push "$SOURCE/$file" "$REMOTE/input/$file"; done
 echo "Runtime backend=$BACKEND graph=$CORE_GRAPH repeat=$REPEAT threads=$THREADS ort_threads=$ORT_THREADS; shared weights=$DEVICE_WEIGHTS"
-echo "GPU controls: tiled=$TILED tiled32=$TILED32 planar=$PLANAR batch=$BATCH tiled_batch=$TILED_BATCH shared_groups=$GROUPS_PER_CHUNK shared32=$SHARED32 mixed=$MIXED cache=$CACHE trace=$TRACE profile=$PROFILE reshape_alias=$RESHAPE_ALIAS"
-"${ADB[@]}" shell "chmod 755 $REMOTE/radish-kokoro-runtime && systemd-run --unit=$UNIT --wait --pipe --collect -p MemoryMax=640M -p MemorySwapMax=128M -p RuntimeMaxSec=300 -p LimitCORE=0 --setenv=RADISH_NCNN_TILED=$TILED --setenv=RADISH_NCNN_TILED32=$TILED32 --setenv=RADISH_NCNN_PLANAR=$PLANAR --setenv=RADISH_NCNN_SHARED32=$SHARED32 --setenv=RADISH_NCNN_MIXED_STORAGE=$MIXED --setenv=RADISH_NCNN_RESHAPE_ALIAS=$RESHAPE_ALIAS --setenv=RADISH_NCNN_PIPELINE_CACHE=$CACHE --setenv=RADISH_NCNN_TRACE=$TRACE --setenv=RADISH_PROFILE=$PROFILE --setenv=RADISH_BATCH_CHUNKS=$BATCH --setenv=RADISH_TILED_BATCH_CHUNKS=$TILED_BATCH --setenv=RADISH_SHARED_GROUPS=$GROUPS_PER_CHUNK --setenv=LD_LIBRARY_PATH=$REMOTE --setenv=VK_DRIVER_FILES=$REMOTE/radish_icd.json $REMOTE/radish-kokoro-runtime --$BACKEND --threads $THREADS --ort-threads $ORT_THREADS --max-frames $MAX_FRAMES --repeat $REPEAT $REMOTE/models $REMOTE/input $REMOTE/decoder.ncnn.param $DEVICE_WEIGHTS $REMOTE/kokoro-tail.bin $REMOTE/output" 2>&1 | tee "$WORK/evidence/$TAG.txt"
+echo "GPU controls: tiled=$TILED tiled32=$TILED32 planar=$PLANAR batch=$BATCH tiled_batch=$TILED_BATCH tiled_groups_x=$TILED_GROUPS_X shared_groups=$GROUPS_PER_CHUNK shared32=$SHARED32 mixed=$MIXED cache=$CACHE trace=$TRACE profile=$PROFILE reshape_alias=$RESHAPE_ALIAS"
+"${ADB[@]}" shell "chmod 755 $REMOTE/radish-kokoro-runtime && systemd-run --unit=$UNIT --wait --pipe --collect -p MemoryMax=640M -p MemorySwapMax=128M -p RuntimeMaxSec=300 -p LimitCORE=0 --setenv=RADISH_NCNN_TILED=$TILED --setenv=RADISH_NCNN_TILED32=$TILED32 --setenv=RADISH_NCNN_PLANAR=$PLANAR --setenv=RADISH_NCNN_SHARED32=$SHARED32 --setenv=RADISH_NCNN_MIXED_STORAGE=$MIXED --setenv=RADISH_NCNN_RESHAPE_ALIAS=$RESHAPE_ALIAS --setenv=RADISH_NCNN_PIPELINE_CACHE=$CACHE --setenv=RADISH_NCNN_TRACE=$TRACE --setenv=RADISH_PROFILE=$PROFILE --setenv=RADISH_BATCH_CHUNKS=$BATCH --setenv=RADISH_TILED_BATCH_CHUNKS=$TILED_BATCH --setenv=RADISH_TILED_GROUPS_X=$TILED_GROUPS_X --setenv=RADISH_SHARED_GROUPS=$GROUPS_PER_CHUNK --setenv=LD_LIBRARY_PATH=$REMOTE --setenv=VK_DRIVER_FILES=$REMOTE/radish_icd.json $REMOTE/radish-kokoro-runtime --$BACKEND --threads $THREADS --ort-threads $ORT_THREADS --max-frames $MAX_FRAMES --repeat $REPEAT $REMOTE/models $REMOTE/input $REMOTE/decoder.ncnn.param $DEVICE_WEIGHTS $REMOTE/kokoro-tail.bin $REMOTE/output" 2>&1 | tee "$WORK/evidence/$TAG.txt"
 if rg -n 'vkCreateComputePipelines failed|new_pipeline failed' "$WORK/evidence/$TAG.txt"; then exit 1; fi
 PULL_STAGE=$(mktemp -d "$WORK/.runtime-pull-$KIND-XXXXXX")
 "${ADB[@]}" pull "$REMOTE/output" "$PULL_STAGE/output"

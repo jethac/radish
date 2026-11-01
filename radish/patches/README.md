@@ -32,6 +32,7 @@ limits and validation scope. Published checkpoints remain experimental; publicat
 | `0024-ncnn-conv1d-planar-input.patch` | After 0021 in the ordered Conv1D stack | Default-off PLANAR layout for eligible tiled64; one initialized padding/transpose workspace replaces existing padding, original math order/output retained; builds/seven-file reconstruction/all20 compiler variants/padded dilation1/3/5 pass. Fixed core48.738814/48.863090 s first/warm, all562342 outputs byte-identical, 420.1 MiB/zero swap/no faults; single warm pair1.1457% faster, fresh runtime pending |
 | `0025-radish-planar-batching-cumulative.patch` | Same Mesa base as 0001; alternative to 0023 | Candidate adds only native instrlen31 beside36/37 in existing tiled-batch resource gate; build/all14-file reconstruction, padded operators and full fixed core pass; all53 math commands retain batch8 schedule. Remaining conditions/defaults and ncnn K bound unchanged; PLANAR remains opt-in |
 | `0026-ncnn-planar-pad-local64.patch` | After0024 in the ordered Conv1D stack | Four reviewed host changes: planar prepass local8x4→8x8, two pipeline guards and group-count formula; shader bodies/defaults unchanged. Reconstruction/builds/compile/focused/full-core gates pass, first48.370236/warm46.932926 s, identical outputs,418.4 MiB/zero swap; single warm3.9501% below0024. Fresh T78/T213 passes31.890578/63.320730 s, all core/waveform values, zero swap/no faults; PLANAR default0 |
+| `0027-radish-tiled-x2-cumulative.patch` | Same Mesa base as0001; alternative to0025 | Default groups1, opt-in2 for narrow A506/instrlen31 tiled resources; X pairs/odd tails, cap4 EXEC chunks per submit, synchronization unchanged. Build/reconstruction/operators/full core pass, all562342 outputs byte-identical,45.621586/47.975705 s first/warm,no faults;417.4 MiB plus25.3 MiB swap. Warm2.2218% slower than0026 in confounded single pair; no performance acceptance |
 
 To reconstruct the accepted driver checkpoint, make a separate checkout/worktree at the
 Mesa base, read its `AGENTS.md`, and apply 0023 with `git apply` instead of
@@ -348,6 +349,32 @@ identity to prior CPU/0023 and GPU core/waveform byte identity are recorded in
 prior63.528396 s, so this is not a broad synthesis-latency claim. PLANAR stays
 default0 and earlier results retain their original local sizes.
 
+Cumulative0027 adds opt-in `RADISH_TILED_GROUPS_X=2`, default1. The existing
+PLANAR31 resource gate additionally requires gridX>=2; two groups consume the X
+budget only, preserving Y/Z and odd X tails. Paired submissions cap at four
+EXEC chunks even when tiled batch8 is requested. It changes no per-EXEC
+WFI/flush, fence waits or fault checks. The targeted build and all14-file
+reconstruction pass (`tiled-x2-0027-reconstruction-i5z4h0kg/reconstruction.json`),
+ICD SHA256 `36666edbfb9759d6e53b5389103f7ccee2e907444b85fa630aca968c8d8af0f8`.
+Padded dilation1/3/5 groups2/batch1 pass all27264 outputs each at unchanged gates,
+four math chunks/submits; dilation1/batch4 also passes four chunks/one submit.
+Logs: `operators-planar-x2-0027-first.log`,
+`operators-planar-x2-0027-d{3,5}-batch1.log`, `operators-planar-x2-0027-d1-batch4.log`.
+Full repeat2 passes all562342 outputs byte-identically in
+`core-snake-planar-x2-0027-repeat2.log`: cold9.022 s, first45.621586/warm47.975705 s,
+no faults/services active. Peak417.4 MiB plus25.3 MiB swap; warm is2.2218% slower
+than0026's46.932926 s in a single pair confounded by swap. The unchanged fixed
+output SHA0550fe07…f18e4 retains prior waveform evidence without a new tail run.
+The53 math commands show no win24.073201017→24.095025469 s despite chunks
+25944→13024; the cap4 policy leaves submissions3255→3256 (one extra odd-X submit).
+Other1745 signatures
+match but timing adds0.823383997 s, so most whole-wall increase is outside changed
+math. Preserve the swap confound and single-pair limit.0027 is an opt-in narrow
+correctness capability; keep0026/groups1 as the performance recommendation.
+No fresh-runtime repeat or default change is claimed for this non-winning case.
+Both first/warm maps are documented in `warm-planar-x2-result-0027-nf2vcmi7/REPORT.md`;
+the faster first extraction also comes mainly from retained-command timing.
+
 SHA-256:
 
 ```
@@ -377,4 +404,5 @@ a29dbbe0c3edf8912e4548cc873beca0ba3f1ba3197b6f1ee5f386bfd4f57dc0  0021-ncnn-conv
 23b9bafe92a6ad41ae393bde9d50576d7e2e6a258036234411e198f0f7c7cce8  0024-ncnn-conv1d-planar-input.patch
 fd0a0bb37e562535488406e183c46a233edf616939ad416efb6b09070bc0c17b  0025-radish-planar-batching-cumulative.patch
 3bbc418cf86b74ef32c1789b4bdc88c2b88ba4f1368c19ab1d62ee9103996a5c  0026-ncnn-planar-pad-local64.patch
+adc9ae8506e91abbacea3674a416b1e907672fecf60eb7c62dbe7c319367f6a1  0027-radish-tiled-x2-cumulative.patch
 ```

@@ -659,3 +659,20 @@ reports stay outside the public repository.
   prior63.528396 s, so warm-core gains do not establish broad synthesis gains.
 - [ ] Preserve PLANAR default0 and earlier checkpoints while evaluating resident,
   sustained and cancellation behavior; no broader latency/conformance claim.
+
+## Candidate 0027: paired tiled X groups
+
+- [x] Independently review default1/opt-in2 resource gate, X-only pairs/tails,
+  at-most-four EXEC chunks per submit and unchanged WFI/flush/wait/fault checks.
+- [x] Build/reconstruct cumulative0027, all14 files. Padded dilation1/3/5 groups2
+  with batch1 pass all27264 values each, four math chunks/submits; dilation1
+  batch4 passes four chunks/one submit. No faults/services active.
+- [x] Pass full fixed core, cold9.022 s, first45.621586/warm47.975705 s,
+  all562342 values byte-identical/no faults/services active. Peak417.4 MiB plus
+  25.3 MiB swap; warm2.2218% slower than0026, single pair confounded by swap.
+- [x] Complete attribution:53 tiled commands24.073201→24.095025 s, no math win,
+  despite chunks25944→13024; submits3255→3256. Other1745 signatures match but
+  timing adds0.823384 s; swap confounds the full-wall comparison.
+- [x] Retain0027 as opt-in correctness capability only; keep0026/groups1 as the
+  performance recommendation. No fresh-runtime repeat or default change for this
+  non-winning candidate.

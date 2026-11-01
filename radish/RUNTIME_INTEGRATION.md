@@ -657,3 +657,21 @@ Evidence under WORK: `core-snake-planar-pad64-0026-repeat2.log`,
 `kokoro-runtime-{short,full}-single-vulkan-planar-pad64-0026-first-snake-planar/`.
 The exact binaries are frozen in `planar-pad64-0026/bin/`, with hashes in
 `planar-pad64-0026/compiled-checkpoint.json`.
+
+### Two X workgroups: checkpoint 0027
+
+Separate cumulative Mesa patch 0027 permits `RADISH_TILED_GROUPS_X=2` only
+for the inspected PLANAR shader resource class. It pairs X workgroups and caps
+sequential chunks at four, retaining at most eight workgroups per submission.
+Default one-group execution is unchanged. The wrappers record this option;
+the runtime manifest helper has been rebuilt, but fresh synthesis with X2 has
+not been run.
+
+Focused dilation 1/3/5 and full fixed-core comparisons pass with identical
+output bytes. First/warm core time is 45.621586/47.975705 s, at 417.4 MiB plus
+25.3 MiB swap. The 53 changed math commands remain near 24.1 s: warm time
+24.073201017→24.095025469 s, despite 25,944→13,024 hardware launches. Unchanged
+work explains most of the first/warm latency variation. No performance gain is
+established; retain the 0026/groups-one recommendation. No new GPU fault occurs.
+Evidence: `core-snake-planar-x2-0027-repeat2.log` and
+`warm-planar-x2-result-0027-nf2vcmi7/REPORT.md` under WORK.
