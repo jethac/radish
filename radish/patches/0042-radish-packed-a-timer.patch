@@ -1,0 +1,34 @@
+--- a/src/freedreno/radish/rd_queue.c
++++ b/src/freedreno/radish/rd_queue.c
+@@ -629,6 +629,31 @@
+             sample->submit_count = device->submit_count;
+             rd_gpu_elapsed_prepare(device, sample);
+          }
++      }
++   }
++   if (!sample && profile && !dispatch->indirect && !tiled_x2 &&
++       max_chunks == 8 && fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) == 506 &&
++       v->local_size[0] == 16 && v->local_size[1] == 8 &&
++       v->local_size[2] == 1 && v->has_barrier && v->loops == 4 &&
++       v->shared_size == 16384 && !v->pvtmem_size &&
++       !v->info.double_threadsize && v->info.max_reg == 15 &&
++       v->info.max_half_reg == -1 &&
++       dispatch->pipeline->descriptor_count == 4 && v->instrlen == 28 &&
++       dispatch->grid[0] == 4 && dispatch->grid[1] == 2 &&
++       dispatch->grid[2] == 1 && tile[0] == 1 && tile[1] == 1 && tile[2] == 1) {
++      const char *enabled = getenv("RADISH_GPU_ELAPSED");
++      const char *profiling = getenv("RADISH_PROFILE");
++      const char *requested = getenv("RADISH_GPU_ELAPSED_CALIBRATION");
++      if (enabled && !strcmp(enabled, "1") &&
++          profiling && !strcmp(profiling, "1") &&
++          requested && !strcmp(requested, "packed-a") &&
++          rd_gpu_elapsed_reserve(&storage.sample)) {
++         sample = &storage;
++         sample->dispatch = dispatch;
++         sample->calibration = "packed-a";
++         sample->seqno = device->seqno;
++         sample->submit_count = device->submit_count;
++         rd_gpu_elapsed_prepare(device, sample);
+       }
+    }
+    struct fd_submit *submit = NULL;

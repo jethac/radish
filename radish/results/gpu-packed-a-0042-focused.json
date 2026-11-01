@@ -1,0 +1,1219 @@
+{
+  "profile_totals": {
+    "dispatches": 12,
+    "chunks": 96,
+    "submits": 12,
+    "samples": 12
+  },
+  "numerical": {
+    "independent_integer_oracle": true,
+    "oracle_scalar_count": 27264,
+    "output_values": 327168,
+    "output_guard_values": 48,
+    "input_guard_values": 4,
+    "production_model_guard_values": 0,
+    "all_output_payloads_bit_identical": true,
+    "all_gpu_model_and_input_bytes_unchanged": true,
+    "actual_gpu_weight_full_transposition": true,
+    "max_abs_oracle_integer_partial": 11208,
+    "changing_nan_poison_absent_from_all_outputs": true,
+    "raw_files": 22,
+    "raw_bytes": 4468960
+  },
+  "work": {
+    "issued_fp32_ops_per_run": 92274688,
+    "useful_fp32_ops_per_run": 76775424,
+    "counting": "Each scalar MAD counts as two FP32 operations; issued work includes inactive output-column arithmetic. Bias/address/control operations excluded.",
+    "rates": "Operations divided by GPU nanoseconds numerically gives GFLOP/s. Per-sample rate means and work divided by mean GPU time are reported separately."
+  },
+  "create_pipeline_seconds": [
+    1.066895107,
+    0.113649046
+  ],
+  "create_pipeline_scope": "wall intervals include packing and shader/pipeline creation; not isolated packing time",
+  "summaries": {
+    "baseline": {
+      "gpu_ns": {
+        "values": [
+          7157031,
+          7178593,
+          7169010,
+          7177447
+        ],
+        "mean": 7170520.25,
+        "median": 7173228.5,
+        "minimum": 7157031,
+        "maximum": 7178593,
+        "sample_stdev": 9956.402944002082
+      },
+      "host_submit_ns": {
+        "values": [
+          7880382,
+          8045590,
+          8225643,
+          7948299
+        ],
+        "mean": 8024978.5,
+        "median": 7996944.5,
+        "minimum": 7880382,
+        "maximum": 8225643,
+        "sample_stdev": 149976.63042954393
+      },
+      "whole_call_s": {
+        "values": [
+          0.008143716,
+          0.008327309,
+          0.008536216,
+          0.008256268
+        ],
+        "mean": 0.00831587725,
+        "median": 0.008291788500000001,
+        "minimum": 0.008143716,
+        "maximum": 0.008536216,
+        "sample_stdev": 0.00016519948380342014
+      },
+      "issued_GFLOP_s": {
+        "values": [
+          12.89287247742814,
+          12.854146766643547,
+          12.871329235138464,
+          12.856199147134072
+        ],
+        "mean": 12.868636906586056,
+        "median": 12.86376419113627,
+        "minimum": 12.854146766643547,
+        "maximum": 12.89287247742814,
+        "sample_stdev": 0.017881774173859326
+      },
+      "useful_GFLOP_s": {
+        "values": [
+          10.727272803485132,
+          10.69505180193389,
+          10.709348152673801,
+          10.696759446638895
+        ],
+        "mean": 10.70710805118293,
+        "median": 10.703053799656349,
+        "minimum": 10.69505180193389,
+        "maximum": 10.727272803485132,
+        "sample_stdev": 0.014878194918093796
+      },
+      "issued_work_over_mean_gpu_GFLOP_s": 12.868618284705352,
+      "useful_work_over_mean_gpu_GFLOP_s": 10.707092557196251
+    },
+    "packed-a": {
+      "gpu_ns": {
+        "values": [
+          6517708,
+          6518072,
+          6524947,
+          6510520
+        ],
+        "mean": 6517811.75,
+        "median": 6517890.0,
+        "minimum": 6510520,
+        "maximum": 6524947,
+        "sample_stdev": 5892.365250898827
+      },
+      "host_submit_ns": {
+        "values": [
+          7122620,
+          7250797,
+          7289183,
+          7533714
+        ],
+        "mean": 7299078.5,
+        "median": 7269990.0,
+        "minimum": 7122620,
+        "maximum": 7533714,
+        "sample_stdev": 171872.4762190464
+      },
+      "whole_call_s": {
+        "values": [
+          0.007407308,
+          0.007562725,
+          0.007617151,
+          0.007923559
+        ],
+        "mean": 0.00762768575,
+        "median": 0.007589938,
+        "minimum": 0.007407308,
+        "maximum": 0.007923559,
+        "sample_stdev": 0.00021636251428158734
+      },
+      "issued_GFLOP_s": {
+        "values": [
+          14.157536360941608,
+          14.156745737082991,
+          14.141829504515515,
+          14.173167120291467
+        ],
+        "mean": 14.157319680707895,
+        "median": 14.1571410490123,
+        "minimum": 14.141829504515515,
+        "maximum": 14.173167120291467,
+        "sample_stdev": 0.012799261195269335
+      },
+      "useful_GFLOP_s": {
+        "values": [
+          11.779512675314697,
+          11.778854851557332,
+          11.766444079928926,
+          11.79251795555501
+        ],
+        "mean": 11.77933239058899,
+        "median": 11.779183763436015,
+        "minimum": 11.766444079928926,
+        "maximum": 11.79251795555501,
+        "sample_stdev": 0.010649385291376053
+      },
+      "issued_work_over_mean_gpu_GFLOP_s": 14.157311002423475,
+      "useful_work_over_mean_gpu_GFLOP_s": 11.779325169985157
+    }
+  },
+  "comparison": {
+    "mean_gpu_reduction_percent": 9.102665876998255,
+    "mean_gap_direction": "packed-a-faster",
+    "baseline_measured_gpu_total_ns": 28682081,
+    "candidate_measured_gpu_total_ns": 26071247,
+    "mean_host_submit_reduction_percent": 9.04550710011248,
+    "mean_whole_call_reduction_percent": 8.275633217168991,
+    "balanced_pairs": [
+      {
+        "indices": [
+          4,
+          5
+        ],
+        "order": [
+          "baseline",
+          "packed-a"
+        ],
+        "baseline_gpu_ns": 7157031,
+        "candidate_gpu_ns": 6517708,
+        "candidate_faster": true,
+        "gpu_reduction_percent": 8.93279629499998,
+        "host_submit_ns": {
+          "baseline": 7880382,
+          "packed-a": 7122620
+        },
+        "whole_call_s": {
+          "baseline": 0.008143716,
+          "packed-a": 0.007407308
+        }
+      },
+      {
+        "indices": [
+          6,
+          7
+        ],
+        "order": [
+          "packed-a",
+          "baseline"
+        ],
+        "baseline_gpu_ns": 7178593,
+        "candidate_gpu_ns": 6518072,
+        "candidate_faster": true,
+        "gpu_reduction_percent": 9.201259912631905,
+        "host_submit_ns": {
+          "baseline": 8045590,
+          "packed-a": 7250797
+        },
+        "whole_call_s": {
+          "baseline": 0.008327309,
+          "packed-a": 0.007562725
+        }
+      },
+      {
+        "indices": [
+          8,
+          9
+        ],
+        "order": [
+          "baseline",
+          "packed-a"
+        ],
+        "baseline_gpu_ns": 7169010,
+        "candidate_gpu_ns": 6524947,
+        "candidate_faster": true,
+        "gpu_reduction_percent": 8.983988026240722,
+        "host_submit_ns": {
+          "baseline": 8225643,
+          "packed-a": 7289183
+        },
+        "whole_call_s": {
+          "baseline": 0.008536216,
+          "packed-a": 0.007617151
+        }
+      },
+      {
+        "indices": [
+          10,
+          11
+        ],
+        "order": [
+          "packed-a",
+          "baseline"
+        ],
+        "baseline_gpu_ns": 7177447,
+        "candidate_gpu_ns": 6510520,
+        "candidate_faster": true,
+        "gpu_reduction_percent": 9.291980839426609,
+        "host_submit_ns": {
+          "baseline": 7948299,
+          "packed-a": 7533714
+        },
+        "whole_call_s": {
+          "baseline": 0.008256268,
+          "packed-a": 0.007923559
+        }
+      }
+    ],
+    "prospective_gate": "Advance focused production candidate only if mean GPU interval falls at least 5 percent and all four balanced adjacent pairs favor packed-A; native/resource qualification remains separate.",
+    "all_pairs_same_direction_as_mean": true,
+    "all_pairs_favor_candidate": true,
+    "focused_performance_gate_passed": true
+  },
+  "runs": [
+    {
+      "kind": "baseline",
+      "index": 0,
+      "phase": "warmup",
+      "push0": 268,
+      "push1": 213,
+      "profile": {
+        "pipeline": "0xaaaaf1e1bc90",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "barrier": 1,
+        "loops": 4,
+        "instrlen": 27,
+        "chunks": 8,
+        "submits": 1,
+        "ns": 12576642,
+        "submit_ns": 12093985,
+        "submit_max_ns": 12093985,
+        "result": 0
+      },
+      "sample": {
+        "version": 1,
+        "sample": 0,
+        "valid": 1,
+        "reason": "ok",
+        "pipeline": "0xaaaaf1e1bc90",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "instrlen": 27,
+        "chunks": 8,
+        "submits": 1,
+        "submit_id": 1,
+        "start_ticks": 37837,
+        "stop_ticks": 175666,
+        "delta_ticks": 137829,
+        "gpu_ns": 7178593,
+        "host_start_ns": 178505889553832,
+        "host_done_ns": 178505901647817,
+        "submit_ns": 12093985,
+        "result": 0
+      },
+      "whole_call_s": 0.012680027,
+      "issued_GFLOP_s": 12.854146766643547,
+      "useful_GFLOP_s": 10.69505180193389,
+      "gpu_fraction_of_host_submit": 0.5935672154380877,
+      "host_submit_minus_gpu_ns": 4915392
+    },
+    {
+      "kind": "packed-a",
+      "index": 1,
+      "phase": "warmup",
+      "push0": 268,
+      "push1": 213,
+      "profile": {
+        "pipeline": "0xaaaaf3565e10",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "barrier": 1,
+        "loops": 4,
+        "instrlen": 28,
+        "chunks": 8,
+        "submits": 1,
+        "ns": 7348141,
+        "submit_ns": 7218453,
+        "submit_max_ns": 7218453,
+        "result": 0
+      },
+      "sample": {
+        "version": 1,
+        "sample": 1,
+        "valid": 1,
+        "reason": "ok",
+        "pipeline": "0xaaaaf3565e10",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "instrlen": 28,
+        "chunks": 8,
+        "submits": 1,
+        "submit_id": 2,
+        "start_ticks": 196577,
+        "stop_ticks": 321850,
+        "delta_ticks": 125273,
+        "gpu_ns": 6524635,
+        "host_start_ns": 178505902009797,
+        "host_done_ns": 178505909228250,
+        "submit_ns": 7218453,
+        "result": 0,
+        "calibration": "packed-a"
+      },
+      "whole_call_s": 0.007444807,
+      "issued_GFLOP_s": 14.142505749363757,
+      "useful_GFLOP_s": 11.767006736775313,
+      "gpu_fraction_of_host_submit": 0.9038827294435525,
+      "host_submit_minus_gpu_ns": 693818
+    },
+    {
+      "kind": "packed-a",
+      "index": 2,
+      "phase": "warmup",
+      "push0": 268,
+      "push1": 213,
+      "profile": {
+        "pipeline": "0xaaaaf3565e10",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "barrier": 1,
+        "loops": 4,
+        "instrlen": 28,
+        "chunks": 8,
+        "submits": 1,
+        "ns": 7179026,
+        "submit_ns": 7041370,
+        "submit_max_ns": 7041370,
+        "result": 0
+      },
+      "sample": {
+        "version": 1,
+        "sample": 2,
+        "valid": 1,
+        "reason": "ok",
+        "pipeline": "0xaaaaf3565e10",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "instrlen": 28,
+        "chunks": 8,
+        "submits": 1,
+        "submit_id": 3,
+        "start_ticks": 339662,
+        "stop_ticks": 464807,
+        "delta_ticks": 125145,
+        "gpu_ns": 6517968,
+        "host_start_ns": 178505909563771,
+        "host_done_ns": 178505916605141,
+        "submit_ns": 7041370,
+        "result": 0,
+        "calibration": "packed-a"
+      },
+      "whole_call_s": 0.007286266,
+      "issued_GFLOP_s": 14.156971620603231,
+      "useful_GFLOP_s": 11.779042793705033,
+      "gpu_fraction_of_host_submit": 0.9256675902558735,
+      "host_submit_minus_gpu_ns": 523402
+    },
+    {
+      "kind": "baseline",
+      "index": 3,
+      "phase": "warmup",
+      "push0": 268,
+      "push1": 213,
+      "profile": {
+        "pipeline": "0xaaaaf1e1bc90",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "barrier": 1,
+        "loops": 4,
+        "instrlen": 27,
+        "chunks": 8,
+        "submits": 1,
+        "ns": 7920173,
+        "submit_ns": 7775694,
+        "submit_max_ns": 7775694,
+        "result": 0
+      },
+      "sample": {
+        "version": 1,
+        "sample": 3,
+        "valid": 1,
+        "reason": "ok",
+        "pipeline": "0xaaaaf1e1bc90",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "instrlen": 27,
+        "chunks": 8,
+        "submits": 1,
+        "submit_id": 4,
+        "start_ticks": 482190,
+        "stop_ticks": 619675,
+        "delta_ticks": 137485,
+        "gpu_ns": 7160677,
+        "host_start_ns": 178505916972641,
+        "host_done_ns": 178505924748335,
+        "submit_ns": 7775694,
+        "result": 0
+      },
+      "whole_call_s": 0.008035643,
+      "issued_GFLOP_s": 12.886307816984344,
+      "useful_GFLOP_s": 10.721810800850255,
+      "gpu_fraction_of_host_submit": 0.9209051950861235,
+      "host_submit_minus_gpu_ns": 615017
+    },
+    {
+      "kind": "baseline",
+      "index": 4,
+      "phase": "measured",
+      "push0": 268,
+      "push1": 213,
+      "profile": {
+        "pipeline": "0xaaaaf1e1bc90",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "barrier": 1,
+        "loops": 4,
+        "instrlen": 27,
+        "chunks": 8,
+        "submits": 1,
+        "ns": 8040069,
+        "submit_ns": 7880382,
+        "submit_max_ns": 7880382,
+        "result": 0
+      },
+      "sample": {
+        "version": 1,
+        "sample": 4,
+        "valid": 1,
+        "reason": "ok",
+        "pipeline": "0xaaaaf1e1bc90",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "instrlen": 27,
+        "chunks": 8,
+        "submits": 1,
+        "submit_id": 5,
+        "start_ticks": 639405,
+        "stop_ticks": 776820,
+        "delta_ticks": 137415,
+        "gpu_ns": 7157031,
+        "host_start_ns": 178505925139065,
+        "host_done_ns": 178505933019447,
+        "submit_ns": 7880382,
+        "result": 0
+      },
+      "whole_call_s": 0.008143716,
+      "issued_GFLOP_s": 12.89287247742814,
+      "useful_GFLOP_s": 10.727272803485132,
+      "gpu_fraction_of_host_submit": 0.9082086376015782,
+      "host_submit_minus_gpu_ns": 723351
+    },
+    {
+      "kind": "packed-a",
+      "index": 5,
+      "phase": "measured",
+      "push0": 268,
+      "push1": 213,
+      "profile": {
+        "pipeline": "0xaaaaf3565e10",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "barrier": 1,
+        "loops": 4,
+        "instrlen": 28,
+        "chunks": 8,
+        "submits": 1,
+        "ns": 7281943,
+        "submit_ns": 7122620,
+        "submit_max_ns": 7122620,
+        "result": 0
+      },
+      "sample": {
+        "version": 1,
+        "sample": 5,
+        "valid": 1,
+        "reason": "ok",
+        "pipeline": "0xaaaaf3565e10",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "instrlen": 28,
+        "chunks": 8,
+        "submits": 1,
+        "submit_id": 6,
+        "start_ticks": 796501,
+        "stop_ticks": 921641,
+        "delta_ticks": 125140,
+        "gpu_ns": 6517708,
+        "host_start_ns": 178505933372989,
+        "host_done_ns": 178505940495609,
+        "submit_ns": 7122620,
+        "result": 0,
+        "calibration": "packed-a"
+      },
+      "whole_call_s": 0.007407308,
+      "issued_GFLOP_s": 14.157536360941608,
+      "useful_GFLOP_s": 11.779512675314697,
+      "gpu_fraction_of_host_submit": 0.9150717011436803,
+      "host_submit_minus_gpu_ns": 604912
+    },
+    {
+      "kind": "packed-a",
+      "index": 6,
+      "phase": "measured",
+      "push0": 268,
+      "push1": 213,
+      "profile": {
+        "pipeline": "0xaaaaf3565e10",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "barrier": 1,
+        "loops": 4,
+        "instrlen": 28,
+        "chunks": 8,
+        "submits": 1,
+        "ns": 7424287,
+        "submit_ns": 7250797,
+        "submit_max_ns": 7250797,
+        "result": 0
+      },
+      "sample": {
+        "version": 1,
+        "sample": 6,
+        "valid": 1,
+        "reason": "ok",
+        "pipeline": "0xaaaaf3565e10",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "instrlen": 28,
+        "chunks": 8,
+        "submits": 1,
+        "submit_id": 7,
+        "start_ticks": 942263,
+        "stop_ticks": 1067410,
+        "delta_ticks": 125147,
+        "gpu_ns": 6518072,
+        "host_start_ns": 178505940943162,
+        "host_done_ns": 178505948193959,
+        "submit_ns": 7250797,
+        "result": 0,
+        "calibration": "packed-a"
+      },
+      "whole_call_s": 0.007562725,
+      "issued_GFLOP_s": 14.156745737082991,
+      "useful_GFLOP_s": 11.778854851557332,
+      "gpu_fraction_of_host_submit": 0.898945591774256,
+      "host_submit_minus_gpu_ns": 732725
+    },
+    {
+      "kind": "baseline",
+      "index": 7,
+      "phase": "measured",
+      "push0": 268,
+      "push1": 213,
+      "profile": {
+        "pipeline": "0xaaaaf1e1bc90",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "barrier": 1,
+        "loops": 4,
+        "instrlen": 27,
+        "chunks": 8,
+        "submits": 1,
+        "ns": 8198559,
+        "submit_ns": 8045590,
+        "submit_max_ns": 8045590,
+        "result": 0
+      },
+      "sample": {
+        "version": 1,
+        "sample": 7,
+        "valid": 1,
+        "reason": "ok",
+        "pipeline": "0xaaaaf1e1bc90",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "instrlen": 27,
+        "chunks": 8,
+        "submits": 1,
+        "submit_id": 8,
+        "start_ticks": 1089130,
+        "stop_ticks": 1226959,
+        "delta_ticks": 137829,
+        "gpu_ns": 7178593,
+        "host_start_ns": 178505948602970,
+        "host_done_ns": 178505956648560,
+        "submit_ns": 8045590,
+        "result": 0
+      },
+      "whole_call_s": 0.008327309,
+      "issued_GFLOP_s": 12.854146766643547,
+      "useful_GFLOP_s": 10.69505180193389,
+      "gpu_fraction_of_host_submit": 0.89223947529019,
+      "host_submit_minus_gpu_ns": 866997
+    },
+    {
+      "kind": "baseline",
+      "index": 8,
+      "phase": "measured",
+      "push0": 268,
+      "push1": 213,
+      "profile": {
+        "pipeline": "0xaaaaf1e1bc90",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "barrier": 1,
+        "loops": 4,
+        "instrlen": 27,
+        "chunks": 8,
+        "submits": 1,
+        "ns": 8415800,
+        "submit_ns": 8225643,
+        "submit_max_ns": 8225643,
+        "result": 0
+      },
+      "sample": {
+        "version": 1,
+        "sample": 8,
+        "valid": 1,
+        "reason": "ok",
+        "pipeline": "0xaaaaf1e1bc90",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "instrlen": 27,
+        "chunks": 8,
+        "submits": 1,
+        "submit_id": 9,
+        "start_ticks": 1256050,
+        "stop_ticks": 1393695,
+        "delta_ticks": 137645,
+        "gpu_ns": 7169010,
+        "host_start_ns": 178505957131842,
+        "host_done_ns": 178505965357485,
+        "submit_ns": 8225643,
+        "result": 0
+      },
+      "whole_call_s": 0.008536216,
+      "issued_GFLOP_s": 12.871329235138464,
+      "useful_GFLOP_s": 10.709348152673801,
+      "gpu_fraction_of_host_submit": 0.8715440239747823,
+      "host_submit_minus_gpu_ns": 1056633
+    },
+    {
+      "kind": "packed-a",
+      "index": 9,
+      "phase": "measured",
+      "push0": 268,
+      "push1": 213,
+      "profile": {
+        "pipeline": "0xaaaaf3565e10",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "barrier": 1,
+        "loops": 4,
+        "instrlen": 28,
+        "chunks": 8,
+        "submits": 1,
+        "ns": 7473974,
+        "submit_ns": 7289183,
+        "submit_max_ns": 7289183,
+        "result": 0
+      },
+      "sample": {
+        "version": 1,
+        "sample": 9,
+        "valid": 1,
+        "reason": "ok",
+        "pipeline": "0xaaaaf3565e10",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "instrlen": 28,
+        "chunks": 8,
+        "submits": 1,
+        "submit_id": 10,
+        "start_ticks": 1417946,
+        "stop_ticks": 1543225,
+        "delta_ticks": 125279,
+        "gpu_ns": 6524947,
+        "host_start_ns": 178505965736548,
+        "host_done_ns": 178505973025731,
+        "submit_ns": 7289183,
+        "result": 0,
+        "calibration": "packed-a"
+      },
+      "whole_call_s": 0.007617151,
+      "issued_GFLOP_s": 14.141829504515515,
+      "useful_GFLOP_s": 11.766444079928926,
+      "gpu_fraction_of_host_submit": 0.8951547793490711,
+      "host_submit_minus_gpu_ns": 764236
+    },
+    {
+      "kind": "packed-a",
+      "index": 10,
+      "phase": "measured",
+      "push0": 268,
+      "push1": 213,
+      "profile": {
+        "pipeline": "0xaaaaf3565e10",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "barrier": 1,
+        "loops": 4,
+        "instrlen": 28,
+        "chunks": 8,
+        "submits": 1,
+        "ns": 7760382,
+        "submit_ns": 7533714,
+        "submit_max_ns": 7533714,
+        "result": 0
+      },
+      "sample": {
+        "version": 1,
+        "sample": 10,
+        "valid": 1,
+        "reason": "ok",
+        "pipeline": "0xaaaaf3565e10",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "instrlen": 28,
+        "chunks": 8,
+        "submits": 1,
+        "submit_id": 11,
+        "start_ticks": 1571323,
+        "stop_ticks": 1696325,
+        "delta_ticks": 125002,
+        "gpu_ns": 6510520,
+        "host_start_ns": 178505973605576,
+        "host_done_ns": 178505981139290,
+        "submit_ns": 7533714,
+        "result": 0,
+        "calibration": "packed-a"
+      },
+      "whole_call_s": 0.007923559,
+      "issued_GFLOP_s": 14.173167120291467,
+      "useful_GFLOP_s": 11.79251795555501,
+      "gpu_fraction_of_host_submit": 0.8641846504924398,
+      "host_submit_minus_gpu_ns": 1023194
+    },
+    {
+      "kind": "baseline",
+      "index": 11,
+      "phase": "measured",
+      "push0": 268,
+      "push1": 213,
+      "profile": {
+        "pipeline": "0xaaaaf1e1bc90",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "barrier": 1,
+        "loops": 4,
+        "instrlen": 27,
+        "chunks": 8,
+        "submits": 1,
+        "ns": 8111111,
+        "submit_ns": 7948299,
+        "submit_max_ns": 7948299,
+        "result": 0
+      },
+      "sample": {
+        "version": 1,
+        "sample": 11,
+        "valid": 1,
+        "reason": "ok",
+        "pipeline": "0xaaaaf1e1bc90",
+        "grid": [
+          4,
+          2,
+          1
+        ],
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "instrlen": 27,
+        "chunks": 8,
+        "submits": 1,
+        "submit_id": 12,
+        "start_ticks": 1721836,
+        "stop_ticks": 1859643,
+        "delta_ticks": 137807,
+        "gpu_ns": 7177447,
+        "host_start_ns": 178505981572155,
+        "host_done_ns": 178505989520454,
+        "submit_ns": 7948299,
+        "result": 0
+      },
+      "whole_call_s": 0.008256268,
+      "issued_GFLOP_s": 12.856199147134072,
+      "useful_GFLOP_s": 10.696759446638895,
+      "gpu_fraction_of_host_submit": 0.9030167335174482,
+      "host_submit_minus_gpu_ns": 770852
+    }
+  ],
+  "raw_pins": {
+    "run-00.f32": {
+      "bytes": 109072,
+      "sha256": "31a22728723089448b3c4b9c60e1f822af34146d59a6d4114dc3d1a8a79321ac"
+    },
+    "run-01.f32": {
+      "bytes": 109072,
+      "sha256": "d276e5d27204c7845d8355aed379d18ab0038a36a4d3fdabba8617fa076d0753"
+    },
+    "run-02.f32": {
+      "bytes": 109072,
+      "sha256": "071312e4c347f9725cec78db41cbb7b9f6972979f774701efac26b1f677699d8"
+    },
+    "run-03.f32": {
+      "bytes": 109072,
+      "sha256": "d9ed0afa515ca27b4b7a046f7d01616c905924ec13f6e224d8378ae8721fe8d7"
+    },
+    "run-04.f32": {
+      "bytes": 109072,
+      "sha256": "d141988dbfe73e18a284705fc0a79c2ddff5acd6bf334889a3c81d9e041abb87"
+    },
+    "run-05.f32": {
+      "bytes": 109072,
+      "sha256": "263585740dbc6f0274d617586634d67a8b2b713516f51bafb2f7ad4f49cc8198"
+    },
+    "run-06.f32": {
+      "bytes": 109072,
+      "sha256": "426262cd3645d1abbd7c76e04746fb9b6688cb8925c363e9c152b831d0f989f0"
+    },
+    "run-07.f32": {
+      "bytes": 109072,
+      "sha256": "7ea84b520528a712939319f9459b436188feda553ba2b3000bbcd470ddee647d"
+    },
+    "run-08.f32": {
+      "bytes": 109072,
+      "sha256": "9d4de99f411978493769fe5b3c8bc8d5d4a439283a8dd4cc594097304beabd27"
+    },
+    "run-09.f32": {
+      "bytes": 109072,
+      "sha256": "87c27ad05fe8dc5a127aa392d22e20e55299c7d41c1ce5e0105f906a294c3dd6"
+    },
+    "run-10.f32": {
+      "bytes": 109072,
+      "sha256": "0cbdb6ab76160a1f0a6d9e1cc10ad206d0032b8bc335e8df6334643ec0e623da"
+    },
+    "run-11.f32": {
+      "bytes": 109072,
+      "sha256": "4417d4953b2e339c8d65738cbaa53794d30fed87932fdae2afdd6cc9181a7c7f"
+    },
+    "baseline-weights-before.f32": {
+      "bytes": 720896,
+      "sha256": "6d3e10ff8198cba37f8896748239aed3bad511a0b13f3ac8ba30d56bd824b6c8"
+    },
+    "baseline-weights-after.f32": {
+      "bytes": 720896,
+      "sha256": "6d3e10ff8198cba37f8896748239aed3bad511a0b13f3ac8ba30d56bd824b6c8"
+    },
+    "packed-weights-before.f32": {
+      "bytes": 720896,
+      "sha256": "0cf5ebb8696fe0ee9c80d2dda15abf538800d0e458925f4fd07f262d4f11c7a9"
+    },
+    "packed-weights-after.f32": {
+      "bytes": 720896,
+      "sha256": "0cf5ebb8696fe0ee9c80d2dda15abf538800d0e458925f4fd07f262d4f11c7a9"
+    },
+    "baseline-bias-before.f32": {
+      "bytes": 512,
+      "sha256": "2a575c3f9c163fe472d41864c268144181d49bfb43026e88cae6391e5d1932f8"
+    },
+    "baseline-bias-after.f32": {
+      "bytes": 512,
+      "sha256": "2a575c3f9c163fe472d41864c268144181d49bfb43026e88cae6391e5d1932f8"
+    },
+    "packed-bias-before.f32": {
+      "bytes": 512,
+      "sha256": "2a575c3f9c163fe472d41864c268144181d49bfb43026e88cae6391e5d1932f8"
+    },
+    "packed-bias-after.f32": {
+      "bytes": 512,
+      "sha256": "2a575c3f9c163fe472d41864c268144181d49bfb43026e88cae6391e5d1932f8"
+    },
+    "input-before.f32": {
+      "bytes": 137232,
+      "sha256": "50a98d889ab2688f50de7d404d7c405e461d5edab8c2315bd4d537776fbd4917"
+    },
+    "input-after.f32": {
+      "bytes": 137232,
+      "sha256": "50a98d889ab2688f50de7d404d7c405e461d5edab8c2315bd4d537776fbd4917"
+    }
+  },
+  "fixture_sha256": {
+    "baseline-weights": "6d3e10ff8198cba37f8896748239aed3bad511a0b13f3ac8ba30d56bd824b6c8",
+    "packed-weights": "0cf5ebb8696fe0ee9c80d2dda15abf538800d0e458925f4fd07f262d4f11c7a9",
+    "baseline-bias": "2a575c3f9c163fe472d41864c268144181d49bfb43026e88cae6391e5d1932f8",
+    "packed-bias": "2a575c3f9c163fe472d41864c268144181d49bfb43026e88cae6391e5d1932f8",
+    "input": "50a98d889ab2688f50de7d404d7c405e461d5edab8c2315bd4d537776fbd4917",
+    "output_payload": "a2da9950f7826a38f016ccd4d8f5320c19e91a30a3cf611e3ce2940f3a5595d8"
+  },
+  "format": "radish-packed-a-0042-focused-publication-v1",
+  "generated_by": "LLM",
+  "scope": "Focused actual Convolution1D OFF/packed-A math only; no full-model acceptance.",
+  "source_evidence": {
+    "label": "0042-qualified-first",
+    "run_log_sha256": "cb576491f340594bf7d2f3a2cee33f868960ef78e995dc97d7d17f27753a2570",
+    "analyzer_sha256": "dc1f28bb7854ce9290c678b48e00206dc5d00996e4e12d695bfc87668e6a32c3",
+    "analysis_result_sha256": "42af7fa0f6cee80eb9597ef6d32ded9f819f97376ae1da857b7fdbfe0f18f87b"
+  },
+  "measured_assets": {
+    "helper_sha256": "61285af2adf1ce4c6b38b6939653f7df363823f8afd4ff125a767e235170678c",
+    "driver_sha256": "a9be6b5c18b7bd6fa33cfe9d0d42e00532a6649090d6720128ccd6072af12a4e",
+    "loader_sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a",
+    "private_runner_sha256": "50c45fbde5e34d6b55d2c6b5e33cca394549d132e759ed98a6a7dbe53092a7a1"
+  },
+  "native_review": {
+    "status": "PASS: separate source/native/resource and measurement reviews",
+    "local": [
+      16,
+      8,
+      1
+    ],
+    "shared_bytes": 16384,
+    "full_registers": 16,
+    "half_registers": 0,
+    "private_bytes": 0,
+    "private_zero_scope": "Inferred from successful pipeline creation under a source-reviewed nonzero-private rejection gate; corroborated by valid exact-resource candidate timer class.",
+    "baseline": {
+      "timer_instrlen": 27,
+      "reported_dwords": 870,
+      "normalized_disassembly_sha256": "21cb3d6135ce82b77dc170c6648b5e3e96696dc5ac601952fcf49eae56d19fc6"
+    },
+    "candidate": {
+      "timer_instrlen": 28,
+      "reported_dwords": 896,
+      "normalized_disassembly_sha256": "4c16a57bee502d50d564f16ab82d1501afc756da42270e110c2414072fccd0f7"
+    },
+    "semantics": "One vec4 A global load and one contiguous vec4 shared store replaces four scalar shared stores; inner K loop retains three vec4 shared loads, 32 scalar MADs and no register copies; barriers/order unchanged; total MOV count63 each."
+  },
+  "conditions": {
+    "scope": "Whole before/after observation window only, not per-kernel clock attribution",
+    "devfreq_residency_delta_ms": {
+      "19200000": 272,
+      "133300000": 0,
+      "216000000": 0,
+      "320000000": 0,
+      "400000000": 0,
+      "510000000": 0,
+      "560000000": 0,
+      "650000000": 140
+    },
+    "gpu_temperature_mC": [
+      32200,
+      33200
+    ],
+    "service_wall_seconds": 1.971,
+    "service_cpu_seconds": 1.834,
+    "service_memory_peak_MiB": 65.9,
+    "service_swap_peak": "not reported in journal",
+    "services_before": [
+      "active",
+      "active"
+    ],
+    "services_after": [
+      "active",
+      "active"
+    ],
+    "fault_check": "PASS: no new GPU fault/recovery messages"
+  },
+  "log_transport_scope": "Separate stdout/stderr pipes may be merged out of chronological order; per-stream ordering and sample/submit IDs plus pipeline, calibration, geometry and submit-interval fields correlate runs. Merged line positions do not establish timer bracketing by stdout BEGIN/END markers.",
+  "full_model_acceptance": "Separate fixed-shape model correctness/timing now passes; see gpu-packed-a-0042-model.json. End-to-end runtime adoption remains pending.",
+  "limitations": [
+    "Native/resource/dataflow admission remains pending separate root review, including candidate contiguous A shared-store code generation and register/shared/private limits.",
+    "Poison upload, distinct live GPU destination allocations and deferred-readback execution are supported by pinned helper source, markers and helper checks; raw files contain final readbacks rather than pre-dispatch allocation-address evidence.",
+    "This focused gain does not establish padding/forward/full-graph integration, end-to-end model performance or acceptance.",
+    "Create-pipeline intervals include packing plus shader/pipeline creation; they are not isolated packing cost.",
+    "Achieved rates are implementation observations, not hardware ceilings, bandwidth, occupancy or measured ALU utilization.",
+    "GPU intervals retain command work and may include scheduling; host whole calls exclude every deferred readback.",
+    "Four warmups and eight measured calls are retained without fastest-only selection or statistical confidence claims.",
+    "Sources/binaries, live services, new faults, temperature and whole-window clocks require separate runner/conditions review."
+  ]
+}

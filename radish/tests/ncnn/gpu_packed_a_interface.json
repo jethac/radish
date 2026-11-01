@@ -1,0 +1,391 @@
+{
+  "format": "radish-gpu-packed-a-v1",
+  "source": "gpu_packed_a_probe.cpp",
+  "source_sha256": "28f6e40df8562e1e8d9d3193b66def88b31edd79033469ef55348ac7d5efd4ce",
+  "generated_by": "LLM",
+  "cli": {
+    "argv": [
+      "--compile-only | NEW_ABSOLUTE_OUTPUT_DIR"
+    ],
+    "argc": 2,
+    "no_other_arguments": true,
+    "output_directory": "absolute, non-root path; mkdir(0700) must succeed exclusively; existing paths rejected",
+    "compile_only": "Two separate real Convolution1D create_pipeline calls, full scalar host weight/bias layout checks and payload clones; returns before acquiring Vulkan allocators, uploading tensors, constructing VkTransfer/VkCompute or CPU output oracle. Host model and snapshot arrays are allocated; device initialization may submit dummy work. No output directory/files.",
+    "exit_codes": {
+      "0": "compile-only checks passed, or full paired numerical/readback checks passed and completion manifest published",
+      "1": "CHECK failure; no completion manifest published before validation; already captured raw evidence retained",
+      "2": "CLI or required environment rejected"
+    }
+  },
+  "required_environment": {
+    "RADISH_NCNN_TILED": "1",
+    "RADISH_NCNN_TILED32": "0",
+    "RADISH_NCNN_PLANAR": "1",
+    "RADISH_NCNN_PAD_CHANNELS": "0",
+    "RADISH_NCNN_SHARED32": "0",
+    "RADISH_NCNN_PIPELINE_CACHE": "1",
+    "RADISH_TILED_GROUPS_X": "1",
+    "RADISH_BATCH_CHUNKS": "8",
+    "RADISH_TILED_BATCH_CHUNKS": "8",
+    "RADISH_SHARED_GROUPS": "8",
+    "RADISH_PROFILE": "1"
+  },
+  "changed_environment_restored_on_normal_exit": [
+    "RADISH_NCNN_PLANAR_PACKED_A",
+    "RADISH_GPU_ELAPSED",
+    "RADISH_GPU_ELAPSED_CALIBRATION"
+  ],
+  "selector": {
+    "name": "RADISH_NCNN_PLANAR_PACKED_A",
+    "baseline_create_pipeline": "0",
+    "candidate_create_pipeline": "1",
+    "sampling": "Production create_pipeline only; helper never manually packs GPU weights."
+  },
+  "device": {
+    "gpu_count": 1,
+    "index": 0,
+    "vendor_id": 20803,
+    "device_id": 506,
+    "name": "Radish Adreno 506 (experimental compute)"
+  },
+  "layer": {
+    "type": "Convolution1D",
+    "separate_owners": 2,
+    "shared_immutable_host_model": true,
+    "params": {
+      "num_output": 128,
+      "kernel": 11,
+      "dilation": 1,
+      "stride": 1,
+      "pad_left": 5,
+      "pad_right": 5,
+      "bias": 1,
+      "activation": 0,
+      "weight_data_size": 180224
+    },
+    "options": {
+      "num_threads": 1,
+      "lightmode": true,
+      "use_weights_in_host_memory": false,
+      "enabled": [
+        "vulkan_compute",
+        "packing_layout",
+        "sgemm_convolution"
+      ],
+      "disabled": [
+        "fp16_packed",
+        "fp16_storage",
+        "fp16_arithmetic",
+        "fp16_uniform",
+        "bf16_packed",
+        "bf16_storage",
+        "int8_inference",
+        "int8_packed",
+        "int8_storage",
+        "int8_arithmetic",
+        "int8_uniform",
+        "int16_packed",
+        "int16_storage",
+        "subgroup_ops",
+        "shader_local_memory",
+        "cooperative_matrix",
+        "tensor_storage"
+      ]
+    },
+    "asserted_modes": {
+      "use_radish_tiled": true,
+      "radish_planar": true,
+      "radish_tiled32": false,
+      "radish_pad_channels": false,
+      "use_cooperative_matrix": false
+    },
+    "create_pipeline_wall_scope": "Includes packing plus shader/pipeline creation, not isolated packing time."
+  },
+  "math_contract": {
+    "specializations": 5,
+    "ssbo_bindings": 4,
+    "push_integer_count": 2,
+    "local": [
+      16,
+      8,
+      1
+    ],
+    "dispatcher": [
+      64,
+      16,
+      1
+    ],
+    "grid": [
+      4,
+      2,
+      1
+    ],
+    "push_values": [
+      268,
+      213
+    ],
+    "binding_order": [
+      "actual layer.weight_data_gpu",
+      "same private planar input B",
+      "distinct run output",
+      "actual layer.bias_data_gpu"
+    ],
+    "pending_dispatch_groups_asserted": 8,
+    "padding_operator_in_timed_calls": false,
+    "actual_chunks_submits_native_timer": "Separate independent root qualification; helper does not infer them from group count. No assumed candidate native length."
+  },
+  "upload_and_lifetimes": {
+    "weights": "Actual layer.upload_model through VkTransfer, followed by wait; candidate payload never manually copied/repacked to GPU. Clone actual weight_data_packed before upload releases it.",
+    "bias": "Clone actual bias_data before upload releases it. Read back actual uploaded layer bias_data_gpu.",
+    "production_model_shape": {
+      "dims": 1,
+      "elempack": 1,
+      "elemsize": 4,
+      "weights_w": 180224,
+      "bias_w": 128,
+      "tail_guard": false
+    },
+    "B_and_output_shape": {
+      "dims": 1,
+      "elempack": 4,
+      "elemsize": 16,
+      "input_w": 8577,
+      "output_w": 6817
+    },
+    "allocations": "All 17 ranges resident, valid and pairwise non-overlapping throughout twelve calls. Layer owners/model/snapshots/GPU wrappers outlive downloads; allocator pool reclaimed after layer owners."
+  },
+  "fixture": {
+    "weight_integer": "a(co,k)=((13*co+7*(k%32)+3)%31)-15",
+    "original_weight": "original[co*1408+k]=a(co,k)/64",
+    "packed_weight": "packed[k*128+co] bit-identical to original[co*1408+k] for every k/co; owned flat scalar FP32 Mat",
+    "bias_integer": "q(co)=((17*co+9)%255)-127",
+    "bias": "q(co)/4096",
+    "input_integer": "B_integer(ci,xpad)=((11*ci+5*(xpad-5)+1)%29)-14 for 5<=xpad<218, otherwise 0",
+    "input": "B[ci*268+xpad]=B_integer(ci,xpad)/64; outside active interval positive zero",
+    "oracle": "numerator=q(co)+sum(ci=0..127,tap=0..10) a(co,ci*11+tap)*B_integer(ci,x+tap); expected=numerator/4096; check each partial abs<=295807<2^24",
+    "output_index": "((co/4)*213+x)*4+co%4; integer division",
+    "validation": "Exact float bits for every scalar per run and byte-identical all twelve output payloads, including OFF/ON; source model unchanged; actual GPU weights/biases/input unchanged."
+  },
+  "poison_and_guards": {
+    "uint32_bits": "Native uint32 word bits; exact comparisons by memcpy",
+    "guard_formula": "0x3e800000u | uint32(tag*131+lane*17+3), lane=0..3",
+    "input_guard_tag": 1,
+    "output_guard_tag": "10+run_index",
+    "output_payload_poison": "0x7fc00100u+uint32(run_index), all 27264 payload words",
+    "uploads": "All twelve changing-NaN payloads and unique four-word tail guards uploaded before sequence",
+    "guard_word_counts": {
+      "output": 48,
+      "input": 4,
+      "weights": 0,
+      "biases": 0
+    }
+  },
+  "schedule": {
+    "variants": [
+      "baseline",
+      "packed-a"
+    ],
+    "indices": [
+      0,
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      0
+    ],
+    "warmups": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "measured": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "measured_count_per_variant": 4,
+    "elapsed": "Set RADISH_GPU_ELAPSED=1 for every call; baseline CALIBRATION unset; candidate RADISH_GPU_ELAPSED_CALIBRATION=packed-a; set elapsed=0 after each wait.",
+    "timing": "record_pipeline plus submit_and_wait only. Every output/model/input GPU readback follows all twelve waits. CPU oracle and all writes outside intervals."
+  },
+  "raw_capture": {
+    "encoding": "Native IEEE-754 binary32 byte layout; intended little-endian aarch64 target, no conversion",
+    "all_files_written_before_cpu_output_reference": true,
+    "before": "Expected actual upload payload snapshots; includes transposed candidate weights, not original-only comparison.",
+    "after": "Actual GPU VkMat readback by record_clone with allocation-appropriate shape checks; scalar model and guarded vec4 input/output helpers differ.",
+    "file_count": 22,
+    "total_bytes": 4468960,
+    "files": [
+      {
+        "name": "run-00.f32",
+        "bytes": 109072,
+        "payload_scalars": 27264,
+        "guard_words": 4
+      },
+      {
+        "name": "run-01.f32",
+        "bytes": 109072,
+        "payload_scalars": 27264,
+        "guard_words": 4
+      },
+      {
+        "name": "run-02.f32",
+        "bytes": 109072,
+        "payload_scalars": 27264,
+        "guard_words": 4
+      },
+      {
+        "name": "run-03.f32",
+        "bytes": 109072,
+        "payload_scalars": 27264,
+        "guard_words": 4
+      },
+      {
+        "name": "run-04.f32",
+        "bytes": 109072,
+        "payload_scalars": 27264,
+        "guard_words": 4
+      },
+      {
+        "name": "run-05.f32",
+        "bytes": 109072,
+        "payload_scalars": 27264,
+        "guard_words": 4
+      },
+      {
+        "name": "run-06.f32",
+        "bytes": 109072,
+        "payload_scalars": 27264,
+        "guard_words": 4
+      },
+      {
+        "name": "run-07.f32",
+        "bytes": 109072,
+        "payload_scalars": 27264,
+        "guard_words": 4
+      },
+      {
+        "name": "run-08.f32",
+        "bytes": 109072,
+        "payload_scalars": 27264,
+        "guard_words": 4
+      },
+      {
+        "name": "run-09.f32",
+        "bytes": 109072,
+        "payload_scalars": 27264,
+        "guard_words": 4
+      },
+      {
+        "name": "run-10.f32",
+        "bytes": 109072,
+        "payload_scalars": 27264,
+        "guard_words": 4
+      },
+      {
+        "name": "run-11.f32",
+        "bytes": 109072,
+        "payload_scalars": 27264,
+        "guard_words": 4
+      },
+      {
+        "name": "baseline-weights-before.f32",
+        "bytes": 720896,
+        "payload_scalars": 180224,
+        "guard_words": 0
+      },
+      {
+        "name": "baseline-weights-after.f32",
+        "bytes": 720896,
+        "payload_scalars": 180224,
+        "guard_words": 0
+      },
+      {
+        "name": "baseline-bias-before.f32",
+        "bytes": 512,
+        "payload_scalars": 128,
+        "guard_words": 0
+      },
+      {
+        "name": "baseline-bias-after.f32",
+        "bytes": 512,
+        "payload_scalars": 128,
+        "guard_words": 0
+      },
+      {
+        "name": "packed-weights-before.f32",
+        "bytes": 720896,
+        "payload_scalars": 180224,
+        "guard_words": 0
+      },
+      {
+        "name": "packed-weights-after.f32",
+        "bytes": 720896,
+        "payload_scalars": 180224,
+        "guard_words": 0
+      },
+      {
+        "name": "packed-bias-before.f32",
+        "bytes": 512,
+        "payload_scalars": 128,
+        "guard_words": 0
+      },
+      {
+        "name": "packed-bias-after.f32",
+        "bytes": 512,
+        "payload_scalars": 128,
+        "guard_words": 0
+      },
+      {
+        "name": "input-before.f32",
+        "bytes": 137232,
+        "payload_scalars": 34304,
+        "guard_words": 4
+      },
+      {
+        "name": "input-after.f32",
+        "bytes": 137232,
+        "payload_scalars": 34304,
+        "guard_words": 4
+      }
+    ]
+  },
+  "metadata": {
+    "pending": "pending.json created exclusively with format and status=pending; contains no success claim",
+    "completion": "result.json.tmp created exclusively after all validation. Pending marker removed before atomic exclusive link to result.json. result.json publication is final fallible completion step; temporary-link cleanup is best effort. result.json status=passed means helper numerical/layout/readback validation only. If publication fails, no result.json exists; pending may already be removed.",
+    "result": "result.json includes all run wall times and two create_pipeline wall intervals, raw counts, guard counts and independent admission pending statement.",
+    "file_policy": "openat O_EXCL|O_NOFOLLOW|O_CLOEXEC mode0600 for all artifacts; failures preserve prior raw files."
+  },
+  "markers": {
+    "family": "GPU_PACKED_A",
+    "events": [
+      "GPU_PACKED_A_PIPELINE_BEGIN",
+      "GPU_PACKED_A_PIPELINE_END",
+      "GPU_PACKED_A_OUTPUT_POISON",
+      "GPU_PACKED_A_RUN_BEGIN",
+      "GPU_PACKED_A_RUN_END",
+      "GPU_PACKED_A_COMPUTE_SEQUENCE_COMPLETE",
+      "GPU_PACKED_A_RAW_CAPTURE_COMPLETE",
+      "GPU_PACKED_A_VALIDATED",
+      "GPU_PACKED_A_MEASURED_SUMMARY"
+    ],
+    "final_success_prefixes": [
+      "PASS: GPU packed-A compile-only;",
+      "PASS: GPU packed-A paired probe"
+    ],
+    "failure": "FAIL line <line>: <expression> to stderr; CLI/required env diagnostics to stderr"
+  },
+  "independent_runner": "Owns execution/service/adb decisions; helper never invokes adb/systemd, alters driver settings, or assumes native resource admission.",
+  "host_check": "host_source_check.py and host-source-check.json provide only source/index/fixture checks, not C++ compilation or GPU evidence."
+}

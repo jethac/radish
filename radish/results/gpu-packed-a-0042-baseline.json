@@ -1,0 +1,76 @@
+{
+  "format": "radish-packed-a-accepted-17-file-baseline-v1",
+  "generated_by": "LLM",
+  "ncnn_base": "f18f3ffc94dbc76a277e94556c588ab2c2d0e1d9",
+  "glslang": "780b6a209132dc74e99458f62ebe5fa7e57c41cf",
+  "files": {
+    "src/gpu.cpp": {
+      "bytes": 268751,
+      "sha256": "61aee7653f42a1819bb42687a33be554b6839d691e35260b1d63f0ae5d10d152"
+    },
+    "src/layer/vulkan/convolution1d_vulkan.cpp": {
+      "bytes": 65336,
+      "sha256": "35e4b937bd1c2de22ef229bc6755dad62a101b88a0ea4214b7d43532dda7520e"
+    },
+    "src/layer/vulkan/convolution1d_vulkan.h": {
+      "bytes": 1355,
+      "sha256": "9b61bde9939e539386f1bafe84f4a8ff19cc425d9660b36f6c2222d11fd4fbdb"
+    },
+    "src/layer/vulkan/instancenorm_vulkan.cpp": {
+      "bytes": 39267,
+      "sha256": "aceb850f71eb90c853382b2dcf7cafe50dbfb6c5be240b70cf23ec5f67db77a7"
+    },
+    "src/layer/vulkan/instancenorm_vulkan.h": {
+      "bytes": 2040,
+      "sha256": "e3b1d5168b91fab7a9bbe484febacb2c602bd8d8cc4021c1dbfe1bb7940818b7"
+    },
+    "src/layer/vulkan/reduction_vulkan.cpp": {
+      "bytes": 5839,
+      "sha256": "298bbb602ee953ea120e11b96aad4942f1409b55f9e31e1b60b1ff25e1382d9a"
+    },
+    "src/layer/vulkan/reshape_vulkan.cpp": {
+      "bytes": 24752,
+      "sha256": "c9ade59b8d9ef1306898a854701c21fbf83c34e0f526b60ba6919e1c6872792e"
+    },
+    "src/layer/vulkan/shader/convolution1d_packed_gemm.comp": {
+      "bytes": 14447,
+      "sha256": "8ed37e7e165e2e0f5ca5fb4f060970a0902c6880b510a1967063858ec48ebf3c"
+    },
+    "src/layer/vulkan/shader/reduction.comp": {
+      "bytes": 9593,
+      "sha256": "2e145d05fcaa97f5c3c1e1873cca6071f57f4e84daae661426660858dfa822fb"
+    },
+    "src/net.cpp": {
+      "bytes": 109513,
+      "sha256": "94d19b53ac39259a02b64085fe6a9913c71a210ca4ad3afa255d70137d646a8e"
+    },
+    "src/layer/vulkan/shader/convolution1d_radish_planar.comp": {
+      "bytes": 3403,
+      "sha256": "d130779e24fa84875adcf63ceb964337a22f402df5779b8eb0ba962b9740aa64"
+    },
+    "src/layer/vulkan/shader/convolution1d_radish_planar_pack1_pad.comp": {
+      "bytes": 991,
+      "sha256": "5f8d3ea4094393a00a8dd8c2d2df80fbee36eb362ce0944ef420947d3c627f73"
+    },
+    "src/layer/vulkan/shader/convolution1d_radish_planar_pad.comp": {
+      "bytes": 939,
+      "sha256": "b117427568e0ff210458340e0ffa502e25e27d84fb04054c0bfc16d2cc503b55"
+    },
+    "src/layer/vulkan/shader/convolution1d_radish_tiled.comp": {
+      "bytes": 3574,
+      "sha256": "f9e68b13d5a9ba69a828b05d6bf6e7b5973e06585b59afd4c6e79f6592f5cdec"
+    },
+    "src/layer/vulkan/shader/convolution1d_radish_tiled32.comp": {
+      "bytes": 3560,
+      "sha256": "d9a554954e0619c58c31be47b8baaa14a22a923ca27b7bd0bd091c1d6447f5e2"
+    },
+    "src/layer/vulkan/shader/instancenorm_radish_outplace_pack4.comp": {
+      "bytes": 1309,
+      "sha256": "2587d50c252abd20e0db718ee446fef341b11757142256c5ab09ce141f19623f"
+    },
+    "src/layer/vulkan/shader/instancenorm_radish_sum4_pack4.comp": {
+      "bytes": 1327,
+      "sha256": "5fc695fca760595f34e6c9021aceefbc9e4684ca259d0519af6d7d74b0b6ad55"
+    }
+  }
+}

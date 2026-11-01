@@ -1,0 +1,258 @@
+--- a/src/layer/vulkan/convolution1d_vulkan.cpp
++++ b/src/layer/vulkan/convolution1d_vulkan.cpp
+@@ -82,10 +82,50 @@
+         return false;
+     for (int i = 0; i < bindings; i++)
+         if (pipeline->shader_info().binding_types[i] != 1)
+             return false;
+     return true;
++}
++
++static int radish_planar_pack_weights(const Mat& original, Mat& packed, int num_input, int padded_input, int num_output, int kernel_w, int weight_data_size, const VulkanDevice* device)
++{
++    if (num_input <= 0 || padded_input < num_input || num_output <= 0
++        || num_output % 64 || kernel_w <= 0 || weight_data_size <= 0)
++        return -1;
++
++    const uint64_t original_k = (uint64_t)num_input * kernel_w;
++    const uint64_t padded_k = (uint64_t)padded_input * kernel_w;
++    if (padded_k > 3584 || padded_k % 32)
++        return -1;
++    const uint64_t original_count = original_k * num_output;
++    const uint64_t padded_count = padded_k * num_output;
++    const uint64_t byte_limit = std::min((uint64_t)SIZE_MAX, (uint64_t)device->info.physicalDeviceProperties().limits.maxStorageBufferRange);
++    if (original_count != (uint64_t)weight_data_size || padded_count > INT_MAX
++        || padded_count > (SIZE_MAX - sizeof(int)) / sizeof(float)
++        || padded_count > byte_limit / sizeof(float)
++        || original.empty() || original.dims != 1 || original.n != 1
++        || original.w != weight_data_size || original.h != 1 || original.d != 1 || original.c != 1
++        || original.elemsize != 4u || original.elempack != 1
++        || original.cstep < (size_t)original_count)
++        return -1;
++#if NCNN_BATCH
++    if (original.nstep != original.total())
++        return -1;
++#endif
++
++    Mat destination((int)padded_count, (size_t)4u, 1);
++    if (destination.empty())
++        return -100;
++    destination.fill(0.f);
++    const float* source = original;
++    float* target = destination;
++    for (size_t k = 0; k < (size_t)original_k; k++)
++        for (int co = 0; co < num_output; co++)
++            memcpy(target + k * num_output + co, source + (size_t)co * original_k + k, sizeof(float));
++
++    packed = destination;
++    return 0;
+ }
+ 
+ static bool radish_pad_channels_tuple(int input, int output)
+ {
+     return (input == 514 && output == 1024)
+@@ -226,10 +266,12 @@
+                        && !opt.use_int8_arithmetic && !opt.use_int8_uniform
+                        && !opt.use_int16_packed && !opt.use_int16_storage
+                        && !opt.use_subgroup_ops && !opt.use_cooperative_matrix && !opt.use_tensor_storage;
+     radish_tiled32 = use_radish_tiled && requested_tiled32;
+     const char* planar_env = getenv("RADISH_NCNN_PLANAR");
++    const char* packed_a_env = getenv("RADISH_NCNN_PLANAR_PACKED_A");
++    const bool requested_packed_a = packed_a_env && strcmp(packed_a_env, "1") == 0;
+     uint32_t pad_bits;
+     memcpy(&pad_bits, &pad_value, sizeof(pad_bits));
+     radish_planar = planar_env && strcmp(planar_env, "1") == 0
+                     && use_radish_tiled && !radish_tiled32
+                     && pad_left >= 0 && pad_right >= 0
+@@ -271,18 +313,27 @@
+             if (!std::isfinite(original[i]))
+                 return -1;
+         for (int i = 0; i < num_output; i++)
+             if (!std::isfinite(bias[i]))
+                 return -1;
+-        weight_data_packed.create((int)padded_count, (size_t)4u, 1);
+-        if (weight_data_packed.empty())
+-            return -100;
+-        weight_data_packed.fill(0.f);
+-        float* padded = weight_data_packed;
+-        const size_t original_row = (size_t)num_input * 3;
+-        for (int co = 0; co < num_output; co++)
+-            memcpy(padded + (size_t)co * k, original + (size_t)co * original_row, original_row * sizeof(float));
++        if (requested_packed_a)
++        {
++            const int pack_ret = radish_planar_pack_weights(weight_data, weight_data_packed, num_input, channels, num_output, kernel_w, weight_data_size, vkdev);
++            if (pack_ret != 0)
++                return pack_ret;
++        }
++        else
++        {
++            weight_data_packed.create((int)padded_count, (size_t)4u, 1);
++            if (weight_data_packed.empty())
++                return -100;
++            weight_data_packed.fill(0.f);
++            float* padded = weight_data_packed;
++            const size_t original_row = (size_t)num_input * 3;
++            for (int co = 0; co < num_output; co++)
++                memcpy(padded + (size_t)co * k, original + (size_t)co * original_row, original_row * sizeof(float));
++        }
+ 
+         use_radish_tiled = true;
+         radish_planar = true;
+         std::vector<vk_specialization_type> specializations(5);
+         specializations[0].i = 3;
+@@ -294,11 +345,12 @@
+         pipeline_radish_planar_pad = new (std::nothrow) Pipeline(vkdev);
+         if (!pipeline_convolution1d_gemm || !pipeline_radish_planar_pad)
+             return -100;
+         pipeline_convolution1d_gemm->set_local_size_xyz(16, 8, 1);
+         pipeline_radish_planar_pad->set_local_size_xyz(8, 8, 1);
+-        const int math_ret = pipeline_convolution1d_gemm->create(LayerShaderType::convolution1d_radish_planar, opt, specializations);
++        const int math_shader_type = requested_packed_a ? LayerShaderType::convolution1d_radish_planar_packed_a : LayerShaderType::convolution1d_radish_planar;
++        const int math_ret = pipeline_convolution1d_gemm->create(math_shader_type, opt, specializations);
+         if (math_ret != 0)
+             return math_ret;
+         const std::vector<vk_specialization_type> pad_specializations;
+         const int pad_ret = pipeline_radish_planar_pad->create(LayerShaderType::convolution1d_radish_planar_pack1_pad, opt, pad_specializations);
+         if (pad_ret != 0)
+@@ -313,13 +365,22 @@
+         return 0;
+     }
+ 
+     if (use_radish_tiled)
+     {
+-        // The original weights already have the required [output][input*tap]
+-        // order. Keep one reference until upload instead of a second packing.
+-        weight_data_packed = weight_data;
++        if (radish_planar && requested_packed_a)
++        {
++            const int pack_ret = radish_planar_pack_weights(weight_data, weight_data_packed, num_input, num_input, num_output, kernel_w, weight_data_size, vkdev);
++            if (pack_ret != 0)
++                return pack_ret;
++        }
++        else
++        {
++            // The original weights already have the required [output][input*tap]
++            // order. Keep one reference until upload instead of a second packing.
++            weight_data_packed = weight_data;
++        }
+ 
+         std::vector<vk_specialization_type> specializations(5);
+         specializations[0].i = kernel_w;
+         specializations[1].i = num_input;
+         specializations[2].i = num_output;
+@@ -333,11 +394,11 @@
+         if (pipeline_convolution1d_gemm->local_size_x() != local_x
+             || pipeline_convolution1d_gemm->local_size_y() != local_y
+             || pipeline_convolution1d_gemm->local_size_z() != 1)
+             return -1;
+ 
+-        const int shader_type = radish_planar ? LayerShaderType::convolution1d_radish_planar
++        const int shader_type = radish_planar ? (requested_packed_a ? LayerShaderType::convolution1d_radish_planar_packed_a : LayerShaderType::convolution1d_radish_planar)
+                                              : radish_tiled32 ? LayerShaderType::convolution1d_radish_tiled32 : LayerShaderType::convolution1d_radish_tiled;
+         const int ret = pipeline_convolution1d_gemm->create(shader_type, opt, specializations);
+         if (ret != 0)
+             return ret;
+ 
+--- /dev/null
++++ b/src/layer/vulkan/shader/convolution1d_radish_planar_packed_a.comp
+@@ -0,0 +1,100 @@
++#version 450
++
++// FP32 implicit GEMM: 64 output channels x 64 positions, reduction blocks of
++// 32, eight vec4 accumulators per invocation. Host local size is 16x8x1.
++layout(constant_id = 0) const int kernel_w = 1;
++layout(constant_id = 1) const int num_input = 32;
++layout(constant_id = 2) const int num_output = 64;
++layout(constant_id = 3) const int bias_term = 0;
++layout(constant_id = 4) const int dilation_w = 1;
++
++layout(binding = 0) readonly buffer weights { vec4 weight_data[]; };
++layout(binding = 1) readonly buffer bottom_blob { float bottom_blob_data[]; };
++layout(binding = 2) writeonly buffer top_blob { vec4 top_blob_data[]; };
++layout(binding = 3) readonly buffer bias_blob { float bias_data[]; };
++
++layout(push_constant) uniform parameter
++{
++    int w;
++    int outw;
++} p;
++
++// Exactly 16 KiB; all invocations fill and consume both tiles at each barrier.
++shared float sa[32][64];
++shared vec4 sb[32][16];
++
++vec4 load_input(int k, int x)
++{
++    const int ci = int(uint(k) / uint(kernel_w));
++    const int tap = (k - ci * kernel_w) * dilation_w;
++    const int base = ci * p.w + x + tap;
++    return vec4(bottom_blob_data[base], bottom_blob_data[base + 1],
++                bottom_blob_data[base + 2], bottom_blob_data[base + 3]);
++}
++
++void main()
++{
++    const int tx = int(gl_LocalInvocationID.x);
++    const int ty = int(gl_LocalInvocationID.y);
++    const int tid = ty * 16 + tx;
++    const int mb = int(gl_WorkGroupID.y) * 64;
++    const int nb = int(gl_WorkGroupID.x) * 64;
++    const int K = num_input * kernel_w;
++
++    vec4 acc[8];
++    for (int r = 0; r < 8; r++)
++    {
++        const int co = mb + ty * 8 + r;
++        acc[r] = vec4(bias_term != 0 && co < num_output ? bias_data[co] : 0.f);
++    }
++
++    for (int k0 = 0; k0 < K; k0 += 32)
++    {
++        for (int i = tid; i < 32 * 16; i += 128)
++        {
++            const int r = i >> 4;
++            const int q = i % 16;
++            vec4 a = mb + q * 4 + 3 < num_output ? weight_data[(k0 + r) * (num_output / 4) + (mb / 4) + q] : vec4(0.f);
++            sa[r][q * 4] = a.x;
++            sa[r][q * 4 + 1] = a.y;
++            sa[r][q * 4 + 2] = a.z;
++            sa[r][q * 4 + 3] = a.w;
++        }
++        for (int i = tid; i < 32 * 16; i += 128)
++        {
++            const int r = i >> 4;
++            const int q = i % 16;
++            sb[r][q] = load_input(k0 + r, nb + q * 4);
++        }
++        barrier();
++
++        for (int k = 0; k < 32; k++)
++        {
++            vec4 b = sb[k][tx];
++            for (int r = 0; r < 8; r++)
++            {
++                float a = sa[k][ty * 8 + r];
++                acc[r] += a * b;
++            }
++        }
++        barrier();
++    }
++
++    // Transpose four channel rows into ncnn's pack4 at each spatial position.
++    const int x = nb + tx * 4;
++    for (int r = 0; r < 8; r += 4)
++    {
++        const int co = mb + ty * 8 + r;
++        if (co + 3 >= num_output)
++            continue;
++        const int base = (co >> 2) * p.outw + x;
++        if (x < p.outw)
++            top_blob_data[base] = vec4(acc[r].x, acc[r + 1].x, acc[r + 2].x, acc[r + 3].x);
++        if (x + 1 < p.outw)
++            top_blob_data[base + 1] = vec4(acc[r].y, acc[r + 1].y, acc[r + 2].y, acc[r + 3].y);
++        if (x + 2 < p.outw)
++            top_blob_data[base + 2] = vec4(acc[r].z, acc[r + 1].z, acc[r + 2].z, acc[r + 3].z);
++        if (x + 3 < p.outw)
++            top_blob_data[base + 3] = vec4(acc[r].w, acc[r + 1].w, acc[r + 2].w, acc[r + 3].w);
++    }
++}

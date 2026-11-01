@@ -60,3 +60,8 @@ add_executable(radish-gpu-shared-hot EXCLUDE_FROM_ALL gpu_shared_hot_probe.cpp)
 target_link_libraries(radish-gpu-shared-hot PRIVATE ncnn)
 target_include_directories(radish-gpu-shared-hot PRIVATE ${NCNN_SOURCE}/src/layer)
 target_compile_options(radish-gpu-shared-hot PRIVATE -ffp-contract=off -Wall -Wextra -Werror)
+
+add_executable(radish-gpu-packed-a EXCLUDE_FROM_ALL gpu_packed_a_probe.cpp)
+target_link_libraries(radish-gpu-packed-a PRIVATE ncnn)
+target_include_directories(radish-gpu-packed-a PRIVATE ${NCNN_SOURCE}/src/layer)
+target_compile_options(radish-gpu-packed-a PRIVATE -ffp-contract=off -Wall -Wextra -Werror)

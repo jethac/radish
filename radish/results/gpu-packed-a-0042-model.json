@@ -1,0 +1,158 @@
+{
+  "format": "radish-packed-a-0042-model-publication-v1",
+  "generated_by": "LLM",
+  "scope": "Fresh fixed-shape full-core OFF/ON correctness and single first/warm observations; end-to-end runtime remains pending.",
+  "executable": {
+    "bytes": 11129352,
+    "sha256": "0b2f39fa6d7263026f1d12a4b03a10a0a531788451db9e774927acfffa03c664"
+  },
+  "profile_comparison": {
+    "bytes": 28689,
+    "sha256": "2e934112c607d61cd73fa912794cb121fa7b32906c09b00421c8629f35aab05b"
+  },
+  "full_native_audit": {
+    "bytes": 60412,
+    "sha256": "ef04f5c9bc40dabab71057f97d1c983ed8e608c538bae43c33aa816458b11e06"
+  },
+  "output_sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287",
+  "validated_values_per_output": 562342,
+  "gpu_layers_per_extraction": 589,
+  "cpu_layers_per_extraction": 0,
+  "all1520_signatures_match_except58_math_native": true,
+  "packed_variants": 23,
+  "math_commands": 58,
+  "math_chunks": 26256,
+  "math_submits": 3294,
+  "variants": {
+    "off": {
+      "cold_load_seconds": 9.03,
+      "service_memory_peak_MiB": 382.3,
+      "service_swap_peak_MiB": 50.4,
+      "first_seconds": 36.200045,
+      "warm_seconds": 35.805708,
+      "run_log": {
+        "bytes": 668658,
+        "sha256": "9627ee12239c2ab761d4fe07ce6c608e60fde95caf538bfc0ab1735dc2786a63"
+      },
+      "receipt": {
+        "bytes": 662,
+        "sha256": "095d593a614957614c17e22f28bd73dd7a6e80eaca269316b7b8e0616233f2df"
+      }
+    },
+    "on": {
+      "cold_load_seconds": 11.427,
+      "service_memory_peak_MiB": 403.7,
+      "service_swap_peak_MiB": 0,
+      "first_seconds": 34.514664,
+      "warm_seconds": 34.303633,
+      "run_log": {
+        "bytes": 668865,
+        "sha256": "2f87df7ce3572cb3babf3e91cc087ec64561038f98d423f32dd44091a59045ff"
+      },
+      "receipt": {
+        "bytes": 662,
+        "sha256": "65b13e0db791319ed3adab40e0654bebbe0b4034c3f4c8fa182528c19b56d7ff"
+      }
+    }
+  },
+  "comparisons": {
+    "first": {
+      "off": {
+        "math": {
+          "commands": 58,
+          "chunks": 26256,
+          "submits": 3294,
+          "ns": 24805037909,
+          "submit_ns": 24538169156
+        },
+        "remaining": {
+          "commands": 1462,
+          "chunks": 40907,
+          "submits": 6941,
+          "ns": 11153093553,
+          "submit_ns": 10761751491
+        },
+        "whole_seconds": 36.200045,
+        "total_command_ns": 35958131462,
+        "residual_seconds": 0.2419135380000057
+      },
+      "on": {
+        "math": {
+          "commands": 58,
+          "chunks": 26256,
+          "submits": 3294,
+          "ns": 23061587987,
+          "submit_ns": 22794534220
+        },
+        "remaining": {
+          "commands": 1462,
+          "chunks": 40907,
+          "submits": 6941,
+          "ns": 11229117695,
+          "submit_ns": 10848153032
+        },
+        "whole_seconds": 34.514664,
+        "total_command_ns": 34290705682,
+        "residual_seconds": 0.2239583180000011
+      },
+      "all1520_signatures_match_except58_math_native": true,
+      "all589_gpu_paths_match": true,
+      "saved_math_ns": 1743449922,
+      "saved_remaining_ns": -76024142,
+      "saved_whole_seconds": 1.6853809999999996
+    },
+    "warm": {
+      "off": {
+        "math": {
+          "commands": 58,
+          "chunks": 26256,
+          "submits": 3294,
+          "ns": 24684938059,
+          "submit_ns": 24409503226
+        },
+        "remaining": {
+          "commands": 1462,
+          "chunks": 40907,
+          "submits": 6941,
+          "ns": 10954074370,
+          "submit_ns": 10564525809
+        },
+        "whole_seconds": 35.805708,
+        "total_command_ns": 35639012429,
+        "residual_seconds": 0.16669557100000532
+      },
+      "on": {
+        "math": {
+          "commands": 58,
+          "chunks": 26256,
+          "submits": 3294,
+          "ns": 22969857545,
+          "submit_ns": 22689010145
+        },
+        "remaining": {
+          "commands": 1462,
+          "chunks": 40907,
+          "submits": 6941,
+          "ns": 11171516197,
+          "submit_ns": 10782050770
+        },
+        "whole_seconds": 34.303633,
+        "total_command_ns": 34141373742,
+        "residual_seconds": 0.16225925799999885
+      },
+      "all1520_signatures_match_except58_math_native": true,
+      "all589_gpu_paths_match": true,
+      "saved_math_ns": 1715080514,
+      "saved_remaining_ns": -217441827,
+      "saved_whole_seconds": 1.502075000000005
+    }
+  },
+  "limitations": [
+    "One first and one warm extraction per variant; distinct observed swap conditions.",
+    "Cold load includes device setup, pipelines and completed model upload, not isolated packing cost.",
+    "Full command intervals include host command work/submits/waits; not device-only timestamps.",
+    "Fresh runtime requests, reload/waveform correctness and end-to-end latency remain pending."
+  ],
+  "observed_warm_reduction_percent": 4.195071355662077,
+  "cold_start_plus_first_difference_seconds": 0.7116189999999989
+}

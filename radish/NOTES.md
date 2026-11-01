@@ -1,5 +1,40 @@
 # Radish status
 
+## 2026-11-02 (JST): packed convolution weights improve the real model
+
+0042 packs constant weights into reduction-major/channel-minor order. The actual
+A preload now uses one vec4 shared store instead of four scalar stores; the
+inner 32-MAD/three-vec4-load loop is unchanged. All 23 model variants keep
+16 full/zero half registers, 16 KiB shared memory and zero private memory. They
+all compile to native length 28, already covered by the existing batch policy.
+The optional driver delta only adds a default-off timer class.
+
+The balanced focused probe improves mean GPU time 7.17052025→6.51781175 ms
+(9.102666%). All four measured pairs improve, all 327,168 outputs match the
+independent exact oracle, and uploaded model/input bytes and guards remain intact.
+Actual timing uses 8 chunks/1 submit for every call. No GPU faults occur.
+
+Same-binary full-model OFF/ON warm extraction improves 35.805708→34.303633 s
+(4.195071%). All 58 affected math commands improve; they save 1.715081 s while
+other commands grow 0.217442 s. All 1520 ordered signatures match except the
+58 intended native-length changes, with 589 GPU/zero CPU layers and unchanged
+26256 math chunks/3294 submits per iteration. All 562342 output scalars are
+byte-identical to accepted 0035 output e128ce63…d287.
+
+Inclusive cold load grows 9.030→11.427 s; load plus first extraction grows
+45.230045→45.941664 s. This is not an isolated packing-time measurement. OFF
+peak memory is 382.3 MiB plus 50.4 MiB swap; ON is 403.7 MiB with zero swap.
+Sequential order, different swap use and one warm observation limit attribution.
+Both services remain active. Complete short/short/full/full synthesis validation
+is still pending; the accepted end-to-end baseline and global device ICD remain
+unchanged. The goal and Vulkan conformance status remain open.
+
+See `GPU_PACKED_A.md`, both incremental 0042 patches and the compact result JSON
+for exact sources, failed analyzer transport-order assumption, native evidence,
+reproduction and remaining scope. This checkpoint is opt-in in a separate ncnn
+source/build tree; the standard build script still recognizes the prior stack.
+
+
 ## 2026-11-02 (JST): shared-hot diagnostic shows a combined implementation gap
 
 The 0041 balanced probe measures **7.213085→5.417721 ms GPU elapsed**, a

@@ -53,6 +53,14 @@ Single observations and memory pressure limit the comparison. The CPU reference
 uses the earlier equivalent unfused graph and remains faster. Sustained behavior
 and live application integration remain unmeasured.
 
+The new [packed-weight experiment](radish/GPU_PACKED_A.md) improves the same-binary
+fixed warm core **35.806 → 34.304 s (4.20%)**, with all 562,342 outputs byte-identical.
+All 58 affected convolutions improve and retain the same batching. A balanced
+representative convolution measures **7.171 → 6.518 ms GPU elapsed (9.10%)**.
+Cold load rises **9.030 → 11.427 s**, making load plus first inference **0.712 s
+slower** in this pair. This remains an opt-in experiment; its complete synthesis
+validation is pending, so the runtime table above still describes checkpoint 0035.
+
 GPU saturation remains unproven. The dominant 58 tiled convolutions delivered
 **10.9 useful GFLOP/s on command wall time**, with only 1.2% padding overhead.
 The qualified timer measures one unchanged convolution at **7.161 ms GPU queued
@@ -73,7 +81,9 @@ reduced GPU time only **0.42%**, below its planned 5% criterion. A separate
 [compiler experiment](radish/GPU_REPEAT_COALESCING.md) formed repeat MAD
 instructions but added moves inside the reduction loop and was rejected before
 tensor execution. Both remain excluded. The current default-off diagnostic
-driver is **0041**; model measurements and the global device ICD remain **0032**.
+driver is **0041**; 0042 adds an incremental timer for the packed-weight
+experiment. Earlier end-to-end measurements and the global device ICD remain
+**0032**.
 
 Counter programming is deferred: the inspected A506 sources do not establish
 exclusive counter ownership while other services remain active. No new counter
