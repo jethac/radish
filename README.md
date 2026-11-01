@@ -32,26 +32,27 @@ a separate driver, with its own a5xx resource bindings and command emission.
 
 | Measurement | GPU path | Packed six-thread CPU |
 | --- | ---: | ---: |
-| Fixed full-size core, warm extraction | **49.429 s** | **32.079 s** |
-| Fresh full-length synthesis, including startup | **63.528 s** | **39.790 s** |
+| Fixed full-size core, warm extraction | **46.933 s** | **32.079 s** |
+| Fresh full-length synthesis, including startup | **63.321 s** | **39.790 s** |
 
-The GPU figures use the opt-in FP32 Snake graph, output reshape aliases and
-eight sequential tiled chunks per submission. Warm core timing is one extraction,
+The GPU figures use the opt-in FP32 Snake graph, planar convolution input,
+output reshape aliases and eight sequential tiled chunks per submission.
+Warm core timing is one extraction,
 versus two for the CPU mean; the CPU uses the preceding InstanceNorm graph.
 Complete synthesis figures are single startup runs with byte-identical
-frontend boundary inputs. The GPU core peaks at **419 MiB, zero swap**;
-full GPU synthesis peaks at **458 MiB with zero swap**. No new GPU faults
+frontend boundary inputs. The GPU core peaks at **418.4 MiB, zero swap**;
+full GPU synthesis peaks at **429.7 MiB with zero swap**. No new GPU faults
 occurred, and both appliance services remained active. Core and waveform bytes
 match the preceding GPU implementation. GPU inference remains slower than CPU.
 Resident warm synthesis and sustained thermal behavior remain unmeasured.
 
-An experimental channel-major convolution input layout lowers fixed-core warm
-time to **48.863 s**, with **420.1 MiB and zero swap**, and produces exactly the
-same output bytes. Convolution math saves 1.444 s, but the new padding pass costs
-an extra 0.939 s; scheduling that pass is the next optimization. This is one warm
-extraction, and fresh complete synthesis has not been measured for this layout.
-It remains disabled by default: use `RADISH_NCNN_PLANAR=1` with ordered ncnn
-patch 0024 and cumulative Mesa patch 0025 to reproduce the experiment.
+Channel-major convolution input and its 64-thread padding pass reduce warm
+time from 49.429 s to 46.933 s. The affected convolution/padding commands save
+1.378 s; variation in other work also contributes to the 2.496 s overall change.
+Fresh full-length synthesis is essentially unchanged from 63.528 s. The layout
+remains disabled by default: select `RADISH_NCNN_PLANAR=1`, ordered ncnn patches
+0024/0026 and cumulative Mesa patch 0025. Full core and waveform bytes remain
+identical to the preceding GPU implementation at both measured input lengths.
 
 - Fused FP32 normalization and tiled convolution, including dilation 3/5,
   guarded output reshape aliases, sequential submission batching and Snake
@@ -62,12 +63,12 @@ patch 0024 and cumulative Mesa patch 0025 to reproduce the experiment.
   3,231 submissions and reduces warm time from 51.188 s by a further 3.4%.
   The tiled path executes 53 matrix-product commands; compiled register-budget
   checks remain in place.
-- Fresh short-utterance synthesis with Snake takes **33.764 s**, including
-  startup, and passes every core/audio comparison at **383.3 MiB, zero swap**.
-  This short-utterance measurement uses the earlier batch-four checkpoint.
+- Fresh short-utterance synthesis with Snake and planar input takes **31.891 s**,
+  including startup, and passes every core/audio comparison at
+  **329.1 MiB, zero swap**.
   Select it with `device-runtime.sh ... --snake`; InstanceNorm remains the
   default graph. Snake is a project-local ncnn custom layer requiring no new
-  Mesa feature; cumulative patch 0023 includes the larger batching option.
+  Mesa feature; cumulative patch 0025 includes the planar batching case.
 - Explicit mixed-storage conversion and FP32 normalization remove the NaNs
   from packed FP16 inference, but full-model and waveform accuracy still fail.
   FP32 remains the validated path.
@@ -101,7 +102,7 @@ kept outside the repository.
 
 1. Check out Mesa at `ddabdd0e36bd2f5e0c8e6bd21c3d1da7e34c1230` in a
    separate worktree. Apply
-   `radish/patches/0023-radish-tiled-batch8-cumulative.patch` to that base.
+   `radish/patches/0025-radish-planar-batching-cumulative.patch` to that base.
    Earlier cumulative Mesa patches are historical alternatives, not a series.
 2. Set `RADISH_WORK` to the scratch/build directory, `RADISH_MESA` to the Mesa
    checkout, `RADISH_SYSROOT` to the aarch64 sysroot and `RADISH_VENV` to the

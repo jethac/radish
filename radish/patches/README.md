@@ -31,6 +31,7 @@ limits and validation scope. Published checkpoints remain experimental; publicat
 | `0023-radish-tiled-batch8-cumulative.patch` | Same Mesa base as 0001; replaces 0022 | Current driver; adds batch8 under unchanged 0022 resource gate; build/reconstruction/operator/full-core checks pass, Snake 49.266772/49.429406 s first/warm, byte-identical, 419 MiB/zero swap/no faults; fresh T213 synthesis 63.528396 s, all core/waveform values pass, 458 MiB/zero swap; runtime default8 after validation, driver/operator/model1, no16 |
 | `0024-ncnn-conv1d-planar-input.patch` | After 0021 in the ordered Conv1D stack | Default-off PLANAR layout for eligible tiled64; one initialized padding/transpose workspace replaces existing padding, original math order/output retained; builds/seven-file reconstruction/all20 compiler variants/padded dilation1/3/5 pass. Fixed core48.738814/48.863090 s first/warm, all562342 outputs byte-identical, 420.1 MiB/zero swap/no faults; single warm pair1.1457% faster, fresh runtime pending |
 | `0025-radish-planar-batching-cumulative.patch` | Same Mesa base as 0001; alternative to 0023 | Candidate adds only native instrlen31 beside36/37 in existing tiled-batch resource gate; build/all14-file reconstruction, padded operators and full fixed core pass; all53 math commands retain batch8 schedule. Remaining conditions/defaults and ncnn K bound unchanged; PLANAR remains opt-in |
+| `0026-ncnn-planar-pad-local64.patch` | After0024 in the ordered Conv1D stack | Four reviewed host changes: planar prepass local8x4→8x8, two pipeline guards and group-count formula; shader bodies/defaults unchanged. Reconstruction/builds/compile/focused/full-core gates pass, first48.370236/warm46.932926 s, identical outputs,418.4 MiB/zero swap; single warm3.9501% below0024. Fresh T78/T213 passes31.890578/63.320730 s, all core/waveform values, zero swap/no faults; PLANAR default0 |
 
 To reconstruct the accepted driver checkpoint, make a separate checkout/worktree at the
 Mesa base, read its `AGENTS.md`, and apply 0023 with `git apply` instead of
@@ -79,9 +80,9 @@ Mesa base, recorded in
 
 The pinned ncnn/glslang checkout is separate. `../scripts/build-ncnn.sh` applies
 0005 if applicable, accepts an already-applied patch, migrates the exact earlier
-0002 adaptation, then applies/verifies 0006, 0008, 0010, 0011 and candidates 0013–0015/0017/0018/0020/0021/0024, plus independent 0019.
+0002 adaptation, then applies/verifies 0006, 0008, 0010, 0011 and candidates 0013–0015/0017/0018/0020/0021/0024/0026, plus independent 0019.
 The first candidate build stopped at overlapping earlier-patch verification.
-The build script accepts exact ordered 0010/0011/0013/0014/0017/0018/0020/0021/0024 Conv1D prefixes
+The build script accepts exact ordered 0010/0011/0013/0014/0017/0018/0020/0021/0024/0026 Conv1D prefixes
 and 0006/0015 net.cpp prefixes, rejecting unrelated edits. This preserves the
 source check despite overlapping patch contexts. Canonical and SIMPLEOMP builds
 pass with revised 0013/0014, 0015 and incremental 0017; both builds and the
@@ -317,6 +318,36 @@ and901 layer paths match. Full attribution is in
 waits. Keep PLANAR off and the accepted baseline distinct; fresh-runtime and
 sustained-performance evidence remain pending.
 
+Ordered 0026 follows 0024 without changing its patch or shader bodies. It changes
+only the planar prepass local8x4→8x8, two guards and its group-count formula to
+address the measured padding overhead. The same53 owners project3696→1848
+padding submissions. All seven Conv files
+reconstruct exactly (`planar-pad64-reconstruction-uoqs78zq/reconstruction.json`).
+Canonical/SIMPLEOMP builds pass and runtime links. Compile-only confirms pad
+local8x8/8 full/3 half/228 instructions/zero loops/no private, unchanged math;
+focused dilation1 passes all27264 outputs at unchanged gates, pad1.770161 ms and
+math7.917470 ms, 144+8 groups, no faults/services active. Logs:
+`operators-planar-pad64-0026-{compile,d1}.log`. Full repeat2 passes in
+`core-snake-planar-pad64-0026-repeat2.log`: cold8.848 s, first48.370236/warm
+46.932926 s, all562342 values within unchanged gates and exact output SHA
+`0550fe07becc684c3dc7b0113bfef0b4e3c87ff8d888acf779e98de4d8af18e4`.
+Peak418.4 MiB/zero swap/no faults, services active. Prior fixed-waveform evidence
+applies by output identity without a new tail run. Single warm comparisons are
+3.9501% faster than0024 local8x4 and5.0506% faster than0023. Actual padding
+submissions halve3696→1848; padding saves0.839163454 s, math0.033946887 s.
+The1692 retained command signatures/901 paths match, but their timing also
+improves0.794779154 s, so the whole1.930164 s reduction is not all padding.
+Comparisons: `warm-planar-pad64-result-0026-ooc8sgac/{vs0024,vs0023}/comparison.json`.
+Fresh T78/T213 runtime also passes all core/waveform values against exact-boundary
+ORT references: synthesis31.890578/63.320730 s, core18.148241/47.887015 s,
+329.1/429.7 MiB with zero swap/no faults and active services. Waveform SNR remains
+96.917732/98.355163 dB. Validation files:
+`runtime-single-{short,full}-planar-pad64-0026-validation.json`. Full eight-input
+identity to prior CPU/0023 and GPU core/waveform byte identity are recorded in
+`runtime-full-planar-pad64-0026-boundary-identity.json`. T213 startup is close to
+prior63.528396 s, so this is not a broad synthesis-latency claim. PLANAR stays
+default0 and earlier results retain their original local sizes.
+
 SHA-256:
 
 ```
@@ -345,4 +376,5 @@ a29dbbe0c3edf8912e4548cc873beca0ba3f1ba3197b6f1ee5f386bfd4f57dc0  0021-ncnn-conv
 5516b6823e67f70c989939a95e16d853fd00af43d3a280b13cefc4b60da40bfd  0023-radish-tiled-batch8-cumulative.patch
 23b9bafe92a6ad41ae393bde9d50576d7e2e6a258036234411e198f0f7c7cce8  0024-ncnn-conv1d-planar-input.patch
 fd0a0bb37e562535488406e183c46a233edf616939ad416efb6b09070bc0c17b  0025-radish-planar-batching-cumulative.patch
+3bbc418cf86b74ef32c1789b4bdc88c2b88ba4f1368c19ab1d62ee9103996a5c  0026-ncnn-planar-pad-local64.patch
 ```

@@ -634,3 +634,28 @@ reports stay outside the public repository.
   performance. Evidence: `warm-planar-result-0024-mdia5brz/REPORT.md`.
 - [ ] Validate fresh runtime before any default change. PLANAR stays off;
   no API/conformance, watchdog or sustained-performance claims change.
+
+## Candidate 0026: planar padding local8x8
+
+- [x] Review/reconstruct the ordered four-host-change patch after 0024: prepass
+  local8x8, matching pipeline guards and group count; shader bodies unchanged.
+  The measured padding penalty motivates projected submits3696→1848 across53
+  layers; no timing benefit is assumed.
+- [x] Pass canonical/SIMPLEOMP builds and link runtime. Compile-only confirms
+  pad local8x8/8 full/3 half/zero loops/no private, unchanged math resources.
+  Focused dilation1 passes all27264 outputs, unchanged error3.42226122e-5,
+  144 pad+8 math groups, pad1.770161/math7.917470 ms; no faults/services active.
+- [x] Pass full-core repeat2: cold8.848 s, first48.370236/warm46.932926 s,
+  all562342 outputs byte-identical, 418.4 MiB/zero swap/no faults/services active.
+  Existing waveform evidence applies to identical fixed output without a rerun.
+- [x] Complete actual attribution: padding3696→1848 submits and0.839163454 s
+  saving; math saves0.033946887 s. All1692 other signatures/901 paths match,
+  but retained timing saves0.794779154 s too. Warm is3.9501% below0024 and
+  5.0506% below0023 in single pairs, not an isolated local-size/sustained claim.
+- [x] Validate fresh integrated T78/T213 runtime against the same captured
+  boundary:31.890578/63.320730 s synthesis, all core/waveform outputs pass,
+  329.1/429.7 MiB and zero swap/no faults/services active. Full output and all
+  eight boundary files match earlier GPU/CPU evidence; T213 startup is close to
+  prior63.528396 s, so warm-core gains do not establish broad synthesis gains.
+- [ ] Preserve PLANAR default0 and earlier checkpoints while evaluating resident,
+  sustained and cancellation behavior; no broader latency/conformance claim.

@@ -2,10 +2,10 @@
 
 2026-11-01: one private tablet executable now runs CPU frontend/source, metadata
 shape propagation, the FP32 Vulkan core and the portable waveform tail from
-token IDs/style/speed. With the opt-in Snake graph, complete T=78 and T=213 runs
-take **33.764051 s** and **63.528396 s** synthesis time, with **383.3 MiB** and
-**458 MiB** peak memory and zero swap. T78 uses the earlier batch-four setting;
-the latest T213 result uses batch eight. No new
+token IDs/style/speed. With the opt-in Snake graph and PLANAR input layout,
+complete T=78 and T=213 runs take **31.890578 s** and **63.320730 s** synthesis
+time, with **329.1 MiB** and **429.7 MiB** peak memory and zero swap. Both use
+batch eight and the 64-thread padding pass from ordered ncnn patch 0026. No new
 GPU faults occurred, and both appliance services remained active.
 Every core value and waveform sample passes
 the unchanged gates against host ORT references computed afterward from each
@@ -17,15 +17,13 @@ application integration remain unfinished.
 Earlier staged and fixed-core evidence is retained below and in
 [NOTES.md](NOTES.md).
 
-The default-off PLANAR input-layout candidate (ncnn 0024 / Mesa 0025) passes
-fixed T213 core extraction in 48.738814 s first / 48.863090 s warm, with
-420.1 MiB peak memory and zero swap. All 562,342 outputs are byte-identical to
-the preceding GPU checkpoint. Fresh frontend-to-waveform execution has not yet
-been measured for PLANAR; the complete synthesis figures above remain the
-accepted batch-eight Snake results. The warm profile saves 1.444377184 s in
-53 convolution math commands but adds 0.939362616 s in their padding passes.
-Evidence: `core-snake-planar-0024-repeat2.log` and
-`warm-planar-result-0024-mdia5brz/comparison.json` under WORK.
+The default-off PLANAR layout (ncnn 0024/0026 / Mesa 0025) passes fixed T213
+core extraction in 48.370236 s first / 46.932926 s warm, with 418.4 MiB peak
+memory and zero swap. All 562,342 outputs are byte-identical to the preceding
+GPU checkpoint. Fresh full synthesis remains essentially level with the prior
+63.528396 s observation. Warm affected convolution/padding commands save
+1.378124909 s versus that checkpoint; other timing variation contributes to the
+2.496480 s total warm difference. These are single warm/startup observations.
 
 ## Implemented route
 
@@ -628,3 +626,34 @@ submissions and a 3.4357% wall-time reduction. The separate 68.158274 to
 63.528396 s fresh-runtime comparison has only one observation per setting and
 different swap use; do not attribute its entire improvement to batching.
 Resident requests and sustained behavior remain unmeasured.
+
+### Planar input and padding: checkpoints 0024–0026
+
+Select `RADISH_NCNN_PLANAR=1` with the Snake graph, ordered ncnn patches
+0024/0026 and cumulative Mesa patch 0025. The new path replaces padding with
+an initialized channel-major workspace and uses contiguous vector loads in the
+53 tiled convolutions. Patch 0026 changes only the padding workgroup from
+8×4 to 8×8; math and storage dimensions are unchanged. PLANAR defaults to zero.
+
+The fixed core passes first/warm extraction at 48.370236/46.932926 s, with
+418.4 MiB and zero swap. The preceding 8×4 candidate ran at 48.863090 s warm;
+8×8 removes 1848 padding submissions and saves 0.839163454 s in those commands.
+Other retained commands vary by 0.794779154 s, so the whole 1.930164 s reduction
+cannot be attributed entirely to padding. Output bytes are unchanged.
+
+Fresh T78 synthesis passes in 31.890577631 s, including 18.148241024 s core
+extraction, at 329.1 MiB and zero swap. Fresh T213 passes in 63.320729646 s,
+including 47.887014795 s extraction, at 429.7 MiB and zero swap. Every core and
+waveform value passes the original exact-boundary ORT comparison; waveform SNR
+is 96.917732 dB and 98.355163 dB respectively. Both generated core/waveform files
+are byte-identical to the preceding GPU outputs. The eight T213 boundary files
+also match the CPU baseline. Both services remain active and no new GPU faults
+occur. The full startup result is essentially unchanged from checkpoint 0023.
+
+Evidence under WORK: `core-snake-planar-pad64-0026-repeat2.log`,
+`warm-planar-pad64-result-0026-ooc8sgac/REPORT.md`,
+`runtime-single-{short,full}-planar-pad64-0026-validation.json`,
+`runtime-full-planar-pad64-0026-boundary-identity.json` and
+`kokoro-runtime-{short,full}-single-vulkan-planar-pad64-0026-first-snake-planar/`.
+The exact binaries are frozen in `planar-pad64-0026/bin/`, with hashes in
+`planar-pad64-0026/compiled-checkpoint.json`.

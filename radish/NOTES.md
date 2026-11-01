@@ -206,8 +206,14 @@ The new planar-input candidate is default-off. All 20 math shader variants pass
 actual compiler/resource inspection; integrated compile and full padded operator
 outputs pass. The full fixed core passes in 48.738814/48.863090 s first/warm,
 420.1 MiB/zero swap, with identical output bytes. The single warm comparison is
-1.1457% faster; slower padding absorbs much of the math gain. Fresh runtime is
-pending; keep PLANAR off and the accepted 49.429406 s baseline distinct.
+1.1457% faster; slower padding absorbs much of the math gain. Local8x4 was not
+fresh-runtime validated; keep its result and the accepted49.429406 s baseline distinct.
+The later0026 local8x8 prepass passes the same full core at46.932926 s warm,
+418.4 MiB/zero swap and exact output identity. Attribution confirms padding
+submits3696→1848 and0.839163 s less padding wall time; other timing variation
+also contributes. Fresh T78/T213 runtime passes in31.890578/63.320730 s with
+unchanged core/waveform bytes and zero swap. Full startup is essentially unchanged
+from0023's63.528396 s observation; PLANAR remains opt-in/default0.
 
 The new metadata-only shape pass matches every original and fused shape at
 T78/T213. The integrated frontend/core/tail executable builds for host and
@@ -1889,4 +1895,57 @@ The private report `warm-planar-result-0024-mdia5brz/REPORT.md` and comparison
 artifacts preserve exact ownership, geometry and per-layer attribution. These
 are wall-inclusive command measurements and one warm sample per mode, not an
 isolated shader-cost or sustained-performance result. PLANAR stays off; preserve
-0023's accepted 49.429406 s baseline. Fresh-runtime validation remains pending.
+0023's accepted 49.429406 s baseline. Fresh-runtime validation below uses the
+later0026 local8x8 prepass, not this historical local8x4 version.
+
+### Candidate 0026: planar padding local8x8
+
+Ordered patch `0026-ncnn-planar-pad-local64.patch` follows 0024 and changes only
+the prepass local size8x4→8x8, its two pipeline guards and checked group-count
+formula. The math shader, padding body, layouts and PLANAR default0 are unchanged.
+This targets the measured 0024 padding penalty above. For the same 53 layers,
+geometry initially projected padding submits3696→1848 (1848 fewer); actual
+execution confirms that count below. The reviewed four host changes reconstruct all seven
+Conv files (`planar-pad64-reconstruction-uoqs78zq/reconstruction.json`). Patch
+SHA256 `3bbc418cf86b74ef32c1789b4bdc88c2b88ba4f1368c19ab1d62ee9103996a5c`.
+Canonical/SIMPLEOMP builds pass and the runtime target links. Compile-only
+`operators-planar-pad64-0026-compile.log` passes before upload/submit: pad
+local8x8, 8 full/3 half, 228 instructions (125 NOP), 288 dwords/instrlen9,
+zero loops and accepted zero private storage; math remains 788 instructions
+(432 NOP), 992 dwords, 16 full/0 half/four loops. Focused dilation1 in
+`operators-planar-pad64-0026-d1.log` passes all 27264 outputs with unchanged
+max error3.42226122e-5, 144 padding groups plus8 math groups, pad1.770161 ms/math
+7.917470 ms. No faults, services active. Full-model repeat2 passes in
+`core-snake-planar-pad64-0026-repeat2.log`: cold8.848 s, first48.370236 s and
+warm46.932926 s (one warm), 418.4 MiB/zero swap/no faults, services active.
+All562342 outputs pass unchanged gates (max0.000129699707/RMS7.72155564e-7).
+The output SHA256 is again
+`0550fe07becc684c3dc7b0113bfef0b4e3c87ff8d888acf779e98de4d8af18e4`, so prior
+fixed-output waveform evidence applies by exact byte identity, without a new
+tail run. Warm latency is1.930164 s/3.9501% below0024 local8x4, and
+2.496480 s/5.0506% below accepted0023. These are single warm observations.
+Actual padding submits fall3696→1848 and padding command wall falls
+1.933040488→1.093877034 s (saving0.839163454 s); math is nearly unchanged at
+24.107147904→24.073201017 s (saving0.033946887 s). All1692 retained signatures
+and901 layer paths match, but retained command time also falls0.794779154 s;
+the entire1.930164 s improvement cannot be assigned to the local-size change.
+Against0023, the target math+padding net saves1.378124909 s of the2.496480 s
+whole-wall reduction. Reproducible comparisons are in
+`warm-planar-pad64-result-0026-ooc8sgac/{vs0024,vs0023}/comparison.json`.
+Fresh integrated runtime also passes exact-boundary ORT validation:
+
+| Capture | Frontend s | Core load s | Core s | Synthesis s | Peak MiB / swap |
+| --- | ---: | ---: | ---: | ---: | --- |
+| T78 | 4.163551 | 9.191366 | 18.148241 | 31.890578 | 329.1 / 0 |
+| T213 | 5.827658 | 9.038404 | 47.887015 | 63.320730 | 429.7 / 0 |
+
+All205942/562342 core values and46800/127800 waveform samples pass unchanged
+gates; waveform SNR is96.917732/98.355163 dB. Both runs have no faults and active
+services. Logs and independent validation are
+`runtime-single-{short,full}-planar-pad64-0026-first.log` and
+`runtime-single-{short,full}-planar-pad64-0026-validation.json`. The full run's
+eight raw boundary files match earlier CPU/0023 captures, and core/waveform bytes
+match prior GPU output (`runtime-full-planar-pad64-0026-boundary-identity.json`).
+Full synthesis63.320730 s is close to0023's63.528396 s; this is not a broad startup
+latency win. PLANAR stays off; preserve earlier checkpoints and single-observation
+limits. Sustained/resident execution and cancellation remain open.

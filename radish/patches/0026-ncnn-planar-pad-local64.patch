@@ -1,0 +1,36 @@
+diff --git a/src/layer/vulkan/convolution1d_vulkan.cpp b/src/layer/vulkan/convolution1d_vulkan.cpp
+--- a/src/layer/vulkan/convolution1d_vulkan.cpp
++++ b/src/layer/vulkan/convolution1d_vulkan.cpp
+@@ -247,12 +247,12 @@
+             pipeline_radish_planar_pad = new (std::nothrow) Pipeline(vkdev);
+             if (!pipeline_radish_planar_pad)
+                 return -100;
+-            pipeline_radish_planar_pad->set_local_size_xyz(8, 4, 1);
++            pipeline_radish_planar_pad->set_local_size_xyz(8, 8, 1);
+             const std::vector<vk_specialization_type> pad_specializations;
+             const int pad_ret = pipeline_radish_planar_pad->create(LayerShaderType::convolution1d_radish_planar_pad, opt, pad_specializations);
+             if (pad_ret != 0)
+                 return pad_ret;
+-            if (!radish_planar_pipeline(pipeline_radish_planar_pad, 2, 4, 8, 4))
++            if (!radish_planar_pipeline(pipeline_radish_planar_pad, 2, 4, 8, 8))
+                 return -1;
+         }
+     }
+@@ -879,7 +879,7 @@
+         memcpy(&pad_bits, &pad_value, sizeof(pad_bits));
+         if (!use_radish_tiled || radish_tiled32 || !radish_planar_fp32(opt)
+             || !radish_planar_pipeline(pipeline_convolution1d_gemm, 4, 2, 16, 8)
+-            || !radish_planar_pipeline(pipeline_radish_planar_pad, 2, 4, 8, 4)
++            || !radish_planar_pipeline(pipeline_radish_planar_pad, 2, 4, 8, 8)
+             || !opt.workspace_vkallocator || !opt.blob_vkallocator
+             || opt.workspace_vkallocator->vkdev != vkdev || opt.blob_vkallocator->vkdev != vkdev
+             || &bottom_blob == &top_blob || bottom_blob.w <= 0 || bottom_blob.h <= 0
+@@ -931,7 +931,7 @@
+             return -1;
+ 
+         const uint64_t pad_groups_x = ((uint64_t)lp / 4 + 7) / 8;
+-        const uint64_t pad_groups_y = ((uint64_t)channels + 3) / 4;
++        const uint64_t pad_groups_y = ((uint64_t)channels + 7) / 8;
+         const uint64_t math_groups_x = ((uint64_t)outw + 63) / 64;
+         const uint64_t math_groups_y = (uint64_t)num_output / 64;
+         if (pad_groups_x > limits.maxComputeWorkGroupCount[0]

@@ -78,6 +78,7 @@ CONV_PATCHES=(
     "$TOP/radish/patches/0020-ncnn-conv1d-tiled32.patch"
     "$TOP/radish/patches/0021-ncnn-conv1d-tile32x32.patch"
     "$TOP/radish/patches/0024-ncnn-conv1d-planar-input.patch"
+    "$TOP/radish/patches/0026-ncnn-planar-pad-local64.patch"
 )
 CONV_FILES=(src/layer/vulkan/convolution1d_vulkan.cpp src/layer/vulkan/convolution1d_vulkan.h
             src/layer/vulkan/shader/convolution1d_packed_gemm.comp
