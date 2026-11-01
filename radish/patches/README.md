@@ -614,3 +614,5 @@ d468a7b2dcadda77b4e06a286eba806aac28c6222f0f3ec9e8330cddf8dba657  0035-ncnn-inst
 | `0044-radish-compute-contract-wip.patch` | After subgroup-linear0044 | Public singleton/external capabilities, actual private/constant and five BASIC cases, per-pipeline noopt pass; RBA code is WIP, first valid texel read fails and feature remains false. |
 
 | `0044-radish-device-group-robustness-wip.patch` | After compute-contract0044 | Singleton KHR group paths, mutable/fullsplit image consumers and all four core buffer-robustness cases pass; feature promotion, no full CTS/conformance claim. |
+
+| `0044-radish-barrier-image-size-wip.patch` | After device-group-robustness0044 | Exact historical32/64 reduction passes under two-row physical mapping. Checked larger-image layouts build; large-array stride and general workgroup/CTS coverage remain incomplete. |

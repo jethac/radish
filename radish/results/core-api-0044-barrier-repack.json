@@ -1,0 +1,90 @@
+{
+  "status": "passed",
+  "driver": {
+    "bytes": 48557240,
+    "sha256": "934665fef472882342e965a18f4478fa8e16a82c86741b1acd4bac821202e37c"
+  },
+  "helper": {
+    "bytes": 11541728,
+    "sha256": "004322115a2cdfaa4e43ebe3508e96c65accbede0036e3fd448d48a96098a40b"
+  },
+  "source_snapshot": "checkpoint-barrier-size-source",
+  "public_patch": {
+    "bytes": 7218,
+    "sha256": "36a5d8ab42d2989be417f54245e6d12a328f457bb1fe2dd3bb5daef21265137b"
+  },
+  "capture": "WORK/core-compute-0044-repack-smoke/probe",
+  "run_log": {
+    "bytes": 1343375,
+    "sha256": "f221910d63cd986abcaff5cbe961754fd49c699f9633a63191086dbd78441dfa"
+  },
+  "compile_capture": "WORK/core-compute-0044-cts-repack-compile-v2/probe",
+  "cases": [
+    {
+      "logical": [
+        32,
+        1,
+        1
+      ],
+      "physical": [
+        16,
+        2,
+        1
+      ],
+      "grid": [
+        1,
+        3,
+        1
+      ],
+      "stride": 32,
+      "outputs": 3,
+      "max_abs_error": 0,
+      "math_chunks": 3,
+      "math_submits": 3
+    },
+    {
+      "logical": [
+        64,
+        1,
+        1
+      ],
+      "physical": [
+        32,
+        2,
+        1
+      ],
+      "grid": [
+        1,
+        3,
+        1
+      ],
+      "stride": 32,
+      "outputs": 3,
+      "max_abs_error": 0,
+      "math_chunks": 3,
+      "math_submits": 3
+    }
+  ],
+  "native": {
+    "full_registers": 16,
+    "half_registers": 13,
+    "shared_bytes": 1024,
+    "private_bytes": 0,
+    "native_length": 57,
+    "loops": 1,
+    "physical_thread_mode": "single"
+  },
+  "conditions": {
+    "service_seconds": 2.901,
+    "peak_mib": 63,
+    "new_gpu_faults": false,
+    "services_active": true
+  },
+  "limitations": [
+    "Exact original width1/C3 ncnn reduction consumer and oracle; not all legal workgroup shapes.",
+    "No new raw allocation/input readback proof beyond original helper.",
+    "Stage14 larger-image allocation/layout source builds; large sampled array/cube stride remains incomplete.",
+    "Existing CTS binary SIGSEGV during context initialization before any case; loader loaded and enumerated Radish; root cause under investigation. No CTS pass.",
+    "Performance remains paused; no performance comparison or conformance claim."
+  ]
+}

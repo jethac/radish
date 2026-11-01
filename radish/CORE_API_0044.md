@@ -1,5 +1,13 @@
 # Core compute implementation: checkpoint 0044
 
+## 2026-11-02: historical barrier reduction now passes
+
+The exact original ncnn width1/C3 reduction passes for logical local sizes32 and64 (stride32), with all three output means exact. The compiler now maps these even1D workgroup-barrier shapes to physical16×2 and32×2 while reconstructing the original logical IDs. Both use the unchanged residency guards,1KiB shared memory,16 full/13 half registers and no private memory. The measured ICD is934665fe; service2.901s,63MiB, no new GPU faults and both live services active. This closes the reproduced historical consumer failure, not all odd/general legal-workgroup behavior. [Paired source and result](results/core-api-0044-barrier-repack.json).
+
+Apply the ninth increment `0044-radish-barrier-image-size-wip.patch` after device-group-robustness. It also builds checked larger-image allocation/layout support, which has no large-image execution evidence here; the sampled-array/cube native-stride gap remains open. The existing ncnn `--reduce-compile` and `--reduce-smoke` paths retain their original inputs and oracle. The measured private helper adds actual logical/physical pipeline assertions; compilation preceded both tensor runs, with32 checked before64 and unchanged fault/service boundaries.
+
+The existing CTS binary was attempted with five information/property cases but crashed during context initialization before running any case. A bounded loader trace confirms Radish was loaded and enumerated before the null-address SIGSEGV; the specific initialization defect remains under investigation. This is an unresolved compatibility issue, not a CTS pass or a proven environment-only failure. Full compute semantics and conformance remain incomplete; performance work is paused.
+
 ## 2026-11-02: public singleton groups and core robust buffers pass
 
 ICD448cc118 passes the three targeted suites: two4,160-invocation normal/noopt pipelines through public device-group dispatch/mask aliases with a DeviceIndex-zero oracle; two resource rounds with a full-image singleton split bind and compatible R32_SFLOAT-to-UINT storage view; and all four robust-buffer cases with1/3/12/16-byte ranges, dynamic offsets, partial vectors, writes/add/CAS,40001-element texel buffers and exact backing guards. Service2.005s,14.3MiB,zero swap; no new faults and both services active.
@@ -77,7 +85,7 @@ budget. It does not solve the earlier legal-workgroup/shared-memory failures.
 
 ## Consolidated reproduction
 
-Apply the eight0044 incremental patches in order to the documented0042 Mesa
+Apply the nine0044 incremental patches in order to the documented0042 Mesa
 stack and build the isolated driver. Build probes against its matching internal
 ABI:
 
