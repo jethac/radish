@@ -1,0 +1,38 @@
+{
+  "status": "experimental_host_build_only",
+  "driver_sha256": "d4037cc757bde872ea09607f2ae817b531dbda2e4ead1ea855e2f536007eee00",
+  "driver_bytes": 48384456,
+  "scope": [
+    "API5 and image transfer foundation",
+    "native image/texel/sampler consumers, UBO/dynamic buffers and late descriptor resolution",
+    "events/query execution and asynchronous queue/loss wake",
+    "R32 image/texel atomics and subgroup constant correction"
+  ],
+  "qualification_properties": "Resource limits, R32 atomic/SFLOAT linear format bits, pipeline statistics, timestamps and subgroup BASIC are enabled for private qualification; they have no combined-device evidence yet.",
+  "remaining": [
+    "full native formats/mips/layers/dimensions/sampler behavior",
+    "broader legal shared-memory/workgroup execution",
+    "descriptor slot/limit semantics and required SPIR-V/CTS gaps",
+    "complete Vulkan1.0/1.1 compute contract; graphics excluded"
+  ],
+  "source_pins": {
+    "rd_nir_resources.c": "945338cb10d3abb3f768cb1475816674d334019adbcbd13b5d8dfc606d99f547",
+    "rd_command.c": "e6044e48d18bc20fd9710ec16cf0caa81de27bbca566d99bba4b25a402e77777",
+    "rd_transfer.c": "a93968bf54724b1a068d7169940952286b73a0eb08f9fe78ee3ef4e608d5812b",
+    "rd_image.h": "60faa1b1b1e5e3df1d1138c3d0ea343e298d378ca5bbc350e62c193bc7e2c082",
+    "rd_memory.c": "fe85c1123805df59f202ee1cfa7a1a204fb05692d555b2ca8eb86d5a14e471b1",
+    "rd_query.c": "8f83148f39b51411963dd2b201979f0e7d94f496a3e34b81601278bcdf622978",
+    "rd_nir_resources.h": "a173a9b38c64fd62f288ec4c01196b2610e24293d396dc8fd53df6ca2f59f490",
+    "rd_event.c": "324cd260d6cb805d6b8548f9f518df1fba8110dd6bef25ae7f072c7ac17ac49c",
+    "rd_queue.c": "2fc4c6458ba0f1b41a86b95ccf0b92917b2eba4bab975b914b37774b3e0c947d",
+    "meson.build": "b0cd3bab8effb77da1a3ded48f916a4cb0701fb2a2f74fa7ace00e20c1d67aea",
+    "rd_instance.c": "a669c19f8c69ac2636904b59e17b9026ef2a904e5566118170c68b2aace029cb",
+    "rd_resources.c": "8c1b812ae0736614cc3c87bfd8900a4d48fb6a08c1343481673d528908af8490",
+    "rd_image.c": "b4898f10eff76e989672e32dca31052b92dee4cebe5de95b316cb08afb7ec331",
+    "rd_device.c": "b93685aa54e1cb01f2a27273703484f29a0d9c5db9dbf425fdc0f8f5d26c9a7a",
+    "rd_private.h": "ff25bc74fee4681876b1eaace5c4b7d370bcb2b2ab2b04b9d9b727ef58d21533",
+    "rd_pipeline.c": "2d6bae6b828b692b0ffcdc567e29fc165569d341bb208839eb1cc37aefa9fcb3",
+    "rd_descriptor.c": "b229970b7590a513c2391f67aa6f8ead34b8aa0919e22f242ecf34c1dbb5ca88"
+  },
+  "device_evidence": "None for this combined build. Earlier API5 evidence uses driver6de62b2677 and is not proof of the new resource/event paths."
+}

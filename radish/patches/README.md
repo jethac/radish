@@ -52,6 +52,8 @@ limits and validation scope. Published checkpoints remain experimental; publicat
 
 | `0044-radish-core-api-foundation.patch` | Incremental over cumulative 0041 plus the 0042 Radish timer patch, isolated WIP checkout | API5 functional probe passes; image transfer foundation builds but is not device-qualified here. Events/query/resource consumers and complete compute behavior remain in progress; API version stays 1.0. |
 
+| `0044-radish-compute-resources-wip.patch` | Incremental after 0044 foundation | Experimental combined resource/UBO/dynamic/event/query/subgroup implementation. Host build passes; qualification properties are not yet device-proven. Not part of the accepted inference stack. |
+
 0042 is now part of the standard verified ncnn patch stack, with its selector
 default off in all device wrappers. The runtime serializer/capture verifier use
 the same environment key. Focused, fixed-core and all four fresh runtime

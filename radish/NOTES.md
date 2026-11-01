@@ -1,5 +1,23 @@
 # Radish status
 
+## 2026-11-02 (JST): combined core-compute WIP builds
+
+The isolated combined implementation now builds as ICD d4037cc7…eee00
+(48,384,456 bytes). It integrates real native image/texel/sampler consumers,
+UBOs and dynamic offsets, descriptors resolved at submission, events/queries,
+asynchronous queue/loss handling, R32 image/texel atomics and the subgroup-ID
+constant correction. This is **host-build evidence only**. Qualification limits,
+format bits, statistics/timestamps and BASIC properties are enabled in this
+experimental patch; they are not accepted device-proven capabilities yet.
+
+The incremental `0044-radish-compute-resources-wip.patch` applies after the
+first 0044 foundation. Earlier API5 hardware evidence belongs to the distinct
+6de62b26… driver. The combined driver has not run on the tablet. Broader format,
+view/mip/sampler coverage, legal shared-memory/workgroup behavior, resource
+limits and required compute/CTS work remain active. Build first, then batch
+functional checks; performance stays paused. See
+[the build record](results/core-api-0044-combined-build.json).
+
 ## 2026-11-02 (JST): compute functionality priority and first 0044 API checkpoint
 
 Performance work is paused. The current campaign is complete Vulkan 1.0/1.1
@@ -18,8 +36,7 @@ ordinary public lookups under API 1.0. This does not establish public 1.1 suppor
 [CORE_API_0044.md](CORE_API_0044.md) and [compact results](results/core-api-0044-api5.json)
 provide the scoped source/evidence/reproduction. The published patch contains
 API5 plus the built image-transfer foundation; image consumers and event/query
-integration are subsequent WIP, not exercised by this probe. The integration
-branch is now building their combined implementation. Canonical inference
+integration are subsequent WIP, not exercised by this probe. The later combined implementation now builds; its separate status is above. Canonical inference
 sources and the installed device ICD remain unchanged. Validation will be
 batched after coherent subsystem builds, per the user's build-first priority.
 

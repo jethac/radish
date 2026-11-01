@@ -1,5 +1,12 @@
 # Core compute implementation: checkpoint 0044
 
+The later `0044-radish-compute-resources-wip.patch` adds the combined native
+resource/event/query/subgroup implementation and builds successfully as
+`d4037cc757bde872ea09607f2ae817b531dbda2e4ead1ea855e2f536007eee00`.
+It has **no combined device execution evidence**. Its qualification properties
+are experimental; see the [separate build record](results/core-api-0044-combined-build.json).
+The bounded hardware result below remains tied to the earlier foundation.
+
 Performance experiments are paused. The current priority is complete compute
 behavior required by Vulkan 1.0/1.1, including execution, descriptors, resources,
 synchronization, subgroup BASIC and required SPIR-V behavior. Graphics remains
