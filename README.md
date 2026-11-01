@@ -24,8 +24,7 @@ a separate driver, with its own a5xx resource bindings and command emission.
 **Current priority:** performance experiments are paused while the driver fills
 its Vulkan 1.0/1.1 compute execution and resource gaps. The first
 [0044 API checkpoint](radish/CORE_API_0044.md) passes bounded A506 dispatch-base,
-secondary-command and descriptor-template checks. The combined image/resource, UBO/dynamic and event/query implementation now
-builds; its device qualification remains pending. This is WIP,
+secondary-command and descriptor-template checks. The consolidated API, event/query and UBO/dynamic/image-resource suites pass on A506; subgroup BASIC fails its first election-count check. Broader semantics and limits remain incomplete. This is WIP,
 not a version or conformance claim. The inference results below remain the
 previous qualified performance baseline.
 

@@ -1,0 +1,2613 @@
+--- a/src/freedreno/ir3/ir3_a4xx.c
++++ b/src/freedreno/ir3/ir3_a4xx.c
+@@ -199,6 +199,15 @@
+ }
+ 
+ static struct ir3_instruction *
++image_mul32(struct ir3_builder *b, struct ir3_instruction *a,
++             struct ir3_instruction *c)
++{
++   struct ir3_instruction *low = ir3_MULL_U(b, a, 0, c, 0);
++   struct ir3_instruction *mixed = ir3_MADSH_M16(b, a, 0, c, 0, low, 0);
++   return ir3_MADSH_M16(b, c, 0, a, 0, mixed, 0);
++}
++
++static struct ir3_instruction *
+ get_image_offset(struct ir3_context *ctx, const nir_intrinsic_instr *instr,
+                  struct ir3_instruction *const *coords, bool byteoff)
+ {
+@@ -226,15 +235,17 @@
+    if (ctx->compiler->gen == 4)
+       offset = ir3_MUL_S24(b, coords[0], 0, create_uniform(b, cb + 3), 0);
+    else
+-      offset = ir3_MUL_S24(b, coords[0], 0, create_uniform(b, cb + 0), 0);
++      offset = image_mul32(b, coords[0], create_uniform(b, cb + 0));
+    if (ncoords > 1) {
+       /* offset += coords.y * y_pitch: */
+-      offset =
++      offset = ctx->compiler->gen == 5 ?
++         ir3_ADD_U(b, image_mul32(b, create_uniform(b, cb + 1), coords[1]), 0, offset, 0) :
+          ir3_MAD_S24(b, create_uniform(b, cb + 1), 0, coords[1], 0, offset, 0);
+    }
+    if (ncoords > 2) {
+       /* offset += coords.z * z_pitch: */
+-      offset =
++      offset = ctx->compiler->gen == 5 ?
++         ir3_ADD_U(b, image_mul32(b, create_uniform(b, cb + 2), coords[2]), 0, offset, 0) :
+          ir3_MAD_S24(b, create_uniform(b, cb + 2), 0, coords[2], 0, offset, 0);
+    }
+ 
+--- a/src/freedreno/radish/meson.build
++++ b/src/freedreno/radish/meson.build
+@@ -14,7 +14,7 @@
+    'rd_command.c', 'rd_nir_resources.c', 'rd_resources.c', 'rd_transfer.c', 'rd_image.c',
+    'rd_event.c', 'rd_query.c', 'rd_queue.c', rd_entrypoints, freedreno_xml_header_files],
+   include_directories : [inc_freedreno, inc_include, inc_src],
+-  link_with : [libfreedreno_drm, libfreedreno_ir3],
++  link_with : [libfreedreno_drm, libfreedreno_ir3, libfreedreno_layout],
+   dependencies : [idep_libfreedreno_common, idep_vulkan_util,
+                   idep_vulkan_runtime, idep_mesautil, dep_libdrm, dep_thread,
+                   dep_dl, dep_m],
+--- a/src/freedreno/radish/rd_device.c
++++ b/src/freedreno/radish/rd_device.c
+@@ -117,8 +117,11 @@
+       result = VK_ERROR_OUT_OF_DEVICE_MEMORY;
+       goto fail;
+    }
+-   result = vk_queue_enable_submit_thread(&device->queue);
++   result = rd_init_border_colors(device);
++   if (result == VK_SUCCESS)
++      result = vk_queue_enable_submit_thread(&device->queue);
+    if (result != VK_SUCCESS) {
++      if (device->border_colors) fd_bo_del(device->border_colors);
+       fd_bo_del(device->control);
+       ir3_compiler_destroy(device->compiler);
+       vk_queue_finish(&device->queue);
+@@ -141,6 +144,7 @@
+    if (!device)
+       return;
+    vk_queue_finish(&device->queue);
++   fd_bo_del(device->border_colors);
+    fd_bo_del(device->control);
+    ir3_compiler_destroy(device->compiler);
+    fd_pipe_del(device->pipe);
+--- a/src/freedreno/radish/rd_image.c
++++ b/src/freedreno/radish/rd_image.c
+@@ -59,8 +59,11 @@
+                     VkImageUsageFlags2KHR usage, VkImageCreateFlags2KHR flags)
+ {
+    VkImageUsageFlags2KHR shader_usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT;
+-   if ((usage & shader_usage) &&
+-       (!rd_shader_format_supported(format) || type != VK_IMAGE_TYPE_2D || flags))
++   if ((usage & shader_usage) && !rd_shader_format_supported(format))
++      return false;
++   if ((flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) && (usage & VK_IMAGE_USAGE_STORAGE_BIT))
++      return false;
++   if ((usage & VK_IMAGE_USAGE_STORAGE_BIT) && !rd_storage_shader_format_supported(format))
+       return false;
+    return rd_image_texel_size(format) &&
+           (type == VK_IMAGE_TYPE_1D || type == VK_IMAGE_TYPE_2D || type == VK_IMAGE_TYPE_3D) &&
+@@ -78,10 +81,15 @@
+       VK_FORMAT_FEATURE_TRANSFER_SRC_BIT | VK_FORMAT_FEATURE_TRANSFER_DST_BIT : 0;
+    VkFormatFeatureFlags buffer = 0;
+    if (rd_shader_format_supported(format)) {
+-      flags |= VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT | VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT;
+-      if (format == VK_FORMAT_R32_SFLOAT || format == VK_FORMAT_R32G32B32A32_SFLOAT)
++      flags |= VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT;
++      if (rd_shader_format_filterable(format))
+          flags |= VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT;
+-      buffer = VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT | VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT;
++      if (!vk_format_is_srgb(format))
++         buffer |= VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT;
++      if (rd_storage_shader_format_supported(format)) {
++         flags |= VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT;
++         buffer |= VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT;
++      }
+       if (format == VK_FORMAT_R32_UINT || format == VK_FORMAT_R32_SINT) {
+          flags |= VK_FORMAT_FEATURE_STORAGE_IMAGE_ATOMIC_BIT;
+          buffer |= VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_ATOMIC_BIT;
+@@ -121,8 +129,7 @@
+       .maxResourceSize = RD_IMAGE_MAX_SIZE,
+    };
+    if (info->usage & (VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT)) {
+-      out->imageFormatProperties.maxMipLevels = 1;
+-      out->imageFormatProperties.maxArrayLayers = 1;
++      out->imageFormatProperties.maxResourceSize = RD_IMAGE_MAX_SIZE - 4096;
+    }
+    vk_foreach_struct(sType, next, out->pNext) {
+       if (sType == VK_STRUCTURE_TYPE_EXTERNAL_IMAGE_FORMAT_PROPERTIES)
+@@ -136,15 +143,44 @@
+ rd_image_layout(struct rd_image *image)
+ {
+    VkDeviceSize size = 0;
++   bool shader = image->vk.usage & (VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT);
++   VkDeviceSize limit = shader ? RD_IMAGE_MAX_SIZE - 4096 : RD_IMAGE_MAX_SIZE;
++   if (shader) {
++      const struct fdl_image_params parameters = {
++         .format = vk_format_to_pipe_format(image->vk.format), .nr_samples = 1,
++         .width0 = image->vk.extent.width, .height0 = image->vk.extent.height,
++         .depth0 = image->vk.extent.depth, .mip_levels = image->vk.mip_levels,
++         .array_size = image->vk.array_layers, .is_3d = image->vk.image_type == VK_IMAGE_TYPE_3D,
++      };
++      fdl5_layout_image(&image->native_layout, &parameters);
++      image->native_layout.mip_levels = image->vk.mip_levels;
++      if (!image->native_layout.size || image->native_layout.size > limit)
++         return false;
++      image->size = image->native_layout.size;
++      for (uint32_t level = 0; level < image->vk.mip_levels; level++) {
++         VkExtent3D extent = vk_image_mip_level_extent(&image->vk, level);
++         struct rd_image_level *layout = &image->levels[level];
++         layout->offset = fdl_surface_offset(&image->native_layout, level, 0);
++         layout->row_pitch = fdl_pitch(&image->native_layout, level);
++         layout->depth_pitch = image->native_layout.slices[level].size0;
++         layout->size = layout->depth_pitch * extent.depth;
++         layout->array_pitch = image->native_layout.layer_first ?
++            image->native_layout.layer_size : layout->size;
++      }
++      return true;
++   }
+    for (uint32_t level = 0; level < image->vk.mip_levels; level++) {
+       VkExtent3D extent = vk_image_mip_level_extent(&image->vk, level);
+       struct rd_image_level *layout = &image->levels[level];
+       layout->offset = size;
+       layout->row_pitch = align64((uint64_t)extent.width * image->texel_size, 64);
+       layout->depth_pitch = layout->row_pitch * extent.height;
++      if (shader)
++         layout->depth_pitch = align64(layout->depth_pitch, 4096);
+       layout->array_pitch = layout->depth_pitch * extent.depth;
++      layout->size = layout->array_pitch;
+       VkDeviceSize level_size = layout->array_pitch * image->vk.array_layers;
+-      if (level_size > RD_IMAGE_MAX_SIZE - size)
++      if (level_size > limit - size)
+          return false;
+       size += level_size;
+    }
+@@ -167,9 +203,6 @@
+        !info->extent.depth || info->sharingMode != VK_SHARING_MODE_EXCLUSIVE ||
+        (info->initialLayout != VK_IMAGE_LAYOUT_UNDEFINED &&
+         info->initialLayout != VK_IMAGE_LAYOUT_PREINITIALIZED))
+-      return VK_ERROR_FORMAT_NOT_SUPPORTED;
+-   if ((vk_image_usage_flags(info) & (VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT)) &&
+-       (info->mipLevels != 1 || info->arrayLayers != 1))
+       return VK_ERROR_FORMAT_NOT_SUPPORTED;
+    uint32_t side = info->imageType == VK_IMAGE_TYPE_3D ? 256 : 4096;
+    if (info->extent.width > side || info->extent.height > side || info->extent.depth > side ||
+@@ -287,7 +320,7 @@
+    const struct rd_image_level *level = &image->levels[subresource->mipLevel];
+    *out = (VkSubresourceLayout) {
+       .offset = level->offset + subresource->arrayLayer * level->array_pitch,
+-      .size = level->array_pitch, .rowPitch = level->row_pitch,
++      .size = level->size, .rowPitch = level->row_pitch,
+       .arrayPitch = level->array_pitch, .depthPitch = level->depth_pitch,
+    };
+ }
+@@ -316,12 +349,12 @@
+       (image->vk.image_type == VK_IMAGE_TYPE_2D &&
+       (info->viewType == VK_IMAGE_VIEW_TYPE_2D || info->viewType == VK_IMAGE_VIEW_TYPE_2D_ARRAY)) ||
+       (image->vk.image_type == VK_IMAGE_TYPE_3D && info->viewType == VK_IMAGE_VIEW_TYPE_3D);
+-   if (!rd_shader_format_supported(info->format) ||
+-       info->viewType != VK_IMAGE_VIEW_TYPE_2D || levels != 1 || layers != 1 ||
+-       (info->components.r != VK_COMPONENT_SWIZZLE_IDENTITY && info->components.r != VK_COMPONENT_SWIZZLE_R) ||
+-       (info->components.g != VK_COMPONENT_SWIZZLE_IDENTITY && info->components.g != VK_COMPONENT_SWIZZLE_G) ||
+-       (info->components.b != VK_COMPONENT_SWIZZLE_IDENTITY && info->components.b != VK_COMPONENT_SWIZZLE_B) ||
+-       (info->components.a != VK_COMPONENT_SWIZZLE_IDENTITY && info->components.a != VK_COMPONENT_SWIZZLE_A))
++   if ((info->viewType == VK_IMAGE_VIEW_TYPE_CUBE || info->viewType == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY) &&
++       image->vk.image_type == VK_IMAGE_TYPE_2D &&
++       (image->vk.create_flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) &&
++       (info->viewType == VK_IMAGE_VIEW_TYPE_CUBE ? layers == 6 : !(layers % 6)))
++      compatible = true;
++   if (!rd_shader_format_supported(info->format))
+       return VK_ERROR_FORMAT_NOT_SUPPORTED;
+    if (!compatible || ((info->viewType == VK_IMAGE_VIEW_TYPE_1D || info->viewType == VK_IMAGE_VIEW_TYPE_2D) && layers != 1))
+       return VK_ERROR_FORMAT_NOT_SUPPORTED;
+@@ -350,14 +383,15 @@
+    *out = VK_NULL_HANDLE;
+    uint32_t size = rd_image_texel_size(info->format);
+    if (!buffer || info->flags || !rd_shader_format_supported(info->format) ||
++       vk_format_is_srgb(info->format) ||
+        !size || info->offset >= buffer->vk.size ||
+-       (info->offset & 15) || !(buffer->vk.usage &
++       (info->offset & 31) || !(buffer->vk.usage &
+        (VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT)))
+       return VK_ERROR_FORMAT_NOT_SUPPORTED;
+    VkDeviceSize range = info->range == VK_WHOLE_SIZE ? buffer->vk.size - info->offset : info->range;
+    if (range > buffer->vk.size - info->offset ||
+        (info->range != VK_WHOLE_SIZE && (!range || range % size)) ||
+-       range / size > (1u << 23))
++       range / size > (1u << 27))
+       return VK_ERROR_FORMAT_NOT_SUPPORTED;
+    range -= range % size;
+    struct rd_buffer_view *view = vk_buffer_view_create(&device->vk, info, allocator, sizeof(*view));
+@@ -388,9 +422,9 @@
+        (info->magFilter != VK_FILTER_NEAREST && info->magFilter != VK_FILTER_LINEAR) ||
+        (info->minFilter != VK_FILTER_NEAREST && info->minFilter != VK_FILTER_LINEAR) ||
+        info->mipmapMode > VK_SAMPLER_MIPMAP_MODE_LINEAR ||
+-       info->addressModeU > VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE ||
+-       info->addressModeV > VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE ||
+-       info->addressModeW > VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE ||
++       info->addressModeU > VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER ||
++       info->addressModeV > VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER ||
++       info->addressModeW > VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER ||
+        info->borderColor > VK_BORDER_COLOR_INT_OPAQUE_WHITE ||
+        info->compareOp > VK_COMPARE_OP_ALWAYS || info->minLod > info->maxLod ||
+        fabsf(info->mipLodBias) > 16.0f ||
+--- /dev/null
++++ b/src/freedreno/radish/rd_image.c.orig
+@@ -0,0 +1,713 @@
++#include "rd_private.h"
++#include "vk_format.h"
++#include "vk_util.h"
++#include "util/format/u_format.h"
++#include <limits.h>
++#include <math.h>
++
++static uint32_t
++rd_image_texel_size(VkFormat format)
++{
++   switch (format) {
++   case VK_FORMAT_R8_UNORM:
++   case VK_FORMAT_R8_SNORM:
++   case VK_FORMAT_R8_UINT:
++   case VK_FORMAT_R8_SINT:
++   case VK_FORMAT_R8G8_UNORM:
++   case VK_FORMAT_R8G8_SNORM:
++   case VK_FORMAT_R8G8_UINT:
++   case VK_FORMAT_R8G8_SINT:
++   case VK_FORMAT_R8G8B8A8_UNORM:
++   case VK_FORMAT_R8G8B8A8_SNORM:
++   case VK_FORMAT_R8G8B8A8_UINT:
++   case VK_FORMAT_R8G8B8A8_SINT:
++   case VK_FORMAT_R8G8B8A8_SRGB:
++   case VK_FORMAT_B8G8R8A8_UNORM:
++   case VK_FORMAT_B8G8R8A8_SRGB:
++   case VK_FORMAT_R16_UNORM:
++   case VK_FORMAT_R16_SNORM:
++   case VK_FORMAT_R16_UINT:
++   case VK_FORMAT_R16_SINT:
++   case VK_FORMAT_R16_SFLOAT:
++   case VK_FORMAT_R16G16_UNORM:
++   case VK_FORMAT_R16G16_SNORM:
++   case VK_FORMAT_R16G16_UINT:
++   case VK_FORMAT_R16G16_SINT:
++   case VK_FORMAT_R16G16_SFLOAT:
++   case VK_FORMAT_R16G16B16A16_UNORM:
++   case VK_FORMAT_R16G16B16A16_SNORM:
++   case VK_FORMAT_R16G16B16A16_UINT:
++   case VK_FORMAT_R16G16B16A16_SINT:
++   case VK_FORMAT_R16G16B16A16_SFLOAT:
++   case VK_FORMAT_R32_UINT:
++   case VK_FORMAT_R32_SINT:
++   case VK_FORMAT_R32_SFLOAT:
++   case VK_FORMAT_R32G32_UINT:
++   case VK_FORMAT_R32G32_SINT:
++   case VK_FORMAT_R32G32_SFLOAT:
++   case VK_FORMAT_R32G32B32A32_UINT:
++   case VK_FORMAT_R32G32B32A32_SINT:
++   case VK_FORMAT_R32G32B32A32_SFLOAT:
++      return vk_format_get_blocksize(format);
++   default:
++      return 0;
++   }
++}
++
++static bool
++rd_image_parameters(VkFormat format, VkImageType type, VkImageTiling tiling,
++                    VkImageUsageFlags2KHR usage, VkImageCreateFlags2KHR flags)
++{
++   VkImageUsageFlags2KHR shader_usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT;
++   if ((usage & shader_usage) &&
++       (!rd_shader_format_supported(format) || type != VK_IMAGE_TYPE_2D || flags))
++      return false;
++   return rd_image_texel_size(format) &&
++          (type == VK_IMAGE_TYPE_1D || type == VK_IMAGE_TYPE_2D || type == VK_IMAGE_TYPE_3D) &&
++          (tiling == VK_IMAGE_TILING_LINEAR || tiling == VK_IMAGE_TILING_OPTIMAL) &&
++          usage && !(usage & ~(VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | shader_usage)) &&
++          !(flags & ~VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) &&
++          (!(flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) || type == VK_IMAGE_TYPE_2D);
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_GetPhysicalDeviceFormatProperties2(VkPhysicalDevice handle, VkFormat format,
++                                      VkFormatProperties2 *out)
++{
++   VkFormatFeatureFlags flags = rd_image_texel_size(format) ?
++      VK_FORMAT_FEATURE_TRANSFER_SRC_BIT | VK_FORMAT_FEATURE_TRANSFER_DST_BIT : 0;
++   VkFormatFeatureFlags buffer = 0;
++   if (rd_shader_format_supported(format)) {
++      flags |= VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT | VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT;
++      if (format == VK_FORMAT_R32_SFLOAT || format == VK_FORMAT_R32G32B32A32_SFLOAT)
++         flags |= VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT;
++      buffer = VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT | VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT;
++   }
++   out->formatProperties = (VkFormatProperties) {
++      .linearTilingFeatures = flags, .optimalTilingFeatures = flags,
++      .bufferFeatures = buffer,
++   };
++   vk_foreach_struct(sType, next, out->pNext) {
++      if (sType == VK_STRUCTURE_TYPE_FORMAT_PROPERTIES_3) {
++         VkFormatProperties3 *properties = (VkFormatProperties3 *)next;
++         properties->linearTilingFeatures = flags;
++         properties->optimalTilingFeatures = flags;
++         properties->bufferFeatures = buffer;
++      }
++   }
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_GetPhysicalDeviceImageFormatProperties2(VkPhysicalDevice handle,
++   const VkPhysicalDeviceImageFormatInfo2 *info, VkImageFormatProperties2 *out)
++{
++   out->imageFormatProperties = (VkImageFormatProperties){0};
++   const VkPhysicalDeviceExternalImageFormatInfo *external =
++      vk_find_struct_const(info->pNext, PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO);
++   if (!rd_image_parameters(info->format, info->type, info->tiling, info->usage, info->flags) ||
++       (external && external->handleType))
++      return VK_ERROR_FORMAT_NOT_SUPPORTED;
++   uint32_t side = info->type == VK_IMAGE_TYPE_3D ? 256 : 4096;
++   out->imageFormatProperties = (VkImageFormatProperties) {
++      .maxExtent = {side, info->type == VK_IMAGE_TYPE_1D ? 1 : side,
++                    info->type == VK_IMAGE_TYPE_3D ? side : 1},
++      .maxMipLevels = info->type == VK_IMAGE_TYPE_3D ? 9 : RD_IMAGE_MAX_LEVELS,
++      .maxArrayLayers = info->type == VK_IMAGE_TYPE_3D ? 1 : 256,
++      .sampleCounts = VK_SAMPLE_COUNT_1_BIT,
++      .maxResourceSize = RD_IMAGE_MAX_SIZE,
++   };
++   if (info->usage & (VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT)) {
++      out->imageFormatProperties.maxMipLevels = 1;
++      out->imageFormatProperties.maxArrayLayers = 1;
++   }
++   vk_foreach_struct(sType, next, out->pNext) {
++      if (sType == VK_STRUCTURE_TYPE_EXTERNAL_IMAGE_FORMAT_PROPERTIES)
++         ((VkExternalImageFormatProperties *)next)->externalMemoryProperties =
++            (VkExternalMemoryProperties){0};
++   }
++   return VK_SUCCESS;
++}
++
++static bool
++rd_image_layout(struct rd_image *image)
++{
++   VkDeviceSize size = 0;
++   for (uint32_t level = 0; level < image->vk.mip_levels; level++) {
++      VkExtent3D extent = vk_image_mip_level_extent(&image->vk, level);
++      struct rd_image_level *layout = &image->levels[level];
++      layout->offset = size;
++      layout->row_pitch = align64((uint64_t)extent.width * image->texel_size, 64);
++      layout->depth_pitch = layout->row_pitch * extent.height;
++      layout->array_pitch = layout->depth_pitch * extent.depth;
++      VkDeviceSize level_size = layout->array_pitch * image->vk.array_layers;
++      if (level_size > RD_IMAGE_MAX_SIZE - size)
++         return false;
++      size += level_size;
++   }
++   image->size = size;
++   return true;
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_CreateImage(VkDevice handle, const VkImageCreateInfo *info,
++               const VkAllocationCallbacks *allocator, VkImage *out)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   *out = VK_NULL_HANDLE;
++   VkImageCreateFlags2KHR flags = vk_image_create_flags(info);
++   if (!rd_image_parameters(info->format, info->imageType, info->tiling,
++                            vk_image_usage_flags(info), flags) ||
++       info->samples != VK_SAMPLE_COUNT_1_BIT || !info->mipLevels ||
++       info->mipLevels > RD_IMAGE_MAX_LEVELS || !info->arrayLayers ||
++       info->arrayLayers > 256 || !info->extent.width || !info->extent.height ||
++       !info->extent.depth || info->sharingMode != VK_SHARING_MODE_EXCLUSIVE ||
++       (info->initialLayout != VK_IMAGE_LAYOUT_UNDEFINED &&
++        info->initialLayout != VK_IMAGE_LAYOUT_PREINITIALIZED))
++      return VK_ERROR_FORMAT_NOT_SUPPORTED;
++   if ((vk_image_usage_flags(info) & (VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT)) &&
++       (info->mipLevels != 1 || info->arrayLayers != 1))
++      return VK_ERROR_FORMAT_NOT_SUPPORTED;
++   uint32_t side = info->imageType == VK_IMAGE_TYPE_3D ? 256 : 4096;
++   if (info->extent.width > side || info->extent.height > side || info->extent.depth > side ||
++       (info->imageType == VK_IMAGE_TYPE_1D && (info->extent.height != 1 || info->extent.depth != 1)) ||
++       (info->imageType == VK_IMAGE_TYPE_2D && info->extent.depth != 1) ||
++       (info->imageType == VK_IMAGE_TYPE_3D && info->arrayLayers != 1) ||
++       info->mipLevels > util_logbase2(MAX3(info->extent.width, info->extent.height, info->extent.depth)) + 1 ||
++       ((flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) &&
++        (info->extent.width != info->extent.height || info->arrayLayers < 6)))
++      return VK_ERROR_FORMAT_NOT_SUPPORTED;
++   const VkExternalMemoryImageCreateInfo *external =
++      vk_find_struct_const(info->pNext, EXTERNAL_MEMORY_IMAGE_CREATE_INFO);
++   if (external && external->handleTypes)
++      return VK_ERROR_FEATURE_NOT_PRESENT;
++   struct rd_image *image = vk_image_create(&device->vk, info, allocator, sizeof(*image));
++   if (!image)
++      return VK_ERROR_OUT_OF_HOST_MEMORY;
++   image->texel_size = rd_image_texel_size(info->format);
++   if (!rd_image_layout(image)) {
++      vk_image_destroy(&device->vk, allocator, &image->vk);
++      return VK_ERROR_OUT_OF_DEVICE_MEMORY;
++   }
++   *out = rd_image_to_handle(image);
++   return VK_SUCCESS;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_DestroyImage(VkDevice handle, VkImage image_handle, const VkAllocationCallbacks *allocator)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   VK_FROM_HANDLE(rd_image, image, image_handle);
++   if (image)
++      vk_image_destroy(&device->vk, allocator, &image->vk);
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_GetImageMemoryRequirements2(VkDevice handle, const VkImageMemoryRequirementsInfo2 *info,
++                              VkMemoryRequirements2 *out)
++{
++   VK_FROM_HANDLE(rd_image, image, info->image);
++   out->memoryRequirements = (VkMemoryRequirements) {
++      .size = image->size, .alignment = 64, .memoryTypeBits = 1,
++   };
++   vk_foreach_struct(sType, next, out->pNext) {
++      if (sType == VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS) {
++         VkMemoryDedicatedRequirements *dedicated = (VkMemoryDedicatedRequirements *)next;
++         dedicated->prefersDedicatedAllocation = false;
++         dedicated->requiresDedicatedAllocation = false;
++      }
++   }
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_GetImageMemoryRequirements(VkDevice handle, VkImage image, VkMemoryRequirements *out)
++{
++   VkImageMemoryRequirementsInfo2 info = {
++      .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_REQUIREMENTS_INFO_2, .image = image,
++   };
++   VkMemoryRequirements2 result = {.sType = VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2};
++   rd_GetImageMemoryRequirements2(handle, &info, &result);
++   *out = result.memoryRequirements;
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_BindImageMemory2(VkDevice handle, uint32_t count, const VkBindImageMemoryInfo *infos)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   for (uint32_t i = 0; i < count; i++) {
++      VK_FROM_HANDLE(rd_image, image, infos[i].image);
++      VK_FROM_HANDLE(rd_memory, memory, infos[i].memory);
++      if (!image || !memory || image->vk.base.device != &device->vk ||
++          memory->vk.base.device != &device->vk || image->memory || (infos[i].memoryOffset & 63) ||
++          infos[i].memoryOffset > memory->vk.size || image->size > memory->vk.size - infos[i].memoryOffset)
++         return VK_ERROR_OUT_OF_DEVICE_MEMORY;
++   }
++   for (uint32_t i = 0; i < count; i++) {
++      VK_FROM_HANDLE(rd_image, image, infos[i].image);
++      image->memory = rd_memory_from_handle(infos[i].memory);
++      image->memory_offset = infos[i].memoryOffset;
++   }
++   return VK_SUCCESS;
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_BindImageMemory(VkDevice handle, VkImage image, VkDeviceMemory memory, VkDeviceSize offset)
++{
++   VkBindImageMemoryInfo info = {.sType = VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_INFO,
++                               .image = image, .memory = memory, .memoryOffset = offset};
++   return rd_BindImageMemory2(handle, 1, &info);
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_GetImageSparseMemoryRequirements(VkDevice handle, VkImage image, uint32_t *count,
++                                   VkSparseImageMemoryRequirements *out)
++{
++   *count = 0;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_GetImageSparseMemoryRequirements2(VkDevice handle, const VkImageSparseMemoryRequirementsInfo2 *info,
++                                    uint32_t *count, VkSparseImageMemoryRequirements2 *out)
++{
++   *count = 0;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_GetImageSubresourceLayout(VkDevice handle, VkImage image_handle,
++                            const VkImageSubresource *subresource, VkSubresourceLayout *out)
++{
++   VK_FROM_HANDLE(rd_image, image, image_handle);
++   *out = (VkSubresourceLayout){0};
++   if (subresource->aspectMask != VK_IMAGE_ASPECT_COLOR_BIT ||
++       subresource->mipLevel >= image->vk.mip_levels || subresource->arrayLayer >= image->vk.array_layers)
++      return;
++   const struct rd_image_level *level = &image->levels[subresource->mipLevel];
++   *out = (VkSubresourceLayout) {
++      .offset = level->offset + subresource->arrayLayer * level->array_pitch,
++      .size = level->array_pitch, .rowPitch = level->row_pitch,
++      .arrayPitch = level->array_pitch, .depthPitch = level->depth_pitch,
++   };
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_CreateImageView(VkDevice handle, const VkImageViewCreateInfo *info,
++                   const VkAllocationCallbacks *allocator, VkImageView *out)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   VK_FROM_HANDLE(rd_image, image, info->image);
++   *out = VK_NULL_HANDLE;
++   VkImageUsageFlags2KHR view_usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT |
++      VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT;
++   const VkImageSubresourceRange *r = &info->subresourceRange;
++   if (!image || info->flags || info->format != image->vk.format ||
++       !(image->vk.usage & view_usage) || r->aspectMask != VK_IMAGE_ASPECT_COLOR_BIT ||
++       r->baseMipLevel >= image->vk.mip_levels || r->baseArrayLayer >= image->vk.array_layers)
++      return VK_ERROR_FORMAT_NOT_SUPPORTED;
++   uint32_t levels = vk_image_subresource_level_count(&image->vk, r);
++   uint32_t layers = vk_image_subresource_layer_count(&image->vk, r);
++   if (!levels || levels > image->vk.mip_levels - r->baseMipLevel || !layers ||
++       layers > image->vk.array_layers - r->baseArrayLayer)
++      return VK_ERROR_FORMAT_NOT_SUPPORTED;
++   bool compatible = (image->vk.image_type == VK_IMAGE_TYPE_1D &&
++      (info->viewType == VK_IMAGE_VIEW_TYPE_1D || info->viewType == VK_IMAGE_VIEW_TYPE_1D_ARRAY)) ||
++      (image->vk.image_type == VK_IMAGE_TYPE_2D &&
++      (info->viewType == VK_IMAGE_VIEW_TYPE_2D || info->viewType == VK_IMAGE_VIEW_TYPE_2D_ARRAY)) ||
++      (image->vk.image_type == VK_IMAGE_TYPE_3D && info->viewType == VK_IMAGE_VIEW_TYPE_3D);
++   if (!rd_shader_format_supported(info->format) ||
++       info->viewType != VK_IMAGE_VIEW_TYPE_2D || levels != 1 || layers != 1 ||
++       (info->components.r != VK_COMPONENT_SWIZZLE_IDENTITY && info->components.r != VK_COMPONENT_SWIZZLE_R) ||
++       (info->components.g != VK_COMPONENT_SWIZZLE_IDENTITY && info->components.g != VK_COMPONENT_SWIZZLE_G) ||
++       (info->components.b != VK_COMPONENT_SWIZZLE_IDENTITY && info->components.b != VK_COMPONENT_SWIZZLE_B) ||
++       (info->components.a != VK_COMPONENT_SWIZZLE_IDENTITY && info->components.a != VK_COMPONENT_SWIZZLE_A))
++      return VK_ERROR_FORMAT_NOT_SUPPORTED;
++   if (!compatible || ((info->viewType == VK_IMAGE_VIEW_TYPE_1D || info->viewType == VK_IMAGE_VIEW_TYPE_2D) && layers != 1))
++      return VK_ERROR_FORMAT_NOT_SUPPORTED;
++   struct rd_image_view *view = vk_image_view_create(&device->vk, info, allocator, sizeof(*view));
++   if (!view)
++      return VK_ERROR_OUT_OF_HOST_MEMORY;
++   *out = rd_image_view_to_handle(view);
++   return VK_SUCCESS;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_DestroyImageView(VkDevice handle, VkImageView view_handle, const VkAllocationCallbacks *allocator)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   VK_FROM_HANDLE(rd_image_view, view, view_handle);
++   if (view)
++      vk_image_view_destroy(&device->vk, allocator, &view->vk);
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_CreateBufferView(VkDevice handle, const VkBufferViewCreateInfo *info,
++                    const VkAllocationCallbacks *allocator, VkBufferView *out)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   VK_FROM_HANDLE(rd_buffer, buffer, info->buffer);
++   *out = VK_NULL_HANDLE;
++   uint32_t size = rd_image_texel_size(info->format);
++   if (!buffer || info->flags || !rd_shader_format_supported(info->format) ||
++       !size || info->offset >= buffer->vk.size ||
++       (info->offset & 15) || !(buffer->vk.usage &
++       (VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT)))
++      return VK_ERROR_FORMAT_NOT_SUPPORTED;
++   VkDeviceSize range = info->range == VK_WHOLE_SIZE ? buffer->vk.size - info->offset : info->range;
++   if (range > buffer->vk.size - info->offset ||
++       (info->range != VK_WHOLE_SIZE && (!range || range % size)) ||
++       range / size > (1u << 23))
++      return VK_ERROR_FORMAT_NOT_SUPPORTED;
++   range -= range % size;
++   struct rd_buffer_view *view = vk_buffer_view_create(&device->vk, info, allocator, sizeof(*view));
++   if (!view)
++      return VK_ERROR_OUT_OF_HOST_MEMORY;
++   view->vk.range = range;
++   view->vk.elements = range / size;
++   *out = rd_buffer_view_to_handle(view);
++   return VK_SUCCESS;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_DestroyBufferView(VkDevice handle, VkBufferView view_handle, const VkAllocationCallbacks *allocator)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   VK_FROM_HANDLE(rd_buffer_view, view, view_handle);
++   if (view)
++      vk_buffer_view_destroy(&device->vk, allocator, &view->vk);
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_CreateSampler(VkDevice handle, const VkSamplerCreateInfo *info,
++                  const VkAllocationCallbacks *allocator, VkSampler *out)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   *out = VK_NULL_HANDLE;
++   if (info->flags || info->anisotropyEnable || info->compareEnable ||
++       (info->magFilter != VK_FILTER_NEAREST && info->magFilter != VK_FILTER_LINEAR) ||
++       (info->minFilter != VK_FILTER_NEAREST && info->minFilter != VK_FILTER_LINEAR) ||
++       info->mipmapMode > VK_SAMPLER_MIPMAP_MODE_LINEAR ||
++       info->addressModeU > VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE ||
++       info->addressModeV > VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE ||
++       info->addressModeW > VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE ||
++       info->borderColor > VK_BORDER_COLOR_INT_OPAQUE_WHITE ||
++       info->compareOp > VK_COMPARE_OP_ALWAYS || info->minLod > info->maxLod ||
++       fabsf(info->mipLodBias) > 16.0f ||
++       !isfinite(info->minLod) || !isfinite(info->maxLod) || !isfinite(info->mipLodBias))
++      return VK_ERROR_FEATURE_NOT_PRESENT;
++   struct rd_sampler *sampler = vk_sampler_create(&device->vk, info, allocator, sizeof(*sampler));
++   if (!sampler)
++      return VK_ERROR_OUT_OF_HOST_MEMORY;
++   vk_sampler_state_init(&sampler->state, info);
++   *out = rd_sampler_to_handle(sampler);
++   return VK_SUCCESS;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_DestroySampler(VkDevice handle, VkSampler sampler_handle, const VkAllocationCallbacks *allocator)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   VK_FROM_HANDLE(rd_sampler, sampler, sampler_handle);
++   if (sampler)
++      vk_sampler_destroy(&device->vk, allocator, &sampler->vk);
++}
++
++static bool
++rd_image_range(const struct rd_image *image, const VkImageSubresourceRange *range)
++{
++   if (!image || range->aspectMask != VK_IMAGE_ASPECT_COLOR_BIT ||
++       range->baseMipLevel >= image->vk.mip_levels || range->baseArrayLayer >= image->vk.array_layers)
++      return false;
++   uint32_t levels = vk_image_subresource_level_count(&image->vk, range);
++   uint32_t layers = vk_image_subresource_layer_count(&image->vk, range);
++   return levels && levels <= image->vk.mip_levels - range->baseMipLevel &&
++          layers && layers <= image->vk.array_layers - range->baseArrayLayer;
++}
++
++bool
++rd_image_barrier_valid(const VkImageMemoryBarrier2 *barrier)
++{
++   VK_FROM_HANDLE(rd_image, image, barrier->image);
++   if (!rd_image_range(image, &barrier->subresourceRange))
++      return false;
++   switch (barrier->oldLayout) {
++   case VK_IMAGE_LAYOUT_UNDEFINED:
++   case VK_IMAGE_LAYOUT_PREINITIALIZED:
++   case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
++   case VK_IMAGE_LAYOUT_GENERAL:
++   case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
++   case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
++      break;
++   default:
++      return false;
++   }
++   if (barrier->newLayout != VK_IMAGE_LAYOUT_GENERAL &&
++       barrier->newLayout != VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL &&
++       barrier->newLayout != VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL &&
++       barrier->newLayout != VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
++      return false;
++   if ((barrier->srcQueueFamilyIndex != VK_QUEUE_FAMILY_IGNORED && barrier->srcQueueFamilyIndex != 0) ||
++       (barrier->dstQueueFamilyIndex != VK_QUEUE_FAMILY_IGNORED && barrier->dstQueueFamilyIndex != 0))
++      return false;
++   return (barrier->newLayout != VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL || (image->vk.usage & VK_IMAGE_USAGE_SAMPLED_BIT)) &&
++          (barrier->newLayout != VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL || (image->vk.usage & VK_IMAGE_USAGE_TRANSFER_SRC_BIT)) &&
++          (barrier->newLayout != VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL || (image->vk.usage & VK_IMAGE_USAGE_TRANSFER_DST_BIT));
++}
++
++static bool
++rd_image_box(struct rd_image *image, const VkImageSubresourceLayers *subresource,
++             VkOffset3D offset, VkExtent3D extent, VkDeviceSize *base,
++             VkDeviceSize *row, VkDeviceSize *slice, uint32_t *slices)
++{
++   if (!image || subresource->aspectMask != VK_IMAGE_ASPECT_COLOR_BIT ||
++       subresource->mipLevel >= image->vk.mip_levels || !subresource->layerCount ||
++       subresource->baseArrayLayer >= image->vk.array_layers ||
++       subresource->layerCount > image->vk.array_layers - subresource->baseArrayLayer ||
++       offset.x < 0 || offset.y < 0 || offset.z < 0 || !extent.width || !extent.height || !extent.depth)
++      return false;
++   VkExtent3D limit = vk_image_mip_level_extent(&image->vk, subresource->mipLevel);
++   if ((uint32_t)offset.x > limit.width || extent.width > limit.width - offset.x ||
++       (uint32_t)offset.y > limit.height || extent.height > limit.height - offset.y ||
++       (uint32_t)offset.z > limit.depth || extent.depth > limit.depth - offset.z)
++      return false;
++   const struct rd_image_level *level = &image->levels[subresource->mipLevel];
++   *base = level->offset + subresource->baseArrayLayer * level->array_pitch +
++           offset.z * level->depth_pitch + offset.y * level->row_pitch + offset.x * image->texel_size;
++   *row = level->row_pitch;
++   *slice = image->vk.image_type == VK_IMAGE_TYPE_3D ? level->depth_pitch : level->array_pitch;
++   *slices = image->vk.image_type == VK_IMAGE_TYPE_3D ? extent.depth : subresource->layerCount;
++   return true;
++}
++
++static bool
++rd_image_copy_layout(VkImageLayout layout, bool source)
++{
++   return layout == VK_IMAGE_LAYOUT_GENERAL || layout ==
++      (source ? VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL : VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
++}
++
++static bool
++rd_image_command_valid(struct rd_command_buffer *command, bool valid)
++{
++   if (!valid)
++      vk_command_buffer_set_error(&command->vk, VK_ERROR_UNKNOWN);
++   return valid;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_CmdCopyImage(VkCommandBuffer handle, VkImage src_handle, VkImageLayout src_layout,
++                VkImage dst_handle, VkImageLayout dst_layout, uint32_t count, const VkImageCopy *regions)
++{
++   VK_FROM_HANDLE(rd_command_buffer, command, handle);
++   VK_FROM_HANDLE(rd_image, src, src_handle);
++   VK_FROM_HANDLE(rd_image, dst, dst_handle);
++   if (!rd_image_command_valid(command, src && dst && src->texel_size == dst->texel_size &&
++       (src->vk.image_type == dst->vk.image_type ||
++        (src->vk.image_type == VK_IMAGE_TYPE_2D && dst->vk.image_type == VK_IMAGE_TYPE_3D) ||
++        (src->vk.image_type == VK_IMAGE_TYPE_3D && dst->vk.image_type == VK_IMAGE_TYPE_2D)) &&
++       (src->vk.usage & VK_IMAGE_USAGE_TRANSFER_SRC_BIT) &&
++       (dst->vk.usage & VK_IMAGE_USAGE_TRANSFER_DST_BIT) &&
++       rd_image_copy_layout(src_layout, true) && rd_image_copy_layout(dst_layout, false)))
++      return;
++   for (uint32_t i = 0; i < count; i++) {
++      struct rd_image_transfer transfer = {.src_image = src, .dst_image = dst};
++      VkExtent3D src_extent = regions[i].extent;
++      VkExtent3D dst_extent = regions[i].extent;
++      if (src->vk.image_type != dst->vk.image_type) {
++         if (src->vk.image_type == VK_IMAGE_TYPE_2D)
++            src_extent.depth = 1;
++         else
++            dst_extent.depth = 1;
++      }
++      uint32_t src_slices, dst_slices;
++      if (!rd_image_command_valid(command,
++          rd_image_box(src, &regions[i].srcSubresource, regions[i].srcOffset, src_extent,
++             &transfer.src_offset, &transfer.src_row_pitch, &transfer.src_slice_pitch, &src_slices) &&
++          rd_image_box(dst, &regions[i].dstSubresource, regions[i].dstOffset, dst_extent,
++             &transfer.dst_offset, &transfer.dst_row_pitch, &transfer.dst_slice_pitch, &dst_slices) && src_slices == dst_slices))
++         return;
++      transfer.row_bytes = (uint64_t)regions[i].extent.width * src->texel_size;
++      transfer.rows = regions[i].extent.height;
++      transfer.slices = src_slices;
++      struct rd_command *recorded = rd_command_append(command, RD_CMD_IMAGE_COPY);
++      if (!recorded)
++         return;
++      recorded->image_transfer = transfer;
++   }
++}
++
++static void
++rd_record_buffer_image(struct rd_command_buffer *command, struct rd_buffer *buffer,
++                       struct rd_image *image, VkImageLayout layout, bool to_image,
++                       uint32_t count, const VkBufferImageCopy *regions)
++{
++   if (!rd_image_command_valid(command, buffer && image &&
++       (buffer->vk.usage & (to_image ? VK_BUFFER_USAGE_TRANSFER_SRC_BIT : VK_BUFFER_USAGE_TRANSFER_DST_BIT)) &&
++       (image->vk.usage & (to_image ? VK_IMAGE_USAGE_TRANSFER_DST_BIT : VK_IMAGE_USAGE_TRANSFER_SRC_BIT)) &&
++       rd_image_copy_layout(layout, !to_image)))
++      return;
++   for (uint32_t i = 0; i < count; i++) {
++      const VkBufferImageCopy *region = &regions[i];
++      VkDeviceSize image_offset, image_row, image_slice;
++      uint32_t slices;
++      if (!rd_image_command_valid(command,
++          rd_image_box(image, &region->imageSubresource, region->imageOffset, region->imageExtent,
++             &image_offset, &image_row, &image_slice, &slices)))
++         return;
++      uint64_t row_length = region->bufferRowLength ? region->bufferRowLength : region->imageExtent.width;
++      uint64_t height = region->bufferImageHeight ? region->bufferImageHeight : region->imageExtent.height;
++      uint64_t row = row_length * image->texel_size;
++      if (!rd_image_command_valid(command, row_length >= region->imageExtent.width &&
++          height >= region->imageExtent.height && row <= RD_IMAGE_MAX_SIZE &&
++          height <= RD_IMAGE_MAX_SIZE / row && !(region->bufferOffset % image->texel_size) &&
++          !(region->bufferOffset & 3)))
++         return;
++      uint64_t slice = row * height;
++      uint64_t row_bytes = (uint64_t)region->imageExtent.width * image->texel_size;
++      uint64_t end = slice * (slices - 1) + row * (region->imageExtent.height - 1) + row_bytes;
++      if (!rd_image_command_valid(command, region->bufferOffset <= buffer->vk.size &&
++          end <= buffer->vk.size - region->bufferOffset))
++         return;
++      struct rd_image_transfer transfer = {
++         .src_image = to_image ? NULL : image, .dst_image = to_image ? image : NULL,
++         .src_buffer = to_image ? buffer : NULL, .dst_buffer = to_image ? NULL : buffer,
++         .src_offset = to_image ? region->bufferOffset : image_offset,
++         .dst_offset = to_image ? image_offset : region->bufferOffset,
++         .src_row_pitch = to_image ? row : image_row, .dst_row_pitch = to_image ? image_row : row,
++         .src_slice_pitch = to_image ? slice : image_slice, .dst_slice_pitch = to_image ? image_slice : slice,
++         .row_bytes = row_bytes, .rows = region->imageExtent.height, .slices = slices,
++      };
++      struct rd_command *recorded = rd_command_append(command, RD_CMD_IMAGE_COPY);
++      if (!recorded)
++         return;
++      recorded->image_transfer = transfer;
++   }
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_CmdCopyBufferToImage(VkCommandBuffer handle, VkBuffer src, VkImage dst, VkImageLayout layout,
++                       uint32_t count, const VkBufferImageCopy *regions)
++{
++   VK_FROM_HANDLE(rd_command_buffer, command, handle);
++   rd_record_buffer_image(command, rd_buffer_from_handle(src), rd_image_from_handle(dst), layout, true, count, regions);
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_CmdCopyImageToBuffer(VkCommandBuffer handle, VkImage src, VkImageLayout layout, VkBuffer dst,
++                       uint32_t count, const VkBufferImageCopy *regions)
++{
++   VK_FROM_HANDLE(rd_command_buffer, command, handle);
++   rd_record_buffer_image(command, rd_buffer_from_handle(dst), rd_image_from_handle(src), layout, false, count, regions);
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_CmdClearColorImage(VkCommandBuffer handle, VkImage image_handle, VkImageLayout layout,
++                      const VkClearColorValue *color, uint32_t count, const VkImageSubresourceRange *ranges)
++{
++   VK_FROM_HANDLE(rd_command_buffer, command, handle);
++   VK_FROM_HANDLE(rd_image, image, image_handle);
++   if (!rd_image_command_valid(command, image && (image->vk.usage & VK_IMAGE_USAGE_TRANSFER_DST_BIT) &&
++       rd_image_copy_layout(layout, false)))
++      return;
++   uint8_t clear[16] = {0};
++   util_format_pack_rgba(vk_format_to_pipe_format(image->vk.format), clear, color, 1);
++   for (uint32_t i = 0; i < count; i++) {
++      if (!rd_image_command_valid(command, rd_image_range(image, &ranges[i])))
++         return;
++      uint32_t levels = vk_image_subresource_level_count(&image->vk, &ranges[i]);
++      uint32_t layers = vk_image_subresource_layer_count(&image->vk, &ranges[i]);
++      for (uint32_t m = 0; m < levels; m++) {
++         uint32_t level = ranges[i].baseMipLevel + m;
++         VkExtent3D extent = vk_image_mip_level_extent(&image->vk, level);
++         struct rd_image_transfer transfer = {
++            .dst_image = image,
++            .dst_offset = image->levels[level].offset + ranges[i].baseArrayLayer * image->levels[level].array_pitch,
++            .dst_row_pitch = image->levels[level].row_pitch,
++            .dst_slice_pitch = image->vk.image_type == VK_IMAGE_TYPE_3D ? image->levels[level].depth_pitch : image->levels[level].array_pitch,
++            .row_bytes = (uint64_t)extent.width * image->texel_size,
++            .rows = extent.height, .slices = image->vk.image_type == VK_IMAGE_TYPE_3D ? extent.depth : layers,
++            .texel_size = image->texel_size,
++         };
++         memcpy(transfer.clear, clear, sizeof(clear));
++         struct rd_command *recorded = rd_command_append(command, RD_CMD_IMAGE_CLEAR);
++         if (!recorded)
++            return;
++         recorded->image_transfer = transfer;
++      }
++   }
++}
++
++static bool
++rd_image_transfer_memory(struct rd_image *image, struct rd_buffer *buffer,
++                         struct rd_memory **memory, VkDeviceSize *offset, VkDeviceSize *size)
++{
++   if (image) {
++      *memory = image->memory;
++      *offset = image->memory_offset;
++      *size = image->size;
++   } else if (buffer) {
++      *memory = buffer->memory;
++      *offset = buffer->offset;
++      *size = buffer->vk.size;
++   } else {
++      return false;
++   }
++   return *memory && *offset <= (*memory)->vk.size && *size <= (*memory)->vk.size - *offset;
++}
++
++static bool
++rd_image_transfer_bounds(VkDeviceSize offset, VkDeviceSize row, VkDeviceSize slice,
++                         const struct rd_image_transfer *transfer, VkDeviceSize size)
++{
++   if (!transfer->rows || !transfer->slices || !transfer->row_bytes || offset > size)
++      return false;
++   uint64_t remaining = size - offset;
++   if (transfer->row_bytes > remaining ||
++       (transfer->rows > 1 && row > (remaining - transfer->row_bytes) / (transfer->rows - 1)))
++      return false;
++   uint64_t rows = row * (transfer->rows - 1) + transfer->row_bytes;
++   return transfer->slices == 1 || slice <= (remaining - rows) / (transfer->slices - 1);
++}
++
++VkResult
++rd_execute_image_transfer(struct rd_device *device, const struct rd_image_transfer *transfer, bool clear)
++{
++   struct rd_memory *src = NULL, *dst = NULL;
++   VkDeviceSize src_offset = 0, dst_offset = 0, src_size = 0, dst_size = 0;
++   if (!rd_image_transfer_memory(transfer->dst_image, transfer->dst_buffer, &dst, &dst_offset, &dst_size) ||
++       !rd_image_transfer_bounds(transfer->dst_offset, transfer->dst_row_pitch,
++                                 transfer->dst_slice_pitch, transfer, dst_size))
++      return VK_ERROR_UNKNOWN;
++   if (!clear && (!rd_image_transfer_memory(transfer->src_image, transfer->src_buffer, &src, &src_offset, &src_size) ||
++       !rd_image_transfer_bounds(transfer->src_offset, transfer->src_row_pitch,
++                                 transfer->src_slice_pitch, transfer, src_size)))
++      return VK_ERROR_UNKNOWN;
++   if (clear && (!transfer->texel_size || transfer->texel_size > sizeof(transfer->clear) ||
++                 transfer->row_bytes % transfer->texel_size))
++      return VK_ERROR_UNKNOWN;
++   if (src && src->bo != dst->bo && fd_bo_cpu_prep(src->bo, device->pipe, FD_BO_PREP_READ | FD_BO_PREP_NOSYNC))
++      return VK_ERROR_DEVICE_LOST;
++   uint32_t flags = FD_BO_PREP_WRITE | FD_BO_PREP_NOSYNC;
++   if (src && src->bo == dst->bo)
++      flags |= FD_BO_PREP_READ;
++   if (fd_bo_cpu_prep(dst->bo, device->pipe, flags))
++      return VK_ERROR_DEVICE_LOST;
++   uint8_t *dst_map = fd_bo_map(dst->bo);
++   const uint8_t *src_map = src ? fd_bo_map(src->bo) : NULL;
++   if (!dst_map || (src && !src_map))
++      return VK_ERROR_MEMORY_MAP_FAILED;
++   __sync_synchronize();
++   for (uint32_t z = 0; z < transfer->slices; z++) {
++      for (uint32_t y = 0; y < transfer->rows; y++) {
++         uint8_t *to = dst_map + dst_offset + transfer->dst_offset +
++                       z * transfer->dst_slice_pitch + y * transfer->dst_row_pitch;
++         if (clear) {
++            for (VkDeviceSize x = 0; x < transfer->row_bytes; x += transfer->texel_size)
++               memcpy(to + x, transfer->clear, transfer->texel_size);
++         } else {
++            const uint8_t *from = src_map + src_offset + transfer->src_offset +
++                                  z * transfer->src_slice_pitch + y * transfer->src_row_pitch;
++            memmove(to, from, transfer->row_bytes);
++         }
++      }
++   }
++   __sync_synchronize();
++   return VK_SUCCESS;
++}
+--- a/src/freedreno/radish/rd_image.h
++++ b/src/freedreno/radish/rd_image.h
+@@ -2,6 +2,7 @@
+ #define RD_IMAGE_H
+ 
+ #include "vk_image.h"
++#include "fdl/freedreno_layout.h"
+ #include "vk_buffer_view.h"
+ #include "vk_sampler.h"
+ 
+@@ -14,7 +15,7 @@
+ struct rd_command_buffer;
+ 
+ struct rd_image_level {
+-   VkDeviceSize offset, row_pitch, depth_pitch, array_pitch;
++   VkDeviceSize offset, row_pitch, depth_pitch, array_pitch, size;
+ };
+ 
+ struct rd_image {
+@@ -22,6 +23,7 @@
+    struct rd_memory *memory;
+    VkDeviceSize memory_offset, size;
+    uint32_t texel_size;
++   struct fdl_layout native_layout;
+    struct rd_image_level levels[RD_IMAGE_MAX_LEVELS];
+ };
+ 
+--- a/src/freedreno/radish/rd_instance.c
++++ b/src/freedreno/radish/rd_instance.c
+@@ -102,16 +102,16 @@
+       .deviceID = 506,
+       .deviceType = VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU,
+       .subgroupSize = 32,
+-      .subgroupSupportedStages = VK_SHADER_STAGE_COMPUTE_BIT,
+-      .subgroupSupportedOperations = VK_SUBGROUP_FEATURE_BASIC_BIT,
++      .subgroupSupportedStages = 0,
++      .subgroupSupportedOperations = 0,
+       .maxMemoryAllocationCount = 4096,
+       .maxImageDimension1D = 4096,
+       .maxImageDimension2D = 4096,
+       .maxImageDimension3D = 256,
+       .maxImageDimensionCube = 4096,
+       .maxImageArrayLayers = 256,
+-      .minTexelBufferOffsetAlignment = 16,
+-      .maxTexelBufferElements = 1 << 23,
++      .minTexelBufferOffsetAlignment = 32,
++      .maxTexelBufferElements = 1 << 27,
+       .maxSamplerAllocationCount = 4096,
+       .maxSamplerLodBias = 16.0f,
+       .maxSamplerAnisotropy = 1.0f,
+--- a/src/freedreno/radish/rd_nir_resources.c
++++ b/src/freedreno/radish/rd_nir_resources.c
+@@ -60,10 +60,15 @@
+ static bool
+ rd_lower_texture(nir_tex_instr *tex, struct rd_resource_lower *state)
+ {
+-   if (tex->sampler_dim != GLSL_SAMPLER_DIM_2D &&
++   if (tex->sampler_dim != GLSL_SAMPLER_DIM_1D &&
++       tex->sampler_dim != GLSL_SAMPLER_DIM_2D &&
++       tex->sampler_dim != GLSL_SAMPLER_DIM_3D &&
++       tex->sampler_dim != GLSL_SAMPLER_DIM_CUBE &&
+        tex->sampler_dim != GLSL_SAMPLER_DIM_BUF)
+       return false;
+-   if (tex->is_array || tex->is_shadow || tex->is_sparse ||
++   if ((tex->is_array && tex->sampler_dim != GLSL_SAMPLER_DIM_1D &&
++        tex->sampler_dim != GLSL_SAMPLER_DIM_2D && tex->sampler_dim != GLSL_SAMPLER_DIM_CUBE) ||
++       tex->is_shadow || tex->is_sparse ||
+        tex->def.bit_size != 32 ||
+        nir_tex_instr_src_index(tex, nir_tex_src_texture_offset) >= 0 ||
+        nir_tex_instr_src_index(tex, nir_tex_src_sampler_offset) >= 0 ||
+@@ -125,9 +130,39 @@
+ rd_storage_format(enum pipe_format format)
+ {
+    switch (format) {
++   case PIPE_FORMAT_R8_UNORM:
++   case PIPE_FORMAT_R8_SNORM:
++   case PIPE_FORMAT_R8_UINT:
++   case PIPE_FORMAT_R8_SINT:
++   case PIPE_FORMAT_R8G8_UNORM:
++   case PIPE_FORMAT_R8G8_SNORM:
++   case PIPE_FORMAT_R8G8_UINT:
++   case PIPE_FORMAT_R8G8_SINT:
++   case PIPE_FORMAT_R8G8B8A8_UNORM:
++   case PIPE_FORMAT_R8G8B8A8_SNORM:
++   case PIPE_FORMAT_R8G8B8A8_UINT:
++   case PIPE_FORMAT_R8G8B8A8_SINT:
++   case PIPE_FORMAT_R16_UNORM:
++   case PIPE_FORMAT_R16_SNORM:
++   case PIPE_FORMAT_R16_UINT:
++   case PIPE_FORMAT_R16_SINT:
++   case PIPE_FORMAT_R16_FLOAT:
++   case PIPE_FORMAT_R16G16_UNORM:
++   case PIPE_FORMAT_R16G16_SNORM:
++   case PIPE_FORMAT_R16G16_UINT:
++   case PIPE_FORMAT_R16G16_SINT:
++   case PIPE_FORMAT_R16G16_FLOAT:
++   case PIPE_FORMAT_R16G16B16A16_UNORM:
++   case PIPE_FORMAT_R16G16B16A16_SNORM:
++   case PIPE_FORMAT_R16G16B16A16_UINT:
++   case PIPE_FORMAT_R16G16B16A16_SINT:
++   case PIPE_FORMAT_R16G16B16A16_FLOAT:
+    case PIPE_FORMAT_R32_UINT:
+    case PIPE_FORMAT_R32_SINT:
+    case PIPE_FORMAT_R32_FLOAT:
++   case PIPE_FORMAT_R32G32_UINT:
++   case PIPE_FORMAT_R32G32_SINT:
++   case PIPE_FORMAT_R32G32_FLOAT:
+    case PIPE_FORMAT_R32G32B32A32_UINT:
+    case PIPE_FORMAT_R32G32B32A32_SINT:
+    case PIPE_FORMAT_R32G32B32A32_FLOAT:
+@@ -200,8 +235,10 @@
+       return false;
+    }
+    enum glsl_sampler_dim dim = nir_intrinsic_image_dim(intr);
+-   if ((dim != GLSL_SAMPLER_DIM_2D && dim != GLSL_SAMPLER_DIM_BUF) ||
+-       nir_intrinsic_image_array(intr)) {
++   if ((dim != GLSL_SAMPLER_DIM_1D && dim != GLSL_SAMPLER_DIM_2D &&
++        dim != GLSL_SAMPLER_DIM_3D && dim != GLSL_SAMPLER_DIM_BUF) ||
++       (nir_intrinsic_image_array(intr) && dim != GLSL_SAMPLER_DIM_1D &&
++        dim != GLSL_SAMPLER_DIM_2D)) {
+       state->failed = true;
+       return false;
+    }
+--- a/src/freedreno/radish/rd_nir_resources.h
++++ b/src/freedreno/radish/rd_nir_resources.h
+@@ -10,7 +10,7 @@
+ struct rd_nir_resource_binding {
+    uint32_t descriptor_set, binding, count, descriptor_slot;
+    VkDescriptorType type;
+-   uint32_t texture_slot, sampler_slot, image_slot;
++   uint32_t buffer_slot, texture_slot, sampler_slot, image_slot;
+ };
+ 
+ struct rd_nir_resource_usage {
+--- a/src/freedreno/radish/rd_pipeline.c
++++ b/src/freedreno/radish/rd_pipeline.c
+@@ -40,6 +40,18 @@
+          return false;
+       }
+       uint32_t first = state->pipeline->set_offsets[set] + found->slot;
++      uint32_t buffer_slot = UINT32_MAX;
++      for (uint32_t i = 0; i < state->pipeline->resource_count; i++) {
++         const struct rd_nir_resource_binding *resource = &state->pipeline->resources[i];
++         if (resource->descriptor_set == set && resource->binding == binding) {
++            buffer_slot = resource->buffer_slot;
++            break;
++         }
++      }
++      if (buffer_slot == UINT32_MAX) {
++         state->failed = true;
++         return false;
++      }
+       if (nir_src_is_const(intr->src[0])) {
+          uint32_t index = nir_src_as_uint(intr->src[0]);
+          if (index >= found->count) {
+@@ -52,7 +64,7 @@
+             state->pipeline->used_descriptors |= 1u << (first + i);
+       }
+       replacement = nir_vec2(b, nir_iadd_imm(b, intr->src[0].ssa,
+-         state->pipeline->set_offsets[set] + found->slot), nir_imm_int(b, 0));
++         buffer_slot), nir_imm_int(b, 0));
+       break;
+    }
+    case nir_intrinsic_vulkan_resource_reindex:
+@@ -118,7 +130,7 @@
+    }
+    pipeline->used_descriptors |= pipeline->resource_usage.descriptors;
+    nir->info.num_ubos = 0;
+-   nir->info.num_ssbos = pipeline->descriptor_count;
++   nir->info.num_ssbos = pipeline->buffer_count;
+    struct rd_lower_state lower = { .pipeline = pipeline };
+    nir_shader_intrinsics_pass(nir, rd_lower_intrinsic,
+       nir_metadata_control_flow, &lower);
+@@ -157,8 +169,7 @@
+       return VK_ERROR_UNKNOWN;
+    v->shader = NULL;
+    if (v->image_mapping.tex_base + v->image_mapping.num_tex > 32 ||
+-       pipeline->descriptor_count + pipeline->resource_usage.image_count > 32 ||
+-       v->pvtmem_size || v->constant_data_size ||
++       pipeline->buffer_count + pipeline->resource_usage.image_count > 32 ||
+        !v->local_size[0] || !v->local_size[1] || !v->local_size[2] ||
+        (uint64_t)v->local_size[0] * v->local_size[1] * v->local_size[2] > 128)
+       return VK_ERROR_FEATURE_NOT_PRESENT;
+@@ -169,6 +180,46 @@
+       DIV_ROUND_UP(local_size, wave_size) * wave_size : wave_size;
+    if ((uint64_t)resident_threads * ir3_shader_halfregs(v) > 4096)
+       return VK_ERROR_FEATURE_NOT_PRESENT;
++   if (v->constant_data_size) {
++      const struct ir3_const_state *state = ir3_const_state(v);
++      if (!v->bin || v->info.constant_data_offset > v->info.size ||
++          v->constant_data_size > v->info.size - v->info.constant_data_offset ||
++          (v->info.constant_data_offset & 15) || (v->constant_data_size & 15) ||
++          state->consts_ubo.idx < 0)
++         return VK_ERROR_UNKNOWN;
++      if (ir3_const_can_upload(&state->allocs, IR3_CONST_ALLOC_UBO_PTRS,
++                              v->constlen)) {
++         uint64_t base = state->allocs.consts[IR3_CONST_ALLOC_UBO_PTRS].offset_vec4 * 4ull;
++         if ((uint32_t)state->consts_ubo.idx >= state->num_ubos ||
++             base + 2ull * align(state->num_ubos, 2) > 4ull * v->constlen)
++            return VK_ERROR_UNKNOWN;
++      }
++      for (unsigned i = 0; i < state->ubo_state.num_enabled; i++) {
++         const struct ir3_ubo_range *range = &state->ubo_state.range[i];
++         if (range->ubo.bindless || range->ubo.global ||
++             range->ubo.block != (uint32_t)state->consts_ubo.idx ||
++             range->start > range->end || range->end > v->constant_data_size ||
++             ((range->start | range->end | range->offset) & 15))
++            return VK_ERROR_UNKNOWN;
++      }
++   }
++   if (v->pvtmem_size) {
++      uint64_t per_sp = (uint64_t)v->pvtmem_size * device->info.fibers_per_sp;
++      per_sp = (per_sp + 4095) & ~UINT64_C(4095);
++      uint64_t total = per_sp * device->info.num_sp_cores;
++      if (v->pvtmem_per_wave || (v->pvtmem_size & 511) ||
++          v->pvtmem_size > (0xffu << 9) || !per_sp ||
++          per_sp > (0xffffu << 11) || per_sp > (0x3ffffu << 12) ||
++          !total || total > UINT32_MAX)
++         return VK_ERROR_OUT_OF_DEVICE_MEMORY;
++      pipeline->private_per_sp = per_sp;
++      pipeline->private_bo = fd_bo_new(device->fd, total, FD_BO_NOMAP,
++                                       "radish-private");
++      if (!pipeline->private_bo)
++         return VK_ERROR_OUT_OF_DEVICE_MEMORY;
++   }
++   if (v->info.size > UINT32_MAX - 127)
++      return VK_ERROR_OUT_OF_DEVICE_MEMORY;
+    pipeline->bo = fd_bo_new(device->fd, align(v->info.size, 128),
+                             FD_BO_GPUREADONLY, "radish-shader");
+    if (!pipeline->bo)
+@@ -191,6 +242,10 @@
+       for (uint32_t j = 0; j < set->binding_count; j++) {
+          const struct rd_binding *binding = &set->bindings[j];
+          uint32_t slot = pipeline->set_offsets[i] + binding->slot;
++         bool buffer = binding->type == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER ||
++            binding->type == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC ||
++            binding->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER ||
++            binding->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+          bool texture = binding->type == VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE ||
+             binding->type == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER ||
+             binding->type == VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER;
+@@ -207,9 +262,12 @@
+          *resource = (struct rd_nir_resource_binding) {
+             .descriptor_set = i, .binding = binding->binding, .count = binding->count,
+             .descriptor_slot = slot, .type = binding->type,
++            .buffer_slot = buffer ? pipeline->buffer_count : UINT32_MAX,
+             .texture_slot = textures, .sampler_slot = samplers, .image_slot = images,
+          };
+          for (uint32_t k = 0; k < binding->count; k++) {
++            if (buffer)
++               pipeline->buffer_descriptors[pipeline->buffer_count++] = slot + k;
+             if (texture)
+                pipeline->texture_descriptors[textures++] = slot + k;
+             if (sampler)
+@@ -228,6 +286,8 @@
+ {
+    if (pipeline->bo)
+       fd_bo_del(pipeline->bo);
++   if (pipeline->private_bo)
++      fd_bo_del(pipeline->private_bo);
+    if (pipeline->variant)
+       ralloc_free(pipeline->variant);
+    vk_pipeline_layout_unref(&device->vk, pipeline->layout);
+--- a/src/freedreno/radish/rd_private.h
++++ b/src/freedreno/radish/rd_private.h
+@@ -43,6 +43,8 @@
+    struct fd_dev_info info;
+    struct ir3_compiler *compiler;
+    struct fd_bo *control;
++   struct fd_bo *border_colors;
++   uint32_t border_colors_offset;
+    uint32_t seqno;
+    uint64_t submit_count;
+    uint64_t faults;
+@@ -102,12 +104,14 @@
+    struct vk_object_base base;
+    struct vk_pipeline_layout *layout;
+    struct ir3_shader_variant *variant;
+-   struct fd_bo *bo;
++   struct fd_bo *bo, *private_bo;
++   uint32_t private_per_sp;
+    uint32_t set_offsets[RD_MAX_SETS], descriptor_count, used_descriptors;
+    struct rd_nir_resource_binding resources[RD_MAX_BINDINGS];
+    uint32_t resource_count;
+    struct rd_nir_resource_usage resource_usage;
+    uint32_t texture_descriptors[16], sampler_descriptors[16], image_descriptors[16];
++   uint32_t buffer_count, buffer_descriptors[RD_MAX_BINDINGS];
+ };
+ struct rd_dispatch {
+    struct rd_pipeline *pipeline;
+@@ -193,6 +197,9 @@
+ struct rd_command *rd_command_append(struct rd_command_buffer *command,
+                                      enum rd_command_type type);
+ bool rd_shader_format_supported(VkFormat format);
++bool rd_storage_shader_format_supported(VkFormat format);
++bool rd_shader_format_filterable(VkFormat format);
++VkResult rd_init_border_colors(struct rd_device *device);
+ void rd_sampler_descriptor(const struct vk_sampler_state *state, uint32_t words[4]);
+ bool rd_descriptor_ready(const struct rd_descriptor *descriptor);
+ void rd_emit_shader_resources(struct rd_device *device, struct fd_ringbuffer *ring,
+--- a/src/freedreno/radish/rd_queue.c
++++ b/src/freedreno/radish/rd_queue.c
+@@ -256,7 +256,7 @@
+ 
+    OUT_PKT4(ring, REG_A5XX_HLSQ_CS_CNTL, 1);
+    OUT_RING(ring, A5XX_HLSQ_CS_CNTL_INSTRLEN(instrlen) |
+-                     COND(pipeline->descriptor_count > 0, A5XX_HLSQ_CS_CNTL_SSBO_ENABLE));
++                     COND(pipeline->buffer_count + pipeline->resource_usage.image_count > 0, A5XX_HLSQ_CS_CNTL_SSBO_ENABLE));
+ 
+    OUT_PKT4(ring, REG_A5XX_SP_CS_CONFIG, 1);
+    OUT_RING(ring, A5XX_SP_CS_CONFIG_CONSTOBJECTOFFSET(0) |
+@@ -271,18 +271,15 @@
+    OUT_RING(ring, pipeline->resource_usage.images ? ~0u : v->num_samp);
+ 
+    uint32_t per_fiber_size = v->pvtmem_size;
+-   uint32_t per_sp_size =
+-      align(per_fiber_size * v->compiler->info->fibers_per_sp, 1 << 12);
++   uint32_t per_sp_size = pipeline->private_per_sp;
+ 
+    OUT_PKT4(ring, REG_A5XX_SP_CS_OBJ_START, 6);
+    OUT_RELOC(ring, pipeline->bo, 0, 0, 0); /* SP_CS_OBJ_START */
+    OUT_RING(ring, A5XX_SP_CS_PVT_MEM_PARAM_MEMSIZEPERITEM(per_fiber_size) |
+                      A5XX_SP_CS_PVT_MEM_PARAM_HWSTACKOFFSET(per_sp_size));
+    if (v->pvtmem_size > 0) { /* SP_CS_PVT_MEM_ADDR */
+-      uint32_t total_size = per_sp_size * v->compiler->info->num_sp_cores;
+-      struct fd_bo *pvtmem =
+-         fd_bo_new(v->compiler->dev, total_size, FD_BO_NOMAP, "pvtmem");
+-      OUT_RELOC(ring, pvtmem, 0, 0, 0);
++      OUT_RELOC(ring, pipeline->private_bo, 0, 0, 0);
++      fd_ringbuffer_attach_bo(ring, pipeline->private_bo);
+    } else {
+       OUT_RING(ring, 0);
+       OUT_RING(ring, 0);
+@@ -348,7 +345,7 @@
+ rd_emit_buffers(struct rd_device *device, struct fd_ringbuffer *ring,
+                  const struct rd_dispatch *dispatch)
+ {
+-   unsigned count = dispatch->pipeline->descriptor_count;
++   unsigned count = dispatch->pipeline->buffer_count;
+    if (!count)
+       return;
+    OUT_PKT7(ring, CP_LOAD_STATE4, 3 + 2 * count);
+@@ -357,7 +354,8 @@
+    OUT_RING(ring, CP_LOAD_STATE4_1_STATE_TYPE(ST4_CONSTANTS));
+    OUT_RING(ring, 0);
+    for (unsigned i = 0; i < count; i++) {
+-      uint32_t bytes = dispatch->descriptors[i].buffer ? dispatch->descriptors[i].range : 0;
++      const struct rd_descriptor *desc = &dispatch->descriptors[dispatch->pipeline->buffer_descriptors[i]];
++      uint32_t bytes = desc->buffer ? desc->range : 0;
+       OUT_RING(ring, A5XX_SSBO_1_0_WIDTH(bytes));
+       OUT_RING(ring, A5XX_SSBO_1_1_HEIGHT(bytes >> 16));
+    }
+@@ -367,7 +365,7 @@
+    OUT_RING(ring, CP_LOAD_STATE4_1_STATE_TYPE(ST4_UBO));
+    OUT_RING(ring, 0);
+    for (unsigned i = 0; i < count; i++) {
+-      const struct rd_descriptor *desc = &dispatch->descriptors[i];
++      const struct rd_descriptor *desc = &dispatch->descriptors[dispatch->pipeline->buffer_descriptors[i]];
+       if (desc->buffer && desc->buffer->memory)
+          OUT_RELOC(ring, desc->buffer->memory->bo,
+                     desc->buffer->offset + desc->offset, 0, 0);
+@@ -402,6 +400,40 @@
+       unsigned size = MIN2(state->num_driver_params, v->constlen * 4 - base);
+       if (size)
+          emit_const(ring, base, size, (const uint32_t *)&params);
++   }
++   if (v->constant_data_size) {
++      if (ir3_const_can_upload(&state->allocs, IR3_CONST_ALLOC_UBO_PTRS,
++                              v->constlen)) {
++         unsigned base = state->allocs.consts[IR3_CONST_ALLOC_UBO_PTRS].offset_vec4;
++         unsigned count = align(state->num_ubos, 2);
++         OUT_PKT7(ring, CP_LOAD_STATE4, 3 + 2 * count);
++         OUT_RING(ring, CP_LOAD_STATE4_0_DST_OFF(base) |
++            CP_LOAD_STATE4_0_STATE_SRC(SS4_DIRECT) |
++            CP_LOAD_STATE4_0_STATE_BLOCK(SB4_CS_SHADER) |
++            CP_LOAD_STATE4_0_NUM_UNIT(count / 2));
++         OUT_RING(ring, CP_LOAD_STATE4_1_STATE_TYPE(ST4_CONSTANTS));
++         OUT_RING(ring, 0);
++         for (unsigned i = 0; i < count; i++) {
++            if (i == (unsigned)state->consts_ubo.idx) {
++               OUT_RELOC(ring, dispatch->pipeline->bo,
++                          v->info.constant_data_offset, 0, 0);
++            } else {
++               OUT_RING(ring, 0);
++               OUT_RING(ring, 0);
++            }
++         }
++      }
++      for (unsigned i = 0; i < state->ubo_state.num_enabled; i++) {
++         const struct ir3_ubo_range *range = &state->ubo_state.range[i];
++         if (range->offset >= 16 * v->constlen)
++            continue;
++         unsigned size = MIN2(range->end - range->start,
++                              16 * v->constlen - range->offset);
++         if (size)
++            emit_const(ring, range->offset / 4, size / 4,
++               (const uint32_t *)((const uint8_t *)v->bin +
++                  v->info.constant_data_offset + range->start));
++      }
+    }
+    unsigned base = state->allocs.max_const_offset_vec4 * 4;
+    if (v->imm_state.count && base < v->constlen * 4)
+--- /dev/null
++++ b/src/freedreno/radish/rd_queue.c.orig
+@@ -0,0 +1,941 @@
++/*
++ * Copyright © 2016 Rob Clark <robclark@freedesktop.org>
++ * SPDX-License-Identifier: MIT
++ */
++
++#include "rd_private.h"
++#include "common/fd5_hw.h"
++#include "common/freedreno_common.h"
++#include "drm/freedreno_ringbuffer.h"
++#include "vk_sync.h"
++#include "util/u_math.h"
++#include "util/u_atomic.h"
++#include "util/os_time.h"
++#include "util/u_debug.h"
++#include <inttypes.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++
++struct rd_submit_profile {
++   int64_t total_ns;
++   int64_t max_ns;
++};
++
++struct rd_gpu_elapsed {
++   struct fd_bo *bo;
++   void *map;
++   const struct rd_dispatch *dispatch;
++   const char *reason;
++   const char *calibration;
++   unsigned sample;
++   uint32_t seqno;
++   uint64_t submit_count;
++};
++
++static bool
++rd_gpu_elapsed_reserve(unsigned *sample)
++{
++   static unsigned attempts;
++   unsigned value = p_atomic_read(&attempts);
++   while (value < 16) {
++      unsigned observed = p_atomic_cmpxchg(&attempts, value, value + 1);
++      if (observed == value) {
++         *sample = value;
++         return true;
++      }
++      value = observed;
++   }
++   return false;
++}
++
++static void
++rd_gpu_elapsed_release(struct rd_gpu_elapsed *sample)
++{
++   if (sample && sample->bo) {
++      fd_bo_del(sample->bo);
++      sample->bo = NULL;
++   }
++}
++
++static void
++rd_gpu_elapsed_prepare(struct rd_device *device, struct rd_gpu_elapsed *sample)
++{
++   sample->bo = fd_bo_new(device->fd, 4096, 0, "radish-gpu-elapsed");
++   if (!sample->bo)
++      sample->reason = "bo_alloc";
++   else if (fd_bo_cpu_prep(sample->bo, device->pipe,
++                          FD_BO_PREP_WRITE | FD_BO_PREP_NOSYNC))
++      sample->reason = "write_prep";
++   else if (!(sample->map = fd_bo_map(sample->bo)))
++      sample->reason = "map";
++   if (sample->reason) {
++      rd_gpu_elapsed_release(sample);
++      return;
++   }
++   const uint64_t initial[4] = {
++      UINT64_MAX, UINT64_C(0x1964a5a55a5acafe),
++      UINT64_MAX, UINT64_C(0xe69b5a5aa5a53501)
++   };
++   memcpy(sample->map, initial, sizeof(initial));
++   __sync_synchronize();
++}
++
++static void
++rd_gpu_elapsed_emit(struct fd_ringbuffer *ring, struct fd_bo *bo,
++                    unsigned offset)
++{
++   OUT_PKT7(ring, CP_EVENT_WRITE, 4);
++   OUT_RING(ring, CP_EVENT_WRITE_0_EVENT(RB_DONE_TS) |
++                  CP_EVENT_WRITE_0_TIMESTAMP);
++   OUT_RELOC(ring, bo, offset, 0, 0);
++   OUT_RING(ring, 0);
++}
++
++static void
++rd_gpu_elapsed_finish(struct rd_device *device, struct rd_gpu_elapsed *sample,
++                      VkResult result, int64_t start, int64_t done)
++{
++   if (!sample)
++      return;
++   uint64_t values[4] = {UINT64_MAX, 0, UINT64_MAX, 0};
++   uint64_t delta = 0, gpu_ns = 0;
++   int64_t host_ns = start >= 0 && done > start ? done - start : 0;
++   if (result != VK_SUCCESS)
++      sample->reason = "submit_failed";
++   else if (!sample->reason) {
++      if (fd_bo_cpu_prep(sample->bo, device->pipe,
++                         FD_BO_PREP_READ | FD_BO_PREP_NOSYNC)) {
++         sample->reason = "read_prep";
++      } else {
++         __sync_synchronize();
++         memcpy(values, sample->map, sizeof(values));
++         if (values[1] != UINT64_C(0x1964a5a55a5acafe) ||
++             values[3] != UINT64_C(0xe69b5a5aa5a53501))
++            sample->reason = "guard";
++         else if ((uint32_t)values[0] == UINT32_MAX ||
++                  (uint32_t)(values[0] >> 32) == UINT32_MAX ||
++                  (uint32_t)values[2] == UINT32_MAX ||
++                  (uint32_t)(values[2] >> 32) == UINT32_MAX)
++            sample->reason = "poison";
++         else if (!values[0] || !values[2])
++            sample->reason = "zero";
++         else if (values[2] <= values[0])
++            sample->reason = "order";
++         else if (values[2] - values[0] > UINT64_C(96000000))
++            sample->reason = "ticks";
++         else if (!host_ns)
++            sample->reason = "host_interval";
++         else if (fd_ticks_to_ns(values[2] - values[0]) >
++                  (uint64_t)host_ns + 1000)
++            sample->reason = "interval";
++         else {
++            delta = values[2] - values[0];
++            gpu_ns = fd_ticks_to_ns(delta);
++         }
++      }
++   }
++   char line[1024];
++   int length = snprintf(line, sizeof(line),
++      "RADISH_GPU_ELAPSED version=1 sample=%u valid=%u reason=%s pipeline=%p grid=4,2,1 local=16,8,1 instrlen=27 chunks=%u submits=%" PRIu64 " submit_id=%" PRIu64 " start_ticks=%" PRIu64 " stop_ticks=%" PRIu64 " delta_ticks=%" PRIu64 " gpu_ns=%" PRIu64 " host_start_ns=%" PRId64 " host_done_ns=%" PRId64 " submit_ns=%" PRId64 " result=%d\n",
++      sample->sample, (unsigned)(sample->reason == NULL), sample->reason ? sample->reason : "ok",
++      (void *)sample->dispatch->pipeline, device->seqno - sample->seqno,
++      device->submit_count - sample->submit_count, device->submit_count,
++      values[0], values[2], delta, gpu_ns, start, done, host_ns, result);
++   if (sample->calibration)
++      length = snprintf(line, sizeof(line),
++         "RADISH_GPU_ELAPSED version=1 sample=%u valid=%u reason=%s pipeline=%p grid=4,2,1 local=16,8,1 instrlen=%u chunks=%u submits=%" PRIu64 " submit_id=%" PRIu64 " start_ticks=%" PRIu64 " stop_ticks=%" PRIu64 " delta_ticks=%" PRIu64 " gpu_ns=%" PRIu64 " host_start_ns=%" PRId64 " host_done_ns=%" PRId64 " submit_ns=%" PRId64 " result=%d calibration=%s\n",
++         sample->sample, (unsigned)(sample->reason == NULL), sample->reason ? sample->reason : "ok",
++         (void *)sample->dispatch->pipeline,
++         sample->dispatch->pipeline->variant->instrlen, device->seqno - sample->seqno,
++         device->submit_count - sample->submit_count, device->submit_count,
++         values[0], values[2], delta, gpu_ns, start, done, host_ns, result,
++         sample->calibration);
++   if (length >= 0 && (size_t)length < sizeof(line))
++      fputs(line, stderr);
++   else
++      fprintf(stderr, "RADISH_GPU_ELAPSED version=1 sample=%u valid=0 reason=report_overflow\n",
++              sample->sample);
++}
++
++static void
++cs_restore_emit(struct fd_ringbuffer *ring, struct rd_device *device)
++{
++   OUT_PKT7(ring, CP_SET_RENDER_MODE, 5);
++   OUT_RING(ring, CP_SET_RENDER_MODE_0_MODE(BYPASS));
++   OUT_RING(ring, 0x00000000); /* ADDR_LO */
++   OUT_RING(ring, 0x00000000); /* ADDR_HI */
++   OUT_RING(ring, 0x00000000);
++   OUT_RING(ring, 0x00000000);
++
++   OUT_PKT4(ring, REG_A5XX_UCHE_CACHE_INVALIDATE_MIN, 5);
++   OUT_RING(ring, 0x00000000); /* UCHE_CACHE_INVALIDATE_MIN_LO */
++   OUT_RING(ring, 0x00000000); /* UCHE_CACHE_INVALIDATE_MIN_HI */
++   OUT_RING(ring, 0x00000000); /* UCHE_CACHE_INVALIDATE_MAX_LO */
++   OUT_RING(ring, 0x00000000); /* UCHE_CACHE_INVALIDATE_MAX_HI */
++   OUT_RING(ring, 0x00000012); /* UCHE_CACHE_INVALIDATE */
++
++   OUT_WFI5(ring);
++
++   OUT_PKT4(ring, REG_A5XX_HLSQ_UPDATE_CNTL, 1);
++   OUT_RING(ring, 0x000fffff);
++
++   OUT_PKT4(ring, REG_A5XX_RB_MODE_CNTL, 1);
++   OUT_RING(ring, 0x00000044);
++
++   OUT_PKT4(ring, REG_A5XX_RB_DBG_ECO_CNTL, 1);
++   OUT_RING(ring, 0x00100000);
++
++   OUT_PKT4(ring, REG_A5XX_PC_MODE_CNTL, 1);
++   OUT_RING(ring, 0x0000001f);
++
++   OUT_PKT4(ring, REG_A5XX_SP_MODE_CNTL, 1);
++   OUT_RING(ring, 0x0000001e);
++
++   if (fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) == 540) {
++      OUT_PKT4(ring, REG_A5XX_SP_DBG_ECO_CNTL, 1);
++      OUT_RING(ring, 0x00000800);
++
++      OUT_PKT4(ring, REG_A5XX_HLSQ_DBG_ECO_CNTL, 1);
++      OUT_RING(ring, 0x00000000);
++   } else {
++      OUT_PKT4(ring, REG_A5XX_SP_DBG_ECO_CNTL, 1);
++      OUT_RING(ring, 0x40000800);
++   }
++
++   OUT_PKT4(ring, REG_A5XX_TPL1_MODE_CNTL, 1);
++   OUT_RING(ring, 0x00000544);
++
++   OUT_PKT4(ring, REG_A5XX_HLSQ_TIMEOUT_THRESHOLD_0, 2);
++   OUT_RING(ring, 0x00000080); /* HLSQ_TIMEOUT_THRESHOLD_0 */
++   OUT_RING(ring, 0x00000000); /* HLSQ_TIMEOUT_THRESHOLD_1 */
++
++   OUT_PKT4(ring, REG_A5XX_VPC_DBG_ECO_CNTL, 1);
++   OUT_RING(ring, 0x00000400);
++
++   OUT_PKT4(ring, REG_A5XX_HLSQ_MODE_CNTL, 1);
++   OUT_RING(ring, 0x00000001);
++
++   OUT_PKT4(ring, REG_A5XX_VPC_MODE_CNTL, 1);
++   OUT_RING(ring, 0x00000000);
++}
++
++static void
++cs_program_emit(struct fd_ringbuffer *ring, struct rd_pipeline *pipeline)
++{
++   struct ir3_shader_variant *v = pipeline->variant;
++   const struct ir3_info *i = &v->info;
++   enum a3xx_threadsize thrsz = i->double_threadsize ? FOUR_QUADS : TWO_QUADS;
++
++   /* if shader is more than 32*16 instructions, don't preload it.  Similar
++    * to the combined restriction of 64*16 for VS+FS
++    */
++   unsigned instrlen = (v->instrlen > 32) ? 0 : v->instrlen;
++
++   OUT_PKT4(ring, REG_A5XX_SP_SP_CNTL, 1);
++   OUT_RING(ring, 0x00000000); /* SP_SP_CNTL */
++
++   OUT_PKT4(ring, REG_A5XX_HLSQ_CONTROL_0_REG, 1);
++   OUT_RING(ring, A5XX_HLSQ_CONTROL_0_REG_FSTHREADSIZE(TWO_QUADS) |
++                     A5XX_HLSQ_CONTROL_0_REG_CSTHREADSIZE(thrsz) |
++                     0x00000880 /* XXX */);
++
++   OUT_PKT4(ring, REG_A5XX_SP_CS_CTRL_REG0, 1);
++   OUT_RING(ring,
++            A5XX_SP_CS_CTRL_REG0_THREADSIZE(thrsz) |
++               A5XX_SP_CS_CTRL_REG0_HALFREGFOOTPRINT(i->max_half_reg + 1) |
++               A5XX_SP_CS_CTRL_REG0_FULLREGFOOTPRINT(i->max_reg + 1) |
++               A5XX_SP_CS_CTRL_REG0_BRANCHSTACK(ir3_shader_branchstack_hw(v)) |
++               COND(instrlen != 0, A5XX_SP_CS_CTRL_REG0_BUFFER) |
++               0x2 /* XXX */);
++
++   OUT_PKT4(ring, REG_A5XX_HLSQ_CS_CONFIG, 1);
++   OUT_RING(ring, A5XX_HLSQ_CS_CONFIG_CONSTOBJECTOFFSET(0) |
++                     A5XX_HLSQ_CS_CONFIG_SHADEROBJOFFSET(0) |
++                     A5XX_HLSQ_CS_CONFIG_ENABLED);
++
++   OUT_PKT4(ring, REG_A5XX_HLSQ_CS_CNTL, 1);
++   OUT_RING(ring, A5XX_HLSQ_CS_CNTL_INSTRLEN(instrlen) |
++                     COND(pipeline->descriptor_count > 0, A5XX_HLSQ_CS_CNTL_SSBO_ENABLE));
++
++   OUT_PKT4(ring, REG_A5XX_SP_CS_CONFIG, 1);
++   OUT_RING(ring, A5XX_SP_CS_CONFIG_CONSTOBJECTOFFSET(0) |
++                     A5XX_SP_CS_CONFIG_SHADEROBJOFFSET(0) |
++                     A5XX_SP_CS_CONFIG_ENABLED);
++
++   OUT_PKT4(ring, REG_A5XX_HLSQ_CS_CONSTLEN, 2);
++   OUT_RING(ring, align(v->constlen, 4) / 4); /* HLSQ_CS_CONSTLEN */
++   OUT_RING(ring, instrlen);                  /* HLSQ_CS_INSTRLEN */
++
++   OUT_PKT4(ring, REG_A5XX_TPL1_CS_TEX_COUNT, 1);
++   OUT_RING(ring, pipeline->resource_usage.images ? ~0u : v->num_samp);
++
++   uint32_t per_fiber_size = v->pvtmem_size;
++   uint32_t per_sp_size =
++      align(per_fiber_size * v->compiler->info->fibers_per_sp, 1 << 12);
++
++   OUT_PKT4(ring, REG_A5XX_SP_CS_OBJ_START, 6);
++   OUT_RELOC(ring, pipeline->bo, 0, 0, 0); /* SP_CS_OBJ_START */
++   OUT_RING(ring, A5XX_SP_CS_PVT_MEM_PARAM_MEMSIZEPERITEM(per_fiber_size) |
++                     A5XX_SP_CS_PVT_MEM_PARAM_HWSTACKOFFSET(per_sp_size));
++   if (v->pvtmem_size > 0) { /* SP_CS_PVT_MEM_ADDR */
++      uint32_t total_size = per_sp_size * v->compiler->info->num_sp_cores;
++      struct fd_bo *pvtmem =
++         fd_bo_new(v->compiler->dev, total_size, FD_BO_NOMAP, "pvtmem");
++      OUT_RELOC(ring, pvtmem, 0, 0, 0);
++   } else {
++      OUT_RING(ring, 0);
++      OUT_RING(ring, 0);
++   }
++   OUT_RING(ring, A5XX_SP_CS_PVT_MEM_SIZE_TOTALPVTMEMSIZE(per_sp_size));
++
++   OUT_PKT4(ring, REG_A5XX_HLSQ_UPDATE_CNTL, 1);
++   OUT_RING(ring, 0x01f00000);
++
++   uint32_t local_invocation_id, work_group_id;
++   local_invocation_id =
++      ir3_find_sysval_regid(v, SYSTEM_VALUE_LOCAL_INVOCATION_ID);
++   work_group_id = ir3_find_sysval_regid(v, SYSTEM_VALUE_WORKGROUP_ID);
++
++   OUT_PKT4(ring, REG_A5XX_HLSQ_CS_CNTL_0, 2);
++   OUT_RING(ring, A5XX_HLSQ_CS_CNTL_0_WGIDCONSTID(work_group_id) |
++                     A5XX_HLSQ_CS_CNTL_0_UNK0(INVALID_REG) |
++                     A5XX_HLSQ_CS_CNTL_0_UNK1(INVALID_REG) |
++                     A5XX_HLSQ_CS_CNTL_0_LOCALIDREGID(local_invocation_id));
++   OUT_RING(ring, 0x1);
++
++   if (instrlen > 0) {
++      /* preload the shader into the instruction cache: */
++      OUT_PKT7(ring, CP_LOAD_STATE4, 3);
++      OUT_RING(ring, CP_LOAD_STATE4_0_DST_OFF(0) |
++                        CP_LOAD_STATE4_0_STATE_SRC(SS4_INDIRECT) |
++                        CP_LOAD_STATE4_0_STATE_BLOCK(SB4_CS_SHADER) |
++                        CP_LOAD_STATE4_0_NUM_UNIT(instrlen));
++      OUT_RELOC(ring, pipeline->bo, 0, CP_LOAD_STATE4_1_STATE_TYPE(ST4_SHADER), 0);
++   }
++}
++
++static void
++emit_const(struct fd_ringbuffer *ring, uint32_t constid, uint32_t sizedwords,
++           const uint32_t *dwords)
++{
++   uint32_t align_sz;
++
++   assert((constid % 4) == 0);
++
++   align_sz = align(sizedwords, 4);
++
++   OUT_PKT7(ring, CP_LOAD_STATE4, 3 + align_sz);
++   OUT_RING(ring, CP_LOAD_STATE4_0_DST_OFF(constid / 4) |
++                     CP_LOAD_STATE4_0_STATE_SRC(SS4_DIRECT) |
++                     CP_LOAD_STATE4_0_STATE_BLOCK(SB4_CS_SHADER) |
++                     CP_LOAD_STATE4_0_NUM_UNIT(DIV_ROUND_UP(sizedwords, 4)));
++   OUT_RING(ring, CP_LOAD_STATE4_1_EXT_SRC_ADDR(0) |
++                     CP_LOAD_STATE4_1_STATE_TYPE(ST4_CONSTANTS));
++   OUT_RING(ring, CP_LOAD_STATE4_2_EXT_SRC_ADDR_HI(0));
++   for (unsigned i = 0; i < sizedwords; i++) {
++      OUT_RING(ring, dwords[i]);
++   }
++
++   /* Zero-pad to multiple of 4 dwords */
++   for (uint32_t i = sizedwords; i < align_sz; i++) {
++      OUT_RING(ring, 0);
++   }
++}
++
++
++static void
++rd_emit_buffers(struct rd_device *device, struct fd_ringbuffer *ring,
++                 const struct rd_dispatch *dispatch)
++{
++   unsigned count = dispatch->pipeline->descriptor_count;
++   if (!count)
++      return;
++   OUT_PKT7(ring, CP_LOAD_STATE4, 3 + 2 * count);
++   OUT_RING(ring, CP_LOAD_STATE4_0_STATE_SRC(SS4_DIRECT) |
++      CP_LOAD_STATE4_0_STATE_BLOCK(SB4_CS_SSBO) | CP_LOAD_STATE4_0_NUM_UNIT(count));
++   OUT_RING(ring, CP_LOAD_STATE4_1_STATE_TYPE(ST4_CONSTANTS));
++   OUT_RING(ring, 0);
++   for (unsigned i = 0; i < count; i++) {
++      uint32_t bytes = dispatch->descriptors[i].buffer ? dispatch->descriptors[i].range : 0;
++      OUT_RING(ring, A5XX_SSBO_1_0_WIDTH(bytes));
++      OUT_RING(ring, A5XX_SSBO_1_1_HEIGHT(bytes >> 16));
++   }
++   OUT_PKT7(ring, CP_LOAD_STATE4, 3 + 2 * count);
++   OUT_RING(ring, CP_LOAD_STATE4_0_STATE_SRC(SS4_DIRECT) |
++      CP_LOAD_STATE4_0_STATE_BLOCK(SB4_CS_SSBO) | CP_LOAD_STATE4_0_NUM_UNIT(count));
++   OUT_RING(ring, CP_LOAD_STATE4_1_STATE_TYPE(ST4_UBO));
++   OUT_RING(ring, 0);
++   for (unsigned i = 0; i < count; i++) {
++      const struct rd_descriptor *desc = &dispatch->descriptors[i];
++      if (desc->buffer && desc->buffer->memory)
++         OUT_RELOC(ring, desc->buffer->memory->bo,
++                    desc->buffer->offset + desc->offset, 0, 0);
++      else
++         OUT_RELOC(ring, device->control, 0, 0, 0);
++   }
++}
++
++static void
++rd_emit_constants(struct fd_ringbuffer *ring, const struct rd_dispatch *dispatch,
++                  const uint32_t group_base[3])
++{
++   const struct ir3_shader_variant *v = dispatch->pipeline->variant;
++   const struct ir3_const_state *state = ir3_const_state(v);
++   emit_const(ring, 0, MIN2(32, v->constlen * 4), dispatch->push);
++   if (v->need_driver_params) {
++      struct ir3_driver_params_cs params = {
++         .num_work_groups_x = dispatch->grid[0],
++         .num_work_groups_y = dispatch->grid[1],
++         .num_work_groups_z = dispatch->grid[2],
++         .work_dim = 3,
++         .base_group_x = dispatch->base[0] + group_base[0],
++         .base_group_y = dispatch->base[1] + group_base[1],
++         .base_group_z = dispatch->base[2] + group_base[2],
++         .subgroup_size = 32,
++         .local_group_size_x = v->local_size[0],
++         .local_group_size_y = v->local_size[1],
++         .local_group_size_z = v->local_size[2],
++      };
++      unsigned base = state->allocs.consts[IR3_CONST_ALLOC_DRIVER_PARAMS].offset_vec4 * 4;
++      unsigned size = MIN2(state->num_driver_params, v->constlen * 4 - base);
++      if (size)
++         emit_const(ring, base, size, (const uint32_t *)&params);
++   }
++   unsigned base = state->allocs.max_const_offset_vec4 * 4;
++   if (v->imm_state.count && base < v->constlen * 4)
++      emit_const(ring, base, MIN2(align(v->imm_state.count, 4),
++                                v->constlen * 4 - base), v->imm_state.values);
++}
++
++static void
++rd_flush(struct rd_device *device, struct fd_ringbuffer *ring)
++{
++   uint32_t seqno = ++device->seqno;
++   OUT_PKT7(ring, CP_EVENT_WRITE, 4);
++   OUT_RING(ring, CACHE_FLUSH_TS);
++   OUT_RELOC(ring, device->control, 0, 0, 0);
++   OUT_RING(ring, seqno);
++   OUT_PKT7(ring, CP_WAIT_REG_MEM, 6);
++   OUT_RING(ring, CP_WAIT_REG_MEM_0_FUNCTION(WRITE_EQ) |
++                  CP_WAIT_REG_MEM_0_POLL(POLL_MEMORY));
++   OUT_RELOC(ring, device->control, 0, 0, 0);
++   OUT_RING(ring, seqno);
++   OUT_RING(ring, ~0u);
++   OUT_RING(ring, CP_WAIT_REG_MEM_5_DELAY_LOOP_CYCLES(16));
++}
++
++static VkResult
++rd_finish_submit(struct rd_device *device, struct fd_submit *submit,
++                  struct fd_ringbuffer *ring, struct rd_submit_profile *profile,
++                  struct rd_gpu_elapsed *sample)
++{
++   device->submit_count++;
++   int64_t start = profile ? os_time_get_nano() : 0;
++   struct fd_fence *fence = fd_submit_flush(submit, -1, false);
++   VkResult result = VK_ERROR_DEVICE_LOST;
++   if (fence) {
++      fd_fence_flush(fence);
++      if (!fd_pipe_wait_timeout(device->pipe, fence, 5000000000ull)) {
++         uint64_t faults = 0;
++         if (!fd_pipe_get_param(device->pipe, FD_CTX_FAULTS, &faults) &&
++             faults == device->faults)
++            result = VK_SUCCESS;
++      }
++   }
++   int64_t done = profile ? os_time_get_nano() : 0;
++   if (profile) {
++      int64_t elapsed = done - start;
++      profile->total_ns += elapsed;
++      profile->max_ns = MAX2(profile->max_ns, elapsed);
++   }
++   rd_gpu_elapsed_finish(device, sample, result, start, done);
++   if (fence)
++      fd_fence_del(fence);
++   fd_ringbuffer_del(ring);
++   fd_submit_del(submit);
++   return result;
++}
++
++VkResult
++rd_query_timestamp(struct rd_device *device, struct rd_query_pool *pool,
++                    uint64_t *value)
++{
++   if (!pool->bo || !pool->map)
++      return VK_ERROR_UNKNOWN;
++   struct fd_submit *submit = fd_submit_new(device->pipe);
++   if (!submit)
++      return VK_ERROR_OUT_OF_HOST_MEMORY;
++   struct fd_ringbuffer *ring = fd_submit_new_ringbuffer(submit, 0,
++      FD_RINGBUFFER_PRIMARY | FD_RINGBUFFER_GROWABLE);
++   if (!ring) {
++      fd_submit_del(submit);
++      return VK_ERROR_OUT_OF_HOST_MEMORY;
++   }
++   cs_restore_emit(ring, device);
++   OUT_PKT7(ring, CP_WAIT_FOR_IDLE, 0);
++   rd_gpu_elapsed_emit(ring, pool->bo, 0);
++   OUT_PKT7(ring, CP_WAIT_FOR_IDLE, 0);
++   rd_flush(device, ring);
++   VkResult result = rd_finish_submit(device, submit, ring, NULL, NULL);
++   if (result != VK_SUCCESS)
++      return result;
++   if (fd_bo_cpu_prep(pool->bo, device->pipe, FD_BO_PREP_READ | FD_BO_PREP_NOSYNC))
++      return VK_ERROR_DEVICE_LOST;
++   __sync_synchronize();
++   memcpy(value, pool->map, sizeof(*value));
++   return VK_SUCCESS;
++}
++
++static void
++rd_emit_dispatch_chunk(struct rd_device *device, struct fd_ringbuffer *ring,
++                       const struct rd_dispatch *dispatch,
++                       const uint32_t grid[3], const uint32_t base[3],
++                       struct rd_gpu_elapsed *sample)
++{
++   const struct ir3_shader_variant *v = dispatch->pipeline->variant;
++   cs_restore_emit(ring, device);
++   if (sample && sample->bo)
++      rd_gpu_elapsed_emit(ring, sample->bo, 0);
++   cs_program_emit(ring, dispatch->pipeline);
++   rd_emit_constants(ring, dispatch, base);
++   rd_emit_buffers(device, ring, dispatch);
++   rd_emit_shader_resources(device, ring, dispatch);
++   rd_emit_image_constants(ring, dispatch);
++   OUT_PKT4(ring, REG_A5XX_HLSQ_CS_NDRANGE_0, 7);
++   OUT_RING(ring, A5XX_HLSQ_CS_NDRANGE_0_KERNELDIM(3) |
++      A5XX_HLSQ_CS_NDRANGE_0_LOCALSIZEX(v->local_size[0] - 1) |
++      A5XX_HLSQ_CS_NDRANGE_0_LOCALSIZEY(v->local_size[1] - 1) |
++      A5XX_HLSQ_CS_NDRANGE_0_LOCALSIZEZ(v->local_size[2] - 1));
++   for (unsigned i = 0; i < 3; i++) {
++      OUT_RING(ring, v->local_size[i] * grid[i]);
++      OUT_RING(ring, 0);
++   }
++   OUT_PKT4(ring, REG_A5XX_HLSQ_CS_KERNEL_GROUP_X, 3);
++   OUT_RING(ring, 1);
++   OUT_RING(ring, 1);
++   OUT_RING(ring, 1);
++   OUT_PKT7(ring, CP_EXEC_CS, 4);
++   OUT_RING(ring, 0);
++   OUT_RING(ring, grid[0]);
++   OUT_RING(ring, grid[1]);
++   OUT_RING(ring, grid[2]);
++   OUT_WFI5(ring);
++   rd_flush(device, ring);
++}
++
++static VkResult
++rd_execute_dispatch(struct rd_device *device, const struct rd_dispatch *dispatch,
++                    struct rd_submit_profile *profile)
++{
++   if (!dispatch->grid[0] || !dispatch->grid[1] || !dispatch->grid[2])
++      return VK_SUCCESS;
++   for (unsigned i = 0; i < dispatch->pipeline->descriptor_count; i++) {
++      const struct rd_descriptor *desc = &dispatch->descriptors[i];
++      if ((dispatch->pipeline->used_descriptors & (1u << i)) &&
++          !rd_descriptor_ready(desc))
++         return VK_ERROR_UNKNOWN;
++   }
++   const struct ir3_shader_variant *v = dispatch->pipeline->variant;
++   uint32_t tile[3], budget = v->has_barrier ? 1 : 64;
++   int64_t shared_groups = debug_get_num_option("RADISH_SHARED_GROUPS", 1);
++   if (v->has_barrier &&
++       (uint64_t)v->local_size[0] * v->local_size[1] * v->local_size[2] <= 32 &&
++       shared_groups >= 1 && shared_groups <= 8)
++      budget = shared_groups;
++   bool tiled_x2 = debug_get_num_option("RADISH_TILED_GROUPS_X", 1) == 2 &&
++      dispatch->grid[0] >= 2 &&
++      fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) == 506 &&
++      v->local_size[0] == 16 && v->local_size[1] == 8 &&
++      v->local_size[2] == 1 && v->has_barrier && v->loops == 4 &&
++      v->shared_size == 16384 && !v->pvtmem_size &&
++      !v->info.double_threadsize && v->info.max_reg + 1 <= 16 &&
++      v->info.max_half_reg == -1 &&
++      dispatch->pipeline->descriptor_count == 4 && v->instrlen == 31;
++   if (tiled_x2)
++      budget = 2;
++   for (unsigned i = 0; i < 3; i++) {
++      if (dispatch->grid[i] > 65535)
++         return VK_ERROR_FEATURE_NOT_PRESENT;
++      tile[i] = MIN2(budget, dispatch->grid[i]);
++      budget /= tile[i];
++   }
++   int64_t requested_chunks = debug_get_num_option("RADISH_BATCH_CHUNKS", 1);
++   unsigned max_chunks = 1;
++   if (!v->loops && !v->has_barrier && v->instrlen <= 32 &&
++       ((requested_chunks >= 1 && requested_chunks <= 4) || requested_chunks == 8))
++      max_chunks = requested_chunks;
++   int64_t tiled_chunks = debug_get_num_option("RADISH_TILED_BATCH_CHUNKS", 1);
++   if ((tiled_chunks == 2 || tiled_chunks == 4 || tiled_chunks == 8) &&
++       fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) == 506 &&
++       v->local_size[0] == 16 && v->local_size[1] == 8 &&
++       v->local_size[2] == 1 && v->has_barrier && v->loops == 4 &&
++       v->shared_size == 16384 && !v->pvtmem_size &&
++       !v->info.double_threadsize && v->info.max_reg + 1 <= 16 &&
++       v->info.max_half_reg == -1 &&
++       dispatch->pipeline->descriptor_count == 4 &&
++       (v->instrlen == 27 || v->instrlen == 28 || v->instrlen == 31 ||
++        v->instrlen == 36 || v->instrlen == 37))
++      max_chunks = tiled_chunks;
++   if (tiled_x2)
++      max_chunks = MIN2(max_chunks, 4);
++   struct rd_gpu_elapsed storage = {0};
++   struct rd_gpu_elapsed *sample = NULL;
++   const bool zero_base = !dispatch->base[0] && !dispatch->base[1] && !dispatch->base[2];
++   if (zero_base && profile && !dispatch->indirect && !tiled_x2 && max_chunks == 8 &&
++       fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) == 506 &&
++       v->local_size[0] == 16 && v->local_size[1] == 8 &&
++       v->local_size[2] == 1 && v->has_barrier && v->loops == 4 &&
++       v->shared_size == 16384 && !v->pvtmem_size &&
++       !v->info.double_threadsize && v->info.max_reg + 1 <= 16 &&
++       v->info.max_half_reg == -1 &&
++       dispatch->pipeline->descriptor_count == 4 && v->instrlen == 27 &&
++       dispatch->grid[0] == 4 && dispatch->grid[1] == 2 &&
++       dispatch->grid[2] == 1 && tile[0] == 1 && tile[1] == 1 && tile[2] == 1) {
++      const char *enabled = getenv("RADISH_GPU_ELAPSED");
++      const char *profiling = getenv("RADISH_PROFILE");
++      if (enabled && !strcmp(enabled, "1") &&
++          profiling && !strcmp(profiling, "1") &&
++          rd_gpu_elapsed_reserve(&storage.sample)) {
++         sample = &storage;
++         sample->dispatch = dispatch;
++         sample->seqno = device->seqno;
++         sample->submit_count = device->submit_count;
++         rd_gpu_elapsed_prepare(device, sample);
++      }
++   }
++   if (!sample && zero_base && profile && !dispatch->indirect && !tiled_x2 &&
++       max_chunks == 1 && fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) == 506 &&
++       v->local_size[0] == 16 && v->local_size[1] == 8 &&
++       v->local_size[2] == 1 && !v->has_barrier && v->loops == 1 &&
++       !v->shared_size && !v->pvtmem_size && !v->info.double_threadsize &&
++       v->info.max_half_reg == -1 && ir3_shader_halfregs(v) <= 32 &&
++       dispatch->grid[0] == 4 && dispatch->grid[1] == 2 &&
++       dispatch->grid[2] == 1 && tile[0] == 4 && tile[1] == 2 && tile[2] == 1) {
++      const char *enabled = getenv("RADISH_GPU_ELAPSED");
++      const char *profiling = getenv("RADISH_PROFILE");
++      const char *requested = getenv("RADISH_GPU_ELAPSED_CALIBRATION");
++      const char *calibration = NULL;
++      if (requested && !strcmp(requested, "mad") && v->instrlen == 8 &&
++          v->info.max_reg == 15 && dispatch->pipeline->descriptor_count == 3)
++         calibration = "mad";
++      else if (requested && !strcmp(requested, "mad-unroll4") && v->instrlen == 12 &&
++               v->info.max_reg == 15 && dispatch->pipeline->descriptor_count == 3)
++         calibration = "mad-unroll4";
++      else if (requested && !strcmp(requested, "copy") && v->instrlen == 3 &&
++               v->info.max_reg == 3 && dispatch->pipeline->descriptor_count == 2)
++         calibration = "copy";
++      if (enabled && !strcmp(enabled, "1") &&
++          profiling && !strcmp(profiling, "1") && calibration &&
++          rd_gpu_elapsed_reserve(&storage.sample)) {
++         sample = &storage;
++         sample->dispatch = dispatch;
++         sample->calibration = calibration;
++         sample->seqno = device->seqno;
++         sample->submit_count = device->submit_count;
++         rd_gpu_elapsed_prepare(device, sample);
++      }
++   }
++   if (!sample && zero_base && profile && !dispatch->indirect && !tiled_x2 &&
++       max_chunks == 1 && tiled_chunks == 8 &&
++       fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) == 506 &&
++       v->local_size[0] == 16 && v->local_size[1] == 8 &&
++       v->local_size[2] == 1 && v->has_barrier && v->loops == 4 &&
++       v->shared_size == 16384 && !v->pvtmem_size &&
++       !v->info.double_threadsize && v->info.max_reg == 15 &&
++       v->info.max_half_reg == -1 &&
++       dispatch->pipeline->descriptor_count == 4 && v->instrlen == 25 &&
++       dispatch->grid[0] == 4 && dispatch->grid[1] == 2 &&
++       dispatch->grid[2] == 1 && tile[0] == 1 && tile[1] == 1 && tile[2] == 1) {
++      const char *enabled = getenv("RADISH_GPU_ELAPSED");
++      const char *profiling = getenv("RADISH_PROFILE");
++      const char *requested = getenv("RADISH_GPU_ELAPSED_CALIBRATION");
++      if (enabled && !strcmp(enabled, "1") &&
++          profiling && !strcmp(profiling, "1") &&
++          requested && !strcmp(requested, "shared-hot")) {
++         max_chunks = 8;
++         if (rd_gpu_elapsed_reserve(&storage.sample)) {
++            sample = &storage;
++            sample->dispatch = dispatch;
++            sample->calibration = "shared-hot";
++            sample->seqno = device->seqno;
++            sample->submit_count = device->submit_count;
++            rd_gpu_elapsed_prepare(device, sample);
++         }
++      }
++   }
++   if (!sample && zero_base && profile && !dispatch->indirect && !tiled_x2 &&
++       max_chunks == 8 && fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) == 506 &&
++       v->local_size[0] == 16 && v->local_size[1] == 8 &&
++       v->local_size[2] == 1 && v->has_barrier && v->loops == 4 &&
++       v->shared_size == 16384 && !v->pvtmem_size &&
++       !v->info.double_threadsize && v->info.max_reg == 15 &&
++       v->info.max_half_reg == -1 &&
++       dispatch->pipeline->descriptor_count == 4 && v->instrlen == 28 &&
++       dispatch->grid[0] == 4 && dispatch->grid[1] == 2 &&
++       dispatch->grid[2] == 1 && tile[0] == 1 && tile[1] == 1 && tile[2] == 1) {
++      const char *enabled = getenv("RADISH_GPU_ELAPSED");
++      const char *profiling = getenv("RADISH_PROFILE");
++      const char *requested = getenv("RADISH_GPU_ELAPSED_CALIBRATION");
++      if (enabled && !strcmp(enabled, "1") &&
++          profiling && !strcmp(profiling, "1") &&
++          requested && !strcmp(requested, "packed-a") &&
++          rd_gpu_elapsed_reserve(&storage.sample)) {
++         sample = &storage;
++         sample->dispatch = dispatch;
++         sample->calibration = "packed-a";
++         sample->seqno = device->seqno;
++         sample->submit_count = device->submit_count;
++         rd_gpu_elapsed_prepare(device, sample);
++      }
++   }
++   struct fd_submit *submit = NULL;
++   struct fd_ringbuffer *ring = NULL;
++   unsigned chunks = 0;
++   uint32_t base[3];
++   for (base[2] = 0; base[2] < dispatch->grid[2]; base[2] += tile[2]) {
++      for (base[1] = 0; base[1] < dispatch->grid[1]; base[1] += tile[1]) {
++         for (base[0] = 0; base[0] < dispatch->grid[0]; base[0] += tile[0]) {
++            if (!submit) {
++               submit = fd_submit_new(device->pipe);
++               if (!submit) {
++                  rd_gpu_elapsed_finish(device, sample,
++                     VK_ERROR_OUT_OF_HOST_MEMORY, 0, 0);
++                  rd_gpu_elapsed_release(sample);
++                  return VK_ERROR_OUT_OF_HOST_MEMORY;
++               }
++               ring = fd_submit_new_ringbuffer(submit, 0,
++                  FD_RINGBUFFER_PRIMARY | FD_RINGBUFFER_GROWABLE);
++               if (!ring) {
++                  fd_submit_del(submit);
++                  rd_gpu_elapsed_finish(device, sample,
++                     VK_ERROR_OUT_OF_HOST_MEMORY, 0, 0);
++                  rd_gpu_elapsed_release(sample);
++                  return VK_ERROR_OUT_OF_HOST_MEMORY;
++               }
++            }
++            uint32_t grid[3];
++            for (unsigned i = 0; i < 3; i++)
++               grid[i] = MIN2(tile[i], dispatch->grid[i] - base[i]);
++            rd_emit_dispatch_chunk(device, ring, dispatch, grid, base,
++                                   chunks == 0 ? sample : NULL);
++            if (++chunks == max_chunks) {
++               if (sample && sample->bo) {
++                  rd_gpu_elapsed_emit(ring, sample->bo, 16);
++                  OUT_WFI5(ring);
++               }
++               VkResult result = rd_finish_submit(device, submit, ring, profile,
++                                                   sample);
++               rd_gpu_elapsed_release(sample);
++               sample = NULL;
++               submit = NULL;
++               ring = NULL;
++               chunks = 0;
++               if (result != VK_SUCCESS)
++                  return result;
++            }
++         }
++      }
++   }
++   if (submit) {
++      VkResult result = rd_finish_submit(device, submit, ring, profile, sample);
++      rd_gpu_elapsed_release(sample);
++      return result;
++   }
++   rd_gpu_elapsed_release(sample);
++   return VK_SUCCESS;
++}
++
++static VkResult
++rd_execute_transfer(struct rd_device *device, enum rd_command_type type,
++                      const struct rd_transfer *transfer,
++                      struct rd_submit_profile *profile)
++{
++   if (!transfer->dst || !transfer->dst->memory ||
++       (type == RD_CMD_COPY && (!transfer->src || !transfer->src->memory)))
++      return VK_ERROR_UNKNOWN;
++   if (type == RD_CMD_COPY &&
++       ((transfer->src_offset | transfer->dst_offset | transfer->size) & 3)) {
++      struct fd_bo *src = transfer->src->memory->bo;
++      struct fd_bo *dst = transfer->dst->memory->bo;
++      if (src == dst) {
++         if (fd_bo_cpu_prep(src, device->pipe, FD_BO_PREP_READ | FD_BO_PREP_WRITE))
++            return VK_ERROR_DEVICE_LOST;
++      } else if (fd_bo_cpu_prep(src, device->pipe, FD_BO_PREP_READ) ||
++                 fd_bo_cpu_prep(dst, device->pipe, FD_BO_PREP_WRITE)) {
++         return VK_ERROR_DEVICE_LOST;
++      }
++      void *src_map = fd_bo_map(src);
++      void *dst_map = fd_bo_map(dst);
++      if (!src_map || !dst_map)
++         return VK_ERROR_MEMORY_MAP_FAILED;
++      memmove((uint8_t *)dst_map + transfer->dst->offset + transfer->dst_offset,
++              (uint8_t *)src_map + transfer->src->offset + transfer->src_offset,
++              transfer->size);
++      __sync_synchronize();
++      return VK_SUCCESS;
++   }
++   for (VkDeviceSize done = 0; done < transfer->size;) {
++      unsigned bytes = MIN2(transfer->size - done, 4096);
++      struct fd_submit *submit = fd_submit_new(device->pipe);
++      if (!submit)
++         return VK_ERROR_OUT_OF_HOST_MEMORY;
++      struct fd_ringbuffer *ring = fd_submit_new_ringbuffer(submit, 0,
++         FD_RINGBUFFER_PRIMARY | FD_RINGBUFFER_GROWABLE);
++      if (!ring) {
++         fd_submit_del(submit);
++         return VK_ERROR_OUT_OF_HOST_MEMORY;
++      }
++      struct rd_buffer *dst = transfer->dst;
++      unsigned dst_offset = dst->offset + transfer->dst_offset + done;
++      if (type == RD_CMD_COPY) {
++         struct rd_buffer *src = transfer->src;
++         unsigned src_offset = src->offset + transfer->src_offset + done;
++         for (unsigned i = 0; i < bytes; i += 4) {
++            OUT_PKT7(ring, CP_MEM_TO_MEM, 5);
++            OUT_RING(ring, 0);
++            OUT_RELOC(ring, dst->memory->bo, dst_offset + i, 0, 0);
++            OUT_RELOC(ring, src->memory->bo, src_offset + i, 0, 0);
++         }
++      } else {
++         OUT_PKT7(ring, CP_MEM_WRITE, 2 + bytes / 4);
++         OUT_RELOC(ring, dst->memory->bo, dst_offset, 0, 0);
++         for (unsigned i = 0; i < bytes; i += 4)
++            OUT_RING(ring, type == RD_CMD_FILL ? transfer->value :
++               ((const uint32_t *)transfer->data)[(done + i) / 4]);
++      }
++      OUT_PKT7(ring, CP_WAIT_MEM_WRITES, 0);
++      rd_flush(device, ring);
++      VkResult result = rd_finish_submit(device, submit, ring, profile, NULL);
++      if (result != VK_SUCCESS)
++         return result;
++      done += bytes;
++   }
++   return VK_SUCCESS;
++}
++
++static VkResult
++rd_resolve_indirect(struct rd_device *device, struct rd_dispatch *dispatch)
++{
++   struct rd_buffer *buffer = dispatch->indirect;
++   if (!buffer || !buffer->memory ||
++       dispatch->indirect_offset > buffer->vk.size ||
++       sizeof(VkDispatchIndirectCommand) > buffer->vk.size - dispatch->indirect_offset)
++      return VK_ERROR_UNKNOWN;
++   struct fd_bo *bo = buffer->memory->bo;
++   if (fd_bo_cpu_prep(bo, device->pipe, FD_BO_PREP_READ))
++      return VK_ERROR_DEVICE_LOST;
++   const uint8_t *map = fd_bo_map(bo);
++   if (!map)
++      return VK_ERROR_MEMORY_MAP_FAILED;
++   __sync_synchronize();
++   VkDispatchIndirectCommand args;
++   memcpy(&args, map + buffer->offset + dispatch->indirect_offset, sizeof(args));
++   dispatch->grid[0] = args.x;
++   dispatch->grid[1] = args.y;
++   dispatch->grid[2] = args.z;
++   return VK_SUCCESS;
++}
++
++static VkResult
++rd_queue_fail(struct vk_queue *queue)
++{
++   VkResult result = vk_queue_set_lost(queue, "Radish execution or synchronization failed");
++   rd_wake_device_waiters(queue->base.device);
++   return result;
++}
++
++VkResult
++rd_queue_submit(struct vk_queue *queue, struct vk_queue_submit *submit)
++{
++   struct rd_device *device = container_of(queue->base.device, struct rd_device, vk);
++   bool profile = debug_get_bool_option("RADISH_PROFILE", false);
++   __sync_synchronize();
++   VkResult result = vk_sync_wait_many(&device->vk, submit->wait_count,
++      submit->waits, VK_SYNC_WAIT_COMPLETE, UINT64_MAX);
++   if (result != VK_SUCCESS)
++      return rd_queue_fail(queue);
++   for (uint32_t i = 0; i < submit->command_buffer_count; i++) {
++      struct rd_command_buffer *command = container_of(submit->command_buffers[i],
++         struct rd_command_buffer, vk);
++      util_dynarray_foreach(&command->commands, struct rd_command, recorded) {
++         int64_t start = profile ? os_time_get_nano() : 0;
++         uint32_t seqno = device->seqno;
++         uint64_t submit_count = device->submit_count;
++         struct rd_submit_profile submit_profile = {0};
++         const struct rd_dispatch *dispatch = &recorded->dispatch;
++         struct rd_dispatch indirect;
++         if (recorded->type == RD_CMD_DISPATCH) {
++            result = VK_SUCCESS;
++            indirect = *dispatch;
++            dispatch = &indirect;
++            for (uint32_t i = 0; i < dispatch->pipeline->layout->set_count; i++) {
++               if (!dispatch->sets[i])
++                  continue;
++               struct rd_set_layout *layout = container_of(
++                  dispatch->pipeline->layout->set_layouts[i], struct rd_set_layout, vk);
++               uint32_t first = dispatch->pipeline->set_offsets[i];
++               memcpy(&indirect.descriptors[first], dispatch->sets[i]->descriptors,
++                      layout->descriptor_count * sizeof(struct rd_descriptor));
++               for (uint32_t j = 0; j < layout->descriptor_count; j++) {
++                  struct rd_descriptor *descriptor = &indirect.descriptors[first + j];
++                  if (descriptor->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC ||
++                      descriptor->type == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC)
++                     descriptor->offset += dispatch->dynamic_offsets[first + j];
++               }
++            }
++            if (dispatch->indirect)
++               result = rd_resolve_indirect(device, &indirect);
++            if (result == VK_SUCCESS)
++               result = rd_execute_dispatch(device, dispatch,
++                                            profile ? &submit_profile : NULL);
++            if (result == VK_SUCCESS)
++               rd_query_account_dispatch(device, dispatch);
++         } else if (recorded->type == RD_CMD_IMAGE_COPY || recorded->type == RD_CMD_IMAGE_CLEAR) {
++            result = rd_execute_image_transfer(device, &recorded->image_transfer,
++                                                recorded->type == RD_CMD_IMAGE_CLEAR);
++         } else if (recorded->type >= RD_CMD_COPY && recorded->type <= RD_CMD_UPDATE) {
++            result = rd_execute_transfer(device, recorded->type, &recorded->transfer,
++                                         profile ? &submit_profile : NULL);
++         } else if (recorded->type >= RD_CMD_EVENT_SET && recorded->type <= RD_CMD_EVENT_WAIT) {
++            result = rd_execute_event(device, recorded->type, &recorded->event);
++         } else if (recorded->type >= RD_CMD_QUERY_RESET && recorded->type <= RD_CMD_QUERY_COPY) {
++            result = rd_execute_query(device, recorded->type, &recorded->query);
++         } else {
++            result = VK_ERROR_UNKNOWN;
++         }
++         if (profile) {
++            int64_t elapsed = os_time_get_nano() - start;
++            uint32_t chunks = device->seqno - seqno;
++            uint64_t submits = device->submit_count - submit_count;
++            if (recorded->type == RD_CMD_DISPATCH) {
++               const struct rd_dispatch *d = dispatch;
++               const struct ir3_shader_variant *v = d->pipeline->variant;
++               fprintf(stderr, "RADISH_PROFILE dispatch pipeline=%p grid=%u,%u,%u local=%u,%u,%u barrier=%u loops=%u instrlen=%u chunks=%u submits=%" PRIu64 " ns=%" PRId64 " submit_ns=%" PRId64 " submit_max_ns=%" PRId64 " result=%d\n",
++                       (void *)d->pipeline, d->grid[0], d->grid[1], d->grid[2],
++                       v->local_size[0], v->local_size[1], v->local_size[2],
++                       (unsigned)v->has_barrier, v->loops, v->instrlen,
++                       chunks, submits, elapsed, submit_profile.total_ns,
++                       submit_profile.max_ns, result);
++            } else if (recorded->type == RD_CMD_IMAGE_COPY || recorded->type == RD_CMD_IMAGE_CLEAR) {
++               const struct rd_image_transfer *t = &recorded->image_transfer;
++               fprintf(stderr, "RADISH_PROFILE image_transfer type=%u bytes=%" PRIu64 " ns=%" PRId64 " result=%d\n",
++                       (unsigned)recorded->type, (uint64_t)t->row_bytes * t->rows * t->slices,
++                       elapsed, result);
++            } else if (recorded->type >= RD_CMD_COPY && recorded->type <= RD_CMD_UPDATE) {
++               fprintf(stderr, "RADISH_PROFILE transfer type=%u bytes=%" PRIu64 " chunks=%u submits=%" PRIu64 " ns=%" PRId64 " submit_ns=%" PRId64 " submit_max_ns=%" PRId64 " result=%d\n",
++                       (unsigned)recorded->type, (uint64_t)recorded->transfer.size,
++                       chunks, submits, elapsed, submit_profile.total_ns,
++                       submit_profile.max_ns, result);
++            } else {
++               fprintf(stderr, "RADISH_PROFILE synchronization type=%u submits=%" PRIu64 " ns=%" PRId64 " result=%d\n",
++                       (unsigned)recorded->type, submits, elapsed, result);
++            }
++         }
++         if (result != VK_SUCCESS)
++            return rd_queue_fail(queue);
++      }
++   }
++   result = vk_sync_signal_many(&device->vk, submit->signal_count, submit->signals);
++   return result == VK_SUCCESS ? VK_SUCCESS : rd_queue_fail(queue);
++}
+--- a/src/freedreno/radish/rd_resources.c
++++ b/src/freedreno/radish/rd_resources.c
+@@ -9,17 +9,118 @@
+    struct fd_bo *bo;
+    VkDeviceSize offset;
+    enum a5xx_tex_fmt format;
+-   uint32_t cpp, width, height, depth, row_pitch, array_pitch;
++   enum a5xx_tex_type type;
++   uint32_t cpp, width, height, depth, row_pitch, array_pitch, format_word;
++   uint32_t mip_levels, pitchalign, min_layer_size;
+    bool buffer;
+ };
+ 
++struct rd_border_color {
++   uint32_t fp32[4];
++   uint16_t ui16[4];
++   int16_t si16[4];
++   uint16_t fp16[4];
++   uint16_t rgb565, rgb5a1, rgba4;
++   uint8_t pad0[2], ui8[4];
++   int8_t si8[4];
++   uint32_t rgb10a2, z24;
++   uint16_t srgb[4];
++   uint8_t pad1[56];
++};
++
++_Static_assert(sizeof(struct rd_border_color) == 128, "a5xx border color entry");
++
++VkResult
++rd_init_border_colors(struct rd_device *device)
++{
++   device->border_colors = fd_bo_new(device->fd, 16384, FD_BO_GPUREADONLY,
++                                      "radish-border-colors");
++   if (!device->border_colors)
++      return VK_ERROR_OUT_OF_DEVICE_MEMORY;
++   void *map = fd_bo_map(device->border_colors);
++   if (!map) {
++      fd_bo_del(device->border_colors);
++      device->border_colors = NULL;
++      return VK_ERROR_MEMORY_MAP_FAILED;
++   }
++   uint64_t address = fd_bo_get_iova(device->border_colors);
++   device->border_colors_offset = align64(address, 8192) - address;
++   struct rd_border_color *colors = (void *)((uint8_t *)map + device->border_colors_offset);
++   memset(colors, 0, 6 * sizeof(*colors));
++   for (uint32_t i = 0; i < 6; i++) {
++      bool integer = i & 1;
++      struct rd_border_color *color = &colors[i];
++      for (uint32_t j = 0; j < 4; j++) {
++         uint32_t value = i >= 4 || (i >= 2 && j == 3);
++         color->fp32[j] = integer ? value : value ? 0x3f800000 : 0;
++         color->fp16[j] = integer ? value : value ? 0x3c00 : 0;
++         if (integer)
++            continue;
++         color->ui16[j] = value ? 0xffff : 0;
++         color->si16[j] = value ? 0x7fff : 0;
++         color->ui8[j] = value ? 0xff : 0;
++         color->si8[j] = value ? 0x7f : 0;
++         color->srgb[j] = value ? 0x3c00 : 0;
++         if (j == 1)
++            color->rgb565 |= value ? 0x7e0 : 0;
++         else if (j < 3)
++            color->rgb565 |= value ? 0x1f << (j ? 11 : 0) : 0;
++         if (j == 3) {
++            color->rgb5a1 |= value ? 0x8000 : 0;
++            color->rgb10a2 |= value ? 3u << 30 : 0;
++         } else {
++            color->rgb5a1 |= value ? 0x1f << (j * 5) : 0;
++            color->rgb10a2 |= value ? 0x3ffu << (j * 10) : 0;
++         }
++         color->rgba4 |= value ? 0xf << (j * 4) : 0;
++         if (j == 0)
++            color->z24 = value ? 0xffffff : 0;
++      }
++   }
++   __sync_synchronize();
++   return VK_SUCCESS;
++}
++
+ static enum a5xx_tex_fmt
+ rd_resource_format(VkFormat format)
+ {
+    switch (format) {
++   case VK_FORMAT_R8_UNORM: return TFMT5_8_UNORM;
++   case VK_FORMAT_R8_SNORM: return TFMT5_8_SNORM;
++   case VK_FORMAT_R8_UINT: return TFMT5_8_UINT;
++   case VK_FORMAT_R8_SINT: return TFMT5_8_SINT;
++   case VK_FORMAT_R8G8_UNORM: return TFMT5_8_8_UNORM;
++   case VK_FORMAT_R8G8_SNORM: return TFMT5_8_8_SNORM;
++   case VK_FORMAT_R8G8_UINT: return TFMT5_8_8_UINT;
++   case VK_FORMAT_R8G8_SINT: return TFMT5_8_8_SINT;
++   case VK_FORMAT_R8G8B8A8_UNORM: return TFMT5_8_8_8_8_UNORM;
++   case VK_FORMAT_R8G8B8A8_SNORM: return TFMT5_8_8_8_8_SNORM;
++   case VK_FORMAT_R8G8B8A8_UINT: return TFMT5_8_8_8_8_UINT;
++   case VK_FORMAT_R8G8B8A8_SINT: return TFMT5_8_8_8_8_SINT;
++   case VK_FORMAT_R8G8B8A8_SRGB: return TFMT5_8_8_8_8_UNORM;
++   case VK_FORMAT_B8G8R8A8_UNORM: return TFMT5_8_8_8_8_UNORM;
++   case VK_FORMAT_B8G8R8A8_SRGB: return TFMT5_8_8_8_8_UNORM;
++   case VK_FORMAT_R16_UNORM: return TFMT5_16_UNORM;
++   case VK_FORMAT_R16_SNORM: return TFMT5_16_SNORM;
++   case VK_FORMAT_R16_UINT: return TFMT5_16_UINT;
++   case VK_FORMAT_R16_SINT: return TFMT5_16_SINT;
++   case VK_FORMAT_R16_SFLOAT: return TFMT5_16_FLOAT;
++   case VK_FORMAT_R16G16_UNORM: return TFMT5_16_16_UNORM;
++   case VK_FORMAT_R16G16_SNORM: return TFMT5_16_16_SNORM;
++   case VK_FORMAT_R16G16_UINT: return TFMT5_16_16_UINT;
++   case VK_FORMAT_R16G16_SINT: return TFMT5_16_16_SINT;
++   case VK_FORMAT_R16G16_SFLOAT: return TFMT5_16_16_FLOAT;
++   case VK_FORMAT_R16G16B16A16_UNORM: return TFMT5_16_16_16_16_UNORM;
++   case VK_FORMAT_R16G16B16A16_SNORM: return TFMT5_16_16_16_16_SNORM;
++   case VK_FORMAT_R16G16B16A16_UINT: return TFMT5_16_16_16_16_UINT;
++   case VK_FORMAT_R16G16B16A16_SINT: return TFMT5_16_16_16_16_SINT;
++   case VK_FORMAT_R16G16B16A16_SFLOAT: return TFMT5_16_16_16_16_FLOAT;
+    case VK_FORMAT_R32_UINT: return TFMT5_32_UINT;
+    case VK_FORMAT_R32_SINT: return TFMT5_32_SINT;
+    case VK_FORMAT_R32_SFLOAT: return TFMT5_32_FLOAT;
++   case VK_FORMAT_R32G32_UINT: return TFMT5_32_32_UINT;
++   case VK_FORMAT_R32G32_SINT: return TFMT5_32_32_SINT;
++   case VK_FORMAT_R32G32_SFLOAT: return TFMT5_32_32_FLOAT;
+    case VK_FORMAT_R32G32B32A32_UINT: return TFMT5_32_32_32_32_UINT;
+    case VK_FORMAT_R32G32B32A32_SINT: return TFMT5_32_32_32_32_SINT;
+    case VK_FORMAT_R32G32B32A32_SFLOAT: return TFMT5_32_32_32_32_FLOAT;
+@@ -33,10 +134,50 @@
+    return rd_resource_format(format) != TFMT5_NONE;
+ }
+ 
++bool
++rd_storage_shader_format_supported(VkFormat format)
++{
++   return rd_shader_format_supported(format) && !vk_format_is_srgb(format) &&
++          format != VK_FORMAT_B8G8R8A8_UNORM;
++}
++
++bool
++rd_shader_format_filterable(VkFormat format)
++{
++   return rd_shader_format_supported(format) && !vk_format_is_int(format);
++}
++
++static enum a5xx_tex_swiz
++rd_resource_swizzle(unsigned swizzle)
++{
++   switch (swizzle) {
++   case PIPE_SWIZZLE_X: return A5XX_TEX_X;
++   case PIPE_SWIZZLE_Y: return A5XX_TEX_Y;
++   case PIPE_SWIZZLE_Z: return A5XX_TEX_Z;
++   case PIPE_SWIZZLE_W: return A5XX_TEX_W;
++   case PIPE_SWIZZLE_1: return A5XX_TEX_ONE;
++   default: return A5XX_TEX_ZERO;
++   }
++}
++
++static unsigned char
++rd_view_swizzle(VkComponentSwizzle swizzle)
++{
++   switch (swizzle) {
++   case VK_COMPONENT_SWIZZLE_R: return PIPE_SWIZZLE_X;
++   case VK_COMPONENT_SWIZZLE_G: return PIPE_SWIZZLE_Y;
++   case VK_COMPONENT_SWIZZLE_B: return PIPE_SWIZZLE_Z;
++   case VK_COMPONENT_SWIZZLE_A: return PIPE_SWIZZLE_W;
++   case VK_COMPONENT_SWIZZLE_ONE: return PIPE_SWIZZLE_1;
++   default: return PIPE_SWIZZLE_0;
++   }
++}
++
+ static bool
+ rd_make_resource(const struct rd_descriptor *descriptor, struct rd_resource *out)
+ {
+    memset(out, 0, sizeof(*out));
++   VkFormat format;
+    if (descriptor->image_view) {
+       const struct vk_image_view *view = &descriptor->image_view->vk;
+       const struct rd_image *image = container_of(view->image, struct rd_image, vk);
+@@ -47,16 +188,29 @@
+       out->bo = image->memory->bo;
+       out->offset = image->memory_offset + level->offset +
+                     view->base_array_layer * level->array_pitch;
+-      out->format = rd_resource_format(view->format);
++      format = view->format;
++      out->format = rd_resource_format(format);
+       out->cpp = image->texel_size;
+       out->width = extent.width;
+       out->height = extent.height;
+-      out->depth = 1;
++      switch (view->view_type) {
++      case VK_IMAGE_VIEW_TYPE_1D:
++      case VK_IMAGE_VIEW_TYPE_1D_ARRAY: out->type = A5XX_TEX_1D; break;
++      case VK_IMAGE_VIEW_TYPE_3D: out->type = A5XX_TEX_3D; break;
++      case VK_IMAGE_VIEW_TYPE_CUBE:
++      case VK_IMAGE_VIEW_TYPE_CUBE_ARRAY: out->type = A5XX_TEX_CUBE; break;
++      default: out->type = A5XX_TEX_2D; break;
++      }
++      out->depth = view->view_type == VK_IMAGE_VIEW_TYPE_3D ? extent.depth :
++                   out->type == A5XX_TEX_CUBE ? view->layer_count / 6 : view->layer_count;
++      out->mip_levels = view->level_count - 1;
++      out->pitchalign = image->native_layout.pitchalign - 6;
++      out->min_layer_size = image->native_layout.slices[image->vk.mip_levels - 1].size0;
+       out->row_pitch = level->row_pitch;
+-      out->array_pitch = level->array_pitch;
++      out->array_pitch = view->view_type == VK_IMAGE_VIEW_TYPE_3D ?
++                         level->depth_pitch : level->array_pitch;
+    } else {
+       const struct rd_buffer *buffer;
+-      VkFormat format;
+       VkDeviceSize offset, elements;
+       if (descriptor->buffer_view) {
+          const struct vk_buffer_view *view = &descriptor->buffer_view->vk;
+@@ -80,8 +234,24 @@
+       out->cpp = vk_format_get_blocksize(format);
+       out->width = elements & BITFIELD_MASK(15);
+       out->height = elements >> 15;
++      out->type = A5XX_TEX_BUFFER;
+       out->buffer = true;
+    }
++   const struct util_format_description *description = vk_format_description(format);
++   unsigned char swizzle[4];
++   memcpy(swizzle, description->swizzle, sizeof(swizzle));
++   if (descriptor->image_view) {
++      const VkComponentMapping *view = &descriptor->image_view->vk.swizzle;
++      unsigned char requested[4] = {rd_view_swizzle(view->r), rd_view_swizzle(view->g),
++                                    rd_view_swizzle(view->b), rd_view_swizzle(view->a)};
++      util_format_compose_swizzles(description->swizzle, requested, swizzle);
++   }
++   out->format_word = A5XX_TEX_CONST_0_FMT(out->format) |
++      A5XX_TEX_CONST_0_SWIZ_X(rd_resource_swizzle(swizzle[0])) |
++      A5XX_TEX_CONST_0_SWIZ_Y(rd_resource_swizzle(swizzle[1])) |
++      A5XX_TEX_CONST_0_SWIZ_Z(rd_resource_swizzle(swizzle[2])) |
++      A5XX_TEX_CONST_0_SWIZ_W(rd_resource_swizzle(swizzle[3])) |
++      COND(vk_format_is_srgb(format), A5XX_TEX_CONST_0_SRGB);
+    return out->format != TFMT5_NONE;
+ }
+ 
+@@ -131,19 +301,15 @@
+ rd_emit_resource_texture(struct fd_ringbuffer *ring, uint32_t slot,
+                           const struct rd_resource *resource)
+ {
+-   bool rgba = resource->cpp == 16;
+    rd_resource_packet(ring, slot, SB4_CS_TEX, ST4_CONSTANTS, 1, 12);
+-   OUT_RING(ring, A5XX_TEX_CONST_0_FMT(resource->format) |
+-      A5XX_TEX_CONST_0_SWIZ_X(A5XX_TEX_X) |
+-      A5XX_TEX_CONST_0_SWIZ_Y(rgba ? A5XX_TEX_Y : A5XX_TEX_ZERO) |
+-      A5XX_TEX_CONST_0_SWIZ_Z(rgba ? A5XX_TEX_Z : A5XX_TEX_ZERO) |
+-      A5XX_TEX_CONST_0_SWIZ_W(rgba ? A5XX_TEX_W : A5XX_TEX_ONE));
++   OUT_RING(ring, resource->format_word | A5XX_TEX_CONST_0_MIPLVLS(resource->mip_levels));
+    OUT_RING(ring, A5XX_TEX_CONST_1_WIDTH(resource->width) |
+                   A5XX_TEX_CONST_1_HEIGHT(resource->height));
+    OUT_RING(ring, COND(resource->buffer, A5XX_TEX_CONST_2_BUFFER) |
+-      A5XX_TEX_CONST_2_TYPE(resource->buffer ? A5XX_TEX_BUFFER : A5XX_TEX_2D) |
++      A5XX_TEX_CONST_2_TYPE(resource->type) | A5XX_TEX_CONST_2_PITCHALIGN(resource->pitchalign) |
+       A5XX_TEX_CONST_2_PITCH(resource->row_pitch));
+-   OUT_RING(ring, A5XX_TEX_CONST_3_ARRAY_PITCH(resource->array_pitch));
++   OUT_RING(ring, A5XX_TEX_CONST_3_ARRAY_PITCH(resource->array_pitch) |
++      (resource->type == A5XX_TEX_3D ? A5XX_TEX_CONST_3_MIN_LAYERSZ(resource->min_layer_size) : 0));
+    OUT_RELOC(ring, resource->bo, resource->offset,
+       (uint64_t)A5XX_TEX_CONST_5_DEPTH(resource->depth) << 32, 0);
+    for (uint32_t i = 0; i < 6; i++)
+@@ -169,6 +335,7 @@
+    switch (wrap) {
+    case VK_SAMPLER_ADDRESS_MODE_REPEAT: return A5XX_TEX_REPEAT;
+    case VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT: return A5XX_TEX_MIRROR_REPEAT;
++   case VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER: return A5XX_TEX_CLAMP_TO_BORDER;
+    default: return A5XX_TEX_CLAMP_TO_EDGE;
+    }
+ }
+@@ -197,7 +364,7 @@
+    }
+    words[0] = word0;
+    words[1] = word1;
+-   words[2] = 0;
++   words[2] = sampler ? A5XX_TEX_SAMP_2_BCOLOR_OFFSET(sampler->border_color) : 0;
+    words[3] = 0;
+ }
+ 
+@@ -209,6 +376,10 @@
+    const struct ir3_shader_variant *v = pipeline->variant;
+    const struct rd_nir_resource_usage *usage = &pipeline->resource_usage;
+    uint32_t sampler_count = MAX2(usage->sampler_count, v->num_samp);
++   if (sampler_count) {
++      OUT_PKT4(ring, REG_A5XX_TPL1_TP_BORDER_COLOR_BASE_ADDR, 2);
++      OUT_RELOC(ring, device->border_colors, device->border_colors_offset, 0, 0);
++   }
+    for (uint32_t i = 0; i < sampler_count; i++) {
+       uint32_t words[4];
+       rd_sampler_descriptor(NULL, words);
+@@ -238,7 +409,8 @@
+    const struct ir3_ibo_mapping *mapping = &v->image_mapping;
+    for (uint32_t i = 0; i < mapping->num_tex; i++) {
+       uint32_t resource_index = mapping->tex_to_image[i];
+-      uint32_t slot = resource_index & UAV_SSBO ? resource_index & ~UAV_SSBO :
++      uint32_t slot = resource_index & UAV_SSBO ?
++         pipeline->buffer_descriptors[resource_index & ~UAV_SSBO] :
+          pipeline->image_descriptors[resource_index];
+       struct rd_resource resource;
+       if (rd_make_resource(&dispatch->descriptors[slot], &resource))
+@@ -266,7 +438,10 @@
+          continue;
+       uint32_t offset = state->image_dims.off[i];
+       values[offset] = resource.cpp;
+-      values[offset + 1] = resource.buffer ? util_logbase2(resource.cpp) : resource.row_pitch;
++      const struct rd_descriptor *descriptor = &dispatch->descriptors[pipeline->image_descriptors[i]];
++      values[offset + 1] = resource.buffer ? util_logbase2(resource.cpp) :
++         descriptor->image_view->vk.view_type == VK_IMAGE_VIEW_TYPE_1D_ARRAY ?
++         resource.array_pitch : resource.row_pitch;
+       values[offset + 2] = resource.array_pitch;
+    }
+    uint32_t offset = state->allocs.consts[IR3_CONST_ALLOC_IMAGE_DIMS].offset_vec4;
+--- a/src/vulkan/runtime/vk_queue.c
++++ b/src/vulkan/runtime/vk_queue.c
+@@ -825,7 +825,8 @@
+ 
+    thrd_join(queue->submit.thread, NULL);
+ 
+-   assert(list_is_empty(&queue->submit.submits));
++   assert(list_is_empty(&queue->submit.submits) ||
++          vk_device_is_lost_no_report(queue->base.device));
+    queue->submit.mode = VK_QUEUE_SUBMIT_MODE_IMMEDIATE;
+ }
+ 

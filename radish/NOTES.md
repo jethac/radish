@@ -1,5 +1,17 @@
 # Radish status
 
+## 2026-11-02 (JST): consolidated compute execution, partial success
+
+Three suites pass on private ICD e4bd958f: API5 regression, events/queries and
+UBO/dynamic/image/texel/sampler resources. Subgroup BASIC compiles but its first
+local32 election-count check fails. All new kernel-fault checks pass and both
+services remain active; service2.286s,7.3MiB,zero swap. The original40 ledger has
+36 representative paths exercised and four build-only; this is not full API
+semantics or conformance. Broader resource layouts and pipeline private/constant
+backing are compiled, with only the stated subset exercised. See
+[the scoped checkpoint](CORE_API_0044.md) and [result](results/core-api-0044-consolidated.json).
+Performance stays paused; descriptor-capacity and subgroup fixes continue.
+
 ## 2026-11-02 (JST): combined core-compute WIP builds
 
 The isolated combined implementation now builds as ICD d4037cc7…eee00

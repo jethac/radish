@@ -602,3 +602,5 @@ ee30ca55756e7a67283353803621a78a8cb6e78ba11a37606ab0c5981dba8878  0033-ncnn-plan
 b2112c3ae6e0bc580f0d606b8ac8f5cfc8c23a8ea6426511d249673bab7179ed  0034-ncnn-instancenorm-outplace.patch
 d468a7b2dcadda77b4e06a286eba806aac28c6222f0f3ec9e8330cddf8dba657  0035-ncnn-instancenorm-coefficients.patch
 ```
+
+| `0044-radish-resource-layout-storage-wip.patch` | After0044 foundation and combined resource WIP | Broader native formats/layouts/mips/cubes/border colors, compact buffer slots, private/constant backing and lost-queue cleanup. Three consolidated suites pass; BASIC election fails. Experimental source, not complete qualification. |

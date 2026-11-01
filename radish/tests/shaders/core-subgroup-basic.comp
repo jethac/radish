@@ -1,0 +1,53 @@
+#version 450
+#extension GL_KHR_shader_subgroup_basic : require
+layout(local_size_x_id=0, local_size_y_id=1, local_size_z_id=2) in;
+layout(set=0,binding=0,std430) buffer Output { uint values[]; } output_data;
+layout(set=0,binding=1,std430) coherent buffer Exchange { uint values[]; } exchange_data;
+layout(push_constant) uniform Params { uint salt; } p;
+shared uint broadcast_value[4];
+shared uint count[4];
+void main()
+{
+    uint sid = gl_SubgroupID;
+    uint lane = gl_SubgroupInvocationID;
+    uint index = gl_LocalInvocationIndex;
+    bool elected = subgroupElect();
+    bool odd_elected = false;
+    if ((lane & 1u) != 0u)
+        odd_elected = subgroupElect();
+    if (elected) {
+        broadcast_value[sid] = index ^ p.salt;
+        count[sid] = 0u;
+        exchange_data.values[16u + 2u * sid] = index ^ p.salt;
+        exchange_data.values[17u + 2u * sid] = 0u;
+    }
+    subgroupMemoryBarrier();
+    subgroupBarrier();
+    atomicAdd(count[sid], 1u);
+    atomicAdd(exchange_data.values[17u + 2u * sid], 1u);
+    subgroupMemoryBarrier();
+    subgroupBarrier();
+    if ((sid & 1u) == 0u) {
+        if (elected)
+            exchange_data.values[16u + 2u * sid] ^= 0x01020304u;
+        subgroupMemoryBarrierBuffer();
+        subgroupBarrier();
+    }
+    uint dst = 16u + 16u * index;
+    output_data.values[dst + 0u] = index;
+    output_data.values[dst + 1u] = gl_SubgroupSize;
+    output_data.values[dst + 2u] = gl_NumSubgroups;
+    output_data.values[dst + 3u] = sid;
+    output_data.values[dst + 4u] = lane;
+    output_data.values[dst + 5u] = elected ? 1u : 0u;
+    output_data.values[dst + 6u] = odd_elected ? 1u : 0u;
+    output_data.values[dst + 7u] = broadcast_value[sid];
+    output_data.values[dst + 8u] = count[sid];
+    output_data.values[dst + 9u] = exchange_data.values[16u + 2u * sid];
+    output_data.values[dst + 10u] = exchange_data.values[17u + 2u * sid];
+    output_data.values[dst + 11u] = p.salt;
+    output_data.values[dst + 12u] = gl_GlobalInvocationID.x;
+    output_data.values[dst + 13u] = gl_GlobalInvocationID.y;
+    output_data.values[dst + 14u] = gl_GlobalInvocationID.z;
+    output_data.values[dst + 15u] = 0x5a000000u ^ index;
+}

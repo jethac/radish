@@ -1,11 +1,64 @@
 # Core compute implementation: checkpoint 0044
 
-The later `0044-radish-compute-resources-wip.patch` adds the combined native
-resource/event/query/subgroup implementation and builds successfully as
-`d4037cc757bde872ea09607f2ae817b531dbda2e4ead1ea855e2f536007eee00`.
-It has **no combined device execution evidence**. Its qualification properties
-are experimental; see the [separate build record](results/core-api-0044-combined-build.json).
-The bounded hardware result below remains tied to the earlier foundation.
+The consolidated A506 run passes three functional suites: API5, events/queries,
+and native resources. Subgroup BASIC compiles but fails its first local32
+election-count oracle. The batch is therefore **partial success**, not a driver
+conformance pass. No GPU faults occurred; both services stayed active. Published source reports
+subgroup stages/operations as zero until this is fixed; the measured private
+qualification build enabled BASIC and the diagnostic helper explicitly enables
+it locally. This two-field safety change is distinct from the measured binary.
+
+Apply `0044-radish-resource-layout-storage-wip.patch` after the foundation and
+combined resource WIP patches to reproduce this source. It adds the broader
+format/layout/mip/cube code, border colors, compact buffer slots, pipeline-owned
+private/constant storage and lost-queue cleanup correction. Those added source
+paths are not all exercised by the passing suites. The measured private ICD is
+`e4bd958f474249670e9df455af6660db91ba8fced590b8997d71dfa641870bb2`.
+See [the per-command/result record](results/core-api-0044-consolidated.json).
+
+The original40 worklist now has36 representative paths exercised, including
+common-wrapper routes for two1.1 image APIs; sparse-image queries, CmdCopyImage
+and CmdClearColorImage remain build-only. This count does not establish complete
+semantics. Public core1.1 names remain filtered under API1.0. BASIC is not accepted;
+required limits, large descriptor layouts, dynamic resource indexing, legal
+shared-memory/workgroup execution, broader formats/views and applicable CTS
+remain active work. Performance remains paused.
+
+The service used2.286s,7.3MiB and zero swap. API5 checked two4,160-invocation
+runs; events/query checked two256-invocation runs plus host-release/events,
+statistics, timestamps, result availability/copies/reset; resources checked
+two85-record runs with full outputs/guards, dynamic UBO/SSBO offsets, updates
+after recording, typed texels/images and nearest/linear sampling.
+
+An initial runner attempt stopped before probes because Python was absent on
+the tablet. A second stopped before functional execution on a probe-only
+16-bit/32-bit memcmp bug. Both failed captures remain preserved. The final runner
+uses awk for between-process fault checks, and the helper compares numeric
+local dimensions. It continues across independent non-fault failures and stops
+on new fault evidence. The public runner changes only root-path discovery from
+the measured private script.
+
+## Consolidated reproduction
+
+Apply the three0044 incremental patches in order to the documented0042 Mesa
+stack and build the isolated driver. Build the matching internal-ABI probes:
+
+```sh
+python3 radish/scripts/build-core-compute.py "$API_WORK/build" "$API_WORK/compute-probes"
+exec 9>"$ORIGINAL_DEVICE_LOCK"
+flock -w 1800 9
+python3 radish/scripts/device-core-compute.py probe combined-first \
+  --driver "$API_WORK/build/src/freedreno/radish/libvulkan_radish.so" \
+  --driver-sha256 "$DRIVER_SHA" --probe-dir "$API_WORK/compute-probes" --lock-fd 9
+```
+
+Set `RADISH_DEVICE_LOCK` to the same original lock and `RADISH_WORK` to the
+host evidence directory. The private driver is selected only for the bounded
+service. The current BASIC failure makes the overall process exit1 while
+preserving the three passing suite outcomes; do not reinterpret that as a full
+pass. No separate human gate is inserted between compile and execution checks.
+
+## Earlier API5 foundation evidence
 
 Performance experiments are paused. The current priority is complete compute
 behavior required by Vulkan 1.0/1.1, including execution, descriptors, resources,
@@ -103,7 +156,7 @@ its own unit on failure. Stop after a new GPU fault. The public runner differs
 from the measured private runner only in portable repository-root discovery;
 that adaptation has host checks, not an additional device run.
 
-## Still open
+## Historical foundation limitations
 
 The image foundation advertises transfer usages only. It supports explicitly
 bounded uncompressed color formats and owns checked linear physical layouts;
