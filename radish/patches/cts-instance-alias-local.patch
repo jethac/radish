@@ -1,0 +1,22 @@
+--- a/external/vulkancts/modules/vulkan/vktTestCase.cpp
++++ b/external/vulkancts/modules/vulkan/vktTestCase.cpp
+@@ -289,11 +289,16 @@
+ #endif // CTS_USES_VULKANSC
+     vector<const char *> enabledLayers;
+ 
+-    // \note Extensions in core are not explicitly enabled even though
+-    //         they are in the extension list advertised to tests.
+     vector<const char *> coreExtensions;
+     getCoreInstanceExtensions(apiVersion, coreExtensions);
+-    const auto nonCoreExtensions = removeExtensions(enabledExtensions, coreExtensions);
++    auto nonCoreExtensions = removeExtensions(enabledExtensions, coreExtensions);
++    const auto advertisedExtensions = filterExtensions(enumerateInstanceExtensionProperties(vkp, nullptr));
++    for (const auto &extension : enabledExtensions)
++    {
++        if (de::contains(advertisedExtensions.begin(), advertisedExtensions.end(), extension) &&
++            !de::contains(nonCoreExtensions.begin(), nonCoreExtensions.end(), extension))
++            nonCoreExtensions.push_back(extension);
++    }
+ 
+     if (isValidationEnabled)
+     {

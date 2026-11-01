@@ -357,5 +357,10 @@
   },
   "publication_safety_delta": "Public source reports subgroup supported stages/operations zero; measured private qualification artifact had BASIC enabled. Probe locally overrides for diagnosis.",
   "published_build_sha256": "aa478f390060a4f19f90a0949497d6d1742491b90b3a62009ce77832876778e3",
-  "published_build_executed": false
+  "published_build_executed": false,
+  "descriptor_order_validity_erratum": {
+    "confirmed_affected": "Resource and robust-buffer helpers that update ordinary descriptor sets after binding/recording and before submission. No update-after-bind binding flags/features were enabled.",
+    "qualification": "Numerical outputs/guards and execution observations remain recorded; affected command-buffer executions do not establish valid Vulkan-use qualification. Corrected update-before-record/re-record consumers are pending.",
+    "unaffected_scope": "This erratum does not automatically invalidate independent API5, event/query, subgroup, private/constant or historical reduction consumers; their ordering is reviewed separately."
+  }
 }

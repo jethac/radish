@@ -23,12 +23,17 @@ a separate driver, with its own a5xx resource bindings and command emission.
 
 **Current priority:** performance experiments are paused while the driver fills
 its Vulkan1.0/1.1 compute execution and resource gaps. The latest
-[0044 checkpoint](radish/CORE_API_0044.md) passes API, event/query and
-UBO/dynamic/image-resource suites, including public KHR aliases. A subsequent logical-to-physical mapping correction passes all four focused
-BASIC cases, followed by a fifth3D case, and compute BASIC is now exposed. Actual private/constant storage and normal/disabled-optimization pipelines pass their exact output checks. Core robust-buffer checks now pass after correcting typed texel bounds, and robustBufferAccess is exposed. Public singleton device-group paths, full-image split binding and mutable views also pass focused checks. The original32/64-thread barrier reduction now passes after preserving logical IDs with a two-row physical mapping. Native D16/D32 sampling, depth comparison and depth-image copy now pass focused guards/oracles. CTS currently crashes during initialization before any case; broader execution/CTS coverage remains incomplete. All40 original command paths now have representative execution evidence;
-this is WIP, not a version or conformance claim. Broader semantics and limits
-remain active work. The inference results below are the previous qualified
-performance baseline.
+[0044 checkpoint](radish/CORE_API_0044.md) implements the original40 command
+paths and broader compute resources. Independent BASIC, private/constant,
+normal/noopt and historical32/64 barrier-reduction consumers pass focused checks.
+A descriptor-order mistake invalidated the resource and robust-buffer probes'
+command buffers: their numerical observations are retained, but valid-use
+qualification is pending corrected update-before-record/re-record runs. The
+40-path count is an execution inventory, not a semantic or conformance claim.
+A locally corrected CTS initialization harness runs five information cases:
+four pass and the full property-limit test fails. Graphics is outside scope;
+compute-relevant limits and remaining semantics are active work. The inference
+results below remain the previous qualified performance baseline.
 
 Radish runs every core layer of Kokoro's neural decoder on the GPU through ncnn.
 The latest opt-in graph fuses 42 normalization/AffineSnake chains and executes

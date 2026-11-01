@@ -1,5 +1,13 @@
 # Core compute implementation: checkpoint 0044
 
+## 2026-11-02: descriptor-order qualification correction
+
+The resource and robust-buffer helpers updated ordinary descriptor sets after recording command buffers and before submission. Without update-after-bind binding flags, those updates invalidate the command buffers. Their passing outputs and guard checks remain recorded as implementation observations, but the affected executions do not establish valid Vulkan-use qualification. This includes the resource/depth/mutable/fullsplit and robust-buffer claims below. Corrected helpers will update descriptors before recording, then reset/re-record after each completed round while retaining all numerical and allocation checks. No optional binding feature is being enabled to bypass the rule.
+
+The40-path ledger records representative execution observations, not40 fully qualified command semantics. Independent API5, event/query, subgroup, private/constant and historical reduction results are not automatically affected; their descriptor ordering is checked separately. Frozen captures are preserved and result records carry this erratum. The existing public resource/RBA helpers are pending the same correction.
+
+The original CTS initialization crash is separately resolved by a local harness correction that retains actually advertised promoted instance extensions. The unchanged five test cases then yield4 passes and1 device-property-limit failure. The full report remains failed, including graphics limits outside this compute campaign and actionable compute texture-offset, sampled-image and queue-priority gaps. This is locally modified-harness evidence, not official conformance. [Results and full failed report](results/core-api-0044-cts-info.json).
+
 ## 2026-11-02: native depth consumers pass
 
 ICDa601f68d passes D16/D32 nearest normalized sampling, LESS_OR_EQUAL comparison at reference0.5, host PREINITIALIZED source visibility and a same-format D32 depth-image copy consumed by native sampling. Both85-record rounds pass all20 fields per record (3400 words total) and full6 image/9 buffer allocation guards. The existing UBO, dynamic-offset, late-update, mutable/fullsplit, color transfer and typed-texel checks remain intact. Service631ms,7.7MiB,zero swap; no new GPU faults and both services active. [Exact paired result](results/core-api-0044-depth.json).

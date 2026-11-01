@@ -1,0 +1,44 @@
+{
+  "status": "failed",
+  "harness": "Locally modified CTS; only instance extension selection changed; test cases and oracles unchanged.",
+  "driver": {
+    "bytes": 48557240,
+    "sha256": "934665fef472882342e965a18f4478fa8e16a82c86741b1acd4bac821202e37c"
+  },
+  "original_CTS": {
+    "bytes": 97536760,
+    "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+  },
+  "modified_CTS": {
+    "bytes": 97537944,
+    "sha256": "60ca85ae9c83ff24024c898b20e17a545d00697d8fa4949ef915ef1d0cb5ea7e"
+  },
+  "harness_patch": {
+    "bytes": 1077,
+    "sha256": "f85cb13b758c1a9bd000978ac95e7a997b51737a4a4448c386a2cdad7612f05a"
+  },
+  "cases": {
+    "dEQP-VK.info.device_features": "Pass",
+    "dEQP-VK.info.device_memory_properties": "Pass",
+    "dEQP-VK.info.device_properties": "Fail",
+    "dEQP-VK.info.device_queue_family_properties": "Pass",
+    "dEQP-VK.info.physical_devices": "Pass"
+  },
+  "qpa": {
+    "file": "core-api-0044-cts-info.qpa",
+    "bytes": 16904,
+    "sha256": "b850f4b227e5481d303fcd5cc91484b933782869372241e6b7e3a1bf45fbd965"
+  },
+  "run_log": {
+    "bytes": 1173,
+    "sha256": "2ac9363ae4fb0267a71d49887856826ae7e2ec79581975d412c6c5b3745aaa05"
+  },
+  "conditions": {
+    "service_seconds": 0.445,
+    "peak_mib": 13.5,
+    "swap_mib": 0,
+    "new_gpu_faults": false,
+    "services_active": true
+  },
+  "scope": "Four query passes; property limits fail. No clean official CTS/conformance claim. Original initialization SIGSEGV preserved; corrected extension selection allows all five cases to execute."
+}
