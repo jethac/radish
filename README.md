@@ -60,6 +60,13 @@ physical bandwidth and occupancy still need measurement. The next work targets
 those limits and the dominant convolution losses. A CPU win will not close the
 goal by itself.
 
+The new default-off timing diagnostic is qualified on one unchanged convolution:
+**7.161 ms GPU queued elapsed**, 90.8% of its matching submit-to-completion
+interval. All twelve outputs pass and match exactly; paired timing overhead
+stays within the planned budget. This establishes measurement, not saturation
+or a new model speedup. Arithmetic and bandwidth calibration follow. See
+[GPU_TIMING.md](radish/GPU_TIMING.md) for scope and reproduction.
+
 A tablet cancellation probe preserves the completed request and discards the
 second request after its active GPU core finishes. Exit follows the cancel marker
 by about 15.8 s in this observation; it does not interrupt GPU work promptly.
@@ -113,6 +120,7 @@ build and test scripts retain their relative paths.
 | [radish/CAPABILITIES.md](radish/CAPABILITIES.md) | Implemented features and their evidence |
 | [radish/VULKAN_AUDIT.md](radish/VULKAN_AUDIT.md) | Vulkan 1.0/1.1 gaps |
 | [radish/RUNTIME_INTEGRATION.md](radish/RUNTIME_INTEGRATION.md) | Fresh-input Kokoro integration and remaining work |
+| [radish/GPU_TIMING.md](radish/GPU_TIMING.md) | Qualified GPU elapsed diagnostic, results and reproduction |
 
 ## Building and running
 
@@ -122,7 +130,7 @@ kept outside the repository.
 
 1. Check out Mesa at `ddabdd0e36bd2f5e0c8e6bd21c3d1da7e34c1230` in a
    separate worktree. Apply
-   `radish/patches/0032-radish-indirect-dispatch-cumulative.patch` to that base.
+   `radish/patches/0036-radish-gpu-elapsed-cumulative.patch` to that base.
    Earlier cumulative Mesa patches are historical alternatives, not a series.
 2. Set `RADISH_WORK` to the scratch/build directory, `RADISH_MESA` to the Mesa
    checkout, `RADISH_SYSROOT` to the aarch64 sysroot and `RADISH_VENV` to the

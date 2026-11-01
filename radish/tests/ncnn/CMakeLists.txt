@@ -35,3 +35,8 @@ if(RADISH_ORT_INCLUDE)
     target_compile_definitions(radish-kokoro-runtime PRIVATE RADISH_FRONTEND_NO_MAIN RADISH_WAVEFORM_NO_MAIN)
     target_compile_options(radish-kokoro-runtime PRIVATE -ffp-contract=off -Wall -Wextra -Werror)
 endif()
+
+add_executable(radish-gpu-elapsed EXCLUDE_FROM_ALL gpu_elapsed_probe.cpp)
+target_link_libraries(radish-gpu-elapsed PRIVATE ncnn)
+target_include_directories(radish-gpu-elapsed PRIVATE ${NCNN_SOURCE}/src/layer)
+target_compile_options(radish-gpu-elapsed PRIVATE -ffp-contract=off -Wall -Wextra -Werror)

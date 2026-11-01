@@ -1,5 +1,36 @@
 # Radish status
 
+## 2026-11-02 (JST): GPU elapsed timing qualified
+
+Default-off driver checkpoint 0036 measures the accepted C128/K11/W213
+convolution without changing its shader or eight-chunk submission. Four
+measured GPU intervals average **7.160924 ms**, versus **7.889763 ms** for
+matching host submit-to-completion intervals: 90.762% falls inside the GPU
+bracket. That bracket includes existing GPU state, waits and flushes; it is
+not ALU busy time. Work accounting gives **10.721 useful / 12.886 issued
+GFLOP/s** for this short case. No model saturation or hardware ceiling follows.
+
+All 327,168 output values from twelve balanced forwards pass the unchanged
+reference gate and match OFF output bytes exactly; GPU input bytes are
+preserved. Six valid ON samples, no OFF samples, and unchanged profile counts
+pass. The prospective 5% perturbation budget passes for math submit and complete
+forward means. Small negative ON penalties do not establish a performance win.
+Peak is 62.5 MiB/zero swap; both services active and no new GPU faults.
+
+The cumulative patch reconstructs all 14 files on the pinned Mesa base. Private
+and canonical driver builds pass; the optional public helper target produces
+the exact device-tested binary. The public runner's portable path adaptation
+has host checks; the hardware capture used its original private version.
+Existing model results and the global private device ICD remain on 0032.
+Full-core warm performance is still **35.730754 s**, with CPU faster. See
+`GPU_TIMING.md` for measurements, packet scope, pins and reproduction.
+
+Next: independent arithmetic and representative vec4-copy measurements under
+the normal non-barrier scheduling path, then optimize a demonstrated dominant
+loss. This supplies a way to measure headroom; it does not close the efficiency
+goal. The initial parser's stdout/stderr ordering assumption failed and was
+corrected narrowly; original failure evidence is preserved.
+
 ## 2026-11-02 (JST): normalization and AffineSnake fused
 
 The opt-in `norm-affine-snake-deconv2d` graph replaces 42 sole-consumer
@@ -445,9 +476,9 @@ accepted local128 tile is retained; later sequential batching improves its
 
 Use the validated 0035 opt-in checkpoint: 35.730754 s fixed-core warm,
 42.819037/18.163352 s resident full/short synthesis, unchanged reference gates
-and exact 0034 output bytes. CPU remains faster. Qualify bounded GPU elapsed
-measurement on accepted tiled work, then arithmetic/bandwidth calibration and
-an evidence-led convolution change. Keep 531.4 MiB/57.2 MiB whole-session memory
+and exact 0034 output bytes. CPU remains faster. Bounded GPU elapsed measurement
+is qualified on one accepted tiled case in 0036; next are arithmetic/bandwidth
+calibration and an evidence-led convolution change. Keep 531.4 MiB/57.2 MiB whole-session memory
 and swap explicit. Measured attainable GPU efficiency and sustained inference
 remain completion requirements. The earlier optimization sequence follows.
 

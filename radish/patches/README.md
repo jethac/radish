@@ -41,13 +41,17 @@ limits and validation scope. Published checkpoints remain experimental; publicat
 | `0033-ncnn-planar-padded-channels.patch` | After 0030 in the ordered Conv1D stack | Default-off channel padding moves five convolutions onto the tiled kernel; full core/wave references pass, fixed warm 38.556751 s, 715 GPU layers and zero CPU fallbacks |
 | `0034-ncnn-instancenorm-outplace.patch` | After 0019 and 0028 in the normalization stack | Default-off named pack4 input alias plus disjoint normalization output removes 49 copies; same-binary warm 38.467278→37.058738 s, exact output bytes, all four fresh core/wave references pass |
 | `0035-ncnn-instancenorm-coefficients.patch` | After 0034 in the normalization stack | Guarded coefficient helper for opt-in project NormAffineSnake; 42 fused chains, exact output bytes, fixed warm 35.730754 s and four full core/wave references pass |
+| `0036-radish-gpu-elapsed-cumulative.patch` | Same Mesa base as 0001; alternative to 0032 | Default-off bounded GPU timestamp diagnostic for one accepted eight-chunk convolution; six valid samples, unchanged output bytes and counts, paired perturbation budget passes; no public query support or model performance change |
 
 To reconstruct the accepted driver checkpoint, make a separate checkout/worktree at the
-Mesa base, read its `AGENTS.md`, and apply 0032 with `git apply` instead of
+Mesa base, read its `AGENTS.md`, and apply 0036 with `git apply` instead of
 earlier cumulative Mesa patches. Set
 `RADISH_MESA` to that checkout and run `../scripts/build.sh`. Preserve the AC8
 checkout and use the shared scratch disk for source/build outputs. The existing
 sysroot/build environment paths and private loader procedure are in `NOTES.md`.
+The 0035 model measurements used driver 0032; 0036's private timing qualification
+and exact build/capture pins are in `../GPU_TIMING.md`. Its diagnostic is disabled
+by default and changes no existing shader, dispatch geometry or public feature.
 
 Checkpoint 0023 is cumulative from the same Mesa base: apply it instead of 0022,
 not on top. Its only behavior change from 0022 is allowing explicit
