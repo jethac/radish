@@ -26,6 +26,7 @@ limits and validation scope. Published checkpoints remain experimental; publicat
 | `0018-ncnn-conv1d-tiled-dilation.patch` | After 0017 in the ordered Conv1D stack | Extends only dilation1/3/5; operator/full fused FP32 core/waveform pass; 69.862470 s first/69.678044 s warm, 416.7 MiB/zero swap, no faults |
 | `0019-ncnn-radish-reshape-alias.patch` | Same ncnn base; independent Reshape file | Default-off exact Radish FP32 pack4 rank3→rank2 output alias; original input copies retained; builds/operator/full-core gates pass, output bit-identical, 67.138187 s first/66.919494 s warm. Earlier bidirectional variant in bf4d98f is rejected at 109.107981 s warm |
 | `0020-ncnn-conv1d-tiled32.patch` | After 0018 in the ordered Conv1D stack | Default-off local8x4, tile64x32, 12 KiB shared; builds/compiler/operator/full-core accuracy pass, output byte-identical; 101.354178 s first/100.467084 s warm versus accepted 66.919494 s warm; 414.8 MiB plus 52 MiB swap; rejected for performance |
+| `0021-ncnn-conv1d-tile32x32.patch` | After 0020 in the ordered Conv1D stack | Revises the same default-off TILED32 path to tile32x32, eight accumulators, 8 KiB shared; builds/all20 variants/operator/full-core accuracy pass; output byte-identical, first 138.633996 s versus accepted first 67.138187 s, peak 425.2 MiB/zero swap/no faults; rejected for performance, no warm repeat; accepted64x64 path unchanged |
 
 To reconstruct the current driver, make a separate checkout/worktree at the
 Mesa base, read its `AGENTS.md`, and apply 0016 with `git apply` instead of
@@ -36,13 +37,13 @@ sysroot/build environment paths and private loader procedure are in `NOTES.md`.
 
 The pinned ncnn/glslang checkout is separate. `../scripts/build-ncnn.sh` applies
 0005 if applicable, accepts an already-applied patch, migrates the exact earlier
-0002 adaptation, then applies/verifies 0006, 0008, 0010, 0011 and candidates 0013–0015/0017/0018/0020, plus independent 0019.
+0002 adaptation, then applies/verifies 0006, 0008, 0010, 0011 and candidates 0013–0015/0017/0018/0020/0021, plus independent 0019.
 The first candidate build stopped at overlapping earlier-patch verification.
-The build script accepts exact ordered 0010/0011/0013/0014/0017/0018/0020 Conv1D prefixes
+The build script accepts exact ordered 0010/0011/0013/0014/0017/0018/0020/0021 Conv1D prefixes
 and 0006/0015 net.cpp prefixes, rejecting unrelated edits. This preserves the
 source check despite overlapping patch contexts. Canonical and SIMPLEOMP builds
 pass with revised 0013/0014, 0015 and incremental 0017; both builds and the
-integrated runtime also pass with 0020. Set
+integrated runtime also pass with 0020 and 0021. Set
 `RADISH_NCNN_TRACE=1` for execution evidence; tracing does not use timestamp
 queries or change backend selection. The 32-thread path passes all 18 mean
 cases; the physical64 failure remains unresolved. It does not enable optional
@@ -164,7 +165,8 @@ GPU core values in 88.314593 s and all 127800 device waveform samples at 98.0175
 This is first-extraction saved-source evidence, not warm or live end-to-end
 performance. New layers use 31=2; packed mode would require 0015 and its opt-in.
 
-Candidate 0020 requires `RADISH_NCNN_TILED32=1`, works without `RADISH_NCNN_TILED`,
+With the stack ending at 0020, that candidate requires `RADISH_NCNN_TILED32=1`,
+works without `RADISH_NCNN_TILED`,
 and takes precedence when both controls are enabled. It retains the exact
 Radish/FP32/packing/shape gates and original row-major weights. Its separate
 local8x4 shader computes 64 channels by 32 positions with BK32 and 12 KiB shared
@@ -198,6 +200,34 @@ disabled by default. Preserve the accepted checkpoint
 `bccdcd3265dfbbc5b7c09f21377f2f38a1054820`; full evidence is in
 `core-instancenorm-tiled32-0020-repeat2.log` and `../NOTES.md`.
 
+Incremental 0021 changes the current TILED32 selection to 32 channels by 32
+positions, keeping local8x4, BK32, sequential K order, all five specializations,
+row-major weights and existing exact Radish/FP32/shape gates including Cout%64.
+Eight vec4 accumulators and shared A4 KiB replace 16 accumulators and A8 KiB;
+shared B remains 4 KiB. Host Y groups become Cout/32. The accepted local16x8
+64x64 shader is unchanged. The same control works alone or takes precedence
+over TILED; it remains default-off. Reconstruct 0020 from the prefix ending
+there, preserved in published checkpoint `b70b0a8c498dd8fabc4409acbface875de0c5e33`.
+
+Independent source review and exact ordered reconstruction pass, as do private
+Vulkan1.0 GLSL/SPIR-V, AArch64 syntax and canonical/SIMPLEOMP/runtime builds.
+The focused actual compile uses 16 full/0 half registers, 950 instructions,
+1152 dwords, four loops and eight compiler max_waves, with no private/spill
+evidence (`operators-tile32x32-0021-compile.log`). Dilation1 passes all 25984
+outputs at groups1/2/4/8, no faults; best math 33.229460 ms is slower than 0020's
+21.885115 ms and the accepted 10.868408 ms. All 20 model compiler variants pass
+at 16 full/0 half and 8 KiB shared, satisfying zero-private/spill and F+H/2<=32
+gates. Debug load 15.992 s, peak 284.3 MiB/zero swap, no faults. Dilation3/5 also
+pass all 23424/20864 outputs at groups8, taking 29.094190/29.227679 ms with four
+submits each. The full first extraction passes all 562342 values byte-identically
+to the accepted core, max error 0.000129699707, relative RMS 7.72155564e-7, but takes
+138.633996 s versus accepted 67.138187 s first (106.49% longer). Cold load 9.791 s,
+peak 425.2 MiB/zero swap, no faults and both services active
+(`core-instancenorm-tile32x32-0021-first.log`). Existing exact-byte waveform
+evidence applies; no new waveform/runtime measurement was performed. Reject 0021
+for performance and keep TILED32 default 0. No warm repeat was performed;
+accepted 66.919494 s remains a separate warm baseline.
+
 SHA-256:
 
 ```
@@ -221,4 +251,5 @@ f9e2c39cfab97fbcc58a34c1464af42d4f0b9be08ce1a14dc2f494fe40322d06  0017-ncnn-conv
 e89d516bca15980a599f96e797b7726546913b05b370bac87a3ac88c8ebc9695  0018-ncnn-conv1d-tiled-dilation.patch
 3f38da1822f50b5b46857e091e2366c96baf350136dd585615c7e663ec72ce57  0019-ncnn-radish-reshape-alias.patch
 bf61ab2af644ddecb632c7c3d8e48ef261085f3a7c1ad68d657c33abf7cda3df  0020-ncnn-conv1d-tiled32.patch
+a29dbbe0c3edf8912e4548cc873beca0ba3f1ba3197b6f1ee5f386bfd4f57dc0  0021-ncnn-conv1d-tile32x32.patch
 ```

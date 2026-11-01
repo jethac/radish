@@ -265,11 +265,12 @@ int conv_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
         CHECK(conv->use_radish_tiled == requested);
         CHECK(conv->radish_tiled32 == requested32);
         const int tile_width = requested32 ? 32 : 64;
+        const int tile_channels = requested32 ? 32 : 64;
         const int groups_x = (output_width + tile_width - 1) / tile_width;
-        const int groups_y = (output_channels + 63) / 64;
-        std::printf("  model-shaped variant: %s; K=%d; expected tiled grid=%d x %d\n",
+        const int groups_y = (output_channels + tile_channels - 1) / tile_channels;
+        std::printf("  model-shaped variant: %s; K=%d; tile=%d channels x %d positions; expected tiled grid=%d x %d\n",
                     conv->radish_tiled32 ? "Radish tiled32" : conv->use_radish_tiled ? "Radish tiled" : "default",
-                    input_channels * kernel, groups_x, groups_y);
+                    input_channels * kernel, tile_channels, tile_width, groups_x, groups_y);
         if (conv->use_radish_tiled) {
             expected_tiled_groups = static_cast<uint64_t>(groups_x) * groups_y;
             CHECK(conv->pipeline_convolution1d_gemm);

@@ -340,7 +340,7 @@ required.
   passes all outputs; warm mean 32.079044 s, 444.4 MiB/zero swap.
 - [x] Extend tiled convolution to dilation3/5 with incremental0018; compiled
   16-full/0-half register footprint and both full operator references pass.
-  Full fused core first/warm69.862470/69.678044s, all562342 values pass,
+  Full fused core first/warm69.862470/69.678044s, all 562342 values pass,
   416.7MiB/zero swap/no faults; waveform127800 samples passes at98.036838dB.
 - [x] Replace CPU shape calibration with metadata-only propagation; all original
   1739 and fused1307 shapes match CPU captures atT78/T213. Factor callable
@@ -374,8 +374,23 @@ required.
   73.200806 s despite submits falling 25944→6512; the other 1937 commands retain
   their submission count and roughly the same total time. Wall-inclusive timers
   and swap do not isolate instruction cost.
+- [x] Implement and independently review incremental 0021 tile32x32 in the
+  existing default-off TILED32 path: local8x4, eight accumulators, 8 KiB shared;
+  unchanged eligibility, K order and accepted shader. Private syntax/SPIR-V
+  checks and exact ordered reconstruction pass.
+- [x] Build 0021 and inspect the focused shader: 16 full/0 half, no private
+  allocation/spills. Dilation1 passes all 25984 outputs at groups1/2/4/8, no
+  faults; best math 33.229460 ms is slower than both earlier tiles.
+- [x] Inspect all 20 model variants: 16 full/0 half, 8 KiB shared, zero
+  private/spill evidence, covering all 53 eligible layers. Dilation3/5 outputs
+  pass at groups8, taking 29.094190/29.227679 ms, no faults.
+- [x] Measure one fixed-model first extraction for 0021: 138.633996 s versus
+  accepted 67.138187 s first, all 562342 values pass byte-identically, peak 425.2 MiB,
+  zero swap/no faults. Reject for performance and keep TILED32 default 0;
+  no warm repeat. Existing exact-byte waveform evidence applies, with no new
+  integrated runtime measurement. Accepted66.919494 s warm remains distinct.
 - [ ] Consider the 48 measured five-operation Snake chains as a subsequent,
-  unimplemented design.
+  separately developed design; they are not integrated into the runtime.
 - [ ] Attribute remaining convolution, reduction and CPU fallback costs; compare
   equivalent warm work against an optimized CPU baseline before declaring a win.
   Use the current fused+dilation profile; earlier unfused convolution/reduction
@@ -393,8 +408,9 @@ baseline. Its separate default-off local8x4 kernel uses a 64-channel by
 dilation1/3/5 and existing exact-device/FP32/packing gates. Do not alter the
 Vulkan feature advertisement or general dispatch limits. The source is reviewed
 and reconstructs from the ordered stack; both ncnn builds and the runtime build
-pass. `RADISH_NCNN_TILED32=1` selects it independently of `RADISH_NCNN_TILED` and
-takes precedence when both are enabled.
+pass. With the stack ending at 0020, `RADISH_NCNN_TILED32=1` selects this geometry
+independently of `RADISH_NCNN_TILED` and takes precedence when both are enabled.
+The same control selects the revised geometry after 0021 below.
 
 Source audit: the current compiler caps full registers at48 and accounts local32
 in a wave pair; the existing driver guard alone does not prove this new resource
@@ -434,3 +450,38 @@ not isolated instruction-cost measurements. Preserve both successful and
 rejected checkpoints.
 The independent 48-chain Snake design remains available as a subsequent measured
 opportunity (6.978 s current command wall).
+
+## Convolution candidate 0021: local32, tile32x32
+
+After the published rejection of 0020, incremental 0021 changes only that
+candidate's channel tile from 64 to 32 and its host Y dispatcher. Keep the same
+flag/member/shader identity, local8x4, BK32, 32 positions, weights and all gates,
+including Cout%64. Eight vec4 accumulators replace 16, and shared A falls from
+8 KiB to 4 KiB; B remains 4 KiB. The accepted local128/tile64x64 source is unchanged.
+The old geometry remains reproducible from the stack ending at 0020 and its
+published checkpoint `b70b0a8c498dd8fabc4409acbface875de0c5e33`.
+
+Source review, exact reconstruction, private GLSL/SPIR-V, AArch64 syntax and
+canonical/SIMPLEOMP/runtime builds pass. The focused shader compiles to 16
+full/0 half registers, 950 instructions, 1152 dwords, four loops and eight
+compiler max_waves, with no private/spill evidence. This meets the resource
+target but does not prove occupancy. The full model load-only gate passes all
+20 specialization tuples at 16 full/0 half and 8 KiB shared, without private
+allocation/spill evidence. Debug load 15.992 s, peak 284.3 MiB/zero swap, no faults;
+all 53 eligible layers are covered. No budget was raised.
+
+Retain the existing full independent width213/C128/K11 fixtures: dilation1
+uses grid7x4, dilation3/5 grid6x4. Dilation1 already passes all 25984 outputs
+at groups1/2/4/8 with no faults, taking 45.268188/39.411195/35.586862/33.229460 ms
+for math versus the accepted 10.868408 ms. Dilation3/5 also pass all 23424/20864
+outputs at groups8, taking 29.094190/29.227679 ms with four submits each.
+The fixed full first extraction passes all 562342 values byte-identically to
+the accepted core but takes 138.633996 s versus accepted 67.138187 s first,
+106.49% longer. Cold load 9.791 s, service 2 min 28.844 s, peak 425.2 MiB/zero swap,
+no faults, both services active. Existing waveform evidence applies to the
+identical core bytes; this is not a new integrated runtime measurement.
+Reject 0021 for performance and retain TILED32 default 0. No warm repeat was
+performed; accepted 66.919494 s warm remains a distinct baseline.
+At groups8 the 53 source shapes project 13024 submissions versus 0020's 6512 and
+the accepted 25944. Input tile traffic doubles relative to 0020, so lower live
+registers and shared allocation do not by themselves establish a speed win.
