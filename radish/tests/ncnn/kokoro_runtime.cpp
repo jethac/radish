@@ -1,6 +1,7 @@
 #include "runtime_helpers.h"
 #include "radish_snake.h"
 #include "radish_affine_snake.h"
+#include "radish_norm_affine_snake.h"
 #if NCNN_VULKAN
 #include "pipelinecache.h"
 #endif
@@ -147,6 +148,7 @@ class CoreSession {
 #endif
     radish_ncnn::SnakeContext snake;
     radish_ncnn::AffineSnakeContext affine_snake;
+    radish_ncnn::NormAffineSnakeContext norm_affine_snake;
     ncnn::Net net;
 public:
     double load_seconds=0;
@@ -178,6 +180,7 @@ public:
 #endif
     require(snake.register_layer(net)==0,"cannot register RadishSnake");
     require(affine_snake.register_layer(net)==0,"cannot register RadishAffineSnake");
+    require(norm_affine_snake.register_layer(net)==0,"cannot register RadishNormAffineSnake");
     require(net.load_param_mem(plan.param_text.c_str())==0,"cannot load inferred graph");
     require(net.opt.use_vulkan_compute==vulkan,"silent Vulkan device fallback");
     require(!net.opt.use_fp16_packed && !net.opt.use_fp16_storage && !net.opt.use_fp16_arithmetic,"unexpected precision change");
@@ -462,7 +465,7 @@ int main(int argc,char** argv) {
     std::setvbuf(stdout,nullptr,_IONBF,0);
     try {
         double start=now();
-        bool vulkan=true,backend_selected=false,affine_snake=false,deconv2d=false,request_loop=false,reuse_pipeline_cache=false;
+        bool vulkan=true,backend_selected=false,affine_snake=false,norm_affine_snake=false,deconv2d=false,request_loop=false,reuse_pipeline_cache=false;
         int threads=4,ort_threads=4,max_T=512,repeat=1;
         std::string ort_library="/usr/local/lib/straylight-listen/libonnxruntime.so";
         std::vector<std::string> args,next_inputs;
@@ -480,7 +483,9 @@ int main(int argc,char** argv) {
                 require(++i<argc && cancel_file.empty(),"--cancel-file requires one unique path"); cancel_file=argv[i];
                 require(!cancel_file.empty() && cancel_file.front()=='/',"cancel-file must be an absolute path");
             } else if(arg=="--affine-snake") {
-                require(!affine_snake,"duplicate --affine-snake"); affine_snake=true;
+                require(!affine_snake && !norm_affine_snake,"select one affine core graph"); affine_snake=true;
+            } else if(arg=="--norm-affine-snake") {
+                require(!norm_affine_snake && !affine_snake,"select one affine core graph"); norm_affine_snake=true;
             } else if(arg=="--deconv2d") {
                 require(!deconv2d,"duplicate --deconv2d"); deconv2d=true;
             } else if(arg=="--vulkan" || arg=="--cpu-packed") {
@@ -494,7 +499,7 @@ int main(int argc,char** argv) {
                 else repeat=integer(argv[i],1,10);
             } else { require(arg.compare(0,2,"--")!=0,"unknown option: "+arg); args.push_back(arg); }
         }
-        require(args.size()==6,"usage: radish-kokoro-runtime [--affine-snake] [--deconv2d] [--vulkan|--cpu-packed] [--threads N] [--ort-threads N] [--max-frames N] [--repeat N] [--ort-lib PATH] [--request-loop --next-input DIR ... [--cancel-file PATH] [--reuse-pipeline-cache]] MODELS INPUT_DIR PARAM WEIGHTS TAIL NEW_OUTPUT; use the staging wrapper to verify artifact hashes");
+        require(args.size()==6,"usage: radish-kokoro-runtime [--affine-snake|--norm-affine-snake] [--deconv2d] [--vulkan|--cpu-packed] [--threads N] [--ort-threads N] [--max-frames N] [--repeat N] [--ort-lib PATH] [--request-loop --next-input DIR ... [--cancel-file PATH] [--reuse-pipeline-cache]] MODELS INPUT_DIR PARAM WEIGHTS TAIL NEW_OUTPUT; use the staging wrapper to verify artifact hashes");
         require(request_loop ? !next_inputs.empty() && repeat==1 : next_inputs.empty() && cancel_file.empty(),
                 "request-loop requires one to three --next-input directories and --repeat1; next-input/cancel-file are loop-only");
         if(reuse_pipeline_cache) {
@@ -502,11 +507,16 @@ int main(int argc,char** argv) {
             const char* enabled=std::getenv("RADISH_NCNN_PIPELINE_CACHE");
             require(enabled && std::strcmp(enabled,"1")==0,"--reuse-pipeline-cache requires RADISH_NCNN_PIPELINE_CACHE=1");
         }
+        require(!norm_affine_snake || deconv2d,"--norm-affine-snake requires --deconv2d");
+        if(norm_affine_snake && vulkan) {
+            const char* enabled=std::getenv("RADISH_NCNN_NORM_SUM4");
+            require(enabled && std::strcmp(enabled,"1")==0,"NormAffineSnake Vulkan requires RADISH_NCNN_NORM_SUM4=1");
+        }
         const std::string parameters=read_param(args[2]);
         std::istringstream header(parameters);
         int magic=0,layers=0,blobs=0;
         require(bool(header>>magic>>layers>>blobs) && magic==7767517,"invalid parameter header");
-        require(deconv2d ? (affine_snake ? layers==720 && blobs==881 : layers==912 && blobs==1073)
+        require(norm_affine_snake ? layers==594 && blobs==755 : deconv2d ? (affine_snake ? layers==720 && blobs==881 : layers==912 && blobs==1073)
                         : (affine_snake ? layers==714 && blobs==875
                                         : (layers==1098 && blobs==1307) || (layers==906 && blobs==1067)),
                 "selected core graph does not match its flags and supported inventory");
@@ -514,7 +524,7 @@ int main(int argc,char** argv) {
         radish_waveform::Tail tail=radish_waveform::load_tail(args[4]);
         if(request_loop) {
             std::vector<std::string> queued(1,args[1]); queued.insert(queued.end(),next_inputs.begin(),next_inputs.end());
-            const char* graph=deconv2d ? (affine_snake?"affine-snake-deconv2d":"snake-deconv2d")
+            const char* graph=norm_affine_snake ? "norm-affine-snake-deconv2d" : deconv2d ? (affine_snake?"affine-snake-deconv2d":"snake-deconv2d")
                                       : affine_snake?"affine-snake":layers==906?"snake":"instancenorm";
             return run_request_loop(args,queued,parameters,tail,ort_library,vulkan,threads,ort_threads,max_T,
                                     layers,blobs,graph,cancel_file,start,reuse_pipeline_cache);
@@ -528,7 +538,7 @@ int main(int argc,char** argv) {
         radish::KokoroShapePlan plan=radish::infer_kokoro_shapes(parameters,static_cast<int>(boundary.T));
         double shapes_wall=now()-shapes_start;
         require(plan.layers==layers && plan.blobs==blobs,"inferred core graph inventory changed");
-        const char* core_graph=deconv2d ? (affine_snake?"affine-snake-deconv2d":"snake-deconv2d")
+        const char* core_graph=norm_affine_snake ? "norm-affine-snake-deconv2d" : deconv2d ? (affine_snake?"affine-snake-deconv2d":"snake-deconv2d")
                                      : affine_snake?"affine-snake":plan.layers==906?"snake":"instancenorm";
         std::printf("frontend complete including ORT release: %.6f s; T=%lld; metadata-only shapes: %d blobs in %.6f s\n",frontend_wall,(long long)boundary.T,plan.blobs,shapes_wall);
         double core_start=now();

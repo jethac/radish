@@ -1,5 +1,103 @@
 # Radish status
 
+## 2026-11-02 (JST): normalization and AffineSnake fused
+
+The opt-in `norm-affine-snake-deconv2d` graph replaces 42 sole-consumer
+normalization/AffineSnake chains with `RadishNormAffineSnake`. Fixed full-core
+first/warm extraction is **36.409648 / 35.730754 s**, versus 37.355882 / 37.058738 s
+at the accepted 0034 checkpoint. Warm improves **1.327984 s / 3.58%**. Both full
+562,342-value references pass and output is byte-identical to 0034
+(`e128ce63…d4d287`). These are one first/warm pair per checkpoint with different
+binaries and execution histories. Peak is 401.9 MiB plus 11.6 MiB swap, versus
+402.8 MiB plus 6.7 MiB previously. No new GPU faults; both live services active.
+
+Attribution accounts for the gain: 84 old final-stage commands become 42,
+reducing affected warm command time 3.577951791 → 2.280919922 s (1.297031869 s).
+All 1478 retained signatures match: 672 statistics commands move under the
+composite owner, and 806 other commands remain, including 96 transfers and
+all 58 tiled math commands. Retained work saves only 0.029873014 s in this pair.
+Totals are **1520 commands / 10235 DRM submits / 67163 chunks**, down from
+1562 / 11663 / 78587. The exact graph has 594 layers / 755 blobs and executes
+**589 GPU / zero CPU layers**. Fewer graph layers represent fused work, with
+all 226 weighted rows, 96 MemoryData rows and every stored weight preserved.
+Command timers include host work and waiting; they are not GPU timestamps.
+
+The complete short/short/full/full speech loop passes all four unchanged
+original-ORT core and waveform references. Synthesis takes
+**27.427916 / 18.163352 / 45.676598 / 42.819037 s**; core extraction takes
+13.788183 / 13.654213 / 35.978882 / 36.437867 s. All eight boundary inputs and
+both outputs are byte-identical to matching 0034 captures. Short/full waveform
+SNR remains 97.411696248 / 97.912821255 dB. Whole-session peak is 531.4 MiB plus
+57.2 MiB swap; session is 137.660401781 s including 0.296271739 s cleanup,
+service 137.771 s. Resident full/short improve over 43.578287 / 18.589849 s,
+but CPU remains faster at 36.802922 / 15.411271 s. The CPU measurement uses
+the earlier equivalent unfused graph. Single observations and different memory
+pressure limit comparisons; sustained operation and live application integration
+remain open. Runtime reproduction is in `RUNTIME_INTEGRATION.md`.
+
+Incremental ncnn patch 0035 exposes existing normalization coefficients without
+changing legacy arithmetic or allocation order. The project composite allocates
+a fresh output, obtains owning coefficients, then immediately records its final
+shader. Raw and residual aliases remain read-only. The shader preserves explicit
+FP32 normalization before style/Snake arithmetic and uses the stored reciprocal.
+It requires exact Radish A506, FP32 pack4, C128/256, known shapes and SUM4; no
+precision relaxation or coefficient folding. The six shared-normalization
+AffineSnake branches and twelve remaining InstanceNorm chains retain their paths.
+OUTPLACE/RESHAPE_ALIAS still control eligible legacy norms independently.
+
+Both ARM builds and the runtime pass. Actual focused and full-model A506 finals
+use seven SSBOs, local32x1x1, 8 full/1 half registers, native length4, no loops,
+shared or private memory; unchanged batch8 admission applies. All 23 tiled
+specializations retain their accepted resources. Focused CPU pack1/4 and GPU
+pack4 compare full original/composite outputs and residual sums bit for bit,
+check independent double references, and preserve all five input buffers.
+Full same-runner host CPU proof checks every output and exact original bytes.
+The first host run caught a real delegation error: x86 InstanceNorm does not
+support packing, and the composite bypassed Net's conversion. A seven-line
+conditional conversion restores that child contract; the full rerun passes.
+ARM's packing-capable child and all GPU code are unchanged by that correction.
+The initial failing evidence is retained. Source review alone missed this error.
+
+Pins: graph `ccab4ff803f05c6ca1f9dbc86b557e28d72488c94f0584f149108523b474aa43`;
+patch `d468a7b2dcadda77b4e06a286eba806aac28c6222f0f3ec9e8330cddf8dba657`;
+model `0325d04a…8af863`; runtime `56c8969c…1b74c2`. Driver 0032 remains
+`c8fee967…cb44c`; this adds no Vulkan conformance claim. Evidence under WORK:
+`norm-affine-implementation-0035-ltsusd7j/`,
+`norm-affine-compiler-audit-qts93nec/`, `norm-affine-result-0035-9bf3sq64/`,
+`norm-affine-actual-review-ne_ex_bj/`, and
+`norm-affine-runtime-validation-zat6_thf/`. Independent runtime profile audit:
+`norm-affine-runtime-audit-2erfkd8e/REPORT.txt`. Four full reference reports are
+`norm-affine0035-request-{000,001,002,003}-validation.json`.
+
+Before runtime staging, two identical immutable library paths were deduplicated.
+Eight completed older executable paths (three inode groups, 0031 deconv,
+0028/0029 and 0033 padded-channel runs) were archived with verified host backups,
+metadata and a hardlink-preserving restore script. Captures, outputs, models,
+the CPU baseline and 0034 executable remain. See
+`dedup-runtime-assets-before-norm-affine-0035*`,
+`archive-probes-before-norm-affine-0035.log` and
+`device-probe-executable-archive-before-norm-affine-0035/`.
+Free storage changed 188376 → 230056 → 263688 KiB; services stayed active.
+
+### GPU efficiency remains open
+
+The independent frozen-0034 audit attributes 24.478507659 s to 58 tiled math
+commands: 267.030343680 useful GFLOPs / 270.312407040 issued padded GFLOPs,
+**10.909 useful GFLOP/s on host command wall**. Padding wastes only 1.214% of
+arithmetic. Neither the earlier nominal 124.8 GFLOP/s formula nor the old GLES
+GEMM result establishes a measured hardware ceiling. Source traffic counts are
+not physical DRAM bandwidth; compiler resource limits are not occupancy data.
+
+The audit identifies repeated shared-memory loads/barriers and serialized
+per-chunk restore/preload/WFI/flush as concrete candidates. 98.924% of math wall
+lies inside submit-to-fence intervals, which include GPU work and host/kernel
+waiting. The next bounded diagnostic is GPU elapsed samples around an unchanged
+accepted eight-chunk batch, followed by same-driver arithmetic and streaming-copy
+calibration. Existing K2, vector-bias, X2 and smaller-tile rejections remain valid;
+none proves saturation. Report `tiled-headroom-0034-n88h8l_j/REPORT.md`, SHA
+`d110308ae6be1393fe352fedb6449528c1a6b203176f84a238f36ab0567f7f7e`, pins all
+58 per-layer counts and source evidence. The goal continues beyond a CPU win.
+
 ## 2026-11-02 (JST): normalization input copies removed
 
 Opt-in ncnn patch 0034 removes 49 normalization input copies. In the same-binary
@@ -345,13 +443,13 @@ accepted local128 tile is retained; later sequential batching improves its
 
 ## Next
 
-Use the validated 0034 opt-in checkpoint for the next comparison: 37.058738 s
-fixed-core warm, 43.578287/18.589849 s complete resident full/short synthesis,
-with every original accuracy gate retained and exact 0033 output bytes. CPU
-remains faster. Investigate the remaining measured convolution and pointwise
-work, then collect matched sustained CPU/GPU evidence. Keep the whole-session
-84.2 MiB swap and flat short latency explicit. The earlier optimization sequence
-below is retained as history.
+Use the validated 0035 opt-in checkpoint: 35.730754 s fixed-core warm,
+42.819037/18.163352 s resident full/short synthesis, unchanged reference gates
+and exact 0034 output bytes. CPU remains faster. Qualify bounded GPU elapsed
+measurement on accepted tiled work, then arithmetic/bandwidth calibration and
+an evidence-led convolution change. Keep 531.4 MiB/57.2 MiB whole-session memory
+and swap explicit. Measured attainable GPU efficiency and sustained inference
+remain completion requirements. The earlier optimization sequence follows.
 
 Continue from the passing FP32 InstanceNorm+tiled+dilation core and waveform:
 56.013717 s GPU warm with 0022 batching versus 32.079044 s packed CPU warm mean

@@ -13,7 +13,7 @@ LOADER_SHA=75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a
 TEMPLATE=$WORK/kokoro-core-shapes-instancenorm
 TAIL=$WORK/kokoro-tail.bin
 KIND=${1:-}
-case $KIND in runtime-short|runtime-full) ;; *) echo 'usage: device-runtime.sh runtime-short|runtime-full [run-label] [--snake|--affine-snake|--snake-deconv2d|--affine-snake-deconv2d] [--vulkan|--cpu-packed] [--threads N] [--ort-threads N] [--max-frames N] [--repeat N] [--request-loop --next-input runtime-short|runtime-full ... [--reuse-pipeline-cache]]' >&2; exit 2 ;; esac
+case $KIND in runtime-short|runtime-full) ;; *) echo 'usage: device-runtime.sh runtime-short|runtime-full [run-label] [--snake|--affine-snake|--snake-deconv2d|--affine-snake-deconv2d|--norm-affine-snake-deconv2d] [--vulkan|--cpu-packed] [--threads N] [--ort-threads N] [--max-frames N] [--repeat N] [--request-loop --next-input runtime-short|runtime-full ... [--reuse-pipeline-cache]]' >&2; exit 2 ;; esac
 shift
 RUN=$(date +%s%N)
 if [[ $# -gt 0 && $1 != --* ]]; then RUN=$1; shift; fi
@@ -39,7 +39,7 @@ while [[ $# -gt 0 ]]; do
         --next-input)
             [[ $# -ge 2 && ( $2 == runtime-short || $2 == runtime-full ) ]] || { echo 'next input must be runtime-short or runtime-full' >&2; exit 2; }
             NEXT_INPUTS+=("$2"); shift ;;
-        --snake|--affine-snake|--snake-deconv2d|--affine-snake-deconv2d)
+        --snake|--affine-snake|--snake-deconv2d|--affine-snake-deconv2d|--norm-affine-snake-deconv2d)
             [[ $CORE_GRAPH == instancenorm ]] || { echo 'select one core graph' >&2; exit 2; }
             CORE_GRAPH=${1#--}; TEMPLATE=$WORK/kokoro-core-shapes-$CORE_GRAPH ;;
         --vulkan|--cpu-packed)
@@ -62,7 +62,7 @@ done
 [[ $MAX_FRAMES =~ ^[1-9][0-9]{0,3}$ && $MAX_FRAMES -le 4096 ]] || { echo 'max frames must be 1..4096' >&2; exit 2; }
 [[ $REPEAT =~ ^([1-9]|10)$ ]] || { echo 'repeat must be 1..10' >&2; exit 2; }
 if $REQUEST_LOOP; then
-    [[ ${#NEXT_INPUTS[@]} -ge 1 && ${#NEXT_INPUTS[@]} -le 3 && $REPEAT == 1 && $CORE_GRAPH == affine-snake-deconv2d ]] || { echo 'request loop requires 2..4 inputs, repeat 1 and explicit --affine-snake-deconv2d' >&2; exit 2; }
+    [[ ${#NEXT_INPUTS[@]} -ge 1 && ${#NEXT_INPUTS[@]} -le 3 && $REPEAT == 1 && ( $CORE_GRAPH == affine-snake-deconv2d || $CORE_GRAPH == norm-affine-snake-deconv2d ) ]] || { echo 'request loop requires 2..4 inputs, repeat 1 and an explicit affine/deconv2d core graph' >&2; exit 2; }
 else
     [[ ${#NEXT_INPUTS[@]} == 0 ]] || { echo '--next-input requires --request-loop' >&2; exit 2; }
 fi
@@ -94,13 +94,18 @@ done
 if [[ $NORM_OUTPLACE == 1 ]]; then
     [[ $BACKEND == vulkan && $MIXED == 0 && $NORM_SUM4 == 1 && $RESHAPE_ALIAS == 1 ]] || { echo 'NORM_OUTPLACE requires Vulkan FP32, NORM_SUM4=1 and RESHAPE_ALIAS=1' >&2; exit 2; }
 fi
+if [[ $CORE_GRAPH == norm-affine-snake-deconv2d && $BACKEND == vulkan ]]; then
+    [[ $NORM_SUM4 == 1 && $MIXED == 0 ]] || { echo 'NormAffineSnake requires Vulkan FP32 and NORM_SUM4=1' >&2; exit 2; }
+fi
 if $REUSE_PIPELINE_CACHE; then
     [[ $REQUEST_LOOP == true && $BACKEND == vulkan && $CACHE == 1 ]] || { echo '--reuse-pipeline-cache requires a Vulkan request loop and RADISH_NCNN_PIPELINE_CACHE=1' >&2; exit 2; }
 fi
 [[ $BATCH =~ ^([1-4]|8)$ && $GROUPS_PER_CHUNK =~ ^[1-8]$ ]] || { echo 'batch must be 1, 2, 3, 4 or 8 and shared groups 1..8' >&2; exit 2; }
 VALIDATOR=$TOP/radish/scripts/validate-kokoro-snake-fixture.py
 CORE_ARGS=
-if [[ $CORE_GRAPH == affine-snake || $CORE_GRAPH == affine-snake-deconv2d ]]; then
+if [[ $CORE_GRAPH == norm-affine-snake-deconv2d ]]; then
+    CORE_ARGS=--norm-affine-snake
+elif [[ $CORE_GRAPH == affine-snake || $CORE_GRAPH == affine-snake-deconv2d ]]; then
     VALIDATOR=$TOP/radish/scripts/validate-kokoro-affine-snake-fixture.py
     CORE_ARGS=--affine-snake
 fi

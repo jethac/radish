@@ -6,7 +6,7 @@ Radish is an experimental, compute-first Vulkan driver for Adreno 5xx, built
 inside Mesa's Freedreno project. It currently runs the Kokoro neural decoder
 through ncnn on the Adreno 506 in a Lenovo ThinkSmart View. FP32 output checks
 pass; GPU inference is still slower than the best measured CPU path. The goal
-is useful, faster GPU speech inference.
+is fast speech inference that makes full use of attainable GPU performance.
 
 ## Purpose
 
@@ -21,56 +21,53 @@ a separate driver, with its own a5xx resource bindings and command emission.
 
 ## Current status
 
-Radish runs every layer of Kokoro's neural decoder on the GPU through ncnn.
-The latest graph eliminates the three CPU deconvolution fallbacks: all **715
-executed core layers use Vulkan**. Frontend/source generation and the waveform
-tail still run on the CPU in one private tablet executable.
+Radish runs every core layer of Kokoro's neural decoder on the GPU through ncnn.
+The latest opt-in graph fuses 42 normalization/AffineSnake chains and executes
+**589 core layers through Vulkan**, with no CPU fallback. Frontend/source and
+waveform generation still run on the CPU in one private tablet executable.
 
-Full core and waveform comparisons pass at two input lengths. The full output
-contains 127,800 samples and passes at **97.91 dB SNR**. No GPU faults occurred,
-and both live appliance services remained active.
+Full core and waveform references pass at both input lengths. All boundary and
+output bytes match the previous accepted GPU result; full waveform SNR is
+**97.91 dB**. No GPU faults occurred, and both live services remained active.
 
-| Measurement | Latest GPU path | Packed six-thread CPU |
+| Measurement | Latest GPU path | Packed six-thread CPU reference |
 | --- | ---: | ---: |
-| Neural core, full resident request | **37.089 s** | **30.703 s** |
-| Complete short synthesis, resident core | **18.590 s** | **15.411 s** |
-| Complete full synthesis, resident core | **43.578 s** | **36.803 s** |
+| Neural core, full resident request | **36.438 s** | **30.703 s** |
+| Complete short synthesis, resident core | **18.163 s** | **15.411 s** |
+| Complete full synthesis, resident core | **42.819 s** | **36.803 s** |
 
-The latest opt-in change removes 49 normalization input copies while preserving
-shared residuals. In a same-binary fixed-core comparison, warm extraction falls
-**38.467 → 37.059 s (3.66%)**. Profiling attributes **1.566 s** to the affected
-copy/normalization work; all 1513 remaining command signatures match. All 562,342
-output values are byte-identical to the previous GPU result and pass the unchanged
-reference. Fixed-core peak is **402.8 MiB plus 6.7 MiB swap**, versus 405.6 MiB
-with zero swap for the disabled path. This is one warm observation per mode.
+Fixed warm core improves **37.059 → 35.731 s (3.58%)**. Profiling attributes
+**1.297 s** of the **1.328 s** improvement to the fused final stages; all 1478
+retained command signatures match. Every one of the 562,342 outputs is
+byte-identical to the accepted result. Fixed-core peak is **401.9 MiB plus
+11.6 MiB swap**. This compares one warm observation per checkpoint, with
+different binaries and execution histories.
 
-A validated short/short/full/full loop takes **28.003 / 18.590 / 46.939 / 43.578 s**
-for complete synthesis. Each request regenerates frontend/source and waveform;
-only the core is retained for matching shapes. All four core/waveform references
-pass, and all eight boundary inputs plus both outputs match validated 0033 bytes.
-Session peak is **504.9 MiB plus 84.2 MiB swap**, with no faults and both services
-active. This is a whole-session peak, not a per-request measurement.
+The validated short/short/full/full loop takes **27.428 / 18.163 / 45.677 /
+42.819 s** for complete synthesis. Each request regenerates frontend/source and
+waveform; matching shapes retain the core. Core load is **9.173 / 0 / 3.516 /
+0 s** with `--reuse-pipeline-cache`. External cache entries are 177/177/271/271,
+and device entries stay at five. Session peak is **531.4 MiB plus 57.2 MiB swap**.
+The prior GPU resident full/short measurements were **43.578 / 18.590 s**.
+Single observations and memory pressure limit the comparison. The CPU reference
+uses the earlier equivalent unfused graph and remains faster. Sustained behavior
+and live application integration remain unmeasured.
 
-Optional `--reuse-pipeline-cache` also preserves compiled pipelines across shape
-changes while replacing the network and reloading weights. This run loads the
-core in **9.374 / 0 / 3.316 / 0 s**. External cache entries are 177/177/271/271,
-stable on same-shape reuse. The earlier short/full/short/short run demonstrated
-cached pipelines surviving a shape revisit; details are in NOTES.
-
-The previous GPU resident results were **45.501 s full / 18.498 s short**.
-Full improves in the latest observation; short is essentially flat. Different
-sequence, cache history and swap limit that comparison. CPU remains faster on
-the same graph and exact boundaries at **36.803 / 15.411 s full/short**,
-404.8 MiB peak and zero swap. Sustained behavior and live application integration
-remain unmeasured.
+GPU saturation is also unproven. The frozen pre-fusion audit finds the dominant
+58 tiled convolutions deliver **10.9 useful GFLOP/s on command wall time**;
+only 1.2% of their issued arithmetic is padding. Attainable GPU arithmetic,
+physical bandwidth and occupancy still need measurement. The next work targets
+those limits and the dominant convolution losses. A CPU win will not close the
+goal by itself.
 
 A tablet cancellation probe preserves the completed request and discards the
 second request after its active GPU core finishes. Exit follows the cancel marker
 by about 15.8 s in this observation; it does not interrupt GPU work promptly.
 The probe reports 485.7 MiB/zero swap, no faults and both services active.
-Restart after cancellation and broader cancellation coverage remain untested.
+Restart after cancellation, the new fused graph and broader cancellation
+coverage remain untested.
 
-Select the measured graph with `--affine-snake-deconv2d`,
+Select the measured graph with `--norm-affine-snake-deconv2d`,
 `RADISH_NCNN_PLANAR=1` and `RADISH_BATCH_CHUNKS=8`, with one X workgroup.
 The latest measurements additionally enable `RADISH_NCNN_NORM_SUM4=1` and
 `RADISH_NCNN_PAD_CHANNELS=1`, plus `RADISH_NCNN_NORM_OUTPLACE=1` with
@@ -152,15 +149,16 @@ For the existing Lenovo workspace, use its shared
 
 With the private fixtures prepared, the public wrapper accepts two to four
 ordered `runtime-short`/`runtime-full` requests. To reproduce the latest
-full/full/short/short sequence, choose a new run label and use:
+short/short/full/full sequence, choose a new run label and use:
 
 ```sh
 RADISH_DEVICE_LOCK=/home/jethac/Projects/lenovo-8/.device.lock \
 RADISH_NCNN_PLANAR=1 RADISH_NCNN_NORM_SUM4=1 RADISH_BATCH_CHUNKS=8 \
-RADISH_NCNN_PAD_CHANNELS=1 \
-  radish/scripts/device-runtime.sh runtime-full padded-channels-NEW \
-  --affine-snake-deconv2d --vulkan --request-loop \
-  --next-input runtime-full --next-input runtime-short --next-input runtime-short \
+RADISH_NCNN_PAD_CHANNELS=1 RADISH_NCNN_NORM_OUTPLACE=1 \
+RADISH_NCNN_RESHAPE_ALIAS=1 RADISH_NCNN_PIPELINE_CACHE=1 \
+  radish/scripts/device-runtime.sh runtime-short norm-affine-NEW \
+  --norm-affine-snake-deconv2d --vulkan --request-loop --reuse-pipeline-cache \
+  --next-input runtime-short --next-input runtime-full --next-input runtime-full \
   --threads 4 --ort-threads 4 --max-frames 512 --repeat 1
 ```
 

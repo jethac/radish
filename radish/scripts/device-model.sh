@@ -38,10 +38,10 @@ KIND=${1:-}
 case $KIND in
     style) SOURCE=$WORK/kokoro-style; MEMORY=384; RUNTIME=90; MODEL_ARGS=--style
         FILES=(decoder.ncnn.param decoder.ncnn.bin style.f32 reference.f32) ;;
-    core|core-layouts|core-shapes|core-shapes-norm32|core-shapes-instancenorm|core-shapes-snake|core-shapes-affine-snake|core-shapes-snake-deconv2d|core-shapes-affine-snake-deconv2d|runtime-*) SOURCE=$WORK/kokoro-core-fixed; MEMORY=640; RUNTIME=300; MODEL_ARGS=
+    core|core-layouts|core-shapes|core-shapes-norm32|core-shapes-instancenorm|core-shapes-snake|core-shapes-affine-snake|core-shapes-snake-deconv2d|core-shapes-affine-snake-deconv2d|core-shapes-norm-affine-snake-deconv2d|runtime-*) SOURCE=$WORK/kokoro-core-fixed; MEMORY=640; RUNTIME=300; MODEL_ARGS=
         [[ $KIND == core ]] || SOURCE=$WORK/kokoro-$KIND
         FILES=(decoder.ncnn.param decoder.ncnn.bin asr.f32 f0.f32 n.f32 style.f32 har.f32 reference.f32) ;;
-    *) echo 'usage: device-model.sh style|core|core-layouts|core-shapes|core-shapes-snake|core-shapes-affine-snake|core-shapes-snake-deconv2d|core-shapes-affine-snake-deconv2d [--cpu|--cpu-packed|--vulkan] [--fp16-packed] [--threads N] [--load-only] [--repeat N] [--blob NAME]' >&2; exit 2 ;;
+    *) echo 'usage: device-model.sh style|core|core-layouts|core-shapes|core-shapes-snake|core-shapes-affine-snake|core-shapes-snake-deconv2d|core-shapes-affine-snake-deconv2d|core-shapes-norm-affine-snake-deconv2d [--cpu|--cpu-packed|--vulkan] [--fp16-packed] [--threads N] [--load-only] [--repeat N] [--blob NAME]' >&2; exit 2 ;;
 esac
 shift
 if [[ $KIND == runtime-* ]]; then
@@ -97,12 +97,15 @@ fi
 if [[ $NORM_OUTPLACE == 1 ]]; then
     [[ $BACKEND == vulkan && $FP16_PACKED == false && $MIXED_STORAGE == 0 && $NORM_SUM4 == 1 && $RESHAPE_ALIAS == 1 ]] || { echo 'NORM_OUTPLACE requires Vulkan FP32, NORM_SUM4=1 and RESHAPE_ALIAS=1' >&2; exit 2; }
 fi
+if [[ $KIND == core-shapes-norm-affine-snake-deconv2d && $BACKEND == vulkan ]]; then
+    [[ $NORM_SUM4 == 1 && $MIXED_STORAGE == 0 && $FP16_PACKED == false ]] || { echo 'NormAffineSnake requires Vulkan FP32 and NORM_SUM4=1' >&2; exit 2; }
+fi
 FIXTURE_VALIDATOR=
 FIXTURE_VALIDATION_TAG=
 case $KIND in
     core-shapes-snake) FIXTURE_VALIDATOR=validate-kokoro-snake-fixture.py; FIXTURE_VALIDATION_TAG=snake ;;
     core-shapes-affine-snake) FIXTURE_VALIDATOR=validate-kokoro-affine-snake-fixture.py; FIXTURE_VALIDATION_TAG=affine-snake ;;
-    core-shapes-snake-deconv2d|core-shapes-affine-snake-deconv2d) FIXTURE_VALIDATOR=validate-kokoro-deconv2d-fixture.py; FIXTURE_VALIDATION_TAG=deconv2d ;;
+    core-shapes-snake-deconv2d|core-shapes-affine-snake-deconv2d|core-shapes-norm-affine-snake-deconv2d) FIXTURE_VALIDATOR=validate-kokoro-deconv2d-fixture.py; FIXTURE_VALIDATION_TAG=deconv2d ;;
 esac
 FIXTURE_VALIDATION=
 if [[ -n $FIXTURE_VALIDATOR ]]; then

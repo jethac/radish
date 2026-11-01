@@ -1,0 +1,137 @@
+diff --git a/src/layer/vulkan/instancenorm_vulkan.cpp b/src/layer/vulkan/instancenorm_vulkan.cpp
+--- a/src/layer/vulkan/instancenorm_vulkan.cpp
++++ b/src/layer/vulkan/instancenorm_vulkan.cpp
+@@ -474,6 +474,54 @@
+     return 0;
+ }
+ 
++int InstanceNorm_vulkan::forward_radish_coefficients(const VkMat& input, VkMat& coefficients, VkCompute& cmd, const Option& opt) const
++{
++    if (&input == &coefficients || coefficients.data || coefficients.refcount || !coefficients.empty()
++        || !vkdev || !vkdev->is_valid() || vkdev->info.vendor_id() != 0x5143 || vkdev->info.device_id() != 506
++        || strcmp(vkdev->info.device_name(), "Radish Adreno 506 (experimental compute)") != 0
++        || !radish_norm_sum4_fp32(opt) || affine != 0 || eps != 1.e-5f
++        || (channels != 128 && channels != 256)
++        || !opt.workspace_vkallocator || opt.workspace_vkallocator->vkdev != vkdev
++        || bottom_shapes.size() != 1 || top_shapes.size() != 1
++        || input.w <= 0 || input.w > INT_MAX - 3
++        || !radish_norm_outplace_buffer(input, input.w, channels / 4, vkdev, opt.blob_vkallocator)
++        || !input.data->memory
++        || pipeline_instancenorm_reduce_subgroup || pipeline_instancenorm_reduce_subgroup_pack4)
++        return -1;
++    for (int i = 0; i < 2; i++)
++    {
++        const Mat& shape = i == 0 ? bottom_shapes[0] : top_shapes[0];
++        if (shape.dims != 3 || shape.n != 1 || shape.w != input.w || shape.h != 1 || shape.d != 1
++            || shape.c != channels / 4 || shape.elempack != 4 || shape.elemsize != 16u || shape.cstep != (size_t)input.w
++            || shape.total() != input.total()
++#if NCNN_BATCH
++            || shape.nstep != input.nstep
++#endif
++        )
++            return -1;
++    }
++    const Pipeline* pipelines[] = {pipeline_instancenorm_reduce_sum4_fp16_to_fp32_pack4,
++                                   pipeline_instancenorm_reduce_sum4_fp32_pack4[0],
++                                   pipeline_instancenorm_reduce_sum4_fp32_pack4[1],
++                                   pipeline_instancenorm_reduce_mean_pack4,
++                                   pipeline_instancenorm_radish_sum4_pack4,
++                                   pipeline_instancenorm_coeffs_pack4};
++    const int bindings[] = {2, 2, 2, 2, 3, 5};
++    const int pushes[] = {8, 8, 8, 5, 8, 1};
++    for (int i = 0; i < 6; i++)
++    {
++        const Pipeline* pipeline = pipelines[i];
++        if (!pipeline || !pipeline->pipeline() || pipeline->shader_info().binding_count != bindings[i]
++            || pipeline->shader_info().push_constant_count != pushes[i])
++            return -1;
++        for (int j = 0; j < bindings[i]; j++)
++            if (pipeline->shader_info().binding_types[j] != 1)
++                return -1;
++    }
++    VkMat unused_output;
++    return forward_impl(input, unused_output, cmd, opt, false, &coefficients);
++}
++
+ int InstanceNorm_vulkan::forward(const VkMat& bottom_blob, VkMat& top_blob, VkCompute& cmd, const Option& opt) const
+ {
+     if (!radish_norm_outplace)
+@@ -509,7 +557,7 @@
+     return forward_impl(bottom_top_blob, bottom_top_blob, cmd, opt, false);
+ }
+ 
+-int InstanceNorm_vulkan::forward_impl(const VkMat& bottom_blob, VkMat& top_blob, VkCompute& cmd, const Option& opt, bool outplace) const
++int InstanceNorm_vulkan::forward_impl(const VkMat& bottom_blob, VkMat& top_blob, VkCompute& cmd, const Option& opt, bool outplace, VkMat* coefficients_out) const
+ {
+     int w = bottom_blob.w;
+     int h = bottom_blob.h * bottom_blob.d;
+@@ -569,6 +617,8 @@
+                 int reduced_c = bottom_blob.c;
+ 
+                 sum_workspace.create(reduced_w, reduced_h, reduced_c, 4u * elempack, elempack, opt.workspace_vkallocator);
++                if (coefficients_out && sum_workspace.empty())
++                    return -100;
+                 {
+                     std::vector<VkMat> bindings(2);
+                     bindings[0] = bottom_blob;
+@@ -599,6 +649,8 @@
+ 
+                 VkMat sum_workspace_reduced;
+                 sum_workspace_reduced.create(reduced_w, reduced_h, reduced_c, 4u * elempack, elempack, opt.workspace_vkallocator);
++                if (coefficients_out && sum_workspace_reduced.empty())
++                    return -100;
+ 
+                 {
+                     std::vector<VkMat> bindings(2);
+@@ -715,6 +767,8 @@
+ 
+                 VkMat sqsum_workspace_reduced;
+                 sqsum_workspace_reduced.create(reduced_w, reduced_h, reduced_c, 4u * elempack, elempack, opt.workspace_vkallocator);
++                if (coefficients_out && sqsum_workspace_reduced.empty())
++                    return -100;
+ 
+                 {
+                     std::vector<VkMat> bindings(2);
+@@ -763,6 +817,8 @@
+     // coeffs
+     VkMat coeffs_workspace;
+     coeffs_workspace.create(c, elemsize * 2, elempack * 2, opt.workspace_vkallocator);
++    if (coefficients_out && coeffs_workspace.empty())
++        return -100;
+     {
+         std::vector<VkMat> bindings(5);
+         bindings[0] = coeffs_workspace;
+@@ -779,6 +835,12 @@
+         cmd.record_pipeline(pipeline, bindings, constants, coeffs_workspace);
+     }
+ 
++    if (coefficients_out)
++    {
++        *coefficients_out = coeffs_workspace;
++        return 0;
++    }
++
+     // norm
+     {
+         std::vector<VkMat> bindings(outplace ? 3 : 2);
+diff --git a/src/layer/vulkan/instancenorm_vulkan.h b/src/layer/vulkan/instancenorm_vulkan.h
+--- a/src/layer/vulkan/instancenorm_vulkan.h
++++ b/src/layer/vulkan/instancenorm_vulkan.h
+@@ -18,6 +18,8 @@
+ 
+     virtual int upload_model(VkTransfer& cmd, const Option& opt);
+ 
++    int forward_radish_coefficients(const VkMat& input, VkMat& coefficients, VkCompute& cmd, const Option& opt) const;
++
+     using InstanceNorm::forward;
+     virtual int forward(const VkMat& bottom_blob, VkMat& top_blob, VkCompute& cmd, const Option& opt) const;
+ 
+@@ -25,7 +27,7 @@
+     virtual int forward_inplace(VkMat& bottom_top_blob, VkCompute& cmd, const Option& opt) const;
+ 
+ private:
+-    int forward_impl(const VkMat& bottom_blob, VkMat& top_blob, VkCompute& cmd, const Option& opt, bool outplace) const;
++    int forward_impl(const VkMat& bottom_blob, VkMat& top_blob, VkCompute& cmd, const Option& opt, bool outplace, VkMat* coefficients_out = 0) const;
+ 
+ public:
+     bool radish_norm_outplace;

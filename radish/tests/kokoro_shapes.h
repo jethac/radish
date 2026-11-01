@@ -25,7 +25,8 @@ struct KokoroShapePlan {
 
 // Supports the audited 1368/1739 layout graph, 1098/1307 InstanceNorm and
 // 906/1067 RadishSnake, 714/875 RadishAffineSnake, and their height-one
-// deconvolution variants 912/1073 and 720/881, at T=1..4096.
+// deconvolution variants 912/1073 and 720/881, plus 594/755 NormAffineSnake,
+// at T=1..4096.
 // Replaces existing -23330 hints,
 // including stale ones,
 // while retaining every other parameter token, layer, and blob in order.

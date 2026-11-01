@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Import completed CPU proof for either exact height-one deconvolution fixture."""
+"""Import completed CPU proof for a pinned height-one deconvolution fixture."""
 import argparse
 import contextlib
 import importlib.util
@@ -79,11 +79,17 @@ def prepare(variant, source, evidence, runner, output):
         for key, name in (('log_sha256', 'deconv2d-cpu-validation.log'), ('output_sha256', 'deconv2d-cpu-output.f32'),
                           ('original_log_sha256', 'original-cpu-validation.log'), ('original_output_sha256', 'original-cpu-output.f32')):
             cpu[key] = asset(stage / name)['sha256']
+        validation_scope = 'Completed host CPU reference evidence only; GPU/waveform/performance are separate gates; original-output byte identity is not required.'
+        if expected.get('require_byte_identity', False):
+            require(imports['deconv2d-cpu-output.f32'] == imports['original-cpu-output.f32'],
+                    'original and NormAffineSnake full CPU outputs differ')
+            cpu['original_output_byte_identical'] = True
+            validation_scope = 'Same-runner full CPU reference and original-output byte identity passed; GPU/waveform/performance are separate gates.'
         marker = dict(format='radish-kokoro-deconv2d-validation-v1', variant=variant, status='cpu-reference-passed',
                       layers=expected['layers'], blobs=expected['blobs'], param_sha256=expected['param_sha256'],
                       weights_sha256=check.WEIGHTS_SHA256, reference_sha256=check.REFERENCE_SHA256,
                       cpu_validation=cpu, evidence_directory=str(evidence), evidence_results_sha256=results_file['sha256'],
-                      validation_scope='Completed host CPU reference evidence only; GPU/waveform/performance are separate gates; original-output byte identity is not required.')
+                      validation_scope=validation_scope)
         (stage / 'deconv2d-validation.json').write_text(json.dumps(marker, indent=2, sort_keys=True) + '\n')
         check.validate(stage)
         output.mkdir()
@@ -101,7 +107,7 @@ def prepare(variant, source, evidence, runner, output):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--variant', required=True, choices=tuple(check.VARIANTS))
-    parser.add_argument('source', type=Path, help='exact original Snake or AffineSnake fixture')
+    parser.add_argument('source', type=Path, help='exact original fixture for the selected variant')
     parser.add_argument('evidence', type=Path, help='completed host validation directory with results.json and original/candidate outputs')
     parser.add_argument('runner', type=Path, help='unchanged executable that produced both CPU runs')
     parser.add_argument('output', type=Path, help='new fixture directory; never overwrites')

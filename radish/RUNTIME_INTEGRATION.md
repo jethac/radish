@@ -1,24 +1,21 @@
 # Kokoro runtime integration audit
 
 2026-11-02: one private tablet executable runs the CPU frontend/source,
-metadata shape propagation, a complete FP32 Vulkan neural core and the portable
-CPU waveform tail from token IDs/style/speed. The opt-in
-`--affine-snake-deconv2d` graph has zero CPU fallbacks in its neural core.
+metadata propagation, FP32 Vulkan neural core and CPU waveform tail from token
+IDs/style/speed. The new opt-in `--norm-affine-snake-deconv2d` graph fuses 42
+normalization/AffineSnake chains and executes all 589 core layers on Vulkan.
 
-With opt-in normalization copy removal 0034, fixed-core warm time is
-**37.058738 s**, versus **38.467278 s** with the same binary's control disabled.
-The validated short/short/full/full loop takes **28.003366 s** fresh short,
-**18.589849 s** resident short, **46.939051 s** full after shape reload, and
-**43.578287 s** resident full. Every core/waveform reference passes, with 715 GPU
-layers per request and output bytes identical to 0033. Whole-session memory is
-504.9 MiB plus 84.2 MiB swap, with no faults and both services active. CPU remains
-faster at **36.802922/15.411271 s** resident full/short. The prior GPU resident
-results were 45.500714/18.498217 s: full improves in this observation while short
-is essentially flat. Sequence, cache history and memory pressure differ between
-those sessions. Defaults remain unchanged. Bounded resident reuse, shape reload
-and earlier phase-boundary cancellation pass; sustained behavior,
-post-cancellation restart and live application wiring remain open. Details and
-earlier checkpoints follow below and in [NOTES.md](NOTES.md).
+Fixed warm core is **35.730754 s**, versus 37.058738 s at 0034; targeted command
+savings account for 1.297032 s of the 1.327984 s gain. The validated
+short/short/full/full loop takes **27.427916 / 18.163352 / 45.676598 / 42.819037 s**.
+All four unchanged core/waveform references pass; every boundary and output
+matches 0034 bytes. Whole-session peak is 531.4 MiB plus 57.2 MiB swap, with no
+faults and both services active. CPU remains faster at 36.802922/15.411271 s
+resident full/short on the earlier equivalent graph. These are bounded single
+observations, with different memory pressure. Sustained behavior, cancellation
+on the new graph, post-cancellation restart and live application wiring remain
+open. GPU efficiency beyond a CPU win is also required; details follow and are
+recorded in [NOTES.md](NOTES.md).
 
 ## Implemented route
 
@@ -1281,3 +1278,58 @@ The independent profile/provenance audit is in
 Patch SHA `b2112c3ae6e0bc580f0d606b8ac8f5cfc8c23a8ea6426511d249673bab7179ed`;
 measured runtime SHA `d1f09b2dcc91b0d25bac576ac14228288f908b0b4e0aaf5a5206c32de5f12ecb`.
 Driver 0032 and the experimental Vulkan 1.0 advertisement are unchanged.
+
+### Optional normalization/AffineSnake fusion 0035
+
+`--norm-affine-snake-deconv2d` selects the pinned 594-layer/755-blob graph
+`ccab4ff8…aa43`; the executable receives `--norm-affine-snake --deconv2d`.
+The runtime and fixed-model wrappers require its complete CPU proof marker.
+The fixed fixture kind is `core-shapes-norm-affine-snake-deconv2d`.
+`fuse-kokoro-norm-affine-snake.py SOURCE NEW_OUTPUT` creates only a provisional
+fixture. Import completed same-runner original/candidate CPU logs and outputs
+with `prepare-kokoro-deconv2d-fixture.py --variant norm-affine-snake-deconv2d
+SOURCE EVIDENCE RUNNER NEW_OUTPUT`; this variant requires full output byte
+identity in addition to the original reference. Weights are unchanged.
+
+The new GPU layer requires `RADISH_NCNN_NORM_SUM4=1` and full FP32. OUTPLACE and
+RESHAPE_ALIAS remain separate controls for retained legacy normalizations.
+The measured four-request command, using a new run label when repeating, is:
+
+```sh
+RADISH_DEVICE_LOCK=/home/jethac/Projects/lenovo-8/.device.lock \
+RADISH_NCNN_PLANAR=1 RADISH_NCNN_PAD_CHANNELS=1 RADISH_BATCH_CHUNKS=8 \
+RADISH_NCNN_NORM_SUM4=1 RADISH_NCNN_RESHAPE_ALIAS=1 RADISH_NCNN_NORM_OUTPLACE=1 \
+RADISH_NCNN_PIPELINE_CACHE=1 \
+  radish/scripts/device-runtime.sh runtime-short norm-affine-0035-first \
+  --norm-affine-snake-deconv2d --request-loop --reuse-pipeline-cache \
+  --next-input runtime-short --next-input runtime-full --next-input runtime-full
+```
+
+| Request | T / Net reuse | Core load s | Core extraction s | Complete synthesis s |
+| --- | --- | ---: | ---: | ---: |
+| 0 | 78 / miss | 9.172902 | 13.788183 | 27.427916 |
+| 1 | 78 / hit | 0 | 13.654213 | 18.163352 |
+| 2 | 213 / miss | 3.516383 | 35.978882 | 45.676598 |
+| 3 | 213 / hit | 0 | 36.437867 | 42.819037 |
+
+All four original-ORT core/waveform references pass, all eight boundary files and
+both outputs match validated 0034 bytes, and every request has 589 GPU/zero CPU
+core paths. Short/full waveform SNR is 97.411696248/97.912821255 dB. Short uses
+1430 commands/4455 submits/25634 chunks; full uses 1520/10235/67163. There are
+96 transfers per request. External cache entries remain 177/177/271/271; device
+entries are five throughout, one more than 0034 for the new raw-SPIR-V final.
+Counts are entries, not cache bytes. Same-shape reuse remains stable.
+
+Session 137.660401781 s includes final cleanup 0.296271739 s; service 137.771 s,
+whole-session 531.4 MiB plus 57.2 MiB swap. No new GPU fault; both services active.
+Previous 0034 resident full/short is 43.578287/18.589849 s; current 42.819037/18.163352 s
+improves in this observation, while CPU 36.802922/15.411271 s remains faster.
+These are not sustained or isolated whole-session speedup claims. New graph
+cancellation and application integration have not been validated.
+
+Capture: `WORK/kokoro-runtime-short-single-vulkan-norm-affine-0035-first-norm-affine-snake-deconv2d-planar-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache/`.
+Independent runtime profile audit: `norm-affine-runtime-audit-2erfkd8e/REPORT.txt`.
+Reference evidence: `norm-affine-runtime-validation-zat6_thf/summary.json` and
+`norm-affine0035-request-{000,001,002,003}-validation.json`.
+Runtime SHA256 `56c8969c6b32316b19007955155c9462137fc56d01f482af06e2294da11b74c2`;
+unchanged driver `c8fee96723942fca768a9026987a5d609071d2c60079058064377635155cb44c`.

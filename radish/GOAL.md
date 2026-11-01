@@ -221,6 +221,7 @@ model-wide defect rate.
 | Pulling every interesting AC8 branch into the base | Pin a base; inspect individual candidate commits and dependencies; port only changes with demonstrated relevance and validation. |
 | Expanding into a complete graphics driver or framework rewrite | Keep the first backend's requirement matrix and milestone exit checks authoritative. Record new scope separately and get a decision before making it a dependency. |
 | Writing a large speculative implementation | Work in small reviewable increments, each with a build and a discriminating correctness check. Resolve architectural unknowns with bounded experiments. |
+| Bypassing framework behavior when composing layers | Preserve each child’s packing, precision and ownership contract; compare original and composite through actual CPU/GPU execution. Direct layer calls can bypass Net conversions and copy rules. |
 | Tests that only mirror the implementation | Use independent CPU references, existing CTS where applicable, boundary cases and negative tests that would catch a plausible incorrect implementation. |
 | Premature completion or stopping at a scaffold | Report milestone status against exit evidence. An ICD stub, first dispatch or isolated GEMM is not delivered inference support. Continue through integration and measurement. |
 | Losing constraints across sessions | Keep a concise current status, next experiment, exact revisions, commands, results, failures and device changes in `radish/NOTES.md` once work starts. Read it before resuming. |

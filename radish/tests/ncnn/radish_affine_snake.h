@@ -14,6 +14,7 @@ class Net;
 namespace radish_ncnn {
 
 class RadishAffineSnake;
+class RadishNormAffineSnake;
 
 // One context per Net. Register before load_param, after configuring Net options.
 // The context must outlive the Net (including its registry and every custom
@@ -53,6 +54,7 @@ private:
     static ncnn::Layer* create(void* context);
     static void destroy(ncnn::Layer* layer, void* context);
     friend class RadishAffineSnake;
+    friend class RadishNormAffineSnake;
 };
 
 } // namespace radish_ncnn

@@ -15,6 +15,16 @@ for arg in "$@"; do
         *) echo 'usage: device-snake.sh [--cpu] [--compile-only]' >&2; exit 2 ;;
     esac
 done
+NORM_SUM4=${RADISH_NCNN_NORM_SUM4:-0}
+NORM_OUTPLACE=${RADISH_NCNN_NORM_OUTPLACE:-0}
+RESHAPE_ALIAS=${RADISH_NCNN_RESHAPE_ALIAS:-0}
+for toggle in "$NORM_SUM4" "$NORM_OUTPLACE" "$RESHAPE_ALIAS"; do
+    [[ $toggle == 0 || $toggle == 1 ]] || { echo 'normalization controls must be 0 or 1' >&2; exit 2; }
+done
+if [[ $NORM_OUTPLACE == 1 ]]; then
+    [[ $NORM_SUM4 == 1 && $RESHAPE_ALIAS == 1 ]] || { echo 'NORM_OUTPLACE requires SUM4=1 and RESHAPE_ALIAS=1' >&2; exit 2; }
+fi
+EXTRA_ENV+=" --setenv=RADISH_NCNN_NORM_SUM4=$NORM_SUM4 --setenv=RADISH_NCNN_NORM_OUTPLACE=$NORM_OUTPLACE --setenv=RADISH_NCNN_RESHAPE_ALIAS=$RESHAPE_ALIAS"
 TAG+=-$RUN
 test -f "$BINARY"
 mkdir -p "$WORK/evidence"

@@ -25,6 +25,7 @@ CORE_GRAPHS = {
     'affine-snake': ('dbd9fbfe67e6053382f1e1734b6480c3a42f0bc59e57b85627fb16a6e9783d5a', 714, 875),
     'snake-deconv2d': ('5ba4b3fd791904b4c7560846072919027fd9d0c7d764f38028a79862e09e4980', 912, 1073),
     'affine-snake-deconv2d': ('e211a573578f5ad45000b487f6e36ac1376ae4bbdcfa6a6e32a95070ffbc807d', 720, 881),
+    'norm-affine-snake-deconv2d': ('ccab4ff803f05c6ca1f9dbc86b557e28d72488c94f0584f149108523b474aa43', 594, 755),
 }
 ORT = '/usr/local/lib/straylight-listen/libonnxruntime.so'
 ENV_NAMES = {
@@ -118,7 +119,7 @@ def prepare(args):
     require(1 <= args.threads <= 6 and 1 <= args.ort_threads <= 6 and 1 <= args.max_frames <= 4096
             and 1 <= args.repeat <= 10, 'invalid runtime limits')
     require((args.request_loop and 1 <= len(args.next_source) <= 3 and args.repeat == 1
-             and args.core_graph == 'affine-snake-deconv2d')
+             and args.core_graph in ('affine-snake-deconv2d', 'norm-affine-snake-deconv2d'))
             or (not args.request_loop and not args.next_source), 'invalid request-loop selection')
     require(not args.reuse_pipeline_cache or (args.request_loop and args.backend == 'vulkan'),
             'pipeline cache reuse requires a Vulkan request loop')
@@ -163,6 +164,9 @@ def prepare(args):
     require(set(environment) == ENV_NAMES, 'incomplete environment inventory')
     require(not args.reuse_pipeline_cache or environment['RADISH_NCNN_PIPELINE_CACHE'] == '1',
             'pipeline cache reuse requires CACHE=1')
+    require(args.core_graph != 'norm-affine-snake-deconv2d' or args.backend != 'vulkan'
+            or (environment['RADISH_NCNN_NORM_SUM4'] == '1' and environment['RADISH_NCNN_MIXED_STORAGE'] == '0'),
+            'NormAffineSnake Vulkan requires FP32 and SUM4=1')
     environment['VK_DRIVER_FILES'] = args.remote + '/radish_icd.json'
     # SIMPLEVK's line scanner must open our loader; the loader reads this private ICD.
     with args.icd.open('x') as stream:
@@ -184,7 +188,9 @@ def prepare(args):
         (args.source_root / name for name in ('radish/tests/ncnn/kokoro_runtime.cpp',
          'radish/tests/ncnn/runtime_helpers.h', 'radish/tests/kokoro_frontend.cpp',
          'radish/tests/kokoro_waveform.cpp', 'radish/tests/kokoro_shapes.cpp',
-         'radish/tests/ncnn/CMakeLists.txt')) if path.is_file()}
+         'radish/tests/ncnn/CMakeLists.txt', 'radish/tests/ncnn/radish_norm_affine_snake.cpp',
+         'radish/tests/ncnn/radish_norm_affine_snake.h', 'radish/tests/ncnn/radish_affine_snake.cpp',
+         'radish/tests/ncnn/radish_affine_snake.h')) if path.is_file()}
     record['source_identity_scope'] = 'Source files observed at launch; the actual executable hash identifies the binary. No source-to-binary attestation is inferred.'
     if args.request_loop:
         record['request_loop'] = True

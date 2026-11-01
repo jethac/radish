@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Recheck full CPU evidence for two exact height-one deconvolution graphs."""
+"""Recheck full CPU evidence for pinned height-one deconvolution graph variants."""
 import argparse
 import importlib.util
 import json
@@ -24,6 +24,11 @@ VARIANTS = {
                                  original_param_sha256=affine.PARAM_SHA256, layers=720, blobs=881,
                                  original_cpu_layers=709, cpu_layers=715, evidence_branch='composed',
                                  rewrite='prepare-kokoro-affine-deconv2d.py'),
+    'norm-affine-snake-deconv2d': dict(param_sha256='ccab4ff803f05c6ca1f9dbc86b557e28d72488c94f0584f149108523b474aa43',
+                                      original_param_sha256='e211a573578f5ad45000b487f6e36ac1376ae4bbdcfa6a6e32a95070ffbc807d',
+                                      layers=594, blobs=755, original_cpu_layers=715, cpu_layers=589,
+                                      evidence_branch='norm_affine', rewrite='fuse-kokoro-norm-affine-snake.py',
+                                      require_byte_identity=True),
 }
 
 
@@ -62,6 +67,9 @@ def validate(directory):
     output = checked_bytes(directory / 'deconv2d-cpu-output.f32', files['deconv2d-cpu-output.f32'])
     original = checked_bytes(directory / 'original-cpu-output.f32', files['original-cpu-output.f32'])
     reference = checked_bytes(directory / 'reference.f32', files['reference.f32'])
+    if expected.get('require_byte_identity', False):
+        require(output == original and cpu.get('original_output_byte_identical') is True,
+                'original and NormAffineSnake full CPU outputs differ or lack identity proof')
     result, original_result = comparison(output, reference), comparison(original, reference)
     return dict(format='radish-kokoro-deconv2d-fixture-check-v1', variant=variant, directory=str(directory),
                 marker=marker, files=files, cpu_comparison=result, original_cpu_comparison=original_result,
