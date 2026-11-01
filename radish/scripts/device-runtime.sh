@@ -57,8 +57,8 @@ CACHE=${RADISH_NCNN_PIPELINE_CACHE:-1}
 TRACE=${RADISH_NCNN_TRACE:-1}
 PROFILE=${RADISH_PROFILE:-1}
 BATCH=${RADISH_BATCH_CHUNKS:-4}
-TILED_BATCH=${RADISH_TILED_BATCH_CHUNKS:-4}
-[[ $TILED_BATCH =~ ^(1|2|4)$ ]] || { echo 'RADISH_TILED_BATCH_CHUNKS must be 1, 2 or 4' >&2; exit 2; }
+TILED_BATCH=${RADISH_TILED_BATCH_CHUNKS:-8}
+[[ $TILED_BATCH =~ ^(1|2|4|8)$ ]] || { echo 'RADISH_TILED_BATCH_CHUNKS must be 1, 2, 4 or 8' >&2; exit 2; }
 GROUPS_PER_CHUNK=${RADISH_SHARED_GROUPS:-8}
 for toggle in "$TILED" "$TILED32" "$SHARED32" "$MIXED" "$CACHE" "$TRACE" "$PROFILE" "$RESHAPE_ALIAS"; do
     [[ $toggle == 0 || $toggle == 1 ]] || { echo 'Radish toggles must be 0 or 1' >&2; exit 2; }

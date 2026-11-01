@@ -34,12 +34,13 @@ both first/warm extractions, now including dilation 3/5, with a passing waveform
 A performance win and sustained runtime behavior remain unproven. API
 advertisement and conformance status are unchanged.
 
-The separate opt-in Snake graph now passes the full fixed core in
-51.936/51.188 s first/warm, 8.615% below the 0022 warm baseline, with identical
-output bytes, 416.8 MiB peak, zero swap and no faults. Fresh T78/T213 Snake runtime
-also passes all core/waveform checks in 33.764/68.158 s. Peak memory is
-383.3/445.9 MiB; the full-length run uses 22.9 MiB swap while T78 uses none.
-The accepted InstanceNorm graph remains default; Snake is explicit opt-in.
+The separate opt-in Snake graph now passes the full fixed core with 0023 batch8
+in 49.267/49.429 s first/warm, 3.436% below its prior 51.188 s batch4 warm result,
+with identical output bytes, 419 MiB peak, zero swap and no faults. Fresh T213
+Snake runtime with batch8 passes all core/waveform checks in 63.528 s,
+458 MiB/zero swap. Earlier batch4 T78/T213 results remain 33.764/68.158 s,
+383.3/445.9 MiB with zero/22.9 MiB swap. The runtime now defaults to batch8;
+InstanceNorm remains the default graph and Snake is explicit opt-in.
 
 Historical candidate 0020 uses local32 with a 64x32 tile and 12 KiB shared
 memory. Builds, all 20 model compiler variants and focused dilation1/3/5 output
@@ -193,9 +194,14 @@ bounded tablet CPU/GPU equivalence probes pass. The full GPU core is
 byte-identical at 51.936026/51.188057 s first/warm, 8.615% lower warm latency
 than 0022, with zero swap and no faults. Fresh T78/T213 runtime passes all
 core/audio values in 33.764051/68.158274 s, with exact earlier GPU output bytes;
-the full-length run uses 22.9 MiB swap. The InstanceNorm graph with accepted
-0022 batching remains the default at 56.013717 s warm. Measure equivalent Snake
+the full-length run uses 22.9 MiB swap. InstanceNorm remains the default graph;
+its recorded 0022 batch4 baseline is 56.013717 s warm. Measure equivalent Snake
 CPU work and sustained/cancellation behavior next; preserve these checkpoints.
+The later 0023 batch8 fixed-core repeat now passes in 49.266772/49.429406 s
+first/warm, 419 MiB/zero swap/no faults. Complete warm attribution preserves all
+resource/grid/chunk signatures and changes only 53 tiled submit counts. Fresh
+batch8 T213 runtime passes in 63.528396 s, 458 MiB/zero swap. The runtime wrapper
+now defaults to 8; driver/operator/model defaults stay 1.
 
 The new metadata-only shape pass matches every original and fused shape at
 T78/T213. The integrated frontend/core/tail executable builds for host and
@@ -1711,3 +1717,77 @@ Snake measurement or a sustained comparison.
 The accepted 0022 InstanceNorm graph remains the default and Snake requires
 explicit `--snake`. Resident reuse, cancellation, sustained performance and
 Vulkan conformance status are unchanged.
+
+### Accepted checkpoint 0023: eight tiled chunks per submit
+
+The bounded candidate adds only value 8 to the existing 0022 tiled-batch
+condition, under the same local128/resource gate. It preserves single-group
+hardware EXECs, restore/descriptor/base setup, every per-chunk wait/flush,
+register/private-memory guards and submission lifetimes. The pinned ncnn K<=3584
+bound is unchanged; the resource gate alone does not prove arbitrary shader K
+or watchdog safety. Driver/operator/model defaults remain 1; runtime default
+changed from 4 to 8 only after the fresh full-runtime validation below.
+The three wrappers accept explicit
+1/2/4/8 and reject 16. Previous published checkpoint `f78917a` remains preserved.
+
+The targeted ICD build passes; candidate driver SHA256:
+`9e8274ca701163e442237e78c7ff965a4de745c97bfb16cfa54a563655f23ff2`.
+The cumulative patch applies to the pinned Mesa base and reconstructs all
+14 changed files exactly. Patch SHA256:
+`5516b6823e67f70c989939a95e16d853fd00af43d3a280b13cefc4b60da40bfd`;
+proof: `tiled-batch8-0023-reconstruction-qinlp2gg/reconstruction.json`.
+`operators-tiled-batch8-0023-d{1,3,5}.log` passes all 25984/23424/20864 outputs
+with unchanged max errors 3.42226122e-5/7.09755113e-6/1.641165e-5. Math command
+wall times are 8.485493/6.473352/6.448820 ms; 8/6/6 chunks each fit one submit,
+including trailing partial batches. No faults; both services remain active.
+This is bounded operator evidence, not a general watchdog guarantee.
+
+`core-snake-batch8-0023-repeat2.log` now passes both full extractions:
+**49.266772 s first / 49.429406 s warm**, cold load 9.315 s, with one warm
+observation. All 562342 outputs pass unchanged gates, max 0.000129699707,
+relative RMS 7.72155564e-7, zero mismatches. Output SHA256
+`0550fe07becc684c3dc7b0113bfef0b4e3c87ff8d888acf779e98de4d8af18e4` matches the
+Snake batch4 and earlier accepted core exactly; existing full-waveform evidence
+applies without claiming a new tail run. Peak 419 MiB/zero swap, no faults,
+both services active. Warm latency is **3.4357% lower** than 51.188057 s.
+Accept the fixed-core checkpoint. The complete warm comparison preserves all
+1798 resource/grid/chunk signatures and 901 layer paths; only the 53 tiled
+submit counts change, 6486→3255, each rounded up from its chunk count at batch8. Total submits
+fall 29329→26098 with work/chunk counts unchanged. Tiled command wall falls
+28.093623943→25.551525088 s, saving 2.542098855 s; the other 1745 commands rise
+19.319909979→20.030949589 s, with unchanged work and submits. Residual wall
+increases 0.072408245 s, yielding the measured 1.758651 s extraction reduction.
+These are wall-inclusive timers, one warm sample each; no individual batch's
+maximum execution time was measured. Evidence:
+`warm-snake-batch8-review-0023-aocwevkg/REPORT.md`, `comparison.json` and per-layer CSVs.
+
+Earlier 33.764051/68.158274 s runtime results use batch4. No general watchdog or
+sustained-performance claim follows from these bounded observations.
+
+The first fresh batch8 attempt stopped before device writes/inference at disk
+preflight: 217568 KiB available versus the unchanged 262144 KiB minimum.
+Under the shared lock with no active runtime, byte-identical immutable frontend
+and source graphs in two earlier private runtime directories were deduplicated
+through verified hardlinks. Paths, content, modes, owners and prior evidence
+were preserved; both services stayed active. This freed 218664 KiB, leaving
+436232 KiB available, without lowering the reserve. Evidence:
+`device-runtime-immutable-graph-dedup-0023.log`. The retry uses the new label
+`snake-batch8-0023-retry` and log `runtime-single-full-snake-batch8-0023-retry.log`;
+no inference result is claimed for the failed preflight.
+
+The fresh T213 retry now passes all **562342 core values / 127800 waveform
+samples** in `runtime-single-full-snake-batch8-0023-validation.json`. Frontend
+5.705182 s, metadata 0.026177 s, load 9.426758 s, core 47.854719 s, core scope
+57.630407 s, tail 0.103455 s, synthesis **63.528396 s**, publication 63.535909 s,
+service 63.611 s. Peak **458 MiB/zero swap**, no faults, both services active.
+Core max error 1.02996826e-4/RMS 7.81135939e-7; waveform max error
+9.19587910e-6/SNR 98.355163 dB; zero mismatches. Core/waveform bytes match the
+batch4 fresh result exactly, and all eight raw boundary files match both batch4
+and the earlier CPU capture. Evidence:
+`runtime-single-full-batch8-cpu-gpu-boundary-identity.json`.
+
+The observed synthesis reduction from 68.158274 s is 4.629878 s, but the prior
+run used 22.9 MiB swap and this run uses none; these separate single observations
+do not isolate a batch8 effect. Following full validation, only the private
+runtime wrapper's tiled-batch default changes from 4 to 8. Driver/operator/model
+defaults stay 1, 16 remains rejected, and Snake still requires `--snake`.

@@ -27,14 +27,53 @@ limits and validation scope. Published checkpoints remain experimental; publicat
 | `0019-ncnn-radish-reshape-alias.patch` | Same ncnn base; independent Reshape file | Default-off exact Radish FP32 pack4 rank3→rank2 output alias; original input copies retained; builds/operator/full-core gates pass, output bit-identical, 67.138187 s first/66.919494 s warm. Earlier bidirectional variant in bf4d98f is rejected at 109.107981 s warm |
 | `0020-ncnn-conv1d-tiled32.patch` | After 0018 in the ordered Conv1D stack | Default-off local8x4, tile64x32, 12 KiB shared; builds/compiler/operator/full-core accuracy pass, output byte-identical; 101.354178 s first/100.467084 s warm versus accepted 66.919494 s warm; 414.8 MiB plus 52 MiB swap; rejected for performance |
 | `0021-ncnn-conv1d-tile32x32.patch` | After 0020 in the ordered Conv1D stack | Revises the same default-off TILED32 path to tile32x32, eight accumulators, 8 KiB shared; builds/all20 variants/operator/full-core accuracy pass; output byte-identical, first 138.633996 s versus accepted first 67.138187 s, peak 425.2 MiB/zero swap/no faults; rejected for performance, no warm repeat; accepted64x64 path unchanged |
-| `0022-radish-tiled-batching-cumulative.patch` | Same Mesa base as 0001; replaces 0016 | Current driver; optional 2/4 sequential single-group tiled chunks per submit, unchanged waits/flushes and register guard; full core 56.013717 s warm, byte-identical, 428.5 MiB/zero swap/no faults; fresh T78 runtime passes |
+| `0022-radish-tiled-batching-cumulative.patch` | Same Mesa base as 0001; replaces 0016 | Prior accepted driver; optional 2/4 sequential single-group tiled chunks per submit, unchanged waits/flushes and register guard; full core 56.013717 s warm, byte-identical, 428.5 MiB/zero swap/no faults; fresh T78 runtime passes |
+| `0023-radish-tiled-batch8-cumulative.patch` | Same Mesa base as 0001; replaces 0022 | Current driver; adds batch8 under unchanged 0022 resource gate; build/reconstruction/operator/full-core checks pass, Snake 49.266772/49.429406 s first/warm, byte-identical, 419 MiB/zero swap/no faults; fresh T213 synthesis 63.528396 s, all core/waveform values pass, 458 MiB/zero swap; runtime default8 after validation, driver/operator/model1, no16 |
 
 To reconstruct the current driver, make a separate checkout/worktree at the
-Mesa base, read its `AGENTS.md`, and apply 0022 with `git apply` instead of
-0001/0003/0004/0007/0009/0012/0016. Set
+Mesa base, read its `AGENTS.md`, and apply 0023 with `git apply` instead of
+0001/0003/0004/0007/0009/0012/0016/0022. Set
 `RADISH_MESA` to that checkout and run `../scripts/build.sh`. Preserve the AC8
 checkout and use the shared scratch disk for source/build outputs. The existing
 sysroot/build environment paths and private loader procedure are in `NOTES.md`.
+
+Checkpoint 0023 is cumulative from the same Mesa base: apply it instead of 0022,
+not on top. Its only behavior change from 0022 is allowing explicit
+`RADISH_TILED_BATCH_CHUNKS=8` under the existing resource condition. Per-chunk
+setup, waits/flushes and single-group hardware execution are retained; driver,
+operator and model defaults stay 1; runtime changes from 4 to 8 only after the
+fresh full-runtime validation below. The pinned ncnn K<=3584 bound and resource
+gate are unchanged. Wrapper syntax/guard
+checks pass for exactly 1/2/4/8; 16 remains rejected. The targeted ICD build
+passes with SHA256
+`9e8274ca701163e442237e78c7ff965a4de745c97bfb16cfa54a563655f23ff2`.
+Complete dilation1/3/5 checks pass all 25984/23424/20864 values at unchanged
+gates, with 8.485493/6.473352/6.448820 ms math commands and 8/6/6 chunks each
+using one submit. No faults, services active. Logs:
+`operators-tiled-batch8-0023-d{1,3,5}.log`. The fixed Snake repeat in
+`core-snake-batch8-0023-repeat2.log` passes all 562342 outputs in both extractions,
+49.266772/49.429406 s first/warm after 9.315 s load. Max error 0.000129699707,
+relative RMS 7.72155564e-7, zero mismatches and exact batch4 output identity;
+the existing full-waveform evidence applies without a new tail run. Peak
+419 MiB/zero swap, no faults and services active. Warm latency is 3.4357% below
+batch4's 51.188057 s (one warm each); accept the fixed-core checkpoint. Complete
+warm attribution preserves all 1798 resource/grid/chunk signatures and 901
+layer paths; only
+53 tiled submit counts change, 6486→3255, lowering their command wall
+28.093624→25.551525 s. Retained 1745 commands take 0.711040 s longer with
+unchanged work/submits; timers include host work and waits, and individual batch
+maximum duration is unmeasured. Fresh batch8 T213 runtime also passes all
+562342 core values and 127800 waveform samples at unchanged gates and exact
+batch4 output identity: synthesis 63.528396 s, core 47.854719 s,
+458 MiB/zero swap/no faults, services active. The boundary matches the earlier
+CPU and GPU captures. Evidence: `runtime-single-full-snake-batch8-0023-validation.json`.
+Earlier fresh 68.158274 s used batch4 and 22.9 MiB swap; the 4.629878 s difference
+does not isolate batching across these single observations. The runtime wrapper
+now defaults to 8 after validation; Snake remains explicit opt-in. Preserve published checkpoint
+`f78917a`; no general watchdog or sustained-performance guarantee is established.
+The cumulative patch reconstructs all 14 changed files exactly on the pinned
+Mesa base, recorded in
+`tiled-batch8-0023-reconstruction-qinlp2gg/reconstruction.json`.
 
 The pinned ncnn/glslang checkout is separate. `../scripts/build-ncnn.sh` applies
 0005 if applicable, accepts an already-applied patch, migrates the exact earlier
@@ -254,4 +293,5 @@ e89d516bca15980a599f96e797b7726546913b05b370bac87a3ac88c8ebc9695  0018-ncnn-conv
 bf61ab2af644ddecb632c7c3d8e48ef261085f3a7c1ad68d657c33abf7cda3df  0020-ncnn-conv1d-tiled32.patch
 a29dbbe0c3edf8912e4548cc873beca0ba3f1ba3197b6f1ee5f386bfd4f57dc0  0021-ncnn-conv1d-tile32x32.patch
 0c03e76309ae835fa32946a61626614136dc5ea173419383258904933ec7514a  0022-radish-tiled-batching-cumulative.patch
+5516b6823e67f70c989939a95e16d853fd00af43d3a280b13cefc4b60da40bfd  0023-radish-tiled-batch8-cumulative.patch
 ```

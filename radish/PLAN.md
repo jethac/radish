@@ -568,3 +568,36 @@ relabel them. The separate full-length Snake result below uses 0022.
 The unchanged accuracy gates, original reference fixtures, memory/fault limits
 and service preservation remain mandatory. Models, captures and private audit
 reports stay outside the public repository.
+
+## Accepted checkpoint 0023: tiled batch 8
+
+- [x] Extend only the 0022 tiled-batch condition to accept 8 under the same
+  resource gate; retain all per-chunk waits/flushes, lifetimes and limits.
+- [x] Accept explicit 1/2/4/8 in the three wrappers; preserve driver/model
+  default 1; initially retain runtime 4 pending validation. No 16; targeted ICD
+  build passes. Pinned ncnn K<=3584 and the driver resource gate are unchanged.
+- [x] Reconstruct cumulative 0023 on the pinned Mesa base; all 14 changed
+  files match the current source exactly. Preserve 0022 as the prior checkpoint.
+- [x] Pass complete dilation1/3/5 operator outputs: 25984/23424/20864 values,
+  unchanged gates, math 8.485493/6.473352/6.448820 ms, 8/6/6 chunks each one
+  submit, no faults and services active.
+- [x] Finish fixed Snake full-core repeat2: 49.266772/49.429406 s first/warm,
+  all 562342 values pass byte-identically to batch4, 419 MiB/zero swap/no faults,
+  services active. Existing exact-byte waveform evidence applies.
+- [x] Accept the fixed-core checkpoint: 3.4357% lower warm latency than
+  51.188057 s, one warm observation each. Keep defaults unchanged.
+- [x] Complete warm trace attribution: all 1798 resource/grid/chunk signatures
+  and 901 layer paths match; 53 tiled submits 6486→3255, wall 28.093624→25.551525 s. Retained
+  1745 commands take 0.711040 s longer with unchanged work/submits. Timers are
+  wall-inclusive; individual batch maximum duration remains unmeasured.
+- [x] Preserve the 256 MiB device disk preflight: first fresh attempt stops
+  before writes/inference. Verified hardlink deduplication of existing identical
+  private graphs frees space with paths/evidence retained; retry uses a new label.
+- [x] Validate fresh T213 batch8 runtime: all core/waveform outputs pass exactly
+  as batch4, all eight boundary files match prior GPU/CPU captures. Synthesis
+  63.528396 s/core 47.854719 s, 458 MiB/zero swap/no faults, services active.
+- [x] After validation, select runtime default8; keep driver/operator/model1,
+  no16 and explicit `--snake`. Preserve earlier batch4 startup measurements.
+- [ ] Measure sustained behavior and equivalent CPU Snake work. The prior fresh
+  full run used 22.9 MiB swap; do not assign its entire latency difference to
+  batching or claim general watchdog safety from these bounded runs.

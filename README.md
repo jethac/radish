@@ -32,31 +32,34 @@ a separate driver, with its own a5xx resource bindings and command emission.
 
 | Measurement | GPU path | Packed six-thread CPU |
 | --- | ---: | ---: |
-| Fixed full-size core, warm extraction | **51.188 s** | **32.079 s** |
-| Fresh full-length synthesis, including startup | **68.158 s** | **39.790 s** |
+| Fixed full-size core, warm extraction | **49.429 s** | **32.079 s** |
+| Fresh full-length synthesis, including startup | **63.528 s** | **39.790 s** |
 
 The GPU figures use the opt-in FP32 Snake graph, output reshape aliases and
-sequential tiled submission batching. Warm core timing is one extraction,
+eight sequential tiled chunks per submission. Warm core timing is one extraction,
 versus two for the CPU mean; the CPU uses the preceding InstanceNorm graph.
 Complete synthesis figures are single startup runs with byte-identical
-frontend boundary inputs. The GPU core peaks at **416.8 MiB, zero swap**;
-full GPU synthesis peaks at **445.9 MiB with 22.9 MiB swap**. No new GPU faults
+frontend boundary inputs. The GPU core peaks at **419 MiB, zero swap**;
+full GPU synthesis peaks at **458 MiB with zero swap**. No new GPU faults
 occurred, and both appliance services remained active. Core and waveform bytes
 match the preceding GPU implementation. GPU inference remains slower than CPU.
 Resident warm synthesis and sustained thermal behavior remain unmeasured.
 
 - Fused FP32 normalization and tiled convolution, including dilation 3/5,
   guarded output reshape aliases, sequential submission batching and Snake
-  activation fusion reduce fixed-core warm GPU time from 101.275 s to 51.188 s.
+  activation fusion reduce fixed-core warm GPU time from 101.275 s to 49.429 s.
   Snake replaces 240 arithmetic dispatches with 48 and removes 7,680 submissions;
   its measured improvement is 8.6% over the preceding 56.014 s checkpoint.
+  Raising sequential tiled batching from four to eight then removes another
+  3,231 submissions and reduces warm time from 51.188 s by a further 3.4%.
   The tiled path executes 53 matrix-product commands; compiled register-budget
   checks remain in place.
 - Fresh short-utterance synthesis with Snake takes **33.764 s**, including
   startup, and passes every core/audio comparison at **383.3 MiB, zero swap**.
+  This short-utterance measurement uses the earlier batch-four checkpoint.
   Select it with `device-runtime.sh ... --snake`; InstanceNorm remains the
   default graph. Snake is a project-local ncnn custom layer requiring no new
-  Mesa patch beyond 0022.
+  Mesa feature; cumulative patch 0023 includes the larger batching option.
 - Explicit mixed-storage conversion and FP32 normalization remove the NaNs
   from packed FP16 inference, but full-model and waveform accuracy still fail.
   FP32 remains the validated path.
@@ -90,7 +93,7 @@ kept outside the repository.
 
 1. Check out Mesa at `ddabdd0e36bd2f5e0c8e6bd21c3d1da7e34c1230` in a
    separate worktree. Apply
-   `radish/patches/0022-radish-tiled-batching-cumulative.patch` to that base.
+   `radish/patches/0023-radish-tiled-batch8-cumulative.patch` to that base.
    Earlier cumulative Mesa patches are historical alternatives, not a series.
 2. Set `RADISH_WORK` to the scratch/build directory, `RADISH_MESA` to the Mesa
    checkout, `RADISH_SYSROOT` to the aarch64 sysroot and `RADISH_VENV` to the

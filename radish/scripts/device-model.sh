@@ -17,7 +17,7 @@ RESHAPE_ALIAS=${RADISH_NCNN_RESHAPE_ALIAS:-0}
 BATCH=${RADISH_BATCH_CHUNKS:-1}
 [[ $BATCH =~ ^[1-4]$ ]] || { echo 'RADISH_BATCH_CHUNKS must be 1..4' >&2; exit 2; }
 TILED_BATCH=${RADISH_TILED_BATCH_CHUNKS:-1}
-[[ $TILED_BATCH =~ ^(1|2|4)$ ]] || { echo 'RADISH_TILED_BATCH_CHUNKS must be 1, 2 or 4' >&2; exit 2; }
+[[ $TILED_BATCH =~ ^(1|2|4|8)$ ]] || { echo 'RADISH_TILED_BATCH_CHUNKS must be 1, 2, 4 or 8' >&2; exit 2; }
 SHARED_GROUPS=${RADISH_SHARED_GROUPS:-1}
 [[ $SHARED_GROUPS =~ ^[1-8]$ ]] || { echo 'RADISH_SHARED_GROUPS must be 1..8' >&2; exit 2; }
 for toggle in "$TRACE" "$PROFILE" "$SHARED32" "$TILED" "$TILED32" "$MIXED_STORAGE" "$RESHAPE_ALIAS"; do

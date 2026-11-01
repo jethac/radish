@@ -3,8 +3,9 @@
 2026-11-01: one private tablet executable now runs CPU frontend/source, metadata
 shape propagation, the FP32 Vulkan core and the portable waveform tail from
 token IDs/style/speed. With the opt-in Snake graph, complete T=78 and T=213 runs
-take **33.764051 s** and **68.158274 s** synthesis time, with **383.3 MiB** and
-**445.9 MiB** peak memory. T78 uses zero swap; T213 uses **22.9 MiB**. No new
+take **33.764051 s** and **63.528396 s** synthesis time, with **383.3 MiB** and
+**458 MiB** peak memory and zero swap. T78 uses the earlier batch-four setting;
+the latest T213 result uses batch eight. No new
 GPU faults occurred, and both appliance services remained active.
 Every core value and waveform sample passes
 the unchanged gates against host ORT references computed afterward from each
@@ -468,7 +469,7 @@ requirements from [GOAL.md](GOAL.md). This evidence does not complete M5 or M6.
 
 ### Sequential tiled submission checkpoint 0022
 
-The private runtime now defaults `RADISH_TILED_BATCH_CHUNKS=4` for the pinned
+At checkpoint 0022, the private runtime selected `RADISH_TILED_BATCH_CHUNKS=4` for the pinned
 FP32 graph. The driver still defaults 1 and accepts this option only for the
 measured local128 tiled resource class. `RADISH_NCNN_TILED32` remains0.
 All wrappers validate 1/2/4, and the executable and frozen device manifest record
@@ -583,3 +584,37 @@ baseline, not a fresh Snake CPU run or a sustained comparison.
 Snake stays an explicit `--snake` opt-in and InstanceNorm remains the default
 for this checkpoint. Resident cross-request reuse, cancellation and sustained
 performance remain open.
+
+### Sequential batch eight: checkpoint 0023
+
+The runtime now selects `RADISH_TILED_BATCH_CHUNKS=8` by default, while Snake
+still requires `--snake`. The driver adds eight to the existing guarded tiled
+batch choices; its default remains one. Each hardware dispatch still executes
+one workgroup with the same waits and cache operations. Batch sixteen is not
+accepted by this checkpoint.
+
+The fixed Snake core passes first/warm extractions in **49.266772/49.429406 s**,
+with 419 MiB peak memory, zero swap and identical output bytes. Fresh full-length
+synthesis then passes in **63.528396 s**, including 5.705182 s frontend/source,
+0.026177 s metadata, 9.426758 s core load, 47.854719 s extraction and 0.103455 s
+tail. Core scope is 57.630407 s; through publication is 63.535909 s and service
+wall is 63.611 s. Peak memory is **458 MiB with zero swap**, no new GPU faults,
+and both appliance services remain active.
+
+All 562342 core values and 127800 audio samples pass the unchanged gates, with
+98.355163 dB waveform SNR. Core/waveform bytes match the earlier full GPU output
+exactly. All eight captured boundary files also match the prior CPU and batch-four
+GPU runs. Evidence is `runtime-single-full-snake-batch8-0023-validation.json`,
+`runtime-single-full-batch8-cpu-gpu-boundary-identity.json` and the capture
+`kokoro-runtime-full-single-vulkan-snake-batch8-0023-retry-snake` under WORK.
+
+The first attempt stopped at disk preflight before inference. Hash-verified
+deduplication of identical private model graphs preserved all paths and contents,
+recovered 218664 KiB, and allowed the retry with the same disk reserve. Its record
+is `device-runtime-immutable-graph-dedup-0023.log`.
+
+The warm core comparison isolates unchanged command work with 3231 fewer
+submissions and a 3.4357% wall-time reduction. The separate 68.158274 to
+63.528396 s fresh-runtime comparison has only one observation per setting and
+different swap use; do not attribute its entire improvement to batching.
+Resident requests and sustained behavior remain unmeasured.
