@@ -6,11 +6,18 @@ Public KHR aliases now exercise descriptor templates, layout support,
 buffer/image binding and memory requirements, and sparse-image queries returning
 zero requirements. The driver still reports API 1.0.
 
-Subgroup BASIC remains disabled. The revised 16-lane API contract passes local
-sizes32 and33, including a partial subgroup, but fails the8×8 election/member
-oracle. The128-invocation case is unattempted. This is **partial success**, not
-conformance. All four suites compile; three execute successfully. No GPU faults
-occurred and both services stayed active:2.257s,7.3MiB,zero swap.
+Subgroup BASIC now passes the four focused cases on a later paired artifact,
+ICDbc8ec8e2. The compiler preserves logicalLocalID/Index/WorkgroupSize and maps
+BASIC shaders to a1D physical workgroup, avoiding A5xx's shape-dependent physical
+packing. Logical32/33/8×8/128 all pass IDs/counts, uniform/divergent election,
+shared/SSBO subgroup barriers, atomics and full guards. The717ms run used8.9MiB,
+zero swap; no new faults and both services active.
+
+Published source now exposes compute BASIC after that evidence and source review.
+The measured helper enabled it locally; the public property-only promotion is
+not another execution measurement. Prior failures remain in their separate
+records. See [the paired BASIC result](results/core-api-0044-subgroup-basic.json).
+This is focused semantic evidence, not full Vulkan1.1 or CTS conformance.
 
 Apply `0044-radish-descriptor-backports-wip.patch` after the three earlier0044
 patches. This increment adds1024 logical descriptor storage with statically
@@ -18,8 +25,8 @@ referenced element compaction, corrected resource limits, pipeline derivative
 and multi-create handling, explicit texture gradients/gather, packed formats,
 the four KHR backports and the16-lane subgroup compiler option. Representative
 resource checks pass; the full range of those source paths is not qualified.
-The measured and published source both leave BASIC supported stages/operations
-zero. The subgroup probe enables them only in its private diagnostic object.
+That earlier artifact left BASIC supported stages/operations zero; the later
+subgroup-linear increment supplies the corrected mapping and capability promotion.
 
 The original40 worklist now has40 representative command paths exercised.
 A subsequent resource-only run on ICD4b5d6cb6 passes full color clear and an
@@ -31,7 +38,7 @@ and external-buffer-property evidence still uses internal dispatch tables;
 the corresponding public version/extensions are not advertised. See
 [the exact result and command ledger](results/core-api-0044-backports.json).
 
-Robust buffer access, complete subgroup semantics, legal shared-memory/workgroup
+Robust buffer access, broader subgroup/CTS coverage, legal shared-memory/workgroup
 execution, remaining mandatory resource/feature behavior and applicable CTS
 coverage remain active work. Graphics is outside scope; performance work stays
 paused. The preceding stage7 result is preserved in
@@ -43,9 +50,14 @@ depth image copies. It is built into4b5d6cb6, but depth consumption is not exerc
 by the color-resource result. Core compute does not gain graphics-only depth
 clear or buffer/depth copy commands.
 
+The sixth increment, `0044-radish-subgroup-linear-wip.patch`, preserves original
+logical shapes while changing physical dispatch only for BASIC shaders. Existing
+register/shared-memory guards remain, including a conservative resident-thread
+budget. It does not solve the earlier legal-workgroup/shared-memory failures.
+
 ## Consolidated reproduction
 
-Apply the five0044 incremental patches in order to the documented0042 Mesa
+Apply the six0044 incremental patches in order to the documented0042 Mesa
 stack and build the isolated driver. Build probes against its matching internal
 ABI:
 
@@ -64,9 +76,10 @@ existing resource-only command list in a private derivative.
 
 Set `RADISH_DEVICE_LOCK` to the same original lock and `RADISH_WORK` to the host
 evidence directory. The private driver is selected only for the bounded service.
-The current BASIC failure makes the overall process exit1 while preserving
-three passing suites. Independent non-fault failures remain separate; new GPU
-fault evidence stops the batch. Do not interpret compile success as execution.
+Use `--suite subgroup` for the four-case BASIC check. The public selector is
+host-checked; the measured private runner used the same fixed subgroup command
+list. Independent non-fault failures remain separate; new GPU faults stop the
+batch. Do not interpret compile success as execution.
 
 ## Earlier API5 foundation evidence
 

@@ -154,9 +154,14 @@ int main(int argc,char **argv)
          .stage={.sType=VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,.stage=VK_SHADER_STAGE_COMPUTE_BIT,
                  .module=module,.pName="main",.pSpecializationInfo=&spec},.layout=layout};
       SUCCESS(d->CreateComputePipelines(device,VK_NULL_HANDLE,1,&pci,NULL,&pipelines[test]));
-      struct ir3_shader_variant *v=rd_pipeline_from_handle(pipelines[test])->variant;
-      REQUIRE(v->local_size[0]==locals[test][0] && v->local_size[1]==locals[test][1] &&
-              v->local_size[2]==locals[test][2] && !v->pvtmem_size);
+      struct rd_pipeline *pipeline=rd_pipeline_from_handle(pipelines[test]);
+      struct ir3_shader_variant *v=pipeline->variant;
+      REQUIRE(pipeline->linear_subgroups &&
+              pipeline->logical_local_size[0]==locals[test][0] &&
+              pipeline->logical_local_size[1]==locals[test][1] &&
+              pipeline->logical_local_size[2]==locals[test][2]);
+      REQUIRE(v->local_size[0]==locals[test][0]*locals[test][1]*locals[test][2] &&
+              v->local_size[1]==1 && v->local_size[2]==1 && !v->pvtmem_size);
       REQUIRE(v->shared_size<=128 && !v->info.double_threadsize && v->num_uavs==2 && !v->has_barrier);
       printf("BASIC COMPILED case=%u local=%u,%u,%u shared=%u full=%d half=%d instrlen=%u barrier=%u\n",
              test,v->local_size[0],v->local_size[1],v->local_size[2],v->shared_size,

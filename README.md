@@ -24,9 +24,9 @@ a separate driver, with its own a5xx resource bindings and command emission.
 **Current priority:** performance experiments are paused while the driver fills
 its Vulkan1.0/1.1 compute execution and resource gaps. The latest
 [0044 checkpoint](radish/CORE_API_0044.md) passes API, event/query and
-UBO/dynamic/image-resource suites, including public KHR aliases. The16-lane
-subgroup correction passes1D cases but fails2D election checks, so BASIC stays
-disabled. All40 original command paths now have representative execution evidence;
+UBO/dynamic/image-resource suites, including public KHR aliases. A subsequent logical-to-physical mapping correction passes all four focused
+BASIC cases, and compute BASIC is now exposed. Broader execution/CTS coverage
+remains incomplete. All40 original command paths now have representative execution evidence;
 this is WIP, not a version or conformance claim. Broader semantics and limits
 remain active work. The inference results below are the previous qualified
 performance baseline.

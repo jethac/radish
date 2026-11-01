@@ -1,5 +1,18 @@
 # Radish status
 
+## 2026-11-02 (JST): subgroup BASIC mapping correction passes
+
+The pairedbc8ec8e2 artifact passes all four logical workgroups32/33/8×8/128.
+BASIC shaders use a1D physical workgroup with reconstructed logical IDs, fixing
+the2D election mismatch without changing other shaders. Full ID/election,
+subgroup shared/SSBO barrier/atomic outputs and guards pass:717ms,8.9MiB,zero
+swap,no new faults,services active. Compute BASIC is exposed in published source
+after this focused evidence and source review; the property-only promotion was
+not separately executed. [Result](results/core-api-0044-subgroup-basic.json).
+
+The old physical64/shared-register failure, private/constant consumption,
+robustness and broader CTS remain open. No performance work resumed.
+
 ## 2026-11-02 (JST): original40 command exercise worklist reached
 
 The existing resource suite passes two rounds with real full color clear,

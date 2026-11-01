@@ -1,0 +1,154 @@
+--- a/src/freedreno/radish/rd_private.h
++++ b/src/freedreno/radish/rd_private.h
+@@ -109,6 +109,8 @@
+    uint32_t private_per_sp;
+    uint32_t descriptor_count;
+    uint64_t used_descriptors;
++   uint32_t logical_local_size[3];
++   bool linear_subgroups;
+    struct rd_nir_resource_binding resources[RD_MAX_ACTIVE_RESOURCES];
+    uint32_t resource_count;
+    struct rd_nir_resource_usage resource_usage;
+--- a/src/freedreno/radish/rd_pipeline.c
++++ b/src/freedreno/radish/rd_pipeline.c
+@@ -139,6 +139,51 @@
+    return true;
+ }
+ 
++static bool
++rd_uses_subgroups(nir_shader *nir)
++{
++   nir_foreach_function_impl(impl, nir) {
++      nir_foreach_block(block, impl) {
++         nir_foreach_instr(instr, block) {
++            if (instr->type != nir_instr_type_intrinsic)
++               continue;
++            const nir_intrinsic_instr *intr = nir_instr_as_intrinsic(instr);
++            switch (intr->intrinsic) {
++            case nir_intrinsic_elect:
++            case nir_intrinsic_load_subgroup_size:
++            case nir_intrinsic_load_subgroup_id:
++            case nir_intrinsic_load_subgroup_invocation:
++            case nir_intrinsic_load_num_subgroups:
++               return true;
++            case nir_intrinsic_barrier:
++               if (nir_intrinsic_execution_scope(intr) == SCOPE_SUBGROUP ||
++                   nir_intrinsic_memory_scope(intr) == SCOPE_SUBGROUP)
++                  return true;
++               break;
++            default:
++               break;
++            }
++         }
++      }
++   }
++   return false;
++}
++
++static bool
++rd_linearize_local_id(nir_builder *b, nir_intrinsic_instr *intr, void *data)
++{
++   if (intr->intrinsic != nir_intrinsic_load_local_invocation_id)
++      return false;
++   const uint32_t *size = data;
++   b->cursor = nir_before_instr(&intr->instr);
++   nir_def *q = nir_channel(b, nir_load_local_invocation_id(b), 0);
++   nir_def *x = nir_umod_imm(b, q, size[0]);
++   nir_def *y = nir_umod_imm(b, nir_udiv_imm(b, q, size[0]), size[1]);
++   nir_def *z = nir_udiv_imm(b, q, size[0] * size[1]);
++   nir_def_replace(&intr->def, nir_vec3(b, x, y, z));
++   return true;
++}
++
+ VkResult
+ rd_compile_pipeline(struct rd_device *device, struct rd_pipeline *pipeline,
+                      const VkPipelineShaderStageCreateInfo *stage)
+@@ -188,15 +233,35 @@
+    pipeline->descriptor_count = pipeline->resource_count;
+    nir->info.num_ubos = 0;
+    nir->info.num_ssbos = pipeline->buffer_count;
++   uint64_t local_count = 1;
++   for (unsigned i = 0; i < 3; i++) {
++      pipeline->logical_local_size[i] = nir->info.workgroup_size[i];
++      local_count *= nir->info.workgroup_size[i];
++   }
++   if (nir->info.workgroup_size_variable || !local_count || local_count > 128) {
++      ralloc_free(nir);
++      return VK_ERROR_FEATURE_NOT_PRESENT;
++   }
++   pipeline->linear_subgroups = rd_uses_subgroups(nir);
+    const struct nir_lower_compute_system_values_options sysvals = {
+       .has_base_workgroup_id = true,
+    };
+    NIR_PASS(_, nir, nir_lower_compute_system_values, &sysvals);
++   if (pipeline->linear_subgroups) {
++      if (pipeline->logical_local_size[1] != 1 || pipeline->logical_local_size[2] != 1)
++         nir_shader_intrinsics_pass(nir, rd_linearize_local_id,
++            nir_metadata_control_flow, pipeline->logical_local_size);
++      nir->info.workgroup_size[0] = local_count;
++      nir->info.workgroup_size[1] = 1;
++      nir->info.workgroup_size[2] = 1;
++   }
+    ir3_nir_lower_io_vars_to_temporaries(nir);
+    ir3_nir_lower_io(nir);
+    struct ir3_shader_options options = {
+       .api_wavesize = IR3_SINGLE_ONLY,
+       .api_subgroup_size = 16,
++      .workgroup_resident_threads = pipeline->linear_subgroups ?
++         DIV_ROUND_UP(local_count, 16) * device->info.threadsize_base : 0,
+       .real_wavesize = IR3_SINGLE_ONLY,
+       .push_consts_type = IR3_PUSH_CONSTS_PER_STAGE,
+       .push_consts_dwords = 32,
+@@ -229,6 +294,8 @@
+                         (v->info.double_threadsize ? 2 : 1);
+    unsigned resident_threads = v->has_barrier ?
+       DIV_ROUND_UP(local_size, wave_size) * wave_size : wave_size;
++   if (v->has_barrier && v->shader_options.workgroup_resident_threads)
++      resident_threads = MAX2(resident_threads, v->shader_options.workgroup_resident_threads);
+    if ((uint64_t)resident_threads * ir3_shader_halfregs(v) > 4096)
+       return VK_ERROR_FEATURE_NOT_PRESENT;
+    if (v->constant_data_size) {
+--- a/src/freedreno/radish/rd_instance.c
++++ b/src/freedreno/radish/rd_instance.c
+@@ -109,8 +109,8 @@
+       .deviceID = 506,
+       .deviceType = VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU,
+       .subgroupSize = 16,
+-      .subgroupSupportedStages = 0,
+-      .subgroupSupportedOperations = 0,
++      .subgroupSupportedStages = VK_SHADER_STAGE_COMPUTE_BIT,
++      .subgroupSupportedOperations = VK_SUBGROUP_FEATURE_BASIC_BIT,
+       .maxMemoryAllocationCount = 4096,
+       .maxPerSetDescriptors = 1024,
+       .maxMemoryAllocationSize = UINT32_MAX - 4095ull,
+--- a/src/freedreno/ir3/ir3_shader.h
++++ b/src/freedreno/ir3/ir3_shader.h
+@@ -622,6 +622,7 @@
+     */
+    enum ir3_wavesize_option api_wavesize;
+    uint32_t api_subgroup_size;
++   uint32_t workgroup_resident_threads;
+    /* What wavesizes we're allowed to actually use. If the API wavesize is
+     * single-only, then this must be single-only too.
+     */
+--- a/src/freedreno/ir3/ir3.c
++++ b/src/freedreno/ir3/ir3.c
+@@ -366,6 +366,7 @@
+       }
+    } else {
+       threads_per_wg = v->local_size[0] * v->local_size[1] * v->local_size[2];
++      threads_per_wg = MAX2(threads_per_wg, v->shader_options.workgroup_resident_threads);
+    }
+ 
+    return DIV_ROUND_UP(threads_per_wg, compiler->info->threadsize_base *
+--- a/src/freedreno/ir3/ir3_disk_cache.cpp
++++ b/src/freedreno/ir3/ir3_disk_cache.cpp
+@@ -84,6 +84,8 @@
+                      sizeof(shader->options.api_wavesize));
+    _mesa_blake3_update(&ctx, &shader->options.api_subgroup_size,
+                      sizeof(shader->options.api_subgroup_size));
++   _mesa_blake3_update(&ctx, &shader->options.workgroup_resident_threads,
++                     sizeof(shader->options.workgroup_resident_threads));
+    _mesa_blake3_update(&ctx, &shader->options.real_wavesize,
+                      sizeof(shader->options.real_wavesize));
+    _mesa_blake3_update(&ctx, &shader->options.nir_options,

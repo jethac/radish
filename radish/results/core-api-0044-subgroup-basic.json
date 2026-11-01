@@ -1,0 +1,102 @@
+{
+  "status": "passed",
+  "mode": "probe",
+  "exit_code": 0,
+  "payload": {
+    "radish_icd.json": {
+      "bytes": 149,
+      "sha256": "80919c1303de69e952b9dd52e16ce147253cd0baf266787210a1f383f7612208"
+    },
+    "subgroup.spv": {
+      "bytes": 5380,
+      "sha256": "19226d99d5986c0e92258ddeccf7809112d8e77e16f83a03320e186ce382459d"
+    },
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 48449328,
+      "sha256": "bc8ec8e27d4018a84f4fa23f02413438d2337fd409ad6510e2cbae8e6ae37f5c"
+    },
+    "subgroup": {
+      "bytes": 648192,
+      "sha256": "025fc4105aad4d35c14891129deeb834dfe96365dc21e7dbb9fcd43f7ab15344"
+    },
+    "payload.json": {
+      "bytes": 812,
+      "sha256": "e89d3ee99c53fc78e37da36e3ddd6d6a136e3ce320afe1db802356e9940117a9"
+    }
+  },
+  "run_log": {
+    "bytes": 2763,
+    "sha256": "d5e3e0a06714d54ac31f9ea0d16b9a7c7eb9cc38dc6a4d0eb1113f5fbe3d55e4"
+  },
+  "scope": "Subgroup BASIC IDs/counts, uniform/divergent election, subgroup shared/SSBO barriers and atomics. No complete Vulkan1.1 or CTS claim.",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-0044-subgroup-linear/probe",
+  "service_seconds": 0.717,
+  "peak_mib": 8.9,
+  "swap_mib": 0,
+  "new_gpu_faults": false,
+  "services_active": true,
+  "logical_locals": [
+    [
+      32,
+      1,
+      1
+    ],
+    [
+      33,
+      1,
+      1
+    ],
+    [
+      8,
+      8,
+      1
+    ],
+    [
+      128,
+      1,
+      1
+    ]
+  ],
+  "physical_locals": [
+    [
+      32,
+      1,
+      1
+    ],
+    [
+      33,
+      1,
+      1
+    ],
+    [
+      64,
+      1,
+      1
+    ],
+    [
+      128,
+      1,
+      1
+    ]
+  ],
+  "all_outputs_and_guards": "exact",
+  "patch_sha256": "1896f1e2f52b210969e195c92a9582622a1ec67656ac08c67d97d687edfd6c4d",
+  "published_source_files": {
+    "src/freedreno/radish/rd_private.h": "c7c5f265c4e57e110b5919da5c85da7a654531460fdf62d0b03f9143d1090226",
+    "src/freedreno/radish/rd_pipeline.c": "9924aced9acb1bf0ad77bc457e8eec01100cc72bdf0fa98adfcc8ba0ef4693e4",
+    "src/freedreno/radish/rd_instance.c": "f9fc4e578340245253edbe7d315f0ce61c70af63687bd49c92c83c4c0b16474f",
+    "src/freedreno/ir3/ir3_shader.h": "f73d2c419d09a5b9a065890c5f53fa9869645dab06eea7a46b76bc93aa65b306",
+    "src/freedreno/ir3/ir3.c": "90161921d1b6f0ce4e62fe922b50bfef613e148aefbf7feaec87e06cb752b6fe",
+    "src/freedreno/ir3/ir3_disk_cache.cpp": "df6166ec065614b28d73c58ac1661aec1428aaf09da45eed20869d7d7e4cd086"
+  },
+  "publication_delta": "Measured bc8ec8e2 reports public BASIC0; diagnostic helper enables it locally. Published source enables compute BASIC after source+four-case review; this property-only delta is included in the later private robust combined build, not another hardware run.",
+  "remaining_execution_gaps": [
+    "legal high-register/shared-memory workgroups including prior physical64 failure",
+    "private/constant backing consumption pending",
+    "broader SPIR-V and CTS coverage"
+  ]
+}
