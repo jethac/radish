@@ -75,10 +75,12 @@ CONV_PATCHES=(
     "$TOP/radish/patches/0014-ncnn-conv1d-a5xx-tiled.patch"
     "$TOP/radish/patches/0017-ncnn-conv1d-shared-a-transpose.patch"
     "$TOP/radish/patches/0018-ncnn-conv1d-tiled-dilation.patch"
+    "$TOP/radish/patches/0020-ncnn-conv1d-tiled32.patch"
 )
 CONV_FILES=(src/layer/vulkan/convolution1d_vulkan.cpp src/layer/vulkan/convolution1d_vulkan.h
             src/layer/vulkan/shader/convolution1d_packed_gemm.comp
-            src/layer/vulkan/shader/convolution1d_radish_tiled.comp)
+            src/layer/vulkan/shader/convolution1d_radish_tiled.comp
+            src/layer/vulkan/shader/convolution1d_radish_tiled32.comp)
 CONV_STAGE=$(mktemp -d)
 trap 'rm -rf -- "$CONV_STAGE"' EXIT
 for file in "${CONV_FILES[@]}"; do

@@ -34,6 +34,15 @@ both first/warm extractions, now including dilation 3/5, with a passing waveform
 A performance win and sustained runtime behavior remain unproven. API
 advertisement and conformance status are unchanged.
 
+Default-off candidate 0020 uses local32 with a 64x32 tile and 12 KiB shared
+memory. Builds, all 20 model compiler variants and focused dilation1/3/5 output
+checks pass, but its best dilation1 math command is 21.885 ms versus the existing
+tile's 10.868 ms. The full core passes with byte-identical output but takes
+101.354/100.467 s first/warm, with 414.8 MiB peak memory and 52 MiB swap.
+Reject 0020 for performance and keep it default-off; the accepted 66.919 s warm
+result above remains the baseline. The new swap use limits causal attribution
+of the slowdown.
+
 - Mesa worktree `/run/media/jethac/Shared/radish/mesa`, branch `radish/main`,
   base `ddabdd0e36bd2f5e0c8e6bd21c3d1da7e34c1230`. AC8 checkout untouched.
 - ncnn checkout `/run/media/jethac/Shared/radish/ncnn`, revision
@@ -146,8 +155,13 @@ Continue from the passing FP32 InstanceNorm+tiled+dilation core and waveform:
 warm sample and CPU two; sustained end-to-end evidence remains open. Incremental
 0018 now covers the 16 dilation3/5 convolutions, with unchanged operator/model
 accuracy gates and no new faults. The narrowed output-only reshape alias removes copies without introducing
-protective clones. Next, inspect and measure a separate local32/tile64x32
-convolution candidate using the recorded conservative resource gates.
+protective clones. Candidate 0020's separate local32/tile64x32 kernel now passes
+source review/reconstruction, builds, the conservative model-wide compiler gate
+and focused operators. Its full-model result is byte-identical but regresses to
+100.467084 s warm with 52 MiB swap; reject it for performance and keep it
+default-off. The profile attributes the increase to the 53 changed tiled commands.
+Consider the measured Snake-chain opportunity while retaining the accepted
+local128 tile and output reshape aliases.
 
 The new metadata-only shape pass matches every original and fused shape at
 T78/T213. The integrated frontend/core/tail executable builds for host and
@@ -1298,3 +1312,83 @@ The earlier first core was25.190135 s, so do not infer a T78 core speedup or
 attribute the lower total to aliases; frontend startup fell from8.364384 s.
 The private runtime wrapper now defaults this accepted alias control to1;
 model/operator comparison wrappers retain explicit opt-in selection.
+
+### Local32 tile64x32 candidate 0020
+
+`0020-ncnn-conv1d-tiled32.patch` is incremental after 0018; the independent 0019
+output-reshape alias remains available. SHA256:
+`bf61ab2af644ddecb632c7c3d8e48ef261085f3a7c1ad68d657c33abf7cda3df`.
+`RADISH_NCNN_TILED32=1` enables the new variant even without `RADISH_NCNN_TILED`
+and takes precedence when both are enabled. It remains disabled by default.
+The previous validated checkpoint is `bccdcd3265dfbbc5b7c09f21377f2f38a1054820`.
+
+The separate shader uses local8x4x1, a tile of 64 output channels by 32 positions,
+BK32, 16 vec4 accumulators per thread and 12 KiB shared memory (A8 KiB+B4 KiB).
+It preserves row-major weights, pack4 addressing/output transposition, bias,
+K accumulation order and dilation1/3/5. Spatial tails retain both barriers.
+Exact Radish/FP32/packing/shape gates still apply; disabling the new flag retains
+the existing local16x8, 64x64 tiled path. Independent source review and ordered
+reconstruction pass. The operator wrapper validates/forwards the new flag and
+keeps distinct evidence tags; compile-only still returns before input/model
+upload or operator submission. Existing full independent references are unchanged.
+
+Canonical, SIMPLEOMP and integrated runtime builds pass
+(`build-ncnn-tiled32-0020.log`, `build-runtime-tiled32-0020.log`). The focused
+dilation1 compile records 32 full/0 half registers, 1476 instructions, 1766
+dwords and four loops (`operators-tiled32-0020-compile.log`). The later model
+load-only gate creates 167 artifacts, including 20 tiled32 programs; all 20 have
+local8x4x1, 12288 shared bytes and 32 full/0 half registers. This satisfies the
+declared F+H/2<=32 execution gate. Independent compiler audit matches all 20
+expected specialization tuples covering 53 model layers, with no NIR scratch or
+native LDP/STP spills. Accepted pipelines also imply zero private memory because
+the pinned driver rejects nonzero private allocation. Private audit evidence is
+`tiled32-resource-audit-0020-7_g20rz2/`. Model load/weight
+upload completes in 17.360 s, peak 262.9 MiB/zero swap, no faults and both services
+active (`core-tiled32-0020-load-allvariants.log`). This run executes no inference.
+
+All 25984 dilation1 operator outputs pass the unchanged gate at shared-group
+budgets 1/2/4/8, with max absolute error 3.42226122e-5. The logical math grid is
+7x2x1, with local8x4x1. Command-wall measurements include submission and waits:
+
+| Shared groups | Math time (ms) | Submits |
+| --- | ---: | ---: |
+| 1 | 28.872531 | 14 |
+| 2 | 25.032780 | 8 |
+| 4 | 23.930798 | 4 |
+| 8 | 21.885115 | 2 |
+
+Logs: `operators-tiled32-0020-d1-groups{1,2,4,8}.log`. All runs preserve both
+services and report no new faults. Even the fastest is slower than the existing
+0017 tile's recorded 10.868408 ms/eight submits. Reducing submissions has not
+produced an operator speed win. Dilation3/5 at groups8 pass all 23424/20864
+outputs, max errors 7.09755113e-6/1.641165e-5, with math times 19.058804/18.831616 ms
+and two submits each; no faults, both services active. Full fixed-core repeat,
+described below, also passes accuracy. These checks do not establish a general
+resource-safety claim.
+
+`core-instancenorm-tiled32-0020-repeat2.log` completes after 11.098 s cold load:
+101.354178 s first extraction and 100.467084 s warm (one warm observation),
+including input/output transfers. Both pass all 562342 outputs, max absolute
+error 0.000129699707, relative RMS 7.72155564e-7, zero mismatches. The frozen
+output SHA256 is
+`0550fe07becc684c3dc7b0113bfef0b4e3c87ff8d888acf779e98de4d8af18e4`,
+identical to the accepted 0019/0018 output. No new waveform run was needed:
+the existing 127800-sample waveform pass for those exact core bytes remains
+applicable. This is not a new end-to-end runtime measurement.
+
+Service wall is 3 min 33.367 s, peak memory 414.8 MiB plus 52 MiB swap, no new
+GPU fault/recovery messages and both services active. The swap use differs from
+the accepted 0019 run's zero swap and limits attributing all of the slowdown to
+the shader. Available memory before/after is 1051232/1057644 KiB. The measured
+warm time is 50.13% longer than 66.919494 s; reject 0020 for performance, retain
+the old tile as the accepted path, and leave `RADISH_NCNN_TILED32=0` by default.
+Warm command attribution contains the same 1990 commands: the 53 changed tiled
+math commands rise from 39.290606493 to 73.200805943 s while their submits fall
+from 25944 to 6512. The other 1937 commands take 23.822304502/23.456005835 s,
+with unchanged 30523 submits; transfers remain 96. Total new submissions are
+37035. These command-wall timers include submission/waits and any intervening
+host delays; the result does not isolate instruction cost or swap effects.
+The retained 1937 command signatures and all 1093 layer-path identities match.
+Private comparison evidence is
+`warm-tiled32-result-0020-nve2rvjz/comparison-to2d-tiled32.json`.
+No budget or accuracy gate was relaxed.

@@ -359,41 +359,78 @@ required.
   output but regress to109.107981s due20 large transfer clones; reject them.
   Restrict to output rank3→rank2 aliases: 67.138187/66.919494s first/warm,
   bit-identical output,417.6MiB/zero swap/no faults. Keep original input copies.
-- [ ] Prioritize the local32/tile64x32 convolution experiment below, then consider
-  the48 measured five-operation Snake chains. Both remain unvalidated designs.
+- [x] Implement and independently review default-off 0020 local32/tile64x32;
+  ordered source reconstruction, canonical/SIMPLEOMP/runtime builds and all
+  20 model tiled32 compiler variants pass the conservative resource gate.
+- [x] Validate 0020 with unchanged full-output operators: dilation1 at shared
+  groups1/2/4/8 and dilation3/5 at groups8 pass, no faults. Dilation1's fastest
+  21.885115 ms math command is slower than the old tile's 10.868408 ms.
+- [x] Complete the bounded full-core comparison for 0020: 101.354178/100.467084 s
+  first/warm, all 562342 outputs pass byte-identically to the accepted core;
+  existing waveform evidence applies to identical bytes. Reject for performance
+  and keep default-off. Peak 414.8 MiB plus 52 MiB swap is a timing confound;
+  no faults, both services active. Accepted warm baseline remains 66.919494 s.
+- [x] Attribute 0020's regression: 53 tiled commands rise from 39.290606 to
+  73.200806 s despite submits falling 25944→6512; the other 1937 commands retain
+  their submission count and roughly the same total time. Wall-inclusive timers
+  and swap do not isolate instruction cost.
+- [ ] Consider the 48 measured five-operation Snake chains as a subsequent,
+  unimplemented design.
 - [ ] Attribute remaining convolution, reduction and CPU fallback costs; compare
   equivalent warm work against an optimized CPU baseline before declaring a win.
   Use the current fused+dilation profile; earlier unfused convolution/reduction
   totals are historical. GPU performance still trails the CPU.
 
 
-## Next convolution experiment: local32, tile64x32
+## Convolution candidate 0020: local32, tile64x32
 
-After the narrowed reshape candidate is measured and published, prioritize the
-53 tiled convolution math commands (40.111 s in the fixed 0018 warm profile).
-Keep the current local128/tile64x64 kernel and all unsupported shapes as the
-baseline. Add a separate default-off local8x4 kernel with a 64-channel by
+The narrowed reshape candidate is measured and published. Candidate 0020 targets
+the 53 tiled convolution math commands (40.111 s in the fixed 0018 warm profile).
+It keeps the current local128/tile64x64 kernel and all unsupported shapes as the
+baseline. Its separate default-off local8x4 kernel uses a 64-channel by
 32-position tile, BK32, 16 vec4 accumulators per thread, and 12 KiB shared memory
 (A8 KiB + B4 KiB). Preserve weight/input/output layout, K accumulation order,
 dilation1/3/5 and existing exact-device/FP32/packing gates. Do not alter the
-Vulkan feature advertisement or general dispatch limits.
+Vulkan feature advertisement or general dispatch limits. The source is reviewed
+and reconstructs from the ordered stack; both ncnn builds and the runtime build
+pass. `RADISH_NCNN_TILED32=1` selects it independently of `RADISH_NCNN_TILED` and
+takes precedence when both are enabled.
 
 Source audit: the current compiler caps full registers at48 and accounts local32
 in a wave pair; the existing driver guard alone does not prove this new resource
 mix safe. Require no private memory and the conservative compiled condition
 F+H/2<=32, where F/H are full/half register counts, before any execution. Reject
 or revise a candidate that misses that condition. Do not raise budgets to make
-it run. Inspect the generated shader and use the existing full-output operator
-reference at groups1 before bounded groups2/4/8 checks. Stop after any new fault.
+it run. The model-wide load-only gate passes all 20 tiled32 programs at 32 full,
+0 half registers and 12288 shared bytes; accepted pipelines imply no private
+allocation under the pinned driver. Independent audit matches all 20 expected
+specialization tuples across 53 model layers, with no scratch or LDP/STP spills.
+This load-only gate includes weight upload
+but no model inference. The existing full-output dilation1 reference passes at
+groups1, then groups2/4/8, with no faults. Stop after any new fault.
 
 The current53 grids project to51776 smaller tiles and6512 groups8 submissions,
 versus25944 submissions for the validated local128 path. This is a count
 projection, not a promised latency gain; doubled weight-block traffic, compiler
-pressure and scheduling can offset it. Shared-memory allocation and multi-group
-scheduling at12KiB/these registers remain unproven. The older shared32 kernel's
-198.453s result is a different design and stays rejected.
+pressure and scheduling can offset it. Dilation1's measured math command takes
+28.872531/25.032780/23.930798/21.885115 ms at groups1/2/4/8 (14/8/4/2 submits),
+all 25984 outputs passing with max error 3.42226122e-5. This is slower than the
+old tile's recorded 10.868408 ms. Dilation3/5 also pass all 23424/20864 outputs
+at groups8, taking 19.058804/18.831616 ms with two submits each. These focused
+checks establish no general occupancy claim or model speed win. The older
+shared32 kernel's 198.453 s result is a different design and stays rejected.
 
-Only after operator/resource checks pass, measure the same fixed full core,
-waveform and warm profile with unchanged gates. Keep published successful and
-rejected candidates reproducible. The independent48-chain Snake design remains
-available as a subsequent measured opportunity (6.978s current command wall).
+The fixed full-core repeat passes all 562342 values with unchanged gates and
+byte-identical output, so existing waveform evidence remains applicable without
+a new waveform run. However, first/warm times are 101.354178/100.467084 s versus
+accepted 67.138187/66.919494 s: the measured warm result is 50.13% slower.
+Peak memory is 414.8 MiB plus 52 MiB swap, unlike the baseline's zero swap;
+do not attribute the entire regression to the shader. No new faults, services
+active. Reject 0020 for performance and retain the default-off control. Warm
+attribution confirms 53 tiled math commands rise from 39.290606 to 73.200806 s
+despite submits falling 25944→6512; the other 1937 commands take 23.822305 versus
+23.456006 s with unchanged 30523 submits. These are wall-inclusive command times,
+not isolated instruction-cost measurements. Preserve both successful and
+rejected checkpoints.
+The independent 48-chain Snake design remains available as a subsequent measured
+opportunity (6.978 s current command wall).

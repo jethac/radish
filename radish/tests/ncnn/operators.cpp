@@ -13,6 +13,7 @@
 #include "layer/vulkan/reshape_vulkan.h"
 
 #include <cmath>
+#include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -255,17 +256,25 @@ int conv_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
     CHECK(owner.layer->create_pipeline(opt) == 0);
     const ncnn::Convolution1D_vulkan* conv = static_cast<const ncnn::Convolution1D_vulkan*>(owner.layer);
     CHECK(check_conv_pipelines(conv) == 0);
+    uint64_t expected_tiled_groups = 0;
     if (tiled_case) {
         const char* tiled = std::getenv("RADISH_NCNN_TILED");
-        const bool requested = tiled && !std::strcmp(tiled, "1");
+        const char* tiled32 = std::getenv("RADISH_NCNN_TILED32");
+        const bool requested32 = tiled32 && !std::strcmp(tiled32, "1");
+        const bool requested = requested32 || (tiled && !std::strcmp(tiled, "1"));
         CHECK(conv->use_radish_tiled == requested);
-        std::printf("  model-shaped variant: %s; K=%d; tiled grid=%d x %d\n",
-                    conv->use_radish_tiled ? "Radish tiled" : "default", input_channels * kernel,
-                    (output_width + 63) / 64, output_channels / 64);
+        CHECK(conv->radish_tiled32 == requested32);
+        const int tile_width = requested32 ? 32 : 64;
+        const int groups_x = (output_width + tile_width - 1) / tile_width;
+        const int groups_y = (output_channels + 63) / 64;
+        std::printf("  model-shaped variant: %s; K=%d; expected tiled grid=%d x %d\n",
+                    conv->radish_tiled32 ? "Radish tiled32" : conv->use_radish_tiled ? "Radish tiled" : "default",
+                    input_channels * kernel, groups_x, groups_y);
         if (conv->use_radish_tiled) {
+            expected_tiled_groups = static_cast<uint64_t>(groups_x) * groups_y;
             CHECK(conv->pipeline_convolution1d_gemm);
-            CHECK(conv->pipeline_convolution1d_gemm->local_size_x() == 16);
-            CHECK(conv->pipeline_convolution1d_gemm->local_size_y() == 8);
+            CHECK(conv->pipeline_convolution1d_gemm->local_size_x() == (requested32 ? 8u : 16u));
+            CHECK(conv->pipeline_convolution1d_gemm->local_size_y() == (requested32 ? 4u : 8u));
             CHECK(conv->pipeline_convolution1d_gemm->local_size_z() == 1);
         }
     }
@@ -295,6 +304,10 @@ int conv_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
     const auto before_forward = command.pending_dispatch_total();
     CHECK(owner.layer->forward(gpu_input, gpu_output, command, opt) == 0);
     CHECK(command.pending_dispatch_total() > before_forward); // Upload/download alone cannot pass.
+    if (expected_tiled_groups) {
+        CHECK(command.pending_dispatch_total() - before_forward == expected_tiled_groups);
+        std::printf("  verified tiled math dispatch groups: %llu\n", static_cast<unsigned long long>(expected_tiled_groups));
+    }
     CHECK(!gpu_output.empty() && gpu_output.dims == 2 && gpu_output.w == output_width);
     CHECK(gpu_output.h * gpu_output.elempack == output_channels);
     CHECK(gpu_output.elemsize == scalar_size(opt) * gpu_output.elempack);

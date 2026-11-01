@@ -25,6 +25,7 @@ limits and validation scope. Published checkpoints remain experimental; publicat
 | `0017-ncnn-conv1d-shared-a-transpose.patch` | After 0014 in the ordered Conv1D stack | Both builds/operator/full fused FP32 core/waveform pass; 76.534312 s first/74.317956 s warm (one warm), versus same-graph CPU 32.079044 s (two warm); GPU remains slower |
 | `0018-ncnn-conv1d-tiled-dilation.patch` | After 0017 in the ordered Conv1D stack | Extends only dilation1/3/5; operator/full fused FP32 core/waveform pass; 69.862470 s first/69.678044 s warm, 416.7 MiB/zero swap, no faults |
 | `0019-ncnn-radish-reshape-alias.patch` | Same ncnn base; independent Reshape file | Default-off exact Radish FP32 pack4 rank3→rank2 output alias; original input copies retained; builds/operator/full-core gates pass, output bit-identical, 67.138187 s first/66.919494 s warm. Earlier bidirectional variant in bf4d98f is rejected at 109.107981 s warm |
+| `0020-ncnn-conv1d-tiled32.patch` | After 0018 in the ordered Conv1D stack | Default-off local8x4, tile64x32, 12 KiB shared; builds/compiler/operator/full-core accuracy pass, output byte-identical; 101.354178 s first/100.467084 s warm versus accepted 66.919494 s warm; 414.8 MiB plus 52 MiB swap; rejected for performance |
 
 To reconstruct the current driver, make a separate checkout/worktree at the
 Mesa base, read its `AGENTS.md`, and apply 0016 with `git apply` instead of
@@ -35,12 +36,13 @@ sysroot/build environment paths and private loader procedure are in `NOTES.md`.
 
 The pinned ncnn/glslang checkout is separate. `../scripts/build-ncnn.sh` applies
 0005 if applicable, accepts an already-applied patch, migrates the exact earlier
-0002 adaptation, then applies/verifies 0006, 0008, 0010, 0011 and candidates 0013–0015/0017/0018, plus independent 0019.
+0002 adaptation, then applies/verifies 0006, 0008, 0010, 0011 and candidates 0013–0015/0017/0018/0020, plus independent 0019.
 The first candidate build stopped at overlapping earlier-patch verification.
-The build script accepts exact ordered 0010/0011/0013/0014/0017/0018 Conv1D prefixes
+The build script accepts exact ordered 0010/0011/0013/0014/0017/0018/0020 Conv1D prefixes
 and 0006/0015 net.cpp prefixes, rejecting unrelated edits. This preserves the
 source check despite overlapping patch contexts. Canonical and SIMPLEOMP builds
-pass with revised 0013/0014, 0015 and incremental 0017. Set
+pass with revised 0013/0014, 0015 and incremental 0017; both builds and the
+integrated runtime also pass with 0020. Set
 `RADISH_NCNN_TRACE=1` for execution evidence; tracing does not use timestamp
 queries or change backend selection. The 32-thread path passes all 18 mean
 cases; the physical64 failure remains unresolved. It does not enable optional
@@ -162,6 +164,40 @@ GPU core values in 88.314593 s and all 127800 device waveform samples at 98.0175
 This is first-extraction saved-source evidence, not warm or live end-to-end
 performance. New layers use 31=2; packed mode would require 0015 and its opt-in.
 
+Candidate 0020 requires `RADISH_NCNN_TILED32=1`, works without `RADISH_NCNN_TILED`,
+and takes precedence when both controls are enabled. It retains the exact
+Radish/FP32/packing/shape gates and original row-major weights. Its separate
+local8x4 shader computes 64 channels by 32 positions with BK32 and 12 KiB shared
+memory; spatial tails still reach both barriers. The existing local16x8,
+64x64 path remains the default tiled variant. Independent source review and
+ordered reconstruction pass. Canonical, SIMPLEOMP and integrated runtime builds
+pass (`build-ncnn-tiled32-0020.log`, `build-runtime-tiled32-0020.log`).
+
+`operators-tiled32-0020-compile.log` records 32 full/0 half registers, 1476
+instructions, 1766 dwords and four loops for dilation1. Model load-only
+compilation also passes: all 20 tiled32 programs have local8x4, 12288 shared bytes
+and 32 full/0 half registers, satisfying the declared F+H/2<=32 gate. Accepted
+pipelines imply zero private memory because the pinned driver rejects nonzero
+private allocation; independent NIR/ISA audit also finds no scratch or LDP/STP
+spills and matches all 20 expected tuples covering 53 model layers. Load-only
+performs weight upload but no model inference.
+All 25984 dilation1 outputs pass unchanged tolerances at shared-group budgets
+1/2/4/8, max error 3.42226122e-5, no faults and both services active. Math command
+wall times are 28.872531/25.032780/23.930798/21.885115 ms with 14/8/4/2 submits.
+Even the fastest is slower than 0017's recorded 10.868408 ms; fewer submissions
+have not produced an operator speed win. Dilation3/5 pass all 23424/20864 outputs
+at groups8, with 19.058804/18.831616 ms math commands and two submits each.
+The full-model repeat passes all 562342 values, max error 0.000129699707, RMS
+7.72155564e-7, with output byte-identical to the accepted 0019/0018 core. Its
+existing waveform pass therefore remains applicable; no new waveform run was
+performed. First/warm times are 101.354178/100.467084 s after 11.098 s load,
+peak memory 414.8 MiB plus 52 MiB swap, no faults and both services active.
+The measured warm time is 50.13% longer than the accepted 66.919494 s, although
+new swap use limits causal attribution. Reject 0020 for performance and keep it
+disabled by default. Preserve the accepted checkpoint
+`bccdcd3265dfbbc5b7c09f21377f2f38a1054820`; full evidence is in
+`core-instancenorm-tiled32-0020-repeat2.log` and `../NOTES.md`.
+
 SHA-256:
 
 ```
@@ -184,4 +220,5 @@ fc4095829ad35385e505d4e233c12657cd54fe7dc50d88566f1a1c512f167598  0016-radish-re
 f9e2c39cfab97fbcc58a34c1464af42d4f0b9be08ce1a14dc2f494fe40322d06  0017-ncnn-conv1d-shared-a-transpose.patch
 e89d516bca15980a599f96e797b7726546913b05b370bac87a3ac88c8ebc9695  0018-ncnn-conv1d-tiled-dilation.patch
 3f38da1822f50b5b46857e091e2366c96baf350136dd585615c7e663ec72ce57  0019-ncnn-radish-reshape-alias.patch
+bf61ab2af644ddecb632c7c3d8e48ef261085f3a7c1ad68d657c33abf7cda3df  0020-ncnn-conv1d-tiled32.patch
 ```

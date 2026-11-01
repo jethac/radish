@@ -7,6 +7,8 @@ SHARED32=${RADISH_NCNN_SHARED32:-0}
 [[ $SHARED32 == 0 || $SHARED32 == 1 ]] || { echo 'RADISH_NCNN_SHARED32 must be 0 or 1' >&2; exit 2; }
 TILED=${RADISH_NCNN_TILED:-0}
 [[ $TILED == 0 || $TILED == 1 ]] || { echo 'RADISH_NCNN_TILED must be 0 or 1' >&2; exit 2; }
+TILED32=${RADISH_NCNN_TILED32:-0}
+[[ $TILED32 == 0 || $TILED32 == 1 ]] || { echo 'RADISH_NCNN_TILED32 must be 0 or 1' >&2; exit 2; }
 RESHAPE_ALIAS=${RADISH_NCNN_RESHAPE_ALIAS:-0}
 [[ $RESHAPE_ALIAS == 0 || $RESHAPE_ALIAS == 1 ]] || { echo 'RADISH_NCNN_RESHAPE_ALIAS must be 0 or 1' >&2; exit 2; }
 SHARED_GROUPS=${RADISH_SHARED_GROUPS:-1}
@@ -41,9 +43,10 @@ if [[ $RESHAPE_ONLY == 1 && ( $OTHER_SELECTION == 1 || $TILED_ONLY == 1 || $DILA
     echo '--reshape-only is FP32 and cannot be combined with another case selector' >&2
     exit 2
 fi
-EXTRA_ENV+=" --setenv=RADISH_NCNN_SHARED32=$SHARED32 --setenv=RADISH_NCNN_TILED=$TILED --setenv=RADISH_NCNN_RESHAPE_ALIAS=$RESHAPE_ALIAS --setenv=RADISH_SHARED_GROUPS=$SHARED_GROUPS --setenv=RADISH_PROFILE=1"
+EXTRA_ENV+=" --setenv=RADISH_NCNN_SHARED32=$SHARED32 --setenv=RADISH_NCNN_TILED=$TILED --setenv=RADISH_NCNN_TILED32=$TILED32 --setenv=RADISH_NCNN_RESHAPE_ALIAS=$RESHAPE_ALIAS --setenv=RADISH_SHARED_GROUPS=$SHARED_GROUPS --setenv=RADISH_PROFILE=1"
 [[ $SHARED32 == 0 ]] || TAG+=-shared32
 [[ $TILED == 0 ]] || TAG+=-tiled
+[[ $TILED32 == 0 ]] || TAG+=-tiled32
 [[ $RESHAPE_ALIAS == 0 ]] || TAG+=-reshape-alias
 [[ $SHARED_GROUPS == 1 ]] || TAG+=-shared-groups$SHARED_GROUPS
 exec 9>"${RADISH_DEVICE_LOCK:-$TOP/.device.lock}"
