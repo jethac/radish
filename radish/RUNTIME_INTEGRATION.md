@@ -1,29 +1,18 @@
 # Kokoro runtime integration audit
 
-2026-11-01: one private tablet executable now runs CPU frontend/source, metadata
-shape propagation, the FP32 Vulkan core and the portable waveform tail from
-token IDs/style/speed. With the opt-in Snake graph and PLANAR input layout,
-complete T=78 and T=213 runs take **31.890578 s** and **63.320730 s** synthesis
-time, with **329.1 MiB** and **429.7 MiB** peak memory and zero swap. Both use
-batch eight and the 64-thread padding pass from ordered ncnn patch 0026. No new
-GPU faults occurred, and both appliance services remained active.
-Every core value and waveform sample passes
-the unchanged gates against host ORT references computed afterward from each
-run's exact eight boundary files. No host work occurs between inference stages.
-The six-thread CPU baseline also passes T213 in **39.789900 s**, using identical
-boundary tensors; Vulkan remains slower. InstanceNorm remains the default;
-select Snake explicitly with `--snake`. Resident reuse, cancellation and live
-application integration remain unfinished.
-Earlier staged and fixed-core evidence is retained below and in
-[NOTES.md](NOTES.md).
+2026-11-01: one private tablet executable runs the CPU frontend/source,
+metadata shape propagation, a complete FP32 Vulkan neural core and the portable
+CPU waveform tail from token IDs/style/speed. The opt-in
+`--affine-snake-deconv2d` graph has zero CPU fallbacks in its neural core.
 
-The default-off PLANAR layout (ncnn 0024/0026 / Mesa 0025) passes fixed T213
-core extraction in 48.370236 s first / 46.932926 s warm, with 418.4 MiB peak
-memory and zero swap. All 562,342 outputs are byte-identical to the preceding
-GPU checkpoint. Fresh full synthesis remains essentially level with the prior
-63.528396 s observation. Warm affected convolution/padding commands save
-1.378124909 s versus that checkpoint; other timing variation contributes to the
-2.496480 s total warm difference. These are single warm/startup observations.
+Current fixed-core warm time is **42.469886 s**, compared with **32.079044 s**
+for the packed six-thread CPU baseline. Fresh T78/T213 synthesis passes every
+core and waveform comparison at **30.156883/63.130064 s**. Full synthesis remains
+slower than the CPU's **39.789900 s** and the preceding GPU sample's59.184846 s
+because frontend startup varies. No GPU faults occurred; both services stayed
+active. Defaults remain unchanged. Resident synthesis, sustained thermal behavior,
+cancellation and live application integration remain unfinished. Detailed current
+and historical measurements follow below and in [NOTES.md](NOTES.md).
 
 ## Implemented route
 
@@ -827,3 +816,66 @@ Evidence under WORK: `planar-index-result-0031-cp_rznjt/REPORT.md`,
 `affine-index-0031-checkpoint/binary-checkpoint.json`.
 The captures are
 `kokoro-runtime-{full,short}-single-vulkan-affine-index-0031-first-affine-snake-planar/`.
+
+### Height-one deconvolution variants
+
+`--snake-deconv2d` and `--affine-snake-deconv2d` select graphs with all three
+former CPU deconvolutions expressed as existing Vulkan 2D operators at height
+one. Each replacement adds an input/output reshape and preserves the original
+weights, horizontal stride, cropping and output padding. Vertical parameters
+are explicit, including zero bottom output padding. The depthwise C1090 path
+uses real aligned reshapes; the two dense output reshapes can use the existing
+validated alias path. No driver or ncnn math shader change is required.
+
+The exact graphs are 912 layers/1073 blobs for Snake and 720/881 for AffineSnake.
+Prepare either from its corresponding original fixture and completed full CPU
+evidence:
+
+```bash
+python3 radish/scripts/prepare-kokoro-deconv2d-fixture.py \
+  --variant affine-snake-deconv2d \
+  "$RADISH_WORK/kokoro-core-shapes-affine-snake" CPU_VALIDATION_DIRECTORY \
+  VALIDATED_CPU_RUNNER "$RADISH_WORK/kokoro-core-shapes-affine-snake-deconv2d"
+
+RADISH_NCNN_PLANAR=1 RADISH_BATCH_CHUNKS=8 \
+  bash radish/scripts/device-runtime.sh runtime-full NEW_LABEL \
+  --affine-snake-deconv2d
+```
+
+For the Snake route, use variant `snake-deconv2d` and the original Snake fixture.
+The importer independently checks both original and candidate CPU outputs
+against the unchanged full reference. Output identity to the old graph is not
+required: different deconvolution accumulation produces small numerical changes.
+The selected graph, all inputs, weights and CPU evidence are rechecked before
+and after device execution. Existing graph defaults remain unchanged.
+
+The combined fixed core passes first/warm extractions in 43.051203/42.469886 s,
+with 402.1 MiB peak and zero swap. All 715 non-Input layers execute through
+Vulkan in both extractions. All 562,342 values pass; the output is byte-identical
+to the independently validated Snake/deconvolution result, whose saved-output
+host waveform passes all 127,800 samples at 98.081 dB SNR. Cold loading is
+9.346 s. The preceding AffineSnake graph takes 43.124072 s warm; these are single
+warm observations, and the CPU baseline remains faster at 32.079044 s.
+Fresh runtime validation is recorded separately after each captured boundary.
+
+Evidence: `core-affine-deconv2d-0031-repeat2.log`,
+`affine-deconv2d-fixed-validation.json`, `deconv2d-first-host-waveform.log`, and
+`deconv2d-integrated-0031-checkpoint/binaries.json` under WORK.
+
+The integrated all-GPU core also passes fresh tablet synthesis at both lengths.
+T213 takes 42.943278 s core / 63.130064 s total, with 459.3 MiB peak and 38.1 MiB
+swap; T78 takes 15.873927 s core / 30.156883 s total, with 385.0 MiB peak and zero
+swap. All 715 executed core layers use Vulkan in each run. Every core value and
+waveform sample passes the unchanged reference gates, with waveform SNR
+98.377722/97.073984 dB for full/short input. All eight frontend boundary files
+match the preceding AffineSnake captures exactly; output values change slightly
+because of GPU deconvolution accumulation. No faults occur and services stay
+active. Full startup regresses from 59.184846 s: frontend time rises from
+5.935016 to 10.326545 s despite a faster GPU core. Short synthesis improves from
+32.105121 to 30.156883 s, including a lower 9.564430 s core load. These remain
+single startup observations with varying memory pressure, not sustained results.
+
+Evidence under WORK: `runtime-single-{full,short}-affine-deconv2d-0031-first.log`,
+matching `runtime-single-{full,short}-affine-deconv2d-0031-validation.json`, and
+`runtime-affine-deconv2d-0031-summary.json`. Captures are
+`kokoro-runtime-{full,short}-single-vulkan-affine-deconv2d-0031-first-affine-snake-deconv2d-planar/`.

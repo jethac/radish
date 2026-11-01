@@ -12,7 +12,7 @@ LOADER_SHA=75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a
 TEMPLATE=$WORK/kokoro-core-shapes-instancenorm
 TAIL=$WORK/kokoro-tail.bin
 KIND=${1:-}
-case $KIND in runtime-short|runtime-full) ;; *) echo 'usage: device-runtime.sh runtime-short|runtime-full [run-label] [--snake|--affine-snake] [--vulkan|--cpu-packed] [--threads N] [--ort-threads N] [--max-frames N] [--repeat N]' >&2; exit 2 ;; esac
+case $KIND in runtime-short|runtime-full) ;; *) echo 'usage: device-runtime.sh runtime-short|runtime-full [run-label] [--snake|--affine-snake|--snake-deconv2d|--affine-snake-deconv2d] [--vulkan|--cpu-packed] [--threads N] [--ort-threads N] [--max-frames N] [--repeat N]' >&2; exit 2 ;; esac
 shift
 RUN=$(date +%s%N)
 if [[ $# -gt 0 && $1 != --* ]]; then RUN=$1; shift; fi
@@ -26,7 +26,7 @@ REPEAT=1
 CORE_GRAPH=instancenorm
 while [[ $# -gt 0 ]]; do
     case $1 in
-        --snake|--affine-snake)
+        --snake|--affine-snake|--snake-deconv2d|--affine-snake-deconv2d)
             [[ $CORE_GRAPH == instancenorm ]] || { echo 'select one core graph' >&2; exit 2; }
             CORE_GRAPH=${1#--}; TEMPLATE=$WORK/kokoro-core-shapes-$CORE_GRAPH ;;
         --vulkan|--cpu-packed)
@@ -72,9 +72,13 @@ done
 [[ $BATCH =~ ^([1-4]|8)$ && $GROUPS_PER_CHUNK =~ ^[1-8]$ ]] || { echo 'batch must be 1, 2, 3, 4 or 8 and shared groups 1..8' >&2; exit 2; }
 VALIDATOR=$TOP/radish/scripts/validate-kokoro-snake-fixture.py
 CORE_ARGS=
-if [[ $CORE_GRAPH == affine-snake ]]; then
+if [[ $CORE_GRAPH == affine-snake || $CORE_GRAPH == affine-snake-deconv2d ]]; then
     VALIDATOR=$TOP/radish/scripts/validate-kokoro-affine-snake-fixture.py
     CORE_ARGS=--affine-snake
+fi
+if [[ $CORE_GRAPH == *-deconv2d ]]; then
+    VALIDATOR=$TOP/radish/scripts/validate-kokoro-deconv2d-fixture.py
+    CORE_ARGS+=" --deconv2d"
 fi
 SOURCE=$WORK/kokoro-$KIND
 TAG=runtime-$KIND-$BACKEND-$RUN
@@ -126,13 +130,15 @@ require(assets['loader']['bytes']==703696 and assets['loader']['sha256']=='75699
 variant=sys.argv[27]
 graph_pins={'instancenorm':('6499e4996cea79d28e9c72caab1e2f0ca7d9fab4420a6f198c7e197fb06d347f',1098,1307),
             'snake':('e01c56a4f23d6d3c8f92dbecb0c3fc37f6f74e9f305f58b82d5196278a450d38',906,1067),
-            'affine-snake':('dbd9fbfe67e6053382f1e1734b6480c3a42f0bc59e57b85627fb16a6e9783d5a',714,875)}
+            'affine-snake':('dbd9fbfe67e6053382f1e1734b6480c3a42f0bc59e57b85627fb16a6e9783d5a',714,875),
+            'snake-deconv2d':('5ba4b3fd791904b4c7560846072919027fd9d0c7d764f38028a79862e09e4980',912,1073),
+            'affine-snake-deconv2d':('e211a573578f5ad45000b487f6e36ac1376ae4bbdcfa6a6e32a95070ffbc807d',720,881)}
 require(variant in graph_pins, 'unsupported core graph')
 param_pin,layers,blobs=graph_pins[variant]
 require(assets['param']['sha256']==param_pin, 'unexpected selected parameter template')
 require((template/'decoder.ncnn.param').read_text().splitlines()[:2]==['7767517',f'{layers} {blobs}'], 'selected graph inventory mismatch')
 core_graph={'variant':variant,'layers':layers,'blobs':blobs,'param_sha256':param_pin}
-if variant in ('snake','affine-snake'):
+if variant != 'instancenorm':
     validator=pathlib.Path(sys.argv[28]).resolve()
     sys.dont_write_bytecode=True
     spec=importlib.util.spec_from_file_location('radish_snake_validation',validator)
@@ -360,7 +366,7 @@ require(asset(pathlib.Path(original['input_directory'])/'runtime.json')==origina
 for name,expected in original['graphs'].items():require(asset(pathlib.Path(original['model_directory'])/name)==expected,'graph changed: '+name)
 for name,expected in record['assets'].items():require(asset(pathlib.Path(expected['path']))=={k:expected[k] for k in ('bytes','sha256')},'asset changed during run: '+name)
 core_graph=record['core_graph']
-if core_graph['variant'] in ('snake','affine-snake'):
+if core_graph['variant'] != 'instancenorm':
     validator=core_graph['validator'];path=pathlib.Path(validator['path'])
     require(asset(path)=={k:validator[k] for k in ('bytes','sha256')},'Selected core validator changed during run')
     sys.dont_write_bytecode=True

@@ -21,66 +21,54 @@ a separate driver, with its own a5xx resource bindings and command emission.
 
 ## Current status
 
-- Private ICD loading, buffer compute, descriptors, transfers, shared memory
-  and synchronization have targeted device checks.
-- A private executable now runs fresh Kokoro frontend/source, ncnn core and
-  waveform synthesis entirely on the tablet. Shape hints come from graph
-  metadata; inference no longer needs host calibration between stages.
-- The neural core uses GPU operations and three CPU deconvolution fallbacks.
-  Full core and waveform comparisons pass at two input lengths, including
-  all 127,800 samples of the full-length output at **98.36 dB SNR**.
+Radish runs every layer of Kokoro's neural decoder on the GPU through ncnn.
+The latest graph eliminates the three CPU deconvolution fallbacks: all **715
+executed core layers use Vulkan**. Frontend/source generation and the waveform
+tail still run on the CPU in one private tablet executable.
+
+Full core and waveform comparisons pass at two input lengths. The full output
+contains 127,800 samples and passes at **98.38 dB SNR**. No GPU faults occurred,
+and both live appliance services remained active.
 
 | Measurement | GPU path | Packed six-thread CPU |
 | --- | ---: | ---: |
-| Fixed full-size core, warm extraction | **43.124 s** | **32.079 s** |
-| Fresh full-length synthesis, including startup | **59.185 s** | **39.790 s** |
+| Fixed full-size core, warm extraction | **42.470 s** | **32.079 s** |
+| Fresh full-length synthesis, including startup | **63.130 s** | **39.790 s** |
 
-The GPU figures use the opt-in FP32 AffineSnake graph, planar convolution input,
-output reshape aliases and eight sequential chunks per submission for eligible
-short shaders and tiled convolution. Select `--affine-snake`,
+GPU inference remains slower than CPU. Warm core time improves from the preceding
+43.124 s, but full synthesis regresses from 59.185 s as CPU frontend startup
+rises from 5.935 s to 10.327 s. Fresh short synthesis improves from 32.105 s to
+**30.157 s**, with a **15.874 s** GPU core. These are single warm/startup
+observations; the CPU warm mean has two samples and uses the earlier
+InstanceNorm graph. All eight full-length boundary inputs match the preceding
+GPU and CPU captures.
+
+The fixed core peaks at **402.1 MiB with zero swap**. Fresh full synthesis peaks
+at **459.3 MiB with 38.1 MiB swap**; short synthesis uses **385.0 MiB with zero
+swap**. Memory pressure varies. Resident warm synthesis and sustained thermal
+behavior remain unmeasured.
+
+Select the measured graph with `--affine-snake-deconv2d`,
 `RADISH_NCNN_PLANAR=1` and `RADISH_BATCH_CHUNKS=8`; keep norm fusion off and
-one X workgroup. The fixture requires recorded full CPU validation before
-GPU use. Defaults remain unchanged.
+one X workgroup. The exact graph preserves every model weight and expresses
+three 1D deconvolutions as stock height-one 2D Vulkan operators with reshapes.
+The preparation/validation tools require completed full CPU reference evidence.
+Existing graph defaults remain unchanged. See
+[RUNTIME_INTEGRATION.md](radish/RUNTIME_INTEGRATION.md) for preparation and use.
 
-Warm core timing is one extraction, versus two for the CPU mean; the CPU uses
-the preceding InstanceNorm graph. Complete synthesis figures are single startup
-runs with byte-identical frontend boundary inputs. The GPU core peaks at
-**416.0 MiB with 7.4 MiB swap**; full synthesis peaks at **415.6 MiB with
-74.2 MiB swap**. Memory pressure varies between runs. No new GPU faults occurred,
-and both appliance services remained active. Complete core and waveform bytes
-match the preceding GPU implementation. GPU inference remains slower than CPU;
-resident warm synthesis and sustained thermal behavior remain unmeasured.
+Earlier normalization, activation, layout and submission changes brought warm
+GPU time down from 101.275 s. The latest reduction-loop unrolling candidate is
+correct but 7–9% slower in paired operator measurements and remains excluded.
+Optional X pairing and norm fusion have no established overall performance win.
+Mixed FP16 storage still fails full-model accuracy gates, so FP32 remains the
+validated path. Detailed results and failed experiments are in
+[NOTES.md](radish/NOTES.md).
 
-The latest changes simplify convolution address calculations and combine the
-three style operations with each Snake activation. The indexing change saves
-0.374 s in the affected math commands; AffineSnake replaces 192 commands with
-48 and saves 1.822 s in the affected work. Warm extraction moves from 45.340 s
-to 44.956 s to 43.124 s across these single-pair measurements. The final graph
-has 714 layers and retains every model weight and the original FP32 arithmetic
-order. Source and evidence are in ncnn patch 0030, cumulative Mesa patch 0031,
-and the AffineSnake preparation/validation scripts.
-
-Earlier submission batching removes 10,894 submissions without changing shader
-work, and planar input avoids repeated convolution address reconstruction.
-Together with normalization, reshape and activation changes, these bring warm
-GPU time down from the initial 101.275 s. Detailed measurements and attribution
-are in [NOTES.md](radish/NOTES.md).
-
-Fresh short synthesis takes **32.105 s**, including startup, and passes every
-core/audio comparison at **330.3 MiB, zero swap**. Its core takes **16.578 s**;
-startup still makes the total slightly slower than the earlier 31.891 s sample.
-InstanceNorm remains the default graph; Snake and AffineSnake are explicit
-project-local ncnn variants. Preparing and selecting them is documented in
-[RUNTIME_INTEGRATION.md](radish/RUNTIME_INTEGRATION.md).
-
-Optional X workgroup pairing and norm-sum4 fusion have correctness evidence but
-no reliable overall performance win; both remain off in the figures above.
-Mixed FP16 storage still fails full-model and waveform accuracy gates, so FP32
-remains the validated path.
-
-This is an experimental compute-only ICD. It does not provide graphics or
-presentation, and it has no Vulkan 1.0 or 1.1 conformance claim. Supported,
-unsupported and untested behavior is recorded in the capability documents.
+This is an experimental compute-only ICD. It provides no graphics or presentation
+and has no Vulkan 1.0 or 1.1 conformance claim. Indirect dispatch, additional
+resource types, secondary command buffers, events and subgroup support remain
+among the API gaps. CTS is built but has not run on the device. See
+[VULKAN_AUDIT.md](radish/VULKAN_AUDIT.md).
 
 ## Repository contents
 

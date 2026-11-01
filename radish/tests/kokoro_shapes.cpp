@@ -230,6 +230,29 @@ std::vector<KokoroShape> infer(const Row& row, const std::vector<KokoroShape>& i
         require(used == in[0].h, "slice does not cover input");
         return results;
     }
+    if (kind == "Deconvolution" || kind == "DeconvolutionDepthWise") {
+        const bool grouped = kind == "DeconvolutionDepthWise";
+        if (grouped) row.allowed({0, 1, 2, 3, 4, 5, 6, 7, 11, 12, 13, 14, 15, 16, 18, 19, 21});
+        else row.allowed({0, 1, 2, 3, 4, 5, 6, 11, 12, 13, 14, 15, 16, 18, 19, 21});
+        row.arity(1);
+        require(in[0].dims == 3 && in[0].h == 1 && row.get(31, 0) == 0 &&
+                row.get(11, 0) == 1 && row.get(12, 0) == 1 && row.get(13, 0) == 1 &&
+                row.get(14, -1) == 0 && row.get(16, -1) == 0 && row.get(19, -1) == 0 && row.get(21, -1) == 0,
+                "unsupported height-one deconvolution parameters");
+        const int outputs = row.get(0, 0), kernel = row.get(1, 0), dilation = row.get(2, 1), stride = row.get(3, 1);
+        const int left = row.get(4, 0), right = row.get(15, left), bias = row.get(5, 0);
+        const int group = grouped ? row.get(7, 1) : 1, extra = row.get(18, 0);
+        require(outputs > 0 && kernel > 0 && dilation > 0 && stride > 0 && left >= 0 && right >= 0 &&
+                (bias == 0 || bias == 1) && group > 0 && in[0].c % group == 0 && outputs % group == 0 &&
+                (!grouped || (group == in[0].c && group == outputs)) && extra >= 0 && extra < stride,
+                "invalid height-one deconvolution dimensions/groups/padding");
+        require(row.get(6, 0) == multiply(multiply(outputs, in[0].c / group), kernel),
+                "height-one deconvolution weight count disagrees with channels/kernel");
+        const int bordered = add(add(multiply(in[0].w - 1, stride), add(multiply(dilation, kernel - 1), 1)), extra);
+        const int crop = add(left, right);
+        require(bordered > crop, "height-one deconvolution cropping removes all output");
+        return {shape(3, bordered - crop, 1, outputs)};
+    }
     if (kind == "Convolution1D" || kind == "Deconvolution1D" || kind == "DeconvolutionDepthWise1D") {
         const bool transpose = kind != "Convolution1D", grouped = kind == "DeconvolutionDepthWise1D";
         if (grouped) row.allowed({0, 1, 2, 3, 4, 5, 6, 7, 15, 18});
@@ -336,7 +359,7 @@ std::vector<KokoroShape> infer(const Row& row, const std::vector<KokoroShape>& i
     throw std::runtime_error("unsupported operator " + kind);
 }
 
-std::map<std::string, int> inventory(bool fused, bool snake, bool affine_snake) {
+std::map<std::string, int> inventory(bool fused, bool snake, bool affine_snake, bool deconv2d) {
     std::map<std::string, int> result = {{"Input", 5}, {"Split", fused ? 110 : 164}, {"Crop", 1}, {"InnerProduct", 58},
             {"Reshape", fused ? 168 : 60}, {"Slice", 58}, {"Convolution1D", 69}, {"Concat", 5},
             {fused ? "InstanceNorm" : "Reduction", fused ? 54 : 108}, {"BinaryOp", fused ? 360 : 576},
@@ -347,6 +370,13 @@ std::map<std::string, int> inventory(bool fused, bool snake, bool affine_snake) 
         result.erase("UnaryOp");
         result[affine_snake ? "RadishAffineSnake" : "RadishSnake"] = 48;
         if (affine_snake) result["Split"] = 62;
+    }
+    if (deconv2d) {
+        result["Reshape"] = 174;
+        result.erase("Deconvolution1D");
+        result.erase("DeconvolutionDepthWise1D");
+        result["Deconvolution"] = 2;
+        result["DeconvolutionDepthWise"] = 1;
     }
     return result;
 }
@@ -365,8 +395,10 @@ KokoroShapePlan infer_kokoro_shapes(const std::string& text, int t) {
     require(header.size() == 2, "malformed graph header");
     KokoroShapePlan plan;
     plan.layers = integer(header[0]); plan.blobs = integer(header[1]);
-    const bool affine_snake = plan.layers == 714 && plan.blobs == 875;
-    const bool snake = affine_snake || (plan.layers == 906 && plan.blobs == 1067);
+    const bool affine_deconv2d = plan.layers == 720 && plan.blobs == 881;
+    const bool affine_snake = affine_deconv2d || (plan.layers == 714 && plan.blobs == 875);
+    const bool deconv2d = affine_deconv2d || (plan.layers == 912 && plan.blobs == 1073);
+    const bool snake = affine_snake || deconv2d || (plan.layers == 906 && plan.blobs == 1067);
     const bool fused = snake || (plan.layers == 1098 && plan.blobs == 1307);
     require(fused || (plan.layers == 1368 && plan.blobs == 1739), "unsupported graph inventory");
     std::map<std::string, KokoroShape> known;
@@ -413,7 +445,7 @@ KokoroShapePlan infer_kokoro_shapes(const std::string& text, int t) {
         ++layer_index;
     }
     require(layer_index == plan.layers && known.size() == static_cast<size_t>(plan.blobs), "incomplete graph inventory");
-    require(counts == inventory(fused, snake, affine_snake) && inputs == std::set<std::string>({"in0", "in1", "in2", "in3", "in4"}),
+    require(counts == inventory(fused, snake, affine_snake, deconv2d) && inputs == std::set<std::string>({"in0", "in1", "in2", "in3", "in4"}),
             "operator/input inventory differs from audited graph");
     const auto result = known.find("out0");
     require(result != known.end() && equal(result->second, shape(2, add(multiply(120, t), 1), 22)),

@@ -34,10 +34,10 @@ KIND=${1:-}
 case $KIND in
     style) SOURCE=$WORK/kokoro-style; MEMORY=384; RUNTIME=90; MODEL_ARGS=--style
         FILES=(decoder.ncnn.param decoder.ncnn.bin style.f32 reference.f32) ;;
-    core|core-layouts|core-shapes|core-shapes-norm32|core-shapes-instancenorm|core-shapes-snake|core-shapes-affine-snake|runtime-*) SOURCE=$WORK/kokoro-core-fixed; MEMORY=640; RUNTIME=300; MODEL_ARGS=
+    core|core-layouts|core-shapes|core-shapes-norm32|core-shapes-instancenorm|core-shapes-snake|core-shapes-affine-snake|core-shapes-snake-deconv2d|core-shapes-affine-snake-deconv2d|runtime-*) SOURCE=$WORK/kokoro-core-fixed; MEMORY=640; RUNTIME=300; MODEL_ARGS=
         [[ $KIND == core ]] || SOURCE=$WORK/kokoro-$KIND
         FILES=(decoder.ncnn.param decoder.ncnn.bin asr.f32 f0.f32 n.f32 style.f32 har.f32 reference.f32) ;;
-    *) echo 'usage: device-model.sh style|core|core-layouts|core-shapes|core-shapes-snake|core-shapes-affine-snake [--cpu|--cpu-packed|--vulkan] [--fp16-packed] [--threads N] [--load-only] [--repeat N] [--blob NAME]' >&2; exit 2 ;;
+    *) echo 'usage: device-model.sh style|core|core-layouts|core-shapes|core-shapes-snake|core-shapes-affine-snake|core-shapes-snake-deconv2d|core-shapes-affine-snake-deconv2d [--cpu|--cpu-packed|--vulkan] [--fp16-packed] [--threads N] [--load-only] [--repeat N] [--blob NAME]' >&2; exit 2 ;;
 esac
 shift
 if [[ $KIND == runtime-* ]]; then
@@ -95,6 +95,7 @@ FIXTURE_VALIDATION_TAG=
 case $KIND in
     core-shapes-snake) FIXTURE_VALIDATOR=validate-kokoro-snake-fixture.py; FIXTURE_VALIDATION_TAG=snake ;;
     core-shapes-affine-snake) FIXTURE_VALIDATOR=validate-kokoro-affine-snake-fixture.py; FIXTURE_VALIDATION_TAG=affine-snake ;;
+    core-shapes-snake-deconv2d|core-shapes-affine-snake-deconv2d) FIXTURE_VALIDATOR=validate-kokoro-deconv2d-fixture.py; FIXTURE_VALIDATION_TAG=deconv2d ;;
 esac
 FIXTURE_VALIDATION=
 if [[ -n $FIXTURE_VALIDATOR ]]; then
@@ -103,6 +104,10 @@ if [[ -n $FIXTURE_VALIDATOR ]]; then
         exit 2
     fi
     FIXTURE_VALIDATION=$(python3 "$TOP/radish/scripts/$FIXTURE_VALIDATOR" "$SOURCE")
+    if [[ $KIND == core-shapes-*-deconv2d ]]; then
+        python3 -c 'import json,sys; r=json.loads(sys.argv[1]); sys.exit(None if r["variant"] == sys.argv[2] else "selected deconvolution graph differs from fixture")' \
+            "$FIXTURE_VALIDATION" "${KIND#core-shapes-}"
+    fi
 fi
 MODEL_ARGS+=" --repeat $REPEAT --threads $THREADS"
 [[ $BACKEND == cpu ]] || MODEL_ARGS+=' --vulkan'
@@ -220,9 +225,9 @@ fi
     "${ADB[@]}" shell "chmod 755 /var/tmp/radish/radish-model; systemd-run --unit=$UNIT --wait --pipe --collect -p MemoryMax=${MEMORY}M -p MemorySwapMax=128M -p RuntimeMaxSec=$RUNTIME -p LimitCORE=0 $EXTRA_ENV --setenv=RADISH_NCNN_TRACE=$TRACE --setenv=RADISH_NCNN_PIPELINE_CACHE=$CACHE --setenv=RADISH_NCNN_SHARED32=$SHARED32 --setenv=RADISH_NCNN_TILED=$TILED --setenv=RADISH_NCNN_TILED32=$TILED32 --setenv=RADISH_NCNN_PLANAR=$PLANAR --setenv=RADISH_NCNN_NORM_SUM4=$NORM_SUM4 --setenv=RADISH_NCNN_MIXED_STORAGE=$MIXED_STORAGE --setenv=RADISH_NCNN_RESHAPE_ALIAS=$RESHAPE_ALIAS --setenv=RADISH_PROFILE=$PROFILE --setenv=RADISH_BATCH_CHUNKS=$BATCH --setenv=RADISH_TILED_BATCH_CHUNKS=$TILED_BATCH --setenv=RADISH_TILED_GROUPS_X=$TILED_GROUPS_X --setenv=RADISH_SHARED_GROUPS=$SHARED_GROUPS --setenv=LD_LIBRARY_PATH=/var/tmp/radish --setenv=VK_DRIVER_FILES=/var/tmp/radish/radish_icd.json /var/tmp/radish/radish-model $MODEL_ARGS /var/tmp/radish/kokoro-$KIND $BLOB"
 } 2>&1 | tee "$WORK/evidence/$TAG.txt"
 if rg -n 'vkCreateComputePipelines failed|new_pipeline failed' "$WORK/evidence/$TAG.txt"; then exit 1; fi
-if [[ $KIND == core-shapes-affine-snake ]]; then
+if [[ -n $FIXTURE_VALIDATOR ]]; then
     [[ $FIXTURE_VALIDATION == "$(python3 "$TOP/radish/scripts/$FIXTURE_VALIDATOR" "$SOURCE")" ]] || {
-        echo 'AffineSnake validation evidence changed during the device run' >&2
+        echo 'Selected graph validation evidence changed during the device run' >&2
         exit 1
     }
 fi

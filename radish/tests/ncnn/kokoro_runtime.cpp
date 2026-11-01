@@ -196,7 +196,7 @@ int main(int argc,char** argv) {
     std::setvbuf(stdout,nullptr,_IONBF,0);
     try {
         double start=now();
-        bool vulkan=true,backend_selected=false,affine_snake=false;
+        bool vulkan=true,backend_selected=false,affine_snake=false,deconv2d=false;
         int threads=4,ort_threads=4,max_T=512,repeat=1;
         std::string ort_library="/usr/local/lib/straylight-listen/libonnxruntime.so";
         std::vector<std::string> args;
@@ -204,6 +204,8 @@ int main(int argc,char** argv) {
             std::string arg=argv[i];
             if(arg=="--affine-snake") {
                 require(!affine_snake,"duplicate --affine-snake"); affine_snake=true;
+            } else if(arg=="--deconv2d") {
+                require(!deconv2d,"duplicate --deconv2d"); deconv2d=true;
             } else if(arg=="--vulkan" || arg=="--cpu-packed") {
                 require(!backend_selected,"select one backend"); backend_selected=true; vulkan=arg=="--vulkan";
             } else if(arg=="--threads" || arg=="--ort-threads" || arg=="--max-frames" || arg=="--repeat" || arg=="--ort-lib") {
@@ -215,14 +217,15 @@ int main(int argc,char** argv) {
                 else repeat=integer(argv[i],1,10);
             } else { require(arg.compare(0,2,"--")!=0,"unknown option: "+arg); args.push_back(arg); }
         }
-        require(args.size()==6,"usage: radish-kokoro-runtime [--affine-snake] [--vulkan|--cpu-packed] [--threads N] [--ort-threads N] [--max-frames N] [--repeat N] [--ort-lib PATH] MODELS INPUT_DIR PARAM WEIGHTS TAIL NEW_OUTPUT; use the staging wrapper to verify artifact hashes");
+        require(args.size()==6,"usage: radish-kokoro-runtime [--affine-snake] [--deconv2d] [--vulkan|--cpu-packed] [--threads N] [--ort-threads N] [--max-frames N] [--repeat N] [--ort-lib PATH] MODELS INPUT_DIR PARAM WEIGHTS TAIL NEW_OUTPUT; use the staging wrapper to verify artifact hashes");
         const std::string parameters=read_param(args[2]);
         std::istringstream header(parameters);
         int magic=0,layers=0,blobs=0;
         require(bool(header>>magic>>layers>>blobs) && magic==7767517,"invalid parameter header");
-        require(affine_snake ? layers==714 && blobs==875
-                            : (layers==1098 && blobs==1307) || (layers==906 && blobs==1067),
-                "selected core graph does not match --affine-snake or the existing graph inventories");
+        require(deconv2d ? (affine_snake ? layers==720 && blobs==881 : layers==912 && blobs==1073)
+                        : (affine_snake ? layers==714 && blobs==875
+                                        : (layers==1098 && blobs==1307) || (layers==906 && blobs==1067)),
+                "selected core graph does not match its flags and supported inventory");
         require(file_size(args[3])==213042160,"unexpected pinned core weight length");
         radish_waveform::Tail tail=radish_waveform::load_tail(args[4]);
         Output output(args[5]);
@@ -234,7 +237,8 @@ int main(int argc,char** argv) {
         radish::KokoroShapePlan plan=radish::infer_kokoro_shapes(parameters,static_cast<int>(boundary.T));
         double shapes_wall=now()-shapes_start;
         require(plan.layers==layers && plan.blobs==blobs,"inferred core graph inventory changed");
-        const char* core_graph=affine_snake?"affine-snake":plan.layers==906?"snake":"instancenorm";
+        const char* core_graph=deconv2d ? (affine_snake?"affine-snake-deconv2d":"snake-deconv2d")
+                                     : affine_snake?"affine-snake":plan.layers==906?"snake":"instancenorm";
         std::printf("frontend complete including ORT release: %.6f s; T=%lld; metadata-only shapes: %d blobs in %.6f s\n",frontend_wall,(long long)boundary.T,plan.blobs,shapes_wall);
         double core_start=now();
         CoreResult core=run_core(boundary,plan,args[3],vulkan,threads,repeat);

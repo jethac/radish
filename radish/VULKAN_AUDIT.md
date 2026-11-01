@@ -37,11 +37,14 @@ copies use a serial CPU fallback; bounded 3D dispatches preserve logical IDs;
 recovered GPU faults now return DEVICE_LOST. Internal dispatch bases do not
 implement the missing public `vkCmdDispatchBase` command.
 
-ncnn's 32-thread reduction adaptation, five FP32 convolution/projection cases
-and the fixed Kokoro neural core now pass output comparisons. Actual core trace
-records 1360 GPU layer calls and three CPU deconvolutions; the saved-source
-fixture plus CPU waveform tail also passes. This does not establish live
-end-to-end integration or a performance win. The identical reduction shader
+ncnn's 32-thread reduction adaptation, FP32 convolution/projection cases and
+the complete Kokoro neural core pass output comparisons. The latest explicit
+AffineSnake/deconvolution graph executes all 715 non-Input layers through Vulkan,
+including the three former CPU deconvolutions. Full saved-core and waveform
+comparisons pass. Earlier graphs also have fresh single-process tablet speech
+synthesis evidence; live-service integration and a CPU performance win remain
+unfinished. These workload results do not close the remaining API gaps.
+The identical reduction shader
 still hangs at physical64, so the backend workaround does not repair general
 execution correctness. The principal baseline and 1.1 API gaps remain.
 

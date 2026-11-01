@@ -761,3 +761,30 @@ reports stay outside the public repository.
   original graph/defaults and unchanged accuracy thresholds.
 - [ ] Establish warm resident reuse, cancellation and sustained performance;
   current success does not change live services.
+
+## Private three-deconvolution functionality trial
+
+- [x] Review exact1D→height-one2D parameter/weight mapping and metadata; actual
+ 23-program compile-only passes without shared/private/barrier changes.
+- [x] Pass first fixed full core,907 GPU/zero CPU non-Input paths, unchanged
+ reference thresholds and a new saved-output host waveform gate. First44.561071 s
+ versus45.312337 s; one pair/current66.2 MiB swap, no warm/fresh synthesis claim.
+- [x] Integrate both explicit Snake/deconv and AffineSnake/deconv selectors;
+  completed integration and fresh output evidence are recorded below. Existing
+  graph defaults remain unchanged.
+
+
+## Height-one GPU deconvolution integration
+
+- [x] Replace the three exact 1D CPU fallback nodes with height-one Vulkan 2D
+  operators, preserving weights, cropping and output padding.
+- [x] Validate actual compiled resources and complete CPU/GPU core output.
+- [x] Compose with AffineSnake; add exact metadata and explicit runtime selectors.
+- [x] Validate fresh T78/T213 core and waveform output; all715 neural-core layers
+  execute on Vulkan. Fixed warm42.469886 s; fresh30.156883/63.130064 s.
+- [ ] Beat CPU end-to-end latency; establish resident and sustained behavior.
+
+The K2 planar loop experiment is correct but7–9% slower in the three paired
+operator samples and remains outside the canonical shader. DispatchIndirect
+and public DispatchBase source analysis has begun; no implementation is accepted
+and Vulkan conformance status remains unchanged.

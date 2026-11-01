@@ -478,6 +478,18 @@ core/wave gates pass32.105121/59.184846 s, exact prior bytes,0/74.2 MiB swap and
 no faults/services active. Startup and memory pressure limit single-run timing
 claims; original graphs and all defaults remain unchanged.
 
+
+Height-one deconvolution support is implemented in the project graph rewriters,
+metadata and runtime/model selectors; no additional Mesa or ncnn math patch is
+needed. Explicit Snake/deconv and AffineSnake/deconv graphs preserve all weights
+and replace three CPU fallbacks with stock Vulkan 2D operators plus reshapes.
+The combined graph traces all 715 non-Input layers through Vulkan and passes
+42.469886 s fixed warm extraction. Fresh T78/T213 core/waveform comparisons pass
+30.156883/63.130064 s total, with no faults. Full startup regresses despite a
+faster core; CPU remains faster. See `RUNTIME_INTEGRATION.md` and `NOTES.md` for
+preparation, exact source pins, tolerances and memory/swap evidence. Defaults
+remain unchanged.
+
 SHA-256:
 
 ```

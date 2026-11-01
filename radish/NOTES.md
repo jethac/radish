@@ -2,14 +2,14 @@
 
 ## 2026-11-01
 
-Latest measured path: explicit AffineSnake with positive planar indices0030/
-0031, generic/tiled batch8, norm0/X1. The fixed core passes at43.124072 s warm;
-fresh T213 synthesis passes at59.184846 s including frontend/load/tail. All core
-and waveform gates pass with prior byte identity. The fixed run uses416.0 MiB
-plus7.4 MiB swap; fresh T213 uses415.6 MiB plus74.2 MiB swap, so comparisons
-remain single observations under memory pressure. Fresh T78 passes32.105121 s
-(330.3 MiB/zero swap); faster core work still leaves startup dominant. All graph
-and control selections remain explicit; defaults and historical evidence remain.
+Latest fixed-core path: explicit AffineSnake with height-one deconvolutions,
+positive planar indices 0030/0031, generic/tiled batch 8, norm 0 and X1. All
+715 non-Input layers execute through Vulkan, with zero CPU fallbacks. The fixed
+core passes at 42.469886 s warm, 402.1 MiB peak and zero swap. Fresh T213 also
+passes all core/waveform gates: 42.943278 s core, 63.130064 s total, 459.3 MiB
+peak plus 38.1 MiB swap. Its slower frontend startup makes total synthesis worse
+than the preceding 59.184846 s sample. CPU remains faster. Fresh T78 passes at 30.156883 s total / 15.873927 s core, 385.0 MiB and zero
+swap. Historical evidence follows.
 
 Overall goal active. M0–M2 bring-up is demonstrated; selected M3 paths now pass,
 including 16 KiB shared reductions, transfers, dependent compute and bounded
@@ -2287,3 +2287,107 @@ Before these runs,16 older private executable paths were archived with verified
 host backup hashes and a restore manifest, freeing186956→367704 KiB. Weights,
 captures, outputs and current0026/norm/batch8 runtime directories were retained.
 Evidence: `device-runtime-executable-archive-before-affine/`; no reserve reduction.
+
+### Private deconvolution route: all neural-core layers on GPU
+
+A separate private912-layer/1073-blob graph converts exactly three1D
+Deconvolutions to existing height-one2D Vulkan operators, adding six reshapes
+while preserving all weights/weighted-row order. It starts from original Snake,
+not AffineSnake. Full stream/weight slices, metadata, bounded runner and actual
+23-program compiler audits pass; math kernels need no new driver guard, shared
+memory or barriers. This first private result preceded the explicit selectors integrated below.
+
+The first fixed extraction passes all562,342 values at44.561071 s versus the
+original-Snake first45.312337 s; no warm measurement. Cold9.697 s/service54.645 s,
+350.1 MiB plus66.2 MiB swap, services active/no new faults. All907 non-Input
+layers execute on GPU, eliminating exactly the three CPU deconvolution fallbacks.
+The original898 remaining paths/1792 ordered command signatures match. Six
+boundary conversions disappear (0.124015 s), while twelve GPU math/crop/reshape
+commands cost3.103440 s; two dense output reshapes alias without dispatch.
+Submits15398→16390 and chunks114393→115927 increase. Residual3.889209→0.277082 s
+falls3.612127 s but includes more than CPU fallback time. The0.751266 s first-only
+improvement is one pair with differing swap; not a sustained performance claim.
+
+Output changes numerically but passes unchanged0.002 absolute/relative gates:
+max0.000110626221/RMS7.58608718e-7, SHA
+`d11801ba74bedbf4772b446b2d703bbfdf1d4f901a7fb7f730ed3a75f997240f`.
+A new saved-output host CPU inverse-STFT gate passes all127,800 samples,
+max1.17148933e-5/SNR98.0811949451 dB. This is the fixed saved boundary with a host
+tail, not fresh on-device synthesis. Largest observed submit wall is299.498362 ms
+in dense GEMM; with66.2 MiB swap this is not an isolated GPU/watchdog bound.
+Logs: `deconv2d-core-first.log`, `deconv2d-first-host-waveform.log`; published
+private evidence: `evidence/deconv2d-private-first/result.json`. Exact attribution
+and allocation-cost details: `deconv2d-result-first-_b1qx777/REPORT.md`.
+
+
+### Integrated AffineSnake with GPU deconvolutions
+
+Both exact graph variants now have structural rewriters, completed-CPU-evidence
+importers and validators, metadata shape propagation, and explicit model/runtime
+selectors. Snake/deconv is 912 layers/1073 blobs; AffineSnake/deconv is 720/881.
+The latter preserves all 226 weighted rows and produces the same CPU output as
+the independently validated Snake/deconv graph. The existing graph defaults,
+FP32 tolerances, driver and ncnn shaders remain unchanged. Source preparation
+and invocation are documented in `RUNTIME_INTEGRATION.md`.
+
+The combined graph passes first/warm extractions in 43.051203/42.469886 s,
+with 9.346 s cold loading, 402.1 MiB peak, zero swap and no GPU faults. Each
+extraction traces all 715 non-Input layers through Vulkan. All 562,342 values
+pass unchanged gates; output SHA is d11801ba74bedbf4772b446b2d703bbfdf1d4f901a7fb7f730ed3a75f997240f,
+identical to the validated Snake/deconv output and therefore the saved host
+waveform input. Warm time improves from 43.124072 s in the preceding AffineSnake
+sample, but remains above the CPU mean of 32.079044 s. There is one warm sample
+for each GPU checkpoint; sustained/resident behavior remains open.
+
+The runtime build passes. Frozen runtime SHA is
+`ab4ed3163e2e6b1a1773e61dafc1fc83a72ed30894a787c4242858dddc6ca587`;
+model 7a78db6e and driver 05ea3444 remain unchanged. Evidence under WORK:
+`deconv2d-integrated-0031-checkpoint/binaries.json`,
+`build-runtime-deconv2d-0031.log`, `core-affine-deconv2d-0031-repeat2.log`,
+`affine-deconv2d-fixed-validation.json`, and the completed same-runner CPU proof
+in `affine-deconv2d-private-3db5592j/host-validation/`.
+
+### Rejected two-step planar reduction loop
+
+The private K2 candidate advances the inner reduction loop by two, preserving
+the original accumulator order. All 20 actual compiler variants pass at 16 full
+registers, zero half registers, 16 KiB shared memory and native length 31. The
+same uploaded inputs and weights produce bit-identical full operator outputs
+for dilation 1, 3 and 5, passing the unchanged independent double reference.
+Nevertheless, affected math-command times regress from 7.744450/7.772575/
+7.847836 ms to 8.275129/8.337265/8.554088 ms. Each uses eight chunks and one
+submission. These are single paired observations, consistently 7–9% slower;
+there is no full-model K2 run and no canonical shader change.
+
+Evidence: `planar-k2-compile-all20.log`,
+`k2-operator-execute-d{1,3,5}-first.log`, and
+`planar-k2-operator-q5tg7bik/REPORT.md`. The smaller dynamic instruction count
+does not establish faster execution; additional moves/stalls and larger native
+code remain possible explanations, not measured causal attribution.
+
+Before the new runtime runs, nine byte-identical immutable library/executable
+paths were deduplicated without changing their contents or names. Two old norm
+ICD paths were archived with verified host backups and restore instructions;
+weights and captures were retained. After the full run, three additional
+identical ICD paths were deduplicated. Logs and manifests are
+`dedup-runtime-assets-before-deconv*`,
+`device-runtime-executable-archive-norm-driver-before-deconv/`, and
+`dedup-runtime-assets-after-deconv-full*`. No memory or disk reserve was reduced.
+
+The integrated all-GPU core also passes fresh tablet synthesis at both lengths.
+T213 takes 42.943278 s core / 63.130064 s total, with 459.3 MiB peak and 38.1 MiB
+swap; T78 takes 15.873927 s core / 30.156883 s total, with 385.0 MiB peak and zero
+swap. All 715 executed core layers use Vulkan in each run. Every core value and
+waveform sample passes the unchanged reference gates, with waveform SNR
+98.377722/97.073984 dB for full/short input. All eight frontend boundary files
+match the preceding AffineSnake captures exactly; output values change slightly
+because of GPU deconvolution accumulation. No faults occur and services stay
+active. Full startup regresses from 59.184846 s: frontend time rises from
+5.935016 to 10.326545 s despite a faster GPU core. Short synthesis improves from
+32.105121 to 30.156883 s, including a lower 9.564430 s core load. These remain
+single startup observations with varying memory pressure, not sustained results.
+
+Evidence under WORK: `runtime-single-{full,short}-affine-deconv2d-0031-first.log`,
+matching `runtime-single-{full,short}-affine-deconv2d-0031-validation.json`, and
+`runtime-affine-deconv2d-0031-summary.json`. Captures are
+`kokoro-runtime-{full,short}-single-vulkan-affine-deconv2d-0031-first-affine-snake-deconv2d-planar/`.
