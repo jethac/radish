@@ -45,6 +45,14 @@ occurred, and both appliance services remained active. Core and waveform bytes
 match the preceding GPU implementation. GPU inference remains slower than CPU.
 Resident warm synthesis and sustained thermal behavior remain unmeasured.
 
+An experimental channel-major convolution input layout lowers fixed-core warm
+time to **48.863 s**, with **420.1 MiB and zero swap**, and produces exactly the
+same output bytes. Convolution math saves 1.444 s, but the new padding pass costs
+an extra 0.939 s; scheduling that pass is the next optimization. This is one warm
+extraction, and fresh complete synthesis has not been measured for this layout.
+It remains disabled by default: use `RADISH_NCNN_PLANAR=1` with ordered ncnn
+patch 0024 and cumulative Mesa patch 0025 to reproduce the experiment.
+
 - Fused FP32 normalization and tiled convolution, including dilation 3/5,
   guarded output reshape aliases, sequential submission batching and Snake
   activation fusion reduce fixed-core warm GPU time from 101.275 s to 49.429 s.

@@ -17,6 +17,16 @@ application integration remain unfinished.
 Earlier staged and fixed-core evidence is retained below and in
 [NOTES.md](NOTES.md).
 
+The default-off PLANAR input-layout candidate (ncnn 0024 / Mesa 0025) passes
+fixed T213 core extraction in 48.738814 s first / 48.863090 s warm, with
+420.1 MiB peak memory and zero swap. All 562,342 outputs are byte-identical to
+the preceding GPU checkpoint. Fresh frontend-to-waveform execution has not yet
+been measured for PLANAR; the complete synthesis figures above remain the
+accepted batch-eight Snake results. The warm profile saves 1.444377184 s in
+53 convolution math commands but adds 0.939362616 s in their padding passes.
+Evidence: `core-snake-planar-0024-repeat2.log` and
+`warm-planar-result-0024-mdia5brz/comparison.json` under WORK.
+
 ## Implemented route
 
 Keep harmonic generation in the CPU ONNX Runtime frontend, return its

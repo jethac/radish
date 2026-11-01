@@ -601,3 +601,36 @@ reports stay outside the public repository.
 - [ ] Measure sustained behavior and equivalent CPU Snake work. The prior fresh
   full run used 22.9 MiB swap; do not assign its entire latency difference to
   batching or claim general watchdog safety from these bounded runs.
+
+## Candidates 0024/0025: planar padded Conv input
+
+- [x] Inspect actual C128/K11/d1 IR3: four scalar binding1 loads become one
+  vec4; 950→788 instructions, unchanged 16 full/0 half and 16 KiB shared.
+- [x] Compile/audit all 20 tuples covering 53 layers: instrlen31, four loops,
+  16 full/0 half, no scratch/private spills, preserved barriers/K order. This
+  is pipeline-only evidence; no tensor execution or speed claim.
+- [x] Integrate independently reviewed 0024 behind PLANAR=1/default0; use a
+  separate checked LP×Cin pack1 workspace and replace one existing zero-padding
+  command. Keep tiled64 gates, original weights/output and static fallbacks.
+- [x] Reconstruct all seven Conv files from the ordered patch stack; preserve
+  accepted source/binaries. Add padded fixture and env/provenance support.
+- [x] Add separate 0025 instrlen31 gate case; preserve other driver conditions,
+  default1/runtime8 and ncnn K<=3584. Targeted ICD build/reconstruction pass.
+- [x] Complete canonical, SIMPLEOMP and integrated runtime builds; logs in NOTES.
+- [x] Pass integrated compile-only before upload/submit: math16 full/0 half,
+  instrlen31; pad8 full/3 half, local8x4, no loops, instrlen9.
+- [x] Pass full independent padded dilation1/3/5 output gates, all27264 each,
+  unchanged errors, no faults/services active. Dilation1 baseline pad/math
+  2.946675/8.272940 ms versus candidate2.126673/7.977001 ms; full-model timing
+  remains separate, and no padded dilation3/5 baseline timing is assumed.
+- [x] Pass the full fixed core: cold9.030 s, first48.738814/warm48.863090 s,
+  all562342 values, 420.1 MiB/zero swap/no faults/services active. Output bytes
+  match accepted0023 exactly, so existing fixed-output waveform evidence applies;
+  no new waveform execution is claimed.
+- [x] Attribute the single warm pair against49.429406 s: whole reduction
+  0.566316 s/1.1457%; 53 math commands save1.444377184 s but their padding adds
+  0.939362616 s, submits1654→3696. Other1692 command signatures/901 layer paths
+  match. Preserve the baseline; this modest result does not establish sustained
+  performance. Evidence: `warm-planar-result-0024-mdia5brz/REPORT.md`.
+- [ ] Validate fresh runtime before any default change. PLANAR stays off;
+  no API/conformance, watchdog or sustained-performance claims change.

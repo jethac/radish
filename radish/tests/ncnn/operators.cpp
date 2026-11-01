@@ -117,6 +117,7 @@ int check_conv_pipelines(const ncnn::Convolution1D_vulkan* layer)
     PIPELINE(layer, pipeline_convolution1d);
     PIPELINE(layer, pipeline_convolution1d_1x1s1d1);
     PIPELINE(layer, pipeline_convolution1d_gemm);
+    PIPELINE(layer, pipeline_radish_planar_pad);
     CHECK(!layer->use_cooperative_matrix);
     CHECK(layer->padding && layer->padding->support_vulkan);
     const ncnn::Padding_vulkan* padding = static_cast<const ncnn::Padding_vulkan*>(layer->padding);
@@ -220,11 +221,12 @@ bool matches(double actual, double expected, int channel, int position, double& 
 
 int conv_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
               int width, int input_channels, int output_channels, int kernel, bool compile_only,
-              bool tiled_case = false, int dilation = 1)
+              bool tiled_case = false, int dilation = 1, bool padded = false)
 {
-    std::printf("CASE Convolution1D: width=%d in=%d out=%d kernel=%d valid stride=1 dilation=%d\n",
-                width, input_channels, output_channels, kernel, dilation);
-    const int output_width = width - dilation * (kernel - 1);
+    const int pad = padded ? dilation * (kernel - 1) / 2 : 0;
+    std::printf("CASE Convolution1D: width=%d in=%d out=%d kernel=%d pad=%d stride=1 dilation=%d\n",
+                width, input_channels, output_channels, kernel, pad, dilation);
+    const int output_width = width + 2 * pad - dilation * (kernel - 1);
     CHECK(output_width > 0);
     ncnn::Mat input(width, input_channels);
     ncnn::Mat model[2] = {ncnn::Mat(output_channels * input_channels * kernel), ncnn::Mat(output_channels)};
@@ -246,8 +248,8 @@ int conv_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
     params.set(1, kernel);
     params.set(2, dilation);
     params.set(3, 1); // stride
-    params.set(4, 0); // left padding
-    params.set(15, 0); // right padding
+    params.set(4, pad);
+    params.set(15, pad);
     params.set(5, 1); // bias
     params.set(6, output_channels * input_channels * kernel);
     params.set(9, 0); // no fused activation
@@ -257,6 +259,7 @@ int conv_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
     const ncnn::Convolution1D_vulkan* conv = static_cast<const ncnn::Convolution1D_vulkan*>(owner.layer);
     CHECK(check_conv_pipelines(conv) == 0);
     uint64_t expected_tiled_groups = 0;
+    uint64_t expected_padding_groups = 0;
     if (tiled_case) {
         const char* tiled = std::getenv("RADISH_NCNN_TILED");
         const char* tiled32 = std::getenv("RADISH_NCNN_TILED32");
@@ -264,6 +267,9 @@ int conv_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
         const bool requested = requested32 || (tiled && !std::strcmp(tiled, "1"));
         CHECK(conv->use_radish_tiled == requested);
         CHECK(conv->radish_tiled32 == requested32);
+        const char* planar = std::getenv("RADISH_NCNN_PLANAR");
+        const bool requested_planar = planar && !std::strcmp(planar, "1");
+        CHECK(conv->radish_planar == (requested && !requested32 && padded && requested_planar));
         const int tile_width = requested32 ? 32 : 64;
         const int tile_channels = requested32 ? 32 : 64;
         const int groups_x = (output_width + tile_width - 1) / tile_width;
@@ -277,6 +283,19 @@ int conv_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
             CHECK(conv->pipeline_convolution1d_gemm->local_size_x() == (requested32 ? 8u : 16u));
             CHECK(conv->pipeline_convolution1d_gemm->local_size_y() == (requested32 ? 4u : 8u));
             CHECK(conv->pipeline_convolution1d_gemm->local_size_z() == 1);
+            if (padded) {
+                const auto* padding = static_cast<const ncnn::Padding_vulkan*>(conv->padding);
+                const ncnn::Pipeline* prepass = conv->radish_planar ? conv->pipeline_radish_planar_pad : padding->pipeline_padding_pack4;
+                CHECK(prepass && prepass->pipeline());
+                const int pitch = ((groups_x * tile_width + dilation * (kernel - 1) + 3) / 4) * 4;
+                const int prepass_w = conv->radish_planar ? pitch / 4 : width + 2 * pad;
+                const int prepass_h = conv->radish_planar ? input_channels : input_channels / 4;
+                expected_padding_groups = static_cast<uint64_t>((prepass_w + prepass->local_size_x() - 1) / prepass->local_size_x())
+                    * ((prepass_h + prepass->local_size_y() - 1) / prepass->local_size_y());
+                std::printf("  padded input path: %s; logical width=%d planar pitch=%d; expected padding groups=%llu\n",
+                            conv->radish_planar ? "channel-major" : "original pack4", width + 2 * pad, pitch,
+                            static_cast<unsigned long long>(expected_padding_groups));
+            }
         }
     }
     if (compile_only) {
@@ -306,8 +325,9 @@ int conv_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
     CHECK(owner.layer->forward(gpu_input, gpu_output, command, opt) == 0);
     CHECK(command.pending_dispatch_total() > before_forward); // Upload/download alone cannot pass.
     if (expected_tiled_groups) {
-        CHECK(command.pending_dispatch_total() - before_forward == expected_tiled_groups);
-        std::printf("  verified tiled math dispatch groups: %llu\n", static_cast<unsigned long long>(expected_tiled_groups));
+        CHECK(command.pending_dispatch_total() - before_forward == expected_tiled_groups + expected_padding_groups);
+        std::printf("  verified tiled math dispatch groups: %llu; padding groups: %llu\n",
+                    static_cast<unsigned long long>(expected_tiled_groups), static_cast<unsigned long long>(expected_padding_groups));
     }
     CHECK(!gpu_output.empty() && gpu_output.dims == 2 && gpu_output.w == output_width);
     CHECK(gpu_output.h * gpu_output.elempack == output_channels);
@@ -330,7 +350,9 @@ int conv_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
             double product_magnitude = 0;
             for (int c = 0; c < input_channels; ++c)
                 for (int k = 0; k < kernel; ++k) {
-                    const double product = static_cast<double>(input.row<float>(c)[x + k * dilation]) * model[0][(o * input_channels + c) * kernel + k];
+                    const int source_x = x + k * dilation - pad;
+                    const double value = source_x >= 0 && source_x < width ? input.row<float>(c)[source_x] : 0.0;
+                    const double product = value * model[0][(o * input_channels + c) * kernel + k];
                     expected += product;
                     product_magnitude += std::fabs(product);
                 }
@@ -579,7 +601,7 @@ int main(int argc, char** argv)
 {
     // Flush each stage so a driver hang still leaves a useful device-side log.
     std::setvbuf(stdout, 0, _IONBF, 0);
-    bool conv = false, inner = false, compile_only = false, smoke = false, fp16_packed = false, tiled_only = false, reshape_only = false;
+    bool conv = false, inner = false, compile_only = false, smoke = false, fp16_packed = false, tiled_only = false, padded_tiled_only = false, reshape_only = false;
     int dilation = 1;
     for (int i = 1; i < argc; ++i) {
         if (!std::strcmp(argv[i], "--conv")) conv = true;
@@ -588,6 +610,7 @@ int main(int argc, char** argv)
         else if (!std::strcmp(argv[i], "--smoke")) smoke = true;
         else if (!std::strcmp(argv[i], "--fp16-packed")) fp16_packed = true;
         else if (!std::strcmp(argv[i], "--tiled-only")) tiled_only = true;
+        else if (!std::strcmp(argv[i], "--padded-tiled-only")) padded_tiled_only = true;
         else if (!std::strcmp(argv[i], "--reshape-only")) reshape_only = true;
         else if (!std::strcmp(argv[i], "--dilation3") || !std::strcmp(argv[i], "--dilation5")) {
             if (dilation != 1) {
@@ -597,23 +620,23 @@ int main(int argc, char** argv)
             dilation = !std::strcmp(argv[i], "--dilation3") ? 3 : 5;
         }
         else {
-            std::fprintf(stderr, "Usage: %s [--conv] [--inner] [--compile-only] [--smoke] [--fp16-packed] | --tiled-only [--compile-only] [--dilation3 | --dilation5] | --reshape-only [--compile-only]\n", argv[0]);
+            std::fprintf(stderr, "Usage: %s [--conv] [--inner] [--compile-only] [--smoke] [--fp16-packed] | --tiled-only | --padded-tiled-only [--compile-only] [--dilation3 | --dilation5] | --reshape-only [--compile-only]\n", argv[0]);
             return 1;
         }
     }
-    if (dilation != 1 && !tiled_only) {
-        std::fputs("--dilation3 and --dilation5 require --tiled-only\n", stderr);
+    if (dilation != 1 && !tiled_only && !padded_tiled_only) {
+        std::fputs("--dilation3 and --dilation5 require a tiled-only case\n", stderr);
         return 1;
     }
-    if (tiled_only && (conv || inner || smoke || fp16_packed)) {
-        std::fputs("--tiled-only is FP32 and cannot be combined with --conv, --inner, --smoke or --fp16-packed\n", stderr);
+    if ((tiled_only && padded_tiled_only) || ((tiled_only || padded_tiled_only) && (conv || inner || smoke || fp16_packed))) {
+        std::fputs("select one tiled-only FP32 case without other operator selectors\n", stderr);
         return 1;
     }
-    if (reshape_only && (conv || inner || smoke || fp16_packed || tiled_only || dilation != 1)) {
+    if (reshape_only && (conv || inner || smoke || fp16_packed || tiled_only || padded_tiled_only || dilation != 1)) {
         std::fputs("--reshape-only is FP32 and cannot be combined with another case selector\n", stderr);
         return 1;
     }
-    if (!conv && !inner && !tiled_only && !reshape_only) conv = inner = true;
+    if (!conv && !inner && !tiled_only && !padded_tiled_only && !reshape_only) conv = inner = true;
     CHECK(ncnn::create_gpu_instance() == 0);
     GpuInstance instance;
     CHECK(ncnn::get_gpu_count() == 1);
@@ -656,6 +679,7 @@ int main(int argc, char** argv)
         CHECK(reshape_norm_case(device, opt, 213, 3, compile_only) == 0);
     }
     if (tiled_only) CHECK(conv_case(device, opt, 213, 128, 128, 11, compile_only, true, dilation) == 0);
+    if (padded_tiled_only) CHECK(conv_case(device, opt, 213, 128, 128, 11, compile_only, true, dilation, true) == 0);
     if (conv) {
         CHECK(conv_case(device, opt, 33, 3, 5, 3, compile_only) == 0);
         if (!smoke) {

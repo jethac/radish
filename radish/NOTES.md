@@ -202,6 +202,12 @@ first/warm, 419 MiB/zero swap/no faults. Complete warm attribution preserves all
 resource/grid/chunk signatures and changes only 53 tiled submit counts. Fresh
 batch8 T213 runtime passes in 63.528396 s, 458 MiB/zero swap. The runtime wrapper
 now defaults to 8; driver/operator/model defaults stay 1.
+The new planar-input candidate is default-off. All 20 math shader variants pass
+actual compiler/resource inspection; integrated compile and full padded operator
+outputs pass. The full fixed core passes in 48.738814/48.863090 s first/warm,
+420.1 MiB/zero swap, with identical output bytes. The single warm comparison is
+1.1457% faster; slower padding absorbs much of the math gain. Fresh runtime is
+pending; keep PLANAR off and the accepted 49.429406 s baseline distinct.
 
 The new metadata-only shape pass matches every original and fused shape at
 T78/T213. The integrated frontend/core/tail executable builds for host and
@@ -1791,3 +1797,96 @@ run used 22.9 MiB swap and this run uses none; these separate single observation
 do not isolate a batch8 effect. Following full validation, only the private
 runtime wrapper's tiled-batch default changes from 4 to 8. Driver/operator/model
 defaults stay 1, 16 remains rejected, and Snake still requires `--snake`.
+
+### Candidates 0024/0025: channel-major padded Conv input
+
+Incremental ncnn patch `0024-ncnn-conv1d-planar-input.patch` adds explicit
+`RADISH_NCNN_PLANAR=1`, default 0. It requires the existing exact-device FP32
+tiled64 path, excludes TILED32, SAME and no-padding cases, and accepts explicit
+nonnegative padding with positive total and bitwise +0 fill. All 53 currently
+tiled model layers satisfy that gate. Unsupported static cases retain their
+original path; selected invalid shapes/options/buffers fail before commands.
+
+One pack4-to-planar padding dispatch replaces the existing padding dispatch;
+it initializes the complete physical halo in an independent rank2 pack1
+workspace `(LP,Cin)`. Logical input/bordered/output widths remain separate from
+the physical pitch. Checked integer products, allocator/device/buffer bounds
+and nonoverlap protect inputs, weights, bias and output. The local8x4 prepass
+writes one spatial vec4 per scalar channel; math keeps local16x8, original
+weights/bias, scalar K order, barriers and pack4 output. `--padded-tiled-only`
+adds a focused existing-width213/C128/K11 padded fixture; old no-pad fixtures
+keep their original behavior. Compile-only still returns before upload/submit.
+Canonical, SIMPLEOMP and integrated runtime builds pass in
+`build-planar-0024-first.log`, `build-simpleomp-planar-0024-first.log` and
+`build-runtime-planar-0024-first.log`. Integrated padded compile-only passes in
+`operators-planar-0024-compile-first.log` before upload/submission: math remains
+16 full/0 half/instrlen31; the local8x4 pad shader uses 8 full/3 half registers,
+no loops and instrlen9. No new faults; both services remain active.
+
+Actual C128/K11/d1 compilation in `channel-major-compile-first.log` changes the
+binding1 input gather from four scalar load sites to one four-component load.
+Instructions fall 950→788 and allocated dwords 1152→992; register use remains
+16 full/0 half, four loops and 16 KiB shared. The complete all20 run,
+`channel-major-compile-all20-first.log`, covers the exact 20 specialization
+tuples used by all 53 layers: each has local16x8, native instrlen31, 16 full/0
+half, four loops, one binding1 vec4 load and preserved barriers/accumulation.
+No scratch/LDP/STP is observed, and accepted pipelines pass the driver's private
+memory rejection. These helpers compile pipelines without tensor execution.
+Private audits: `channel-major-compiler-34cx94fy/actual-compile-audit/REPORT.md`
+and `channel-major-compiler-34cx94fy/all20-actual-audit/REPORT.md`. Fewer
+instructions alone do not establish a speedup.
+
+The padded width213/C128/K11 baseline and planar dilation1/3/5 runs each compare
+all **27264 outputs** against the independent reference at unchanged gates.
+Candidate max errors are 3.42226122e-5/7.09755113e-6/1.641165e-5, matching the
+corresponding existing errors. No faults, services active. These padded cases
+retain output width213, unlike the historical unpadded203/183/163 fixtures.
+
+| Padded operator | Pad command | Math command |
+| --- | ---: | ---: |
+| Original pack4, dilation1 | 2.946675 ms | 8.272940 ms |
+| PLANAR, dilation1 | 2.126673 ms | 7.977001 ms |
+| PLANAR, dilation3 | 1.939901 ms | 7.875804 ms |
+| PLANAR, dilation5 | 2.465007 ms | 7.922783 ms |
+
+Each math command has eight chunks in one batch8 submit. Candidate pad commands
+use 5/5/6 chunks/submits; the baseline pad uses eight. Logs:
+`operators-planar-0024-d1-baseline.log` and `operators-planar-0024-d{1,3,5}-first.log`.
+These are single operator observations; no equivalent padded dilation3/5
+baseline timing or full-model speedup is inferred from this table.
+
+The separate cumulative Mesa patch `0025-radish-planar-batching-cumulative.patch`
+adds only native instrlen31 beside 36/37 in the existing tiled-batch gate.
+All other resource conditions, K<=3584 in the ncnn selector, chunk waits/flushes
+and defaults remain unchanged. Without it the new math shader misses the
+batch8 gate. Instrlen31 also uses the driver's existing <=32 instruction-preload
+path; that is another execution difference, not a demonstrated benefit.
+The targeted ICD build passes, SHA256
+`22a34efba7622363225c14600366fe05488fbc38bd452248e43717d40d239227`.
+
+0024 SHA256 `23b9bafe92a6ad41ae393bde9d50576d7e2e6a258036234411e198f0f7c7cce8`
+reconstructs all seven tracked Conv files in the ordered stack;
+`planar-0024-reconstruction-4oq6y46v/reconstruction.json` records the match.
+0025 SHA256 `fd0a0bb37e562535488406e183c46a233edf616939ad416efb6b09070bc0c17b`
+reconstructs the pinned Mesa base separately, with proof in
+`planar-0025-reconstruction-xcjenuma/reconstruction.json`.
+The full fixed-boundary model passes in `core-snake-planar-0024-repeat2.log`:
+9.030 s cold load, 48.738814 s first extraction and 48.863090 s warm (one warm
+sample), 420.1 MiB/zero swap. All 562342 values pass unchanged gates, max error
+0.000129699707 and RMS 7.72155564e-7; services remain active with no new GPU faults.
+The pulled 2249368-byte output is identical to accepted 0023, SHA256
+`0550fe07becc684c3dc7b0113bfef0b4e3c87ff8d888acf779e98de4d8af18e4`.
+Existing fixed-output waveform evidence therefore applies to these exact bytes;
+this run did not repeat the waveform stage or exercise a fresh frontend boundary.
+
+The warm comparison improves 49.429406→48.863090 s, a modest 0.566316 s/1.1457%.
+The 53 tiled math commands improve 25.551525088→24.107147904 s, while their
+53 padding commands worsen 0.993677872→1.933040488 s and increase submissions
+1654→3696. The targeted net saving is 0.505014568 s. All 1692 remaining command
+signatures and all 901 layer paths match; transfers remain 96/73728 bytes, with
+no added clone/helper commands. Whole-profile submissions rise 26098→28140.
+The private report `warm-planar-result-0024-mdia5brz/REPORT.md` and comparison
+artifacts preserve exact ownership, geometry and per-layer attribution. These
+are wall-inclusive command measurements and one warm sample per mode, not an
+isolated shader-cost or sustained-performance result. PLANAR stays off; preserve
+0023's accepted 49.429406 s baseline. Fresh-runtime validation remains pending.

@@ -29,8 +29,10 @@ limits and validation scope. Published checkpoints remain experimental; publicat
 | `0021-ncnn-conv1d-tile32x32.patch` | After 0020 in the ordered Conv1D stack | Revises the same default-off TILED32 path to tile32x32, eight accumulators, 8 KiB shared; builds/all20 variants/operator/full-core accuracy pass; output byte-identical, first 138.633996 s versus accepted first 67.138187 s, peak 425.2 MiB/zero swap/no faults; rejected for performance, no warm repeat; accepted64x64 path unchanged |
 | `0022-radish-tiled-batching-cumulative.patch` | Same Mesa base as 0001; replaces 0016 | Prior accepted driver; optional 2/4 sequential single-group tiled chunks per submit, unchanged waits/flushes and register guard; full core 56.013717 s warm, byte-identical, 428.5 MiB/zero swap/no faults; fresh T78 runtime passes |
 | `0023-radish-tiled-batch8-cumulative.patch` | Same Mesa base as 0001; replaces 0022 | Current driver; adds batch8 under unchanged 0022 resource gate; build/reconstruction/operator/full-core checks pass, Snake 49.266772/49.429406 s first/warm, byte-identical, 419 MiB/zero swap/no faults; fresh T213 synthesis 63.528396 s, all core/waveform values pass, 458 MiB/zero swap; runtime default8 after validation, driver/operator/model1, no16 |
+| `0024-ncnn-conv1d-planar-input.patch` | After 0021 in the ordered Conv1D stack | Default-off PLANAR layout for eligible tiled64; one initialized padding/transpose workspace replaces existing padding, original math order/output retained; builds/seven-file reconstruction/all20 compiler variants/padded dilation1/3/5 pass. Fixed core48.738814/48.863090 s first/warm, all562342 outputs byte-identical, 420.1 MiB/zero swap/no faults; single warm pair1.1457% faster, fresh runtime pending |
+| `0025-radish-planar-batching-cumulative.patch` | Same Mesa base as 0001; alternative to 0023 | Candidate adds only native instrlen31 beside36/37 in existing tiled-batch resource gate; build/all14-file reconstruction, padded operators and full fixed core pass; all53 math commands retain batch8 schedule. Remaining conditions/defaults and ncnn K bound unchanged; PLANAR remains opt-in |
 
-To reconstruct the current driver, make a separate checkout/worktree at the
+To reconstruct the accepted driver checkpoint, make a separate checkout/worktree at the
 Mesa base, read its `AGENTS.md`, and apply 0023 with `git apply` instead of
 0001/0003/0004/0007/0009/0012/0016/0022. Set
 `RADISH_MESA` to that checkout and run `../scripts/build.sh`. Preserve the AC8
@@ -77,9 +79,9 @@ Mesa base, recorded in
 
 The pinned ncnn/glslang checkout is separate. `../scripts/build-ncnn.sh` applies
 0005 if applicable, accepts an already-applied patch, migrates the exact earlier
-0002 adaptation, then applies/verifies 0006, 0008, 0010, 0011 and candidates 0013–0015/0017/0018/0020/0021, plus independent 0019.
+0002 adaptation, then applies/verifies 0006, 0008, 0010, 0011 and candidates 0013–0015/0017/0018/0020/0021/0024, plus independent 0019.
 The first candidate build stopped at overlapping earlier-patch verification.
-The build script accepts exact ordered 0010/0011/0013/0014/0017/0018/0020/0021 Conv1D prefixes
+The build script accepts exact ordered 0010/0011/0013/0014/0017/0018/0020/0021/0024 Conv1D prefixes
 and 0006/0015 net.cpp prefixes, rejecting unrelated edits. This preserves the
 source check despite overlapping patch contexts. Canonical and SIMPLEOMP builds
 pass with revised 0013/0014, 0015 and incremental 0017; both builds and the
@@ -268,6 +270,53 @@ evidence applies; no new waveform/runtime measurement was performed. Reject 0021
 for performance and keep TILED32 default 0. No warm repeat was performed;
 accepted 66.919494 s remains a separate warm baseline.
 
+Candidate 0024 requires explicit `RADISH_NCNN_PLANAR=1` (default0) and the
+existing tiled64 FP32 selector, excluding TILED32/SAME/no-pad/nonzero fill.
+It replaces the selected layer's padding command with a local8x4 out-of-place
+pack4-to-planar pass, fully initializing a checked LP×Cin scalar workspace.
+The math shader keeps the original weights, K order, barriers and output layout;
+only the input gather uses contiguous spatial scalars. Unsupported static cases
+retain their original path. Selected malformed/overflow/buffer conditions fail
+before recording. The source and wrappers/probe are reviewed; canonical,
+SIMPLEOMP and integrated runtime builds pass. Seven-file ordered reconstruction is recorded
+in `planar-0024-reconstruction-4oq6y46v/reconstruction.json`.
+
+`channel-major-compile-first.log` shows binding1 four scalar loads becoming one
+vec4 for C128/K11/d1, 950→788 instructions at unchanged 16 full/0 half/four loops/
+16 KiB shared. `channel-major-compile-all20-first.log` and
+`channel-major-compiler-34cx94fy/all20-actual-audit/REPORT.md` prove all 20 tuples
+covering 53 layers use instrlen31, one binding1 vec4 load and no scratch/private
+spill evidence. These are pipeline-only results, not tensor accuracy or timing.
+Integrated compile-only also passes before upload/submit: the pad shader is
+local8x4,8 full/3 half,no loops,instrlen9. The separate padded dilation1/3/5
+execution logs pass all27264 outputs each at unchanged gates, no faults and
+services active. Candidate math takes7.977001/7.875804/7.922783 ms and padding
+2.126673/1.939901/2.465007 ms. The matching padded dilation1 baseline takes
+8.272940 ms math/2.946675 ms pad; these single observations do not establish a
+model win or equivalent padded dilation3/5 baseline timings. Full log names,
+max errors and build records are in `../NOTES.md`.
+
+Separate cumulative 0025 applies to the pinned Mesa base instead of 0023,
+adding only instrlen31 alongside36/37 in the existing tiled-batch gate. Other
+resource checks, ncnn K<=3584, waits/flushes and defaults are unchanged. Without
+this gate the new shader uses one submit per chunk; instrlen31 also follows the
+existing <=32 instruction-preload path. The targeted ICD build and all14-file
+reconstruction pass (`planar-0025-reconstruction-xcjenuma/reconstruction.json`),
+ICD SHA256 `22a34efba7622363225c14600366fe05488fbc38bd452248e43717d40d239227`.
+The full fixed-boundary repeat passes in `core-snake-planar-0024-repeat2.log`:
+cold9.030 s, first48.738814/warm48.863090 s, all562342 values within unchanged
+gates (max0.000129699707/RMS7.72155564e-7), 420.1 MiB/zero swap/no faults and
+active services. The output SHA256 remains
+`0550fe07becc684c3dc7b0113bfef0b4e3c87ff8d888acf779e98de4d8af18e4`;
+existing fixed-output waveform evidence applies by exact byte identity, without
+a new waveform run. Against accepted49.429406 s, this single warm pair improves
+0.566316 s/1.1457%. The53 math commands save1.444377184 s but their padding adds
+0.939362616 s and increases submits1654→3696; all1692 other command signatures
+and901 layer paths match. Full attribution is in
+`warm-planar-result-0024-mdia5brz/REPORT.md`. Command times include host work and
+waits. Keep PLANAR off and the accepted baseline distinct; fresh-runtime and
+sustained-performance evidence remain pending.
+
 SHA-256:
 
 ```
@@ -294,4 +343,6 @@ bf61ab2af644ddecb632c7c3d8e48ef261085f3a7c1ad68d657c33abf7cda3df  0020-ncnn-conv
 a29dbbe0c3edf8912e4548cc873beca0ba3f1ba3197b6f1ee5f386bfd4f57dc0  0021-ncnn-conv1d-tile32x32.patch
 0c03e76309ae835fa32946a61626614136dc5ea173419383258904933ec7514a  0022-radish-tiled-batching-cumulative.patch
 5516b6823e67f70c989939a95e16d853fd00af43d3a280b13cefc4b60da40bfd  0023-radish-tiled-batch8-cumulative.patch
+23b9bafe92a6ad41ae393bde9d50576d7e2e6a258036234411e198f0f7c7cce8  0024-ncnn-conv1d-planar-input.patch
+fd0a0bb37e562535488406e183c46a233edf616939ad416efb6b09070bc0c17b  0025-radish-planar-batching-cumulative.patch
 ```
