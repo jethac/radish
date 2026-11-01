@@ -708,3 +708,21 @@ reports stay outside the public repository.
   no faults/services active. Full inputs and outputs match prior CPU/GPU evidence.
 - [x] Preserve NORM_SUM4=0 and0026/groups1 recommendation: targeted norm saving is
   proven, but these single observations establish no overall latency win.
+
+## Candidate 0029: generic short-dispatch batch8
+
+- [x] Review/build/reconstruct cumulative driver; allow8 only under existing
+  no-loop/no-barrier/instrlen<=32 gate, unchanged64-group budget/synchronization.
+  Review four regex-only wrapper changes and profile-only submit sum/max timers.
+- [x] Pass16 grid cases and paired full fixed core on the same model/driver:
+  warm47.413913→45.339510 s,4.3751% lower, byte-identical outputs/no faults.
+  Baseline7.7 MiB swap differs from candidate0; one warm observation each.
+- [x] Verify1798 signatures/901 paths/114393 chunks unchanged,669 submit-count
+  changes,26292→15398 submits and all timing/output invariants. Preserve observed
+  maxima and CPU-wall meaning; no watchdog or sustained-performance guarantee.
+- [x] Validate fresh T78/T213: all core/wave outputs match prior bytes,
+  synthesis32.622528/61.429138 s,330.7/431.3 MiB and0/16.7 MiB swap,no faults.
+  T78 core improves but its longer load regresses total; preserve this result
+  and single-run/swap caveats alongside the fixed-core gain.
+- [x] Recommend generic batch8 as an opt-in for the measured fixed path, retaining
+  norm0/X1 and all existing defaults. No sustained/watchdog guarantee.

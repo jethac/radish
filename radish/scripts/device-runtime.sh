@@ -69,7 +69,7 @@ GROUPS_PER_CHUNK=${RADISH_SHARED_GROUPS:-8}
 for toggle in "$TILED" "$TILED32" "$SHARED32" "$MIXED" "$CACHE" "$TRACE" "$PROFILE" "$RESHAPE_ALIAS"; do
     [[ $toggle == 0 || $toggle == 1 ]] || { echo 'Radish toggles must be 0 or 1' >&2; exit 2; }
 done
-[[ $BATCH =~ ^[1-4]$ && $GROUPS_PER_CHUNK =~ ^[1-8]$ ]] || { echo 'batch must be 1..4 and shared groups 1..8' >&2; exit 2; }
+[[ $BATCH =~ ^([1-4]|8)$ && $GROUPS_PER_CHUNK =~ ^[1-8]$ ]] || { echo 'batch must be 1, 2, 3, 4 or 8 and shared groups 1..8' >&2; exit 2; }
 SOURCE=$WORK/kokoro-$KIND
 TAG=runtime-$KIND-$BACKEND-$RUN
 [[ $CORE_GRAPH != snake ]] || TAG+=-snake

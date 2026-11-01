@@ -2,6 +2,14 @@
 
 ## 2026-11-01
 
+Latest measured path: Snake with PLANAR/local8x8 and opt-in generic batch8
+(0029), norm0/X1, passes the fixed core at45.339510 s warm and fresh T213
+synthesis at61.429138 s. All core/waveform gates pass with prior output identity.
+The paired fixed-core improvement is4.3751%; observations remain single runs
+with differing swap. Fresh T78 total regresses to32.622528 s despite faster core
+work because load time rises. Defaults remain unchanged; historical checkpoints
+and full evidence follow below.
+
 Overall goal active. M0–M2 bring-up is demonstrated; selected M3 paths now pass,
 including 16 KiB shared reductions, transfers, dependent compute and bounded
 3D dispatch subdivision. Recovery now propagates DEVICE_LOST. ncnn ReLU,
@@ -214,6 +222,10 @@ submits3696→1848 and0.839163 s less padding wall time; other timing variation
 also contributes. Fresh T78/T213 runtime passes in31.890578/63.320730 s with
 unchanged core/waveform bytes and zero swap. Full startup is essentially unchanged
 from0023's63.528396 s observation; PLANAR remains opt-in/default0.
+Later0029 generic batch8 is recommended as an opt-in for the measured fixed path:
+paired warm47.413913→45.339510 s, exact outputs, fresh T21361.429138 s with16.7 MiB
+swap. T78 total32.622528 s is slower despite its faster17.289251 s core. Keep
+norm0/X1 and existing defaults; preserve single-pair/swap/startup limitations.
 
 The new metadata-only shape pass matches every original and fused shape at
 T78/T213. The integrated frontend/core/tail executable builds for host and
@@ -2088,3 +2100,62 @@ byte comparisons, modes and owners; all paths remain present. This recovered
 219876 KiB, leaving393784 KiB free; services stayed active. Evidence:
 `dedup-immutable-runtime-assets-pre-norm-{plan,summary}.json` and the corresponding
 `.log`. This housekeeping supplies no inference or performance evidence.
+
+### Candidate 0029: generic short-dispatch batch8 and submit timing
+
+Cumulative `0029-radish-short-batch8-cumulative.patch` adds8 to existing generic
+batch1..4 only for shaders without loops/barriers and instrlen<=32. The64-group
+hardware budget, X2 behavior, tiled batching and per-EXEC WFI/flush/wait/fault
+checks are unchanged. Driver/grid/compute/model defaults remain1, runtime4.
+Wrappers accept exactly1/2/3/4/8; existing controls/provenance remain intact.
+Profile-only `submit_ns`/`submit_max_ns` measure submit-through-fence/fault-check
+wall intervals, excluding cleanup; profile-off adds no clocks.
+
+Targeted build/all14-file reconstruction and16 grid cases pass, no faults/services
+active (`grid-short-batch8-0029-first.log`). Patch SHA256
+`4d46236f83dfd943080241d05822479aaae6b2fa70e5fa8584b9a557f509995c`, ICD
+`c7ec53be69dbe249112c3e6aeae01532175390fbcf4718e2da1ff54cb4badad5`; reconstruction
+is in `short-batch8-0029-integration-bot0hl5l/checkpoint.json`.
+
+The paired runs use the same frozen0026 model and0029 driver, norm0/X1/tiled8:
+
+| Generic batch | Cold s | First s | Warm s | Peak MiB / swap MiB |
+| --- | ---: | ---: | ---: | ---: |
+| 4 | 8.991 | 47.715981 | 47.413913 | 419.7 / 7.7 |
+| 8 | 8.998 | 45.766135 | 45.339510 | 417.5 / 0 |
+
+All562342 values pass unchanged gates, no faults/services active. Saved outputs
+are byte-identical SHA0550fe07…f18e4, retaining prior fixed-waveform evidence
+without a new tail run. Warm improves2.074403 s/4.3751%, one warm each; baseline
+swap differs from candidate. All1798 command signatures/901 paths and114393
+hardware chunks match. Only669 command submit counts change;1467 qualify for the
+gate, and total submits26292→15398. The669 changed commands save2.072993161 s;
+other1129 command timing varies by−0.029432263 s. Exact ownership/count/output
+and submit-timing invariants pass; report:
+`short-batch8-result-0029-p9a9QvGK/REPORT.md`.
+
+Eligible observed submit maxima are34.062768→33.911360 ms first and
+5.011371→6.193822 ms warm. These include CPU scheduling and waits, not GPU-only
+time or a watchdog guarantee; much larger whole-window maxima belong to
+ineligible loop1 Conv math.
+
+Fresh runtimes with norm0/batch8/X1 both pass exact-boundary ORT references:
+
+| Capture | Core load s | Core s | Synthesis s | Peak MiB / swap MiB |
+| --- | ---: | ---: | ---: | ---: |
+| T78 | 10.769532 | 17.289251 | 32.622528 | 330.7 / 0 |
+| T213 | 9.301445 | 45.667104 | 61.429138 | 431.3 / 16.7 |
+
+All205942/562342 core values and46800/127800 waveform samples pass; waveform
+SNR96.917732/98.355163 dB. Core/waveform bytes match0026 exactly; eight-boundary
+identity reports are `runtime-{short,full}-short-batch8-0029-boundary-identity.json`.
+Logs and reference results are `runtime-single-{short,full}-short-batch8-0029-first.log`
+and `runtime-single-{short,full}-short-batch8-0029-validation.json`; no faults and
+services active. T213 total is lower than0026's63.320730 s but has16.7 MiB swap
+versus zero. T78 total regresses from31.890578 s despite core18.148241→17.289251 s:
+load9.191366→10.769532 s masks that gain. Keep single-run limits and this short
+regression explicit. Recommend batch8 opt-in for the measured fixed path;
+norm0/X1 and all defaults remain unchanged.
+Before that run, four verified immutable hardlink replacements preserved files
+and hashes while free space increased271396→329336 KiB
+(`dedup-immutable-runtime-assets-pre-0029.log`).

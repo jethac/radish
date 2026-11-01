@@ -32,19 +32,28 @@ a separate driver, with its own a5xx resource bindings and command emission.
 
 | Measurement | GPU path | Packed six-thread CPU |
 | --- | ---: | ---: |
-| Fixed full-size core, warm extraction | **46.933 s** | **32.079 s** |
-| Fresh full-length synthesis, including startup | **63.321 s** | **39.790 s** |
+| Fixed full-size core, warm extraction | **45.340 s** | **32.079 s** |
+| Fresh full-length synthesis, including startup | **61.429 s** | **39.790 s** |
 
 The GPU figures use the opt-in FP32 Snake graph, planar convolution input,
-output reshape aliases and eight sequential tiled chunks per submission.
+output reshape aliases and eight sequential chunks per submission for both
+eligible short shaders and tiled convolution.
 Warm core timing is one extraction,
 versus two for the CPU mean; the CPU uses the preceding InstanceNorm graph.
 Complete synthesis figures are single startup runs with byte-identical
-frontend boundary inputs. The GPU core peaks at **418.4 MiB, zero swap**;
-full GPU synthesis peaks at **429.7 MiB with zero swap**. No new GPU faults
+frontend boundary inputs. The GPU core peaks at **417.5 MiB, zero swap**;
+full GPU synthesis peaks at **431.3 MiB with 16.7 MiB swap**. No new GPU faults
 occurred, and both appliance services remained active. Core and waveform bytes
 match the preceding GPU implementation. GPU inference remains slower than CPU.
 Resident warm synthesis and sustained thermal behavior remain unmeasured.
+
+Cumulative Mesa patch 0029 adds `RADISH_BATCH_CHUNKS=8` for short, loop-free
+shaders. A paired measurement with the same driver reduces warm extraction
+from 47.414 s to 45.340 s, removing 10,894 submissions while preserving all
+shader work and output bytes. The affected commands save 1.992 s of the
+2.074 s total improvement. This is one first/warm pair per setting; the
+batch-four baseline used 7.7 MiB swap. Defaults remain unchanged; select eight
+explicitly for the measured path, with norm fusion off and one X workgroup.
 
 Channel-major convolution input and its 64-thread padding pass reduce warm
 time from 49.429 s to 46.933 s. The affected convolution/padding commands save
@@ -64,7 +73,7 @@ removing 49 full-width intermediate passes. All fixed-core and fresh core/audio
 outputs remain byte-identical. The affected commands save 1.632 s, but whole
 warm time stays near 47 s; a full fresh run takes 65.988 s with 46.9 MiB of swap.
 This establishes no overall speedup. `RADISH_NCNN_NORM_SUM4=1` enables it;
-the default remains off and the table retains the preceding checkpoint.
+the default remains off, including in the table's batching checkpoint.
 
 - Fused FP32 normalization and tiled convolution, including dilation 3/5,
   guarded output reshape aliases, sequential submission batching and Snake
@@ -75,9 +84,10 @@ the default remains off and the table retains the preceding checkpoint.
   3,231 submissions and reduces warm time from 51.188 s by a further 3.4%.
   The tiled path executes 53 matrix-product commands; compiled register-budget
   checks remain in place.
-- Fresh short-utterance synthesis with Snake and planar input takes **31.891 s**,
+- Fresh short-utterance synthesis with Snake, planar input and batch eight takes **32.623 s**,
   including startup, and passes every core/audio comparison at
-  **329.1 MiB, zero swap**.
+  **330.7 MiB, zero swap**. Core extraction improves from 18.148 s to 17.289 s,
+  while slower startup makes total time worse than the earlier 31.891 s run.
   Select it with `device-runtime.sh ... --snake`; InstanceNorm remains the
   default graph. Snake is a project-local ncnn custom layer requiring no new
   Mesa feature; cumulative patch 0025 includes the planar batching case.
@@ -114,7 +124,7 @@ kept outside the repository.
 
 1. Check out Mesa at `ddabdd0e36bd2f5e0c8e6bd21c3d1da7e34c1230` in a
    separate worktree. Apply
-   `radish/patches/0025-radish-planar-batching-cumulative.patch` to that base.
+   `radish/patches/0029-radish-short-batch8-cumulative.patch` to that base.
    Earlier cumulative Mesa patches are historical alternatives, not a series.
 2. Set `RADISH_WORK` to the scratch/build directory, `RADISH_MESA` to the Mesa
    checkout, `RADISH_SYSROOT` to the aarch64 sysroot and `RADISH_VENV` to the

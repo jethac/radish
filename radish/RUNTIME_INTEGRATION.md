@@ -711,3 +711,50 @@ Captures are `kokoro-runtime-{full,short}-single-vulkan-norm-sum4-0028-first-sna
 command attribution and corrects the initial compiler-length accounting:
 95 encoded instructions give `instrlen=6`; 198 allocated dwords include
 trailing padding. Both focused execution and full-model profiles report 6.
+
+### Short-shader batching: checkpoint 0029
+
+Cumulative Mesa patch `0029-radish-short-batch8-cumulative.patch` adds optional
+`RADISH_BATCH_CHUNKS=8` for the existing loop-free, barrier-free shader class
+with instruction length at most 32. Defaults and dispatch group limits stay
+unchanged. Every chunk retains its state, waits and cache synchronization;
+the larger batch groups sequential chunks into fewer DRM submissions.
+
+The measured path uses Snake, planar input, reshape aliases, generic batch 8,
+tiled batch 8, shared groups 8, X groups 1 and norm fusion 0. The paired fixed
+model uses the same frozen 0026 model helper and 0029 driver for both settings.
+First/warm times are 47.715981/47.413913 s at batch 4 and
+45.766135/45.339510 s at batch 8. All 562,342 output values remain byte-identical.
+Peak memory is 419.7/417.5 MiB, with 7.7/0 MiB swap respectively.
+
+Every one of the 1,798 command signatures, 114,393 chunks and 901 layer paths
+matches. Submissions fall from 26,292 to 15,398; the affected shader class saves
+1.992217851 s of the 2.074403 s warm improvement. This is a single paired
+observation with different swap usage. New `submit_ns` and `submit_max_ns`
+profile fields measure CPU wall time around submission, fence wait and fault
+query. They include host scheduling and are neither GPU timestamps nor a
+future bound on job duration. The largest eligible observed intervals are
+34.063/33.911 ms in first runs and 5.011/6.194 ms in warm runs.
+
+Fresh synthesis passes every unchanged core and waveform comparison:
+
+| Input | Core extraction | Complete synthesis | Peak memory | Swap | Waveform SNR |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Full, T=213 | 45.667104 s | 61.429138 s | 431.3 MiB | 16.7 MiB | 98.355 dB |
+| Short, T=78 | 17.289251 s | 32.622528 s | 330.7 MiB | 0 | 96.918 dB |
+
+All eight boundary files and complete GPU core/waveform bytes match 0026.
+Full synthesis improves from 63.320730 s. Short synthesis is slower than the
+preceding 31.890578 s, despite its faster core, because startup varies:
+core loading takes 10.769532 s instead of 9.191366 s. Both services remain
+active and no GPU faults occur. CPU remains faster; resident synthesis and
+sustained behavior remain unfinished. Select batch eight explicitly for this
+measured workload; norm fusion and X pairing remain off.
+
+Evidence under WORK: `core-snake-planar-short-batch{4,8}-0029-repeat2.log`,
+`short-batch8-result-0029-p9a9QvGK/REPORT.md`,
+`runtime-single-{full,short}-short-batch8-0029-first.log`,
+`runtime-single-{full,short}-short-batch8-0029-validation.json`, and
+`runtime-{full,short}-short-batch8-0029-boundary-identity.json`.
+Build/source reconstruction and frozen driver are in
+`short-batch8-0029-integration-bot0hl5l/`.

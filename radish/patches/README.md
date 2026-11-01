@@ -34,6 +34,7 @@ limits and validation scope. Published checkpoints remain experimental; publicat
 | `0026-ncnn-planar-pad-local64.patch` | After0024 in the ordered Conv1D stack | Four reviewed host changes: planar prepass local8x4→8x8, two pipeline guards and group-count formula; shader bodies/defaults unchanged. Reconstruction/builds/compile/focused/full-core gates pass, first48.370236/warm46.932926 s, identical outputs,418.4 MiB/zero swap; single warm3.9501% below0024. Fresh T78/T213 passes31.890578/63.320730 s, all core/waveform values, zero swap/no faults; PLANAR default0 |
 | `0027-radish-tiled-x2-cumulative.patch` | Same Mesa base as0001; alternative to0025 | Default groups1, opt-in2 for narrow A506/instrlen31 tiled resources; X pairs/odd tails, cap4 EXEC chunks per submit, synchronization unchanged. Build/reconstruction/operators/full core pass, all562342 outputs byte-identical,45.621586/47.975705 s first/warm,no faults;417.4 MiB plus25.3 MiB swap. Warm2.2218% slower than0026 in confounded single pair; no performance acceptance |
 | `0028-ncnn-instancenorm-sum4.patch` | Independent InstanceNorm files on current ncnn stack | Default-off FP32 pack4 variance-first fusion; initial hint-gate failure corrected. Builds/compiler/focused/full core pass byte-identically; first47.302535/warm46.983200 s,418.5 MiB/zero swap.49 targeted stages save1.632487 s but whole warm stays flat. Fresh T78/T213 core/wave outputs pass31.783290/65.988211 s,0/46.9 MiB swap,no faults; no overall latency win/default change |
+| `0029-radish-short-batch8-cumulative.patch` | Same Mesa base as0001; alternative to0027 | Adds generic batch8 under unchanged short/no-loop/no-barrier gate and profile-only submit sum/max timers; geometry/synchronization/defaults unchanged. Build/reconstruction/grid/paired full core pass, warm47.413913→45.339510 s, identical outputs/no faults; submits26292→15398. Fresh T78/T213 references pass32.622528/61.429138 s,0/16.7 MiB swap; T78 total regresses. Opt-in recommendation/norm0/X1, defaults unchanged |
 
 To reconstruct the accepted driver checkpoint, make a separate checkout/worktree at the
 Mesa base, read its `AGENTS.md`, and apply 0023 with `git apply` instead of
@@ -416,6 +417,30 @@ core/wave byte identity is recorded in `runtime-full-norm-sum4-0028-boundary-ide
 No overall latency win; default0 and0026/groups1 recommendation remain unchanged.
 The ledger pins revised source; initial97b28ffe…95bea remains historical only.
 
+Cumulative0029 allows generic batch8 only for !loops/!barrier/instrlen<=32,
+preserving64-group hardware chunks and per-EXEC synchronization. It records
+profile-only submit-through-wait sum/max wall times; these include CPU scheduling,
+not isolated GPU time or watchdog bounds. Defaults remain driver/model1/runtime4.
+Build/all14-file reconstruction (`short-batch8-0029-integration-bot0hl5l/checkpoint.json`)
+and16 grid cases pass, ICD
+`c7ec53be69dbe249112c3e6aeae01532175390fbcf4718e2da1ff54cb4badad5`.
+Paired fixed-core logs `core-snake-planar-short-batch{4,8}-0029-repeat2.log` pass
+all562342 values with exact prior output identity: first47.715981→45.766135 s,
+warm47.413913→45.339510 s (4.3751%), no faults/services active. Baseline419.7 MiB
+plus7.7 MiB swap versus candidate417.5 MiB/zero swap; one warm each. All1798
+command signatures/901 paths/114393 chunks match; only669 submission counts
+change, whole26292→15398. Timing invariants pass; eligible observed submit maxima
+34.062768→33.911360 ms first and5.011371→6.193822 ms warm. Evidence:
+`short-batch8-result-0029-p9a9QvGK/REPORT.md`. Fresh T78/T213 all core/wave outputs
+also pass exact-boundary references and retain0026 bytes: synthesis32.622528/
+61.429138 s, core17.289251/45.667104 s,330.7/431.3 MiB and0/16.7 MiB swap,
+no faults/services active. Validation files:
+`runtime-single-{short,full}-short-batch8-0029-validation.json`; boundary identity:
+`runtime-{short,full}-short-batch8-0029-boundary-identity.json`. T78 total regresses
+from31.890578 s despite faster core because load9.191366→10.769532 s. Preserve
+that regression, full-run swap and single-observation caveats. Recommend batch8
+opt-in for this measured fixed path; norm0/X1 and existing defaults unchanged.
+
 SHA-256:
 
 ```
@@ -447,4 +472,5 @@ fd0a0bb37e562535488406e183c46a233edf616939ad416efb6b09070bc0c17b  0025-radish-pl
 3bbc418cf86b74ef32c1789b4bdc88c2b88ba4f1368c19ab1d62ee9103996a5c  0026-ncnn-planar-pad-local64.patch
 adc9ae8506e91abbacea3674a416b1e907672fecf60eb7c62dbe7c319367f6a1  0027-radish-tiled-x2-cumulative.patch
 4aa4d0983dd680492a35db3993bce02030e6700e3add4bc22369f03239a3af33  0028-ncnn-instancenorm-sum4.patch
+4d46236f83dfd943080241d05822479aaae6b2fa70e5fa8584b9a557f509995c  0029-radish-short-batch8-cumulative.patch
 ```
