@@ -1,5 +1,58 @@
 # Radish status
 
+## 2026-11-02 (JST): pipeline reuse across shape changes
+
+New default-off `--reuse-pipeline-cache` retains a lazy Vulkan device and an
+external ncnn PipelineCache for the bounded two-to-four-request loop. It requires
+Vulkan and `RADISH_NCNN_PIPELINE_CACHE=1`. Exact inferred-parameter matching still
+controls Net reuse; a shape change destroys the old Net/weights before creating
+and loading the next. Stock pipelines use the external cache; custom/raw
+pipelines use the retained device cache. No shader, precision, graph, stored
+weight or driver changes. Final cleanup remains Net/custom contexts, external
+cache, then device, included in session timing.
+
+The public short/full/short/short run passes all four original-ORT core/waveform
+references. All eight input files and both output files are byte-identical to
+the matching validated 0033 captures. Every request has 715 GPU/zero CPU layers.
+
+| Request | T / Net hit | Load s | Extraction s | Synthesis s | External/device cache entries |
+| --- | --- | ---: | ---: | ---: | --- |
+| 000 | 78 / no | 9.710722 | 14.733876 | 28.937692 | 173 / 4 |
+| 001 | 213 / no | 3.988262 | 39.090510 | 49.434000 | 263 / 4 |
+| 002 | 78 / no | 1.162545 | 14.568416 | 20.455279 | 263 / 4 |
+| 003 | 78 / yes | 0 | 14.191422 | 18.498217 | 263 / 4 |
+
+The T78 revisit reloads its weights; it is not a retained-Net hit. The same 140
+executing pipeline handles and all 1425 ordered dispatch signatures recur across
+the first, revisited and retained T78 requests. Counts alone are not hit or byte
+measurements. Cache growth stops after these two shapes; this is not an unbounded
+worker-cache policy. Session 120.478595258 s includes final cleanup 0.279266953 s;
+printed outer elapsed 120.492458 s, service 120.596 s. Whole-session peak is
+525.7 MiB plus 41.6 MiB swap, no faults and both live services active.
+
+Prior short shape reload took 9.328511 s and synthesis 28.964791 s. The current
+revisit takes 1.162545/20.455279 s, with different cache history, request sequence
+and swap. These observations support retaining compiled pipelines, not an isolated
+convolution speedup. The new resident short observation is 18.498217 s; CPU remains
+faster at 15.411271 s. No new full resident sample, sustained result, live Japanese
+baseline or application integration is established. The earlier tablet cancellation
+probe predates this flag; its enabled cancellation path has source/ownership review
+but has not been separately exercised on the tablet.
+
+Runtime source SHA `27f81a603923ce135920bd0c858ee74c5e734ed39d6e905aac7e1568b29e3737`;
+canonical binary `dfc2f7a65ffe153ebffc18597e16aa771dfb9cd69e417a723ffdcc7e6de05d66`.
+Driver 0032 and ncnn patch 0033 are unchanged. The strict isolated build, CLI/
+provenance checks and independent review preceded the canonical two-step rebuild.
+Evidence under WORK: `resident-pipeline-cache-implementation/checkpoint-{before,after}/`,
+`resident-pipeline-cache-review-k9qwltmm/review.json`,
+`resident-pipeline-cache-result-o2y_6g4d/{REPORT.md,audit.json}`,
+`shared-pipelines-runtime-validation-3906w_1n/{REPORT.md,summary.json}` and
+`shared-pipelines-request-{000,001,002,003}-validation.json`. Terminal log:
+`runtime-shared-pipelines-first.log`. The complete capture and exact command are
+in [RUNTIME_INTEGRATION.md](RUNTIME_INTEGRATION.md). Staged assets and outputs
+remain in the corresponding private `runtime-runtime-short-vulkan-shared-pipelines-first-…-pipeline-cache`
+directory. API advertisement remains experimental 1.0, without conformance.
+
 ## 2026-11-01
 
 Latest opt-in path adds padded channels 0033 to AffineSnake, height-one
@@ -2892,3 +2945,15 @@ The terminal log is `vector-bias-warmed-first.log`. New private files left on
 the tablet are under `/var/tmp/radish/vector-bias-batch1-first/` and
 `/var/tmp/radish/vector-bias-warmed-first/` (one helper and two shaders each),
 plus two shaders in `/var/tmp/radish/planar-vector-bias-compile-first/`.
+
+Before the next runtime experiment, three identical immutable runtime library/
+executable paths were deduplicated; every path remains. Four completed probe
+executables were then archived: the two channel-major compile helpers and the
+two vector-bias tensor helpers listed above. Those four device executables are
+now absent; their shader/evidence directories remain. Byte-verified host backups,
+original metadata and a restore script are in
+`WORK/device-probe-executable-archive-before-pipeline-cache/`. Logs and exact
+inventories are `dedup-runtime-assets-before-pipeline-cache*` and
+`archive-probes-before-pipeline-cache.log`. Free storage changed
+177196→223276→265920 KiB; models, captures and outputs were retained and both
+live services stayed active.

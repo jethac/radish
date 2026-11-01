@@ -867,3 +867,21 @@ performance remains unmeasured.
 - [ ] Repeat matched CPU/GPU resident measurements and address memory pressure;
   preserve default-off selection and single-observation/swap limitations.
   Continue broader input, sustained and cancellation/restart work above.
+
+## Pipeline reuse across shape changes
+
+- [x] Add default-off `--reuse-pipeline-cache` for bounded Vulkan request loops
+  with CACHE1; preserve the exact-T Net cache and one weight set at a time.
+- [x] Retain both a lazy device and an external stock-pipeline cache. Keep
+  Net/custom contexts → external cache → device cleanup and timing order.
+- [x] Preserve historical capture compatibility and validate explicit option,
+  nonnegative entry counts and per-request/session provenance agreement.
+- [x] Pass strict builds, focused CLI/provenance checks and independent review.
+- [x] Validate short/full/short/short on the tablet: all original core/waveform
+  gates, exact prior input/output bytes, 715 GPU/zero CPU paths each. Load times
+  9.710722/3.988262/1.162545/0 s; cache entries 173/263/263/263 plus four device
+  entries. Revisited T78 retains all executing pipeline handles. Peak525.7 MiB/
+  41.6 MiB swap, no faults/services active; full evidence in NOTES.
+- [ ] Measure broader novel-shape/cache-memory behavior, enabled cancellation
+  and sustained workloads before an indefinite worker integration. CPU remains
+  faster; this change reduces loading and does not close the extraction gap.

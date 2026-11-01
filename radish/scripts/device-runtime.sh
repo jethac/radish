@@ -13,7 +13,7 @@ LOADER_SHA=75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a
 TEMPLATE=$WORK/kokoro-core-shapes-instancenorm
 TAIL=$WORK/kokoro-tail.bin
 KIND=${1:-}
-case $KIND in runtime-short|runtime-full) ;; *) echo 'usage: device-runtime.sh runtime-short|runtime-full [run-label] [--snake|--affine-snake|--snake-deconv2d|--affine-snake-deconv2d] [--vulkan|--cpu-packed] [--threads N] [--ort-threads N] [--max-frames N] [--repeat N] [--request-loop --next-input runtime-short|runtime-full ...]' >&2; exit 2 ;; esac
+case $KIND in runtime-short|runtime-full) ;; *) echo 'usage: device-runtime.sh runtime-short|runtime-full [run-label] [--snake|--affine-snake|--snake-deconv2d|--affine-snake-deconv2d] [--vulkan|--cpu-packed] [--threads N] [--ort-threads N] [--max-frames N] [--repeat N] [--request-loop --next-input runtime-short|runtime-full ... [--reuse-pipeline-cache]]' >&2; exit 2 ;; esac
 shift
 RUN=$(date +%s%N)
 if [[ $# -gt 0 && $1 != --* ]]; then RUN=$1; shift; fi
@@ -26,9 +26,13 @@ MAX_FRAMES=512
 REPEAT=1
 CORE_GRAPH=instancenorm
 REQUEST_LOOP=false
+REUSE_PIPELINE_CACHE=false
 NEXT_INPUTS=()
 while [[ $# -gt 0 ]]; do
     case $1 in
+        --reuse-pipeline-cache)
+            ! $REUSE_PIPELINE_CACHE || { echo 'duplicate --reuse-pipeline-cache' >&2; exit 2; }
+            REUSE_PIPELINE_CACHE=true ;;
         --request-loop)
             ! $REQUEST_LOOP || { echo 'duplicate --request-loop' >&2; exit 2; }
             REQUEST_LOOP=true ;;
@@ -85,6 +89,9 @@ GROUPS_PER_CHUNK=${RADISH_SHARED_GROUPS:-8}
 for toggle in "$TILED" "$TILED32" "$SHARED32" "$MIXED" "$CACHE" "$TRACE" "$PROFILE" "$RESHAPE_ALIAS"; do
     [[ $toggle == 0 || $toggle == 1 ]] || { echo 'Radish toggles must be 0 or 1' >&2; exit 2; }
 done
+if $REUSE_PIPELINE_CACHE; then
+    [[ $REQUEST_LOOP == true && $BACKEND == vulkan && $CACHE == 1 ]] || { echo '--reuse-pipeline-cache requires a Vulkan request loop and RADISH_NCNN_PIPELINE_CACHE=1' >&2; exit 2; }
+fi
 [[ $BATCH =~ ^([1-4]|8)$ && $GROUPS_PER_CHUNK =~ ^[1-8]$ ]] || { echo 'batch must be 1, 2, 3, 4 or 8 and shared groups 1..8' >&2; exit 2; }
 VALIDATOR=$TOP/radish/scripts/validate-kokoro-snake-fixture.py
 CORE_ARGS=
@@ -104,6 +111,7 @@ TAG=runtime-$KIND-$BACKEND-$RUN
 [[ $PAD_CHANNELS == 0 ]] || TAG+=-pad-channels
 [[ $TILED_GROUPS_X == 1 ]] || TAG+=-tiled-groups-x$TILED_GROUPS_X
 if $REQUEST_LOOP; then TAG+=-loop; fi
+if $REUSE_PIPELINE_CACHE; then TAG+=-pipeline-cache; fi
 UNIT=radish-$TAG
 REMOTE=/var/tmp/radish/$TAG
 OUTPUT=$WORK/kokoro-$KIND-single-$BACKEND-$RUN
@@ -113,6 +121,7 @@ OUTPUT=$WORK/kokoro-$KIND-single-$BACKEND-$RUN
 [[ $PAD_CHANNELS == 0 ]] || OUTPUT+=-pad-channels
 [[ $TILED_GROUPS_X == 1 ]] || OUTPUT+=-tiled-groups-x$TILED_GROUPS_X
 if $REQUEST_LOOP; then OUTPUT+=-loop; fi
+if $REUSE_PIPELINE_CACHE; then OUTPUT+=-pipeline-cache; fi
 [[ ! -e $OUTPUT && ! -L $OUTPUT ]] || { echo 'host output already exists' >&2; exit 2; }
 mkdir -p "$WORK/evidence"
 [[ ! -e $WORK/evidence/$TAG-inputs.json && ! -e $WORK/evidence/$TAG.txt && ! -e $WORK/evidence/$TAG-icd.json ]] || { echo 'run label already has evidence' >&2; exit 2; }
@@ -129,6 +138,10 @@ if $REQUEST_LOOP; then
         PREPARE_ARGS+=(--next-source "$WORK/kokoro-$next")
         LOOP_ARGS+=" --next-input $REMOTE/input-$next"
     done
+fi
+if $REUSE_PIPELINE_CACHE; then
+    PREPARE_ARGS+=(--reuse-pipeline-cache)
+    LOOP_ARGS+=" --reuse-pipeline-cache"
 fi
 python3 "$CAPTURE" prepare --source "$SOURCE" --models "$MODELS" --template "$TEMPLATE" \
     --binary "$BINARY" --driver "$DRIVER" --loader "$LOADER" --tail "$TAIL" \

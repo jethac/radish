@@ -34,7 +34,7 @@ and both live appliance services remained active.
 | --- | ---: | ---: |
 | Fixed full-size core, warm extraction | **38.557 s** | **32.079 s** |
 | Fresh full-length synthesis, including startup | **54.928 s** | **39.790 s** |
-| Complete short synthesis, resident core | **18.768 s** | **15.411 s** |
+| Complete short synthesis, resident core | **18.498 s** | **15.411 s** |
 | Complete full synthesis, resident core | **45.501 s** | **36.803 s** |
 
 The latest optional channel padding moves five general convolutions onto the
@@ -53,6 +53,18 @@ Every request passes original-ORT core/waveform references and has 715 GPU / zer
 CPU core layers. All eight boundary inputs match prior validated CPU/GPU captures;
 new same-length outputs match each other. The whole four-request session peaks
 at **525.8 MiB plus 80.1 MiB swap**, not an isolated fresh-request peak.
+
+New opt-in `--reuse-pipeline-cache` preserves compiled pipelines across shape
+changes while still replacing the network and reloading its weights. A validated
+short/full/short/short sequence loads the core in **9.711 / 3.988 / 1.163 / 0 s**;
+complete synthesis takes **28.938 / 49.434 / 20.455 / 18.498 s**. All four outputs
+are byte-identical to the earlier validated results. The short-shape revisit
+reuses the same compiled pipeline handles; cache entries stop growing after the
+two shapes are seen. Session peak is **525.7 MiB plus 41.6 MiB swap**. Earlier
+short reload took 9.329 s, but different cache history, sequence and memory
+pressure limit that comparison. This improves reloads; it does not establish a
+convolution speedup or sustained performance. The full resident figure above
+remains the earlier measurement.
 
 CPU remains faster on the same combined graph and exact boundaries: **15.411 s
 short / 36.803 s full**, **404.8 MiB peak and zero swap**, with all reference

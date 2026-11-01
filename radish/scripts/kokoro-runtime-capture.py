@@ -89,11 +89,23 @@ def frontend_inputs(source, models, binary, graphs):
             'binary_path': str(binary.resolve()), 'binary': asset(binary.resolve())}
 
 
+def cache_reuse(record):
+    value = record.get('reuse_pipeline_cache', False)
+    require(type(value) is bool, 'reuse_pipeline_cache must be a boolean')
+    return value
+
+
 def request_records(plan):
+    reuse = cache_reuse(plan)
+    require(not reuse or (plan.get('request_loop') is True and plan['backend'] == 'vulkan'
+                         and plan['environment']['RADISH_NCNN_PIPELINE_CACHE'] == '1'),
+            'pipeline cache reuse requires a Vulkan request loop and CACHE=1')
     if not plan.get('request_loop', False):
         return [plan]
     records = []
     for index, request in enumerate(plan['requests']):
+        require('reuse_pipeline_cache' not in request or cache_reuse(request) == reuse,
+                'request overrides pipeline cache reuse mode')
         record = {key: value for key, value in plan.items() if key not in ('request_loop', 'requests')}
         record.update(request)
         record['request_index'] = index
@@ -108,6 +120,8 @@ def prepare(args):
     require((args.request_loop and 1 <= len(args.next_source) <= 3 and args.repeat == 1
              and args.core_graph == 'affine-snake-deconv2d')
             or (not args.request_loop and not args.next_source), 'invalid request-loop selection')
+    require(not args.reuse_pipeline_cache or (args.request_loop and args.backend == 'vulkan'),
+            'pipeline cache reuse requires a Vulkan request loop')
     graph_manifest = read_json(args.models / 'frontend-models.json')
     require(graph_manifest['format'] == 'radish-kokoro-frontend-models-v1'
             and graph_manifest['source_sha256'] == SOURCE_PIN, 'unexpected frontend model provenance')
@@ -147,6 +161,8 @@ def prepare(args):
         require(value in allowed.get(key, {'0', '1'}), 'invalid environment value: ' + key)
         environment[key] = value
     require(set(environment) == ENV_NAMES, 'incomplete environment inventory')
+    require(not args.reuse_pipeline_cache or environment['RADISH_NCNN_PIPELINE_CACHE'] == '1',
+            'pipeline cache reuse requires CACHE=1')
     environment['VK_DRIVER_FILES'] = args.remote + '/radish_icd.json'
     # SIMPLEVK's line scanner must open our loader; the loader reads this private ICD.
     with args.icd.open('x') as stream:
@@ -160,6 +176,7 @@ def prepare(args):
               'loader_environment': {'LD_LIBRARY_PATH': args.remote}, 'backend': args.backend,
               'threads': args.threads, 'ort_threads': args.ort_threads, 'max_frames': args.max_frames,
               'repeat': args.repeat, 'remote_directory': args.remote,
+              'reuse_pipeline_cache': args.reuse_pipeline_cache,
               'scope': 'Pinned single-process synthesis inputs; generation itself does not establish accuracy.'}
     record['implementation'] = {str(path.resolve()): asset(path) for path in
                                 (args.wrapper, Path(__file__), args.wrapper.parent / 'check-gpu-log.py')}
@@ -307,6 +324,11 @@ def check_request(stage, record, evidence, shared_graphs, shared_weights):
     require(run['threads'] == record['threads'] and run['ort_threads'] == record['ort_threads']
             and run['repeat'] == record['repeat'] and run['ort_version'] == front['ort_version'], 'runtime configuration mismatch')
     require(run['environment'] == record['environment'], 'runtime environment mismatch')
+    reuse = cache_reuse(record)
+    require(cache_reuse(run) == reuse, 'runtime pipeline cache reuse differs from launch')
+    require(not reuse or ('request_index' in record and record['backend'] == 'vulkan'
+                         and record['environment']['RADISH_NCNN_PIPELINE_CACHE'] == '1'),
+            'invalid enabled pipeline cache reuse request')
     require(len(run['extraction_seconds']) == record['repeat'], 'repeat timing count mismatch')
     times = [run[key] for key in ('frontend_wall_seconds', 'shape_seconds', 'core_load_seconds', 'core_scope_seconds',
                                   'tail_seconds', 'synthesis_seconds')] + run['extraction_seconds']
@@ -336,6 +358,8 @@ def check_session(stage, plan, evidence, shared_graphs, shared_weights):
     n = len(records)
     require(2 <= n <= 4 and plan['repeat'] == 1, 'invalid bounded session plan')
     session = read_json(stage / 'session.json')
+    reuse = cache_reuse(plan)
+    require(cache_reuse(session) == reuse, 'session pipeline cache reuse differs from launch')
     require(session['format'] == 'radish-kokoro-runtime-session-v1' and session['status'] == 'complete'
             and session['phase'] == 'complete', 'resident session did not complete')
     require(session['requested_requests'] == session['completed_requests'] == session['active_request_index'] == n,
@@ -347,6 +371,10 @@ def check_session(stage, plan, evidence, shared_graphs, shared_weights):
     previous_t, ort_version, requests = None, None, []
     for index, (record, item) in enumerate(zip(records, session['requests'])):
         name = f'request-{index:03d}'
+        for key in ('pipeline_cache_entries', 'device_pipeline_cache_entries'):
+            value = item.get(key, 0)
+            require((not reuse or key in item) and type(value) is int and value >= 0
+                    and (reuse or value == 0), 'invalid session cache entry count: ' + key)
         require(item['index'] == index and item['directory'] == name
                 and item['input_directory'] == record['remote_input_directory'], 'request ordering/provenance differs')
         run = check_request(stage / name, record, evidence, shared_graphs, shared_weights)
@@ -439,6 +467,7 @@ def main():
         p.add_argument('--' + name, type=Path, required=True)
     p.add_argument('--next-source', type=Path, action='append', default=[])
     p.add_argument('--request-loop', action='store_true')
+    p.add_argument('--reuse-pipeline-cache', action='store_true')
     p.add_argument('--remote', required=True)
     p.add_argument('--backend', choices=['vulkan', 'cpu-packed'], required=True)
     p.add_argument('--core-graph', choices=CORE_GRAPHS, required=True)

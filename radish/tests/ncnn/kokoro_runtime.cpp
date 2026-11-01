@@ -1,6 +1,9 @@
 #include "runtime_helpers.h"
 #include "radish_snake.h"
 #include "radish_affine_snake.h"
+#if NCNN_VULKAN
+#include "pipelinecache.h"
+#endif
 #include "../kokoro_frontend.h"
 #include "../kokoro_shapes.h"
 #include "../kokoro_waveform.h"
@@ -117,6 +120,23 @@ struct CoreResult {
     std::vector<double> extractions,workspace_trim;
     double load_seconds=0;
 };
+struct LoopPipelineCache {
+#if NCNN_VULKAN
+    radish_ncnn::GpuInstance instance;
+    const ncnn::VulkanDevice* device=nullptr;
+    std::unique_ptr<ncnn::PipelineCache> cache;
+    void initialize() {
+        if(cache) return;
+        require(ncnn::create_gpu_instance()==0,"cannot create shared GPU instance"); instance.active=true;
+        require(ncnn::get_gpu_count()==1,"expected one private Radish GPU");
+        device=ncnn::get_gpu_device(0);
+        require(device && device->is_valid(),"invalid shared GPU device");
+        require(std::strstr(device->info.device_name(),"Radish")!=nullptr,"expected Radish device");
+        require(!device->info.bug_corrupted_online_pipeline_cache(),"shared pipeline cache lookup is disabled");
+        cache.reset(new ncnn::PipelineCache(device));
+    }
+#endif
+};
 class CoreSession {
     double load_start=now();
     bool vulkan,resident;
@@ -131,23 +151,30 @@ class CoreSession {
 public:
     double load_seconds=0;
     CoreSession(const radish::KokoroShapePlan& plan,const std::string& weights,
-                bool use_vulkan,int threads,bool request_loop):vulkan(use_vulkan),resident(request_loop),parameters(plan.param_text) {
+                bool use_vulkan,int threads,bool request_loop,LoopPipelineCache* shared=nullptr):vulkan(use_vulkan),resident(request_loop),parameters(plan.param_text) {
 #if NCNN_VULKAN
     if(vulkan) {
-        require(ncnn::create_gpu_instance()==0,"cannot create GPU instance"); instance.active=true;
-        require(ncnn::get_gpu_count()==1,"expected one private Radish GPU");
-        device=ncnn::get_gpu_device(0);
-        require(device && device->is_valid(),"invalid GPU device");
-        require(std::strstr(device->info.device_name(),"Radish")!=nullptr,"expected Radish device");
+        if(shared) {
+            shared->initialize(); device=shared->device;
+        } else {
+            require(ncnn::create_gpu_instance()==0,"cannot create GPU instance"); instance.active=true;
+            require(ncnn::get_gpu_count()==1,"expected one private Radish GPU");
+            device=ncnn::get_gpu_device(0);
+            require(device && device->is_valid(),"invalid GPU device");
+            require(std::strstr(device->info.device_name(),"Radish")!=nullptr,"expected Radish device");
+        }
         std::printf("ncnn device: %s\n",device->info.device_name());
     }
 #else
-    require(!vulkan,"runtime was built without Vulkan");
+    require(!vulkan && !shared,"runtime was built without Vulkan");
 #endif
     radish_ncnn::configure_options(net.opt,vulkan,!vulkan,false,threads);
     if(resident) net.opt.use_local_pool_allocator=false;
 #if NCNN_VULKAN
-    if(vulkan) net.set_vulkan_device(device);
+    if(vulkan) {
+        net.set_vulkan_device(device);
+        if(shared) net.opt.pipeline_cache=shared->cache.get();
+    }
 #endif
     require(snake.register_layer(net)==0,"cannot register RadishSnake");
     require(affine_snake.register_layer(net)==0,"cannot register RadishAffineSnake");
@@ -213,10 +240,11 @@ CoreResult run_core(const radish_frontend::Boundary& boundary,const radish::Koko
 void publish_runtime(Output& output,const radish_frontend::Boundary& boundary,const CoreResult& core,
                      bool vulkan,int threads,int ort_threads,int repeat,const char* core_graph,
                      double frontend_wall,double shapes_wall,int shape_blobs,double core_wall,
-                     double tail_wall,double synthesis_wall,bool resident=false,size_t request_index=0,bool cache_hit=false) {
+                     double tail_wall,double synthesis_wall,bool resident=false,size_t request_index=0,bool cache_hit=false,bool reuse_pipeline_cache=false) {
         std::ostringstream manifest;
         manifest << std::setprecision(17) << "{\n  \"format\": \"radish-kokoro-runtime-v1\",\n  \"backend\": " << quote(vulkan?"vulkan":"cpu-packed")
                  << ",\n  \"core_graph\": " << quote(core_graph)
+                 << ",\n  \"reuse_pipeline_cache\": " << (reuse_pipeline_cache?"true":"false")
                  << ",\n  \"accuracy\": \"unreferenced generation; validate the captured boundary separately\",\n  \"T\": " << boundary.T
                  << ",\n  \"frames\": " << boundary.frames << ",\n  \"samples\": " << boundary.samples << ",\n  \"sample_rate\": 24000,\n  \"threads\": " << threads
                  << ",\n  \"ort_threads\": " << ort_threads << ",\n  \"repeat\": " << repeat << ",\n  \"ort_version\": " << quote(boundary.ort_version)
@@ -309,15 +337,17 @@ struct RequestRecord {
     int64_t T;
     bool cache_hit;
     double load,synthesis,publication,eviction;
+    size_t pipeline_cache_entries,device_pipeline_cache_entries;
 };
 int run_request_loop(const std::vector<std::string>& args,const std::vector<std::string>& queued,
                      const std::string& parameters,const radish_waveform::Tail& tail,
                      const std::string& ort_library,bool vulkan,int threads,int ort_threads,int max_T,
-                     int layers,int blobs,const char* core_graph,const std::string& cancel_file,double process_start) {
+                     int layers,int blobs,const char* core_graph,const std::string& cancel_file,double process_start,bool reuse_pipeline_cache) {
     require(!args[5].empty() && args[5].back()!='/',"session output must name a new directory");
     require(mkdir(args[5].c_str(),0700)==0,"cannot create exclusive session directory");
     std::vector<RequestRecord> completed;
     std::vector<MemorySample> memory;
+    std::unique_ptr<LoopPipelineCache> shared;
     std::unique_ptr<CoreSession> session;
     std::string phase="before_request";
     size_t active=0;
@@ -326,6 +356,7 @@ int run_request_loop(const std::vector<std::string>& args,const std::vector<std:
         std::ostringstream out;
         out << std::setprecision(17) << "{\n  \"format\": \"radish-kokoro-runtime-session-v1\",\n  \"status\": " << quote(status)
             << ",\n  \"backend\": " << quote(vulkan?"vulkan":"cpu-packed") << ",\n  \"core_graph\": " << quote(core_graph)
+            << ",\n  \"reuse_pipeline_cache\": " << (reuse_pipeline_cache?"true":"false")
             << ",\n  \"requested_requests\": " << queued.size() << ",\n  \"completed_requests\": " << completed.size()
             << ",\n  \"active_request_index\": " << active << ",\n  \"phase\": " << quote(phase)
             << ",\n  \"error\": " << quote(error) << ",\n  \"session_seconds\": " << now()-process_start
@@ -338,7 +369,9 @@ int run_request_loop(const std::vector<std::string>& args,const std::vector<std:
                 << ", \"input_directory\": " << quote(r.input) << ", \"T\": " << r.T
                 << ", \"core_cache_hit\": " << (r.cache_hit?"true":"false") << ", \"core_load_seconds\": " << r.load
                 << ", \"synthesis_seconds\": " << r.synthesis << ", \"through_publication_seconds\": " << r.publication
-                << ", \"previous_core_eviction_seconds\": " << r.eviction << '}';
+                << ", \"previous_core_eviction_seconds\": " << r.eviction
+                << ", \"pipeline_cache_entries\": " << r.pipeline_cache_entries
+                << ", \"device_pipeline_cache_entries\": " << r.device_pipeline_cache_entries << '}';
         }
         out << "\n  ],\n  \"memory_samples\": [";
         for(size_t i=0;i<memory.size();++i) {
@@ -349,7 +382,7 @@ int run_request_loop(const std::vector<std::string>& args,const std::vector<std:
         out << "\n  ],\n  \"timing_scope\": \"Each request regenerates frontend/source and one tail. A same-shape core remains resident; per-request extraction includes GPU allocator trimming. Request timing excludes publication and final session teardown; session timing includes completed captures and final teardown. Memory samples are phase observations, not isolated peaks. Accuracy requires separate same-boundary references for every completed request.\"\n}\n";
         atomic_session_manifest(args[5],out.str());
     };
-    auto cleanup_core=[&]() { double start=now(); session.reset(); cleanup=now()-start; };
+    auto cleanup_core=[&]() { double start=now(); session.reset(); shared.reset(); cleanup=now()-start; };
     auto checkpoint=[&](const char* next) {
         phase=next;
         memory.push_back(memory_sample(next,active,process_start));
@@ -374,13 +407,21 @@ int run_request_loop(const std::vector<std::string>& args,const std::vector<std:
             bool hit=session && session->matches(plan);
             if(!hit) {
                 double eviction_start=now(); session.reset(); eviction=now()-eviction_start;
-                session.reset(new CoreSession(plan,args[3],vulkan,threads,true));
+                if(reuse_pipeline_cache && !shared) shared.reset(new LoopPipelineCache);
+                session.reset(new CoreSession(plan,args[3],vulkan,threads,true,shared.get()));
                 load=session->load_seconds;
             }
             std::printf("request %zu core cache %s T=%lld\n",active,hit?"hit":"miss",static_cast<long long>(boundary.T));
             checkpoint("after_core_load");
             CoreResult core=session->extract(boundary,1); core.load_seconds=load;
             double core_wall=now()-core_start;
+            size_t pipeline_entries=0,device_pipeline_entries=0;
+#if NCNN_VULKAN
+            if(shared) {
+                pipeline_entries=shared->cache->size();
+                device_pipeline_entries=shared->device->get_pipeline_cache()->size();
+            }
+#endif
             checkpoint("after_core");
             double tail_start=now();
             std::vector<float> audio=radish_waveform::synthesize(core.values.data(),core.values.size(),static_cast<size_t>(boundary.frames),tail);
@@ -394,8 +435,8 @@ int run_request_loop(const std::vector<std::string>& args,const std::vector<std:
             output.write("waveform.f32",audio.data(),audio.size()*sizeof(float));
             checkpoint("before_publication");
             publish_runtime(output,boundary,core,vulkan,threads,ort_threads,1,core_graph,
-                            frontend_wall,shapes_wall,plan.blobs,core_wall,tail_wall,synthesis_wall,true,active,hit);
-            completed.push_back({active,queued[active],boundary.T,hit,load,synthesis_wall,now()-request_start,eviction});
+                            frontend_wall,shapes_wall,plan.blobs,core_wall,tail_wall,synthesis_wall,true,active,hit,reuse_pipeline_cache);
+            completed.push_back({active,queued[active],boundary.T,hit,load,synthesis_wall,now()-request_start,eviction,pipeline_entries,device_pipeline_entries});
             phase="request_published";
             manifest("running","");
         }
@@ -421,7 +462,7 @@ int main(int argc,char** argv) {
     std::setvbuf(stdout,nullptr,_IONBF,0);
     try {
         double start=now();
-        bool vulkan=true,backend_selected=false,affine_snake=false,deconv2d=false,request_loop=false;
+        bool vulkan=true,backend_selected=false,affine_snake=false,deconv2d=false,request_loop=false,reuse_pipeline_cache=false;
         int threads=4,ort_threads=4,max_T=512,repeat=1;
         std::string ort_library="/usr/local/lib/straylight-listen/libonnxruntime.so";
         std::vector<std::string> args,next_inputs;
@@ -430,6 +471,8 @@ int main(int argc,char** argv) {
             std::string arg=argv[i];
             if(arg=="--request-loop") {
                 require(!request_loop,"duplicate --request-loop"); request_loop=true;
+            } else if(arg=="--reuse-pipeline-cache") {
+                require(!reuse_pipeline_cache,"duplicate --reuse-pipeline-cache"); reuse_pipeline_cache=true;
             } else if(arg=="--next-input") {
                 require(++i<argc && next_inputs.size()<3,"--next-input requires a directory; maximum three appended requests");
                 next_inputs.push_back(argv[i]);
@@ -451,9 +494,14 @@ int main(int argc,char** argv) {
                 else repeat=integer(argv[i],1,10);
             } else { require(arg.compare(0,2,"--")!=0,"unknown option: "+arg); args.push_back(arg); }
         }
-        require(args.size()==6,"usage: radish-kokoro-runtime [--affine-snake] [--deconv2d] [--vulkan|--cpu-packed] [--threads N] [--ort-threads N] [--max-frames N] [--repeat N] [--ort-lib PATH] [--request-loop --next-input DIR ... [--cancel-file PATH]] MODELS INPUT_DIR PARAM WEIGHTS TAIL NEW_OUTPUT; use the staging wrapper to verify artifact hashes");
+        require(args.size()==6,"usage: radish-kokoro-runtime [--affine-snake] [--deconv2d] [--vulkan|--cpu-packed] [--threads N] [--ort-threads N] [--max-frames N] [--repeat N] [--ort-lib PATH] [--request-loop --next-input DIR ... [--cancel-file PATH] [--reuse-pipeline-cache]] MODELS INPUT_DIR PARAM WEIGHTS TAIL NEW_OUTPUT; use the staging wrapper to verify artifact hashes");
         require(request_loop ? !next_inputs.empty() && repeat==1 : next_inputs.empty() && cancel_file.empty(),
                 "request-loop requires one to three --next-input directories and --repeat1; next-input/cancel-file are loop-only");
+        if(reuse_pipeline_cache) {
+            require(request_loop && vulkan,"--reuse-pipeline-cache requires a Vulkan request loop");
+            const char* enabled=std::getenv("RADISH_NCNN_PIPELINE_CACHE");
+            require(enabled && std::strcmp(enabled,"1")==0,"--reuse-pipeline-cache requires RADISH_NCNN_PIPELINE_CACHE=1");
+        }
         const std::string parameters=read_param(args[2]);
         std::istringstream header(parameters);
         int magic=0,layers=0,blobs=0;
@@ -469,7 +517,7 @@ int main(int argc,char** argv) {
             const char* graph=deconv2d ? (affine_snake?"affine-snake-deconv2d":"snake-deconv2d")
                                       : affine_snake?"affine-snake":layers==906?"snake":"instancenorm";
             return run_request_loop(args,queued,parameters,tail,ort_library,vulkan,threads,ort_threads,max_T,
-                                    layers,blobs,graph,cancel_file,start);
+                                    layers,blobs,graph,cancel_file,start,reuse_pipeline_cache);
         }
         Output output(args[5]);
         double front_start=now();

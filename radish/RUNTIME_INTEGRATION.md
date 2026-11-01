@@ -1139,3 +1139,79 @@ driver remains 0032 `c8fee96723942fca768a9026987a5d609071d2c60079058064377635155
 The checkpoint and unchanged graph/weight hashes are in
 `WORK/padded-channel-integration-0033-checkpoint/after.json` and per-request device
 provenance. No live application/service integration or sustained/restart claim.
+
+### Optional pipeline reuse across shape reloads
+
+`--reuse-pipeline-cache` is default off and requires a Vulkan request loop with
+`RADISH_NCNN_PIPELINE_CACHE=1`. It retains the device and an external ncnn pipeline
+cache across exact-T Net evictions. A shape miss still destroys the old Net and
+reloads/packs/uploads weights for the new one; only one weight set is retained.
+Positive shape hints and exact-T matching remain unchanged. Both the session and
+each request record the option, and enabled output names add `-pipeline-cache`.
+
+The validated short/full/short/short command was:
+
+```sh
+RADISH_DEVICE_LOCK=/home/jethac/Projects/lenovo-8/.device.lock \
+RADISH_NCNN_PLANAR=1 RADISH_NCNN_NORM_SUM4=1 RADISH_BATCH_CHUNKS=8 \
+RADISH_NCNN_PAD_CHANNELS=1 RADISH_NCNN_PIPELINE_CACHE=1 \
+  radish/scripts/device-runtime.sh runtime-short shared-pipelines-first \
+  --affine-snake-deconv2d --vulkan --request-loop --reuse-pipeline-cache \
+  --next-input runtime-full --next-input runtime-short --next-input runtime-short \
+  --threads 4 --ort-threads 4 --max-frames 512 --repeat 1
+```
+
+Use a new run label when repeating it. The wrapper retains its two-to-four-request
+bound, resource limits, asset pins and complete-session publication checks.
+
+| Request | T / exact-Net reuse | Core load s | Core extraction s | Complete synthesis s |
+| --- | --- | ---: | ---: | ---: |
+| 000 | 78 / fresh process | 9.710721877 | 14.733876446 | 28.937691947 |
+| 001 | 213 / shape reload | 3.988262344 | 39.090509623 | 49.434000380 |
+| 002 | 78 / shape reload, cached pipelines | 1.162544576 | 14.568416143 | 20.455279049 |
+| 003 | 78 / retained core | 0 | 14.191422084 | 18.498216593 |
+
+The external cache records 173,263,263,263 entries; the device cache records four
+at each completed request. These are artifact counts, not hits or allocated bytes. Revisiting
+T78 adds no entries but still reloads weights. Its 140 executing pipeline handles
+and all 1425 ordered dispatch signatures match across requests 000, 002 and 003.
+The earlier 0033 short reload was
+9.328510884 s versus 1.162544576 s here; these observations have different cache
+histories, session order and memory pressure, so they are not a matched timing
+pair or a compute-kernel speedup measurement.
+
+All four requests pass unchanged original-ORT core/waveform gates generated after
+device completion from their exact boundaries. All eight boundary files and both
+outputs are byte-identical to the corresponding validated 0033 captures. Short
+waveform SNR is 97.411696248 dB and full SNR 97.912821255 dB. The three T78 requests
+also match each other exactly. The driver remains 0032, advertised Vulkan remains
+experimental 1.0, and model, shaders and precision are unchanged.
+
+Session time is 120.478595258 s, including final Net → external cache → device
+cleanup of 0.279266953 s; service wall is 120.596 s. Whole-session peak is
+525.7 MiB plus 41.6 MiB swap, with no faults and both services active. Request
+synthesis excludes publication and final teardown; extraction includes allocator
+trim. CPU remains faster: the earlier short resident result is 15.411270994 s
+versus 18.498216593 s here. This sequence contains no full resident reuse sample;
+the earlier CPU/full comparison remains separately scoped. Sustained service,
+cache-memory bounds beyond four requests and a live application latency win remain
+unestablished.
+The tablet cancellation probe above predates this flag. Cleanup uses the reviewed
+success/cancellation/failure call sites, but cancellation with a populated shared
+cache has not been device-retested.
+
+Capture: `WORK/kokoro-runtime-short-single-vulkan-shared-pipelines-first-affine-snake-deconv2d-planar-norm-sum4-pad-channels-loop-pipeline-cache/`.
+Evidence: `WORK/shared-pipelines-runtime-validation-3906w_1n/{REPORT.md,summary.json,manifest.json}`,
+`resident-pipeline-cache-result-o2y_6g4d/{REPORT.md,audit.json}`,
+`shared-pipelines-request-{000,001,002,003}-validation.json` and
+`runtime-shared-pipelines-first.log`. Apply the same per-request import/validation
+commands above with new reference/report destinations.
+
+Measured canonical runtime SHA
+`dfc2f7a65ffe153ebffc18597e16aa771dfb9cd69e417a723ffdcc7e6de05d66`;
+source SHA `27f81a603923ce135920bd0c858ee74c5e734ed39d6e905aac7e1568b29e3737`.
+Project source patches are frozen in
+`WORK/resident-pipeline-cache-private-logygus0/runtime-pipeline-cache.patch`
+(SHA `872d474e33c20707d311dfcb3ca82174541d30bfa8044d076672742bae5fa58b`)
+and `WORK/resident-cache-controls-yz7yt3g4/resident-cache-controls.patch`
+(SHA `4b15a6b8a9a30d0a01c9d48496647f65c5a61834c036bb4dd791dd7268282eaa`).
