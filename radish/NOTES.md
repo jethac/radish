@@ -31,6 +31,20 @@ core drains; marker-return to exit is 15.793739 s. Prompt interruption, a new
 request after cancellation, sustained behavior and live application wiring remain
 unproven. Detailed earlier checkpoints and the new 0033 evidence follow below.
 
+A private vector-bias shader experiment is not admitted to the production path.
+Its original repeat-MAD hypothesis failed: the hot loop still has 32 scalar
+MADs, with no repeat MAD or instruction-count improvement. Vector bias loads
+do reduce the whole program from native length 27 to 21 and consolidate two
+shared-load/wait phases into one, motivating a separate timing experiment.
+Both initial batch1 operator pairs pass all 27264 output, independent-reference
+and input-preservation checks. However, the second call is slower in both
+orders: accepted/vector-bias math 10.594/35.536 ms, then vector-bias/accepted
+11.789/66.611 ms. First-use setup and changing GPU frequency prevent a shader
+ranking from these pairs. The subsequent warmed balanced comparison rejects
+the candidate: math mean 11.850724→12.704529 ms, 7.20% slower, with the candidate
+slower in all four adjacent pairs. All twelve outputs pass. Driver 0032 and its
+production batching allowlist remain unchanged.
+
 Historical evidence follows.
 
 Overall goal active. M0–M2 bring-up is demonstrated; selected M3 paths now pass,
@@ -2831,3 +2845,50 @@ probe executables were then archived with verified host backups and a restore
 manifest in `device-probe-executable-archive-before-padded-runtime/`; log
 `archive-probes-before-padded-runtime.log` records free 249408→270756 KiB.
 Models, captures and outputs were retained; both services stayed active.
+
+## Vector-bias shader experiment: rejected
+
+The private candidate changes scalar bias reads to two vec4 reads, leaving the
+planar accumulation body unchanged. Actual A506 compilation reduces whole-program
+native length 27→21, but both hot loops still contain 32 scalar MADs, 47 encoded
+instructions and no repeat MAD. Both retain 16 full/zero half registers, 16 KiB
+shared memory, four loops and no private allocation. The original repeat-MAD
+hypothesis fails. A separate observation—two shared-load/wait phases becoming
+one—motivated the bounded timing comparison; compiler estimates are not measured
+A506 cycle counts.
+
+The first two ordered pairs are confounded by execution position: accepted then
+candidate math takes 10.594/35.536 ms; reversing the order gives 11.789/66.611 ms.
+Both pass accuracy. A separate warmed run uses four ABBA warmups followed by
+eight ABBAABBA measured calls, where A is accepted and B is candidate. Full CPU
+reference checking occurs afterward, preserving all twelve downloaded outputs.
+
+Measured accepted/candidate math means are 11.850724/12.704529 ms, medians
+11.927482/12.627380 ms; the candidate is slower in all four adjacent pairs
+(18.91%, 4.10%, 5.14%, 2.30%). Whole-forward means are 14.984522/15.771816 ms.
+Each math call uses eight chunks/eight submits at batch1, grid4×2/local16×8;
+native21 is not admitted to production batch8. All 327168 output values pass
+the unchanged independent double reference and are bit-identical to accepted
+run0, with maximum absolute error 3.42226122e-5. Every input scalar is preserved.
+These checks do not include a full workspace readback. Peak 61.7 MiB/zero swap,
+service 2.019 s, no faults and both live services active. Aggregate devfreq
+counters cannot assign clocks to individual kernels; these are command wall
+times, not GPU timestamps or an isolated hardware-cause finding.
+
+Reject the candidate for promotion. Keep accepted math
+`d130779e24fa84875adcf63ceb964337a22f402df5779b8eb0ba962b9740aa64`,
+driver 0032 and its allowlist unchanged. Candidate SHA is
+`09cc6e74665c8f9c5c8c11b97f9548704a97b731d5f8e40d0e7fef2d496e3b4b`.
+No full-model run or broader compiler sweep follows this failed timing gate.
+
+Evidence under WORK: `vector-bias-warmed-result-hwj1yfn4/{REPORT.md,audit.json}`,
+`vector-bias-order-result-pl1grsi9/REPORT.md`,
+`vector-bias-batch1-result-68fn5tom/REPORT.md` and
+`vector-bias-warmed-review-9_yqsnbo/review.json`. The frozen helper is in
+`planar-vector-bias-warmed-7kxtypbk/`; its source SHA is
+`5373abc9cf51d104fa072a182bf02ad3f2570afff7d951426a86b94571f48aaa`, binary
+`4831b55f5e991cc20c2f1921d07fb0b94a1140334715e3b14a69e87e222f202c`.
+The terminal log is `vector-bias-warmed-first.log`. New private files left on
+the tablet are under `/var/tmp/radish/vector-bias-batch1-first/` and
+`/var/tmp/radish/vector-bias-warmed-first/` (one helper and two shaders each),
+plus two shaders in `/var/tmp/radish/planar-vector-bias-compile-first/`.
