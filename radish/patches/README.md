@@ -44,6 +44,14 @@ limits and validation scope. Published checkpoints remain experimental; publicat
 | `0036-radish-gpu-elapsed-cumulative.patch` | Same Mesa base as 0001; alternative to 0032 | Default-off bounded GPU timestamp diagnostic for one accepted eight-chunk convolution; six valid samples, unchanged output bytes and counts, paired perturbation budget passes; no public query support or model performance change |
 | `0037-radish-gpu-calibration-cumulative.patch` | Same Mesa base as 0001; alternative to 0036 | Default-off fixed MAD/vec4-copy elapsed calibration; ten valid samples and full exact output/guard/input checks; deferred-readback medians 21.3185 GFLOP/s and 4.3011 logical read+write GB/s, without a ceiling or model-speedup claim |
 | `0038-radish-tiled-state-reuse.patch` | Incremental over 0037 in a separate experimental checkout only | **Rejected performance experiment:** full poisoned-output correctness passes, but 0.417119% mean GPU reduction fails the prospective 5% gate. Optional reproduction/history only; not part of the recommended driver stack. |
+| `0039-ir3-cold-output-collect.patch` | Incremental over 0037 in a separate experimental checkout; 0038 not needed | **Rejected before tensors:** 13 repeat MADs form, but 2 hot register moves and outer-boundary shuffling fail compiler admission; native 27→29 is outside batching/timing gates. Compile-only reproduction/history; no tensor or performance claim. |
+
+0039 is not cumulative and is not in the recommended stack. SHA256
+`9633ded58bf108c543d536582f795adbc40bafab0c591457bdfeb89ac4b9eaac`.
+The compiler option is default-off; actual OFF/ON compilation used private
+ICD `8189ca1f…a0633` with the unchanged optional 2510 helper. Canonical Mesa
+remains 0037. See `../GPU_REPEAT_COALESCING.md` for source/native findings and
+the host-checked portable compile-only runner.
 
 0038 is not cumulative. SHA256 `0d3a34785a96f50aabba75529372d83838a71e22ae5613bc350a33cd4d37a72e`; its tested driver was private `bd2a672a…e1a0f`. Keep canonical 0037 and the global device 0032 unchanged. See `../GPU_STATE_REUSE.md` for scope, paired results and optional reproduction.
 

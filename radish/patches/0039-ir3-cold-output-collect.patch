@@ -1,0 +1,120 @@
+--- a/src/freedreno/ir3/ir3_merge_regs.c
++++ b/src/freedreno/ir3/ir3_merge_regs.c
+@@ -610,9 +610,94 @@
+    }
+ }
+ 
++static bool
++radish_cold_output_collect(struct ir3_instruction *instr)
++{
++   if (instr->opc != OPC_META_COLLECT || instr->block->loop_depth != 0 ||
++       instr->dsts_count != 1 || instr->srcs_count != 4 ||
++       instr->dsts[0]->wrmask != 0xf ||
++       (instr->dsts[0]->flags & (IR3_REG_HALF | IR3_REG_SHARED)))
++      return false;
++
++   struct ir3_block *hot = NULL;
++   struct ir3_instruction *groups[4];
++   for (unsigned i = 0; i < 4; i++) {
++      struct ir3_register *src = instr->srcs[i];
++      if (!(src->flags & IR3_REG_SSA) || !src->def ||
++          (src->flags & (IR3_REG_HALF | IR3_REG_SHARED | IR3_REG_RELATIV | IR3_REG_ARRAY)))
++         return false;
++      struct ir3_instruction *mad = src->def->instr;
++      if (mad->opc != OPC_MAD_F32 || mad->dsts_count != 1 ||
++          mad->srcs_count != 3 || mad->dsts[0] != src->def ||
++          mad->block->loop_depth != 2 || !ir3_instr_is_rpt(mad) ||
++          (hot && hot != mad->block))
++         return false;
++      hot = mad->block;
++      groups[i] = ir3_instr_first_rpt(mad);
++      if (ir3_instr_rpt_length(groups[i]) != 2 ||
++          groups[i]->opc != OPC_MAD_F32 ||
++          groups[i]->rpt_next->opc != OPC_MAD_F32)
++         return false;
++      for (unsigned j = 0; j < i; j++) {
++         if (groups[j] == groups[i])
++            return false;
++      }
++   }
++
++   foreach_instr (store, &instr->block->instr_list) {
++      if (store->opc == OPC_STGB && store->srcs_count == 4 &&
++          (store->srcs[0]->flags & IR3_REG_IMMED) &&
++          store->srcs[0]->uim_val == 2 &&
++          (store->srcs[1]->flags & IR3_REG_SSA) &&
++          store->srcs[1]->def == instr->dsts[0] &&
++          store->srcs[1]->wrmask == 0xf)
++         return true;
++   }
++   return false;
++}
++
++static unsigned
++radish_deferred_collects(struct ir3 *ir, struct ir3_instruction *deferred[8])
++{
++   const char *requested = getenv("RADISH_IR3_DEFER_COLD_COLLECT");
++   if (!requested || strcmp(requested, "1") ||
++       ir->type != MESA_SHADER_COMPUTE ||
++       fd_dev_gpu_id(ir->compiler->dev_id) != 506)
++      return 0;
++
++   const nir_shader *nir = NULL;
++   foreach_block (block, &ir->block_list) {
++      if (block->nblock && block->nblock->impl && block->nblock->impl->function) {
++         nir = block->nblock->impl->function->shader;
++         break;
++      }
++   }
++   if (!nir || nir->info.stage != MESA_SHADER_COMPUTE ||
++       nir->info.workgroup_size[0] != 16 ||
++       nir->info.workgroup_size[1] != 8 ||
++       nir->info.workgroup_size[2] != 1 ||
++       nir->info.shared_size != 16384 || nir->info.num_ssbos != 4)
++      return 0;
++
++   unsigned count = 0;
++   foreach_block (block, &ir->block_list) {
++      foreach_instr (instr, &block->instr_list) {
++         if (!radish_cold_output_collect(instr))
++            continue;
++         if (count == 8)
++            return 0;
++         deferred[count++] = instr;
++      }
++   }
++   return count == 8 ? count : 0;
++}
++
+ void
+ ir3_merge_regs(struct ir3_liveness *live, struct ir3 *ir)
+ {
++   struct ir3_instruction *deferred[8];
++   unsigned deferred_count = radish_deferred_collects(ir, deferred);
++
+    /* First pass: coalesce phis, which must be together. */
+    foreach_block (block, &ir->block_list) {
+       foreach_instr (instr, &block->instr_list) {
+@@ -626,7 +711,11 @@
+    /* Second pass: aggressively coalesce parallelcopy, split, collect */
+    foreach_block (block, &ir->block_list) {
+       foreach_instr (instr, &block->instr_list) {
+-         ir3_aggressive_coalesce(live, instr);
++         bool skip = false;
++         for (unsigned i = 0; i < deferred_count; i++)
++            skip |= instr == deferred[i];
++         if (!skip)
++            ir3_aggressive_coalesce(live, instr);
+       }
+    }
+ 
+@@ -636,6 +725,9 @@
+       }
+    }
+ 
++   for (unsigned i = 0; i < deferred_count; i++)
++      aggressive_coalesce_collect(live, deferred[i]);
++
+    index_merge_sets(live, ir, false);
+ 
+    if (ir3_shader_debug & IR3_DBG_RAMSGS)

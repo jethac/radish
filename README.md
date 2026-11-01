@@ -69,8 +69,11 @@ capacity, and compiler wave estimates do not establish occupancy. Reusing state
 within the existing batch preserves every output but reduces GPU time only
 **0.42%**, below the planned 5% criterion. The rejected experiment is recorded
 in [GPU_STATE_REUSE.md](radish/GPU_STATE_REUSE.md); the recommended driver stays
-at 0037. Compiler register allocation and repeat encoding are the next lead,
-not an established bottleneck or speedup. A CPU win alone will not close the goal.
+at 0037. A separate [compiler experiment](radish/GPU_REPEAT_COALESCING.md)
+forms repeat MAD instructions but adds moves inside the reduction loops; it was
+rejected before tensor execution. The next measurement target is shared-memory
+stalls and ALU activity on the unchanged kernel. A CPU win alone will not close
+the goal.
 
 A tablet cancellation probe preserves the completed request and discards the
 second request after its active GPU core finishes. Exit follows the cancel marker
@@ -128,6 +131,7 @@ build and test scripts retain their relative paths.
 | [radish/GPU_TIMING.md](radish/GPU_TIMING.md) | Qualified GPU elapsed diagnostic, results and reproduction |
 | [radish/GPU_CALIBRATION.md](radish/GPU_CALIBRATION.md) | Measured arithmetic/copy rates, raw correctness and reproduction |
 | [radish/GPU_STATE_REUSE.md](radish/GPU_STATE_REUSE.md) | Rejected state-reuse experiment and paired GPU measurements |
+| [radish/GPU_REPEAT_COALESCING.md](radish/GPU_REPEAT_COALESCING.md) | Compiler repeat/copy tradeoff and compile-only rejection |
 
 ## Building and running
 

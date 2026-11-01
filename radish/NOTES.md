@@ -1,5 +1,25 @@
 # Radish status
 
+## 2026-11-02 (JST): repeat coalescing rejected before tensors
+
+Private compiler candidate 0039 permits 13 `rpt1` MADs plus 6 scalar MADs in the
+accepted convolution, retaining 32 scalar operations and 3 vec4 shared loads.
+Hot encoding shrinks 47→36 instructions, but expanded slots stay 55 and two
+new inner-loop register moves plus outer-boundary shuffling violate the
+preselected admission rule. Whole native length grows 27→29, outside current
+batching/timing qualification, with 16 full / 0 half registers retained. The
+additional 3685 pre-output MOV executions per invocation at K1408 are a
+control-flow count, not a GPU performance measurement.
+
+OFF/ON compile-only captures pass process/service/fault checks; no candidate
+tensors, reference checks, timing or model run followed. Canonical Mesa stays
+0037 and the global device ICD 0032. Exact incremental patch 9633ded5 and a
+portable compile-only wrapper preserve the rejected experiment; the wrapper
+adaptation is host-checked only, while hardware used private runner 2e8d7bb0.
+See `GPU_REPEAT_COALESCING.md` and private independent audit
+`ir3-cold-collect-review-o4t3y95m/ACTUAL-COMPILER-REJECTION.txt`.
+
+
 ## 2026-11-02 (JST): state reuse rejected on measured GPU gain
 
 The private 0038 experiment skips seven repeated restore/program/descriptor
