@@ -1,10 +1,13 @@
 # Kokoro runtime integration audit
 
-2026-11-01: dynamic frontend/source export and fresh T=78/T=213 captures pass
-on the host; the fresh T=78 FP32 neural core also passes on the tablet. Live
-frontend/core/waveform integration and tablet harmonic-source execution remain
-incomplete. The fixed core and separate on-device waveform results are recorded
-in [NOTES.md](NOTES.md).
+2026-11-01: the standalone CPU frontend and harmonic source now run on the
+tablet from token IDs/style/speed, producing a fresh T=78 boundary. Its exact
+bytes have matching host ORT decoder/tail references, and the tablet GPU core
+and portable waveform tail both pass on that boundary. This completes the
+staged T=78 chain with host reference generation and shape capture between
+device stages. A single executable and live application integration remain
+unfinished. Fixed-core and separate waveform evidence is recorded in
+[NOTES.md](NOTES.md).
 
 ## Proposed route
 
@@ -33,8 +36,9 @@ Models, fixtures and generated artifacts remain private.
 | `gpu/src/kokoro.c:449` in that checkout | Existing double-precision harmonic generator; deliberately differs from this export |
 
 Host checks used `streams/tts/downloads/kokoro-venv/bin/python`, ORT **1.31.1**.
-The installed tablet runtime is documented in `streams/tts/NOTES.md` as ORT
-**1.28.2**, from sherpa-onnx v2.0.1. This audit did not recheck or execute it.
+The standalone tablet helper reports installed ORT **1.28.2**, from
+sherpa-onnx v2.0.1. It opens the installed library read-only through C API24;
+`build-frontend.sh` pins official v1.24.4 header downloads outside the repository.
 
 ## Harmonic boundary and verified extraction
 
@@ -121,6 +125,7 @@ Private artifacts are under `/run/media/jethac/Shared/radish`:
 | --- | --- | --- | ---: |
 | `kokoro-runtime-full` | 213 / 25561 | 562342 / 127800 | 4.95910645e-5 |
 | `kokoro-runtime-short` | 78 / 9361 | 205942 / 46800 | 3.0040741e-5 |
+| `kokoro-runtime-device-short` | 78 / 9361 | 205942 / 46800 | 4.93526459e-5 |
 
 `scripts/prepare-kokoro-runtime-ncnn.py RUNNER CAPTURE TEMPLATE NEW_DIR` validates
 the complete capture and graph manifests, the pinned unhinted ncnn parameters
@@ -146,15 +151,101 @@ zero mismatches, **38.332986 s** extraction/transfers, **321.1 MiB** peak and
 zero swap. Both live services remain active and no new GPU fault is recorded.
 Frontend/source generation was on the host; this timing covers the core only.
 
-The independent packed-FP16 failure and source-only 0014 tiled-convolution and
-0015 mixed-storage candidates are tracked in [NOTES.md](NOTES.md). None supplies
-a live integration, conformance or performance-win claim.
+The packed-FP16 investigation and convolution/normalization candidates have
+separate evidence and limitations in [NOTES.md](NOTES.md).
+
+## Tablet frontend and exact-boundary import
+
+`scripts/export-kokoro-frontend.py MODEL NEW_MODELS_DIR` recreates a separate
+**1201-node / 111933749-byte** `frontend-only.onnx`, SHA256
+`56ba27008352a2191b631ebbf269bf4506d690a1b83d8ff8ff5524b11291ddd3`,
+plus the pinned 13810-byte harmonic-source graph. The existing four-graph
+export remains unchanged. The pure frontend returns asr/F0/N/durations and
+excludes harmonic work; the helper releases its session before running the
+small source graph. No source formula is reimplemented.
+
+`tests/kokoro_frontend.cpp` reads `ids.i64`, `style.f32`, and `speed.f32`, checks
+tokens, types, shapes, finite values and duration sums, and writes eight raw
+files plus `frontend.json` into a new directory. Publication uses atomic
+`renameat2(NOREPLACE)`. Host ORT1.31.1 runs reproduce all eight original host
+capture files byte-for-byte for both T78 and T213.
+
+`scripts/device-frontend.sh runtime-short first` runs the helper in a fresh
+private tablet directory with MemoryMax640M, SwapMax128M and RuntimeMax120s.
+It checks 832MiB available memory and 256MiB free disk before pushing, preserves
+the shared lock override, checks both services and new kernel faults, and pulls
+to an exclusive host directory with raw/model/input/evidence hashes.
+`runtime-short-frontend-device-first.log` records:
+
+| Stage | Session load | Inference |
+| --- | ---: | ---: |
+| CPU frontend | 3.554571 s | 0.468618 s |
+| Harmonic source | 0.011151 s | 0.248083 s |
+
+The complete boundary stage took **4.665090 s**, with **181.3MiB peak memory**,
+zero swap, both services active and no new GPU fault. This is standalone T78
+frontend/source evidence; model loading is included in the total.
+
+The pulled directory is `kokoro-runtime-short-device-frontend-first`.
+`scripts/import-kokoro-device-boundary.py CAPTURE RUNTIME_MODELS NEW_FIXTURE`
+validates its eight raw hashes, source/model pins, dimensions and evidence,
+copies the device arrays exactly, and runs only the host ORT decoder and tail
+to obtain references conditioned on those arrays. It never reruns the frontend
+or harmonic source. Its `runtime.json` records device ORT1.28.2 and host reference
+ORT1.31.1 separately, with `source_crosscheck: device-boundary-preserved`.
+The assembler accepts that explicit provenance only after matching the original
+device manifest and all eight raw files; the old host source crosscheck remains.
+
+`kokoro-runtime-device-short` and `kokoro-runtime-device-short-ncnn` are ready
+under the private work directory. Both scalar CPU runs pass the unchanged gate
+for **205942 values**, max error **4.93526459e-5**, relative RMS
+**4.17532224e-7**, zero mismatches; all **1739 shapes** match. CPU outputs before
+and after annotation are byte-identical, SHA256
+`d9f8abf51d708632352846e3798417c14dcf095ea34b1f2396a362ec53b61082`.
+Logs are `runtime-device-short-import.log` and
+`runtime-device-short-ncnn-prepare.log`. These are CPU decoder/tail references
+on the tablet boundary, without an unsplit original-ONNX waveform identity claim.
+
+The same fixture then passed both tablet stages:
+
+| Stage / log | Output and accuracy | Measured stage time | Peak / swap |
+| --- | --- | ---: | --- |
+| GPU core, `runtime-device-short-ncnn-device.log` | 205942 values; max error 1.02519989e-4, relative RMS 9.15445936e-7; zero mismatches | 38.844565 s extraction/transfers | 318.7MiB / zero |
+| CPU tail, `runtime-device-short-ncnn-waveform-device.log` | 46800 samples; max error 8.36180584e-6, SNR97.957328dB; zero mismatches | 0.040910 s | 2.4MiB / zero |
+
+Both services stayed active and no new GPU fault was recorded. The actual
+tablet frontend/source output reaches the GPU and then the waveform tail with
+the existing accuracy gates. Host CPU reference generation and ncnn shape
+capture were interleaved between device stages; these stage timings therefore
+do not establish single-executable synthesis latency or combined memory use.
 
 ## Remaining integration work
 
-- Run the exported frontend/source on the actual tablet ORT runtime before
-  claiming device support or frontend latency. Host ORT 1.31.1 is not installed
-  tablet ORT 1.28.2 evidence.
+The next runtime implementation should remove the host calibration step with a
+small metadata-only shape pass over the pinned layout graph. Its 17 operator
+kinds have integer shape rules; seed the five inputs from T, propagate each
+operation's actual padding/stride/dilation/reshape/broadcast rules, and append
+standard `-23330` hints before `Net::load_param_mem`. Require exact agreement
+with all 1739 existing T78/T213 captured shapes. Do not infer formulas by fitting
+those two observations. Upstream `ModelWriter::shape_inference()` executes an
+Extractor for every blob, so it does not remove calibration costs.
+
+Carry the validated InstanceNorm graph and tiled-kernel options into that
+executable as well. After matching the original graph's hints, validate the
+1307-blob fused graph, including its rank-three normalization reshapes. Removing
+host calibration must preserve the measured graph optimizations.
+
+Then factor the existing frontend/source, ncnn extraction and portable tail into
+one private executable, keeping tensors in memory and releasing ORT sessions
+before GPU allocation. An optional sequential CPU comparison must reuse the
+same boundary. Start with one Net for the actual T and rebuild on a T change;
+measure resident reuse, combined memory, cold/warm latency and cancellation
+before treating it as an application backend.
+
+- Replace per-input host shape capture with validated propagation from graph
+  metadata and T, then run frontend, ncnn and tail in one private executable.
+  Keep the existing staged references as the baseline. Full T213 tablet
+  frontend/source execution remains unmeasured.
 - For every new T, keep shape hints and compiled specializations matched to
   actual dimensions. T78 device success does not justify reusing its hints at
   another length or claiming arbitrary-length compatibility.

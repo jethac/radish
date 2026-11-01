@@ -72,6 +72,7 @@ CONV_PATCHES=(
     "$TOP/radish/patches/0011-ncnn-conv1d-gemm-induction.patch"
     "$TOP/radish/patches/0013-ncnn-conv1d-shared32.patch"
     "$TOP/radish/patches/0014-ncnn-conv1d-a5xx-tiled.patch"
+    "$TOP/radish/patches/0017-ncnn-conv1d-shared-a-transpose.patch"
 )
 CONV_FILES=(src/layer/vulkan/convolution1d_vulkan.cpp src/layer/vulkan/convolution1d_vulkan.h
             src/layer/vulkan/shader/convolution1d_packed_gemm.comp

@@ -24,7 +24,7 @@ KIND=${1:-}
 case $KIND in
     style) SOURCE=$WORK/kokoro-style; MEMORY=384; RUNTIME=90; MODEL_ARGS=--style
         FILES=(decoder.ncnn.param decoder.ncnn.bin style.f32 reference.f32) ;;
-    core|core-layouts|core-shapes|core-shapes-norm32|runtime-*) SOURCE=$WORK/kokoro-core-fixed; MEMORY=640; RUNTIME=300; MODEL_ARGS=
+    core|core-layouts|core-shapes|core-shapes-norm32|core-shapes-instancenorm|runtime-*) SOURCE=$WORK/kokoro-core-fixed; MEMORY=640; RUNTIME=300; MODEL_ARGS=
         [[ $KIND == core ]] || SOURCE=$WORK/kokoro-$KIND
         FILES=(decoder.ncnn.param decoder.ncnn.bin asr.f32 f0.f32 n.f32 style.f32 har.f32 reference.f32) ;;
     *) echo 'usage: device-model.sh style|core|core-layouts|core-shapes [--cpu|--cpu-packed|--vulkan] [--fp16-packed] [--threads N] [--load-only] [--repeat N] [--blob NAME]' >&2; exit 2 ;;
@@ -173,6 +173,7 @@ if [[ -n $BLOB ]]; then
     "${ADB[@]}" pull "/var/tmp/radish/kokoro-$KIND/$BLOB_FILE" "$WORK/evidence/$TAG.f32"
 elif ! $LOAD_ONLY; then
     "${ADB[@]}" pull "/var/tmp/radish/kokoro-$KIND/ncnn-$OUTPUT_BACKEND-output.f32" "$SOURCE/ncnn-device-$OUTPUT_BACKEND-output.f32"
+    cp -- "$SOURCE/ncnn-device-$OUTPUT_BACKEND-output.f32" "$WORK/evidence/$TAG-output.f32"
 fi
 }
 main "$@"

@@ -36,7 +36,7 @@ Loads divide byte offsets by four before using ir3's constant-load intrinsic.
 ir3 allocates any required driver parameters after that reservation. Immediate
 constants start at `ir3_const_state(v)->allocs.max_const_offset_vec4`.
 
-Constant packets address vec4s; hardware constant length is programmed from the
+Constant packets address vec4 s; hardware constant length is programmed from the
 compiled variant in the units used by the existing a5xx compute implementation.
 The shader's compiled sysval register assignments program `WGIDCONSTID` and
 `LOCALIDREGID`. NIR lowers global invocation ID to local invocation plus workgroup
@@ -57,9 +57,21 @@ IDs, 3D local IDs, partial outputs, shared exchange and zero-size dispatches.
 This bounds groups per chunk, not the runtime of arbitrary shader loops.
 
 The first path uses a single-size wave, fixed workgroups of at most 128
-invocations and no private-memory spills. Tested shaders use local size 32 and
-two full registers. ncnn ReLU also passes three sizes. Other sizes and register
-footprints need separate tests. Shared variables now lower to explicit byte
+invocations and no private-memory spills. Current cumulative patch 0016 enforces
+the measured A506 register budget before shader upload. It uses
+`ir3_shader_halfregs(v) = 2 * (max_reg + 1) + (max_half_reg + 1)` and requires
+resident threads times that footprint to be at most 4096 half-register units
+(2048 full vec4 registers). A barrier workgroup reserves its entire local size,
+rounded up to a wave; a non-barrier shader requires one resident wave. This
+accounts for full and half register banks together. The earlier local128 /
+21-full tiled program is rejected with `VK_ERROR_FEATURE_NOT_PRESENT` before
+upload or execution; revised local128 / 16-full / 0-half passes all 25984
+operator outputs. This bound does not prove the cause of every historical hang
+or general occupancy safety. The full FP32 InstanceNorm+tiled model also passes
+under this guard in both first and warm extractions, with 37 actual local16x8
+barrier math commands and a passing waveform check; broader
+workgroup/register combinations still need their own evidence.
+Shared variables now lower to explicit byte
 addresses and ir3 local-memory operations. Tree reductions pass with 32/128
 invocations, including byte address 16380. The driver caps static shared memory
 at 16 KiB and rejects larger allocations before GPU submission. Accesses above

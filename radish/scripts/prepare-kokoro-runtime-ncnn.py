@@ -55,7 +55,31 @@ def validate_capture(capture):
             elements *= dimension
         require(report["files"][name + ".f32"]["bytes"] == 4*elements, f"wrong scalar byte count: {name}")
     require(report["files"]["ids.i64"]["bytes"] == 8*tokens, "wrong token byte count")
-    require(report["runtime"]["source_crosscheck"] == "bit-identical", "source crosscheck is missing")
+    source_check = report["runtime"]["source_crosscheck"]
+    if source_check == "device-boundary-preserved":
+        provenance = report["device_capture"]
+        directory = Path(provenance["directory"])
+        require(asset(directory / "device-capture.json") == provenance["manifest"], "device capture provenance changed")
+        device = json.loads((directory / "device-capture.json").read_text())
+        front = json.loads((directory / "frontend.json").read_text())
+        require(device["format"] == "radish-kokoro-device-frontend-v1" and
+                device["inputs"]["source_sha256"] == MODEL_SHA256 and device["frontend"] == front and
+                front["format"] == "radish-kokoro-frontend-boundary-v1" and front["ort_api"] == 24 and
+                front["optimization"] == "disabled" and front["sample_rate"] == 24000 and
+                provenance["frontend"] == front and
+                asset(directory / "frontend.json") == device["frontend_manifest"] == provenance["frontend_manifest"],
+                "unexpected imported device frontend provenance")
+        require(front["T"] == count and front["frames"] == frames and front["samples"] == samples and
+                front["tokens_with_pads"] == tokens and
+                report["runtime"]["frontend_onnxruntime"] == front["ort_version"], "device frontend dimensions/runtime changed")
+        raw_names = {"ids.i64", "style.f32", "speed.f32", "asr.f32", "f0.f32", "n.f32", "har.f32", "durations.f32"}
+        require(set(device["files"]) == raw_names and device["files"] == provenance["raw_files"],
+                "unexpected device boundary file inventory")
+        for name, expected in device["files"].items():
+            require(asset(directory / name) == expected == report["files"][name],
+                    f"imported raw boundary differs from device: {name}")
+    else:
+        require(source_check == "bit-identical", "source crosscheck is missing")
     require(set(report["models"]) == GRAPHS, "incomplete runtime graph provenance")
     model_directory = Path(report["models_directory"])
     models = json.loads((model_directory / "runtime-models.json").read_text())

@@ -10,13 +10,14 @@
 
 #include <cmath>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 
 #define CHECK(x) do { if (!(x)) { std::fprintf(stderr, "FAIL line %d: %s\n", __LINE__, #x); return 1; } } while (0)
 
 namespace {
 
-// Fixed before running either backend: bounded FP32 inputs and at most 176
+// Fixed before running either backend: bounded FP32 inputs and at most 1408
 // products per output. The reference accumulates the original FP32 values in
 // double, independently of ncnn's packing and reduction order.
 const double absolute_tolerance = 2e-5;
@@ -164,7 +165,7 @@ bool matches(double actual, double expected, int channel, int position, double& 
 }
 
 int conv_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
-              int width, int input_channels, int output_channels, int kernel, bool compile_only)
+              int width, int input_channels, int output_channels, int kernel, bool compile_only, bool tiled_case = false)
 {
     std::printf("CASE Convolution1D: width=%d in=%d out=%d kernel=%d valid stride=1 dilation=1\n",
                 width, input_channels, output_channels, kernel);
@@ -199,6 +200,20 @@ int conv_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
     CHECK(owner.layer->create_pipeline(opt) == 0);
     const ncnn::Convolution1D_vulkan* conv = static_cast<const ncnn::Convolution1D_vulkan*>(owner.layer);
     CHECK(check_conv_pipelines(conv) == 0);
+    if (tiled_case) {
+        const char* tiled = std::getenv("RADISH_NCNN_TILED");
+        const bool requested = tiled && !std::strcmp(tiled, "1");
+        CHECK(conv->use_radish_tiled == requested);
+        std::printf("  model-shaped variant: %s; K=%d; tiled grid=%d x %d\n",
+                    conv->use_radish_tiled ? "Radish tiled" : "default", input_channels * kernel,
+                    (output_width + 63) / 64, output_channels / 64);
+        if (conv->use_radish_tiled) {
+            CHECK(conv->pipeline_convolution1d_gemm);
+            CHECK(conv->pipeline_convolution1d_gemm->local_size_x() == 16);
+            CHECK(conv->pipeline_convolution1d_gemm->local_size_y() == 8);
+            CHECK(conv->pipeline_convolution1d_gemm->local_size_z() == 1);
+        }
+    }
     if (compile_only) {
         CHECK(owner.destroy() == 0);
         std::puts("PASS: Convolution1D pipeline compilation; no model/input upload or operator submission");
@@ -353,19 +368,24 @@ int main(int argc, char** argv)
 {
     // Flush each stage so a driver hang still leaves a useful device-side log.
     std::setvbuf(stdout, 0, _IONBF, 0);
-    bool conv = false, inner = false, compile_only = false, smoke = false, fp16_packed = false;
+    bool conv = false, inner = false, compile_only = false, smoke = false, fp16_packed = false, tiled_only = false;
     for (int i = 1; i < argc; ++i) {
         if (!std::strcmp(argv[i], "--conv")) conv = true;
         else if (!std::strcmp(argv[i], "--inner")) inner = true;
         else if (!std::strcmp(argv[i], "--compile-only")) compile_only = true;
         else if (!std::strcmp(argv[i], "--smoke")) smoke = true;
         else if (!std::strcmp(argv[i], "--fp16-packed")) fp16_packed = true;
+        else if (!std::strcmp(argv[i], "--tiled-only")) tiled_only = true;
         else {
-            std::fprintf(stderr, "Usage: %s [--conv] [--inner] [--compile-only] [--smoke] [--fp16-packed]\n", argv[0]);
+            std::fprintf(stderr, "Usage: %s [--conv] [--inner] [--compile-only] [--smoke] [--fp16-packed] | --tiled-only [--compile-only]\n", argv[0]);
             return 1;
         }
     }
-    if (!conv && !inner) conv = inner = true;
+    if (tiled_only && (conv || inner || smoke || fp16_packed)) {
+        std::fputs("--tiled-only is FP32 and cannot be combined with --conv, --inner, --smoke or --fp16-packed\n", stderr);
+        return 1;
+    }
+    if (!conv && !inner && !tiled_only) conv = inner = true;
     CHECK(ncnn::create_gpu_instance() == 0);
     GpuInstance instance;
     CHECK(ncnn::get_gpu_count() == 1);
@@ -402,6 +422,7 @@ int main(int argc, char** argv)
     Allocators allocators(device, opt);
     CHECK(opt.blob_vkallocator && opt.staging_vkallocator);
 
+    if (tiled_only) CHECK(conv_case(device, opt, 213, 128, 128, 11, compile_only, true) == 0);
     if (conv) {
         CHECK(conv_case(device, opt, 33, 3, 5, 3, compile_only) == 0);
         if (!smoke) {

@@ -1,0 +1,35 @@
+--- a/src/layer/vulkan/shader/convolution1d_radish_tiled.comp
++++ b/src/layer/vulkan/shader/convolution1d_radish_tiled.comp
+@@ -19,7 +19,7 @@
+ } p;
+ 
+ // Exactly 16 KiB; all invocations fill and consume both tiles at each barrier.
+-shared float sa[64][32];
++shared float sa[32][64];
+ shared vec4 sb[32][16];
+ 
+ vec4 load_input(int k, int x)
+@@ -59,10 +59,10 @@
+             const int r = i / 8;
+             const int q = i % 8;
+             vec4 a = mb + r < num_output ? weight_data[(mb + r) * K4 + k0 / 4 + q] : vec4(0.f);
+-            sa[r][q * 4] = a.x;
+-            sa[r][q * 4 + 1] = a.y;
+-            sa[r][q * 4 + 2] = a.z;
+-            sa[r][q * 4 + 3] = a.w;
++            sa[q * 4][r] = a.x;
++            sa[q * 4 + 1][r] = a.y;
++            sa[q * 4 + 2][r] = a.z;
++            sa[q * 4 + 3][r] = a.w;
+         }
+         for (int i = tid; i < 32 * 16; i += 128)
+         {
+@@ -77,7 +77,7 @@
+             vec4 b = sb[k][tx];
+             for (int r = 0; r < 8; r++)
+             {
+-                float a = sa[ty * 8 + r][k];
++                float a = sa[k][ty * 8 + r];
+                 acc[r] += a * b;
+             }
+         }

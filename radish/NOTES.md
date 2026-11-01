@@ -6,22 +6,28 @@ Overall goal active. M0–M2 bring-up is demonstrated; selected M3 paths now pas
 including 16 KiB shared reductions, transfers, dependent compute and bounded
 3D dispatch subdivision. Recovery now propagates DEVICE_LOST. ncnn ReLU,
 32-thread means, Conv1D K3/K7/K11 and InnerProduct pass full GPU output checks.
-The fixed Kokoro neural core now passes all 562342 outputs on the ncnn Vulkan
-path, with 1360 GPU layer calls and three CPU deconvolutions. The latest run
-takes 103.192 s first and 101.275 s warm; the same fixture's packed six-thread
-CPU warm mean is 32.052 s, so GPU performance remains far behind. The portable
-CPU waveform tail now passes all 127800 samples on the device in 0.106 s. Fresh
-host frontend/source inputs also pass the GPU core at a different length, T=78:
-all 205942 outputs pass in 38.333 s. This remains a core-only device run. The
-physical64 reduction hang remains unresolved; a backend workaround uses 32 threads.
+The fixed Kokoro neural core passes all 562342 outputs. A guarded FP32
+InstanceNorm+tiled graph now passes first/warm extractions in 76.534/74.318 s,
+including input/output transfer, and its device waveform passes all 127800
+samples. The same fused graph's packed six-thread CPU warm mean is 32.079 s:
+the GPU remains about 2.3 times slower, despite a 26.6% reduction from the prior
+graph's 101.275 s warm extraction. GPU evidence has one warm iteration; CPU has
+two. These are core measurements, not live end-to-end latency. Fresh host frontend/source inputs also
+pass the T=78 GPU core and all 46800 device waveform samples. A separate tablet
+frontend/source run produces fresh T=78 inputs in 4.665 s; integrated timing
+remains open. The physical64 complex-reduction hang remains unresolved;
+the backend uses 32 threads. A separate compiled-register guard now rejects
+programs beyond the measured register budget before upload.
 Packed-FP16 conversion/ReLU, all five Conv1D/InnerProduct fixtures, all 18 means,
 and up to eight shared32 workgroups per hardware dispatch now pass on device.
-The first packed full-model run fails: all 562342 outputs are NaN despite no
-new GPU faults. Diagnostics now identify six zero normalization denominators
-and matching nonfinite output channels; an opt-in mixed-storage fix is
-source-only pending verification. The failed 107.515 s extraction is not a
-valid performance result. The new tiled FP32 convolution is source-reviewed
-but has not built or executed.
+The first packed full-model run produces NaNs. Explicit mixed-storage conversion
+and FP32 normalization regions remove the diagnosed zero denominators and make
+all outputs finite, but 168167 core values and the waveform gate still fail.
+Neither failed run is an accepted performance result. The revised tiled FP32
+convolution fits 16 full registers and passes its complete operator fixture;
+17.920 ms versus 18.809 ms for the default kernel improves to 10.868 ms after
+the shared-A transpose. The full tiled model passes all 562342 outputs in
+both first/warm extractions, with 37 tiled math commands and a passing waveform.
 Live end-to-end integration and a performance win remain unproven. API
 advertisement and conformance status are unchanged.
 
@@ -34,6 +40,13 @@ advertisement and conformance status are unchanged.
   `upstream` is `git@github.com:Tencent/ncnn.git`. Local changes remain uncommitted
   and unpushed; the source revision is unchanged.
 - Local transcribe.cpp revision `087328dca63b644aaca048658cfdf110ee95b8c5`.
+- Public backup: [jethac/radish](https://github.com/jethac/radish), MIT license,
+  initial commit `ba13c70`, local publication mirror `/home/jethac/Projects/radish`.
+  Editable project files remain in `/home/jethac/Projects/lenovo-8/radish`;
+  Mesa/ncnn source and private builds, fixtures and evidence remain at the shared
+  work locations above. The public snapshot carries audited source patches,
+  not model weights or private captures; publication does not replace those
+  working trees or constitute an upstream submission.
 - Existing cross sysroot and Python build environment are available in
   `streams/gpu-mesa16/work/{sysroot,venv}`. Reuse read-only; Radish outputs go on
   `/run/media/jethac/Shared/radish` because the root filesystem has only 5.5 GiB free.
@@ -125,17 +138,20 @@ advertisement and conformance status are unchanged.
 
 ## Next
 
-Continue real-model performance work from the 101.275 s warm GPU extraction and
-32.052 s packed CPU warm baseline. Convolution still accounts for 64.539 s of
-command wall time. Shared32 convolution passes correctness but slows the model
-to 198.453 s; retain the existing nonshared path. The new tiled FP32 candidate
-(0014) needs build/ISA inspection before bounded operator execution. Packed-FP16
-conversion/ReLU, five convolution/InnerProduct cases and all 18 means pass, but
-the full model fails. Validate explicit FP16/FP32 storage transitions (0015)
-and FP32 normalization sections before retrying the full graph, retaining the
-accuracy gates. Host runtime export, dynamic shape capture and the fresh T=78
-GPU core pass; tablet frontend/source execution and integrated waveform timing
-remain. M6 and sustained thermal behavior are open.
+Continue from the passing FP32 InstanceNorm+tiled core and waveform:
+74.317956 s GPU warm versus 32.079044 s packed CPU warm mean. The GPU has one
+warm sample and CPU two; sustained/end-to-end evidence is still missing.
+The next source priority is 16 dilation3/5 convolutions still using the default
+path, totaling 19.495 s of command wall time. The 37 eligible tiled convolutions
+fall from 41.813 to 26.625 s; those measurements include submission/wait costs.
+Audit a narrow dilation extension without changing gates or claiming it works
+before compiler/output validation. Shared32 remains rejected at 198.453 s.
+Mixed-storage 0015 removes
+the localized packed NaNs, but full core and waveform accuracy still fail;
+retain FP32 as the accepted path. Fresh T=78 GPU core/waveform and separate
+tablet frontend/source execution pass. Connect and measure those phases without
+counting saved-input runs as live end-to-end results. M6 and sustained thermal
+behavior remain open.
 
 The harmonic-source audit and proposed frontend integration are in
 [RUNTIME_INTEGRATION.md](RUNTIME_INTEGRATION.md); live integration remains pending.
@@ -188,7 +204,7 @@ Batching passes the existing plain/shared 3D-grid checks and 48 dependent
 dispatches with no faults. Plain grids record 30 chunks in 12 submissions;
 shared shaders retain one chunk per submission. The full hinted-model batch4
 run also passes. Checkpoint 0009 records that driver; current cumulative Mesa
-checkpoint 0012 also adds the opt-in shared32 group budget described below.
+checkpoint 0016 includes the later shared32 group budget and register guard.
 
 The separate SIMPLEOMP build succeeds with `RADISH_NCNN_SIMPLEOMP=ON` and
 `RADISH_NCNN_BUILD_DIR=.../build-ncnn-simpleomp`; it includes its pthread-based
@@ -221,6 +237,53 @@ accumulation order. K11 compile inspection reduces instructions 377→254 and
 NOPs 151→75, retaining 16 full registers and eight waves; K3/K7/K11 operator
 checks and the full model pass (`operators-induction-execute.log`).
 
+The separate FP32 InstanceNorm variant passes its first extraction in
+`core-instancenorm-first.log`: 88.314593 s, max absolute error 0.000129699707,
+relative RMS 7.77219834e-7 and zero mismatches. Service wall time is 99.279 s,
+peak memory 424 MiB and swap 72.2 MiB; no new faults and both services active.
+Its 1943 recorded dispatch commands use 34075 submissions and total
+84.3403444 s of command wall time. These include submission/wait overhead;
+transfer and CPU work are not independently timed by subtracting the totals.
+The result changes rounding and is not part of the bit-identical table above.
+It is one first extraction, not a controlled warm speedup measurement.
+
+`core-instancenorm-tiled-transpose-first.log` enables 0017 on the same fused
+FP32 graph and passes all 562342 outputs: first extraction 75.743194 s,
+cold load 9.673 s, max absolute error 0.000106811523, relative RMS
+7.80397212e-7 and zero mismatches. Peak memory is400.6 MiB with zero swap,
+both services active and no new faults. Actual layer trace records 1090 GPU
+calls and three CPU deconvolutions (one DepthWise1D, two Deconvolution1D),
+independently counted from execution records rather than graph inventory.
+The 1943 dispatch commands use 50047 submissions and total 71.650563844 s;
+37 tiled math commands account for 17400 submissions and 26.624574599 s.
+Their instruction lengths are 36 (25 commands) and 37 (12), all local16x8 with
+four loops and barriers. Timing includes host submission/wait costs. The 75.743 s
+and 88.315 s runs are first extractions with different swap observations;
+the later repeated/core-and-waveform validation is recorded below.
+
+`core-instancenorm-tiled-transpose-repeat2.log` passes two complete GPU
+extractions after 9.379 s cold load: 76.534312 s first and 74.317956 s warm.
+Both compare all 562342 values with max absolute error 0.000106811523,
+relative RMS 7.80397212e-7 and zero mismatches. Frozen first and warm outputs
+share SHA256 `324de97d2c224635b1f54dcb8bf89c73efab2e09a8538691dfe68d4b9c2c0b37`.
+Peak memory is 417.8 MiB, zero swap, no new faults and both services active.
+
+The same fused graph's packed FP32 CPU comparison uses six SIMPLEOMP threads
+(`core-instancenorm-cpu-repeat3.log`): cold load 1.040 s, first 32.326136 s,
+then 32.025450/32.132638 s, warm mean 32.079044 s. All 562342 outputs pass on
+every iteration, max absolute error 0.000507354736, relative RMS 4.01799868e-6,
+zero mismatches; peak 444.4 MiB, zero swap and no new faults. The GPU warm
+extraction remains 2.317 times slower. Relative to the prior graph's 101.275010 s
+warm GPU run, 74.317956 s is 26.6% lower, but this is a historical comparison,
+not a controlled repeated A/B experiment. GPU warm count is one; CPU is two.
+The earlier nonfused CPU warm baseline remains 32.052271 s.
+
+The tiled device waveform also passes all 127800 samples
+(`core-instancenorm-tiled-transpose-waveform-device.log`): 0.104488 s,
+max absolute error 1.12576771e-5, SNR 97.967904 dB, zero mismatches,
+peak 4.7 MiB and zero swap, with no new faults. Core/style and waveform
+tolerances are unchanged; the source remains the saved fixture.
+
 The padding/SIMPLEOMP device process exited successfully, but editing its active
 shell wrapper caused host exit 126 after completion. Saved output was recovered
 under the lock and its hash verified. Wrappers now parse a complete function
@@ -240,15 +303,16 @@ These are same-fixture core measurements, not live end-to-end timing.
 `RADISH_NCNN_TRACE` accept 0/1; `RADISH_BATCH_CHUNKS` accepts 1..4, default 1,
 and `RADISH_SHARED_GROUPS` accepts 1..8, default 1.
 `build-ncnn.sh` accepts `RADISH_NCNN_SIMPLEOMP=ON|OFF` and a separate
-`RADISH_NCNN_BUILD_DIR`. The validated model executable used patches
-0005/0006/0008/0010/0011; the optional 0013 candidate is applied in source.
+`RADISH_NCNN_BUILD_DIR`. The original validated model executable used patches
+0005/0006/0008/0010/0011; optional candidates are applied but remain gated.
 The earlier overlapping-patch verification failure is resolved; the regular
-and SIMPLEOMP builds now pass with the packed helper modes and corrected
-shared32 shader. Shared32 operators and full-model correctness pass, but the model slows to 198.453 s; keep this path opt-in.
+and SIMPLEOMP builds pass with corrected 0013 and revised 0014/0015.
+Shared32 operators and full-model correctness pass, but the model slows to
+198.453 s; keep this path opt-in.
 
 ### Shared32 groups and convolution candidate
 
-Cumulative Mesa patch 0012 adds `RADISH_SHARED_GROUPS=1..8` (default 1),
+Historical cumulative Mesa patch 0012 adds `RADISH_SHARED_GROUPS=1..8` (default 1),
 allowing that many workgroups per hardware chunk only for barrier shaders with
 at most 32 physical invocations. Larger barrier workgroups retain one group;
 non-barrier chunks and short-shader batching rules are unchanged. Every chunk
@@ -304,9 +368,41 @@ memory. Its gate requires exact Radish A506, pack4, stride/dilation1, output
 channels divisible by 64, K divisible by 32 and at most 3584, and no fused
 activation or optional reduced-precision features. Upload/layout, tails,
 barriers, cache keys and weight lifetime passed independent source review;
-reverse patch application checks pass. It has **not built or executed**.
-Physical128 register/shared-memory behavior and changed arithmetic grouping
-still require compile inspection and the existing output accuracy gates.
+reverse patch application checks pass. Both ncnn builds pass. The first compiled
+version used 21 full registers at local128 and was never executed. Revised
+0014, SHA256 `d1081b712ae8a4518b494ced59c7c1ba5fa1da501e3758e33030ddfb22d14695`,
+uses scalar shared-A loads with sequential K accumulation: 16 full/0 half
+registers, 954 instructions, four loops and 16 KiB shared memory. All 25984
+operator outputs pass with maximum absolute error 3.422e-5 and no new faults
+(`operators-tiled-scalar-execute.log`). Compute command wall time is
+17.919664 ms in eight submissions versus 18.809093 ms in one submission for
+the default kernel (`operators-tiled-shape-default-execute.log`). This single
+case establishes no accepted model performance improvement.
+
+Current cumulative driver patch 0016 checks the measured A506 budget of 2048
+full vec4 registers before shader upload: resident threads times
+`ir3_shader_halfregs(v)` must not exceed 4096 half-register units. Barrier
+workgroups round their entire local size up to waves; non-barrier programs need
+one resident wave. This combines full and half footprints. The old local128 /
+21-full program now returns `VK_ERROR_FEATURE_NOT_PRESENT` (-8) before upload
+or execution (`operators-tiled-register-reject.log`); the revised 16-full
+program passes. This guard does not establish the root cause of every earlier
+physical64 failure or prove general occupancy safety.
+
+Incremental 0017 transposes only shared A to make each thread's eight consumed
+scalars contiguous, preserving loader coverage, K order, arithmetic and both
+barriers. Both ncnn builds and independent source review pass.
+`operators-tiled-transpose-compile.log` shows 16 full/0 half registers,
+950 instructions, 1152 dwords and four loops. The inner reduction uses three
+vec4 local loads instead of nine shared loads. All 25984 operator outputs pass
+with max absolute error 3.42226122e-5 and no faults
+(`operators-tiled-transpose-execute.log`). Compute command wall time falls to
+10.868408 ms in eight submissions, versus 17.919664 ms for scalar 0014 and
+18.809093 ms for the default kernel. The later full fused graph also passes
+in 75.743194 s, with 37 actual tiled math dispatches as recorded above.
+The repeated GPU run then passes 76.534312/74.317956 s first/warm, and its
+device waveform passes at 97.967904 dB. The same fused graph's packed CPU
+warm mean is 32.079044 s; M6 remains unmet.
 
 ### Packed FP16 storage and operators
 
@@ -399,8 +495,8 @@ are finite; blob `829` contains 3271808 NaNs. In a separate normalization
 branch, `437` is the variance-plus-1e-5 output of `add_47`: its 128 values are
 finite, but channels **13, 52, 57, 67, 84, 86 are zero**. The corresponding
 `sqrt_48` denominator feeds `div_49` blob `439`, whose nonfinite values occur
-in exactly those six channels (153366 values). Logs `packed-blob437.log` and
-`packed-blob439.log` and their raw evidence preserve this localization; both
+in exactly those six channels (153366 values). Logs `packed-blob 437.log` and
+`packed-blob 439.log` and their raw evidence preserve this localization; both
 services remained active and no new GPU faults were reported. This identifies
 a failed normalization path without claiming it is the only packed-model issue.
 
@@ -415,10 +511,44 @@ FP16. Patch 0015 adds exact-Radish, opt-in `RADISH_NCNN_MIXED_STORAGE=1`
 conversion between 16-bit packed and 32-bit values for the consuming layer's
 masked options, including CPU-to-GPU uploads. It enables the proposed `31=2`
 FP32 normalization sections to receive and return correctly typed buffers.
-This is a **source-only candidate pending verification**, not a demonstrated
-fix or a reason to weaken the model gates.
-Core/style and waveform gates remain unchanged; no native FP16 feature or
-packed-model accuracy/performance claim is made.
+Both ncnn builds pass. With `keep-kokoro-norms-fp32.py`'s guarded 54-chain /
+486-layer `31=2` variant, blob 437 has 128 positive finite values, minimum
+4.52838685e-5, and blob 439 has all 3271808 values finite. The previous 153366
+nonfinite values disappear with no new faults.
+
+The full rerun (`core-norm32-mixed-first.log`) nevertheless fails the unchanged
+core gate: all 562342 values are finite, but 168167 mismatch, max absolute error
+0.368797302 and relative RMS 0.00359251526. Failed extraction takes 100.270060 s,
+peak memory 307.1 MiB and swap 42 MiB. The host waveform diagnostic also fails
+(`packed-norm32-waveform-diagnostic.log`): SNR 40.421776 dB, max absolute error
+0.01251896 and 43435 mismatches. The conversion fix resolves the diagnosed
+nonfinite path, not packed-model accuracy. Gates remain unchanged; native FP16
+features remain disabled and these failed runs are not accepted benchmarks.
+
+### Guarded FP32 InstanceNorm graph
+
+`scripts/fuse-kokoro-norms.py` creates a new pinned private graph without
+changing the source graph or weights. Each of 54 exact normalization chains
+becomes rank2-to-rank3 Reshape, affine-disabled InstanceNorm with epsilon1e-5,
+and rank3-to-rank2 Reshape. It retains the original Split input aliases and
+downstream style affine operations; liveness removes only dead normalization
+arithmetic and Split outputs. All 108 generic means disappear. The result has
+1098 layers / 1307 blobs, with every new layer masked to FP32 storage (`31=2`).
+Packed execution would still require 0015 and the mixed-storage opt-in; the
+accepted run uses full FP32.
+
+Host validation captures all 1307 shapes and passes the unchanged full core
+gate (max error 6.48498535e-5). Host waveform SNR is 106.344961 dB with zero
+mismatches. GPU blob 439 passes all 3271808 values, with maximum difference
+0.0003991 from the original CPU intermediate. The complete GPU core passes
+in 88.314593 s as recorded above. Its device waveform then passes all 127800
+samples (`core-instancenorm-waveform-device.log`): max absolute error
+1.19900454e-5, SNR 98.017571 dB, zero mismatches, 0.103437 s, peak 4.4 MiB,
+zero swap and no new faults. This uses the saved-source fixture; the arithmetic
+changes rounding and is not claimed bit-identical to the previous graph.
+The same graph with 0017 tiled convolution subsequently passes the complete
+core, including a 74.317956 s warm extraction, and all 127800 device waveform
+samples at 97.967904 dB. Its same-graph packed CPU warm mean is 32.079044 s.
 
 ### Fresh runtime inputs and another sequence length
 
@@ -443,9 +573,29 @@ fresh ORT reference: all **205942 outputs** pass, max absolute error
 **9.29832458e-5**, relative RMS **8.99170127e-7**, zero mismatches. Extraction
 including input/output transfers takes **38.332986 s**, peak **321.1 MiB**, zero
 swap. Both services remain active and no new GPU fault/recovery is recorded.
-Frontend/source generation occurred on the host; this is neither tablet
-frontend execution nor an integrated end-to-end timing. Further procedure,
+The matching T=78 device waveform also passes all 46800 samples
+(`runtime-short-ncnn-waveform-device.log`): max error 1.1001e-5, SNR 96.176020 dB,
+0.043091 s, peak 2.9 MiB, zero swap and no new faults. These core inputs were
+generated on the host.
+
+A separate actual tablet frontend/source run now passes for T=78
+(`runtime-short-frontend-device-first.log`): boundary total 4.66509 s, frontend
+load/run 3.554571/0.468618 s, source load/run 0.011151/0.248083 s, peak 181.3 MiB
+and zero swap. The phases are validated separately; no integrated end-to-end
+timing is claimed. Further procedure,
 pins and remaining work are in [RUNTIME_INTEGRATION.md](RUNTIME_INTEGRATION.md).
+
+The actual tablet boundary is now also preserved and passed through the GPU
+core, with fresh host references computed from those exact inputs rather than
+rerunning the frontend (`runtime-device-short-ncnn-device.log`). All 205942
+outputs pass:38.844565 s, max absolute error 0.000102519989, relative RMS
+9.15445936e-7, zero mismatches, 318.7 MiB peak and zero swap. The matching device
+tail (`runtime-device-short-ncnn-waveform-device.log`) passes all 46800 samples
+in 0.040910 s: max error 8.36180584e-6, SNR 97.957328 dB, zero mismatches,
+2.4 MiB peak and zero swap. Both stages report no new faults and active
+services. These are linked runtime stages with preserved device inputs;
+the separately timed stages and intervening preparation are not a live
+end-to-end latency measurement.
 
 ### Portable waveform tail on device
 
@@ -502,7 +652,7 @@ Cleanup: remove only `/var/tmp/radish` under the device lock when no tests run.
   barrier at queue submission. A dedicated test skips flush/invalidate and
   verifies all outputs over 32 dispatches (`coherent-green.log`). This supports
   the tested memory path; it does not establish every memory-model case.
-- ncnn Vulkan-only ReLU passes 128, 508 and 16,396 scalar elements, checking every
+- ncnn Vulkan-only ReLU passes 128, 508 and 16, 396 scalar elements, checking every
   result against independent arithmetic (`ncnn-relu-coherent.log`). The test
   requires recorded GPU dispatches and disables optional arithmetic/subgroup
   paths. Packed outputs are counted in scalar elements. Both live services
@@ -525,12 +675,12 @@ Cleanup: remove only `/var/tmp/radish` under the device lock when no tests run.
   shared allocation/address range, barrier path and hardware state need further
   isolation. Do not claim shared-memory support from successful compilation.
 - Controlled isolation after inspection: a 512-byte shared array passes 16
-  dispatches at both local size 32 and 128 (`shared-small-{32,128}.log`), with
+  dispatches at both local size 32 and 128 (`shared-small-{32, 128}.log`), with
   full output/guard checks and no new faults. This establishes the tested
   multi-wave barrier path; it narrows the original failure toward larger shared
   addresses/allocation or their associated state, rather than wave count alone.
 - Source evidence found in pinned Mesa
-  `src/freedreno/tests/reference/compute-a540.log:463–469,612–618`: the captured
+  `src/freedreno/tests/reference/compute-a540.log:463–469, 612–618`: the captured
   vendor compute stream writes register `0xe5f9=0x1f` and
   `HLSQ_CS_CNTL_1=0x1f` for a shared-memory shader. Radish/Gallium's initial
   emitter instead left the former zero and wrote the latter as 1. Testing the
@@ -601,7 +751,7 @@ Cleanup: remove only `/var/tmp/radish` under the device lock when no tests run.
   one DeconvolutionDepthWise1D lack Vulkan implementations; ExpandDims is also
   not a Vulkan class. Actual fallback behavior/overhead needs graph execution.
   Saved inputs include the original harmonic-source tensor. CPU ONNX Runtime
-  reference executes in 1.40 s on this host, output `[1,22,25561]`, all finite;
+  reference executes in 1.40 s on this host, output `[1, 22, 25561]`, all finite;
   arrays/raw fp32 reference and input files retained under `kokoro-core/`.
   This does not yet prove ncnn CPU or GPU numerical compatibility.
 - Host pinned ncnn build succeeds. Full neural-core CPU comparison **fails**
@@ -708,7 +858,7 @@ Cleanup: remove only `/var/tmp/radish` under the device lock when no tests run.
   and execution stops before readback. Both services remained active; testing
   stopped for inspection. Captured `evidence/ncnn-reduce-bounded-fault.devcoredump`
   (devcd22) and `-dmesg.txt` on shared scratch; no captures enter this repository.
-- Dump confirms CP_EXEC_CS payload `[0,1,1,1]`, local 64, logical grid 1×3×1,
+- Dump confirms CP_EXEC_CS payload `[0, 1, 1, 1]`, local 64, logical grid 1×3×1,
   base 0, correct push constants and 16-byte descriptors. Shader BOs are now
   marked for dump capture; decoded shader bytes reproduce the compile hash
   `66f7ae7cf6acef1d2852adadd9e1a77f1926a1e80e64271d3ea7360931f0ada8`
@@ -817,7 +967,7 @@ Cleanup: remove only `/var/tmp/radish` under the device lock when no tests run.
   `operators-full.log`): Conv K3 155 outputs, K7 216 outputs, K11 6496 outputs;
   IP13→7 and IP128→1028. Every logical output matches; largest absolute error
   3.81310e-6 (K11). No new GPU faults/recovery, both live services active.
-  Device sessions use MemoryMax384M and RuntimeMax90s under the lock.
+  Device sessions use MemoryMax384M and RuntimeMax90 s under the lock.
 - These are M4 FP32 operator results. Later full-core and waveform evidence is
   recorded below; FP16 and the M6 performance win remain unproven.
 
@@ -844,28 +994,28 @@ Cleanup: remove only `/var/tmp/radish` under the device lock when no tests run.
   programs, at most 8 full/1 half registers, locals32/64, no category7 barriers.
   Actual graph execution then passes all 1028 outputs, max error4.76837e-7
   (`style-device-gpu.log`): Crop records1 group and InnerProduct38, both GPU.
-  Cold load0.751s, transfer+extraction0.109s, process peak RSS58016KiB. These are
+  Cold load0.751 s, transfer+extraction0.109 s, process peak RSS58016KiB. These are
   single diagnostic timings, not warm performance evidence. No faults; services
   active. Output pulled to `kokoro-style/ncnn-device-vulkan-output.f32`.
 - Memory preflight: 995164KiB available, 702708KiB swap free, both services
   active (`model-preflight.log`). Full core weights occupy213042160 bytes.
-  Source estimate: about198.4MiB persistent GPU weight BOs plus11.5MiB CPU
-  deconvolution weights; worst convolution packing transient about38.35MiB.
+  Source estimate: about198.4 MiB persistent GPU weight BOs plus11.5 MiB CPU
+  deconvolution weights; worst convolution packing transient about38.35 MiB.
   Mappable weight uploads directly copy into GPU memory and release CPU packed
   arrays. The later full-core run records process/cgroup peaks below;
   sustained device-wide memory behavior still needs measurement.
 - Waveform reference caught an export-specific normalization difference before
-  GPU integration. A conventional centered Hann iSTFT failed at9.54dB SNR
+  GPU integration. A conventional centered Hann iSTFT failed at9.54 dB SNR
   (`reference-waveform.log`). The original ONNX tail stores only20 window_sum
   values; Gather/Div/ScatterND normalizes those indices, then scales by4 and
   trims10 samples at each end. Synthesizing a full overlap envelope changes gain.
 - `prepare-kokoro.py --neural-core` now also extracts the original waveform
   tail. `validate-kokoro-waveform.py` independently evaluates its stored basis
   and normalization with NumPy. Extracted ORT tail matches original fixture at
- 117.38dB; the NumPy tail on ORT core matches117.20dB. On the ncnn CPU core it
-  passes all127800 samples, max error4.03158e-6, SNR106.22dB
+ 117.38 dB; the NumPy tail on ORT core matches117.20 dB. On the ncnn CPU core it
+  passes all 127800 samples, max error4.03158e-6, SNR106.22 dB
   (`ncnn-cpu-waveform.log`). The predeclared gate remains
-  `2e-4 + 2e-3*abs(reference)` per sample and SNR≥50dB. This validates the fixed
+  `2e-4 + 2e-3*abs(reference)` per sample and SNR≥50 dB. This validates the fixed
   saved-source fixture; later Vulkan-core waveform validation is recorded below.
   Runtime harmonic generation remains outside this check.
 
@@ -887,21 +1037,21 @@ Cleanup: remove only `/var/tmp/radish` under the device lock when no tests run.
   `reduce-compiler-free.log`), with no faults and both services active.
   The full load repeats with the same model/options/disassembly/640 MiB limit;
   swap is additionally capped at128 MiB. It reaches2187 compiled programs but
-  still hits150s while dumping NIR/ISA. Peak falls to356MiB with zero swap, and
+  still hits150 s while dumping NIR/ISA. Peak falls to356 MiB with zero swap, and
   all2033 hashes shared with the original attempt are identical. This confirms
   the retention fix's benefit; complete model loading remains unproven at this
   entry. Normal full inference is now attempted without verbose shader dumps.
-- The normal full run completes cold loading in166.041s, with all1368 graph
+- The normal full run completes cold loading in166.041 s, with all1368 graph
   layers available, then executes through early generator operations with
-  successful intermediate submissions. Its180s process cap ends it at CPU
-  deconvolution layer582 before output (`core-first-full.log`); peak438.9MiB,
+  successful intermediate submissions. Its180 s process cap ends it at CPU
+  deconvolution layer582 before output (`core-first-full.log`); peak438.9 MiB,
   zero swap, no GPU fault, services active. Full output was unverified at this
-  checkpoint. The next attempt allowed 300s for cold compilation plus inference,
-  keeping MemoryMax640MiB/MemorySwapMax128MiB and the GPU hangcheck. This is a bounded
+  checkpoint. The next attempt allowed 300 s for cold compilation plus inference,
+  keeping MemoryMax640 MiB/MemorySwapMax128 MiB and the GPU hangcheck. This is a bounded
   private process beside the live services, not listener downtime.
 - The driver checkpoint at this stage was cumulative patch0007, SHA256
   `7ce02f0a61dbcf0d3872b82983b35b14007fa7d976e6b76800844ff6f24e0a54`.
-  Reverse apply-check passed; current checkpoint0012 is documented above.
+  Reverse apply-check passed; current checkpoint 0016 is documented above.
 
 ## Full-core correctness and remaining performance work
 

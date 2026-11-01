@@ -222,6 +222,15 @@ does not replace full-core, waveform, memory or performance requirements.
   all 127800 reference samples (97.91 dB SNR). This is fixture correctness.
 - [x] Port the exact waveform tail to a standalone CPU executable and validate
   all original samples on device: 0.105977 s, 5.5 MiB peak, zero swap.
+- [x] Validate a fresh T=78 host boundary through GPU core and device waveform:
+  205942 core values and 46800 waveform samples pass, tail SNR 96.176020 dB.
+- [x] Execute the standalone frontend/source on the tablet for T=78: fresh
+  boundary passes in 4.66509 s, 181.3 MiB peak and zero swap. This phase remains
+  separately measured from the GPU core and waveform.
+- [x] Preserve that actual tablet boundary and validate GPU core/tail against
+  references from those exact inputs: 205942 core values pass in 38.844565 s;
+  all 46800 waveform samples pass in 0.040910 s at 97.957328 dB. No new faults;
+  separately timed phases still do not establish live end-to-end latency.
 - [ ] Integrate runtime harmonic generation and waveform output, then compare
   warm/cold end-to-end CPU/GLES baselines per GOAL.md. Continue profiling the
   remaining extraction/transfer path, including submissions and CPU fallback;
@@ -245,11 +254,14 @@ and build on shared scratch; preserve the existing GLES build and all sysroots.
 
 ## Task 11: measured model performance (M6)
 
-The fixed neural core and device waveform tail pass. GPU extraction falls from
-193.390 s to 103.192 s first / 101.275 s warm for 5.325 s of audio, with
-identical output. The same fixture's packed six-thread CPU warm mean is 32.052 s.
-The GPU warm result contains one iteration after warmup; GPU performance remains
-behind, and integrated end-to-end timing is still required.
+The fixed neural core and device waveform tail pass. The FP32
+InstanceNorm+tiled path now passes 76.534312 s first / 74.317956 s warm after
+9.379 s cold load. The same fused graph's packed six-thread CPU warm mean is
+32.079044 s, so GPU extraction remains 2.317 times slower. GPU has one warm
+iteration, CPU two. Elapsed GPU time is 26.6% lower than the prior graph's
+101.275010 s warm run; this historical comparison is not a controlled repeated
+A/B experiment. Integrated end-to-end timing and sustained measurements remain
+required.
 
 - [x] Profile actual command wall time and hardware submission counts while
   preserving output checks. The repeated run passes in 193.390 s, with 349033
@@ -294,12 +306,45 @@ behind, and integrated end-to-end timing is still required.
 - [x] Run the packed full model with unchanged accuracy gates and preserve its
   failed candidate: all 562342 outputs are NaN, exit 1, no new GPU faults.
   The 107.515 s failed extraction is not a valid benchmark or speed win.
-- [ ] Locate the first nonfinite packed graph value, distinguish normalization
-  subnormal conversion from storage overflow or another correctness issue, and
-  validate any fix against unchanged model/waveform gates. Mean scaling occurs
-  in FP32 before its output store; do not assume an unscaled half mean sum.
-  Packed Conv1D/InnerProduct local64 paths have no barriers and do not resolve
-  the physical64 reduction fault.
+- [x] Localize six zero variance-plus-epsilon channels in 437 and matching
+  nonfinite 439 values. Build 0015 and mask 54 complete normalization chains;
+  diagnostic 437 becomes positive and 439 finite, with no faults.
+- [x] Run the mixed-storage full core and unchanged waveform gates: all core
+  values become finite, but 168167 fail (max 0.368797302); waveform also fails
+  SNR 40.421776 dB and 43435 samples. Reject the 100.270060 s run as an accuracy or
+  performance success; remaining packed precision loss is unresolved.
+- [x] Replace 54 exact fixed-graph normalization chains with rank2→rank3→
+  affine-disabled InstanceNorm→rank2 in a private variant; preserve weights,
+  aliases and gates. All 1307 host shapes and full CPU/core/waveform gates pass.
+  Full FP32 GPU core passes 562342 values in 88.314593 s; device waveform passes
+  127800 samples at 98.017571 dB, no faults. Saved-source fixture only.
+- [x] Add combined full/half register-budget rejection in cumulative 0016;
+  old local128/21-full tiled shader rejects -8 before upload/execution.
+- [x] Build revised 0014 in both ncnn variants and validate its local128,
+  16-full/0-half tiled operator: all 25984 outputs pass, no faults.
+  Single-case 17.919664 ms/8 submits versus default 18.809093 ms/1 submit does
+  not establish a model performance win.
+- [x] Build and validate incremental 0017 shared-A transpose: 16 full/0 half,
+  950 instructions, 1152 dwords, four loops; three inner vec4 local loads
+  replace nine shared loads. All 25984 operator outputs pass, no faults;
+  10.868408 ms/eight submits versus 17.919664 ms/eight for scalar 0014.
+- [x] Validate the tiled path on the complete fused FP32 core: 562342 values pass,
+  max error 1.06811523e-4, 75.743194 s first extraction, 400.6 MiB/zero swap, no faults.
+  Actual trace records 1090 GPU calls and 3 CPU deconvolutions; 37 tiled math
+  commands execute. This is not a controlled warm comparison with 88.314593 s.
+- [x] Validate the tiled full-model waveform: all 127800 samples pass,
+  SNR 97.967904 dB, max error 1.12576771e-5, 0.104488 s, 4.7 MiB/zero swap, no faults.
+- [x] Repeat FP32 InstanceNorm+tiled extraction: 76.534312/74.317956 s
+  first/warm, both full-reference passes with identical output SHA; 417.8 MiB/zero
+  swap, no faults. Same-graph packed CPU first 32.326136 s then 32.025450/32.132638 s
+  passes all outputs; warm mean 32.079044 s, 444.4 MiB/zero swap.
+- [ ] Audit the 16 dilation3/5 convolutions still on the default path
+  (19.495 s command wall), retaining shape/register/output gates for any narrow
+  tiled dilation extension. The 37 tiled commands improve 41.813→26.625 s;
+  those totals include submission/wait overhead.
+- [ ] Connect and time the separately validated runtime phases and collect
+  sustained controlled measurements; one GPU warm sample and two CPU samples
+  do not establish end-to-end performance.
 - [ ] Attribute remaining convolution, reduction and CPU fallback costs; compare
   equivalent warm work against an optimized CPU baseline before declaring a win.
   Current warm command wall time includes 64.539 s convolution and 13.784 s

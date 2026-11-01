@@ -25,15 +25,21 @@ a separate driver, with its own a5xx resource bindings and command emission.
   and synchronization have targeted device checks.
 - ncnn runs the Kokoro neural core with GPU operations and three CPU
   deconvolution fallbacks. A complete FP32 output comparison passes.
-- On the fixed full-size fixture, the best measured warm GPU core extraction
-  is **101.275 s**, versus **32.052 s** for the optimized CPU path. These are
-  neural-core timings, not complete text-to-speech latency.
-- Fresh inputs with a different sequence length also pass the full FP32
-  core comparison: **38.333 s**, 205,942 outputs, no new GPU faults.
-- Packed FP16 storage fails full-model accuracy. An explicit mixed-storage
-  adaptation and FP32 normalization regions are under development.
-- A new tiled convolution kernel is included as a disabled experiment;
-  hardware validation remains pending.
+- On the fixed full-size fixture, fused normalization and tiled convolutions
+  reduce warm GPU core extraction from **101.275 s to 74.318 s**. The same
+  graph takes **32.079 s** on the optimized six-thread ncnn CPU path. These
+  are neural-core timings, not complete text-to-speech latency; the new GPU
+  result contains one warm extraction, the CPU mean contains two.
+- Fresh tablet-generated inputs at a different sequence length pass the GPU
+  core and waveform comparisons: **38.845 s** for 205,942 core outputs and
+  **97.96 dB SNR** for 46,800 audio samples. This is a staged chain with host
+  reference preparation between stages, not a measured end-to-end runtime.
+- Explicit mixed-storage conversion and FP32 normalization remove the NaNs
+  from packed FP16 inference, but full-model and waveform accuracy still fail.
+  FP32 remains the validated path.
+- The opt-in tiled kernel now passes the full model. It accelerates 37
+  convolutions; extending it to the remaining dilated convolutions is next.
+  The driver rejects shaders beyond A506's measured register budget.
 
 This is an experimental compute-only ICD. It does not provide graphics or
 presentation, and it has no Vulkan 1.0 or 1.1 conformance claim. Supported,
@@ -64,7 +70,7 @@ kept outside the repository.
 
 1. Check out Mesa at `ddabdd0e36bd2f5e0c8e6bd21c3d1da7e34c1230` in a
    separate worktree. Apply
-   `radish/patches/0012-radish-shared32-groups-cumulative.patch` to that base.
+   `radish/patches/0016-radish-register-budget-cumulative.patch` to that base.
    Earlier cumulative Mesa patches are historical alternatives, not a series.
 2. Set `RADISH_WORK` to the scratch/build directory, `RADISH_MESA` to the Mesa
    checkout, `RADISH_SYSROOT` to the aarch64 sysroot and `RADISH_VENV` to the

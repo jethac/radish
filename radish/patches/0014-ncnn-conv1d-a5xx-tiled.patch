@@ -118,7 +118,7 @@
      int coopmat_M;
 --- /dev/null
 +++ b/src/layer/vulkan/shader/convolution1d_radish_tiled.comp
-@@ -0,0 +1,103 @@
+@@ -0,0 +1,104 @@
 +#version 450
 +
 +// FP32 implicit GEMM: 64 output channels x 64 positions, reduction blocks of
@@ -140,7 +140,7 @@
 +} p;
 +
 +// Exactly 16 KiB; all invocations fill and consume both tiles at each barrier.
-+shared vec4 sa[64][8];
++shared float sa[64][32];
 +shared vec4 sb[32][16];
 +
 +vec4 load_input(int k, int x)
@@ -179,7 +179,11 @@
 +        {
 +            const int r = i / 8;
 +            const int q = i % 8;
-+            sa[r][q] = mb + r < num_output ? weight_data[(mb + r) * K4 + k0 / 4 + q] : vec4(0.f);
++            vec4 a = mb + r < num_output ? weight_data[(mb + r) * K4 + k0 / 4 + q] : vec4(0.f);
++            sa[r][q * 4] = a.x;
++            sa[r][q * 4 + 1] = a.y;
++            sa[r][q * 4 + 2] = a.z;
++            sa[r][q * 4 + 3] = a.w;
 +        }
 +        for (int i = tid; i < 32 * 16; i += 128)
 +        {
@@ -189,16 +193,13 @@
 +        }
 +        barrier();
 +
-+        for (int kq = 0; kq < 8; kq++)
++        for (int k = 0; k < 32; k++)
 +        {
-+            vec4 b0 = sb[4 * kq][tx];
-+            vec4 b1 = sb[4 * kq + 1][tx];
-+            vec4 b2 = sb[4 * kq + 2][tx];
-+            vec4 b3 = sb[4 * kq + 3][tx];
++            vec4 b = sb[k][tx];
 +            for (int r = 0; r < 8; r++)
 +            {
-+                vec4 a = sa[ty * 8 + r][kq];
-+                acc[r] += a.x * b0 + a.y * b1 + a.z * b2 + a.w * b3;
++                float a = sa[ty * 8 + r][k];
++                acc[r] += a * b;
 +            }
 +        }
 +        barrier();
