@@ -73,14 +73,18 @@ reduced GPU time only **0.42%**, below its planned 5% criterion. A separate
 [compiler experiment](radish/GPU_REPEAT_COALESCING.md) formed repeat MAD
 instructions but added moves inside the reduction loop and was rejected before
 tensor execution. Both remain excluded. The current default-off diagnostic
-driver is **0040**; model measurements and the global device ICD remain **0032**.
+driver is **0041**; model measurements and the global device ICD remain **0032**.
 
 Counter programming is deferred: the inspected A506 sources do not establish
 exclusive counter ownership while other services remain active. No new counter
-code is implemented. The next proposed measurement loads a shared-memory tile
-once and repeats the accepted convolution's inner loop, to separate inner-loop
-costs from repeated tile loading. This is still a source-only design. A CPU win
-alone will not close the goal.
+code is implemented. The [shared-hot diagnostic](radish/GPU_SHARED_HOT.md)
+now measures **7.213085 → 5.417721 ms (24.89% less GPU time)** at equal issued
+arithmetic work, with all exact references passing. Both source variants failed
+the original no-hot-MOV gate; before timing, the scope was revised to compare
+the original complete implementation including its extra register moves. The
+result does not isolate memory or barrier cost, establish a conservative bound,
+or improve a production model. It guides the next kernel investigation. A CPU
+win alone will not close the goal.
 
 A tablet cancellation probe preserves the completed request and discards the
 second request after its active GPU core finishes. Exit follows the cancel marker
@@ -140,6 +144,7 @@ build and test scripts retain their relative paths.
 | [radish/GPU_STATE_REUSE.md](radish/GPU_STATE_REUSE.md) | Rejected state-reuse experiment and paired GPU measurements |
 | [radish/GPU_REPEAT_COALESCING.md](radish/GPU_REPEAT_COALESCING.md) | Compiler repeat/copy tradeoff and compile-only rejection |
 | [radish/GPU_MAD_UNROLL.md](radish/GPU_MAD_UNROLL.md) | Paired loop-overhead calibration, exact outputs and achieved arithmetic rate |
+| [radish/GPU_SHARED_HOT.md](radish/GPU_SHARED_HOT.md) | Combined shared-hot diagnostic, strict admission failures and paired results |
 
 ## Building and running
 
@@ -149,7 +154,7 @@ kept outside the repository.
 
 1. Check out Mesa at `ddabdd0e36bd2f5e0c8e6bd21c3d1da7e34c1230` in a
    separate worktree. Apply
-   `radish/patches/0040-radish-mad-unroll-calibration-cumulative.patch` to that base.
+   `radish/patches/0041-radish-shared-hot-calibration-cumulative.patch` to that base.
    Earlier cumulative Mesa patches are historical alternatives, not a series.
 2. Set `RADISH_WORK` to the scratch/build directory, `RADISH_MESA` to the Mesa
    checkout, `RADISH_SYSROOT` to the aarch64 sysroot and `RADISH_VENV` to the

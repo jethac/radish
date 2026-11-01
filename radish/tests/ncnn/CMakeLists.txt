@@ -55,3 +55,8 @@ add_executable(radish-gpu-mad-unroll EXCLUDE_FROM_ALL gpu_mad_unroll_probe.cpp)
 target_link_libraries(radish-gpu-mad-unroll PRIVATE ncnn)
 target_include_directories(radish-gpu-mad-unroll PRIVATE ${NCNN_SOURCE}/src/layer)
 target_compile_options(radish-gpu-mad-unroll PRIVATE -ffp-contract=off -Wall -Wextra -Werror)
+
+add_executable(radish-gpu-shared-hot EXCLUDE_FROM_ALL gpu_shared_hot_probe.cpp)
+target_link_libraries(radish-gpu-shared-hot PRIVATE ncnn)
+target_include_directories(radish-gpu-shared-hot PRIVATE ${NCNN_SOURCE}/src/layer)
+target_compile_options(radish-gpu-shared-hot PRIVATE -ffp-contract=off -Wall -Wextra -Werror)

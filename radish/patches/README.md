@@ -46,6 +46,14 @@ limits and validation scope. Published checkpoints remain experimental; publicat
 | `0038-radish-tiled-state-reuse.patch` | Incremental over 0037 in a separate experimental checkout only | **Rejected performance experiment:** full poisoned-output correctness passes, but 0.417119% mean GPU reduction fails the prospective 5% gate. Optional reproduction/history only; not part of the recommended driver stack. |
 | `0039-ir3-cold-output-collect.patch` | Incremental over 0037 in a separate experimental checkout; 0038 not needed | **Rejected before tensors:** 13 repeat MADs form, but 2 hot register moves and outer-boundary shuffling fail compiler admission; native 27→29 is outside batching/timing gates. Compile-only reproduction/history; no tensor or performance claim. |
 | `0040-radish-mad-unroll-calibration-cumulative.patch` | Same Mesa base as 0001; alternative to 0037, without 0038/0039 | Default-off elapsed class for fourfold MAD-loop calibration; full exact output/guard/input checks pass and balanced mean GPU interval falls 5.407433% (12.597682→11.916471 ms), yielding 22.526423 GFLOP/s. No model dispatch or public-feature change. |
+| `0041-radish-shared-hot-calibration-cumulative.patch` | Same Mesa base as 0001; alternative to 0040 | Default-off diagnostic class for the original shared-hot implementation; full exact outputs/guards/inputs pass and balanced mean GPU interval falls 24.890379%. Both strict no-hot-MOV rejections remain failures; revised exploratory scope includes the extra moves. No model optimization or conformance change. |
+
+0041 adds one narrowly gated 28-line timing/batching block to 0040. All fourteen
+files reconstruct exactly from the pinned Mesa base. SHA256
+`416045c8ef3b572abf128ad21b432673f8f35bc37989507b0fcd70e18577d2d5`.
+The normal model batching allowlist and existing diagnostics are unchanged;
+0038/0039 remain excluded. See `../GPU_SHARED_HOT.md` for the revised diagnostic
+scope, paired results and reproduction.
 
 0040 is cumulative from the same pinned Mesa base, preserving all 0037 policies
 and adding only three timer-selection lines. SHA256
@@ -53,9 +61,11 @@ and adding only three timer-selection lines. SHA256
 All fourteen source files reconstruct exactly; 0038/0039 are excluded. See
 `../GPU_MAD_UNROLL.md` for paired results, exact checks and reproduction.
 
-Current diagnostic reconstruction uses 0040; the measured model/global device
-ICD remain 0032. The canonical 0040 ICD is 366948ba…51a8e (host-built); actual
-calibration used private 30e19d89…8758d. The helper binary matches exactly.
+Current diagnostic reconstruction uses 0041; the measured model/global device
+ICD remain 0032. Canonical 0041 ICD f9610658…bb096 is host-built from the same
+reviewed queue source as measured private 49d84db0…76833. Its optional helper
+is byte-identical to the measured binary. Earlier 0040 calibration used private
+30e19d89…8758d; canonical 0040 was 366948ba…51a8e.
 
 0039 is not cumulative and is not in the recommended stack. SHA256
 `9633ded58bf108c543d536582f795adbc40bafab0c591457bdfeb89ac4b9eaac`.
@@ -74,7 +84,7 @@ Calibration used private ICD `393383ce…a2900`; canonical ICD
 `2f4fde0e…1b1682` has only host-build evidence. See `../GPU_CALIBRATION.md`.
 
 To reconstruct the accepted driver checkpoint, make a separate checkout/worktree at the
-Mesa base, read its `AGENTS.md`, and apply 0040 with `git apply` instead of
+Mesa base, read its `AGENTS.md`, and apply 0041 with `git apply` instead of
 earlier cumulative Mesa patches. Set
 `RADISH_MESA` to that checkout and run `../scripts/build.sh`. Preserve the AC8
 checkout and use the shared scratch disk for source/build outputs. The existing

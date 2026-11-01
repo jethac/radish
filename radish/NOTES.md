@@ -1,5 +1,31 @@
 # Radish status
 
+## 2026-11-02 (JST): shared-hot diagnostic shows a combined implementation gap
+
+The 0041 balanced probe measures **7.213085→5.417721 ms GPU elapsed**, a
+**24.890379% reduction** at equal issued arithmetic work. All four pairs improve
+(24.865127%, 24.819301%, 24.837629%, 25.039097%); work divided by mean GPU time
+is 12.792680→17.032012 GFLOP/s. Host submit/whole-call means are
+8.055620→6.067568 ms and 8.320751→6.336280 ms. No production shader changed;
+accepted fixed warm core remains 35.730754 s and conformance status is unchanged.
+
+Both the original and one coordinate-reformulated shader **failed** the original
+no-hot-MOV admission rule. Before timing, the scope was revised to compare the
+original complete implementation, including its 2816 register moves per
+invocation. The gap is not isolated outer-work, barrier, shared-memory or physical
+traffic cost, and is not a guaranteed conservative bound. It supplies exploratory
+evidence for a production-kernel investigation; it does not accept a model change.
+
+All 327,168 outputs match their kernel's exact oracle, with within-kernel byte
+identity, 48 output guards and five guarded GPU input readbacks preserved.
+Twelve timestamps, 96 chunks, 12 submits and all 22 raw files pass. Peak is
+62.8 MiB/zero swap, service 1.470 s, GPU temperature 32.9→32.9°C, no new faults,
+both services active. Whole-window clock records are not per-call measurements.
+The default-off cumulative gate preserves all ordinary model dispatch policies.
+Canonical builds pass and the optional helper matches the measured binary;
+timings use the separately pinned private ICD. See `GPU_SHARED_HOT.md` for the
+strict rejections, prospective scope revision, exact evidence and reproduction.
+
 ## 2026-11-02 (JST): MAD loop unrolling raises the arithmetic lower bound
 
 The balanced 0040 calibration reduces mean GPU elapsed **12.597682→11.916471 ms**
