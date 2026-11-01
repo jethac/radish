@@ -1,0 +1,59 @@
+#version 450
+
+layout(local_size_x=4, local_size_y=2, local_size_z=2) in;
+layout(set=0, binding=0, std430) buffer Output { uint values[]; } output_data;
+layout(push_constant) uniform Params {
+    uvec4 grid;   // Original API grid, followed by the per-dispatch salt.
+    uvec4 extent; // Addressing extents, followed by record capacity.
+    uvec4 bounds; // Partial output bounds, followed by the leading guard size.
+} params;
+
+#ifdef RADISH_GRID_SHARED
+shared uint scratch[16];
+#endif
+
+void main()
+{
+    uint lane = gl_LocalInvocationIndex;
+    uint peer = (lane + 5u) & 15u;
+    uint group_value = gl_WorkGroupID.x * 65537u +
+                       gl_WorkGroupID.y * 257u +
+                       gl_WorkGroupID.z * 17u + params.grid.w;
+#ifdef RADISH_GRID_SHARED
+    scratch[lane] = group_value + lane * 31u;
+    barrier();
+    uint exchanged = scratch[peer];
+#else
+    uint exchanged = group_value + peer * 31u;
+#endif
+
+    // Every invocation must reach the shared barrier, including bounded tails.
+    uvec3 id = gl_GlobalInvocationID;
+    if (any(greaterThanEqual(id, params.extent.xyz)) ||
+        any(greaterThanEqual(id, params.bounds.xyz)))
+        return;
+    uint record = (id.z * params.extent.y + id.y) * params.extent.x + id.x;
+    if (record >= params.extent.w)
+        return;
+    uint base = params.bounds.w + record * 16u;
+
+    // The address uses GlobalInvocationID; the group fields use WorkGroupID.
+    output_data.values[base + 0u] = gl_NumWorkGroups.x;
+    output_data.values[base + 1u] = gl_NumWorkGroups.y;
+    output_data.values[base + 2u] = gl_NumWorkGroups.z;
+    output_data.values[base + 3u] = gl_WorkGroupID.x;
+    output_data.values[base + 4u] = gl_WorkGroupID.y;
+    output_data.values[base + 5u] = gl_WorkGroupID.z;
+    output_data.values[base + 6u] = id.x;
+    output_data.values[base + 7u] = id.y;
+    output_data.values[base + 8u] = id.z;
+    output_data.values[base + 9u] = gl_LocalInvocationID.x;
+    output_data.values[base + 10u] = gl_LocalInvocationID.y;
+    output_data.values[base + 11u] = gl_LocalInvocationID.z;
+    output_data.values[base + 12u] = lane;
+    output_data.values[base + 13u] =
+        (gl_WorkGroupID.z * params.grid.y + gl_WorkGroupID.y) *
+        params.grid.x + gl_WorkGroupID.x;
+    output_data.values[base + 14u] = params.grid.w;
+    output_data.values[base + 15u] = exchanged;
+}

@@ -1,0 +1,26 @@
+#version 450
+layout(local_size_x_id=0) in;
+layout(set=0,binding=11,std430) buffer Output { float values[]; } output_data;
+layout(push_constant) uniform Params { uint count; uint salt; } params;
+shared uint scratch[256];
+
+#define STEP state ^= state << 13u; state ^= state >> 17u; state ^= state << 5u;
+#define STEP8 STEP STEP STEP STEP STEP STEP STEP STEP
+#define STEP64 STEP8 STEP8 STEP8 STEP8 STEP8 STEP8 STEP8 STEP8
+
+void main()
+{
+    uint lane = gl_LocalInvocationID.x;
+    uint i = gl_GlobalInvocationID.x;
+    uint state = (i + 1u) ^ params.salt;
+#ifdef RADISH_LONG_SHADER
+    STEP64 STEP64
+#endif
+    scratch[lane] = i < params.count ? state & 65535u : 0u;
+    barrier();
+    for (uint stride = gl_WorkGroupSize.x / 2u; stride > 0u; stride /= 2u) {
+        if (lane < stride) scratch[lane] += scratch[lane + stride];
+        barrier();
+    }
+    if (i < params.count) output_data.values[i] = float(scratch[0] + params.salt);
+}

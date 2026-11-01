@@ -1,0 +1,98 @@
+diff --git a/src/net.cpp b/src/net.cpp
+index 34438ab..72edc9a 100644
+--- a/src/net.cpp
++++ b/src/net.cpp
+@@ -12,6 +12,7 @@
+ #include <limits.h>
+ #include <stdarg.h>
+ #include <stdint.h>
++#include <stdlib.h>
+ #include <string.h>
+ 
+ #if NCNN_BENCHMARK
+@@ -25,6 +26,25 @@
+ 
+ namespace ncnn {
+ 
++// Opt-in execution evidence without timestamp-query support. Dispatch counts
++// are workgroups recorded by a layer, not completed GPU timings.
++static bool radish_trace_enabled()
++{
++    const char* value = getenv("RADISH_NCNN_TRACE");
++    return value && value[0] && strcmp(value, "0") != 0;
++}
++
++static void radish_trace_layer(int index, const Layer* layer, const char* path, int ret, uint64_t dispatch_groups)
++{
++    if (!radish_trace_enabled())
++        return;
++#if NCNN_STRING
++    NCNN_LOGE("RADISH_TRACE layer=%d type=%s name=%s path=%s ret=%d dispatch_groups=%llu", index, layer->type.c_str(), layer->name.c_str(), path, ret, (unsigned long long)dispatch_groups);
++#else
++    NCNN_LOGE("RADISH_TRACE layer=%d typeindex=%d path=%s ret=%d dispatch_groups=%llu", index, layer->typeindex, path, ret, (unsigned long long)dispatch_groups);
++#endif
++}
++
+ #if NCNN_VALIDATION
+ // bound model header allocations, including repeated blob references
+ static const int max_net_count = 1000000;
+@@ -187,6 +207,7 @@ int NetPrivate::forward_layer(int layer_index, std::vector<Mat>& blob_mats, cons
+     {
+         ret = do_forward_layer(layer, blob_mats, opt);
+     }
++    radish_trace_layer(layer_index, layer, "CPU", ret, 0);
+ #if NCNN_BENCHMARK
+     double end = get_current_time();
+     if (layer->one_blob_only)
+@@ -244,6 +265,8 @@ int NetPrivate::forward_layer(int layer_index, std::vector<Mat>& blob_mats, std:
+             if (blob_mats_gpu[bottom_blob_index].dims == 0 && blob_mats[bottom_blob_index].dims != 0)
+             {
+                 // host to buffer
++                if (radish_trace_enabled())
++                    NCNN_LOGE("RADISH_TRACE event=upload consumer=%d blob=%d storage_bytes=%zu", layer_index, bottom_blob_index, blob_mats[bottom_blob_index].total() * blob_mats[bottom_blob_index].elemsize);
+                 cmd.record_upload(blob_mats[bottom_blob_index], blob_mats_gpu[bottom_blob_index], opt);
+ 
+                 if (opt.lightmode)
+@@ -261,6 +284,8 @@ int NetPrivate::forward_layer(int layer_index, std::vector<Mat>& blob_mats, std:
+                 opt_download.use_packing_layout = layer->support_packing;
+ 
+                 // buffer to host
++                if (radish_trace_enabled())
++                    NCNN_LOGE("RADISH_TRACE event=download consumer=%d blob=%d storage_bytes=%zu", layer_index, bottom_blob_index, blob_mats_gpu[bottom_blob_index].total() * blob_mats_gpu[bottom_blob_index].elemsize);
+                 cmd.record_download(blob_mats_gpu[bottom_blob_index], blob_mats[bottom_blob_index], opt_download);
+ 
+                 if (opt.lightmode)
+@@ -302,7 +327,11 @@ int NetPrivate::forward_layer(int layer_index, std::vector<Mat>& blob_mats, std:
+     int ret;
+     if (cmd_submit_and_wait)
+     {
++        if (radish_trace_enabled())
++            NCNN_LOGE("RADISH_TRACE event=submit layer=%d pending_dispatch_groups=%llu", layer_index, (unsigned long long)cmd.pending_dispatch_total());
+         ret = cmd.submit_and_wait();
++        if (radish_trace_enabled())
++            NCNN_LOGE("RADISH_TRACE event=submit_done layer=%d ret=%d", layer_index, ret);
+ 
+ #if NCNN_BENCHMARK
+         std::vector<uint64_t> results(layer_index * 2);
+@@ -320,10 +349,13 @@ int NetPrivate::forward_layer(int layer_index, std::vector<Mat>& blob_mats, std:
+ #endif // NCNN_BENCHMARK
+ 
+         cmd.reset();
++        if (radish_trace_enabled())
++            NCNN_LOGE("RADISH_TRACE event=reset layer=%d", layer_index);
+         if (ret != 0)
+             return ret;
+     }
+ 
++    const uint64_t dispatch_before_layer = cmd.pending_dispatch_total();
+     if (layer->support_vulkan)
+     {
+ #if NCNN_BENCHMARK
+@@ -373,6 +405,7 @@ int NetPrivate::forward_layer(int layer_index, std::vector<Mat>& blob_mats, std:
+         }
+ #endif
+     }
++    radish_trace_layer(layer_index, layer, layer->support_vulkan ? "GPU" : "CPU", ret, cmd.pending_dispatch_total() - dispatch_before_layer);
+     if (ret != 0)
+         return ret;
+ 

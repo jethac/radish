@@ -1,0 +1,14 @@
+dEQP-VK.info.physical_devices
+dEQP-VK.info.device_features
+dEQP-VK.info.device_queue_family_properties
+dEQP-VK.info.device_memory_properties
+dEQP-VK.api.object_management.single.device_memory_small
+dEQP-VK.api.object_management.single.buffer_storage_small
+dEQP-VK.api.object_management.single.descriptor_set_layout_empty
+dEQP-VK.api.object_management.single.pipeline_layout_empty
+dEQP-VK.api.object_management.single.command_pool
+dEQP-VK.api.object_management.single.command_buffer_primary
+dEQP-VK.memory.mapping.suballocation.full.33.simple
+dEQP-VK.memory.mapping.suballocation.full.33.remap
+dEQP-VK.memory.mapping.suballocation.full.33.flush
+dEQP-VK.memory.mapping.suballocation.full.33.invalidate

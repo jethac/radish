@@ -1,0 +1,36 @@
+--- a/src/layer/vulkan/shader/convolution1d_packed_gemm.comp
++++ b/src/layer/vulkan/shader/convolution1d_packed_gemm.comp
+@@ -230,12 +230,18 @@
+         }
+     }
+ #else
++#if !(NCNN_fp16_arithmetic || NCNN_fp16_storage || NCNN_fp16_packed || NCNN_bf16_storage || NCNN_bf16_packed)
++    int sz = 0;
++    int kx = 0;
++#endif
+     for (int z = 0; z < N; z++)
+     {
++#if NCNN_fp16_arithmetic || NCNN_fp16_storage || NCNN_fp16_packed || NCNN_bf16_storage || NCNN_bf16_packed
+         const int sz = z / maxk;
+         const int kk = z % maxk;
+ 
+         const int kx = kk % kernel_w;
++#endif
+ 
+         afpvec4 v0, v1, v2, v3;
+ 
+@@ -291,6 +297,14 @@
+         sum3 += v3 * k;
+ 
+         w_offset += 4;
++#if !(NCNN_fp16_arithmetic || NCNN_fp16_storage || NCNN_fp16_packed || NCNN_bf16_storage || NCNN_bf16_packed)
++        kx++;
++        if (kx == maxk)
++        {
++            kx = 0;
++            sz++;
++        }
++#endif
+     }
+ #endif
+ 

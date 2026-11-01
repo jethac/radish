@@ -1,0 +1,224 @@
+--- a/src/layer/vulkan/convolution1d_vulkan.cpp
++++ b/src/layer/vulkan/convolution1d_vulkan.cpp
+@@ -22,6 +22,8 @@
+     pipeline_convolution1d = 0;
+     pipeline_convolution1d_1x1s1d1 = 0;
+     pipeline_convolution1d_gemm = 0;
++
++    use_radish_tiled = false;
+ 
+     use_cooperative_matrix = false;
+     coopmat_M = 0;
+@@ -104,7 +106,49 @@
+                     && num_input * maxk >= 8
+                     && num_output >= 8;
+ 
+-    if (use_gemm)
++    const char* tiled_env = getenv("RADISH_NCNN_TILED");
++    use_radish_tiled = tiled_env && strcmp(tiled_env, "1") == 0 && use_gemm
++                       && vkdev->info.vendor_id() == 0x5143 && vkdev->info.device_id() == 506
++                       && strcmp(vkdev->info.device_name(), "Radish Adreno 506 (experimental compute)") == 0
++                       && vkdev->info.max_shared_memory_size() >= 16384
++                       && vkdev->info.max_workgroup_invocations() >= 128
++                       && vkdev->info.max_workgroup_size_x() >= 16 && vkdev->info.max_workgroup_size_y() >= 8
++                       && opt.use_packing_layout && elempack == 4 && out_elempack == 4
++                       && stride_w == 1 && dilation_w == 1 && (num_input * maxk) % 32 == 0
++                       && num_input * maxk <= 3584
++                       && num_output % 64 == 0 && activation_type == 0
++                       && !opt.use_fp16_packed && !opt.use_fp16_storage
++                       && !opt.use_fp16_arithmetic && !opt.use_fp16_uniform
++                       && !opt.use_bf16_packed && !opt.use_bf16_storage
++                       && !opt.use_int8_inference && !opt.use_int8_packed && !opt.use_int8_storage
++                       && !opt.use_int8_arithmetic && !opt.use_int8_uniform
++                       && !opt.use_int16_packed && !opt.use_int16_storage
++                       && !opt.use_subgroup_ops && !opt.use_cooperative_matrix && !opt.use_tensor_storage;
++
++    if (use_radish_tiled)
++    {
++        // The original weights already have the required [output][input*tap]
++        // order. Keep one reference until upload instead of a second packing.
++        weight_data_packed = weight_data;
++
++        std::vector<vk_specialization_type> specializations(4);
++        specializations[0].i = kernel_w;
++        specializations[1].i = num_input;
++        specializations[2].i = num_output;
++        specializations[3].i = bias_term;
++
++        pipeline_convolution1d_gemm = new Pipeline(vkdev);
++        pipeline_convolution1d_gemm->set_local_size_xyz(16, 8, 1);
++        if (pipeline_convolution1d_gemm->local_size_x() != 16
++            || pipeline_convolution1d_gemm->local_size_y() != 8
++            || pipeline_convolution1d_gemm->local_size_z() != 1)
++            return -1;
++
++        const int ret = pipeline_convolution1d_gemm->create(LayerShaderType::convolution1d_radish_tiled, opt, specializations);
++        if (ret != 0)
++            return ret;
++    }
++    else if (use_gemm)
+     {
+         use_cooperative_matrix = vkdev->info.support_cooperative_matrix() && opt.use_cooperative_matrix && (opt.use_fp16_storage || opt.use_fp16_packed);
+ 
+@@ -677,6 +721,8 @@
+     delete pipeline_convolution1d_gemm;
+     pipeline_convolution1d_gemm = 0;
+ 
++    use_radish_tiled = false;
++
+     use_cooperative_matrix = false;
+     coopmat_M = 0;
+     coopmat_N = 0;
+@@ -800,6 +846,35 @@
+                     && num_input * maxk >= 8
+                     && num_output >= 8;
+ 
++    if (use_radish_tiled)
++    {
++        if (!pipeline_convolution1d_gemm || pipeline_convolution1d_gemm->pipeline() == VK_NULL_HANDLE
++            || bottom_blob_bordered.dims != 2 || elempack != 4 || elemsize != 16u
++            || num_input != weight_data_size / maxk / num_output || outw <= 0)
++            return -1;
++
++        top_blob.create(outw, num_output / 4, (size_t)16u, 4, opt.blob_vkallocator);
++        if (top_blob.empty())
++            return -100;
++
++        std::vector<VkMat> bindings(4);
++        bindings[0] = weight_data_gpu;
++        bindings[1] = bottom_blob_bordered;
++        bindings[2] = top_blob;
++        bindings[3] = bias_data_gpu;
++
++        std::vector<vk_constant_type> constants(2);
++        constants[0].i = bottom_blob_bordered.w;
++        constants[1].i = outw;
++
++        VkMat dispatcher;
++        dispatcher.w = (outw / 64 + (outw % 64 != 0)) * 16;
++        dispatcher.h = (num_output / 64) * 8;
++        dispatcher.c = 1;
++        cmd.record_pipeline(pipeline_convolution1d_gemm, bindings, constants, dispatcher);
++        return 0;
++    }
++
+     if (use_gemm && pipeline_convolution1d_gemm)
+     {
+         if (use_cooperative_matrix)
+--- a/src/layer/vulkan/convolution1d_vulkan.h
++++ b/src/layer/vulkan/convolution1d_vulkan.h
+@@ -35,6 +35,8 @@
+     Pipeline* pipeline_convolution1d_1x1s1d1;
+     Pipeline* pipeline_convolution1d_gemm;
+ 
++    bool use_radish_tiled;
++
+     // cooperative matrix
+     bool use_cooperative_matrix;
+     int coopmat_M;
+--- /dev/null
++++ b/src/layer/vulkan/shader/convolution1d_radish_tiled.comp
+@@ -0,0 +1,103 @@
++#version 450
++
++// FP32 implicit GEMM: 64 output channels x 64 positions, reduction blocks of
++// 32, eight vec4 accumulators per invocation. Host local size is 16x8x1.
++layout(constant_id = 0) const int kernel_w = 1;
++layout(constant_id = 1) const int num_input = 32;
++layout(constant_id = 2) const int num_output = 64;
++layout(constant_id = 3) const int bias_term = 0;
++
++layout(binding = 0) readonly buffer weights { vec4 weight_data[]; };
++layout(binding = 1) readonly buffer bottom_blob { float bottom_blob_data[]; };
++layout(binding = 2) writeonly buffer top_blob { vec4 top_blob_data[]; };
++layout(binding = 3) readonly buffer bias_blob { float bias_data[]; };
++
++layout(push_constant) uniform parameter
++{
++    int w;
++    int outw;
++} p;
++
++// Exactly 16 KiB; all invocations fill and consume both tiles at each barrier.
++shared vec4 sa[64][8];
++shared vec4 sb[32][16];
++
++vec4 load_input(int k, int x)
++{
++    const int ci = k / kernel_w;
++    const int tap = k - ci * kernel_w;
++    const int base = (ci / 4) * p.w * 4 + ci % 4;
++    vec4 v = vec4(0.f);
++    if (x < p.outw) v.x = bottom_blob_data[base + (x + tap) * 4];
++    if (x + 1 < p.outw) v.y = bottom_blob_data[base + (x + 1 + tap) * 4];
++    if (x + 2 < p.outw) v.z = bottom_blob_data[base + (x + 2 + tap) * 4];
++    if (x + 3 < p.outw) v.w = bottom_blob_data[base + (x + 3 + tap) * 4];
++    return v;
++}
++
++void main()
++{
++    const int tx = int(gl_LocalInvocationID.x);
++    const int ty = int(gl_LocalInvocationID.y);
++    const int tid = ty * 16 + tx;
++    const int mb = int(gl_WorkGroupID.y) * 64;
++    const int nb = int(gl_WorkGroupID.x) * 64;
++    const int K = num_input * kernel_w;
++    const int K4 = K / 4;
++
++    vec4 acc[8];
++    for (int r = 0; r < 8; r++)
++    {
++        const int co = mb + ty * 8 + r;
++        acc[r] = vec4(bias_term != 0 && co < num_output ? bias_data[co] : 0.f);
++    }
++
++    for (int k0 = 0; k0 < K; k0 += 32)
++    {
++        for (int i = tid; i < 64 * 8; i += 128)
++        {
++            const int r = i / 8;
++            const int q = i % 8;
++            sa[r][q] = mb + r < num_output ? weight_data[(mb + r) * K4 + k0 / 4 + q] : vec4(0.f);
++        }
++        for (int i = tid; i < 32 * 16; i += 128)
++        {
++            const int r = i / 16;
++            const int q = i % 16;
++            sb[r][q] = load_input(k0 + r, nb + q * 4);
++        }
++        barrier();
++
++        for (int kq = 0; kq < 8; kq++)
++        {
++            vec4 b0 = sb[4 * kq][tx];
++            vec4 b1 = sb[4 * kq + 1][tx];
++            vec4 b2 = sb[4 * kq + 2][tx];
++            vec4 b3 = sb[4 * kq + 3][tx];
++            for (int r = 0; r < 8; r++)
++            {
++                vec4 a = sa[ty * 8 + r][kq];
++                acc[r] += a.x * b0 + a.y * b1 + a.z * b2 + a.w * b3;
++            }
++        }
++        barrier();
++    }
++
++    // Transpose four channel rows into ncnn's pack4 at each spatial position.
++    const int x = nb + tx * 4;
++    for (int r = 0; r < 8; r += 4)
++    {
++        const int co = mb + ty * 8 + r;
++        if (co + 3 >= num_output)
++            continue;
++        const int base = (co / 4) * p.outw + x;
++        if (x < p.outw)
++            top_blob_data[base] = vec4(acc[r].x, acc[r + 1].x, acc[r + 2].x, acc[r + 3].x);
++        if (x + 1 < p.outw)
++            top_blob_data[base + 1] = vec4(acc[r].y, acc[r + 1].y, acc[r + 2].y, acc[r + 3].y);
++        if (x + 2 < p.outw)
++            top_blob_data[base + 2] = vec4(acc[r].z, acc[r + 1].z, acc[r + 2].z, acc[r + 3].z);
++        if (x + 3 < p.outw)
++            top_blob_data[base + 3] = vec4(acc[r].w, acc[r + 1].w, acc[r + 2].w, acc[r + 3].w);
++    }
++}

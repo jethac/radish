@@ -1,0 +1,5 @@
+dEQP-VK.compute.pipeline.basic.empty_shader
+dEQP-VK.compute.pipeline.basic.ssbo_rw_single_invocation
+dEQP-VK.compute.pipeline.basic.copy_ssbo_single_invocation
+dEQP-VK.compute.pipeline.basic.shared_var_single_invocation
+dEQP-VK.compute.pipeline.basic.shared_var_single_group

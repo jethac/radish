@@ -1,0 +1,136 @@
+--- a/src/layer/vulkan/convolution1d_vulkan.cpp
++++ b/src/layer/vulkan/convolution1d_vulkan.cpp
+@@ -4,6 +4,8 @@
+ #include "convolution1d_vulkan.h"
+ 
+ #include <limits.h>
++#include <stdlib.h>
++#include <string.h>
+ 
+ #include "layer_shader_type.h"
+ #include "layer_type.h"
+@@ -346,8 +348,29 @@
+             specializations[9 + 4].i = num_output;
+             specializations[9 + 5].i = num_input;
+ 
++            Option gemm_opt = opt;
++            const char* shared32_env = getenv("RADISH_NCNN_SHARED32");
++            const bool use_shared32 = shared32_env && strcmp(shared32_env, "1") == 0
++                                      && vkdev->info.vendor_id() == 0x5143 && vkdev->info.device_id() == 506
++                                      && strcmp(vkdev->info.device_name(), "Radish Adreno 506 (experimental compute)") == 0
++                                      && !opt.use_fp16_packed && !opt.use_fp16_storage
++                                      && !opt.use_fp16_arithmetic && !opt.use_fp16_uniform
++                                      && !opt.use_bf16_packed && !opt.use_bf16_storage
++                                      && !opt.use_int8_inference;
++            if (use_shared32)
++                gemm_opt.use_shader_local_memory = true;
++            if (gemm_opt.use_shader_local_memory)
++            {
++                specializations.resize(9 + 7);
++                specializations[9 + 6].i = use_shared32 ? 1 : 0;
++            }
++
+             pipeline_convolution1d_gemm = new Pipeline(vkdev);
+-            if (opt.use_shader_local_memory)
++            if (use_shared32)
++            {
++                pipeline_convolution1d_gemm->set_local_size_xyz(8, 4, 1);
++            }
++            else if (gemm_opt.use_shader_local_memory)
+             {
+                 pipeline_convolution1d_gemm->set_local_size_xyz(8, 8, 1);
+             }
+@@ -355,7 +378,7 @@
+             {
+                 pipeline_convolution1d_gemm->set_local_size_xyz(16, std::min(4, num_output_packed / 4), 1);
+             }
+-            pipeline_convolution1d_gemm->create(LayerShaderType::convolution1d_packed_gemm, opt, specializations);
++            pipeline_convolution1d_gemm->create(LayerShaderType::convolution1d_packed_gemm, gemm_opt, specializations);
+         }
+     }
+     else if (is_conv1x1s1d1)
+--- a/src/layer/vulkan/shader/convolution1d_packed_gemm.comp
++++ b/src/layer/vulkan/shader/convolution1d_packed_gemm.comp
+@@ -49,6 +49,7 @@
+ } p;
+ 
+ #if NCNN_shader_local_memory
++layout(constant_id = shape_constant_id_offset + 6) const int shared32_mode = 0;
+ shared lfpvec4 tmp_v[8][LOCAL_MEMORY_UNROLL_INCH][4];
+ shared lfpvec4 tmp_k[8][LOCAL_MEMORY_UNROLL_INCH][4];
+ #endif
+@@ -60,6 +61,10 @@
+ 
+     const int outsize = psc(outw);
+ 
++#if NCNN_shader_local_memory
++    const bool shared32 = shared32_mode != 0;
++#endif
++
+ #if !NCNN_shader_local_memory
+     if (gx >= outsize || gy >= psc(outh))
+         return;
+@@ -72,7 +77,13 @@
+ 
+     if (bias_term == 1)
+     {
++#if NCNN_shader_local_memory
++        afpvec4 b = afpvec4(0.f);
++        if (!shared32 || gy < psc(outh))
++            b = buffer_ld4(bias_data, gy);
++#else
+         afpvec4 b = buffer_ld4(bias_data, gy);
++#endif
+         sum0 = b;
+         sum1 = b;
+         sum2 = b;
+@@ -111,7 +122,11 @@
+ 
+                 const int kx = k % kernel_w;
+ 
+-                if (elempack == 4)
++                if (shared32 && gx + ly >= outsize)
++                {
++                    tmp_v[lx][z4][ly] = afp2lfpvec4(afpvec4(0.f));
++                }
++                else if (elempack == 4)
+                 {
+                     const int v_offset = sz * psc(w) + sx4[ly] + kx * dilation_w;
+                     tmp_v[lx][z4][ly] = buffer_sm4(bottom_blob_data_4, v_offset);
+@@ -135,7 +150,10 @@
+         {
+             for (int z4 = 0; z4 < LOCAL_MEMORY_UNROLL_INCH; z4++)
+             {
+-                tmp_k[ly][z4][lx] = buffer_sm4(weight_data, w_offset + z4 * 4 + lx);
++                if (shared32 && gy >= psc(outh))
++                    tmp_k[ly][z4][lx] = afp2lfpvec4(afpvec4(0.f));
++                else
++                    tmp_k[ly][z4][lx] = buffer_sm4(weight_data, w_offset + z4 * 4 + lx);
+             }
+         }
+ 
+@@ -179,7 +197,11 @@
+ 
+                 const int kx = k % kernel_w;
+ 
+-                if (elempack == 4)
++                if (shared32 && gx + ly >= outsize)
++                {
++                    tmp_v[lx][z4][ly] = afp2lfpvec4(afpvec4(0.f));
++                }
++                else if (elempack == 4)
+                 {
+                     const int v_offset = sz * psc(w) + sx4[ly] + kx * dilation_w;
+                     tmp_v[lx][z4][ly] = buffer_sm4(bottom_blob_data_4, v_offset);
+@@ -203,7 +225,10 @@
+         {
+             for (int z4 = 0; z4 < remain; z4++)
+             {
+-                tmp_k[ly][z4][lx] = buffer_sm4(weight_data, w_offset + z4 * 4 + lx);
++                if (shared32 && gy >= psc(outh))
++                    tmp_k[ly][z4][lx] = afp2lfpvec4(afpvec4(0.f));
++                else
++                    tmp_k[ly][z4][lx] = buffer_sm4(weight_data, w_offset + z4 * 4 + lx);
+             }
+         }
+ 

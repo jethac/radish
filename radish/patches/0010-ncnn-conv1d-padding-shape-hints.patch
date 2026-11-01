@@ -1,0 +1,41 @@
+--- a/src/layer/vulkan/convolution1d_vulkan.cpp
++++ b/src/layer/vulkan/convolution1d_vulkan.cpp
+@@ -2,6 +2,8 @@
+ // SPDX-License-Identifier: BSD-3-Clause
+ 
+ #include "convolution1d_vulkan.h"
++
++#include <limits.h>
+ 
+ #include "layer_shader_type.h"
+ #include "layer_type.h"
+@@ -56,6 +58,29 @@
+     {
+         padding = ncnn::create_layer_vulkan(ncnn::LayerType::Padding);
+         padding->vkdev = vkdev;
++
++        const Mat& shape = bottom_shapes.empty() ? Mat() : bottom_shapes[0];
++        if (shape.dims == 2 && shape.w > 0 && shape.h > 0)
++        {
++            long long bordered_w = 0;
++            if (pad_left >= 0 && pad_right >= 0)
++            {
++                bordered_w = (long long)shape.w + pad_left + pad_right;
++            }
++            else if (((pad_left == -233 && pad_right == -233) || (pad_left == -234 && pad_right == -234))
++                     && kernel_w > 0 && dilation_w > 0 && stride_w > 0)
++            {
++                const long long kernel_extent_w = (long long)dilation_w * (kernel_w - 1) + 1;
++                const long long wpad = kernel_extent_w + (shape.w - 1) / stride_w * (long long)stride_w - shape.w;
++                bordered_w = shape.w + std::max(0LL, wpad);
++            }
++
++            if (bordered_w > 0 && bordered_w <= INT_MAX)
++            {
++                padding->bottom_shapes.assign(1, shape);
++                padding->top_shapes.assign(1, Mat((int)bordered_w, shape.h, (void*)0, shape.elemsize, shape.elempack));
++            }
++        }
+ 
+         ncnn::ParamDict pd;
+         pd.set(0, 0);

@@ -1,0 +1,35 @@
+#version 450
+layout(local_size_x_id=0) in;
+layout(set=0,binding=2,std430) readonly buffer InputA { float values[]; } input_a;
+layout(set=0,binding=11,std430) buffer Output { float values[]; } output_data;
+layout(push_constant) uniform Params { uint count; uint salt; } params;
+#ifdef RADISH_SHARED_SMALL
+#define SCRATCH_COUNT 128
+#define SCRATCH_BASE 0
+#define SCRATCH_STRIDE 1
+#elif defined(RADISH_SHARED_LOW)
+#define SCRATCH_COUNT 8192
+#define SCRATCH_BASE 0
+#define SCRATCH_STRIDE 1
+#elif defined(RADISH_SHARED_MID)
+#define SCRATCH_COUNT 4096
+#define SCRATCH_BASE 31
+#define SCRATCH_STRIDE 32
+#else
+#define SCRATCH_COUNT 8192
+#define SCRATCH_BASE 4096
+#define SCRATCH_STRIDE 31
+#endif
+shared float scratch[SCRATCH_COUNT];
+void main() {
+    uint lane = gl_LocalInvocationID.x;
+    uint i = gl_GlobalInvocationID.x;
+    uint slot = SCRATCH_BASE + lane * SCRATCH_STRIDE;
+    scratch[slot] = i < params.count ? input_a.values[i] : 0.0;
+    barrier();
+    for (uint stride = gl_WorkGroupSize.x / 2; stride > 0; stride /= 2) {
+        if (lane < stride) scratch[slot] += scratch[SCRATCH_BASE + (lane + stride) * SCRATCH_STRIDE];
+        barrier();
+    }
+    if (i < params.count) output_data.values[i] = scratch[SCRATCH_BASE] + float(params.salt);
+}

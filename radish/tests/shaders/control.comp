@@ -1,0 +1,107 @@
+#version 450
+
+// Build separate pipelines: no defines = loop, CONTROL_ARRAY=1 = array,
+// CONTROL_DIV=1 = div, both = array-div, CONTROL_LONG=1 alone = loop-long.
+// CONTROL_LOAD=1 alone = loop-load, with float input at binding 1.
+// The mode tag detects a mismatched harness.
+#ifndef CONTROL_ARRAY
+#define CONTROL_ARRAY 0
+#endif
+#ifndef CONTROL_DIV
+#define CONTROL_DIV 0
+#endif
+#ifndef CONTROL_LONG
+#define CONTROL_LONG 0
+#endif
+#ifndef CONTROL_LOAD
+#define CONTROL_LOAD 0
+#endif
+#if (CONTROL_ARRAY != 0 && CONTROL_ARRAY != 1) || (CONTROL_DIV != 0 && CONTROL_DIV != 1) || (CONTROL_LONG != 0 && CONTROL_LONG != 1) || (CONTROL_LOAD != 0 && CONTROL_LOAD != 1)
+#error Control variant flags must be zero or one
+#endif
+#if CONTROL_LOAD && (CONTROL_ARRAY || CONTROL_DIV || CONTROL_LONG)
+#error CONTROL_LOAD must be tested separately from all other variants
+#endif
+#if CONTROL_LONG && (CONTROL_ARRAY || CONTROL_DIV)
+#error CONTROL_LONG must be tested separately from CONTROL_ARRAY and CONTROL_DIV
+#endif
+
+#define STEP value ^= value << 13u; value ^= value >> 17u; value ^= value << 5u;
+#define STEP8 STEP STEP STEP STEP STEP STEP STEP STEP
+#define STEP64 STEP8 STEP8 STEP8 STEP8 STEP8 STEP8 STEP8 STEP8
+
+layout(local_size_x=64, local_size_y=1, local_size_z=1) in;
+layout(set=0, binding=0, std430) buffer Output { uint values[]; } output_data;
+#if CONTROL_LOAD
+layout(set=0, binding=1, std430) readonly buffer Input { float values[]; } input_data;
+#endif
+layout(push_constant) uniform Params {
+    uvec4 shape; // count, salt, leading guard words, reserved
+    uvec4 axes;  // A permutation of 0, 1, 2, 3, validated by the harness.
+    ivec4 divisors; // The first two components are strictly positive.
+} params;
+
+#if CONTROL_LOAD
+shared float scratch[64];
+#else
+shared uint scratch[64];
+#endif
+
+void main()
+{
+    uint lane = gl_LocalInvocationID.x;
+#if CONTROL_LOAD
+    float accumulator = 0.0;
+#else
+    uint accumulator = 0u;
+#endif
+    uint iterations = 0u;
+    for (int t = int(lane); t < int(params.shape.x); t += 64) {
+#if CONTROL_LOAD
+        float value = input_data.values[t];
+#else
+        uint value = (uint(t) + 1u) * 0x9e3779b9u + params.shape.y;
+#if CONTROL_ARRAY
+        uint temporary[4] = uint[4](0u, 0u, 0u, 0u);
+        temporary[params.axes.x] = value ^ 0xa5a5a5a5u;
+        temporary[params.axes.y] = (uint(t) + params.shape.y) * 17u;
+        temporary[params.axes.z] = uint(t) * 3u + params.shape.y;
+        temporary[params.axes.w] = (uint(t) ^ params.shape.y) + 0x13579bdfu;
+        value = temporary[0] * 3u + temporary[1] * 5u +
+                temporary[2] * 7u + temporary[3] * 11u;
+#endif
+#if CONTROL_DIV
+        // Bounded positive inputs keep signed arithmetic defined in all cases.
+        int numerator = t * 37 + int(params.shape.y & 0x7fffu);
+        int quotient = numerator / params.divisors.x;
+        int remainder = numerator % params.divisors.y;
+        value += uint(quotient) * 0x045d9f3bu + uint(remainder) * 0x27d4eb2du;
+#endif
+#if CONTROL_LONG
+        STEP64 STEP64
+#endif
+#endif
+        accumulator += value;
+        iterations++;
+    }
+
+    uint base = params.shape.z + lane * 4u;
+#if CONTROL_LOAD
+    output_data.values[base + 0u] = floatBitsToUint(accumulator);
+#else
+    output_data.values[base + 0u] = accumulator;
+#endif
+    output_data.values[base + 2u] = iterations;
+    output_data.values[base + 3u] = 0xc0170000u | uint(CONTROL_ARRAY + 2 * CONTROL_DIV + 4 * CONTROL_LONG + 5 * CONTROL_LOAD);
+    scratch[lane] = accumulator;
+    barrier();
+    for (uint stride = 32u; stride > 0u; stride >>= 1u) {
+        if (lane < stride) scratch[lane] += scratch[lane + stride];
+        barrier();
+    }
+#if CONTROL_LOAD
+    output_data.values[base + 1u] = floatBitsToUint(scratch[0]);
+#else
+    output_data.values[base + 1u] = scratch[0];
+#endif
+}

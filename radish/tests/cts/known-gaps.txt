@@ -1,0 +1,3 @@
+dEQP-VK.info.device_properties
+dEQP-VK.memory.requirements.dedicated_allocation.buffer.regular
+dEQP-VK.subgroups.basic.compute.subgroupelect

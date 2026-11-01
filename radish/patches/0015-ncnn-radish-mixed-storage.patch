@@ -1,0 +1,66 @@
+--- a/src/net.cpp
++++ b/src/net.cpp
+@@ -155,6 +155,23 @@
+     return opt1;
+ }
+ 
++#if NCNN_VULKAN
++static bool radish_mixed_storage_enabled(const VulkanDevice* vkdev, const Option& opt)
++{
++    const char* value = getenv("RADISH_NCNN_MIXED_STORAGE");
++    return value && strcmp(value, "1") == 0
++           && vkdev->info.vendor_id() == 0x5143 && vkdev->info.device_id() == 506
++           && strcmp(vkdev->info.device_name(), "Radish Adreno 506 (experimental compute)") == 0
++           && !vkdev->info.support_fp16_storage()
++           && opt.use_vulkan_compute && opt.use_fp16_packed
++           && !opt.use_fp16_storage && !opt.use_fp16_arithmetic && !opt.use_fp16_uniform
++           && !opt.use_bf16_packed && !opt.use_bf16_storage
++           && !opt.use_int8_inference && !opt.use_int8_packed && !opt.use_int8_storage
++           && !opt.use_int8_arithmetic && !opt.use_int8_uniform
++           && !opt.use_int16_packed && !opt.use_int16_storage && !opt.use_tensor_storage;
++}
++#endif
++
+ int NetPrivate::forward_layer(int layer_index, std::vector<Mat>& blob_mats, const Option& opt) const
+ {
+     if (layer_index < 0 || layer_index >= (int)layers.size() || !layers[layer_index])
+@@ -267,7 +284,9 @@
+                 // host to buffer
+                 if (radish_trace_enabled())
+                     NCNN_LOGE("RADISH_TRACE event=upload consumer=%d blob=%d storage_bytes=%zu", layer_index, bottom_blob_index, blob_mats[bottom_blob_index].total() * blob_mats[bottom_blob_index].elemsize);
+-                cmd.record_upload(blob_mats[bottom_blob_index], blob_mats_gpu[bottom_blob_index], opt);
++                const Option opt_upload = radish_mixed_storage_enabled(vkdev, this->opt)
++                                              ? get_masked_option(opt, layer->featmask) : opt;
++                cmd.record_upload(blob_mats[bottom_blob_index], blob_mats_gpu[bottom_blob_index], opt_upload);
+ 
+                 if (opt.lightmode)
+                 {
+@@ -688,14 +707,26 @@
+         }
+     }
+ 
+-    if (bottom_blob.elempack != dst_elempack)
++    int cast_type_to = 0;
++    int dst_elembits = bottom_blob.elembits();
++    if (radish_mixed_storage_enabled(vkdev, this->opt))
++    {
++        if (dst_elembits != 16 && dst_elembits != 32)
++            return -1;
++        cast_type_to = opt.use_fp16_packed ? 2 : 1;
++        dst_elembits = opt.use_fp16_packed ? 16 : 32;
++    }
++
++    if (bottom_blob.elempack != dst_elempack || bottom_blob.elembits() != dst_elembits)
+     {
+         VkMat bottom_blob_packed;
+-        vkdev->convert_packing(bottom_blob, bottom_blob_packed, dst_elempack, cmd, opt);
++        vkdev->convert_packing(bottom_blob, bottom_blob_packed, dst_elempack, cast_type_to, cmd, opt);
+         bottom_blob = bottom_blob_packed;
+ 
+         if (bottom_blob.empty())
+             return -100;
++        if (cast_type_to && bottom_blob.elembits() != dst_elembits)
++            return -1;
+     }
+ 
+     return 0;

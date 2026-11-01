@@ -1,0 +1,19 @@
+#version 450
+#ifdef RADISH_CONSECUTIVE
+#define A_BINDING 0
+#define B_BINDING 1
+#define OUTPUT_BINDING 2
+#else
+#define A_BINDING 2
+#define B_BINDING 7
+#define OUTPUT_BINDING 11
+#endif
+layout(local_size_x=32) in;
+layout(set=0,binding=A_BINDING,std430) readonly buffer InputA { float values[]; } input_a;
+layout(set=0,binding=B_BINDING,std430) readonly buffer InputB { float values[]; } input_b;
+layout(set=0,binding=OUTPUT_BINDING,std430) buffer Output { float values[]; } output_data;
+layout(push_constant) uniform Params { uint count; uint salt; } params;
+void main() {
+    uint i = gl_GlobalInvocationID.x;
+    if (i < params.count) output_data.values[i] = input_a.values[i] + input_b.values[i];
+}
