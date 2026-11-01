@@ -30,48 +30,39 @@ Full core and waveform comparisons pass at two input lengths. The full output
 contains 127,800 samples and passes at **97.91 dB SNR**. No GPU faults occurred,
 and both live appliance services remained active.
 
-| Measurement | GPU path | Packed six-thread CPU |
+| Measurement | Latest GPU path | Packed six-thread CPU |
 | --- | ---: | ---: |
-| Fixed full-size core, warm extraction | **38.557 s** | **32.079 s** |
-| Fresh full-length synthesis, including startup | **54.928 s** | **39.790 s** |
-| Complete short synthesis, resident core | **18.498 s** | **15.411 s** |
-| Complete full synthesis, resident core | **45.501 s** | **36.803 s** |
+| Neural core, full resident request | **37.089 s** | **30.703 s** |
+| Complete short synthesis, resident core | **18.590 s** | **15.411 s** |
+| Complete full synthesis, resident core | **43.578 s** | **36.803 s** |
 
-The latest optional channel padding moves five general convolutions onto the
-existing tiled kernel. Their padding/math commands save **2.090 s** of the
-**2.167 s** observed warm-core reduction from 40.724 s; the other 1601 command
-signatures match. Outputs differ from the previous GPU result but pass every
-unchanged accuracy gate. Fixed-core peak is **405.9 MiB with zero swap**; the
-prior run used 71.7 MiB swap, so whole-wall timing is not an isolated comparison.
+The latest opt-in change removes 49 normalization input copies while preserving
+shared residuals. In a same-binary fixed-core comparison, warm extraction falls
+**38.467 → 37.059 s (3.66%)**. Profiling attributes **1.566 s** to the affected
+copy/normalization work; all 1513 remaining command signatures match. All 562,342
+output values are byte-identical to the previous GPU result and pass the unchanged
+reference. Fixed-core peak is **402.8 MiB plus 6.7 MiB swap**, versus 405.6 MiB
+with zero swap for the disabled path. This is one warm observation per mode.
 
-A bounded resident worker regenerates frontend/source and waveform for every
-request while retaining one loaded core. The public wrapper passes four complete
-full/full/short/short requests with driver 0032 and channel padding: **54.928 s
-fresh full / 45.501 s resident full**, then **28.965 s short after shape reload /
-18.768 s resident short**. Core extraction takes 39.689/39.181/14.378/14.371 s.
-Every request passes original-ORT core/waveform references and has 715 GPU / zero
-CPU core layers. All eight boundary inputs match prior validated CPU/GPU captures;
-new same-length outputs match each other. The whole four-request session peaks
-at **525.8 MiB plus 80.1 MiB swap**, not an isolated fresh-request peak.
+A validated short/short/full/full loop takes **28.003 / 18.590 / 46.939 / 43.578 s**
+for complete synthesis. Each request regenerates frontend/source and waveform;
+only the core is retained for matching shapes. All four core/waveform references
+pass, and all eight boundary inputs plus both outputs match validated 0033 bytes.
+Session peak is **504.9 MiB plus 84.2 MiB swap**, with no faults and both services
+active. This is a whole-session peak, not a per-request measurement.
 
-New opt-in `--reuse-pipeline-cache` preserves compiled pipelines across shape
-changes while still replacing the network and reloading its weights. A validated
-short/full/short/short sequence loads the core in **9.711 / 3.988 / 1.163 / 0 s**;
-complete synthesis takes **28.938 / 49.434 / 20.455 / 18.498 s**. All four outputs
-are byte-identical to the earlier validated results. The short-shape revisit
-reuses the same compiled pipeline handles; cache entries stop growing after the
-two shapes are seen. Session peak is **525.7 MiB plus 41.6 MiB swap**. Earlier
-short reload took 9.329 s, but different cache history, sequence and memory
-pressure limit that comparison. This improves reloads; it does not establish a
-convolution speedup or sustained performance. The full resident figure above
-remains the earlier measurement.
+Optional `--reuse-pipeline-cache` also preserves compiled pipelines across shape
+changes while replacing the network and reloading weights. This run loads the
+core in **9.374 / 0 / 3.316 / 0 s**. External cache entries are 177/177/271/271,
+stable on same-shape reuse. The earlier short/full/short/short run demonstrated
+cached pipelines surviving a shape revisit; details are in NOTES.
 
-CPU remains faster on the same combined graph and exact boundaries: **15.411 s
-short / 36.803 s full**, **404.8 MiB peak and zero swap**, with all reference
-gates passing. These are single resident observations with different sequences
-(CPU short/short/full/full) and memory pressure. The older fixed-core CPU mean
-and fresh CPU result use the earlier InstanceNorm graph. Sustained behavior and
-live application integration remain unmeasured; earlier results are in NOTES.
+The previous GPU resident results were **45.501 s full / 18.498 s short**.
+Full improves in the latest observation; short is essentially flat. Different
+sequence, cache history and swap limit that comparison. CPU remains faster on
+the same graph and exact boundaries at **36.803 / 15.411 s full/short**,
+404.8 MiB peak and zero swap. Sustained behavior and live application integration
+remain unmeasured.
 
 A tablet cancellation probe preserves the completed request and discards the
 second request after its active GPU core finishes. Exit follows the cancel marker
@@ -82,7 +73,9 @@ Restart after cancellation and broader cancellation coverage remain untested.
 Select the measured graph with `--affine-snake-deconv2d`,
 `RADISH_NCNN_PLANAR=1` and `RADISH_BATCH_CHUNKS=8`, with one X workgroup.
 The latest measurements additionally enable `RADISH_NCNN_NORM_SUM4=1` and
-`RADISH_NCNN_PAD_CHANNELS=1`; channel padding remains default-off. The exact
+`RADISH_NCNN_PAD_CHANNELS=1`, plus `RADISH_NCNN_NORM_OUTPLACE=1` with
+`RADISH_NCNN_RESHAPE_ALIAS=1`; these optimizations remain default-off except the
+runtime wrapper's existing reshape-alias default. The exact
 graph preserves every model weight and expresses
 three 1D deconvolutions as stock height-one 2D Vulkan operators with reshapes.
 The preparation/validation tools require completed full CPU reference evidence.

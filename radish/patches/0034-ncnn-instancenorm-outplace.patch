@@ -1,0 +1,506 @@
+--- a/src/layer/vulkan/instancenorm_vulkan.cpp
++++ b/src/layer/vulkan/instancenorm_vulkan.cpp
+@@ -4,6 +4,7 @@
+ #include "instancenorm_vulkan.h"
+ 
+ #include <limits.h>
++#include <limits>
+ #include <stdlib.h>
+ #include <string.h>
+ 
+@@ -24,9 +25,52 @@
+            && !opt.use_cooperative_matrix && !opt.use_tensor_storage;
+ }
+ 
++#if NCNN_STRING
++static bool radish_norm_outplace_name(const std::string& name, const char* suffix)
++{
++    const char* p = name.c_str();
++    if (strncmp(p, "radish_norm_", 12) != 0)
++        return false;
++    p += 12;
++    if (*p < '0' || *p > '9')
++        return false;
++    while (*p >= '0' && *p <= '9')
++        p++;
++    return strcmp(p, suffix) == 0;
++}
++#endif
++
++static bool radish_norm_outplace_buffer(const VkMat& blob, int width, int packs, const VulkanDevice* vkdev, const VkAllocator* allocator)
++{
++    if (!allocator || allocator->vkdev != vkdev || blob.allocator != allocator
++        || !blob.data || !blob.refcount || *blob.refcount <= 0 || !blob.data->buffer
++        || blob.dims != 3 || blob.n != 1 || blob.h != 1 || blob.d != 1
++        || blob.w != width || blob.c != packs || width <= 0 || packs <= 0
++        || blob.elempack != 4 || blob.elemsize != 16u || blob.cstep != (size_t)width)
++        return false;
++    const size_t max_size = std::numeric_limits<size_t>::max();
++    if ((size_t)width > max_size / (size_t)packs)
++        return false;
++    const size_t count = (size_t)width * packs;
++    if (count > max_size / 16u || blob.total() != count
++#if NCNN_BATCH
++        || blob.nstep != count
++#endif
++        || blob.offset > blob.data->capacity || count * 16u > blob.data->capacity - blob.offset
++        || blob.buffer_capacity() != count * 16u || blob.data->offset > max_size - blob.offset)
++        return false;
++    const size_t offset = blob.buffer_offset();
++    const size_t alignment = vkdev->info.physicalDeviceProperties().limits.minStorageBufferOffsetAlignment;
++    return offset % 16u == 0 && (!alignment || offset % alignment == 0)
++           && count * 16u <= max_size - offset
++           && count * 16u <= vkdev->info.physicalDeviceProperties().limits.maxStorageBufferRange;
++}
++
+ InstanceNorm_vulkan::InstanceNorm_vulkan()
+ {
+     support_vulkan = true;
++    radish_norm_outplace = false;
++    pipeline_instancenorm_radish_outplace_pack4 = 0;
+     support_vulkan_packing = true;
+ 
+     pipeline_instancenorm_reduce_sum4_fp16_to_fp32 = 0;
+@@ -74,6 +118,23 @@
+                                      && shape.dims == 3 && shape.n == 1 && shape.h == 1 && shape.d == 1
+                                      && shape.elempack == 4 && shape.elemsize == 16u && shape.c == channels / 4
+                                      && shape.w > 0 && shape.w <= INT_MAX - 3;
++
++    bool use_radish_norm_outplace = false;
++#if NCNN_STRING
++    const char* norm_outplace = getenv("RADISH_NCNN_NORM_OUTPLACE");
++    const char* reshape_alias = getenv("RADISH_NCNN_RESHAPE_ALIAS");
++    if (use_radish_norm_sum4 && norm_outplace && strcmp(norm_outplace, "1") == 0
++        && reshape_alias && strcmp(reshape_alias, "1") == 0
++        && radish_norm_outplace_name(name, "_instance") && bottom_shapes.size() == 1)
++    {
++        const Mat& input_shape = bottom_shapes[0];
++        use_radish_norm_outplace = input_shape.dims == 3 && input_shape.n == 1
++                                  && input_shape.w == shape.w && input_shape.h == 1 && input_shape.d == 1
++                                  && input_shape.c == shape.c && input_shape.elempack == 4 && input_shape.elemsize == 16u
++                                  && input_shape.cstep == (size_t)shape.w && shape.cstep == (size_t)shape.w
++                                  && (size_t)shape.w <= vkdev->info.physicalDeviceProperties().limits.maxStorageBufferRange / 16u / shape.c;
++    }
++#endif
+ 
+     int _channels = channels;
+     if (shape.dims == 3 || shape.dims == 4) _channels = shape.c * shape.elempack;
+@@ -309,6 +370,34 @@
+             pipeline_instancenorm_norm_pack4 = new Pipeline(vkdev);
+             pipeline_instancenorm_norm_pack4->set_optimal_local_size_xyz(local_size_xyz);
+             pipeline_instancenorm_norm_pack4->create(LayerShaderType::instancenorm_norm_pack4, opt, specializations);
++
++            if (use_radish_norm_outplace)
++            {
++                pipeline_instancenorm_radish_outplace_pack4 = new Pipeline(vkdev);
++                pipeline_instancenorm_radish_outplace_pack4->set_optimal_local_size_xyz(local_size_xyz);
++                int ret = pipeline_instancenorm_radish_outplace_pack4->create(LayerShaderType::instancenorm_radish_outplace_pack4, opt, specializations);
++                if (ret != 0)
++                    return ret;
++                const Pipeline* pipeline = pipeline_instancenorm_radish_outplace_pack4;
++                if (!pipeline->pipeline() || !pipeline_instancenorm_norm_pack4->pipeline()
++                    || !pipeline_instancenorm_radish_sum4_pack4 || !pipeline_instancenorm_radish_sum4_pack4->pipeline()
++                    || !pipeline_instancenorm_reduce_sum4_fp16_to_fp32_pack4->pipeline()
++                    || !pipeline_instancenorm_reduce_sum4_fp32_pack4[0]->pipeline()
++                    || !pipeline_instancenorm_reduce_sum4_fp32_pack4[1]->pipeline()
++                    || !pipeline_instancenorm_reduce_mean_pack4->pipeline()
++                    || !pipeline_instancenorm_coeffs_pack4->pipeline()
++                    || pipeline->local_size_x() != pipeline_instancenorm_norm_pack4->local_size_x()
++                    || pipeline->local_size_y() != pipeline_instancenorm_norm_pack4->local_size_y()
++                    || pipeline->local_size_z() != pipeline_instancenorm_norm_pack4->local_size_z()
++                    || pipeline->shader_info().binding_count != 3 || pipeline->shader_info().push_constant_count != 5
++                    || pipeline->shader_info().specialization_count != 5)
++                    return -1;
++                for (int i = 0; i < 3; i++)
++                    if (pipeline->shader_info().binding_types[i] != 1)
++                        return -1;
++                radish_norm_outplace = true;
++                support_inplace = false;
++            }
+         }
+     }
+ 
+@@ -317,6 +406,11 @@
+ 
+ int InstanceNorm_vulkan::destroy_pipeline(const Option& /*opt*/)
+ {
++    delete pipeline_instancenorm_radish_outplace_pack4;
++    pipeline_instancenorm_radish_outplace_pack4 = 0;
++    radish_norm_outplace = false;
++    support_inplace = true;
++
+     delete pipeline_instancenorm_reduce_sum4_fp16_to_fp32;
+     pipeline_instancenorm_reduce_sum4_fp16_to_fp32 = 0;
+ 
+@@ -380,22 +474,57 @@
+     return 0;
+ }
+ 
++int InstanceNorm_vulkan::forward(const VkMat& bottom_blob, VkMat& top_blob, VkCompute& cmd, const Option& opt) const
++{
++    if (!radish_norm_outplace)
++        return InstanceNorm::forward(bottom_blob, top_blob, cmd, opt);
++    if (&bottom_blob == &top_blob || !radish_norm_sum4_fp32(opt)
++        || !pipeline_instancenorm_radish_outplace_pack4 || !pipeline_instancenorm_radish_sum4_pack4
++        || top_shapes.size() != 1 || bottom_shapes.size() != 1
++        || bottom_blob.w <= 0 || bottom_blob.w > INT_MAX - 3 || bottom_blob.w != top_shapes[0].w
++        || bottom_blob.w != bottom_shapes[0].w || bottom_blob.c != channels / 4
++        || !radish_norm_outplace_buffer(bottom_blob, bottom_blob.w, channels / 4, vkdev, opt.blob_vkallocator))
++        return -1;
++
++    VkMat output(bottom_blob.w, 1, bottom_blob.c, 16u, 4, opt.blob_vkallocator);
++    if (output.empty())
++        return -100;
++    if (!radish_norm_outplace_buffer(output, bottom_blob.w, bottom_blob.c, vkdev, opt.blob_vkallocator)
++        || output.data == bottom_blob.data)
++        return -1;
++    if (output.buffer() == bottom_blob.buffer()
++        && output.buffer_offset() < bottom_blob.buffer_offset() + bottom_blob.buffer_capacity()
++        && bottom_blob.buffer_offset() < output.buffer_offset() + output.buffer_capacity())
++        return -1;
++
++    int ret = forward_impl(bottom_blob, output, cmd, opt, true);
++    if (ret != 0)
++        return ret;
++    top_blob = output;
++    return 0;
++}
++
+ int InstanceNorm_vulkan::forward_inplace(VkMat& bottom_top_blob, VkCompute& cmd, const Option& opt) const
+ {
+-    int w = bottom_top_blob.w;
+-    int h = bottom_top_blob.h * bottom_top_blob.d;
+-    int c = bottom_top_blob.c;
++    return forward_impl(bottom_top_blob, bottom_top_blob, cmd, opt, false);
++}
++
++int InstanceNorm_vulkan::forward_impl(const VkMat& bottom_blob, VkMat& top_blob, VkCompute& cmd, const Option& opt, bool outplace) const
++{
++    int w = bottom_blob.w;
++    int h = bottom_blob.h * bottom_blob.d;
++    int c = bottom_blob.c;
+     int size = w * h;
+-    size_t elemsize = bottom_top_blob.elemsize;
+-    int elempack = bottom_top_blob.elempack;
++    size_t elemsize = bottom_blob.elemsize;
++    int elempack = bottom_blob.elempack;
+ 
+     const bool use_radish_norm_sum4 = pipeline_instancenorm_radish_sum4_pack4
+                                      && radish_norm_sum4_fp32(opt)
+-                                     && bottom_top_blob.dims == 3 && bottom_top_blob.n == 1
+-                                     && bottom_top_blob.h == 1 && bottom_top_blob.d == 1
++                                     && bottom_blob.dims == 3 && bottom_blob.n == 1
++                                     && bottom_blob.h == 1 && bottom_blob.d == 1
+                                      && elempack == 4 && elemsize == 16u && c > 0 && c == channels / 4
+                                      && !top_shapes.empty() && w == top_shapes[0].w
+-                                     && w > 0 && w <= INT_MAX - 3 && bottom_top_blob.cstep == (size_t)w
++                                     && w > 0 && w <= INT_MAX - 3 && bottom_blob.cstep == (size_t)w
+                                      && (size_t)w <= vkdev->info.physicalDeviceProperties().limits.maxStorageBufferRange / 16u / c;
+ 
+     // mean and var
+@@ -408,12 +537,12 @@
+     if (pipeline_reduce_subgroup)
+     {
+         std::vector<VkMat> bindings(3);
+-        bindings[0] = bottom_top_blob;
++        bindings[0] = bottom_blob;
+         bindings[1] = mean_workspace;
+         bindings[2] = var_workspace;
+ 
+         std::vector<vk_constant_type> constants(3);
+-        constants[0].i = bottom_top_blob.cstep;
++        constants[0].i = bottom_blob.cstep;
+         constants[1].i = size;
+         constants[2].i = c;
+ 
+@@ -437,19 +566,19 @@
+             {
+                 int reduced_w = (size + 3) / 4;
+                 int reduced_h = 1;
+-                int reduced_c = bottom_top_blob.c;
++                int reduced_c = bottom_blob.c;
+ 
+                 sum_workspace.create(reduced_w, reduced_h, reduced_c, 4u * elempack, elempack, opt.workspace_vkallocator);
+                 {
+                     std::vector<VkMat> bindings(2);
+-                    bindings[0] = bottom_top_blob;
++                    bindings[0] = bottom_blob;
+                     bindings[1] = sum_workspace;
+ 
+                     std::vector<vk_constant_type> constants(8);
+                     constants[0].i = size;
+                     constants[1].i = 1;
+-                    constants[2].i = bottom_top_blob.c;
+-                    constants[3].i = bottom_top_blob.cstep;
++                    constants[2].i = bottom_blob.c;
++                    constants[3].i = bottom_blob.cstep;
+                     constants[4].i = sum_workspace.w;
+                     constants[5].i = 1;
+                     constants[6].i = sum_workspace.c;
+@@ -522,16 +651,16 @@
+             {
+                 square_workspace.create(w, h, c, 4u * elempack, elempack, opt.workspace_vkallocator);
+                 std::vector<VkMat> bindings(3);
+-                bindings[0] = bottom_top_blob;
++                bindings[0] = bottom_blob;
+                 bindings[1] = mean_workspace;
+                 bindings[2] = square_workspace;
+ 
+                 std::vector<vk_constant_type> constants(10);
+-                constants[0].i = std::min(3, bottom_top_blob.dims);
+-                constants[1].i = bottom_top_blob.w;
++                constants[0].i = std::min(3, bottom_blob.dims);
++                constants[1].i = bottom_blob.w;
+                 constants[2].i = h;
+-                constants[3].i = bottom_top_blob.c;
+-                constants[4].i = bottom_top_blob.cstep;
++                constants[3].i = bottom_blob.c;
++                constants[4].i = bottom_blob.cstep;
+                 constants[5].i = square_workspace.dims;
+                 constants[6].i = square_workspace.w;
+                 constants[7].i = square_workspace.h;
+@@ -548,7 +677,7 @@
+             {
+                 int reduced_w = (size + 3) / 4;
+                 int reduced_h = 1;
+-                int reduced_c = use_radish_norm_sum4 ? bottom_top_blob.c : square_workspace.c;
++                int reduced_c = use_radish_norm_sum4 ? bottom_blob.c : square_workspace.c;
+ 
+                 sqsum_workspace.create(reduced_w, reduced_h, reduced_c, 4u * elempack, elempack, opt.workspace_vkallocator);
+                 if (use_radish_norm_sum4 && sqsum_workspace.empty())
+@@ -556,7 +685,7 @@
+ 
+                 {
+                     std::vector<VkMat> bindings(use_radish_norm_sum4 ? 3 : 2);
+-                    bindings[0] = use_radish_norm_sum4 ? bottom_top_blob : square_workspace;
++                    bindings[0] = use_radish_norm_sum4 ? bottom_blob : square_workspace;
+                     bindings[1] = sqsum_workspace;
+                     if (use_radish_norm_sum4)
+                         bindings[2] = mean_workspace;
+@@ -564,8 +693,8 @@
+                     std::vector<vk_constant_type> constants(8);
+                     constants[0].i = size;
+                     constants[1].i = 1;
+-                    constants[2].i = use_radish_norm_sum4 ? bottom_top_blob.c : square_workspace.c;
+-                    constants[3].i = use_radish_norm_sum4 ? bottom_top_blob.cstep : square_workspace.cstep;
++                    constants[2].i = use_radish_norm_sum4 ? bottom_blob.c : square_workspace.c;
++                    constants[3].i = use_radish_norm_sum4 ? bottom_blob.cstep : square_workspace.cstep;
+                     constants[4].i = sqsum_workspace.w;
+                     constants[5].i = 1;
+                     constants[6].i = sqsum_workspace.c;
+@@ -652,20 +781,22 @@
+ 
+     // norm
+     {
+-        std::vector<VkMat> bindings(2);
+-        bindings[0] = bottom_top_blob;
++        std::vector<VkMat> bindings(outplace ? 3 : 2);
++        bindings[0] = bottom_blob;
+         bindings[1] = coeffs_workspace;
++        if (outplace)
++            bindings[2] = top_blob;
+ 
+         std::vector<vk_constant_type> constants(5);
+-        constants[0].i = std::min(3, bottom_top_blob.dims);
+-        constants[1].i = bottom_top_blob.w;
++        constants[0].i = std::min(3, bottom_blob.dims);
++        constants[1].i = bottom_blob.w;
+         constants[2].i = h;
+-        constants[3].i = bottom_top_blob.c;
+-        constants[4].i = bottom_top_blob.cstep;
+-
+-        const Pipeline* pipeline = elempack == 4 ? pipeline_instancenorm_norm_pack4 : pipeline_instancenorm_norm;
+-
+-        cmd.record_pipeline(pipeline, bindings, constants, bottom_top_blob);
++        constants[3].i = bottom_blob.c;
++        constants[4].i = bottom_blob.cstep;
++
++        const Pipeline* pipeline = outplace ? pipeline_instancenorm_radish_outplace_pack4 : (elempack == 4 ? pipeline_instancenorm_norm_pack4 : pipeline_instancenorm_norm);
++
++        cmd.record_pipeline(pipeline, bindings, constants, top_blob);
+     }
+ 
+     return 0;
+--- a/src/layer/vulkan/instancenorm_vulkan.h
++++ b/src/layer/vulkan/instancenorm_vulkan.h
+@@ -18,10 +18,18 @@
+ 
+     virtual int upload_model(VkTransfer& cmd, const Option& opt);
+ 
++    using InstanceNorm::forward;
++    virtual int forward(const VkMat& bottom_blob, VkMat& top_blob, VkCompute& cmd, const Option& opt) const;
++
+     using InstanceNorm::forward_inplace;
+     virtual int forward_inplace(VkMat& bottom_top_blob, VkCompute& cmd, const Option& opt) const;
+ 
++private:
++    int forward_impl(const VkMat& bottom_blob, VkMat& top_blob, VkCompute& cmd, const Option& opt, bool outplace) const;
++
+ public:
++    bool radish_norm_outplace;
++    Pipeline* pipeline_instancenorm_radish_outplace_pack4;
+     VkMat gamma_data_gpu;
+     VkMat beta_data_gpu;
+ 
+--- a/src/layer/vulkan/reshape_vulkan.cpp
++++ b/src/layer/vulkan/reshape_vulkan.cpp
+@@ -12,6 +12,21 @@
+ #include <string.h>
+ 
+ namespace ncnn {
++
++#if NCNN_STRING
++static bool radish_norm_to3d_name(const std::string& name)
++{
++    const char* p = name.c_str();
++    if (strncmp(p, "radish_norm_", 12) != 0)
++        return false;
++    p += 12;
++    if (*p < '0' || *p > '9')
++        return false;
++    while (*p >= '0' && *p <= '9')
++        p++;
++    return strcmp(p, "_to3d") == 0;
++}
++#endif
+ 
+ Reshape_vulkan::Reshape_vulkan()
+ {
+@@ -337,6 +352,34 @@
+     }
+ #endif // NCNN_BATCH
+ 
++    bool use_radish_norm_alias = false;
++#if NCNN_STRING
++    const char* norm_outplace = getenv("RADISH_NCNN_NORM_OUTPLACE");
++    const char* norm_sum4 = getenv("RADISH_NCNN_NORM_SUM4");
++    const char* norm_alias = getenv("RADISH_NCNN_RESHAPE_ALIAS");
++    use_radish_norm_alias = norm_outplace && strcmp(norm_outplace, "1") == 0
++                            && norm_sum4 && strcmp(norm_sum4, "1") == 0
++                            && norm_alias && strcmp(norm_alias, "1") == 0
++                            && radish_norm_to3d_name(name)
++                            && vkdev->info.vendor_id() == 0x5143 && vkdev->info.device_id() == 506
++                            && strcmp(vkdev->info.device_name(), "Radish Adreno 506 (experimental compute)") == 0
++                            && opt.use_vulkan_compute && opt.use_packing_layout
++                            && !opt.use_fp16_packed && !opt.use_fp16_storage
++                            && !opt.use_fp16_arithmetic && !opt.use_fp16_uniform
++                            && !opt.use_bf16_packed && !opt.use_bf16_storage
++                            && !opt.use_int8_inference && !opt.use_int8_packed && !opt.use_int8_storage
++                            && !opt.use_int8_arithmetic && !opt.use_int8_uniform
++                            && !opt.use_int16_packed && !opt.use_int16_storage
++                            && !opt.use_subgroup_ops && !opt.use_shader_local_memory
++                            && !opt.use_cooperative_matrix && !opt.use_tensor_storage
++                            && dims == 2 && ndim == 3 && bottom_blob.n == 1
++                            && bottom_blob.d == 1 && bottom_blob.c == 1 && elempack == 4 && elemsize == 16u
++                            && (bottom_blob.h == 32 || bottom_blob.h == 64 || bottom_blob.h == 128 || bottom_blob.h == 256);
++    if (use_radish_norm_alias && (bottom_blob.w <= 0
++        || bottom_blob.w > std::numeric_limits<int>::max() / 4 / bottom_blob.h))
++        return -1;
++#endif
++
+     int total = bottom_blob.w * bottom_blob.h * bottom_blob.d * bottom_blob.c * elempack;
+ 
+     // resolve out shape
+@@ -452,6 +495,54 @@
+     }
+ 
+     size_t out_elemsize = elemsize / elempack * out_elempack;
++
++    if (use_radish_norm_alias && outw == bottom_blob.w && outh == 1 && outc == bottom_blob.h * 4
++        && out_elempack == 4 && out_elemsize == 16u
++        && bottom_shapes.size() == 1 && top_shapes.size() == 1
++        && opt.blob_vkallocator && opt.blob_vkallocator->vkdev == vkdev
++        && bottom_blob.allocator == opt.blob_vkallocator
++        && bottom_blob.data && bottom_blob.data->buffer && bottom_blob.refcount && *bottom_blob.refcount > 0)
++    {
++        const Mat& input_shape = bottom_shapes[0];
++        const Mat& output_shape = top_shapes[0];
++        const size_t width = bottom_blob.w;
++        const size_t packs = bottom_blob.h;
++        const size_t max_size = std::numeric_limits<size_t>::max();
++        if (input_shape.dims == 2 && input_shape.n == 1 && input_shape.w == outw
++            && input_shape.h == (int)packs && input_shape.d == 1 && input_shape.c == 1
++            && input_shape.elempack == 4 && input_shape.elemsize == 16u
++            && output_shape.dims == 3 && output_shape.n == 1 && output_shape.w == outw
++            && output_shape.h == 1 && output_shape.d == 1 && output_shape.c == (int)packs
++            && output_shape.elempack == 4 && output_shape.elemsize == 16u && output_shape.cstep == width
++            && width <= max_size / packs)
++        {
++            const size_t count = width * packs;
++            if (count <= max_size / 16u && input_shape.cstep == count
++                && bottom_blob.cstep == count && bottom_blob.total() == count
++#if NCNN_BATCH
++                && bottom_blob.nstep == count
++#endif
++                && bottom_blob.offset <= bottom_blob.data->capacity
++                && count * 16u <= bottom_blob.data->capacity - bottom_blob.offset
++                && bottom_blob.buffer_capacity() == count * 16u
++                && bottom_blob.data->offset <= max_size - bottom_blob.offset)
++            {
++                const size_t offset = bottom_blob.buffer_offset();
++                const size_t alignment = vkdev->info.physicalDeviceProperties().limits.minStorageBufferOffsetAlignment;
++                if (offset % 16u == 0 && (!alignment || offset % alignment == 0)
++                    && count * 16u <= max_size - offset
++                    && count * 16u <= vkdev->info.physicalDeviceProperties().limits.maxStorageBufferRange)
++                {
++                    top_blob = bottom_blob;
++                    top_blob.dims = 3;
++                    top_blob.h = 1;
++                    top_blob.c = (int)packs;
++                    top_blob.cstep = width;
++                    return 0;
++                }
++            }
++        }
++    }
+ 
+     const char* alias_env = getenv("RADISH_NCNN_RESHAPE_ALIAS");
+     if (alias_env && strcmp(alias_env, "1") == 0
+--- /dev/null
++++ b/src/layer/vulkan/shader/instancenorm_radish_outplace_pack4.comp
+@@ -0,0 +1,45 @@
++// Copyright 2019 Tencent
++// SPDX-License-Identifier: BSD-3-Clause
++
++#version 450
++
++#define shape_constant_id_offset 0
++layout(constant_id = shape_constant_id_offset + 0) const int dims = 0;
++layout(constant_id = shape_constant_id_offset + 1) const int w = 0;
++layout(constant_id = shape_constant_id_offset + 2) const int h = 0;
++layout(constant_id = shape_constant_id_offset + 3) const int c = 0;
++layout(constant_id = shape_constant_id_offset + 4) const int cstep = 0;
++
++layout(binding = 0) readonly buffer bottom_blob { sfpvec4 bottom_blob_data[]; };
++layout(binding = 1) readonly buffer coeffs_blob { sfpvec4 coeffs_blob_data[]; };
++layout(binding = 2) writeonly buffer top_blob { sfpvec4 top_blob_data[]; };
++
++layout(push_constant) uniform parameter
++{
++    int dims;
++    int w;
++    int h;
++    int c;
++    int cstep;
++} p;
++
++void main()
++{
++    int gx = int(gl_GlobalInvocationID.x);
++    int gy = int(gl_GlobalInvocationID.y);
++    int gz = int(gl_GlobalInvocationID.z);
++
++    if (gx >= psc(w) || gy >= psc(h) || gz >= psc(c))
++        return;
++
++    const int gi = gz * psc(cstep) + gy * psc(w) + gx;
++
++    afpvec4 v = buffer_ld4(bottom_blob_data, gi);
++
++    afpvec4 a = buffer_ld4(coeffs_blob_data, gz * 2);
++    afpvec4 b = buffer_ld4(coeffs_blob_data, gz * 2 + 1);
++
++    v = v * a + b;
++
++    buffer_st4(top_blob_data, gi, v);
++}

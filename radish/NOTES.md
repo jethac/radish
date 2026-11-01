@@ -1,5 +1,82 @@
 # Radish status
 
+## 2026-11-02 (JST): normalization input copies removed
+
+Opt-in ncnn patch 0034 removes 49 normalization input copies. In the same-binary
+comparison, full-core warm extraction improves **38.467278 → 37.058738 s**
+(1.408540 s / 3.66%); first extraction improves 39.186235 → 37.355882 s.
+All 562,342 output values are byte-identical to both the disabled path and the
+published 0033 output (`e128ce63…d4d287`), and pass the unchanged full reference.
+These are one first and one warm extraction per mode, measured sequentially.
+Baseline peak is 405.6 MiB with zero swap; candidate peak is 402.8 MiB plus
+6.7 MiB swap. Both runs have 715 GPU/zero CPU core layers, no new GPU faults,
+and active appliance services. CPU remains faster overall.
+
+The complete short/short/full/full loop passes all four original-ORT core and
+waveform references. Complete synthesis takes 28.003366/18.589849/46.939051/
+43.578287 s; core extraction takes 14.223749/14.054969/37.448352/37.088662 s.
+The retained full request improves over the prior 45.500714 s observation;
+short stays essentially flat against 18.498217 s. CPU remains ahead at
+36.802922/15.411271 s resident full/short. Different session order, cache history
+and swap limit the earlier-GPU comparison. All eight boundary files and both
+outputs are byte-identical to matching validated 0033 captures, with 715 GPU
+layers per request. Short/full waveform SNR remains 97.411696248/97.912821255 dB.
+Whole-session peak is 504.9 MiB plus 84.2 MiB swap, with no faults and both
+services active; session time is 137.809958348 s including 0.456133282 s cleanup.
+External cache entries are 177/177/271/271, stable on same-shape reuse.
+Exact reproduction and limitations are in `RUNTIME_INTEGRATION.md`; frozen
+references are in `WORK/norm-outplace-runtime-validation-drx8p6l9/` and
+`norm-outplace0034-request-{000,001,002,003}-validation.json`.
+The independent runtime profile/provenance audit is in
+`WORK/norm-outplace-runtime-audit-0034-gxlmdgfl/`.
+
+`RADISH_NCNN_NORM_OUTPLACE=1` requires Vulkan FP32, `RADISH_NCNN_NORM_SUM4=1`
+and `RADISH_NCNN_RESHAPE_ALIAS=1`. It remains default off. Eligible named pack4
+normalizations use a rank3 input view and explicitly allocate a disjoint output,
+so retained Split residuals are preserved without protective cloning. The five
+pack1 chains and deconvolution input reshapes retain their existing paths.
+The graph, weights, reduction order and final `v*a+b` arithmetic are unchanged.
+Creation checks the exact Radish A506 identity, shape, precision and pipeline
+contracts; execution checks buffer ownership, strides, bounds and disjointness.
+
+The complete profile contains 1611 → 1562 commands, 13179 → 11663 DRM submits
+and 90715 → 78587 chunks. Exactly 49 input copies disappear and 49 final
+normalization dispatches use the separate output binding. All 1513 remaining
+command signatures match, including the unchanged 96 transfers. Unique FIFO
+ownership mapping accounts for changed flush boundaries (93 → 74 partitions).
+The removed copies cost 1.618795382 s; replacement finals cost 0.052835442 s
+more, for 1.565959940 s saved in the affected work. Remaining command time grows
+0.167344535 s, accounting for most of the difference from the whole-core gain.
+Command timing includes host submission and waits; it is not isolated GPU time.
+
+Both ARM64 builds pass. Actual A506 compilation covers the four full-model
+shape families and four focused widths: new and old finals use local 8×1×4,
+8 full/1 half registers, native length 4, and no loops or private memory.
+Their native instruction sequences differ only in the final output binding.
+The focused retained-residual probe checks all 36,606 normalized/residual-sum
+values, exactly matches the old output bytes, and removes precisely four input
+dispatches while preserving all 70 other dispatch signatures. Driver 0032 and
+the experimental Vulkan 1.0 advertisement are unchanged; this adds no conformance
+claim.
+
+Evidence under `WORK`: `norm-outplace-implementation/`,
+`norm-outplace-private-e7ffhsde/`, `norm-outplace-review-96c5i3nh/`,
+`norm-outplace-compiler-audit-gr5snlul/`,
+`norm-outplace-result-0034-6xx9oeni/`, and
+`norm-outplace-output-0034-3co1hdcg/`. The model binary is
+`4ccf2730…735999a`; the runtime binary is `d1f09b2d…5f12ecb`.
+
+Before the complete runtime run, two byte-identical immutable runtime library
+paths were deduplicated, retaining every path. Four older full/short runtime
+executable paths from the 0026 planar-pad64 and 0031 affine-index runs were then
+archived with verified host backups, original metadata and restore instructions.
+Those four executables are absent on-device; their captures and outputs remain.
+See `dedup-runtime-assets-before-norm-outplace*`,
+`archive-probes-before-norm-outplace.log`, and
+`device-probe-executable-archive-before-norm-outplace/`. Free space changed
+197088 → 243168 KiB, then 242876 → 265256 KiB after the focused output dumps
+and archival. Both services stayed active.
+
 ## 2026-11-02 (JST): pipeline reuse across shape changes
 
 New default-off `--reuse-pipeline-cache` retains a lazy Vulkan device and an
@@ -268,12 +345,13 @@ accepted local128 tile is retained; later sequential batching improves its
 
 ## Next
 
-Use the validated 0033 opt-in checkpoint for the next comparison: 38.556751 s
-fixed-core warm, 45.500714/18.767525 s complete resident full/short synthesis,
-with every original accuracy gate retained. CPU remains faster. Improve the
-remaining measured work and memory pressure, then collect matched sustained
-CPU/GPU evidence. Keep the new output differences and whole-session 80.1 MiB
-swap explicit. The earlier optimization sequence below is retained as history.
+Use the validated 0034 opt-in checkpoint for the next comparison: 37.058738 s
+fixed-core warm, 43.578287/18.589849 s complete resident full/short synthesis,
+with every original accuracy gate retained and exact 0033 output bytes. CPU
+remains faster. Investigate the remaining measured convolution and pointwise
+work, then collect matched sustained CPU/GPU evidence. Keep the whole-session
+84.2 MiB swap and flat short latency explicit. The earlier optimization sequence
+below is retained as history.
 
 Continue from the passing FP32 InstanceNorm+tiled+dilation core and waveform:
 56.013717 s GPU warm with 0022 batching versus 32.079044 s packed CPU warm mean

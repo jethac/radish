@@ -253,7 +253,7 @@ void publish_runtime(Output& output,const radish_frontend::Boundary& boundary,co
                  << ",\n  \"tail_seconds\": " << tail_wall << ",\n  \"synthesis_seconds\": " << synthesis_wall << ",\n  \"extraction_seconds\": [";
         for(size_t i=0;i<core.extractions.size();++i) { if(i) manifest << ", "; manifest << core.extractions[i]; }
         manifest << "],\n  \"environment\": {";
-        const char* env_names[]={"RADISH_NCNN_TILED","RADISH_NCNN_TILED32","RADISH_NCNN_PLANAR","RADISH_NCNN_NORM_SUM4","RADISH_NCNN_PAD_CHANNELS","RADISH_NCNN_SHARED32","RADISH_NCNN_MIXED_STORAGE","RADISH_NCNN_PIPELINE_CACHE","RADISH_NCNN_TRACE","RADISH_PROFILE","RADISH_BATCH_CHUNKS","RADISH_TILED_BATCH_CHUNKS","RADISH_TILED_GROUPS_X","RADISH_SHARED_GROUPS","RADISH_NCNN_RESHAPE_ALIAS","VK_DRIVER_FILES"};
+        const char* env_names[]={"RADISH_NCNN_TILED","RADISH_NCNN_TILED32","RADISH_NCNN_PLANAR","RADISH_NCNN_NORM_SUM4","RADISH_NCNN_NORM_OUTPLACE","RADISH_NCNN_PAD_CHANNELS","RADISH_NCNN_SHARED32","RADISH_NCNN_MIXED_STORAGE","RADISH_NCNN_PIPELINE_CACHE","RADISH_NCNN_TRACE","RADISH_PROFILE","RADISH_BATCH_CHUNKS","RADISH_TILED_BATCH_CHUNKS","RADISH_TILED_GROUPS_X","RADISH_SHARED_GROUPS","RADISH_NCNN_RESHAPE_ALIAS","VK_DRIVER_FILES"};
         for(size_t i=0;i<sizeof(env_names)/sizeof(env_names[0]);++i) {
             if(i) manifest << ", ";
             const char* value=std::getenv(env_names[i]);

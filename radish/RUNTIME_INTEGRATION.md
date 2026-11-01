@@ -1,21 +1,24 @@
 # Kokoro runtime integration audit
 
-2026-11-01: one private tablet executable runs the CPU frontend/source,
+2026-11-02: one private tablet executable runs the CPU frontend/source,
 metadata shape propagation, a complete FP32 Vulkan neural core and the portable
 CPU waveform tail from token IDs/style/speed. The opt-in
 `--affine-snake-deconv2d` graph has zero CPU fallbacks in its neural core.
 
-With opt-in padded channels 0033, fixed-core warm time is **38.556751 s**.
-The validated full/full/short/short loop takes **54.928111 s** fresh full and
-**45.500714 s** resident full; short takes **28.964791 s** after shape reload
-and **18.767525 s** on reuse. Every core/waveform reference passes, with 715 GPU
-layers per request. Whole-session memory is 525.8 MiB plus80.1 MiB swap, no faults
-and both services active. CPU remains faster at **36.802922/15.411271 s** resident
-full/short. These are single observations with different session sequences and
-memory pressure. Defaults remain unchanged. Bounded resident reuse, shape reload
-and phase-boundary cancellation pass; sustained behavior, post-cancellation
-restart and live application wiring remain open. Details and earlier checkpoints
-follow below and in [NOTES.md](NOTES.md).
+With opt-in normalization copy removal 0034, fixed-core warm time is
+**37.058738 s**, versus **38.467278 s** with the same binary's control disabled.
+The validated short/short/full/full loop takes **28.003366 s** fresh short,
+**18.589849 s** resident short, **46.939051 s** full after shape reload, and
+**43.578287 s** resident full. Every core/waveform reference passes, with 715 GPU
+layers per request and output bytes identical to 0033. Whole-session memory is
+504.9 MiB plus 84.2 MiB swap, with no faults and both services active. CPU remains
+faster at **36.802922/15.411271 s** resident full/short. The prior GPU resident
+results were 45.500714/18.498217 s: full improves in this observation while short
+is essentially flat. Sequence, cache history and memory pressure differ between
+those sessions. Defaults remain unchanged. Bounded resident reuse, shape reload
+and earlier phase-boundary cancellation pass; sustained behavior,
+post-cancellation restart and live application wiring remain open. Details and
+earlier checkpoints follow below and in [NOTES.md](NOTES.md).
 
 ## Implemented route
 
@@ -1215,3 +1218,66 @@ Project source patches are frozen in
 (SHA `872d474e33c20707d311dfcb3ca82174541d30bfa8044d076672742bae5fa58b`)
 and `WORK/resident-cache-controls-yz7yt3g4/resident-cache-controls.patch`
 (SHA `4b15a6b8a9a30d0a01c9d48496647f65c5a61834c036bb4dd791dd7268282eaa`).
+
+
+### Optional normalization copy removal 0034
+
+`RADISH_NCNN_NORM_OUTPLACE=1` combines a named rank3 input view with a separate
+normalization output. It is default off and requires Vulkan FP32,
+`RADISH_NCNN_NORM_SUM4=1` and `RADISH_NCNN_RESHAPE_ALIAS=1`. Graph/weight pins,
+shape inference and accuracy thresholds are unchanged. New captures record the
+control; enabled run/output names add `-norm-outplace`. The focused operator
+mode is `device-operators.sh --norm-outplace-only [--compile-only]` with SUM4
+and RESHAPE_ALIAS enabled; OUTPLACE0/1 selects the before/after route.
+
+The validated complete-runtime command was:
+
+```sh
+RADISH_DEVICE_LOCK=/home/jethac/Projects/lenovo-8/.device.lock \
+RADISH_NCNN_PLANAR=1 RADISH_NCNN_PAD_CHANNELS=1 RADISH_BATCH_CHUNKS=8 \
+RADISH_NCNN_NORM_SUM4=1 RADISH_NCNN_RESHAPE_ALIAS=1 RADISH_NCNN_NORM_OUTPLACE=1 \
+RADISH_NCNN_PIPELINE_CACHE=1 \
+  radish/scripts/device-runtime.sh runtime-short norm-outplace-0034-first \
+  --affine-snake-deconv2d --request-loop --reuse-pipeline-cache \
+  --next-input runtime-short --next-input runtime-full --next-input runtime-full
+```
+
+Use a new run label when repeating it. This keeps four CPU/ORT threads, one
+extraction per request, and the existing four-request and resource bounds.
+
+| Request | T / exact-Net reuse | Core load s | Core extraction s | Complete synthesis s |
+| --- | --- | ---: | ---: | ---: |
+| 000 | 78 / fresh process | 9.374135751 | 14.223748612 | 28.003366292 |
+| 001 | 78 / retained core | 0 | 14.054969412 | 18.589849111 |
+| 002 | 213 / shape reload | 3.315996690 | 37.448352060 | 46.939050940 |
+| 003 | 213 / retained core | 0 | 37.088662047 | 43.578287423 |
+
+All four requests pass original-ORT core and waveform references generated after
+device completion from their exact boundaries. All eight boundary files and both
+outputs are byte-identical to the matching validated 0033 captures; short and
+full waveform SNR remain 97.411696248 and 97.912821255 dB. Every request traces
+715 GPU/zero CPU core layers. The separate fixed full-core comparison verifies
+exactly 49 removed input copies, 49 final output-binding changes and no additional
+transfer clones; all 1513 retained command signatures match. See NOTES for the
+same-binary 3.66% warm-core improvement and its attribution.
+
+External cache entries are 177/177/271/271, with four device cache entries;
+counts remain stable on same-shape reuse. Session time is 137.809958348 s,
+including 0.456133282 s final cleanup; service wall is 137.911 s. Whole-session
+peak is 504.9 MiB plus 84.2 MiB swap, with no new faults and both services active.
+This is not an isolated per-request memory peak. The previous GPU full resident
+result was 45.500714 s, while short was 18.498217 s: this run improves full and
+leaves short essentially flat. Different order/cache history/swap limit that
+comparison. CPU still wins at 36.802922/15.411271 s full/short. Sustained service,
+live integration and cancellation with this new path remain unmeasured.
+
+Capture: `WORK/kokoro-runtime-short-single-vulkan-norm-outplace-0034-first-affine-snake-deconv2d-planar-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache/`.
+Evidence: `WORK/norm-outplace-implementation/runtime-first.log`,
+`norm-outplace-runtime-validation-drx8p6l9/{REPORT.md,summary.json}`, and
+`norm-outplace0034-request-{000,001,002,003}-validation.json`.
+The independent profile/provenance audit is in
+`WORK/norm-outplace-runtime-audit-0034-gxlmdgfl/`.
+
+Patch SHA `b2112c3ae6e0bc580f0d606b8ac8f5cfc8c23a8ea6426511d249673bab7179ed`;
+measured runtime SHA `d1f09b2dcc91b0d25bac576ac14228288f908b0b4e0aaf5a5206c32de5f12ecb`.
+Driver 0032 and the experimental Vulkan 1.0 advertisement are unchanged.

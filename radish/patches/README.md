@@ -38,10 +38,12 @@ limits and validation scope. Published checkpoints remain experimental; publicat
 | `0030-ncnn-planar-positive-indices.patch` | After0026 in ordered Conv1D stack | Six equivalent positive-domain integer substitutions, float/layout/barriers unchanged. Builds/focused d1,d3,d5 references pass; all20 programs/53 layers compile16 full/0 half/no private,16 KiB/four loops, lengths27/28. Full fixed core passes identical outputs, warm44.956105 s/current30.6 MiB swap; modest single-pair improvement |
 | `0031-radish-planar-index-batching-cumulative.patch` | Same Mesa base as0001; alternative to0029 | Adds only27/28 to existing tiled batch length guard; all resource/packet/fence/fault/default controls preserved, X2 still31. Build/all14 reconstruction and focused batch8 pass; full fixed core passes identical bytes, warm44.956105 s/current30.6 MiB swap |
 | `0032-radish-indirect-dispatch-cumulative.patch` | Same Mesa base as 0001; alternative to 0031 | Core indirect dispatch reads arguments at execution time, then uses the bounded direct executor. Build/reconstruction, 36 indirect checks and 16 direct-grid checks pass; public DispatchBase and conformance remain pending |
+| `0033-ncnn-planar-padded-channels.patch` | After 0030 in the ordered Conv1D stack | Default-off channel padding moves five convolutions onto the tiled kernel; full core/wave references pass, fixed warm 38.556751 s, 715 GPU layers and zero CPU fallbacks |
+| `0034-ncnn-instancenorm-outplace.patch` | After 0019 and 0028 in the normalization stack | Default-off named pack4 input alias plus disjoint normalization output removes 49 copies; same-binary warm 38.467278→37.058738 s, exact output bytes, all four fresh core/wave references pass |
 
 To reconstruct the accepted driver checkpoint, make a separate checkout/worktree at the
-Mesa base, read its `AGENTS.md`, and apply 0023 with `git apply` instead of
-0001/0003/0004/0007/0009/0012/0016/0022. Set
+Mesa base, read its `AGENTS.md`, and apply 0032 with `git apply` instead of
+earlier cumulative Mesa patches. Set
 `RADISH_MESA` to that checkout and run `../scripts/build.sh`. Preserve the AC8
 checkout and use the shared scratch disk for source/build outputs. The existing
 sysroot/build environment paths and private loader procedure are in `NOTES.md`.
@@ -535,4 +537,6 @@ adc9ae8506e91abbacea3674a416b1e907672fecf60eb7c62dbe7c319367f6a1  0027-radish-ti
 d706738bce01ab6fc5d2dc45776c843c3fa18e7c40157c4d9fe1627b94c4c65f  0030-ncnn-planar-positive-indices.patch
 24090b6d37daf2533f6f5557e1c634cbd362603721d3fdf4b6852587b918be96  0031-radish-planar-index-batching-cumulative.patch
 923c05c1fc31b6d690e5d93af4c1d3ced3cb48262004ace3ff8ab8d4ff347eef  0032-radish-indirect-dispatch-cumulative.patch
+ee30ca55756e7a67283353803621a78a8cb6e78ba11a37606ab0c5981dba8878  0033-ncnn-planar-padded-channels.patch
+b2112c3ae6e0bc580f0d606b8ac8f5cfc8c23a8ea6426511d249673bab7179ed  0034-ncnn-instancenorm-outplace.patch
 ```

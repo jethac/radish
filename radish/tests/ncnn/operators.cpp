@@ -173,7 +173,7 @@ int check_reshape_pipelines(const ncnn::Reshape_vulkan* layer)
 
 int check_norm_pipelines(const ncnn::InstanceNorm_vulkan* layer)
 {
-    CHECK(layer->pipeline_instancenorm_norm || layer->pipeline_instancenorm_norm_pack4);
+    CHECK(layer->pipeline_instancenorm_norm || layer->pipeline_instancenorm_norm_pack4 || layer->pipeline_instancenorm_radish_outplace_pack4);
     PIPELINE(layer, pipeline_instancenorm_reduce_sum4_fp16_to_fp32);
     PIPELINE(layer, pipeline_instancenorm_reduce_sum4_fp16_to_fp32_pack4);
     for (int i = 0; i < 2; ++i) {
@@ -185,6 +185,17 @@ int check_norm_pipelines(const ncnn::InstanceNorm_vulkan* layer)
     PIPELINE(layer, pipeline_instancenorm_sub_mean_square);
     PIPELINE(layer, pipeline_instancenorm_sub_mean_square_pack4);
     PIPELINE(layer, pipeline_instancenorm_radish_sum4_pack4);
+    PIPELINE(layer, pipeline_instancenorm_radish_outplace_pack4);
+    if (layer->pipeline_instancenorm_radish_outplace_pack4) {
+        const ncnn::Pipeline* p = layer->pipeline_instancenorm_radish_outplace_pack4;
+        const ncnn::Pipeline* original = layer->pipeline_instancenorm_norm_pack4;
+        CHECK(original);
+        CHECK(p->local_size_x() == original->local_size_x());
+        CHECK(p->local_size_y() == original->local_size_y());
+        CHECK(p->local_size_z() == original->local_size_z());
+        CHECK(p->shader_info().binding_count == 3 && p->shader_info().push_constant_count == 5);
+        for (int i = 0; i < 3; ++i) CHECK(p->shader_info().binding_types[i] == 1);
+    }
     if (layer->pipeline_instancenorm_radish_sum4_pack4) {
         const ncnn::Pipeline* p = layer->pipeline_instancenorm_radish_sum4_pack4;
         CHECK(p->local_size_x() == 16 && p->local_size_y() == 1 && p->local_size_z() == 4);
@@ -463,12 +474,18 @@ int inner_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
 
 int reshape_norm_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
                       int width, int channels, bool compile_only,
-                      bool norm_sum4_probe = false, std::vector<float>* norm_outputs = 0)
+                      bool norm_sum4_probe = false, std::vector<float>* norm_outputs = 0,
+                      bool norm_outplace_probe = false)
 {
     std::printf("CASE Reshape/InstanceNorm roundtrip: width=%d channels=%d retained Split residual\n", width, channels);
     const int pack = channels % 4 == 0 ? 4 : 1;
     const char* alias_env = std::getenv("RADISH_NCNN_RESHAPE_ALIAS");
     const bool alias2d = pack == 4 && alias_env && !std::strcmp(alias_env, "1");
+    const char* outplace_env = std::getenv("RADISH_NCNN_NORM_OUTPLACE");
+    const bool outplace = norm_outplace_probe && pack == 4 && outplace_env && !std::strcmp(outplace_env, "1");
+    const char* to3d_name = norm_outplace_probe ? (pack == 4 ? "radish_norm_5_to3d" : "radish_norm_0_to3d") : "to3d";
+    const char* norm_name = norm_outplace_probe ? (pack == 4 ? "radish_norm_5_instance" : "radish_norm_0_instance") : "norm";
+    const char* to2d_name = norm_outplace_probe ? (pack == 4 ? "radish_norm_5_to2d" : "radish_norm_0_to2d") : "to2d";
     CHECK(device->info.vendor_id() == 0x5143 && device->info.device_id() == 506);
     CHECK(!std::strcmp(device->info.device_name(), "Radish Adreno 506 (experimental compute)"));
     CHECK(!opt.use_fp16_packed && scalar_size(opt) == 4u);
@@ -479,9 +496,9 @@ int reshape_norm_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
     graph << "7767517\n6 8\n"
           << "Input input 0 1 input -23330=5," << shape2 << "\n"
           << "Split split 1 3 input norm_input residual retained -23330=15," << shape2 << ',' << shape2 << ',' << shape2 << "\n"
-          << "Reshape to3d 1 1 norm_input rank3 0=-1 1=1 2=" << channels << " -23330=5," << shape3 << "\n"
-          << "InstanceNorm norm 1 1 rank3 normalized 0=" << channels << " 1=1.000000e-5 2=0 -23330=5," << shape3 << "\n"
-          << "Reshape to2d 1 1 normalized norm2 0=-1 1=" << channels << " -23330=5," << shape2 << "\n"
+          << "Reshape " << to3d_name << " 1 1 norm_input rank3 0=-1 1=1 2=" << channels << " -23330=5," << shape3 << "\n"
+          << "InstanceNorm " << norm_name << " 1 1 rank3 normalized 0=" << channels << " 1=1.000000e-5 2=0 -23330=5," << shape3 << "\n"
+          << "Reshape " << to2d_name << " 1 1 normalized norm2 0=-1 1=" << channels << " -23330=5," << shape2 << "\n"
           << "BinaryOp add 2 1 norm2 residual output 0=0 -23330=5," << shape2 << "\n";
 
     ncnn::Net net;
@@ -514,6 +531,14 @@ int reshape_norm_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
         const char* requested = std::getenv("RADISH_NCNN_NORM_SUM4");
         const bool fused = requested && !std::strcmp(requested, "1") && pack == 4;
         CHECK((norm->pipeline_instancenorm_radish_sum4_pack4 != 0) == fused);
+        if (norm_outplace_probe) {
+            CHECK(norm->radish_norm_outplace == outplace);
+            CHECK((norm->pipeline_instancenorm_radish_outplace_pack4 != 0) == outplace);
+            CHECK(norm->support_inplace == !outplace);
+            CHECK(!outplace || (fused && alias2d));
+            std::printf("norm outplace selection=%s, input reshape=%s, support_inplace=%d\n",
+                        outplace ? "separate output" : "legacy inplace", outplace ? "alias" : "copy", norm->support_inplace);
+        }
         const auto groups = [](const ncnn::Pipeline* p, int w, int h, int c) -> uint64_t {
             return ((static_cast<uint64_t>(w) + p->local_size_x() - 1) / p->local_size_x())
                    * ((static_cast<uint64_t>(h) + p->local_size_y() - 1) / p->local_size_y())
@@ -545,13 +570,14 @@ int reshape_norm_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
             expected_norm_groups += groups(mean, c, 1, 1);
         }
         const ncnn::Pipeline* coeffs = pack == 4 ? norm->pipeline_instancenorm_coeffs_pack4 : norm->pipeline_instancenorm_coeffs;
-        const ncnn::Pipeline* apply = pack == 4 ? norm->pipeline_instancenorm_norm_pack4 : norm->pipeline_instancenorm_norm;
+        const ncnn::Pipeline* apply = outplace ? norm->pipeline_instancenorm_radish_outplace_pack4
+            : (pack == 4 ? norm->pipeline_instancenorm_norm_pack4 : norm->pipeline_instancenorm_norm);
         CHECK(coeffs && apply);
         expected_norm_groups += groups(coeffs, c, 1, 1) + groups(apply, width, 1, c);
         std::printf("norm sum4 selection=%s expected dispatch groups=%llu\n", fused ? "fused" : "original", static_cast<unsigned long long>(expected_norm_groups));
     }
     if (compile_only) {
-        std::puts("PASS: normalization roundtrip pipeline compilation; no upload or submission");
+        std::puts("PASS: normalization roundtrip pipeline compilation; no probe tensor upload or dispatch (device initialization may submit)");
         return 0;
     }
 
@@ -580,8 +606,12 @@ int reshape_norm_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
     CHECK(ex.extract("retained", retained, command) == 0);
     CHECK(rank3.dims == 3 && rank3.w == width && rank3.h == 1 && rank3.c * pack == channels);
     CHECK(rank3.elempack == pack && rank3.elemsize == 4u * pack);
-    CHECK(command.pending_dispatch_total() > before3);
-    CHECK(rank3.data != retained.data);
+    CHECK((command.pending_dispatch_total() == before3) == outplace);
+    CHECK((rank3.data == retained.data) == outplace);
+    if (outplace) {
+        CHECK(rank3.buffer_offset() == retained.buffer_offset() && rank3.refcount == retained.refcount);
+        CHECK(rank3.allocator == retained.allocator);
+    }
     if (pack == 4) {
         CHECK(rank3.cstep == static_cast<size_t>(width));
         CHECK(rank3.total() == retained.total() && rank3.buffer_capacity() == retained.buffer_capacity());
@@ -603,7 +633,9 @@ int reshape_norm_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
     if (norm_sum4_probe)
         CHECK(command.pending_dispatch_total() - before_norm == expected_norm_groups);
     CHECK(normalized.data != retained_data);
-    CHECK(normalized.data == rank3_data);
+    CHECK((normalized.data == rank3_data) == !outplace);
+    CHECK(normalized.dims == 3 && normalized.w == width && normalized.h == 1 && normalized.c * pack == channels);
+    CHECK(normalized.elempack == pack && normalized.elemsize == 4u * pack);
     const auto before2 = command.pending_dispatch_total();
     CHECK(ex.extract("norm2", norm2, command) == 0);
     CHECK((command.pending_dispatch_total() == before2) == alias2d);
@@ -656,7 +688,7 @@ int reshape_norm_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
             norm_outputs->insert(norm_outputs->end(), output.row<float>(c), output.row<float>(c) + width);
     }
     std::printf("PASS: %s roundtrip, all %d normalized + %d residual-sum outputs, retained residual bit-exact, max abs error %.9g\n",
-                alias2d ? "pack4 to2d alias with to3d copy" : "copy fallback", width * channels, width * channels, max_error);
+                outplace ? "pack4 input alias/outplace norm/output alias" : (alias2d ? "pack4 to2d alias with to3d copy" : "copy fallback"), width * channels, width * channels, max_error);
     return 0;
 }
 
@@ -666,7 +698,7 @@ int main(int argc, char** argv)
 {
     // Flush each stage so a driver hang still leaves a useful device-side log.
     std::setvbuf(stdout, 0, _IONBF, 0);
-    bool conv = false, inner = false, compile_only = false, smoke = false, fp16_packed = false, tiled_only = false, padded_tiled_only = false, reshape_only = false, norm_sum4_only = false;
+    bool conv = false, inner = false, compile_only = false, smoke = false, fp16_packed = false, tiled_only = false, padded_tiled_only = false, reshape_only = false, norm_sum4_only = false, norm_outplace_only = false;
     int dilation = 1;
     for (int i = 1; i < argc; ++i) {
         if (!std::strcmp(argv[i], "--conv")) conv = true;
@@ -678,6 +710,10 @@ int main(int argc, char** argv)
         else if (!std::strcmp(argv[i], "--padded-tiled-only")) padded_tiled_only = true;
         else if (!std::strcmp(argv[i], "--reshape-only")) reshape_only = true;
         else if (!std::strcmp(argv[i], "--norm-sum4-only")) norm_sum4_only = true;
+        else if (!std::strcmp(argv[i], "--norm-outplace-only")) {
+            CHECK(!norm_outplace_only);
+            norm_outplace_only = true;
+        }
         else if (!std::strcmp(argv[i], "--dilation3") || !std::strcmp(argv[i], "--dilation5")) {
             if (dilation != 1) {
                 std::fputs("select at most one of --dilation3 or --dilation5\n", stderr);
@@ -686,7 +722,7 @@ int main(int argc, char** argv)
             dilation = !std::strcmp(argv[i], "--dilation3") ? 3 : 5;
         }
         else {
-            std::fprintf(stderr, "Usage: %s [--conv] [--inner] [--compile-only] [--smoke] [--fp16-packed] | --tiled-only | --padded-tiled-only [--compile-only] [--dilation3 | --dilation5] | --reshape-only | --norm-sum4-only [--compile-only]\n", argv[0]);
+            std::fprintf(stderr, "Usage: %s [--conv] [--inner] [--compile-only] [--smoke] [--fp16-packed] | --tiled-only | --padded-tiled-only [--compile-only] [--dilation3 | --dilation5] | --reshape-only | --norm-sum4-only | --norm-outplace-only [--compile-only]\n", argv[0]);
             return 1;
         }
     }
@@ -706,12 +742,22 @@ int main(int argc, char** argv)
         std::fputs("--norm-sum4-only is FP32 and cannot be combined with another case selector\n", stderr);
         return 1;
     }
+    if (norm_outplace_only && (conv || inner || smoke || fp16_packed || tiled_only || padded_tiled_only || reshape_only || norm_sum4_only || dilation != 1)) {
+        std::fputs("--norm-outplace-only is FP32 and cannot be combined with another case selector\n", stderr);
+        return 1;
+    }
     const char* norm_env = std::getenv("RADISH_NCNN_NORM_SUM4");
     CHECK(!norm_env || !std::strcmp(norm_env, "0") || !std::strcmp(norm_env, "1"));
+    const char* outplace_env = std::getenv("RADISH_NCNN_NORM_OUTPLACE");
+    CHECK(!outplace_env || !std::strcmp(outplace_env, "0") || !std::strcmp(outplace_env, "1"));
+    if (norm_outplace_only) {
+        const char* alias_env = std::getenv("RADISH_NCNN_RESHAPE_ALIAS");
+        CHECK(norm_env && !std::strcmp(norm_env, "1") && alias_env && !std::strcmp(alias_env, "1"));
+    }
     const char* norm_output = std::getenv("RADISH_NCNN_NORM_OUTPUT");
-    CHECK(!norm_output || (*norm_output && norm_sum4_only && !compile_only));
+    CHECK(!norm_output || (*norm_output && (norm_sum4_only || norm_outplace_only) && !compile_only));
     std::vector<float> norm_outputs;
-    if (!conv && !inner && !tiled_only && !padded_tiled_only && !reshape_only && !norm_sum4_only) conv = inner = true;
+    if (!conv && !inner && !tiled_only && !padded_tiled_only && !reshape_only && !norm_sum4_only && !norm_outplace_only) conv = inner = true;
     CHECK(ncnn::create_gpu_instance() == 0);
     GpuInstance instance;
     CHECK(ncnn::get_gpu_count() == 1);
@@ -757,6 +803,11 @@ int main(int argc, char** argv)
         for (int width = 33; width <= 36; ++width)
             CHECK(reshape_norm_case(device, opt, width, 128, compile_only, true, norm_output ? &norm_outputs : 0) == 0);
         CHECK(reshape_norm_case(device, opt, 213, 3, compile_only, true, norm_output ? &norm_outputs : 0) == 0);
+    }
+    if (norm_outplace_only) {
+        for (int width = 33; width <= 36; ++width)
+            CHECK(reshape_norm_case(device, opt, width, 128, compile_only, true, norm_output ? &norm_outputs : 0, true) == 0);
+        CHECK(reshape_norm_case(device, opt, 213, 3, compile_only, true, norm_output ? &norm_outputs : 0, true) == 0);
     }
     if (tiled_only) CHECK(conv_case(device, opt, 213, 128, 128, 11, compile_only, true, dilation) == 0);
     if (padded_tiled_only) CHECK(conv_case(device, opt, 213, 128, 128, 11, compile_only, true, dilation, true) == 0);

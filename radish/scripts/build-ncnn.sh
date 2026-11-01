@@ -35,9 +35,7 @@ else
     echo 'ncnn reduction adaptation conflicts with this checkout; preserve its changes' >&2
     exit 1
 fi
-for EXTRA_PATCH in "$TOP/radish/patches/0008-ncnn-radish-pipeline-cache.patch" \
-                   "$TOP/radish/patches/0019-ncnn-radish-reshape-alias.patch" \
-                   "$TOP/radish/patches/0028-ncnn-instancenorm-sum4.patch"; do
+for EXTRA_PATCH in "$TOP/radish/patches/0008-ncnn-radish-pipeline-cache.patch"; do
     if git -C "$SRC" apply --check "$EXTRA_PATCH" 2>/dev/null; then
         git -C "$SRC" apply "$EXTRA_PATCH"
     elif ! git -C "$SRC" apply --check --reverse "$EXTRA_PATCH" 2>/dev/null; then
@@ -45,6 +43,46 @@ for EXTRA_PATCH in "$TOP/radish/patches/0008-ncnn-radish-pipeline-cache.patch" \
         exit 1
     fi
 done
+NORM_PATCHES=(
+    "$TOP/radish/patches/0019-ncnn-radish-reshape-alias.patch"
+    "$TOP/radish/patches/0028-ncnn-instancenorm-sum4.patch"
+    "$TOP/radish/patches/0034-ncnn-instancenorm-outplace.patch"
+)
+NORM_FILES=(src/layer/vulkan/reshape_vulkan.cpp
+            src/layer/vulkan/instancenorm_vulkan.cpp src/layer/vulkan/instancenorm_vulkan.h
+            src/layer/vulkan/shader/instancenorm_norm_pack4.comp
+            src/layer/vulkan/shader/instancenorm_radish_sum4_pack4.comp
+            src/layer/vulkan/shader/instancenorm_radish_outplace_pack4.comp)
+NORM_STAGE=$(mktemp -d)
+trap 'rm -rf -- "$NORM_STAGE"' EXIT
+for file in "${NORM_FILES[@]}"; do
+    if git -C "$SRC" cat-file -e "HEAD:$file" 2>/dev/null; then
+        mkdir -p "$NORM_STAGE/$(dirname "$file")"
+        git -C "$SRC" show "HEAD:$file" > "$NORM_STAGE/$file"
+    fi
+done
+NORM_MATCH=-1
+for ((stage=0; stage<=${#NORM_PATCHES[@]}; stage++)); do
+    matches=1
+    for file in "${NORM_FILES[@]}"; do
+        if [[ -e $SRC/$file || -e $NORM_STAGE/$file ]]; then
+            cmp -s "$SRC/$file" "$NORM_STAGE/$file" || matches=0
+        fi
+    done
+    if (( matches )); then NORM_MATCH=$stage; fi
+    if (( stage<${#NORM_PATCHES[@]} )); then
+        git -C "$NORM_STAGE" apply "${NORM_PATCHES[stage]}"
+    fi
+done
+if (( NORM_MATCH<0 )); then
+    echo 'ncnn normalization adaptations conflict with the known patch stack; preserve checkout changes' >&2
+    exit 1
+fi
+for ((stage=NORM_MATCH; stage<${#NORM_PATCHES[@]}; stage++)); do
+    git -C "$SRC" apply "${NORM_PATCHES[stage]}"
+done
+rm -rf -- "$NORM_STAGE"
+trap - EXIT
 NET_PATCHES=(
     "$TOP/radish/patches/0006-ncnn-execution-trace.patch"
     "$TOP/radish/patches/0015-ncnn-radish-mixed-storage.patch"
