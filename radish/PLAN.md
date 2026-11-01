@@ -485,3 +485,25 @@ performed; accepted 66.919494 s warm remains a distinct baseline.
 At groups8 the 53 source shapes project 13024 submissions versus 0020's 6512 and
 the accepted 25944. Input tile traffic doubles relative to 0020, so lower live
 registers and shared allocation do not by themselves establish a speed win.
+
+## Accepted sequential tiled batching: 0022
+
+- [x] Preserve the proven local128 shader and one workgroup per hardware EXEC.
+- [x] Add a separate1/2/4 control with a narrow A506 resource gate; retain every
+  per-chunk wait/flush, submission lifetime and fault check.
+- [x] Independent source review, exact cumulative reconstruction and build.
+- [x] Focused batch 1→2→4 full-output checks, including dilation 3/5 trailing batches.
+- [x] Same-boundary full repeat:56.853055 s first/56.013717 s warm, bit-identical
+  output,428.5 MiB/zero swap/no faults. Previous warm66.919494 s; CPU32.079044 s.
+- [x] Full warm command attribution: all 53 tiled layers faster, other 1937
+  commands nearly unchanged;6486 tiled submits versus 25944, same chunk count.
+- [x] Fresh T78 runtime core/waveform gate with new environment provenance:
+  synthesis 34.863887 s, core 20.403266 s,341.8 MiB/zero swap, outputs byte-identical.
+- [x] Select batch 4 in the private runtime wrapper; retain driver/model default 1.
+- [ ] Integrate and measure guarded Snake fusion from its isolated worktree.
+- [ ] Beat the applicable CPU baseline end to end and measure sustained behavior.
+
+The register-budget guard and Vulkan capability advertisement are unchanged.
+The debug resource gate does not independently prove K bounds or arbitrary
+shader watchdog safety. The pinned ncnn path supplies the measured K<=3584 bound.
+Full-length fresh startup figures predate0022; do not relabel them.

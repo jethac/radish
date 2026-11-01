@@ -21,16 +21,17 @@ limits and validation scope. Published checkpoints remain experimental; publicat
 | `0013-ncnn-conv1d-shared32.patch` | Current ncnn stack including 0010/0011 | Optional exact Radish FP32 shared32 Conv1D GEMM; both builds and K3/K7/K11 device checks pass; full model passes bit-identically but slows to 198.453 s; opt-in candidate rejected for performance |
 | `0014-ncnn-conv1d-a5xx-tiled.patch` | Current ncnn stack including 0010/0011/0013 | Opt-in FP32 64x64 tile, local16x8, 16 KiB shared; revised 16-full/0-half shader passes all 25984 operator outputs; no accepted model speed win |
 | `0015-ncnn-radish-mixed-storage.patch` | Same ncnn base plus 0006 | Opt-in GPU storage conversions; FP32 norm islands remove diagnosed NaNs, but packed full core and waveform accuracy still fail |
-| `0016-radish-register-budget-cumulative.patch` | Same Mesa base as 0001 | Current driver; includes 0012 and rejects combined full/half register footprints beyond the measured A506 budget before shader upload |
+| `0016-radish-register-budget-cumulative.patch` | Same Mesa base as 0001 | Historical register-budget driver, retained in0022; includes0012 and rejects combined full/half register footprints beyond the measured A506 budget before shader upload |
 | `0017-ncnn-conv1d-shared-a-transpose.patch` | After 0014 in the ordered Conv1D stack | Both builds/operator/full fused FP32 core/waveform pass; 76.534312 s first/74.317956 s warm (one warm), versus same-graph CPU 32.079044 s (two warm); GPU remains slower |
 | `0018-ncnn-conv1d-tiled-dilation.patch` | After 0017 in the ordered Conv1D stack | Extends only dilation1/3/5; operator/full fused FP32 core/waveform pass; 69.862470 s first/69.678044 s warm, 416.7 MiB/zero swap, no faults |
 | `0019-ncnn-radish-reshape-alias.patch` | Same ncnn base; independent Reshape file | Default-off exact Radish FP32 pack4 rank3→rank2 output alias; original input copies retained; builds/operator/full-core gates pass, output bit-identical, 67.138187 s first/66.919494 s warm. Earlier bidirectional variant in bf4d98f is rejected at 109.107981 s warm |
 | `0020-ncnn-conv1d-tiled32.patch` | After 0018 in the ordered Conv1D stack | Default-off local8x4, tile64x32, 12 KiB shared; builds/compiler/operator/full-core accuracy pass, output byte-identical; 101.354178 s first/100.467084 s warm versus accepted 66.919494 s warm; 414.8 MiB plus 52 MiB swap; rejected for performance |
 | `0021-ncnn-conv1d-tile32x32.patch` | After 0020 in the ordered Conv1D stack | Revises the same default-off TILED32 path to tile32x32, eight accumulators, 8 KiB shared; builds/all20 variants/operator/full-core accuracy pass; output byte-identical, first 138.633996 s versus accepted first 67.138187 s, peak 425.2 MiB/zero swap/no faults; rejected for performance, no warm repeat; accepted64x64 path unchanged |
+| `0022-radish-tiled-batching-cumulative.patch` | Same Mesa base as 0001; replaces 0016 | Current driver; optional 2/4 sequential single-group tiled chunks per submit, unchanged waits/flushes and register guard; full core 56.013717 s warm, byte-identical, 428.5 MiB/zero swap/no faults; fresh T78 runtime passes |
 
 To reconstruct the current driver, make a separate checkout/worktree at the
-Mesa base, read its `AGENTS.md`, and apply 0016 with `git apply` instead of
-0001/0003/0004/0007/0009/0012. Set
+Mesa base, read its `AGENTS.md`, and apply 0022 with `git apply` instead of
+0001/0003/0004/0007/0009/0012/0016. Set
 `RADISH_MESA` to that checkout and run `../scripts/build.sh`. Preserve the AC8
 checkout and use the shared scratch disk for source/build outputs. The existing
 sysroot/build environment paths and private loader procedure are in `NOTES.md`.
@@ -115,7 +116,7 @@ max absolute error 3.422e-5, no faults. Its 17.919664 ms/eight submits versus th
 default 18.809093 ms/one submit is a single-case command-wall comparison, not an
 accepted model win. Original 21-full local128 code was never executed.
 
-Current driver 0016 uses `ir3_shader_halfregs` to combine full/half footprints
+The register guard introduced in 0016 and retained in 0022 uses `ir3_shader_halfregs` to combine full/half footprints
 against a measured 2048-full-vec4 budget. It rounds barrier workgroups to whole
 resident waves and requires one wave for non-barrier shaders. The old 21-full
 local128 pipeline now rejects with -8 before shader upload/execution
@@ -252,4 +253,5 @@ e89d516bca15980a599f96e797b7726546913b05b370bac87a3ac88c8ebc9695  0018-ncnn-conv
 3f38da1822f50b5b46857e091e2366c96baf350136dd585615c7e663ec72ce57  0019-ncnn-radish-reshape-alias.patch
 bf61ab2af644ddecb632c7c3d8e48ef261085f3a7c1ad68d657c33abf7cda3df  0020-ncnn-conv1d-tiled32.patch
 a29dbbe0c3edf8912e4548cc873beca0ba3f1ba3197b6f1ee5f386bfd4f57dc0  0021-ncnn-conv1d-tile32x32.patch
+0c03e76309ae835fa32946a61626614136dc5ea173419383258904933ec7514a  0022-radish-tiled-batching-cumulative.patch
 ```

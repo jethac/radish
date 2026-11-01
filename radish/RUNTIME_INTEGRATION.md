@@ -450,3 +450,18 @@ The full T213 startup table above predates the output-alias optimization.
 
 Keep device locking, bounded sessions, both live services and fault inspection
 requirements from [GOAL.md](GOAL.md). This evidence does not complete M5 or M6.
+
+### Sequential tiled submission checkpoint 0022
+
+The private runtime now defaults `RADISH_TILED_BATCH_CHUNKS=4` for the pinned
+FP32 graph. The driver still defaults 1 and accepts this option only for the
+measured local128 tiled resource class. `RADISH_NCNN_TILED32` remains0.
+All wrappers validate 1/2/4, and the executable and frozen device manifest record
+the new control. Rebuild the executable before using the updated wrapper.
+
+Fresh T78 validation passes all 205942 core values and 46800 waveform samples:
+core 20.403266 s, total synthesis 34.863887 s, service 38.856 s,341.8 MiB/zero swap.
+Core and waveform are byte-identical to the earlier T78 run; SNR 96.917732 dB.
+Evidence: `runtime-single-short-tiled-submit-0022-validation.json`. The fixed
+T213 core is 56.013717 s warm, but full-length fresh synthesis has not been rerun
+with 0022. Keep the older full-length startup result separately identified.

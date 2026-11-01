@@ -32,20 +32,22 @@ a separate driver, with its own a5xx resource bindings and command emission.
 
 | Measurement | GPU path | Packed six-thread CPU |
 | --- | ---: | ---: |
-| Fixed full-size core, warm extraction | **66.919 s** | **32.079 s** |
+| Fixed full-size core, warm extraction | **56.014 s** | **32.079 s** |
 | Fresh full-length synthesis, including startup | **84.223 s** | **39.790 s** |
 
-The warm GPU figure includes output reshape aliases and is one extraction; the
-CPU mean is two. The full-length synthesis row predates that copy optimization
-(checkpoint `96de5c7`). Complete synthesis figures are single startup runs, with byte-identical frontend boundary inputs.
+The warm GPU figure includes output reshape aliases and sequential tiled
+submission batching; it is one extraction, versus two for the CPU mean. The
+full-length synthesis row predates both optimizations (checkpoint `96de5c7`).
+Complete synthesis figures are single startup runs with byte-identical
+frontend boundary inputs. The current warm core peaks at **428.5 MiB, zero swap**.
 Full GPU synthesis peaks at **457.2 MiB with zero swap**; no new GPU faults,
 and both appliance services remain active. GPU inference remains slower than
 CPU. Resident warm synthesis and sustained thermal behavior remain unmeasured.
 
 - Fused FP32 normalization and tiled convolution, now including dilation 3/5,
-  plus guarded output reshape aliases reduce fixed-core warm GPU time from
-  101.275 s to 66.919 s. The tiled path executes 53 matrix-product commands; compiled register-budget checks remain
-  in place.
+  plus guarded output reshape aliases and sequential submission batching reduce
+  fixed-core warm GPU time from 101.275 s to 56.014 s. The tiled path executes
+  53 matrix-product commands; compiled register-budget checks remain in place.
 - Explicit mixed-storage conversion and FP32 normalization remove the NaNs
   from packed FP16 inference, but full-model and waveform accuracy still fail.
   FP32 remains the validated path.
@@ -79,7 +81,7 @@ kept outside the repository.
 
 1. Check out Mesa at `ddabdd0e36bd2f5e0c8e6bd21c3d1da7e34c1230` in a
    separate worktree. Apply
-   `radish/patches/0016-radish-register-budget-cumulative.patch` to that base.
+   `radish/patches/0022-radish-tiled-batching-cumulative.patch` to that base.
    Earlier cumulative Mesa patches are historical alternatives, not a series.
 2. Set `RADISH_WORK` to the scratch/build directory, `RADISH_MESA` to the Mesa
    checkout, `RADISH_SYSROOT` to the aarch64 sysroot and `RADISH_VENV` to the

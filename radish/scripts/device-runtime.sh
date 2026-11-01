@@ -53,6 +53,8 @@ CACHE=${RADISH_NCNN_PIPELINE_CACHE:-1}
 TRACE=${RADISH_NCNN_TRACE:-1}
 PROFILE=${RADISH_PROFILE:-1}
 BATCH=${RADISH_BATCH_CHUNKS:-4}
+TILED_BATCH=${RADISH_TILED_BATCH_CHUNKS:-4}
+[[ $TILED_BATCH =~ ^(1|2|4)$ ]] || { echo 'RADISH_TILED_BATCH_CHUNKS must be 1, 2 or 4' >&2; exit 2; }
 GROUPS_PER_CHUNK=${RADISH_SHARED_GROUPS:-8}
 for toggle in "$TILED" "$TILED32" "$SHARED32" "$MIXED" "$CACHE" "$TRACE" "$PROFILE" "$RESHAPE_ALIAS"; do
     [[ $toggle == 0 || $toggle == 1 ]] || { echo 'Radish toggles must be 0 or 1' >&2; exit 2; }
@@ -66,10 +68,10 @@ OUTPUT=$WORK/kokoro-$KIND-single-$BACKEND-$RUN
 [[ ! -e $OUTPUT && ! -L $OUTPUT ]] || { echo 'host output already exists' >&2; exit 2; }
 mkdir -p "$WORK/evidence"
 [[ ! -e $WORK/evidence/$TAG-inputs.json && ! -e $WORK/evidence/$TAG.txt && ! -e $WORK/evidence/$TAG-icd.json ]] || { echo 'run label already has evidence' >&2; exit 2; }
-python3 - "$SOURCE" "$MODELS" "$TEMPLATE" "$BINARY" "$DRIVER" "$TAIL" "$WORK/evidence/$TAG-inputs.json" "$WORK/evidence/$TAG-icd.json" "$REMOTE" "$BACKEND" "$THREADS" "$ORT_THREADS" "$MAX_FRAMES" "$REPEAT" "$TILED" "$SHARED32" "$MIXED" "$CACHE" "$TRACE" "$PROFILE" "$BATCH" "$GROUPS_PER_CHUNK" "$RESHAPE_ALIAS" "$TILED32" "$LOADER" <<'PY'
+python3 - "$SOURCE" "$MODELS" "$TEMPLATE" "$BINARY" "$DRIVER" "$TAIL" "$WORK/evidence/$TAG-inputs.json" "$WORK/evidence/$TAG-icd.json" "$REMOTE" "$BACKEND" "$THREADS" "$ORT_THREADS" "$MAX_FRAMES" "$REPEAT" "$TILED" "$SHARED32" "$MIXED" "$CACHE" "$TRACE" "$PROFILE" "$BATCH" "$GROUPS_PER_CHUNK" "$RESHAPE_ALIAS" "$TILED32" "$TILED_BATCH" "$LOADER" <<'PY'
 import hashlib, json, pathlib, sys
 source, models, template, binary, driver, tail, output, icd = map(pathlib.Path, sys.argv[1:9])
-loader=pathlib.Path(sys.argv[25])
+loader=pathlib.Path(sys.argv[26])
 remote, backend = sys.argv[9:11]
 threads, ort_threads, max_frames, repeat = map(int, sys.argv[11:15])
 def require(ok, message):
@@ -106,8 +108,8 @@ require(assets['tail']['bytes']==1936 and assets['tail']['sha256']=='e04b5c7b07c
 with icd.open('x') as stream:
     json.dump({'file_format_version':'1.0.0','ICD':{'library_path':remote+'/libvulkan_radish.so','api_version':'1.0.0'}},stream);stream.write('\n')
 assets['icd']={'path':str(icd.resolve()),**asset(icd)}
-names=['RADISH_NCNN_TILED','RADISH_NCNN_SHARED32','RADISH_NCNN_MIXED_STORAGE','RADISH_NCNN_PIPELINE_CACHE','RADISH_NCNN_TRACE','RADISH_PROFILE','RADISH_BATCH_CHUNKS','RADISH_SHARED_GROUPS','RADISH_NCNN_RESHAPE_ALIAS','RADISH_NCNN_TILED32']
-environment=dict(zip(names,sys.argv[15:25]))
+names=['RADISH_NCNN_TILED','RADISH_NCNN_SHARED32','RADISH_NCNN_MIXED_STORAGE','RADISH_NCNN_PIPELINE_CACHE','RADISH_NCNN_TRACE','RADISH_PROFILE','RADISH_BATCH_CHUNKS','RADISH_SHARED_GROUPS','RADISH_NCNN_RESHAPE_ALIAS','RADISH_NCNN_TILED32','RADISH_TILED_BATCH_CHUNKS']
+environment=dict(zip(names,sys.argv[15:26]))
 environment['VK_DRIVER_FILES']=remote+'/radish_icd.json'
 frontend_inputs={'format':'radish-kokoro-device-frontend-inputs-v1','source_sha256':pin,
     'input_directory':str(source.resolve()),'runtime_manifest':asset(source/'runtime.json'),
@@ -192,8 +194,8 @@ fi
 for file in frontend-only.onnx harmonic-source.onnx; do "${ADB[@]}" push "$MODELS/$file" "$REMOTE/models/$file"; done
 for file in ids.i64 style.f32 speed.f32; do "${ADB[@]}" push "$SOURCE/$file" "$REMOTE/input/$file"; done
 echo "Runtime backend=$BACKEND repeat=$REPEAT threads=$THREADS ort_threads=$ORT_THREADS; shared weights=$DEVICE_WEIGHTS"
-echo "GPU controls: tiled=$TILED tiled32=$TILED32 batch=$BATCH shared_groups=$GROUPS_PER_CHUNK shared32=$SHARED32 mixed=$MIXED cache=$CACHE trace=$TRACE profile=$PROFILE reshape_alias=$RESHAPE_ALIAS"
-"${ADB[@]}" shell "chmod 755 $REMOTE/radish-kokoro-runtime && systemd-run --unit=$UNIT --wait --pipe --collect -p MemoryMax=640M -p MemorySwapMax=128M -p RuntimeMaxSec=300 -p LimitCORE=0 --setenv=RADISH_NCNN_TILED=$TILED --setenv=RADISH_NCNN_TILED32=$TILED32 --setenv=RADISH_NCNN_SHARED32=$SHARED32 --setenv=RADISH_NCNN_MIXED_STORAGE=$MIXED --setenv=RADISH_NCNN_RESHAPE_ALIAS=$RESHAPE_ALIAS --setenv=RADISH_NCNN_PIPELINE_CACHE=$CACHE --setenv=RADISH_NCNN_TRACE=$TRACE --setenv=RADISH_PROFILE=$PROFILE --setenv=RADISH_BATCH_CHUNKS=$BATCH --setenv=RADISH_SHARED_GROUPS=$GROUPS_PER_CHUNK --setenv=LD_LIBRARY_PATH=$REMOTE --setenv=VK_DRIVER_FILES=$REMOTE/radish_icd.json $REMOTE/radish-kokoro-runtime --$BACKEND --threads $THREADS --ort-threads $ORT_THREADS --max-frames $MAX_FRAMES --repeat $REPEAT $REMOTE/models $REMOTE/input $REMOTE/decoder.ncnn.param $DEVICE_WEIGHTS $REMOTE/kokoro-tail.bin $REMOTE/output" 2>&1 | tee "$WORK/evidence/$TAG.txt"
+echo "GPU controls: tiled=$TILED tiled32=$TILED32 batch=$BATCH tiled_batch=$TILED_BATCH shared_groups=$GROUPS_PER_CHUNK shared32=$SHARED32 mixed=$MIXED cache=$CACHE trace=$TRACE profile=$PROFILE reshape_alias=$RESHAPE_ALIAS"
+"${ADB[@]}" shell "chmod 755 $REMOTE/radish-kokoro-runtime && systemd-run --unit=$UNIT --wait --pipe --collect -p MemoryMax=640M -p MemorySwapMax=128M -p RuntimeMaxSec=300 -p LimitCORE=0 --setenv=RADISH_NCNN_TILED=$TILED --setenv=RADISH_NCNN_TILED32=$TILED32 --setenv=RADISH_NCNN_SHARED32=$SHARED32 --setenv=RADISH_NCNN_MIXED_STORAGE=$MIXED --setenv=RADISH_NCNN_RESHAPE_ALIAS=$RESHAPE_ALIAS --setenv=RADISH_NCNN_PIPELINE_CACHE=$CACHE --setenv=RADISH_NCNN_TRACE=$TRACE --setenv=RADISH_PROFILE=$PROFILE --setenv=RADISH_BATCH_CHUNKS=$BATCH --setenv=RADISH_TILED_BATCH_CHUNKS=$TILED_BATCH --setenv=RADISH_SHARED_GROUPS=$GROUPS_PER_CHUNK --setenv=LD_LIBRARY_PATH=$REMOTE --setenv=VK_DRIVER_FILES=$REMOTE/radish_icd.json $REMOTE/radish-kokoro-runtime --$BACKEND --threads $THREADS --ort-threads $ORT_THREADS --max-frames $MAX_FRAMES --repeat $REPEAT $REMOTE/models $REMOTE/input $REMOTE/decoder.ncnn.param $DEVICE_WEIGHTS $REMOTE/kokoro-tail.bin $REMOTE/output" 2>&1 | tee "$WORK/evidence/$TAG.txt"
 if rg -n 'vkCreateComputePipelines failed|new_pipeline failed' "$WORK/evidence/$TAG.txt"; then exit 1; fi
 PULL_STAGE=$(mktemp -d "$WORK/.runtime-pull-$KIND-XXXXXX")
 "${ADB[@]}" pull "$REMOTE/output" "$PULL_STAGE/output"

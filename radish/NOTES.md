@@ -7,11 +7,11 @@ including 16 KiB shared reductions, transfers, dependent compute and bounded
 3D dispatch subdivision. Recovery now propagates DEVICE_LOST. ncnn ReLU,
 32-thread means, Conv1D K3/K7/K11 and InnerProduct pass full GPU output checks.
 The fixed Kokoro neural core passes all 562342 outputs. A guarded FP32
-InstanceNorm+tiled graph with output reshape aliases now passes first/warm
-extractions in 67.138/66.919 s,
+InstanceNorm+tiled graph with output reshape aliases and four sequential tiled
+chunks per submission now passes first/warm extractions in 56.853/56.014 s,
 including input/output transfer, and its device waveform passes all 127800
 samples. The same fused graph's packed six-thread CPU warm mean is 32.079 s:
-the GPU remains about 2.09 times slower, despite a 33.9% reduction from the prior
+the GPU remains about 1.75 times slower, despite a 44.7% reduction from the prior
 graph's 101.275 s warm extraction. GPU evidence has one warm iteration; CPU has
 two. These are core measurements. The new single-process runtime completes
 fresh tablet T=78 synthesis in 43.652 s including frontend startup/release,
@@ -39,8 +39,8 @@ memory. Builds, all 20 model compiler variants and focused dilation1/3/5 output
 checks pass, but its best dilation1 math command is 21.885 ms versus the existing
 tile's 10.868 ms. The full core passes with byte-identical output but takes
 101.354/100.467 s first/warm, with 414.8 MiB peak memory and 52 MiB swap.
-Reject 0020 for performance and keep it default-off; the accepted 66.919 s warm
-result above remains the baseline. The new swap use limits causal attribution
+Reject 0020 for performance and keep it default-off; 66.919 s warm was the
+accepted baseline for that comparison. Sequential batching is recorded below. The new swap use limits causal attribution
 of the slowdown.
 
 Incremental candidate 0021 now changes the same default-off
@@ -52,7 +52,8 @@ dilation1 math time is 33.229 ms, slower than both earlier tiles. The full first
 extraction passes with byte-identical output but takes 138.633996 s versus the
 accepted 67.138187 s first, with 425.2 MiB/zero swap and no faults. Reject 0021
 for performance and keep TILED32 default-off. No warm run was performed; the
-accepted local128 tile and 66.919494 s warm baseline are unchanged.
+accepted local128 tile is retained; later sequential batching improves its
+66.919494 s warm baseline as recorded below.
 
 - Mesa worktree `/run/media/jethac/Shared/radish/mesa`, branch `radish/main`,
   base `ddabdd0e36bd2f5e0c8e6bd21c3d1da7e34c1230`. AC8 checkout untouched.
@@ -1497,3 +1498,65 @@ retain the accepted local128 tile, and keep `RADISH_NCNN_TILED32=0` by default.
 No warm repeat was performed or is warranted by this result. The accepted
 66.919494 s warm remains a separate baseline, not the denominator for this
 first-extraction comparison. No resource or accuracy gate was relaxed.
+
+### Sequential tiled submissions: accepted checkpoint 0022
+
+Cumulative Mesa patch `0022-radish-tiled-batching-cumulative.patch` replaces
+0016 at the same pinned base. Its only driver behavior change is an opt-in
+`RADISH_TILED_BATCH_CHUNKS=2|4` gate for the measured A506 tiled resource class:
+local16x8x1, barrier, four loops, 16 KiB shared, no private allocation, single
+thread size, at most 16 full registers/no half registers, four descriptors and
+instruction length 36 or 37. Driver default is one chunk. Each hardware EXEC
+still contains one workgroup; each complete restore/program/descriptor/base,
+EXEC, WFI and cache-flush/wait sequence is retained. The existing submission
+loop groups two or four sequential sequences, including trailing batches.
+Other shaders and existing short-shader batching are unchanged.
+
+The gate identifies a resource class, not a shader identity or a general
+watchdog guarantee. The pinned ncnn selector bounds K at 3584 for this workload.
+Per-chunk private timestamps do not reset the kernel hangcheck fence; no wait,
+flush, register limit or fault check was removed. Independent review proves the
+11-line insertion is the only change to `rd_queue.c`; all 14 patch files
+reconstruct exactly. Build log: `build-tiled-submit-0022.log`. Patch SHA256:
+`0c03e76309ae835fa32946a61626614136dc5ea173419383258904933ec7514a`.
+ICD SHA256: `828094bb27e30a0d97c41caa8714073b500ebcd0de40201426c520ded58293e4`.
+
+Focused dilation 1 passes all 25984 outputs at batch 1/2/4, with unchanged max
+error 3.42226122e-5. Math command times are 11.472062/9.396640/8.675388 ms;
+eight chunks produce 8/4/2 submits. Dilation3/5 at batch 4 pass all 23424/20864
+values, errors 7.09755113e-6/1.641165e-5, in6.921529/6.628924 ms; six chunks
+produce two submits, exercising a trailing partial batch. All runs have no new
+faults and both services active. Logs: `operators-tiled-submit-0022-d*-batch*.log`.
+
+The fixed full-core `core-instancenorm-tiled-submit-0022-repeat2.log` records
+9.884 s load, **56.853055 s first / 56.013717 s warm** (one warm observation),
+including input/output transfer. Both compare all 562342 outputs successfully:
+max 0.000129699707, relative RMS 7.72155564e-7, zero mismatches. Output SHA256
+`0550fe07becc684c3dc7b0113bfef0b4e3c87ff8d888acf779e98de4d8af18e4` matches
+0019 exactly, so its full127800-sample waveform evidence remains applicable.
+Service wall 2 min 3.193 s, peak 428.5 MiB, zero swap, no new faults; both services
+remain active. Warm core latency falls16.30% from 66.919494 s, but remains slower
+than the packed six-thread CPU mean 32.079044 s (two warm observations).
+
+The independently mapped warm window preserves all 1990 command signatures
+except the53 tiled submit counts; all 1093 layer paths/groups/returns match.
+Those 53 commands fall39.290606493→28.279931903 s and 25944→6486 submits, with
+25944 chunks unchanged. Other 1937 commands take 23.822304502→23.819569629 s,
+with 30523 submits and 96 small transfers unchanged. These are command wall
+times including host work/submission/waits, not isolated GPU instruction times.
+Evidence: `warm-tiled-submit-result-0022-ie_nqmik/` and
+`warm-tiled-submit-review-0022-r4v8wqm4/`.
+
+Fresh T78 runtime with explicit batch 4 also passes all 205942 core values and
+46800 waveform samples against ORT references from its exact tablet boundary.
+Frontend 4.553038 s, metadata 0.031497 s, load 9.530217 s, core 20.403266 s,
+tail 0.038096 s, synthesis 34.863887 s (through publication34.868013 s); service
+38.856 s, peak 341.8 MiB/zero swap, no faults, services active. Waveform SNR is
+96.917732 dB. Core/waveform hashes remain respectively
+`7b91c412aa771e91c1976233fddde9d138610b8f56dd8157829110f0adba670c` and
+`1baae4fc1a45bb276bff219d3b9b9c7af8352e5d889798482e6fcfd4114c7353`.
+Logs/report: `runtime-single-short-tiled-submit-0022-first.log` and
+`runtime-single-short-tiled-submit-0022-validation.json`. The runtime wrapper
+now defaults batch 4 for this pinned workload; model/operator wrappers retain
+explicit opt-in and driver default remains1. TILED32 remains disabled.
+Full-length fresh synthesis has not been rerun with 0022.
