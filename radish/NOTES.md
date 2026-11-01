@@ -26,10 +26,14 @@ reference gates; all eight boundary files and core/waveform bytes match earlier
 validated captures. Each request has 715 GPU / zero CPU core layers. Peak memory
 is 432.1 MiB with zero swap, no faults and both live services active. The earlier
 private T213 shape-change session remains 57.301229/46.984077 s after reload/reuse,
-517 MiB / 19.1 MiB swap. Equivalent resident CPU comparison, sustained behavior
-and tablet cancellation remain pending. The canonical runtime build reproduces
-the tested private binary byte-for-byte; public staging supports two to four
-complete requests and preserves per-request reference validation.
+517 MiB / 19.1 MiB swap. A same-graph six-thread CPU short/short/full/full session
+now passes every reference gate with identical GPU input boundaries: resident
+short/full synthesis is 15.411271/36.802922 s, faster than GPU 20.089174/46.984077 s.
+CPU peak is 404.8 MiB with zero swap and 715 CPU / zero GPU core layers per request.
+These are single resident observations with different session sequences; the
+full GPU result uses driver 0031. Sustained behavior and tablet cancellation remain
+pending. Public staging supports two to four complete requests and preserves
+per-request reference validation.
 
 Historical evidence follows.
 
@@ -2536,8 +2540,8 @@ core output and waveform matches the corresponding prior validated capture.
 Original ORT comparisons pass all 205942 or 562342 core values and 46800 or
 127800 waveform samples; waveform SNR is 97.073984 dB short / 98.377722 dB full.
 Both sessions report no faults and both live services active. Full resident
-latency still exceeds the historical 39.789900 s fresh CPU baseline; an equivalent
-resident CPU measurement is pending. These bounded sessions are not sustained
+latency still exceeds the historical 39.789900 s fresh CPU baseline; the later
+same-graph resident CPU measurement is recorded below. These bounded sessions are not sustained
 thermal evidence or live application integration.
 
 Per-request atomic output preserves the existing v1 boundary/core/waveform/runtime
@@ -2658,3 +2662,54 @@ backup with original path/mode/owner records, increasing free space to 287408 Ki
 `archive-batch8-driver-before-resident-cpu.log`. No model, capture or output was
 removed; both services remained active. These are disk-maintenance records,
 not resident CPU benchmark evidence.
+
+## Same-graph resident CPU baseline
+
+The public wrapper also passes a packed six-thread CPU short/short/full/full
+session with ORT4, the same combined graph and runtime binary. The measured
+command was (choose a new run label for another execution):
+
+```sh
+RADISH_NCNN_PLANAR=1 RADISH_NCNN_NORM_SUM4=1 RADISH_BATCH_CHUNKS=8 \
+  radish/scripts/device-runtime.sh runtime-short resident-cpu-0032-first \
+  --affine-snake-deconv2d --cpu-packed --request-loop \
+  --next-input runtime-short --next-input runtime-full --next-input runtime-full \
+  --threads 6 --ort-threads 4 --max-frames 512 --repeat 1
+```
+
+| Request | T | Core cache | Core seconds | Synthesis seconds |
+| --- | ---: | --- | ---: | ---: |
+| 0 | 78 | miss | 11.325414444 | 16.998107487 |
+| 1 | 78 | hit | 11.072058253 | 15.411270994 |
+| 2 | 213 | miss | 30.849667695 | 38.496352537 |
+| 3 | 213 | hit | 30.703000662 | 36.802922440 |
+
+Each request executes all 715 CPU / zero GPU layers; all 2860 successful ordered
+trace rows have the same layer inventory. Cache hits report zero core load.
+Every request passes the unchanged original-ORT decoder/tail gates from its exact
+saved boundary, with zero mismatches. T78 checks 205942 core values / 46800 samples:
+core max 0.000358581543, relative RMS 2.541598061e-6, waveform max 2.557039261e-5 /
+SNR 92.417480395 dB. T213 checks 562342 core values / 127800 samples:
+core max 0.000347137451, relative RMS 2.504017408e-6, waveform max 5.042552948e-5 /
+SNR 88.221183364 dB. All eight boundary files match the corresponding validated
+GPU captures exactly. Same-T CPU boundaries/core/waveform are byte-identical;
+CPU and GPU outputs are independently checked, not asserted byte-identical.
+
+CPU resident short 15.411270994 s is 4.677903482 s below GPU 20.089174476 s; full
+36.802922440 s is 10.181154123 s below GPU 46.984076563 s. CPU remains faster in
+these observations. The compared graph, runtime binary, ORT thread count and
+boundary bytes match; CPU uses six inference threads and GPU four host threads.
+CPU ran short/short/full/full, short GPU ran short/short with driver 0032, and
+full GPU ran short/full/full with driver 0031. There is one resident observation
+per length/backend with different session histories and memory pressure, not
+controlled sustained evidence. Tablet cancellation and live application work
+remain open.
+
+Session 108.114303525 s including final cleanup 0.002831208 s; service 112.503 s
+wall / 430.462 s CPU time, 404.8 MiB peak and zero swap. No new GPU fault occurred
+and both live services remained active. Runtime SHA 0541e68c...70bda9 and combined
+graph SHA e211a573...fc807d are unchanged; the CPU path makes no GPU dispatches.
+Evidence: `resident-cpu-0032-validation-ch3gouod/{REPORT.md,summary.json}`,
+`resident-cpu-0032-request-{000,001,002,003}-validation.json`, and
+`runtime-resident-cpu-0032-first.log`. Capture:
+`kokoro-runtime-short-single-cpu-packed-resident-cpu-0032-first-affine-snake-deconv2d-planar-norm-sum4-loop/`.

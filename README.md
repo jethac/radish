@@ -34,6 +34,8 @@ and both live appliance services remained active.
 | --- | ---: | ---: |
 | Fixed full-size core, warm extraction | **40.724 s** | **32.079 s** |
 | Fresh full-length synthesis, including startup | **57.293 s** | **39.790 s** |
+| Complete short synthesis, resident core | **20.089 s** | **15.411 s** |
+| Complete full synthesis, resident core | **46.984 s** | **36.803 s** |
 
 GPU inference remains slower than CPU. Enabling the existing normalization
 optimization reduces warm core time from 42.470 s to 40.724 s, with identical
@@ -58,9 +60,15 @@ primarily comes from avoiding 9.476 s of model loading. Both requests pass compl
 reference checks with byte-identical prior boundaries and outputs, 715 GPU / zero
 CPU core layers, no faults and both live services active. The earlier private
 short/full/full session proves shape-change reload and **46.984 s** full resident
-synthesis, at 517 MiB / 19.1 MiB swap. These are single resident observations;
-equivalent resident CPU, sustained performance, tablet cancellation and live
-application integration remain unmeasured.
+synthesis, at 517 MiB / 19.1 MiB swap.
+
+The same combined graph and exact input boundaries now pass four resident CPU
+requests at **15.411 s short / 36.803 s full**, with **404.8 MiB peak and zero swap**.
+All 715 core layers use CPU; full output references pass with no faults and both
+services active. CPU remains faster. These are single resident observations:
+CPU ran short/short/full/full, short GPU used driver 0032 and full GPU used the
+earlier driver 0031 short/full/full session. Sustained behavior, tablet
+cancellation and live application integration remain unmeasured.
 
 Select the measured graph with `--affine-snake-deconv2d`,
 `RADISH_NCNN_PLANAR=1` and `RADISH_BATCH_CHUNKS=8`, with one X workgroup.

@@ -828,5 +828,11 @@ performance remains unmeasured.
   pass with exact prior boundary/output bytes and 715 GPU/zero CPU paths each.
   The repeat mainly avoids loading; no extraction-speed or sustained claim.
   Evidence: `resident-public-0032-validation-mcnh4qu7/summary.json`.
-- [ ] Measure tablet cancellation, equivalent resident CPU baseline and sustained behavior.
+- [x] Measure initial same-graph resident CPU baseline with identical GPU boundary
+  inputs: four short/short/full/full requests, all 715 CPU/zero GPU layers and full
+  original-ORT core/waveform gates pass. CPU resident 15.411271/36.802922 s versus
+  GPU 20.089174/46.984077 s; 404.8 MiB/zero swap, no faults/services active. Different
+  sequences and full GPU 0031 limit causal comparisons; one resident observation each.
+  Evidence: `resident-cpu-0032-validation-ch3gouod/summary.json`.
+- [ ] Measure tablet cancellation and controlled repeated/sustained behavior.
 - [ ] Beat CPU latency and integrate with the live application.
