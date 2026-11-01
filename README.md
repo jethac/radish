@@ -32,68 +32,51 @@ a separate driver, with its own a5xx resource bindings and command emission.
 
 | Measurement | GPU path | Packed six-thread CPU |
 | --- | ---: | ---: |
-| Fixed full-size core, warm extraction | **45.340 s** | **32.079 s** |
-| Fresh full-length synthesis, including startup | **61.429 s** | **39.790 s** |
+| Fixed full-size core, warm extraction | **43.124 s** | **32.079 s** |
+| Fresh full-length synthesis, including startup | **59.185 s** | **39.790 s** |
 
-The GPU figures use the opt-in FP32 Snake graph, planar convolution input,
-output reshape aliases and eight sequential chunks per submission for both
-eligible short shaders and tiled convolution.
-Warm core timing is one extraction,
-versus two for the CPU mean; the CPU uses the preceding InstanceNorm graph.
-Complete synthesis figures are single startup runs with byte-identical
-frontend boundary inputs. The GPU core peaks at **417.5 MiB, zero swap**;
-full GPU synthesis peaks at **431.3 MiB with 16.7 MiB swap**. No new GPU faults
-occurred, and both appliance services remained active. Core and waveform bytes
-match the preceding GPU implementation. GPU inference remains slower than CPU.
-Resident warm synthesis and sustained thermal behavior remain unmeasured.
+The GPU figures use the opt-in FP32 AffineSnake graph, planar convolution input,
+output reshape aliases and eight sequential chunks per submission for eligible
+short shaders and tiled convolution. Select `--affine-snake`,
+`RADISH_NCNN_PLANAR=1` and `RADISH_BATCH_CHUNKS=8`; keep norm fusion off and
+one X workgroup. The fixture requires recorded full CPU validation before
+GPU use. Defaults remain unchanged.
 
-Cumulative Mesa patch 0029 adds `RADISH_BATCH_CHUNKS=8` for short, loop-free
-shaders. A paired measurement with the same driver reduces warm extraction
-from 47.414 s to 45.340 s, removing 10,894 submissions while preserving all
-shader work and output bytes. The affected commands save 1.992 s of the
-2.074 s total improvement. This is one first/warm pair per setting; the
-batch-four baseline used 7.7 MiB swap. Defaults remain unchanged; select eight
-explicitly for the measured path, with norm fusion off and one X workgroup.
+Warm core timing is one extraction, versus two for the CPU mean; the CPU uses
+the preceding InstanceNorm graph. Complete synthesis figures are single startup
+runs with byte-identical frontend boundary inputs. The GPU core peaks at
+**416.0 MiB with 7.4 MiB swap**; full synthesis peaks at **415.6 MiB with
+74.2 MiB swap**. Memory pressure varies between runs. No new GPU faults occurred,
+and both appliance services remained active. Complete core and waveform bytes
+match the preceding GPU implementation. GPU inference remains slower than CPU;
+resident warm synthesis and sustained thermal behavior remain unmeasured.
 
-Channel-major convolution input and its 64-thread padding pass reduce warm
-time from 49.429 s to 46.933 s. The affected convolution/padding commands save
-1.378 s; variation in other work also contributes to the 2.496 s overall change.
-Fresh full-length synthesis is essentially unchanged from 63.528 s. The layout
-remains disabled by default: select `RADISH_NCNN_PLANAR=1`, ordered ncnn patches
-0024/0026 and cumulative Mesa patch 0025. Full core and waveform bytes remain
-identical to the preceding GPU implementation at both measured input lengths.
+The latest changes simplify convolution address calculations and combine the
+three style operations with each Snake activation. The indexing change saves
+0.374 s in the affected math commands; AffineSnake replaces 192 commands with
+48 and saves 1.822 s in the affected work. Warm extraction moves from 45.340 s
+to 44.956 s to 43.124 s across these single-pair measurements. The final graph
+has 714 layers and retains every model weight and the original FP32 arithmetic
+order. Source and evidence are in ncnn patch 0030, cumulative Mesa patch 0031,
+and the AffineSnake preparation/validation scripts.
 
-Cumulative Mesa patch 0027 also validates optional pairs of convolution
-workgroups with `RADISH_TILED_GROUPS_X=2`. Full output remains identical, but
-the affected math time stays near 24.1 s and establishes no performance gain.
-The recommended setting remains one workgroup; the measurements above use it.
+Earlier submission batching removes 10,894 submissions without changing shader
+work, and planar input avoids repeated convolution address reconstruction.
+Together with normalization, reshape and activation changes, these bring warm
+GPU time down from the initial 101.275 s. Detailed measurements and attribution
+are in [NOTES.md](radish/NOTES.md).
 
-Optional ncnn patch 0028 fuses the first variance reduction in normalization,
-removing 49 full-width intermediate passes. All fixed-core and fresh core/audio
-outputs remain byte-identical. The affected commands save 1.632 s, but whole
-warm time stays near 47 s; a full fresh run takes 65.988 s with 46.9 MiB of swap.
-This establishes no overall speedup. `RADISH_NCNN_NORM_SUM4=1` enables it;
-the default remains off, including in the table's batching checkpoint.
+Fresh short synthesis takes **32.105 s**, including startup, and passes every
+core/audio comparison at **330.3 MiB, zero swap**. Its core takes **16.578 s**;
+startup still makes the total slightly slower than the earlier 31.891 s sample.
+InstanceNorm remains the default graph; Snake and AffineSnake are explicit
+project-local ncnn variants. Preparing and selecting them is documented in
+[RUNTIME_INTEGRATION.md](radish/RUNTIME_INTEGRATION.md).
 
-- Fused FP32 normalization and tiled convolution, including dilation 3/5,
-  guarded output reshape aliases, sequential submission batching and Snake
-  activation fusion reduce fixed-core warm GPU time from 101.275 s to 49.429 s.
-  Snake replaces 240 arithmetic dispatches with 48 and removes 7,680 submissions;
-  its measured improvement is 8.6% over the preceding 56.014 s checkpoint.
-  Raising sequential tiled batching from four to eight then removes another
-  3,231 submissions and reduces warm time from 51.188 s by a further 3.4%.
-  The tiled path executes 53 matrix-product commands; compiled register-budget
-  checks remain in place.
-- Fresh short-utterance synthesis with Snake, planar input and batch eight takes **32.623 s**,
-  including startup, and passes every core/audio comparison at
-  **330.7 MiB, zero swap**. Core extraction improves from 18.148 s to 17.289 s,
-  while slower startup makes total time worse than the earlier 31.891 s run.
-  Select it with `device-runtime.sh ... --snake`; InstanceNorm remains the
-  default graph. Snake is a project-local ncnn custom layer requiring no new
-  Mesa feature; cumulative patch 0025 includes the planar batching case.
-- Explicit mixed-storage conversion and FP32 normalization remove the NaNs
-  from packed FP16 inference, but full-model and waveform accuracy still fail.
-  FP32 remains the validated path.
+Optional X workgroup pairing and norm-sum4 fusion have correctness evidence but
+no reliable overall performance win; both remain off in the figures above.
+Mixed FP16 storage still fails full-model and waveform accuracy gates, so FP32
+remains the validated path.
 
 This is an experimental compute-only ICD. It does not provide graphics or
 presentation, and it has no Vulkan 1.0 or 1.1 conformance claim. Supported,
@@ -124,7 +107,7 @@ kept outside the repository.
 
 1. Check out Mesa at `ddabdd0e36bd2f5e0c8e6bd21c3d1da7e34c1230` in a
    separate worktree. Apply
-   `radish/patches/0029-radish-short-batch8-cumulative.patch` to that base.
+   `radish/patches/0031-radish-planar-index-batching-cumulative.patch` to that base.
    Earlier cumulative Mesa patches are historical alternatives, not a series.
 2. Set `RADISH_WORK` to the scratch/build directory, `RADISH_MESA` to the Mesa
    checkout, `RADISH_SYSROOT` to the aarch64 sysroot and `RADISH_VENV` to the

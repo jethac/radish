@@ -1,0 +1,51 @@
+diff --git a/src/layer/vulkan/shader/convolution1d_radish_planar.comp b/src/layer/vulkan/shader/convolution1d_radish_planar.comp
+--- a/src/layer/vulkan/shader/convolution1d_radish_planar.comp
++++ b/src/layer/vulkan/shader/convolution1d_radish_planar.comp
+@@ -25,7 +25,7 @@
+ 
+ vec4 load_input(int k, int x)
+ {
+-    const int ci = k / kernel_w;
++    const int ci = int(uint(k) / uint(kernel_w));
+     const int tap = (k - ci * kernel_w) * dilation_w;
+     const int base = ci * p.w + x + tap;
+     return vec4(bottom_blob_data[base], bottom_blob_data[base + 1],
+@@ -40,7 +40,7 @@
+     const int mb = int(gl_WorkGroupID.y) * 64;
+     const int nb = int(gl_WorkGroupID.x) * 64;
+     const int K = num_input * kernel_w;
+-    const int K4 = K / 4;
++    const int K4 = K >> 2;
+ 
+     vec4 acc[8];
+     for (int r = 0; r < 8; r++)
+@@ -53,9 +53,9 @@
+     {
+         for (int i = tid; i < 64 * 8; i += 128)
+         {
+-            const int r = i / 8;
++            const int r = i >> 3;
+             const int q = i % 8;
+-            vec4 a = mb + r < num_output ? weight_data[(mb + r) * K4 + k0 / 4 + q] : vec4(0.f);
++            vec4 a = mb + r < num_output ? weight_data[(mb + r) * K4 + (k0 >> 2) + q] : vec4(0.f);
+             sa[q * 4][r] = a.x;
+             sa[q * 4 + 1][r] = a.y;
+             sa[q * 4 + 2][r] = a.z;
+@@ -63,7 +63,7 @@
+         }
+         for (int i = tid; i < 32 * 16; i += 128)
+         {
+-            const int r = i / 16;
++            const int r = i >> 4;
+             const int q = i % 16;
+             sb[r][q] = load_input(k0 + r, nb + q * 4);
+         }
+@@ -88,7 +88,7 @@
+         const int co = mb + ty * 8 + r;
+         if (co + 3 >= num_output)
+             continue;
+-        const int base = (co / 4) * p.outw + x;
++        const int base = (co >> 2) * p.outw + x;
+         if (x < p.outw)
+             top_blob_data[base] = vec4(acc[r].x, acc[r + 1].x, acc[r + 2].x, acc[r + 3].x);
+         if (x + 1 < p.outw)

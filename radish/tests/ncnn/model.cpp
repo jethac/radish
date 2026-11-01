@@ -1,5 +1,6 @@
 #include "runtime_helpers.h"
 #include "radish_snake.h"
+#include "radish_affine_snake.h"
 #include "net.h"
 #include "layer/innerproduct.h"
 #if NCNN_VULKAN
@@ -313,13 +314,17 @@ int main(int argc,char** argv) {
     }
 #endif
     SnakeContext snake;
+    AffineSnakeContext affine_snake;
     ncnn::Net net;
     configure_options(net.opt,vulkan,cpu_packed,fp16_packed,threads);
     std::printf("execution configuration: %s, %s, packing=%s threads=%d\n",vulkan?"Vulkan":"CPU",fp16_packed?"FP16-packed storage / FP32 arithmetic":"FP32",net.opt.use_packing_layout?"on":"off",net.opt.num_threads);
 #if NCNN_VULKAN
     if(vulkan) net.set_vulkan_device(device);
 #endif
-    if(!fp16_packed) CHECK(snake.register_layer(net)==0);
+    if(!fp16_packed) {
+        CHECK(snake.register_layer(net)==0);
+        CHECK(affine_snake.register_layer(net)==0);
+    }
     CHECK(net.load_param((dir+"/decoder.ncnn.param").c_str())==0);
     CHECK(net.opt.use_vulkan_compute==vulkan); // Reject silent device fallback.
     CHECK(net.opt.use_fp16_packed==fp16_packed && !net.opt.use_fp16_storage && !net.opt.use_fp16_arithmetic && !net.opt.use_fp16_uniform);

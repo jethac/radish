@@ -12,7 +12,7 @@ LOADER_SHA=75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a
 TEMPLATE=$WORK/kokoro-core-shapes-instancenorm
 TAIL=$WORK/kokoro-tail.bin
 KIND=${1:-}
-case $KIND in runtime-short|runtime-full) ;; *) echo 'usage: device-runtime.sh runtime-short|runtime-full [run-label] [--snake] [--vulkan|--cpu-packed] [--threads N] [--ort-threads N] [--max-frames N] [--repeat N]' >&2; exit 2 ;; esac
+case $KIND in runtime-short|runtime-full) ;; *) echo 'usage: device-runtime.sh runtime-short|runtime-full [run-label] [--snake|--affine-snake] [--vulkan|--cpu-packed] [--threads N] [--ort-threads N] [--max-frames N] [--repeat N]' >&2; exit 2 ;; esac
 shift
 RUN=$(date +%s%N)
 if [[ $# -gt 0 && $1 != --* ]]; then RUN=$1; shift; fi
@@ -26,9 +26,9 @@ REPEAT=1
 CORE_GRAPH=instancenorm
 while [[ $# -gt 0 ]]; do
     case $1 in
-        --snake)
-            [[ $CORE_GRAPH == instancenorm ]] || { echo 'duplicate --snake' >&2; exit 2; }
-            CORE_GRAPH=snake; TEMPLATE=$WORK/kokoro-core-shapes-snake ;;
+        --snake|--affine-snake)
+            [[ $CORE_GRAPH == instancenorm ]] || { echo 'select one core graph' >&2; exit 2; }
+            CORE_GRAPH=${1#--}; TEMPLATE=$WORK/kokoro-core-shapes-$CORE_GRAPH ;;
         --vulkan|--cpu-packed)
             if $BACKEND_SET; then echo 'select one backend' >&2; exit 2; fi
             BACKEND=${1#--}; BACKEND_SET=true ;;
@@ -70,23 +70,29 @@ for toggle in "$TILED" "$TILED32" "$SHARED32" "$MIXED" "$CACHE" "$TRACE" "$PROFI
     [[ $toggle == 0 || $toggle == 1 ]] || { echo 'Radish toggles must be 0 or 1' >&2; exit 2; }
 done
 [[ $BATCH =~ ^([1-4]|8)$ && $GROUPS_PER_CHUNK =~ ^[1-8]$ ]] || { echo 'batch must be 1, 2, 3, 4 or 8 and shared groups 1..8' >&2; exit 2; }
+VALIDATOR=$TOP/radish/scripts/validate-kokoro-snake-fixture.py
+CORE_ARGS=
+if [[ $CORE_GRAPH == affine-snake ]]; then
+    VALIDATOR=$TOP/radish/scripts/validate-kokoro-affine-snake-fixture.py
+    CORE_ARGS=--affine-snake
+fi
 SOURCE=$WORK/kokoro-$KIND
 TAG=runtime-$KIND-$BACKEND-$RUN
-[[ $CORE_GRAPH != snake ]] || TAG+=-snake
+[[ $CORE_GRAPH == instancenorm ]] || TAG+=-$CORE_GRAPH
 [[ $PLANAR == 0 ]] || TAG+=-planar
 [[ $NORM_SUM4 == 0 ]] || TAG+=-norm-sum4
 [[ $TILED_GROUPS_X == 1 ]] || TAG+=-tiled-groups-x$TILED_GROUPS_X
 UNIT=radish-$TAG
 REMOTE=/var/tmp/radish/$TAG
 OUTPUT=$WORK/kokoro-$KIND-single-$BACKEND-$RUN
-[[ $CORE_GRAPH != snake ]] || OUTPUT+=-snake
+[[ $CORE_GRAPH == instancenorm ]] || OUTPUT+=-$CORE_GRAPH
 [[ $PLANAR == 0 ]] || OUTPUT+=-planar
 [[ $NORM_SUM4 == 0 ]] || OUTPUT+=-norm-sum4
 [[ $TILED_GROUPS_X == 1 ]] || OUTPUT+=-tiled-groups-x$TILED_GROUPS_X
 [[ ! -e $OUTPUT && ! -L $OUTPUT ]] || { echo 'host output already exists' >&2; exit 2; }
 mkdir -p "$WORK/evidence"
 [[ ! -e $WORK/evidence/$TAG-inputs.json && ! -e $WORK/evidence/$TAG.txt && ! -e $WORK/evidence/$TAG-icd.json ]] || { echo 'run label already has evidence' >&2; exit 2; }
-python3 - "$SOURCE" "$MODELS" "$TEMPLATE" "$BINARY" "$DRIVER" "$TAIL" "$WORK/evidence/$TAG-inputs.json" "$WORK/evidence/$TAG-icd.json" "$REMOTE" "$BACKEND" "$THREADS" "$ORT_THREADS" "$MAX_FRAMES" "$REPEAT" "$TILED" "$SHARED32" "$MIXED" "$CACHE" "$TRACE" "$PROFILE" "$BATCH" "$GROUPS_PER_CHUNK" "$RESHAPE_ALIAS" "$TILED32" "$TILED_BATCH" "$LOADER" "$CORE_GRAPH" "$TOP/radish/scripts/validate-kokoro-snake-fixture.py" "$PLANAR" "$TILED_GROUPS_X" "$NORM_SUM4" <<'PY'
+python3 - "$SOURCE" "$MODELS" "$TEMPLATE" "$BINARY" "$DRIVER" "$TAIL" "$WORK/evidence/$TAG-inputs.json" "$WORK/evidence/$TAG-icd.json" "$REMOTE" "$BACKEND" "$THREADS" "$ORT_THREADS" "$MAX_FRAMES" "$REPEAT" "$TILED" "$SHARED32" "$MIXED" "$CACHE" "$TRACE" "$PROFILE" "$BATCH" "$GROUPS_PER_CHUNK" "$RESHAPE_ALIAS" "$TILED32" "$TILED_BATCH" "$LOADER" "$CORE_GRAPH" "$VALIDATOR" "$PLANAR" "$TILED_GROUPS_X" "$NORM_SUM4" <<'PY'
 import hashlib, importlib.util, json, pathlib, sys
 source, models, template, binary, driver, tail, output, icd = map(pathlib.Path, sys.argv[1:9])
 loader=pathlib.Path(sys.argv[26])
@@ -119,13 +125,14 @@ assets={name:{'path':str(path.resolve()),**asset(path)} for name,path in
 require(assets['loader']['bytes']==703696 and assets['loader']['sha256']=='75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a', 'unexpected private Vulkan loader')
 variant=sys.argv[27]
 graph_pins={'instancenorm':('6499e4996cea79d28e9c72caab1e2f0ca7d9fab4420a6f198c7e197fb06d347f',1098,1307),
-            'snake':('e01c56a4f23d6d3c8f92dbecb0c3fc37f6f74e9f305f58b82d5196278a450d38',906,1067)}
+            'snake':('e01c56a4f23d6d3c8f92dbecb0c3fc37f6f74e9f305f58b82d5196278a450d38',906,1067),
+            'affine-snake':('dbd9fbfe67e6053382f1e1734b6480c3a42f0bc59e57b85627fb16a6e9783d5a',714,875)}
 require(variant in graph_pins, 'unsupported core graph')
 param_pin,layers,blobs=graph_pins[variant]
 require(assets['param']['sha256']==param_pin, 'unexpected selected parameter template')
 require((template/'decoder.ncnn.param').read_text().splitlines()[:2]==['7767517',f'{layers} {blobs}'], 'selected graph inventory mismatch')
 core_graph={'variant':variant,'layers':layers,'blobs':blobs,'param_sha256':param_pin}
-if variant=='snake':
+if variant in ('snake','affine-snake'):
     validator=pathlib.Path(sys.argv[28]).resolve()
     sys.dont_write_bytecode=True
     spec=importlib.util.spec_from_file_location('radish_snake_validation',validator)
@@ -159,18 +166,18 @@ print(f'Pinned graphs, raw inputs, {variant} parameters, weights and tail verifi
 PY
 exec 9>"${RADISH_DEVICE_LOCK:-$TOP/.device.lock}"
 flock -w 1800 9
-if [[ $CORE_GRAPH == snake ]]; then
+if [[ $CORE_GRAPH != instancenorm ]]; then
     python3 - "$WORK/evidence/$TAG-inputs.json" <<'PY'
 import hashlib,importlib.util,json,pathlib,sys
 r=json.load(open(sys.argv[1]));g=r['core_graph'];v=g['validator'];path=pathlib.Path(v['path'])
 data=path.read_bytes()
 if len(data)!=v['bytes'] or hashlib.sha256(data).hexdigest()!=v['sha256']:
-    raise ValueError('Snake validator changed while waiting for device lock')
+    raise ValueError('Selected core validator changed while waiting for device lock')
 sys.dont_write_bytecode=True
 spec=importlib.util.spec_from_file_location('radish_snake_validation',path)
 module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
 if module.validate(pathlib.Path(r['assets']['param']['path']).parent)!=g['host_validation']:
-    raise ValueError('Snake validation changed while waiting for device lock')
+    raise ValueError('Selected core validation changed while waiting for device lock')
 PY
 fi
 ADB=(adb -s "$SERIAL")
@@ -296,7 +303,7 @@ verify_remote_graphs "$WORK/evidence/$TAG-graphs-before.txt"
 for file in ids.i64 style.f32 speed.f32; do "${ADB[@]}" push "$SOURCE/$file" "$REMOTE/input/$file"; done
 echo "Runtime backend=$BACKEND graph=$CORE_GRAPH repeat=$REPEAT threads=$THREADS ort_threads=$ORT_THREADS; shared weights=$DEVICE_WEIGHTS"
 echo "GPU controls: tiled=$TILED tiled32=$TILED32 planar=$PLANAR norm_sum4=$NORM_SUM4 batch=$BATCH tiled_batch=$TILED_BATCH tiled_groups_x=$TILED_GROUPS_X shared_groups=$GROUPS_PER_CHUNK shared32=$SHARED32 mixed=$MIXED cache=$CACHE trace=$TRACE profile=$PROFILE reshape_alias=$RESHAPE_ALIAS"
-"${ADB[@]}" shell "chmod 755 $REMOTE/radish-kokoro-runtime && systemd-run --unit=$UNIT --wait --pipe --collect -p MemoryMax=640M -p MemorySwapMax=128M -p RuntimeMaxSec=300 -p LimitCORE=0 --setenv=RADISH_NCNN_TILED=$TILED --setenv=RADISH_NCNN_TILED32=$TILED32 --setenv=RADISH_NCNN_PLANAR=$PLANAR --setenv=RADISH_NCNN_NORM_SUM4=$NORM_SUM4 --setenv=RADISH_NCNN_SHARED32=$SHARED32 --setenv=RADISH_NCNN_MIXED_STORAGE=$MIXED --setenv=RADISH_NCNN_RESHAPE_ALIAS=$RESHAPE_ALIAS --setenv=RADISH_NCNN_PIPELINE_CACHE=$CACHE --setenv=RADISH_NCNN_TRACE=$TRACE --setenv=RADISH_PROFILE=$PROFILE --setenv=RADISH_BATCH_CHUNKS=$BATCH --setenv=RADISH_TILED_BATCH_CHUNKS=$TILED_BATCH --setenv=RADISH_TILED_GROUPS_X=$TILED_GROUPS_X --setenv=RADISH_SHARED_GROUPS=$GROUPS_PER_CHUNK --setenv=LD_LIBRARY_PATH=$REMOTE --setenv=VK_DRIVER_FILES=$REMOTE/radish_icd.json $REMOTE/radish-kokoro-runtime --$BACKEND --threads $THREADS --ort-threads $ORT_THREADS --max-frames $MAX_FRAMES --repeat $REPEAT $REMOTE/models $REMOTE/input $REMOTE/decoder.ncnn.param $DEVICE_WEIGHTS $REMOTE/kokoro-tail.bin $REMOTE/output" 2>&1 | tee "$WORK/evidence/$TAG.txt"
+"${ADB[@]}" shell "chmod 755 $REMOTE/radish-kokoro-runtime && systemd-run --unit=$UNIT --wait --pipe --collect -p MemoryMax=640M -p MemorySwapMax=128M -p RuntimeMaxSec=300 -p LimitCORE=0 --setenv=RADISH_NCNN_TILED=$TILED --setenv=RADISH_NCNN_TILED32=$TILED32 --setenv=RADISH_NCNN_PLANAR=$PLANAR --setenv=RADISH_NCNN_NORM_SUM4=$NORM_SUM4 --setenv=RADISH_NCNN_SHARED32=$SHARED32 --setenv=RADISH_NCNN_MIXED_STORAGE=$MIXED --setenv=RADISH_NCNN_RESHAPE_ALIAS=$RESHAPE_ALIAS --setenv=RADISH_NCNN_PIPELINE_CACHE=$CACHE --setenv=RADISH_NCNN_TRACE=$TRACE --setenv=RADISH_PROFILE=$PROFILE --setenv=RADISH_BATCH_CHUNKS=$BATCH --setenv=RADISH_TILED_BATCH_CHUNKS=$TILED_BATCH --setenv=RADISH_TILED_GROUPS_X=$TILED_GROUPS_X --setenv=RADISH_SHARED_GROUPS=$GROUPS_PER_CHUNK --setenv=LD_LIBRARY_PATH=$REMOTE --setenv=VK_DRIVER_FILES=$REMOTE/radish_icd.json $REMOTE/radish-kokoro-runtime $CORE_ARGS --$BACKEND --threads $THREADS --ort-threads $ORT_THREADS --max-frames $MAX_FRAMES --repeat $REPEAT $REMOTE/models $REMOTE/input $REMOTE/decoder.ncnn.param $DEVICE_WEIGHTS $REMOTE/kokoro-tail.bin $REMOTE/output" 2>&1 | tee "$WORK/evidence/$TAG.txt"
 if rg -n 'vkCreateComputePipelines failed|new_pipeline failed' "$WORK/evidence/$TAG.txt"; then exit 1; fi
 PULL_STAGE=$(mktemp -d "$WORK/.runtime-pull-$KIND-XXXXXX")
 "${ADB[@]}" pull "$REMOTE/output" "$PULL_STAGE/output"
@@ -353,15 +360,16 @@ require(asset(pathlib.Path(original['input_directory'])/'runtime.json')==origina
 for name,expected in original['graphs'].items():require(asset(pathlib.Path(original['model_directory'])/name)==expected,'graph changed: '+name)
 for name,expected in record['assets'].items():require(asset(pathlib.Path(expected['path']))=={k:expected[k] for k in ('bytes','sha256')},'asset changed during run: '+name)
 core_graph=record['core_graph']
-if core_graph['variant']=='snake':
+if core_graph['variant'] in ('snake','affine-snake'):
     validator=core_graph['validator'];path=pathlib.Path(validator['path'])
-    require(asset(path)=={k:validator[k] for k in ('bytes','sha256')},'Snake validator changed during run')
+    require(asset(path)=={k:validator[k] for k in ('bytes','sha256')},'Selected core validator changed during run')
     sys.dont_write_bytecode=True
     spec=importlib.util.spec_from_file_location('radish_snake_validation',path)
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
     require(module.validate(pathlib.Path(record['assets']['param']['path']).parent)==core_graph['host_validation'],
-            'Snake fixture validation changed during run')
+            'Selected core fixture validation changed during run')
 require(run['format']=='radish-kokoro-runtime-v1' and run['backend']==record['backend'],'unexpected runtime schema/backend')
+require(run['core_graph']==core_graph['variant'],'runtime core graph selection mismatch')
 require(run['T']==t and run['frames']==frames and run['samples']==samples and run['sample_rate']==24000 and run['shape_blobs']==core_graph['blobs'],'runtime shape mismatch')
 require(run['threads']==record['threads'] and run['ort_threads']==record['ort_threads'] and run['repeat']==record['repeat'] and run['ort_version']==front['ort_version'],'runtime configuration mismatch')
 require(run['environment']==record['environment'],'runtime environment mismatch')

@@ -24,7 +24,8 @@ struct KokoroShapePlan {
 };
 
 // Supports the audited 1368/1739 layout graph, 1098/1307 InstanceNorm and
-// 906/1067 RadishSnake variants, at T=1..4096. Replaces existing -23330 hints,
+// 906/1067 RadishSnake and 714/875 RadishAffineSnake variants, at T=1..4096.
+// Replaces existing -23330 hints,
 // including stale ones,
 // while retaining every other parameter token, layer, and blob in order.
 // No weights, tensor allocation/execution, ncnn, or Vulkan are needed.

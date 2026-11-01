@@ -35,6 +35,8 @@ limits and validation scope. Published checkpoints remain experimental; publicat
 | `0027-radish-tiled-x2-cumulative.patch` | Same Mesa base as0001; alternative to0025 | Default groups1, opt-in2 for narrow A506/instrlen31 tiled resources; X pairs/odd tails, cap4 EXEC chunks per submit, synchronization unchanged. Build/reconstruction/operators/full core pass, all562342 outputs byte-identical,45.621586/47.975705 s first/warm,no faults;417.4 MiB plus25.3 MiB swap. Warm2.2218% slower than0026 in confounded single pair; no performance acceptance |
 | `0028-ncnn-instancenorm-sum4.patch` | Independent InstanceNorm files on current ncnn stack | Default-off FP32 pack4 variance-first fusion; initial hint-gate failure corrected. Builds/compiler/focused/full core pass byte-identically; first47.302535/warm46.983200 s,418.5 MiB/zero swap.49 targeted stages save1.632487 s but whole warm stays flat. Fresh T78/T213 core/wave outputs pass31.783290/65.988211 s,0/46.9 MiB swap,no faults; no overall latency win/default change |
 | `0029-radish-short-batch8-cumulative.patch` | Same Mesa base as0001; alternative to0027 | Adds generic batch8 under unchanged short/no-loop/no-barrier gate and profile-only submit sum/max timers; geometry/synchronization/defaults unchanged. Build/reconstruction/grid/paired full core pass, warm47.413913→45.339510 s, identical outputs/no faults; submits26292→15398. Fresh T78/T213 references pass32.622528/61.429138 s,0/16.7 MiB swap; T78 total regresses. Opt-in recommendation/norm0/X1, defaults unchanged |
+| `0030-ncnn-planar-positive-indices.patch` | After0026 in ordered Conv1D stack | Six equivalent positive-domain integer substitutions, float/layout/barriers unchanged. Builds/focused d1,d3,d5 references pass; all20 programs/53 layers compile16 full/0 half/no private,16 KiB/four loops, lengths27/28. Full fixed core passes identical outputs, warm44.956105 s/current30.6 MiB swap; modest single-pair improvement |
+| `0031-radish-planar-index-batching-cumulative.patch` | Same Mesa base as0001; alternative to0029 | Adds only27/28 to existing tiled batch length guard; all resource/packet/fence/fault/default controls preserved, X2 still31. Build/all14 reconstruction and focused batch8 pass; full fixed core passes identical bytes, warm44.956105 s/current30.6 MiB swap |
 
 To reconstruct the accepted driver checkpoint, make a separate checkout/worktree at the
 Mesa base, read its `AGENTS.md`, and apply 0023 with `git apply` instead of
@@ -83,9 +85,9 @@ Mesa base, recorded in
 
 The pinned ncnn/glslang checkout is separate. `../scripts/build-ncnn.sh` applies
 0005 if applicable, accepts an already-applied patch, migrates the exact earlier
-0002 adaptation, then applies/verifies 0006, 0008, 0010, 0011 and candidates 0013–0015/0017/0018/0020/0021/0024/0026, plus independent 0019/0028.
+0002 adaptation, then applies/verifies 0006, 0008, 0010, 0011 and candidates 0013–0015/0017/0018/0020/0021/0024/0026/0030, plus independent 0019/0028.
 The first candidate build stopped at overlapping earlier-patch verification.
-The build script accepts exact ordered 0010/0011/0013/0014/0017/0018/0020/0021/0024/0026 Conv1D prefixes
+The build script accepts exact ordered 0010/0011/0013/0014/0017/0018/0020/0021/0024/0026/0030 Conv1D prefixes
 and 0006/0015 net.cpp prefixes, rejecting unrelated edits. This preserves the
 source check despite overlapping patch contexts. Canonical and SIMPLEOMP builds
 pass with revised 0013/0014, 0015 and incremental 0017; both builds and the
@@ -441,6 +443,41 @@ from31.890578 s despite faster core because load9.191366→10.769532 s. Preserve
 that regression, full-run swap and single-observation caveats. Recommend batch8
 opt-in for this measured fixed path; norm0/X1 and existing defaults unchanged.
 
+0030 changes only six integer expressions in the PLANAR math shader; positive,
+bounded host-gated domains make unsigned division/shifts equivalent. Actual
+C128/K11/d1 compile-only passes (`planar-index-compile-0030-first.log`):16 full/
+0 half/no private, four loops/16 KiB,431 encoded instructions→instrlen27,
+870 padded dwords. The original inner K sequence/registers/access widths and
+barriers match exactly. Audit: `planar-index-compiler-38ya7qvg/actual-compile/REPORT.md`.
+Subsequent all20 compile-only evidence covers53 layers, with six native27 and
+14 native28, identical resource bounds; d1/d3/d5 focused references all pass.
+Equal-batch1 d1 math10.858472/10.782274 ms is not a reliable speed claim.
+Cumulative0031 adds27/28 only to the existing tiled-batch guard, keeping every
+resource/packet/fence/fault/default condition and X2==31. Build/all14-file
+reconstruction passes (`planar-index-0031-integration-1fgdngh5/checkpoint.json`),
+ICD05ea3444c6b1e38a524ffe59133dd6097634412ffc0a25356b2fbf14b312365e;
+focused batch8 passes eight math chunks/one submit, no faults. Full original-
+Snake repeat2 passes identical output bytes:45.312337 first/44.956105 warm,
+400.6 MiB plus30.6 MiB swap, no faults/services active. Versus0029,53 math
+commands save0.373508 s; all1745 other signatures/901 paths,15398 submits and
+114393 chunks match. Whole0.383405 s/0.8456% gain is one pair with swap; no fresh
+runtime/default change. Audit: `planar-index-result-0031-cp_rznjt/REPORT.md`.
+
+
+AffineSnake is a project-local module/graph route, not another ncnn/Mesa patch.
+The strict714/875 graph retains all weights and48 original alpha/reciprocal pairs;
+CPU/focused GPU and full fixed-core gates pass, with identical historical output
+bytes. Warm43.124072 s/current7.4 MiB swap; exact192→48 targeted commands save
+1.822263 s, all1606 retained per-owner signatures match although traversal order
+changes. Actual kernel8 full/1 half/local32/no shared/private, native4, precise
+unfused arithmetic. See NOTES for compiler/attribution evidence. The transformer
+only produces provisional output; fixture preparation requires matching completed
+CPU runner/log/reference/output-identity proof and validates its marker/assets.
+Runtime selection is explicit `--affine-snake`; fresh T78/T213 full same-boundary
+core/wave gates pass32.105121/59.184846 s, exact prior bytes,0/74.2 MiB swap and
+no faults/services active. Startup and memory pressure limit single-run timing
+claims; original graphs and all defaults remain unchanged.
+
 SHA-256:
 
 ```
@@ -473,4 +510,6 @@ fd0a0bb37e562535488406e183c46a233edf616939ad416efb6b09070bc0c17b  0025-radish-pl
 adc9ae8506e91abbacea3674a416b1e907672fecf60eb7c62dbe7c319367f6a1  0027-radish-tiled-x2-cumulative.patch
 4aa4d0983dd680492a35db3993bce02030e6700e3add4bc22369f03239a3af33  0028-ncnn-instancenorm-sum4.patch
 4d46236f83dfd943080241d05822479aaae6b2fa70e5fa8584b9a557f509995c  0029-radish-short-batch8-cumulative.patch
+d706738bce01ab6fc5d2dc45776c843c3fa18e7c40157c4d9fe1627b94c4c65f  0030-ncnn-planar-positive-indices.patch
+24090b6d37daf2533f6f5557e1c634cbd362603721d3fdf4b6852587b918be96  0031-radish-planar-index-batching-cumulative.patch
 ```

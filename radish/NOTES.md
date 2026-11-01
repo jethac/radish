@@ -2,13 +2,14 @@
 
 ## 2026-11-01
 
-Latest measured path: Snake with PLANAR/local8x8 and opt-in generic batch8
-(0029), norm0/X1, passes the fixed core at45.339510 s warm and fresh T213
-synthesis at61.429138 s. All core/waveform gates pass with prior output identity.
-The paired fixed-core improvement is4.3751%; observations remain single runs
-with differing swap. Fresh T78 total regresses to32.622528 s despite faster core
-work because load time rises. Defaults remain unchanged; historical checkpoints
-and full evidence follow below.
+Latest measured path: explicit AffineSnake with positive planar indices0030/
+0031, generic/tiled batch8, norm0/X1. The fixed core passes at43.124072 s warm;
+fresh T213 synthesis passes at59.184846 s including frontend/load/tail. All core
+and waveform gates pass with prior byte identity. The fixed run uses416.0 MiB
+plus7.4 MiB swap; fresh T213 uses415.6 MiB plus74.2 MiB swap, so comparisons
+remain single observations under memory pressure. Fresh T78 passes32.105121 s
+(330.3 MiB/zero swap); faster core work still leaves startup dominant. All graph
+and control selections remain explicit; defaults and historical evidence remain.
 
 Overall goal active. M0–M2 bring-up is demonstrated; selected M3 paths now pass,
 including 16 KiB shared reductions, transfers, dependent compute and bounded
@@ -2159,3 +2160,130 @@ norm0/X1 and all defaults remain unchanged.
 Before that run, four verified immutable hardlink replacements preserved files
 and hashes while free space increased271396→329336 KiB
 (`dedup-immutable-runtime-assets-pre-0029.log`).
+
+### Candidate 0030: positive planar integer indices
+
+Ordered `0030-ncnn-planar-positive-indices.patch` follows0026 and changes only
+six integer expressions in the PLANAR math shader. Nonnegative k/kernel_w uses
+unsigned division; K/4, k0/4, i/8, i/16 and co/4 use equivalent shifts. Existing
+host gates bound positive K (multiple32, <=3584), channels and buffer indices;
+independent review confirms no floating-point, memory-layout, tail or barrier
+change within that domain. PLANAR remains default0.
+
+Actual compile-only `planar-index-compile-0030-first.log` passes C128/K11/d1
+with no tensors/compute objects, no faults/services active. Baseline ISA matches
+the prior accepted shader. Candidate431 encoded instructions through END yield
+instrlen27 (four padding NOPs/870 allocated dwords); repeat-expanded count is717
+versus788. Both retain16 full/0 half, four loops,16 KiB shared and accepted
+zero private storage. The47-slot inner K body,32 MADs, accumulator registers,
+global/shared access widths and barrier pairs are unchanged. Subsequent all20
+compiler and focused tensor evidence follows below.
+Frozen audit: `planar-index-compiler-38ya7qvg/actual-compile/REPORT.md`.
+
+Candidate source SHA256 is
+`d130779e24fa84875adcf63ceb964337a22f402df5779b8eb0ba962b9740aa64`;
+0030 patch SHA256 `d706738bce01ab6fc5d2dc45776c843c3fa18e7c40157c4d9fe1627b94c4c65f`.
+Canonical and SIMPLEOMP builds pass. Equal tiled-batch1 d1 baseline/candidate
+checks pass all27,264 outputs at unchanged3.42226122e-5 max error; math wall
+10.858472/10.782274 ms is a small single-pair difference, not a speed claim.
+Candidate d3/d5 also pass all27,264 values at7.09755113e-6/1.641165e-5 max
+error, with no faults/services active (`operators-planar-index-0030-*batch1.log`).
+
+Actual `planar-index-compile-0030-all20.log` passes all20 specializations covering
+53 layers: six native27 and14 native28, all16 full/0 half, four loops,16 KiB,
+local16x8, four SSBOs, single-thread and accepted zero private storage. Counts
+come from encoded instructions through END, excluding metadata/labels/trailing
+padding. Independent frozen proof:
+`planar-index-compiler-38ya7qvg/independent-all20-resource-check.json`.
+
+Cumulative0031 adds only27/28 to the existing tiled-batch31/36/37 guard; all
+resource checks, chunks, packet sequence, synchronization/fault checks and
+defaults remain intact. X2 still requires31. Build/all14-file reconstruction
+pass (`planar-index-0031-integration-1fgdngh5/checkpoint.json`); patch SHA256
+`24090b6d37daf2533f6f5557e1c634cbd362603721d3fdf4b6852587b918be96`, ICD
+`05ea3444c6b1e38a524ffe59133dd6097634412ffc0a25356b2fbf14b312365e`.
+Focused batch8 passes eight math chunks/one submit at7.711066 ms, no faults.
+Full original-Snake repeat2 passes all562,342 values with unchanged max/RMS
+errors, no faults/services active: cold9.015 s, first45.312337 s, warm44.956105 s
+(one warm),400.6 MiB plus30.6 MiB swap (`core-snake-planar-index-0031-repeat2.log`).
+Saved full output is byte-identical SHA0550fe07…f18e4. Compared with0029 warm
+45.339510 s, the0.383405 s/0.8456% difference is modest and confounded by swap
+and one pair. Exactly53 math commands change only native length31→27/28:
+24.162254532→23.788746683 s saves0.373507849 s. All1745 retained signatures/
+901 paths and15398 submits/114393 chunks match; retained time adds0.025433019 s,
+residual falls0.035330170 s. Every integer submit-timing invariant passes.
+Frozen first/warm attribution: `planar-index-result-0031-cp_rznjt/REPORT.md`.
+No fresh runtime or default change is claimed.
+
+### AffineSnake: preserve style arithmetic while removing intermediate passes
+
+The separate opt-in `RadishAffineSnake` graph fuses48 style-affine/Snake chains:
+714 layers/875 blobs, same226 weighted rows in original order and unchanged
+weights. Inputs retain normalized x, original gamma/beta, alpha and stored
+reciprocal. CPU delegates the original eight operations; GPU uses an FP32
+pack4/local32 kernel with precise operations, six SSBOs/eight push bytes, no
+weights or inplace writes. Original Snake and InstanceNorm graphs/defaults remain
+available. Parameter SHA256:
+`dbd9fbfe67e6053382f1e1734b6480c3a42f0bc59e57b85627fb16a6e9783d5a`.
+
+Independent source/metadata/registration/wrapper review and isolated host CPU
+focused/full checks pass. Actual compile `affine-snake-compile-first.log`
+programs1/10 share native d24a3ad0…106dbd:8 full/1 half, zero loops/shared/private,
+53 encoded instructions through END→length4,128 allocated dwords;117 expanded
+instructions/48 NOPs. One context compile produces931 SPIR-V words. Final NIR
+keeps gamma+1 exact fadd, style/final residual exact unfused fmad, alpha multiply
+and sine square exact fmul. Two further fmad operations are internal sine range
+reduction; there is no final ffma. Native MAD does not imply contraction.
+Frozen audit: `affine-snake-actual-compile-bir0qvav/REPORT.md`.
+Focused GPU C128/W33 andC256/W35 pass all4224+8960 values with zero bit/numeric
+mismatches against the original chain, full independent2e-5 gates and all five
+inputs preserved, max3.04405713e-7 (`affine-snake-gpu-first.log`); no faults.
+
+Full fixed `core-affine-snake-index-0031-repeat2.log` passes all562,342 outputs
+with unchanged max/RMS, exact historical SHA0550fe07…f18e4, services active/no
+faults: cold8.880 s, first43.525012 s, warm43.124072 s,416.0 MiB plus7.4 MiB swap.
+Against same-model/driver original Snake44.956105 s,48 chains replace192→48
+commands and save1.822263171 s (4.043802893→2.221539722); total warm saves1.832033 s/
+4.0752%. All1606 retained per-owner signatures/661 paths match; global recursive
+traversal changes because fused inputs visit x before gamma/beta. Transfers
+remain96 with identical inventory. Whole submits15398→13718, chunks114393→101289.
+Retained time adds0.013458526 s; residual falls0.023228355 s. One warm each and
+swap30.6→7.4 MiB limit broad claims. Exact fixed output bytes allow prior fixed
+waveform evidence to apply; fresh integrated-runtime evidence follows below.
+Attribution: `affine-snake-result-0031-nb319sa9/REPORT.md`.
+
+Fixture reproduction requires CPU evidence. `fuse-kokoro-affine-snake.py` alone
+creates a provisional graph. `prepare-kokoro-affine-snake-fixture.py SOURCE
+EVIDENCE RUNNER NEW_OUTPUT` imports completed same-runner/same-thread CPU logs,
+reference-gated outputs and exact original/Affine byte identity, regenerates the
+pinned graph, validates all assets, and publishes exclusively. Its evidence
+contains `results.json` plus `original/` and `affine/`; RUNNER must hash-match
+that checkpoint. `validate-kokoro-affine-snake-fixture.py` checks the resulting
+marker/assets/proof before device use and afterward. Fixed wrapper kind is
+`core-shapes-affine-snake`; runtime requires explicit `--affine-snake` and rejects
+wrong714/875 selection before frontend. Default graph/controls are unchanged.
+
+Fresh explicit `--affine-snake` integrated runs pass full same-boundary ORT
+core/waveform gates, with no host work between frontend/core/tail:
+
+| Input | Synthesis | Core | Load | Peak/swap |
+|---|---:|---:|---:|---:|
+| T78 |32.105121 s|16.577948 s|10.965538 s|330.3 MiB/0 |
+| T213 |59.184846 s|43.655035 s|8.887679 s|415.6 MiB/74.2 MiB |
+
+All205,942/562,342 core values and46,800/127,800 waveform samples pass unchanged
+thresholds, with zero mismatches and exact0026 core/wave bytes; waveform SNR is
+96.917731811/98.355162707 dB. Reports:
+`runtime-single-{short,full}-affine-index-0031-validation.json`; captured inputs
+are used exactly for the references, without recomputing frontend/source. Both
+runs leave services active and no new faults. Fresh T78 core improves versus
+0029 (17.289251→16.577948 s), but load10.965538 s keeps total32.105121 s above
+0026's31.890578 s. Fresh T21359.184846 s is a lower single observation than
+0029's61.429138 s, with much greater swap74.2 versus16.7 MiB; this is not a
+sustained or isolated speedup proof. Warm residency/reuse and cancellation remain
+open; no live-service integration is claimed.
+
+Before these runs,16 older private executable paths were archived with verified
+host backup hashes and a restore manifest, freeing186956→367704 KiB. Weights,
+captures, outputs and current0026/norm/batch8 runtime directories were retained.
+Evidence: `device-runtime-executable-archive-before-affine/`; no reserve reduction.

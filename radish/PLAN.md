@@ -726,3 +726,38 @@ reports stay outside the public repository.
   and single-run/swap caveats alongside the fixed-core gain.
 - [x] Recommend generic batch8 as an opt-in for the measured fixed path, retaining
   norm0/X1 and all existing defaults. No sustained/watchdog guarantee.
+
+## Candidates 0030/0031: positive planar indices and bounded batching
+
+- [x] Independently review six integer-only substitutions under positive bounded
+  host gates; float recurrence/layout/barriers/ABI unchanged.
+- [x] Pass actual C128/K11/d1 compile-only:16 full/0 half/no private,16 KiB/four
+  loops, instrlen27; exact inner K instruction/register sequence preserved.
+- [x] Pass integration/build and d1/d3/d5 equal-batch1 full focused references;
+  all20 programs covering53 layers compile16 full/0 half/no private, lengths
+  27(six)/28(fourteen). No speed claim from the small focused timing difference.
+- [x] Independently review/build/reconstruct0031: only add27/28 to the existing
+  tiled-batch gate; resource/synchronization/defaults and X2==31 stay unchanged.
+  Focused batch8 passes eight math chunks/one submit, no faults.
+- [x] Pass full original-Snake repeat2, exact output bytes and53-math attribution:
+  warm44.956105 vs45.339510 s; math saves0.373508 s, all1745 other signatures/
+  901 paths/submits/chunks unchanged. One warm/current30.6 MiB swap limits the
+  modest0.8456% comparison; PLANAR default0, no fresh runtime claim.
+
+## Opt-in AffineSnake integration
+
+- [x] Review48-chain rewrite714/875, unchanged weights/weighted-row order,
+  CPU delegated eight operations, exact FP32 GPU gates and metadata rules.
+- [x] Pass host CPU focused/full gates, actual compiler arithmetic/resource audit
+  and focused GPU bit identity/full independent references/input preservation.
+- [x] Pass full fixed GPU references/bytes at43.124072 s warm; exact192→48
+  targeted commands save1.822263 s. All1606 retained per-owner signatures match,
+  while recursive order changes. One warm/swap7.4 MiB; no broad timing claim.
+- [x] Add explicit runtime selector and CPU-proof fixture preparation/validator;
+  provisional transformer output alone does not authorize a device fixture.
+- [x] Pass fresh T78/T213 exact-boundary ORT core/wave gates at32.105121/
+  59.184846 s, exact prior bytes. Peak330.3/415.6 MiB, swap0/74.2 MiB; no faults,
+  services active. Keep single-observation/startup/swap caveats, explicit selector,
+  original graph/defaults and unchanged accuracy thresholds.
+- [ ] Establish warm resident reuse, cancellation and sustained performance;
+  current success does not change live services.

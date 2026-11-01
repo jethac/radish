@@ -80,6 +80,7 @@ CONV_PATCHES=(
     "$TOP/radish/patches/0021-ncnn-conv1d-tile32x32.patch"
     "$TOP/radish/patches/0024-ncnn-conv1d-planar-input.patch"
     "$TOP/radish/patches/0026-ncnn-planar-pad-local64.patch"
+    "$TOP/radish/patches/0030-ncnn-planar-positive-indices.patch"
 )
 CONV_FILES=(src/layer/vulkan/convolution1d_vulkan.cpp src/layer/vulkan/convolution1d_vulkan.h
             src/layer/vulkan/shader/convolution1d_packed_gemm.comp
@@ -127,4 +128,4 @@ cmake -G Ninja -S "$TOP/radish/tests/ncnn" -B "$BUILD" \
     -DNCNN_ARM84BF16=OFF -DNCNN_ARM84I8MM=OFF -DNCNN_ARM86SVE=OFF \
     -DNCNN_RUNTIME_CPU=OFF -DNCNN_BUILD_TESTS=OFF -DNCNN_BUILD_TOOLS=OFF \
     -DNCNN_BUILD_EXAMPLES=OFF -DNCNN_BUILD_BENCHMARK=OFF -DNCNN_BENCHMARK=OFF
-cmake --build "$BUILD" -j"${RADISH_JOBS:-6}" --target radish-ncnn radish-operators radish-model radish-snake
+cmake --build "$BUILD" -j"${RADISH_JOBS:-6}" --target radish-ncnn radish-operators radish-model radish-snake radish-affine-snake

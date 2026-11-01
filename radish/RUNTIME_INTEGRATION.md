@@ -758,3 +758,72 @@ Evidence under WORK: `core-snake-planar-short-batch{4,8}-0029-repeat2.log`,
 `runtime-{full,short}-short-batch8-0029-boundary-identity.json`.
 Build/source reconstruction and frozen driver are in
 `short-batch8-0029-integration-bot0hl5l/`.
+
+### Positive convolution indices and AffineSnake: checkpoints 0030/0031
+
+Ordered ncnn patch 0030 replaces six signed index divisions with equivalent
+operations on their proved nonnegative domains. The floating-point recurrence,
+shared storage, tensor layout and barriers stay unchanged. All 20 compiled
+specializations retain 16 full registers, zero half registers and no private
+storage. Their native lengths are 27 or 28; cumulative Mesa patch 0031 admits
+those lengths to the existing bounded tiled batching class. X pairing still
+requires length 31 and remains disabled in these measurements.
+
+With the original Snake graph, warm extraction moves from 45.339510 s to
+44.956105 s. The 53 affected math commands save 0.373507849 s; every other
+command signature, chunk count and submission count matches. Output bytes
+remain identical. This single pair has differing swap usage, including
+30.6 MiB in the index run; it establishes a modest observed improvement.
+
+The separate `RadishAffineSnake` layer computes style scale, style bias and
+Snake activation together, preserving the original eight FP32 operation
+boundaries and the stored reciprocal. Its five inputs are normalized data,
+gamma, beta, alpha and reciprocal. The exact graph has 714 layers/875 blobs,
+with all weights retained. Focused CPU/GPU comparisons are bit-identical to
+the original operators; full CPU and GPU reference gates also pass.
+
+Prepare the fixture from the validated Snake fixture, actual original/affine
+CPU validation directory and its runner:
+
+```bash
+python3 radish/scripts/prepare-kokoro-affine-snake-fixture.py \
+  "$RADISH_WORK/kokoro-core-shapes-snake" CPU_VALIDATION_DIRECTORY \
+  VALIDATED_CPU_RUNNER "$RADISH_WORK/kokoro-core-shapes-affine-snake"
+```
+
+The preparer imports and checks completed evidence; it does not fabricate a
+pass marker or run inference. Its required files and commands are described in
+`radish/NOTES.md`. The validator rechecks every fixed input, the graph/weights,
+full CPU output and original/fused byte identity before allowing device use.
+The model runner accepts `core-shapes-affine-snake`; the runtime runner selects
+it only with `--affine-snake`, preserving the existing InstanceNorm/Snake paths.
+
+With identical model helper, driver and controls, AffineSnake changes warm
+extraction from 44.956105 s to 43.124072 s. Targeted work changes from 192 to
+48 commands and saves 1.822263171 s; all 1,606 retained per-layer command
+signatures match. Global traversal order changes because normalized input is
+visited first, so this is not a claim of identical global scheduling.
+Fixed output bytes remain identical. Peak memory is 416.0 MiB with 7.4 MiB
+swap. First extraction takes 43.525012 s and cold load 8.880 s.
+
+Fresh runs use batch 8, tiled batch 8, shared groups 8, planar input and reshape
+aliases, with norm fusion 0 and X groups 1:
+
+| Input | Core extraction | Complete synthesis | Peak memory | Swap | Waveform SNR |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Full, T=213 | 43.655035 s | 59.184846 s | 415.6 MiB | 74.2 MiB | 98.355 dB |
+| Short, T=78 | 16.577948 s | 32.105121 s | 330.3 MiB | 0 | 96.918 dB |
+
+Both complete core/audio comparisons pass unchanged gates; all eight boundary
+files and GPU output bytes match checkpoint 0029. Both services remain active
+and there are no new GPU faults. These are single startup runs with varying
+memory pressure. CPU remains faster, and three core operations still fall back
+to CPU. Resident synthesis and sustained behavior remain unfinished.
+
+Evidence under WORK: `planar-index-result-0031-cp_rznjt/REPORT.md`,
+`affine-snake-result-0031-nb319sa9/REPORT.md`,
+`runtime-single-{full,short}-affine-index-0031-validation.json`,
+`runtime-{full,short}-affine-index-0031-boundary-identity.json`, and
+`affine-index-0031-checkpoint/binary-checkpoint.json`.
+The captures are
+`kokoro-runtime-{full,short}-single-vulkan-affine-index-0031-first-affine-snake-planar/`.

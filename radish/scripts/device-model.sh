@@ -34,10 +34,10 @@ KIND=${1:-}
 case $KIND in
     style) SOURCE=$WORK/kokoro-style; MEMORY=384; RUNTIME=90; MODEL_ARGS=--style
         FILES=(decoder.ncnn.param decoder.ncnn.bin style.f32 reference.f32) ;;
-    core|core-layouts|core-shapes|core-shapes-norm32|core-shapes-instancenorm|core-shapes-snake|runtime-*) SOURCE=$WORK/kokoro-core-fixed; MEMORY=640; RUNTIME=300; MODEL_ARGS=
+    core|core-layouts|core-shapes|core-shapes-norm32|core-shapes-instancenorm|core-shapes-snake|core-shapes-affine-snake|runtime-*) SOURCE=$WORK/kokoro-core-fixed; MEMORY=640; RUNTIME=300; MODEL_ARGS=
         [[ $KIND == core ]] || SOURCE=$WORK/kokoro-$KIND
         FILES=(decoder.ncnn.param decoder.ncnn.bin asr.f32 f0.f32 n.f32 style.f32 har.f32 reference.f32) ;;
-    *) echo 'usage: device-model.sh style|core|core-layouts|core-shapes|core-shapes-snake [--cpu|--cpu-packed|--vulkan] [--fp16-packed] [--threads N] [--load-only] [--repeat N] [--blob NAME]' >&2; exit 2 ;;
+    *) echo 'usage: device-model.sh style|core|core-layouts|core-shapes|core-shapes-snake|core-shapes-affine-snake [--cpu|--cpu-packed|--vulkan] [--fp16-packed] [--threads N] [--load-only] [--repeat N] [--blob NAME]' >&2; exit 2 ;;
 esac
 shift
 if [[ $KIND == runtime-* ]]; then
@@ -90,13 +90,19 @@ if $LOAD_ONLY && [[ $REPEAT != 1 ]]; then
     echo '--load-only requires --repeat 1' >&2
     exit 2
 fi
-SNAKE_VALIDATION=
-if [[ $KIND == core-shapes-snake ]]; then
+FIXTURE_VALIDATOR=
+FIXTURE_VALIDATION_TAG=
+case $KIND in
+    core-shapes-snake) FIXTURE_VALIDATOR=validate-kokoro-snake-fixture.py; FIXTURE_VALIDATION_TAG=snake ;;
+    core-shapes-affine-snake) FIXTURE_VALIDATOR=validate-kokoro-affine-snake-fixture.py; FIXTURE_VALIDATION_TAG=affine-snake ;;
+esac
+FIXTURE_VALIDATION=
+if [[ -n $FIXTURE_VALIDATOR ]]; then
     if $FP16_PACKED || { [[ $BACKEND == cpu ]] && ! $CPU_PACKED; }; then
-        echo 'core-shapes-snake requires Vulkan FP32 or --cpu-packed' >&2
+        echo "$KIND requires Vulkan FP32 or --cpu-packed" >&2
         exit 2
     fi
-    SNAKE_VALIDATION=$(python3 "$TOP/radish/scripts/validate-kokoro-snake-fixture.py" "$SOURCE")
+    FIXTURE_VALIDATION=$(python3 "$TOP/radish/scripts/$FIXTURE_VALIDATOR" "$SOURCE")
 fi
 MODEL_ARGS+=" --repeat $REPEAT --threads $THREADS"
 [[ $BACKEND == cpu ]] || MODEL_ARGS+=' --vulkan'
@@ -138,12 +144,12 @@ exec 9>"${RADISH_DEVICE_LOCK:-$TOP/.device.lock}"
 flock -w 1800 9
 ADB=(adb -s "$SERIAL")
 mkdir -p "$WORK/evidence"
-if [[ $KIND == core-shapes-snake ]]; then
-    [[ $SNAKE_VALIDATION == "$(python3 "$TOP/radish/scripts/validate-kokoro-snake-fixture.py" "$SOURCE")" ]] || {
-        echo 'Snake validation evidence changed while waiting for the device lock' >&2
+if [[ -n $FIXTURE_VALIDATOR ]]; then
+    [[ $FIXTURE_VALIDATION == "$(python3 "$TOP/radish/scripts/$FIXTURE_VALIDATOR" "$SOURCE")" ]] || {
+        echo "$KIND validation evidence changed while waiting for the device lock" >&2
         exit 1
     }
-    printf '%s\n' "$SNAKE_VALIDATION" > "$WORK/evidence/$TAG-snake-validation.json"
+    printf '%s\n' "$FIXTURE_VALIDATION" > "$WORK/evidence/$TAG-$FIXTURE_VALIDATION_TAG-validation.json"
 fi
 "${ADB[@]}" shell 'systemctl is-active straylight-listen straylight-voice'
 "${ADB[@]}" shell dmesg > "$WORK/evidence/$TAG-dmesg-before.txt"
@@ -175,11 +181,11 @@ finish() {
     exit "$result"
 }
 trap finish EXIT
-if [[ $KIND == core-shapes-snake ]]; then
-    "${ADB[@]}" shell 'test ! -L /var/tmp/radish/kokoro-core-shapes-snake'
+if [[ -n $FIXTURE_VALIDATOR ]]; then
+    "${ADB[@]}" shell "test ! -L /var/tmp/radish/kokoro-$KIND"
 fi
 "${ADB[@]}" shell "mkdir -p /var/tmp/radish/kokoro-$KIND"
-if [[ $KIND == core-shapes-snake ]]; then
+if [[ -n $FIXTURE_VALIDATOR ]]; then
     "${ADB[@]}" shell 'test -f /var/tmp/radish/kokoro-core-shapes-instancenorm/decoder.ncnn.bin && test ! -L /var/tmp/radish/kokoro-core-shapes-instancenorm/decoder.ncnn.bin && stat -c %s /var/tmp/radish/kokoro-core-shapes-instancenorm/decoder.ncnn.bin && sha256sum /var/tmp/radish/kokoro-core-shapes-instancenorm/decoder.ncnn.bin' > "$WORK/evidence/$TAG-shared-weights.txt"
     python3 - "$WORK/evidence/$TAG-shared-weights.txt" <<'PY'
 import pathlib, sys
@@ -187,13 +193,13 @@ lines = pathlib.Path(sys.argv[1]).read_text().splitlines()
 if len(lines) != 2 or lines[0] != '213042160' or lines[1].split() != [
         '0f77cf77ff79a7724662f2e79a4d50284eb498abb2e519469a188e33f6c051ae',
         '/var/tmp/radish/kokoro-core-shapes-instancenorm/decoder.ncnn.bin']:
-    raise SystemExit('deployed baseline weights do not match the pinned Snake weights')
+    raise SystemExit('deployed baseline weights do not match the pinned fused-graph weights')
 PY
-    "${ADB[@]}" shell 'if test -e /var/tmp/radish/kokoro-core-shapes-snake/decoder.ncnn.bin || test -L /var/tmp/radish/kokoro-core-shapes-snake/decoder.ncnn.bin; then test ! -L /var/tmp/radish/kokoro-core-shapes-snake/decoder.ncnn.bin && test -f /var/tmp/radish/kokoro-core-shapes-snake/decoder.ncnn.bin && test /var/tmp/radish/kokoro-core-shapes-snake/decoder.ncnn.bin -ef /var/tmp/radish/kokoro-core-shapes-instancenorm/decoder.ncnn.bin; else ln /var/tmp/radish/kokoro-core-shapes-instancenorm/decoder.ncnn.bin /var/tmp/radish/kokoro-core-shapes-snake/decoder.ncnn.bin; fi'
-    "${ADB[@]}" shell 'stat -c "%n %s %i %h" /var/tmp/radish/kokoro-core-shapes-instancenorm/decoder.ncnn.bin /var/tmp/radish/kokoro-core-shapes-snake/decoder.ncnn.bin' >> "$WORK/evidence/$TAG-shared-weights.txt"
+    "${ADB[@]}" shell "if test -e /var/tmp/radish/kokoro-$KIND/decoder.ncnn.bin || test -L /var/tmp/radish/kokoro-$KIND/decoder.ncnn.bin; then test ! -L /var/tmp/radish/kokoro-$KIND/decoder.ncnn.bin && test -f /var/tmp/radish/kokoro-$KIND/decoder.ncnn.bin && test /var/tmp/radish/kokoro-$KIND/decoder.ncnn.bin -ef /var/tmp/radish/kokoro-core-shapes-instancenorm/decoder.ncnn.bin; else ln /var/tmp/radish/kokoro-core-shapes-instancenorm/decoder.ncnn.bin /var/tmp/radish/kokoro-$KIND/decoder.ncnn.bin; fi"
+    "${ADB[@]}" shell "stat -c '%n %s %i %h' /var/tmp/radish/kokoro-core-shapes-instancenorm/decoder.ncnn.bin /var/tmp/radish/kokoro-$KIND/decoder.ncnn.bin" >> "$WORK/evidence/$TAG-shared-weights.txt"
 fi
 for file in "${FILES[@]}"; do
-    if [[ $KIND == core-shapes-snake && $file == decoder.ncnn.bin ]]; then continue; fi
+    if [[ -n $FIXTURE_VALIDATOR && $file == decoder.ncnn.bin ]]; then continue; fi
     "${ADB[@]}" push --sync "$SOURCE/$file" "/var/tmp/radish/kokoro-$KIND/$file"
 done
 "${ADB[@]}" push "$MODEL_BINARY" /var/tmp/radish/radish-model
@@ -214,6 +220,12 @@ fi
     "${ADB[@]}" shell "chmod 755 /var/tmp/radish/radish-model; systemd-run --unit=$UNIT --wait --pipe --collect -p MemoryMax=${MEMORY}M -p MemorySwapMax=128M -p RuntimeMaxSec=$RUNTIME -p LimitCORE=0 $EXTRA_ENV --setenv=RADISH_NCNN_TRACE=$TRACE --setenv=RADISH_NCNN_PIPELINE_CACHE=$CACHE --setenv=RADISH_NCNN_SHARED32=$SHARED32 --setenv=RADISH_NCNN_TILED=$TILED --setenv=RADISH_NCNN_TILED32=$TILED32 --setenv=RADISH_NCNN_PLANAR=$PLANAR --setenv=RADISH_NCNN_NORM_SUM4=$NORM_SUM4 --setenv=RADISH_NCNN_MIXED_STORAGE=$MIXED_STORAGE --setenv=RADISH_NCNN_RESHAPE_ALIAS=$RESHAPE_ALIAS --setenv=RADISH_PROFILE=$PROFILE --setenv=RADISH_BATCH_CHUNKS=$BATCH --setenv=RADISH_TILED_BATCH_CHUNKS=$TILED_BATCH --setenv=RADISH_TILED_GROUPS_X=$TILED_GROUPS_X --setenv=RADISH_SHARED_GROUPS=$SHARED_GROUPS --setenv=LD_LIBRARY_PATH=/var/tmp/radish --setenv=VK_DRIVER_FILES=/var/tmp/radish/radish_icd.json /var/tmp/radish/radish-model $MODEL_ARGS /var/tmp/radish/kokoro-$KIND $BLOB"
 } 2>&1 | tee "$WORK/evidence/$TAG.txt"
 if rg -n 'vkCreateComputePipelines failed|new_pipeline failed' "$WORK/evidence/$TAG.txt"; then exit 1; fi
+if [[ $KIND == core-shapes-affine-snake ]]; then
+    [[ $FIXTURE_VALIDATION == "$(python3 "$TOP/radish/scripts/$FIXTURE_VALIDATOR" "$SOURCE")" ]] || {
+        echo 'AffineSnake validation evidence changed during the device run' >&2
+        exit 1
+    }
+fi
 if [[ -n $BLOB ]]; then
     "${ADB[@]}" pull "/var/tmp/radish/kokoro-$KIND/$BLOB_FILE" "$WORK/evidence/$TAG.f32"
 elif ! $LOAD_ONLY; then
