@@ -2,13 +2,16 @@
 
 2026-11-01: one private tablet executable now runs CPU frontend/source, metadata
 shape propagation, the FP32 Vulkan core and the portable waveform tail from
-token IDs/style/speed. Complete T=78 and T=213 runs take **43.652206 s** and
-**84.223461 s** synthesis time, with **343.6MiB** and **457.2MiB** peak memory,
-zero swap and no new GPU fault. Every core value and waveform sample passes
+token IDs/style/speed. With the opt-in Snake graph, complete T=78 and T=213 runs
+take **33.764051 s** and **68.158274 s** synthesis time, with **383.3 MiB** and
+**445.9 MiB** peak memory. T78 uses zero swap; T213 uses **22.9 MiB**. No new
+GPU faults occurred, and both appliance services remained active.
+Every core value and waveform sample passes
 the unchanged gates against host ORT references computed afterward from each
 run's exact eight boundary files. No host work occurs between inference stages.
 The six-thread CPU baseline also passes T213 in **39.789900 s**, using identical
-boundary tensors; Vulkan remains slower. Resident reuse, cancellation and live
+boundary tensors; Vulkan remains slower. InstanceNorm remains the default;
+select Snake explicitly with `--snake`. Resident reuse, cancellation and live
 application integration remain unfinished.
 Earlier staged and fixed-core evidence is retained below and in
 [NOTES.md](NOTES.md).
@@ -256,7 +259,8 @@ pinned inverse basis, window and double-precision arithmetic.
 
 `tests/ncnn/kokoro_runtime.cpp` joins these modules with the existing ncnn
 helpers. It generates one boundary, rebuilds all logical shape hints for the
-actual T, loads the fused graph, checks its 1307 loaded hints, and runs FP32
+actual T, loads the selected graph, checks its 1307 InstanceNorm or 1067 Snake
+loaded hints, and runs FP32
 core inference. It destroys the Net, GPU allocators and device before the CPU
 tail. Thus a new invocation with a different T gets new hints and pipelines;
 there is no cross-input resident Net cache. `--repeat N` reuses one boundary
@@ -283,6 +287,7 @@ The device wrapper verifies these immutable artifacts before staging:
 | Pure frontend, 111933749 bytes | `56ba27008352a2191b631ebbf269bf4506d690a1b83d8ff8ff5524b11291ddd3` |
 | Harmonic source, 13810 bytes | `4bdcb9f2f54d6efbfdcefce384300352933cc71fa562930f23eaeb3443528fd2` |
 | Fused T213 parameter template | `6499e4996cea79d28e9c72caab1e2f0ca7d9fab4420a6f198c7e197fb06d347f` |
+| Opt-in Snake T213 parameter template | `e01c56a4f23d6d3c8f92dbecb0c3fc37f6f74e9f305f58b82d5196278a450d38` |
 | Core weights, 213042160 bytes | `0f77cf77ff79a7724662f2e79a4d50284eb498abb2e519469a188e33f6c051ae` |
 | Portable tail, 1936 bytes | `e04b5c7b07c51b98b8883ba4feb753dbcb5bad9260fc93d009aa7fd577e80749` |
 | Private Vulkan loader, 703696 bytes | `75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a` |
@@ -294,6 +299,10 @@ causes ncnn SIMPLEVK to load that Vulkan loader, which then reads
 `VK_DRIVER_FILES`; its library search path does not depend on a system loader.
 The installed ORT library remains read-only. Existing device core weights are
 hash-checked and reused, or uploaded once to a new shared hash-named asset.
+Immutable frontend/source graphs may also be reused through no-overwrite
+hardlinks from a prior private runtime directory after matching their exact
+hashes. The wrapper records upload/hardlink provenance and rechecks both remote
+graph hashes before and after execution.
 
 Each run has exclusive device and host output directories. The shared lock
 honors `RADISH_DEVICE_LOCK`. The wrapper requires 832MiB available memory and
@@ -321,6 +330,12 @@ Labels must be new; prior outputs are never overwritten. `--repeat 2` requests
 two loaded-core extractions within the same process, and `--cpu-packed` is an
 alternative backend. The default maximum decoder T is 512 (`--max-frames`),
 independent of the derived core frame count `120*T+1`.
+The InstanceNorm graph remains the default. Explicit `--snake` selects the
+separately pinned 906-layer candidate and adds `-snake` to the capture directory
+name. Its shared fixture validator freezes the host CPU validation marker,
+reference/output hashes and graph assets, then rechecks them after acquiring
+the device lock and after execution. This host gate does not replace validation
+of each actual tablet output.
 
 After a device run finishes, import its preserved boundary and validate the
 complete outputs. For the short command above:
@@ -463,5 +478,108 @@ Fresh T78 validation passes all 205942 core values and 46800 waveform samples:
 core 20.403266 s, total synthesis 34.863887 s, service 38.856 s,341.8 MiB/zero swap.
 Core and waveform are byte-identical to the earlier T78 run; SNR 96.917732 dB.
 Evidence: `runtime-single-short-tiled-submit-0022-validation.json`. The fixed
-T213 core is 56.013717 s warm, but full-length fresh synthesis has not been rerun
-with 0022. Keep the older full-length startup result separately identified.
+T213 core is 56.013717 s warm, but full-length fresh InstanceNorm-only synthesis
+has not been rerun with 0022. Keep the older full-length startup result separate
+from the later Snake runtime using this driver checkpoint.
+
+### Opt-in Snake graph
+
+The model and integrated runtime now register the project-local
+`radish_ncnn::SnakeContext` before loading graph parameters. The context outlives
+its Net/layers and is destroyed before the device; it compiles explicit-length
+GLSL once when a supported GPU Snake layer is instantiated. Original graphs
+instantiate no Snake shader. CPU execution uses the original five
+BinaryOp/UnaryOp layers. No weights or tensor execution are added to metadata
+propagation; the exact 906-layer/1067-blob inventory has a checked rank2 Snake
+rule requiring both original per-channel coefficient shapes.
+
+The strict rewrite retains all 96 original coefficient tensors, weighted-row
+order and bytes, and the 48 final output identities. `snake-host-full-cpu-first.log`
+passes all 562342 values at unchanged gates, max error 6.65187836e-5; its
+2.504136 s is host CPU evidence. Focused tablet CPU pack1/pack4 and GPU probes
+also pass with retained inputs and bit identity to the original five operations.
+Actual shader compilation passes after correcting the push struct spelling to
+`parameter`: local32, 8 full/1 half registers, no shared/private memory. The
+live actual SPIR-V gate checks NoContraction, and the outer final-NIR `fmad`
+preserves intermediate rounding because it is explicitly unfused. Full audit
+scope and original failed-compile evidence are retained in [NOTES.md](NOTES.md).
+
+`scripts/fuse-kokoro-snake.py SOURCE NEW_DIRECTORY` creates only a **provisional**
+graph and `snake-provisional.json`; it executes no tensors and is insufficient
+for `--snake`. The private fixture must first pass a Snake-enabled host
+`radish-model --cpu-packed --threads 6 FIXTURE` against the pinned fixed
+`reference.f32`. Preserve `snake-cpu-validation.log` and the runner's complete
+`ncnn-cpu-packed-output.f32`. A completed `snake-validation.json` must record
+format `radish-kokoro-snake-validation-v1`, status `cpu-reference-passed`, the
+parameter/weight/reference hashes and CPU backend, 562342 outputs, zero
+mismatches, 0.002 absolute/relative gates, runner hash, log hash and output hash.
+This checkpoint's host runner is `build-ncnn-host/radish-model`, SHA256
+`f4b06e2edfe3740d27fc78fa63d6b982e78b1dd03f99ca4d1f070c69b6b9fe48`.
+
+`scripts/validate-kokoro-snake-fixture.py FIXTURE` is read-only: it requires that
+proof marker, verifies all eleven evidence/input/graph files and independently
+recompares every CPU output. Neither script creates CPU proof automatically;
+do not copy a success marker onto an unvalidated candidate. The existing
+validated private fixture is `WORK/kokoro-core-shapes-snake`. Device executable,
+probe, graph and ICD pins for the measured runs are preserved separately in
+`WORK/snake-binary-checkpoint.json`; model weights and proof outputs remain
+private. Each fresh runtime still requires its own same-boundary validation.
+
+The fixed T213 GPU core now passes first/warm extractions in
+**51.936026/51.188057 s**, with 9.365 s cold load, 416.8 MiB peak and zero swap,
+no faults and both services active. All 562342 outputs pass and are byte-identical
+to accepted 0022, so its existing full-waveform evidence applies to these exact
+core bytes without claiming a new tail run. Warm latency is 8.615% below
+56.013717 s, with one warm observation for each graph. Evidence:
+`core-snake-first-repeat2.log`. This is a saved-boundary core comparison;
+the complete warm trace maps 240 original Snake commands to 48, reducing their
+wall time from 6.654548391 to 2.459730388 s and submits from 11328 to 3648.
+All 1750 retained command signatures match, with no new helpers or transfers.
+These command timers include host work, submission/waits and GPU execution.
+The map is `warm-snake-result-mrqc_tau/comparison-0022-snake.json`.
+
+Fresh T78 and T213 `--snake` synthesis both pass independent validation in
+`runtime-single-{short,full}-snake-first-validation.json`, using the captures
+`kokoro-runtime-{short,full}-single-vulkan-snake-first-snake`. Both use four
+ncnn/ORT threads and have no new faults, with both services active. The wrapper
+successfully reuses immutable frontend/source graphs through verified hardlinks.
+
+| Snake runtime stage | T78 | T213 |
+| --- | ---: | ---: |
+| Frontend/source, including cleanup | 4.424653 s | 5.772051 s |
+| Metadata propagation, 1067 blobs | 0.026029 s | 0.026095 s |
+| Core cold load | 9.398850 s | 9.314241 s |
+| Core extraction, including transfers | 19.507355 s | 52.428375 s |
+| Entire core scope | 29.189242 s | 62.193123 s |
+| Waveform tail | 0.037999 s | 0.103515 s |
+| Synthesis total | **33.764051 s** | **68.158274 s** |
+| Through publication / service wall | 33.767987 / 33.852 s | 68.178252 / 68.279 s |
+| Peak memory / swap | 383.3 MiB / zero | 445.9 MiB / **22.9 MiB** |
+
+Load/extraction are included in core scope. The full runtime's swap use is a
+distinct condition from the zero-swap fixed-core repeat and T78 runtime.
+
+All **205942 core values** and **46800 waveform samples** pass unchanged gates
+against original decoder/tail references on the exact tablet boundary; all
+eight boundary files are identical to the reference inputs. Core max error is
+1.05142593e-4, relative RMS 9.27539488e-7; waveform max error 1.47223473e-5,
+SNR 96.917732 dB, zero mismatches. Core/waveform hashes are respectively
+`7b91c412aa771e91c1976233fddde9d138610b8f56dd8157829110f0adba670c` and
+`1baae4fc1a45bb276bff219d3b9b9c7af8352e5d889798482e6fcfd4114c7353`,
+matching the earlier GPU T78 results exactly. No host work occurs between
+inference phases; reference creation/validation happens afterward.
+
+T213 likewise passes all **562342 core values** and **127800 waveform samples**:
+core max error 1.02996826e-4/relative RMS 7.81135939e-7, waveform max error
+9.19587910e-6/SNR 98.355163 dB, zero mismatches. Core/waveform SHA256s are
+`7a5dbb9410a91e30bdfb9db12426b653d21b09786310c8c0cc623618efa174bb` and
+`4d2ff1622bb83ad0ff02a603c6f2974fbd19685a099e45b5f0cd13a2928b7e8d`, identical
+to the earlier full GPU results. The separate
+`runtime-single-full-snake-cpu-gpu-boundary-identity.json` verifies all eight
+boundary files match both prior CPU and GPU captures. The earlier six-thread
+CPU synthesis remains faster at 39.789900 s; it is a historical same-input
+baseline, not a fresh Snake CPU run or a sustained comparison.
+
+Snake stays an explicit `--snake` opt-in and InstanceNorm remains the default
+for this checkpoint. Resident cross-request reuse, cancellation and sustained
+performance remain open.

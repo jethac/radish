@@ -122,4 +122,4 @@ cmake -G Ninja -S "$TOP/radish/tests/ncnn" -B "$BUILD" \
     -DNCNN_ARM84BF16=OFF -DNCNN_ARM84I8MM=OFF -DNCNN_ARM86SVE=OFF \
     -DNCNN_RUNTIME_CPU=OFF -DNCNN_BUILD_TESTS=OFF -DNCNN_BUILD_TOOLS=OFF \
     -DNCNN_BUILD_EXAMPLES=OFF -DNCNN_BUILD_BENCHMARK=OFF -DNCNN_BENCHMARK=OFF
-cmake --build "$BUILD" -j"${RADISH_JOBS:-6}" --target radish-ncnn radish-operators radish-model
+cmake --build "$BUILD" -j"${RADISH_JOBS:-6}" --target radish-ncnn radish-operators radish-model radish-snake

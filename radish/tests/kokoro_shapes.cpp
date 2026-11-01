@@ -283,6 +283,14 @@ std::vector<KokoroShape> infer(const Row& row, const std::vector<KokoroShape>& i
                 "unsupported InstanceNorm shape, affine, epsilon, or storage mask");
         return {in[0]};
     }
+    if (kind == "RadishSnake") {
+        row.allowed({}); row.arity(3);
+        require(row.get(31, 0) == 0 && in[0].dims == 2 &&
+                (in[0].h == 128 || in[0].h == 256) &&
+                equal(in[1], shape(2, 1, in[0].h)) && equal(in[2], in[1]),
+                "unsupported RadishSnake shape or storage mask");
+        return {in[0]};
+    }
     if (kind == "BinaryOp") {
         row.allowed({0, 1, 2});
         const int operation = row.get(0, 0), with_scalar = row.get(1, 0);
@@ -319,12 +327,18 @@ std::vector<KokoroShape> infer(const Row& row, const std::vector<KokoroShape>& i
     throw std::runtime_error("unsupported operator " + kind);
 }
 
-std::map<std::string, int> inventory(bool fused) {
-    return {{"Input", 5}, {"Split", fused ? 110 : 164}, {"Crop", 1}, {"InnerProduct", 58},
+std::map<std::string, int> inventory(bool fused, bool snake) {
+    std::map<std::string, int> result = {{"Input", 5}, {"Split", fused ? 110 : 164}, {"Crop", 1}, {"InnerProduct", 58},
             {"Reshape", fused ? 168 : 60}, {"Slice", 58}, {"Convolution1D", 69}, {"Concat", 5},
             {fused ? "InstanceNorm" : "Reduction", fused ? 54 : 108}, {"BinaryOp", fused ? 360 : 576},
             {"UnaryOp", fused ? 96 : 150}, {"ReLU", 13}, {"MemoryData", 96}, {"Interp", 1},
             {"DeconvolutionDepthWise1D", 1}, {"Deconvolution1D", 2}, {"Padding", 1}};
+    if (snake) {
+        result["BinaryOp"] = 216;
+        result.erase("UnaryOp");
+        result["RadishSnake"] = 48;
+    }
+    return result;
 }
 
 } // namespace
@@ -341,7 +355,8 @@ KokoroShapePlan infer_kokoro_shapes(const std::string& text, int t) {
     require(header.size() == 2, "malformed graph header");
     KokoroShapePlan plan;
     plan.layers = integer(header[0]); plan.blobs = integer(header[1]);
-    const bool fused = plan.layers == 1098 && plan.blobs == 1307;
+    const bool snake = plan.layers == 906 && plan.blobs == 1067;
+    const bool fused = snake || (plan.layers == 1098 && plan.blobs == 1307);
     require(fused || (plan.layers == 1368 && plan.blobs == 1739), "unsupported graph inventory");
     std::map<std::string, KokoroShape> known;
     std::map<std::string, int> counts;
@@ -387,7 +402,7 @@ KokoroShapePlan infer_kokoro_shapes(const std::string& text, int t) {
         ++layer_index;
     }
     require(layer_index == plan.layers && known.size() == static_cast<size_t>(plan.blobs), "incomplete graph inventory");
-    require(counts == inventory(fused) && inputs == std::set<std::string>({"in0", "in1", "in2", "in3", "in4"}),
+    require(counts == inventory(fused, snake) && inputs == std::set<std::string>({"in0", "in1", "in2", "in3", "in4"}),
             "operator/input inventory differs from audited graph");
     const auto result = known.find("out0");
     require(result != known.end() && equal(result->second, shape(2, add(multiply(120, t), 1), 22)),

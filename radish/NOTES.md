@@ -13,11 +13,11 @@ including input/output transfer, and its device waveform passes all 127800
 samples. The same fused graph's packed six-thread CPU warm mean is 32.079 s:
 the GPU remains about 1.75 times slower, despite a 44.7% reduction from the prior
 graph's 101.275 s warm extraction. GPU evidence has one warm iteration; CPU has
-two. These are core measurements. The new single-process runtime completes
-fresh tablet T=78 synthesis in 43.652 s including frontend startup/release,
+two. These are core measurements. The single-process runtime with 0022 completes
+fresh tablet T=78 synthesis in 34.864 s including frontend startup/release,
 metadata-only shapes, GPU core load/extraction and waveform tail. All 205942
 core values and 46800 audio samples pass against references from its exact
-captured boundary; peak 343.6 MiB, zero swap, no new faults. No host calibration
+captured boundary; peak 341.8 MiB, zero swap, no new faults. No host calibration
 or reference preparation occurs between its inference phases. The physical64 complex-reduction hang remains unresolved;
 the backend uses 32 threads. A separate compiled-register guard now rejects
 programs beyond the measured register budget before upload.
@@ -33,6 +33,13 @@ the shared-A transpose. The full tiled model passes all 562342 outputs in
 both first/warm extractions, now including dilation 3/5, with a passing waveform.
 A performance win and sustained runtime behavior remain unproven. API
 advertisement and conformance status are unchanged.
+
+The separate opt-in Snake graph now passes the full fixed core in
+51.936/51.188 s first/warm, 8.615% below the 0022 warm baseline, with identical
+output bytes, 416.8 MiB peak, zero swap and no faults. Fresh T78/T213 Snake runtime
+also passes all core/waveform checks in 33.764/68.158 s. Peak memory is
+383.3/445.9 MiB; the full-length run uses 22.9 MiB swap while T78 uses none.
+The accepted InstanceNorm graph remains default; Snake is explicit opt-in.
 
 Historical candidate 0020 uses local32 with a 64x32 tile and 12 KiB shared
 memory. Builds, all 20 model compiler variants and focused dilation1/3/5 output
@@ -163,7 +170,8 @@ accepted local128 tile is retained; later sequential batching improves its
 ## Next
 
 Continue from the passing FP32 InstanceNorm+tiled+dilation core and waveform:
-66.919494 s GPU warm versus 32.079044 s packed CPU warm mean. The GPU has one
+56.013717 s GPU warm with 0022 batching versus 32.079044 s packed CPU warm mean
+(the prior 0019 GPU checkpoint was 66.919494 s). The GPU has one
 warm sample and CPU two; sustained end-to-end evidence remains open. Incremental
 0018 now covers the 16 dilation3/5 convolutions, with unchanged operator/model
 accuracy gates and no new faults. The narrowed output-only reshape alias removes copies without introducing
@@ -179,8 +187,15 @@ All 20 model variants pass the zero-private/F+H/2<=32 gate at 16 full/0 half,
 and dilation3/5 complete-output checks pass too. The full first extraction
 passes byte-identically but takes 138.633996 s versus accepted 67.138187 s first.
 Reject this geometry and keep TILED32 default-off; no warm repeat is warranted.
-The measured Snake-chain opportunity
-remains separate from this candidate and is not integrated into the runtime.
+The separate 48-chain Snake candidate is now integrated as an explicit opt-in
+graph in the model/runtime helpers. Its host full-core reference check and
+bounded tablet CPU/GPU equivalence probes pass. The full GPU core is
+byte-identical at 51.936026/51.188057 s first/warm, 8.615% lower warm latency
+than 0022, with zero swap and no faults. Fresh T78/T213 runtime passes all
+core/audio values in 33.764051/68.158274 s, with exact earlier GPU output bytes;
+the full-length run uses 22.9 MiB swap. The InstanceNorm graph with accepted
+0022 batching remains the default at 56.013717 s warm. Measure equivalent Snake
+CPU work and sustained/cancellation behavior next; preserve these checkpoints.
 
 The new metadata-only shape pass matches every original and fused shape at
 T78/T213. The integrated frontend/core/tail executable builds for host and
@@ -1559,4 +1574,140 @@ Logs/report: `runtime-single-short-tiled-submit-0022-first.log` and
 `runtime-single-short-tiled-submit-0022-validation.json`. The runtime wrapper
 now defaults batch 4 for this pinned workload; model/operator wrappers retain
 explicit opt-in and driver default remains1. TILED32 remains disabled.
-Full-length fresh synthesis has not been rerun with 0022.
+Full-length fresh InstanceNorm-only synthesis has not been rerun with 0022;
+the later full-length Snake run below uses the same driver checkpoint.
+
+### Guarded Snake fusion: full core and fresh T78/T213 runtime pass
+
+The project-local `tests/ncnn/radish_snake.{h,cpp}` fuses 48 exact five-operation
+chains into `RadishSnake` layers. The strict rewrite preserves each original
+alpha and independently stored reciprocal tensor, weighted-row order, output
+blob identity and the live input alias. It removes 192 arithmetic layers and
+dead Split outputs, producing **906 layers / 1067 blobs** from the accepted
+InstanceNorm graph's 1098/1307. The 213042160-byte weights are unchanged at
+SHA256 `0f77cf77ff79a7724662f2e79a4d50284eb498abb2e519469a188e33f6c051ae`;
+the new parameter SHA256 is
+`e01c56a4f23d6d3c8f92dbecb0c3fc37f6f74e9f305f58b82d5196278a450d38`.
+Metadata propagation recognizes the exact new inventory and derives Snake
+shapes from its three inputs; it does not execute tensors to obtain hints.
+
+Each Net registers a context before loading parameters; that context outlives
+its layers and is destroyed before the Vulkan device. The layer has no weights
+or in-place writes. Its FP32 pack4 shader requires the exact Radish device,
+supported options, rank2 C128/C256 shapes, valid buffer bounds and a fresh
+output allocation. It evaluates `x + stored_reciprocal * square(sin(alpha*x))`
+with the original operand order. CPU execution delegates to the original five
+BinaryOp/UnaryOp layers. The default graph remains InstanceNorm; `--snake`
+explicitly selects the separately validated private fixture.
+
+`snake-host-full-cpu-first.log` passes all **562342 outputs**, max error
+6.65187836e-5, relative RMS 3.38237918e-7, zero mismatches at unchanged 0.002
+absolute/relative gates. Its **2.504136 s is host CPU time, not tablet
+performance**. `snake-host-cpu-first.log` and `snake-device-cpu-first.log`
+also pass C128/W33 and C256/W35 in pack1 and pack4: all 4224/8960 outputs are
+bit-identical to the original delegated chain, max independent-reference error
+1.28855663e-7, and all inputs are preserved. The tablet probe has no new faults
+and both services remain active.
+
+The first actual compile, `snake-compile-first.log`, stopped at the strict push
+layout guard before execution. ncnn reflects push members only for the struct
+name `parameter`; renaming `Parameters` accordingly retained the two-member /
+eight-byte guard without changing arithmetic. The corrected
+`snake-compile-push-layout.log` passes compile-only before any upload or command
+submission. The live gate checks the actual ncnn-generated SPIR-V for three
+OpFMul and one OpFAdd, all NoContraction. Raw generated SPIR-V was not saved;
+the evidence is the live gate plus actual NIR/native output, separately from
+the earlier standalone shader inspection.
+
+The final NIR's outer `fmad` is explicitly **unfused**, preserving intermediate
+product rounding; it is distinct from `ffma`. NIR's late rewrite requires
+contraction permission only for the latter. Two internal sine range-reduction
+MADs also occur in the original UnaryOp path. Their presence is not evidence of
+a NoContraction violation, and no driver change was needed. Actual dataflow and
+resource audit: `snake-actual-compile-audit-btxi8gc0/REPORT.md`.
+
+Both compiled probe variants use local32x1x1, four SSBOs, eight push bytes,
+8 full/1 half registers, 106 instructions/102 dwords, no loops/shared memory
+and no scratch/private allocation or spill instructions. Diagnostics confirm
+one GLSL/SPIR-V compile (729 words) per context across both cases. The log still
+contains two identical native programs; this does not prove native pipeline
+cache reuse.
+
+`snake-device-first.log` passes all **13184 GPU outputs** across C128/W33 and
+C256/W35, with zero bit mismatches against the original five GPU operations,
+zero numeric mismatches and max error 4.51237448e-7 at unchanged 2e-5
+absolute/relative gates. Signed zero, small/subnormal values, independent stored
+coefficients and odd tails are covered; all three inputs remain unchanged.
+Fused dispatch groups are 64/128. No new faults, both services active.
+
+The separate `core-snake-first-repeat2.log` now records **51.936026 s first /
+51.188057 s warm**, with 9.365 s cold load and one warm observation. Both
+extractions pass all 562342 outputs at unchanged gates, max 0.000129699707,
+relative RMS 7.72155564e-7, zero mismatches. Output SHA256
+`0550fe07becc684c3dc7b0113bfef0b4e3c87ff8d888acf779e98de4d8af18e4` matches
+accepted 0022 exactly. Its existing full 127800-sample waveform evidence applies
+to these identical core bytes; no new waveform run is claimed. Service wall
+1 min 52.994 s, peak 416.8 MiB/zero swap, no new faults and both services active.
+Warm latency is **8.615% lower** than 56.013717 s; this is saved-boundary core
+evidence, not fresh synthesis latency.
+
+The complete warm mapping replaces exactly 240 original arithmetic commands
+with 48 Snake commands: their wall time falls 6.654548391→2.459730388 s,
+submits 11328→3648 and chunks 45216→14592. All 1750 retained commands match
+resource/grid/chunk/submit signatures by layer, normalized boundary or transfer
+inventory; no helper or transfer commands are added. Transfers remain 96,
+totalling 73728 bytes. Whole-window counts fall 1990→1798 commands,
+37009→29329 submits and 144245→113621 chunks. The trace now has 898 GPU and
+three CPU layer calls, with all 853 retained non-Snake layer paths/groups
+unchanged. Driver hash and controls match 0022.
+
+The 4.825660 s warm reduction comprises 4.194818003 s less Snake command wall,
+0.491149607 s retained-command timing variation and 0.139692390 s less residual
+time. These timers include host work, submission/waits and GPU execution;
+the residual is not pure CPU time and this decomposition is not an isolated
+instruction-cost model. Evidence:
+`warm-snake-result-mrqc_tau/comparison-0022-snake.json` and `snake-warm-map.json`.
+
+The model/runtime modules and explicit `--snake` wrapper selection are reviewed;
+the wrapper pins the candidate graph and freezes its host validation marker and
+assets before/after execution. The transformer emits only a provisional graph;
+the wrapper additionally requires `snake-validation.json`, a complete host CPU
+pass log/output and matching graph/input/reference hashes. The read-only fixture
+validator rechecks all values. Proof inputs and binary checkpoint pins are
+documented in [RUNTIME_INTEGRATION.md](RUNTIME_INTEGRATION.md); transformation
+alone does not make a fixture runnable through `--snake`.
+
+Fresh T78 `--snake` runtime now passes all
+205942 core values and 46800 waveform samples against original decoder/tail
+references from its exact tablet boundary. Frontend 4.424653 s, metadata
+0.026029 s for 1067 blobs, load 9.398850 s, extraction 19.507355 s, tail
+0.037999 s, synthesis **33.764051 s**, through publication 33.767987 s and
+service 33.852 s. Peak 383.3 MiB/zero swap, no faults, both services active.
+Core/waveform hashes equal the original T78 GPU results, respectively
+`7b91c412aa771e91c1976233fddde9d138610b8f56dd8157829110f0adba670c` and
+`1baae4fc1a45bb276bff219d3b9b9c7af8352e5d889798482e6fcfd4114c7353`;
+max errors 1.05142593e-4/1.47223473e-5, waveform SNR 96.917732 dB, zero
+mismatches. All eight boundary files match the reference inputs exactly.
+Verified immutable frontend/source hardlink reuse succeeds. Evidence:
+`runtime-single-short-snake-first.log` and matching `-validation.json`.
+
+Fresh T213 `--snake` also passes all **562342 core values / 127800 waveform
+samples** in `runtime-single-full-snake-first-validation.json`. Frontend
+5.772051 s, metadata 0.026095 s, load 9.314241 s, extraction 52.428375 s,
+tail 0.103515 s, synthesis **68.158274 s**, through publication 68.178252 s and
+service 68.279 s. Peak memory is **445.9 MiB plus 22.9 MiB swap**; keep this
+distinct from the zero-swap fixed-core and T78 runs. No faults, both services
+active. Core max error 1.02996826e-4/RMS 7.81135939e-7; waveform max error
+9.19587910e-6/SNR 98.355163 dB; zero mismatches at unchanged gates.
+Core/waveform SHA256s are
+`7a5dbb9410a91e30bdfb9db12426b653d21b09786310c8c0cc623618efa174bb` and
+`4d2ff1622bb83ad0ff02a603c6f2974fbd19685a099e45b5f0cd13a2928b7e8d`, identical
+to the earlier full GPU runtime. All eight boundary files also match both the
+earlier CPU and GPU captures exactly, recorded in
+`runtime-single-full-snake-cpu-gpu-boundary-identity.json`. The earlier same-input
+six-thread CPU synthesis remains faster at 39.789900 s; this is not a new CPU
+Snake measurement or a sustained comparison.
+
+The accepted 0022 InstanceNorm graph remains the default and Snake requires
+explicit `--snake`. Resident reuse, cancellation, sustained performance and
+Vulkan conformance status are unchanged.

@@ -32,22 +32,31 @@ a separate driver, with its own a5xx resource bindings and command emission.
 
 | Measurement | GPU path | Packed six-thread CPU |
 | --- | ---: | ---: |
-| Fixed full-size core, warm extraction | **56.014 s** | **32.079 s** |
-| Fresh full-length synthesis, including startup | **84.223 s** | **39.790 s** |
+| Fixed full-size core, warm extraction | **51.188 s** | **32.079 s** |
+| Fresh full-length synthesis, including startup | **68.158 s** | **39.790 s** |
 
-The warm GPU figure includes output reshape aliases and sequential tiled
-submission batching; it is one extraction, versus two for the CPU mean. The
-full-length synthesis row predates both optimizations (checkpoint `96de5c7`).
+The GPU figures use the opt-in FP32 Snake graph, output reshape aliases and
+sequential tiled submission batching. Warm core timing is one extraction,
+versus two for the CPU mean; the CPU uses the preceding InstanceNorm graph.
 Complete synthesis figures are single startup runs with byte-identical
-frontend boundary inputs. The current warm core peaks at **428.5 MiB, zero swap**.
-Full GPU synthesis peaks at **457.2 MiB with zero swap**; no new GPU faults,
-and both appliance services remain active. GPU inference remains slower than
-CPU. Resident warm synthesis and sustained thermal behavior remain unmeasured.
+frontend boundary inputs. The GPU core peaks at **416.8 MiB, zero swap**;
+full GPU synthesis peaks at **445.9 MiB with 22.9 MiB swap**. No new GPU faults
+occurred, and both appliance services remained active. Core and waveform bytes
+match the preceding GPU implementation. GPU inference remains slower than CPU.
+Resident warm synthesis and sustained thermal behavior remain unmeasured.
 
-- Fused FP32 normalization and tiled convolution, now including dilation 3/5,
-  plus guarded output reshape aliases and sequential submission batching reduce
-  fixed-core warm GPU time from 101.275 s to 56.014 s. The tiled path executes
-  53 matrix-product commands; compiled register-budget checks remain in place.
+- Fused FP32 normalization and tiled convolution, including dilation 3/5,
+  guarded output reshape aliases, sequential submission batching and Snake
+  activation fusion reduce fixed-core warm GPU time from 101.275 s to 51.188 s.
+  Snake replaces 240 arithmetic dispatches with 48 and removes 7,680 submissions;
+  its measured improvement is 8.6% over the preceding 56.014 s checkpoint.
+  The tiled path executes 53 matrix-product commands; compiled register-budget
+  checks remain in place.
+- Fresh short-utterance synthesis with Snake takes **33.764 s**, including
+  startup, and passes every core/audio comparison at **383.3 MiB, zero swap**.
+  Select it with `device-runtime.sh ... --snake`; InstanceNorm remains the
+  default graph. Snake is a project-local ncnn custom layer requiring no new
+  Mesa patch beyond 0022.
 - Explicit mixed-storage conversion and FP32 normalization remove the NaNs
   from packed FP16 inference, but full-model and waveform accuracy still fail.
   FP32 remains the validated path.

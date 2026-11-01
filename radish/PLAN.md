@@ -389,8 +389,10 @@ required.
   zero swap/no faults. Reject for performance and keep TILED32 default 0;
   no warm repeat. Existing exact-byte waveform evidence applies, with no new
   integrated runtime measurement. Accepted66.919494 s warm remains distinct.
-- [ ] Consider the 48 measured five-operation Snake chains as a subsequent,
-  separately developed design; they are not integrated into the runtime.
+- [x] Implement the separate 48-chain Snake candidate in project-local modules,
+  strict graph rewriting and metadata inference; retain InstanceNorm by default.
+  Host full-core and focused tablet CPU/GPU checks pass; full GPU/runtime
+  acceptance remains separate below.
 - [ ] Attribute remaining convolution, reduction and CPU fallback costs; compare
   equivalent warm work against an optimized CPU baseline before declaring a win.
   Use the current fused+dilation profile; earlier unfused convolution/reduction
@@ -448,8 +450,8 @@ despite submits falling 25944→6512; the other 1937 commands take 23.822305 ver
 23.456006 s with unchanged 30523 submits. These are wall-inclusive command times,
 not isolated instruction-cost measurements. Preserve both successful and
 rejected checkpoints.
-The independent 48-chain Snake design remains available as a subsequent measured
-opportunity (6.978 s current command wall).
+The independent 48-chain Snake opportunity (6.978 s in that command profile)
+is now implemented as a separate opt-in candidate; see its acceptance steps below.
 
 ## Convolution candidate 0021: local32, tile32x32
 
@@ -500,10 +502,69 @@ registers and shared allocation do not by themselves establish a speed win.
 - [x] Fresh T78 runtime core/waveform gate with new environment provenance:
   synthesis 34.863887 s, core 20.403266 s,341.8 MiB/zero swap, outputs byte-identical.
 - [x] Select batch 4 in the private runtime wrapper; retain driver/model default 1.
-- [ ] Integrate and measure guarded Snake fusion from its isolated worktree.
+- [x] Integrate the reviewed guarded Snake candidate from its isolated worktree;
+  leave the accepted InstanceNorm graph as the default.
+- [x] Measure and validate the full Snake GPU core: 51.936026/51.188057 s
+  first/warm, all outputs byte-identical, 416.8 MiB/zero swap/no faults.
+- [x] Validate fresh T78 Snake runtime: all core/waveform values pass in
+  33.764051 s, peak 383.3 MiB/zero swap/no faults; keep explicit opt-in.
+- [x] Validate fresh T213 Snake runtime: all core/waveform values pass in
+  68.158274 s, 445.9 MiB plus 22.9 MiB swap, no faults; exact earlier GPU bytes.
+- [ ] Measure equivalent CPU Snake work and sustained behavior separately.
 - [ ] Beat the applicable CPU baseline end to end and measure sustained behavior.
 
 The register-budget guard and Vulkan capability advertisement are unchanged.
 The debug resource gate does not independently prove K bounds or arbitrary
 shader watchdog safety. The pinned ncnn path supplies the measured K<=3584 bound.
-Full-length fresh startup figures predate0022; do not relabel them.
+The earlier full-length InstanceNorm startup figures predate 0022; do not
+relabel them. The separate full-length Snake result below uses 0022.
+
+## Guarded Snake graph candidate
+
+- [x] Strictly replace 48 exact five-operation chains while retaining both
+  original coefficient tensors, weight order/bytes, live aliases and output
+  blob identities. Candidate 906 layers/1067 blobs; weights remain 213042160
+  bytes. The exact parameter pin is recorded in NOTES.md.
+- [x] Register the project-local module in each model/runtime Net with explicit
+  context/device lifetimes; use original five CPU operators and a separate
+  exact-device FP32 pack4 local32 shader with fresh output and strict bounds.
+- [x] Extend metadata-only shape inference for the exact new graph inventory;
+  preserve the original and InstanceNorm graph paths.
+- [x] Pass the complete host CPU reference gate: all 562342 outputs, zero
+  mismatches, max 6.65187836e-5. Its 2.504136 s is host evidence, not tablet timing.
+- [x] Pass host and tablet CPU probes in pack1/pack4 for C128/W33 and C256/W35,
+  bit-identical to the original chain with unchanged independent numeric gates.
+- [x] Correct the reflected push-block name to `parameter` while retaining the
+  two-member guard; pass actual compile-only before upload/submission. Live
+  SPIR-V NoContraction checks and NIR/native dataflow audit preserve intermediate
+  rounding: outer `fmad` is unfused, and internal sine MADs are expected.
+- [x] Confirm local32, 8 full/1 half registers, no shared/private memory or
+  spills. One GLSL/SPIR-V compile serves both probe cases; two native programs
+  are observed, so native cache reuse is not established by this probe.
+- [x] Pass all 13184 focused GPU outputs bitwise against the original chain and
+  independent 2e-5 gates; preserve inputs and exercise odd tails, groups64/128,
+  no faults and services active.
+- [x] Add explicit `--snake` selection with exact graph/host-validation pins and
+  before/after provenance checks; keep default InstanceNorm and 0022 controls.
+- [x] Validate the fixed full GPU core: all 562342 values pass byte-identically
+  to 0022, so existing full-waveform evidence applies without a new tail run.
+  First/warm 51.936026/51.188057 s (one warm), 8.615% lower warm latency than
+  accepted 56.013717 s; 416.8 MiB/zero swap/no faults, services active.
+- [x] Attribute the complete warm trace: exactly 240→48 Snake commands,
+  6.654548391→2.459730388 s and 11328→3648 submits; all 1750 retained command
+  signatures match, with no new helpers/transfers. Wall timers do not isolate
+  GPU instruction cost or pure CPU residual time.
+- [x] Validate fresh T78 same-boundary runtime: all 205942 core values/46800
+  samples pass byte-identically to the earlier GPU output, SNR 96.917732 dB;
+  synthesis 33.764051 s, core 19.507355 s, 383.3 MiB/zero swap/no faults.
+- [x] Validate fresh T213 runtime: all 562342 core values/127800 samples pass,
+  SNR 98.355163 dB; synthesis 68.158274 s/core 52.428375 s, 445.9 MiB plus
+  22.9 MiB swap/no faults. All eight boundary files match prior CPU/GPU captures,
+  and core/waveform bytes equal the prior GPU results.
+- [ ] Measure equivalent CPU Snake work and sustained/cancellation behavior.
+  Earlier same-input CPU synthesis is 39.789900 s; no end-to-end win is claimed.
+  Retain explicit `--snake` opt-in and default InstanceNorm for this checkpoint.
+
+The unchanged accuracy gates, original reference fixtures, memory/fault limits
+and service preservation remain mandatory. Models, captures and private audit
+reports stay outside the public repository.

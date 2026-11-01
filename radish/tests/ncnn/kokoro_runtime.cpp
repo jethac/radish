@@ -1,4 +1,5 @@
 #include "runtime_helpers.h"
+#include "radish_snake.h"
 #include "../kokoro_frontend.h"
 #include "../kokoro_shapes.h"
 #include "../kokoro_waveform.h"
@@ -132,11 +133,13 @@ CoreResult run_core(const radish_frontend::Boundary& boundary,const radish::Koko
 #else
     require(!vulkan,"runtime was built without Vulkan");
 #endif
+    radish_ncnn::SnakeContext snake;
     ncnn::Net net;
     radish_ncnn::configure_options(net.opt,vulkan,!vulkan,false,threads);
 #if NCNN_VULKAN
     if(vulkan) net.set_vulkan_device(device);
 #endif
+    require(snake.register_layer(net)==0,"cannot register RadishSnake");
     require(net.load_param_mem(plan.param_text.c_str())==0,"cannot load inferred graph");
     require(net.opt.use_vulkan_compute==vulkan,"silent Vulkan device fallback");
     require(!net.opt.use_fp16_packed && !net.opt.use_fp16_storage && !net.opt.use_fp16_arithmetic,"unexpected precision change");
@@ -219,7 +222,8 @@ int main(int argc,char** argv) {
         double shapes_start=now();
         radish::KokoroShapePlan plan=radish::infer_kokoro_shapes(parameters,static_cast<int>(boundary.T));
         double shapes_wall=now()-shapes_start;
-        require(plan.layers==1098 && plan.blobs==1307,"integrated runtime requires the validated fused graph");
+        require((plan.layers==1098 && plan.blobs==1307) || (plan.layers==906 && plan.blobs==1067),
+                "integrated runtime requires the InstanceNorm graph or explicit RadishSnake candidate");
         std::printf("frontend complete including ORT release: %.6f s; T=%lld; metadata-only shapes: %d blobs in %.6f s\n",frontend_wall,(long long)boundary.T,plan.blobs,shapes_wall);
         double core_start=now();
         CoreResult core=run_core(boundary,plan,args[3],vulkan,threads,repeat);
