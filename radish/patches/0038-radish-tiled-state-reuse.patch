@@ -1,0 +1,83 @@
+--- a/src/freedreno/radish/rd_queue.c
++++ b/src/freedreno/radish/rd_queue.c
+@@ -29,6 +29,7 @@
+    const char *reason;
+    const char *calibration;
+    unsigned sample;
++   unsigned state_reuse_chunks;
+    uint32_t seqno;
+    uint64_t submit_count;
+ };
+@@ -151,6 +152,12 @@
+          device->submit_count - sample->submit_count, device->submit_count,
+          values[0], values[2], delta, gpu_ns, start, done, host_ns, result,
+          sample->calibration);
++   if (sample->state_reuse_chunks && length > 0 && (size_t)length < sizeof(line)) {
++      size_t used = length - 1;
++      int suffix = snprintf(line + used, sizeof(line) - used,
++                            " state_reuse_chunks=%u\n", sample->state_reuse_chunks);
++      length = suffix < 0 ? -1 : (int)used + suffix;
++   }
+    if (length >= 0 && (size_t)length < sizeof(line))
+       fputs(line, stderr);
+    else
+@@ -461,15 +468,21 @@
+ rd_emit_dispatch_chunk(struct rd_device *device, struct fd_ringbuffer *ring,
+                        const struct rd_dispatch *dispatch,
+                        const uint32_t grid[3], const uint32_t base[3],
+-                       struct rd_gpu_elapsed *sample)
++                       struct rd_gpu_elapsed *sample, bool full_state)
+ {
+    const struct ir3_shader_variant *v = dispatch->pipeline->variant;
+-   cs_restore_emit(ring, device);
++   if (full_state) {
++      cs_restore_emit(ring, device);
++   } else {
++      OUT_WFI5(ring);
++   }
+    if (sample && sample->bo)
+       rd_gpu_elapsed_emit(ring, sample->bo, 0);
+-   cs_program_emit(ring, dispatch->pipeline);
++   if (full_state)
++      cs_program_emit(ring, dispatch->pipeline);
+    rd_emit_constants(ring, dispatch, base);
+-   rd_emit_buffers(device, ring, dispatch);
++   if (full_state)
++      rd_emit_buffers(device, ring, dispatch);
+    OUT_PKT4(ring, REG_A5XX_HLSQ_CS_NDRANGE_0, 7);
+    OUT_RING(ring, A5XX_HLSQ_CS_NDRANGE_0_KERNELDIM(3) |
+       A5XX_HLSQ_CS_NDRANGE_0_LOCALSIZEX(v->local_size[0] - 1) |
+@@ -600,6 +613,20 @@
+          rd_gpu_elapsed_prepare(device, sample);
+       }
+    }
++   bool reuse_state = false;
++   if (!dispatch->indirect && !tiled_x2 && max_chunks == 8 &&
++       fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) == 506 &&
++       v->local_size[0] == 16 && v->local_size[1] == 8 &&
++       v->local_size[2] == 1 && v->has_barrier && v->loops == 4 &&
++       v->shared_size == 16384 && !v->pvtmem_size &&
++       !v->info.double_threadsize && v->info.max_reg == 15 &&
++       v->info.max_half_reg == -1 &&
++       dispatch->pipeline->descriptor_count == 4 && v->instrlen == 27 &&
++       dispatch->grid[0] == 4 && dispatch->grid[1] == 2 &&
++       dispatch->grid[2] == 1 && tile[0] == 1 && tile[1] == 1 && tile[2] == 1) {
++      const char *requested = getenv("RADISH_TILED_STATE_REUSE");
++      reuse_state = requested && !strcmp(requested, "1");
++   }
+    struct fd_submit *submit = NULL;
+    struct fd_ringbuffer *ring = NULL;
+    unsigned chunks = 0;
+@@ -628,8 +655,11 @@
+             uint32_t grid[3];
+             for (unsigned i = 0; i < 3; i++)
+                grid[i] = MIN2(tile[i], dispatch->grid[i] - base[i]);
++            bool full_state = !reuse_state || chunks == 0;
+             rd_emit_dispatch_chunk(device, ring, dispatch, grid, base,
+-                                   chunks == 0 ? sample : NULL);
++                                   chunks == 0 ? sample : NULL, full_state);
++            if (!full_state && sample)
++               sample->state_reuse_chunks++;
+             if (++chunks == max_chunks) {
+                if (sample && sample->bo) {
+                   rd_gpu_elapsed_emit(ring, sample->bo, 16);

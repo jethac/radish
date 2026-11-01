@@ -43,6 +43,9 @@ limits and validation scope. Published checkpoints remain experimental; publicat
 | `0035-ncnn-instancenorm-coefficients.patch` | After 0034 in the normalization stack | Guarded coefficient helper for opt-in project NormAffineSnake; 42 fused chains, exact output bytes, fixed warm 35.730754 s and four full core/wave references pass |
 | `0036-radish-gpu-elapsed-cumulative.patch` | Same Mesa base as 0001; alternative to 0032 | Default-off bounded GPU timestamp diagnostic for one accepted eight-chunk convolution; six valid samples, unchanged output bytes and counts, paired perturbation budget passes; no public query support or model performance change |
 | `0037-radish-gpu-calibration-cumulative.patch` | Same Mesa base as 0001; alternative to 0036 | Default-off fixed MAD/vec4-copy elapsed calibration; ten valid samples and full exact output/guard/input checks; deferred-readback medians 21.3185 GFLOP/s and 4.3011 logical read+write GB/s, without a ceiling or model-speedup claim |
+| `0038-radish-tiled-state-reuse.patch` | Incremental over 0037 in a separate experimental checkout only | **Rejected performance experiment:** full poisoned-output correctness passes, but 0.417119% mean GPU reduction fails the prospective 5% gate. Optional reproduction/history only; not part of the recommended driver stack. |
+
+0038 is not cumulative. SHA256 `0d3a34785a96f50aabba75529372d83838a71e22ae5613bc350a33cd4d37a72e`; its tested driver was private `bd2a672a…e1a0f`. Keep canonical 0037 and the global device 0032 unchanged. See `../GPU_STATE_REUSE.md` for scope, paired results and optional reproduction.
 
 0037 is cumulative and preserves 0036's convolution class and all model dispatch
 policies. Apply it instead of another cumulative Mesa patch. SHA256

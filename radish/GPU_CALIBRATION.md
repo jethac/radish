@@ -111,6 +111,10 @@ neither a large gain nor an occupancy explanation is established. A fixed
 shader and bounded elapsed A/B measurement should decide whether this mechanism
 is useful before model integration.
 
+The follow-up [0038 experiment](GPU_STATE_REUSE.md) passed full poisoned-output
+checks but reduced mean GPU time only 0.417%, below its planned 5% gate. It is
+retained as rejected history; canonical 0037 remains unchanged.
+
 ## Reproduction and pins
 
 The optional `radish-gpu-calibration` target is excluded from default builds.

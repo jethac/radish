@@ -1,5 +1,39 @@
 # Radish status
 
+## 2026-11-02 (JST): state reuse rejected on measured GPU gain
+
+The private 0038 experiment skips seven repeated restore/program/descriptor
+setups within the existing tiled submit, including the skipped restore's UCHE
+invalidation, while retaining every WFI, constant/base update, EXEC, cache
+flush and wait. Actual skip counters confirm seven on all six ON samples;
+OFF has no reuse suffix. The shader and 38 dispatch / 188 chunk / 38 submit work
+remain unchanged.
+
+Mean measured GPU time is **7.195364250 → 7.165351000 ms**, only **0.417119%**
+lower. All four balanced pairs are positive (0.379671%, 0.433345%, 0.232565%,
+0.622563%), but this fails the prospective **at least 5% mean GPU improvement**
+criterion. Host math-submit/whole-forward means improve 0.577876% / 1.311693%;
+the latter includes output poison and download. No full-model run or expanded
+rollout follows. 0037 remains recommended; the incremental patch, helper and
+analyzer are retained only as reproducible rejected history. See
+`GPU_STATE_REUSE.md`.
+
+Each actual GPU output is poisoned with changing NaNs before submit, so stale
+contents cannot satisfy the unchanged full reference and bit checks. All
+327,168 values, twelve poison markers/timestamps and input readbacks pass; all
+fourteen raw files match 0036. Peak 62.5 MiB/zero swap, service 1.698 s, no new faults,
+both services active. The frozen parser passed without correction. Full
+private analysis is `state-reuse-analysis-0038-i58lyilx/actual-analysis.json`;
+independent rejection audit is `state-reuse-review-0038-_6i9cj2e/ACTUAL-REJECTION.txt`.
+The optional public helper builds byte-identically to the tested `2510a415…6024d` binary.
+Canonical Mesa remains 0037 and the global device ICD 0032.
+
+Before staging, only completed 0037 v2 device raw/results were archived after audit.
+The original host capture plus a second verified copy and restore manifest
+remain under `gpu-calibration-deferred-dkyybh_d/probe-first/raw/` and
+`state-reuse-implementation-0038-4n5ll5k4/device-raw-v2-archive/`. Services
+remained active; models and other captures were unchanged.
+
 ## 2026-11-02 (JST): arithmetic and copy calibration
 
 Default-off diagnostic 0037 measures two fixed non-barrier kernels without

@@ -65,10 +65,12 @@ from this diagnostic. See [GPU_TIMING.md](radish/GPU_TIMING.md) and
 [GPU_CALIBRATION.md](radish/GPU_CALIBRATION.md).
 
 The conservative per-group register guard does not establish total physical
-capacity, and compiler wave estimates do not establish occupancy. The next
-proposed experiment reuses immutable state within existing tiled submissions
-while retaining every wait, EXEC and flush. It is not implemented. A CPU win
-alone will not close the performance goal.
+capacity, and compiler wave estimates do not establish occupancy. Reusing state
+within the existing batch preserves every output but reduces GPU time only
+**0.42%**, below the planned 5% criterion. The rejected experiment is recorded
+in [GPU_STATE_REUSE.md](radish/GPU_STATE_REUSE.md); the recommended driver stays
+at 0037. Compiler register allocation and repeat encoding are the next lead,
+not an established bottleneck or speedup. A CPU win alone will not close the goal.
 
 A tablet cancellation probe preserves the completed request and discards the
 second request after its active GPU core finishes. Exit follows the cancel marker
@@ -125,6 +127,7 @@ build and test scripts retain their relative paths.
 | [radish/RUNTIME_INTEGRATION.md](radish/RUNTIME_INTEGRATION.md) | Fresh-input Kokoro integration and remaining work |
 | [radish/GPU_TIMING.md](radish/GPU_TIMING.md) | Qualified GPU elapsed diagnostic, results and reproduction |
 | [radish/GPU_CALIBRATION.md](radish/GPU_CALIBRATION.md) | Measured arithmetic/copy rates, raw correctness and reproduction |
+| [radish/GPU_STATE_REUSE.md](radish/GPU_STATE_REUSE.md) | Rejected state-reuse experiment and paired GPU measurements |
 
 ## Building and running
 
