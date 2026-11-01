@@ -35,7 +35,8 @@ else
     echo 'ncnn reduction adaptation conflicts with this checkout; preserve its changes' >&2
     exit 1
 fi
-for EXTRA_PATCH in "$TOP/radish/patches/0008-ncnn-radish-pipeline-cache.patch"; do
+for EXTRA_PATCH in "$TOP/radish/patches/0008-ncnn-radish-pipeline-cache.patch" \
+                   "$TOP/radish/patches/0019-ncnn-radish-reshape-alias.patch"; do
     if git -C "$SRC" apply --check "$EXTRA_PATCH" 2>/dev/null; then
         git -C "$SRC" apply "$EXTRA_PATCH"
     elif ! git -C "$SRC" apply --check --reverse "$EXTRA_PATCH" 2>/dev/null; then

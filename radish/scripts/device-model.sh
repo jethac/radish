@@ -12,11 +12,12 @@ PROFILE=${RADISH_PROFILE:-0}
 SHARED32=${RADISH_NCNN_SHARED32:-0}
 TILED=${RADISH_NCNN_TILED:-0}
 MIXED_STORAGE=${RADISH_NCNN_MIXED_STORAGE:-0}
+RESHAPE_ALIAS=${RADISH_NCNN_RESHAPE_ALIAS:-0}
 BATCH=${RADISH_BATCH_CHUNKS:-1}
 [[ $BATCH =~ ^[1-4]$ ]] || { echo 'RADISH_BATCH_CHUNKS must be 1..4' >&2; exit 2; }
 SHARED_GROUPS=${RADISH_SHARED_GROUPS:-1}
 [[ $SHARED_GROUPS =~ ^[1-8]$ ]] || { echo 'RADISH_SHARED_GROUPS must be 1..8' >&2; exit 2; }
-for toggle in "$TRACE" "$PROFILE" "$SHARED32" "$TILED" "$MIXED_STORAGE"; do
+for toggle in "$TRACE" "$PROFILE" "$SHARED32" "$TILED" "$MIXED_STORAGE" "$RESHAPE_ALIAS"; do
     [[ $toggle == 0 || $toggle == 1 ]] || { echo 'trace/profile flags must be 0 or 1' >&2; exit 2; }
 done
 KIND=${1:-}
@@ -112,7 +113,7 @@ UNIT=radish-$TAG-$(date +%s%N)
 for file in "${FILES[@]}"; do test -f "$SOURCE/$file"; done
 test -f "$MODEL_BINARY"
 sha256sum "$MODEL_BINARY" "$WORK/build/src/freedreno/radish/libvulkan_radish.so" "$SOURCE/decoder.ncnn.param"
-echo "Radish controls: batch=$BATCH shared_groups=$SHARED_GROUPS shared32=$SHARED32 tiled=$TILED mixed_storage=$MIXED_STORAGE"
+echo "Radish controls: batch=$BATCH shared_groups=$SHARED_GROUPS shared32=$SHARED32 tiled=$TILED mixed_storage=$MIXED_STORAGE reshape_alias=$RESHAPE_ALIAS"
 exec 9>"${RADISH_DEVICE_LOCK:-$TOP/.device.lock}"
 flock -w 1800 9
 ADB=(adb -s "$SERIAL")
@@ -121,7 +122,7 @@ mkdir -p "$WORK/evidence"
 "${ADB[@]}" shell dmesg > "$WORK/evidence/$TAG-dmesg-before.txt"
 "${ADB[@]}" shell cat /proc/meminfo > "$WORK/evidence/$TAG-mem-before.txt"
 thermal_snapshot() {
-    "${ADB[@]}" shell 'for d in /sys/class/devfreq/*; do for n in name cur_freq governor; do if test -r "$d/$n"; then printf "%s=" "$d/$n"; cat "$d/$n"; fi; done; done; for z in /sys/class/thermal/thermal_zone*; do for n in type temp; do if test -r "$z/$n"; then printf "%s=" "$z/$n"; cat "$z/$n"; fi; done; done'
+    "${ADB[@]}" shell 'for d in /sys/class/devfreq/*; do for n in name cur_freq governor min_freq max_freq trans_stat; do if test -r "$d/$n"; then printf "%s=" "$d/$n"; cat "$d/$n"; fi; done; done; for z in /sys/class/thermal/thermal_zone*; do for n in type temp; do if test -r "$z/$n"; then printf "%s=" "$z/$n"; cat "$z/$n"; fi; done; done'
 }
 thermal_snapshot > "$WORK/evidence/$TAG-thermal-before.txt"
 AVAILABLE=$(awk '$1 == "MemAvailable:" {print $2}' "$WORK/evidence/$TAG-mem-before.txt")
@@ -166,7 +167,7 @@ fi
     if [[ -n $BLOB ]]; then
         echo "DIAGNOSTIC: extracting blob $BLOB; no full-model accuracy validation is performed"
     fi
-    "${ADB[@]}" shell "chmod 755 /var/tmp/radish/radish-model; systemd-run --unit=$UNIT --wait --pipe --collect -p MemoryMax=${MEMORY}M -p MemorySwapMax=128M -p RuntimeMaxSec=$RUNTIME -p LimitCORE=0 $EXTRA_ENV --setenv=RADISH_NCNN_TRACE=$TRACE --setenv=RADISH_NCNN_PIPELINE_CACHE=$CACHE --setenv=RADISH_NCNN_SHARED32=$SHARED32 --setenv=RADISH_NCNN_TILED=$TILED --setenv=RADISH_NCNN_MIXED_STORAGE=$MIXED_STORAGE --setenv=RADISH_PROFILE=$PROFILE --setenv=RADISH_BATCH_CHUNKS=$BATCH --setenv=RADISH_SHARED_GROUPS=$SHARED_GROUPS --setenv=LD_LIBRARY_PATH=/var/tmp/radish --setenv=VK_DRIVER_FILES=/var/tmp/radish/radish_icd.json /var/tmp/radish/radish-model $MODEL_ARGS /var/tmp/radish/kokoro-$KIND $BLOB"
+    "${ADB[@]}" shell "chmod 755 /var/tmp/radish/radish-model; systemd-run --unit=$UNIT --wait --pipe --collect -p MemoryMax=${MEMORY}M -p MemorySwapMax=128M -p RuntimeMaxSec=$RUNTIME -p LimitCORE=0 $EXTRA_ENV --setenv=RADISH_NCNN_TRACE=$TRACE --setenv=RADISH_NCNN_PIPELINE_CACHE=$CACHE --setenv=RADISH_NCNN_SHARED32=$SHARED32 --setenv=RADISH_NCNN_TILED=$TILED --setenv=RADISH_NCNN_MIXED_STORAGE=$MIXED_STORAGE --setenv=RADISH_NCNN_RESHAPE_ALIAS=$RESHAPE_ALIAS --setenv=RADISH_PROFILE=$PROFILE --setenv=RADISH_BATCH_CHUNKS=$BATCH --setenv=RADISH_SHARED_GROUPS=$SHARED_GROUPS --setenv=LD_LIBRARY_PATH=/var/tmp/radish --setenv=VK_DRIVER_FILES=/var/tmp/radish/radish_icd.json /var/tmp/radish/radish-model $MODEL_ARGS /var/tmp/radish/kokoro-$KIND $BLOB"
 } 2>&1 | tee "$WORK/evidence/$TAG.txt"
 if rg -n 'vkCreateComputePipelines failed|new_pipeline failed' "$WORK/evidence/$TAG.txt"; then exit 1; fi
 if [[ -n $BLOB ]]; then

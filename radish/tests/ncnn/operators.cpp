@@ -2,16 +2,21 @@
 #include "gpu.h"
 #include "layer.h"
 #include "modelbin.h"
+#include "net.h"
 #include "pipeline.h"
+#include "layer/vulkan/binaryop_vulkan.h"
 #include "layer/vulkan/convolution1d_vulkan.h"
 #include "layer/vulkan/flatten_vulkan.h"
 #include "layer/vulkan/innerproduct_vulkan.h"
+#include "layer/vulkan/instancenorm_vulkan.h"
 #include "layer/vulkan/padding_vulkan.h"
+#include "layer/vulkan/reshape_vulkan.h"
 
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <sstream>
 
 #define CHECK(x) do { if (!(x)) { std::fprintf(stderr, "FAIL line %d: %s\n", __LINE__, #x); return 1; } } while (0)
 
@@ -146,6 +151,54 @@ int check_inner_pipelines(const ncnn::InnerProduct_vulkan* layer)
     CHECK(!layer->pipeline_innerproduct_gemm_int8);
     CHECK(!flatten->pipeline_flatten_int8 && !flatten->pipeline_flatten_pack4_int8 && !flatten->pipeline_flatten_pack1to4_int8);
 #endif
+    return 0;
+}
+
+int check_reshape_pipelines(const ncnn::Reshape_vulkan* layer)
+{
+    CHECK(layer->pipeline_reshape || layer->pipeline_reshape_pack4);
+    PIPELINE(layer, pipeline_reshape);
+    PIPELINE(layer, pipeline_reshape_pack4);
+    PIPELINE(layer, pipeline_reshape_pack1to4);
+    PIPELINE(layer, pipeline_reshape_pack4to1);
+#if NCNN_BATCH
+    CHECK(!layer->pipeline_reshape_batch_reorder && !layer->pipeline_reshape_batch_reorder_pack4);
+    CHECK(!layer->pipeline_reshape_batch_reorder_pack1to4 && !layer->pipeline_reshape_batch_reorder_pack4to1);
+#endif
+    return 0;
+}
+
+int check_norm_pipelines(const ncnn::InstanceNorm_vulkan* layer)
+{
+    CHECK(layer->pipeline_instancenorm_norm || layer->pipeline_instancenorm_norm_pack4);
+    PIPELINE(layer, pipeline_instancenorm_reduce_sum4_fp16_to_fp32);
+    PIPELINE(layer, pipeline_instancenorm_reduce_sum4_fp16_to_fp32_pack4);
+    for (int i = 0; i < 2; ++i) {
+        PIPELINE(layer, pipeline_instancenorm_reduce_sum4_fp32[i]);
+        PIPELINE(layer, pipeline_instancenorm_reduce_sum4_fp32_pack4[i]);
+    }
+    PIPELINE(layer, pipeline_instancenorm_reduce_mean);
+    PIPELINE(layer, pipeline_instancenorm_reduce_mean_pack4);
+    PIPELINE(layer, pipeline_instancenorm_sub_mean_square);
+    PIPELINE(layer, pipeline_instancenorm_sub_mean_square_pack4);
+    PIPELINE(layer, pipeline_instancenorm_coeffs);
+    PIPELINE(layer, pipeline_instancenorm_coeffs_pack4);
+    PIPELINE(layer, pipeline_instancenorm_norm);
+    PIPELINE(layer, pipeline_instancenorm_norm_pack4);
+    CHECK(!layer->pipeline_instancenorm_reduce_subgroup && !layer->pipeline_instancenorm_reduce_subgroup_pack4);
+    return 0;
+}
+
+int check_binary_pipelines(const ncnn::BinaryOp_vulkan* layer)
+{
+    CHECK(layer->pipeline_binaryop || layer->pipeline_binaryop_pack4);
+    PIPELINE(layer, pipeline_binaryop);
+    PIPELINE(layer, pipeline_binaryop_pack4);
+    for (int i = 0; i < 2; ++i) {
+        PIPELINE(layer, pipeline_binaryop_broadcast[i]);
+        PIPELINE(layer, pipeline_binaryop_broadcast_pack4[i]);
+        PIPELINE(layer, pipeline_binaryop_broadcast_pack1to4[i]);
+    }
     return 0;
 }
 
@@ -364,13 +417,155 @@ int inner_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
     return 0;
 }
 
+int reshape_norm_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
+                      int width, int channels, bool compile_only)
+{
+    std::printf("CASE Reshape/InstanceNorm roundtrip: width=%d channels=%d retained Split residual\n", width, channels);
+    const int pack = channels % 4 == 0 ? 4 : 1;
+    const char* alias_env = std::getenv("RADISH_NCNN_RESHAPE_ALIAS");
+    const bool alias = pack == 4 && alias_env && !std::strcmp(alias_env, "1");
+    CHECK(device->info.vendor_id() == 0x5143 && device->info.device_id() == 506);
+    CHECK(!std::strcmp(device->info.device_name(), "Radish Adreno 506 (experimental compute)"));
+    CHECK(!opt.use_fp16_packed && scalar_size(opt) == 4u);
+
+    std::ostringstream graph;
+    const std::string shape2 = "2," + std::to_string(width) + "," + std::to_string(channels) + ",1,1";
+    const std::string shape3 = "3," + std::to_string(width) + ",1,1," + std::to_string(channels);
+    graph << "7767517\n6 8\n"
+          << "Input input 0 1 input -23330=5," << shape2 << "\n"
+          << "Split split 1 3 input norm_input residual retained -23330=15," << shape2 << ',' << shape2 << ',' << shape2 << "\n"
+          << "Reshape to3d 1 1 norm_input rank3 0=-1 1=1 2=" << channels << " -23330=5," << shape3 << "\n"
+          << "InstanceNorm norm 1 1 rank3 normalized 0=" << channels << " 1=1.000000e-5 2=0 -23330=5," << shape3 << "\n"
+          << "Reshape to2d 1 1 normalized norm2 0=-1 1=" << channels << " -23330=5," << shape2 << "\n"
+          << "BinaryOp add 2 1 norm2 residual output 0=0 -23330=5," << shape2 << "\n";
+
+    ncnn::Net net;
+    net.opt = opt;
+    net.set_vulkan_device(device);
+    CHECK(net.load_param_mem(graph.str().c_str()) == 0 && net.opt.use_vulkan_compute);
+    CHECK(net.layers().size() == 6);
+    ncnn::Mat no_weights;
+    for (size_t i = 0; i < net.layers().size(); ++i) {
+        ncnn::Layer* layer = net.mutable_layers()[i];
+        CHECK(layer && (i == 0 || layer->support_vulkan));
+        CHECK(layer->load_model(ncnn::ModelBinFromMatArray(&no_weights)) == 0);
+        CHECK(layer->create_pipeline(net.opt) == 0);
+        if (i == 2 || i == 4)
+            CHECK(check_reshape_pipelines(static_cast<const ncnn::Reshape_vulkan*>(layer)) == 0);
+        if (i == 3)
+            CHECK(check_norm_pipelines(static_cast<const ncnn::InstanceNorm_vulkan*>(layer)) == 0);
+        if (i == 5)
+            CHECK(check_binary_pipelines(static_cast<const ncnn::BinaryOp_vulkan*>(layer)) == 0);
+    }
+    if (compile_only) {
+        std::puts("PASS: normalization roundtrip pipeline compilation; no upload or submission");
+        return 0;
+    }
+
+    ncnn::Mat input(width, channels);
+    CHECK(!input.empty());
+    for (int c = 0; c < channels; ++c)
+        for (int x = 0; x < width; ++x)
+            input.row<float>(c)[x] = ((x * 13 + c * 7) % 127 - 63) / 64.f + c / 16.f;
+
+    ncnn::Extractor ex = net.create_extractor();
+    ex.set_light_mode(true);
+    ex.set_blob_vkallocator(opt.blob_vkallocator);
+    ex.set_workspace_vkallocator(opt.workspace_vkallocator);
+    ex.set_staging_vkallocator(opt.staging_vkallocator);
+    ncnn::VkCompute command(device);
+    ncnn::VkMat uploaded;
+    command.record_upload(input, uploaded, opt);
+    CHECK(!uploaded.empty() && uploaded.elempack == pack && uploaded.elemsize == 4u * pack);
+    CHECK(ex.input("input", uploaded) == 0);
+    uploaded.release();
+    CHECK(command.submit_and_wait() == 0 && command.reset() == 0);
+
+    ncnn::VkMat rank3, retained;
+    const auto before3 = command.pending_dispatch_total();
+    CHECK(ex.extract("rank3", rank3, command) == 0);
+    CHECK(ex.extract("retained", retained, command) == 0);
+    CHECK(rank3.dims == 3 && rank3.w == width && rank3.h == 1 && rank3.c * pack == channels);
+    CHECK(rank3.elempack == pack && rank3.elemsize == 4u * pack);
+    CHECK((command.pending_dispatch_total() == before3) == alias);
+    CHECK((rank3.data == retained.data) == alias);
+    if (alias) {
+        CHECK(rank3.cstep == static_cast<size_t>(width));
+        CHECK(rank3.total() == retained.total() && rank3.buffer_capacity() == retained.buffer_capacity());
+        CHECK(rank3.buffer_offset() == retained.buffer_offset() && rank3.refcount == retained.refcount);
+        CHECK(rank3.data->access_flags == retained.data->access_flags && rank3.data->stage_flags == retained.data->stage_flags);
+#if NCNN_BATCH
+        CHECK(rank3.n == 1 && rank3.nstep == rank3.total() && retained.nstep == rank3.nstep);
+#endif
+    } else if (pack == 1) {
+        CHECK(rank3.cstep > static_cast<size_t>(width));
+    }
+    ncnn::VkBufferMemory* retained_data = retained.data;
+    rank3.release();
+    retained.release();
+
+    ncnn::VkMat normalized, norm2, gpu_output;
+    const auto before_norm = command.pending_dispatch_total();
+    CHECK(ex.extract("normalized", normalized, command) == 0);
+    CHECK(command.pending_dispatch_total() > before_norm);
+    CHECK(normalized.data != retained_data);
+    const auto before2 = command.pending_dispatch_total();
+    CHECK(ex.extract("norm2", norm2, command) == 0);
+    CHECK((command.pending_dispatch_total() == before2) == alias);
+    CHECK((norm2.data == normalized.data) == alias);
+    CHECK(norm2.dims == 2 && norm2.w == width && norm2.h * pack == channels);
+    if (alias) {
+        CHECK(norm2.cstep == static_cast<size_t>(width) * channels / pack);
+        CHECK(norm2.total() == normalized.total() && norm2.buffer_capacity() == normalized.buffer_capacity());
+        CHECK(norm2.buffer_offset() == normalized.buffer_offset() && norm2.refcount == normalized.refcount);
+#if NCNN_BATCH
+        CHECK(norm2.nstep == norm2.total() && norm2.nstep == normalized.nstep);
+#endif
+    }
+    CHECK(ex.extract("output", gpu_output, command) == 0);
+    CHECK(ex.extract("retained", retained, command) == 0 && retained.data == retained_data);
+    ncnn::Option download = opt;
+    download.use_packing_layout = false;
+    ncnn::Mat output, norm_output, residual;
+    command.record_download(gpu_output, output, download);
+    command.record_download(norm2, norm_output, download);
+    command.record_download(retained, residual, download);
+    CHECK(command.submit_and_wait() == 0);
+    CHECK(!output.empty() && !norm_output.empty() && !residual.empty());
+    CHECK(output.dims == 2 && output.w == width && output.h == channels && output.elempack == 1 && output.elemsize == 4u);
+    CHECK(norm_output.dims == 2 && norm_output.w == width && norm_output.h == channels && norm_output.elempack == 1 && norm_output.elemsize == 4u);
+    CHECK(residual.dims == 2 && residual.w == width && residual.h == channels && residual.elempack == 1 && residual.elemsize == 4u);
+    double max_error = 0;
+    const double epsilon = static_cast<double>(1e-5f);
+    for (int c = 0; c < channels; ++c) {
+        const float* original = input.row<float>(c);
+        double mean = 0, variance = 0;
+        for (int x = 0; x < width; ++x) mean += original[x];
+        mean /= width;
+        for (int x = 0; x < width; ++x) {
+            const double delta = original[x] - mean;
+            variance += delta * delta;
+        }
+        variance /= width;
+        for (int x = 0; x < width; ++x) {
+            const double expected = (original[x] - mean) / std::sqrt(variance + epsilon);
+            CHECK(matches(norm_output.row<float>(c)[x], expected, c, x, max_error, 0));
+            CHECK(matches(output.row<float>(c)[x], original[x] + expected, c, x, max_error, 0));
+        }
+        CHECK(!std::memcmp(residual.row<float>(c), original, static_cast<size_t>(width) * sizeof(float)));
+    }
+    std::printf("PASS: %s roundtrip, all %d normalized + %d residual-sum outputs, retained residual bit-exact, max abs error %.9g\n",
+                alias ? "pack4 alias" : "copy fallback", width * channels, width * channels, max_error);
+    return 0;
+}
+
 } // namespace
 
 int main(int argc, char** argv)
 {
     // Flush each stage so a driver hang still leaves a useful device-side log.
     std::setvbuf(stdout, 0, _IONBF, 0);
-    bool conv = false, inner = false, compile_only = false, smoke = false, fp16_packed = false, tiled_only = false;
+    bool conv = false, inner = false, compile_only = false, smoke = false, fp16_packed = false, tiled_only = false, reshape_only = false;
     int dilation = 1;
     for (int i = 1; i < argc; ++i) {
         if (!std::strcmp(argv[i], "--conv")) conv = true;
@@ -379,6 +574,7 @@ int main(int argc, char** argv)
         else if (!std::strcmp(argv[i], "--smoke")) smoke = true;
         else if (!std::strcmp(argv[i], "--fp16-packed")) fp16_packed = true;
         else if (!std::strcmp(argv[i], "--tiled-only")) tiled_only = true;
+        else if (!std::strcmp(argv[i], "--reshape-only")) reshape_only = true;
         else if (!std::strcmp(argv[i], "--dilation3") || !std::strcmp(argv[i], "--dilation5")) {
             if (dilation != 1) {
                 std::fputs("select at most one of --dilation3 or --dilation5\n", stderr);
@@ -387,7 +583,7 @@ int main(int argc, char** argv)
             dilation = !std::strcmp(argv[i], "--dilation3") ? 3 : 5;
         }
         else {
-            std::fprintf(stderr, "Usage: %s [--conv] [--inner] [--compile-only] [--smoke] [--fp16-packed] | --tiled-only [--compile-only] [--dilation3 | --dilation5]\n", argv[0]);
+            std::fprintf(stderr, "Usage: %s [--conv] [--inner] [--compile-only] [--smoke] [--fp16-packed] | --tiled-only [--compile-only] [--dilation3 | --dilation5] | --reshape-only [--compile-only]\n", argv[0]);
             return 1;
         }
     }
@@ -399,7 +595,11 @@ int main(int argc, char** argv)
         std::fputs("--tiled-only is FP32 and cannot be combined with --conv, --inner, --smoke or --fp16-packed\n", stderr);
         return 1;
     }
-    if (!conv && !inner && !tiled_only) conv = inner = true;
+    if (reshape_only && (conv || inner || smoke || fp16_packed || tiled_only || dilation != 1)) {
+        std::fputs("--reshape-only is FP32 and cannot be combined with another case selector\n", stderr);
+        return 1;
+    }
+    if (!conv && !inner && !tiled_only && !reshape_only) conv = inner = true;
     CHECK(ncnn::create_gpu_instance() == 0);
     GpuInstance instance;
     CHECK(ncnn::get_gpu_count() == 1);
@@ -436,6 +636,11 @@ int main(int argc, char** argv)
     Allocators allocators(device, opt);
     CHECK(opt.blob_vkallocator && opt.staging_vkallocator);
 
+    if (reshape_only) {
+        CHECK(reshape_norm_case(device, opt, 33, 8, compile_only) == 0);
+        CHECK(reshape_norm_case(device, opt, 213, 8, compile_only) == 0);
+        CHECK(reshape_norm_case(device, opt, 213, 3, compile_only) == 0);
+    }
     if (tiled_only) CHECK(conv_case(device, opt, 213, 128, 128, 11, compile_only, true, dilation) == 0);
     if (conv) {
         CHECK(conv_case(device, opt, 33, 3, 5, 3, compile_only) == 0);

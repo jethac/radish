@@ -1,0 +1,63 @@
+--- a/src/layer/vulkan/reshape_vulkan.cpp
++++ b/src/layer/vulkan/reshape_vulkan.cpp
+@@ -6,6 +6,10 @@
+ #include "expression.h"
+ #include "layer_type.h"
+ #include "layer_shader_type.h"
++
++#include <limits>
++#include <stdlib.h>
++#include <string.h>
+ 
+ namespace ncnn {
+ 
+@@ -449,6 +453,49 @@
+ 
+     size_t out_elemsize = elemsize / elempack * out_elempack;
+ 
++    const char* alias_env = getenv("RADISH_NCNN_RESHAPE_ALIAS");
++    if (alias_env && strcmp(alias_env, "1") == 0
++        && vkdev->info.vendor_id() == 0x5143 && vkdev->info.device_id() == 506
++        && strcmp(vkdev->info.device_name(), "Radish Adreno 506 (experimental compute)") == 0
++        && opt.use_packing_layout && !opt.use_fp16_packed && !opt.use_fp16_storage
++        && !opt.use_fp16_arithmetic && !opt.use_fp16_uniform
++        && !opt.use_bf16_packed && !opt.use_bf16_storage
++        && elempack == 4 && out_elempack == 4 && elemsize == 16 && out_elemsize == 16
++        && bottom_blob.data && bottom_blob.refcount && bottom_blob.n == 1
++        && bottom_blob.w > 0 && bottom_blob.d == 1 && outw == bottom_blob.w
++        && bottom_blob.allocator == opt.blob_vkallocator)
++    {
++        const bool to3d = dims == 2 && ndim == 3 && bottom_blob.c == 1
++                          && bottom_blob.h > 0 && outh == 1 && outc > 0
++                          && outc % 4 == 0 && outc / 4 == bottom_blob.h;
++        const bool to2d = dims == 3 && ndim == 2 && bottom_blob.h == 1
++                          && bottom_blob.c > 0 && outh > 0 && outh % 4 == 0
++                          && outh / 4 == bottom_blob.c;
++        const size_t width = bottom_blob.w;
++        const size_t packs = to3d ? bottom_blob.h : to2d ? bottom_blob.c : 0;
++        if (packs && width <= std::numeric_limits<size_t>::max() / packs)
++        {
++            const size_t count = width * packs;
++            if (count <= std::numeric_limits<size_t>::max() / elemsize
++                && bottom_blob.cstep == (to3d ? count : width)
++                && bottom_blob.total() == count
++#if NCNN_BATCH
++                && bottom_blob.nstep == count
++#endif
++                && bottom_blob.offset <= bottom_blob.data->capacity
++                && count * elemsize <= bottom_blob.data->capacity - bottom_blob.offset
++                && bottom_blob.buffer_capacity() == count * elemsize)
++            {
++                top_blob = bottom_blob;
++                top_blob.dims = ndim;
++                top_blob.h = to3d ? 1 : (int)packs;
++                top_blob.c = to3d ? (int)packs : 1;
++                top_blob.cstep = to3d ? width : count;
++                return 0;
++            }
++        }
++    }
++
+     if (ndim == 1)
+     {
+         top_blob.create(outw / out_elempack, out_elemsize, out_elempack, opt.blob_vkallocator);

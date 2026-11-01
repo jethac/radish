@@ -155,7 +155,8 @@ full T213 synthesis and the equivalent CPU startup measurement also complete.
 Both complete output gates pass. Pursue the measured remaining costs and
 sustained behavior. Shared32 remains rejected for latency; packed FP16 remains rejected
 for accuracy. Keep FP32 as the accepted path. Give performance updates about
-every five minutes during active work.
+every five minutes during active work. Keep pushing validated increments and
+measurements to the public GitHub repository, as requested.
 
 The harmonic-source audit and complete runtime measurements are in
 [RUNTIME_INTEGRATION.md](RUNTIME_INTEGRATION.md).
@@ -1189,3 +1190,58 @@ values (max 0.000362396240, relative RMS 2.51363812e-6) and all 127800 waveform
 samples (max 5.05000353e-5, SNR 88.225028 dB), with zero mismatches. Both backend
 measurements therefore have complete same-boundary reference gates. Warm
 resident synthesis, cancellation and sustained thermal measurements remain open.
+
+### Next measured optimization
+
+Private `warm-profile-alias-20261101-zcy9kch2/{REPORT.md,DESIGN.md,comparison.json}`
+records complete deferred-command attribution for the 0017/0018 warm samples.
+The 60 general convolution math commands fall from 49.092575 to 43.458908 s;
+53 tiled commands account for 40.111435 s. The graph has 69 Conv1D layers in
+all: the other nine simple convolutions were not part of that math-command
+category. All convolution owners, including helper commands, total 45.813589 s.
+The 48 exact five-operation Snake chains total 6.978474 s. These are command
+wall timers including submission/wait overhead, not isolated GPU/fence timings.
+
+The immediate candidate is an opt-in metadata alias for 49 FP32 pack4
+normalization reshape pairs. Their 98 copies total 3.384351 s and about 1.55 GB
+of logical reads/writes. Require actual dimensions, identical scalar order,
+valid buffer capacity/offsets and unchanged ownership. Keep five scalar pairs
+and all incompatible reshapes on the copy path; preserve downstream in-place
+clone protection for Split residuals. Those clones may replace some removed
+copies, so the attributed copy time is not a promised latency saving. No result
+is accepted before the operator/full-model/waveform gates. The preserved source
+checkpoint is public commit `96de5c7f0695f25af645cf9cc857378a0a79138f`.
+
+### Reshape alias candidate 0019
+
+`RADISH_NCNN_RESHAPE_ALIAS=1` enables a narrow exact-Radish FP32 pack4 alias
+between [C,W] and [C,1,W]. All other paths remain unchanged. Runtime checks
+cover dimensions, packing/storage, cstep/nstep, allocator, offsets, descriptor
+capacity and allocation bounds; normal VkMat assignment preserves shared
+ownership and access state. Existing InstanceNorm clone-on-shared-input behavior
+remains intact. Both cross builds and the integrated runtime build pass.
+
+`operators-reshape0019-compile.log` compiles all three focused cases before
+upload/submission; 30 compiled shaders use at most 8 full and 5 half registers.
+Both `operators-reshape0019-{alias,default}-execute.log` runs pass: widths 33
+and 213 with eight channels check both pack4 alias directions, full independent
+normalization/residual-sum references and bit-exact retained Split input. Width
+213 with three channels checks the unchanged padded scalar-copy fallback.
+Maximum errors are 3.62247091e-7, 3.00622287e-7 and 2.80124335e-7 respectively,
+with unchanged 2e-5 absolute/relative gates. No new faults; services active.
+The full-model experiment rejects this bidirectional candidate for performance:
+`core-instancenorm-reshape-alias-repeat2.log` takes 109.290526 s first and
+109.107981 s warm after 9.432 s load, versus the accepted 69.678044 s warm.
+All 562342 values pass, and the frozen output is byte-identical to 0018.
+Peak memory is 420.5 MiB, zero swap, no faults, both services active. The
+normalization inputs retain Split aliases, causing protective transfer clones.
+The current driver copies those through one CP_MEM_TO_MEM packet per four bytes
+and a submit/wait every 4 KiB; one 13 MB clone takes about 3.3 s. This candidate
+stays default-off and is not an accepted optimization. Narrowing the fast path
+to post-normalization rank3→rank2 aliases is the next experiment.
+
+Device-model snapshots now include readonly devfreq residency counters. Across
+this rejected run they account for 212.572 s, of which 210.232 s (98.9%) is at
+650 MHz. These are the counters' accounted times between wrapper snapshots,
+not a per-kernel or complete-wall-clock frequency measurement. No power or
+clock settings were changed.

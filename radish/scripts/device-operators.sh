@@ -7,22 +7,26 @@ SHARED32=${RADISH_NCNN_SHARED32:-0}
 [[ $SHARED32 == 0 || $SHARED32 == 1 ]] || { echo 'RADISH_NCNN_SHARED32 must be 0 or 1' >&2; exit 2; }
 TILED=${RADISH_NCNN_TILED:-0}
 [[ $TILED == 0 || $TILED == 1 ]] || { echo 'RADISH_NCNN_TILED must be 0 or 1' >&2; exit 2; }
+RESHAPE_ALIAS=${RADISH_NCNN_RESHAPE_ALIAS:-0}
+[[ $RESHAPE_ALIAS == 0 || $RESHAPE_ALIAS == 1 ]] || { echo 'RADISH_NCNN_RESHAPE_ALIAS must be 0 or 1' >&2; exit 2; }
 SHARED_GROUPS=${RADISH_SHARED_GROUPS:-1}
 [[ $SHARED_GROUPS =~ ^[1-8]$ ]] || { echo 'RADISH_SHARED_GROUPS must be 1..8' >&2; exit 2; }
 EXTRA_ENV=
 TAG=operators
 TILED_ONLY=0
+RESHAPE_ONLY=0
 OTHER_SELECTION=0
 DILATION=1
 for arg in "$@"; do
     case $arg in
         --conv|--inner|--smoke|--fp16-packed) TAG+=-${arg#--}; OTHER_SELECTION=1 ;;
         --tiled-only) TAG+=-tiled-only; TILED_ONLY=1 ;;
+        --reshape-only) TAG+=-reshape-only; RESHAPE_ONLY=1 ;;
         --dilation3|--dilation5)
             [[ $DILATION == 1 ]] || { echo 'select at most one of --dilation3 or --dilation5' >&2; exit 2; }
             DILATION=${arg#--dilation}; TAG+=-dilation$DILATION ;;
         --compile-only) TAG+=-compile; EXTRA_ENV='--setenv=IR3_SHADER_DEBUG=disasm' ;;
-        *) echo 'usage: device-operators.sh [--conv] [--inner] [--compile-only] [--smoke] [--fp16-packed] | --tiled-only [--compile-only] [--dilation3 | --dilation5]' >&2; exit 2 ;;
+        *) echo 'usage: device-operators.sh [--conv] [--inner] [--compile-only] [--smoke] [--fp16-packed] | --tiled-only [--compile-only] [--dilation3 | --dilation5] | --reshape-only [--compile-only]' >&2; exit 2 ;;
     esac
 done
 if [[ $DILATION != 1 && $TILED_ONLY != 1 ]]; then
@@ -33,9 +37,14 @@ if [[ $TILED_ONLY == 1 && $OTHER_SELECTION == 1 ]]; then
     echo '--tiled-only is FP32 and cannot be combined with --conv, --inner, --smoke or --fp16-packed' >&2
     exit 2
 fi
-EXTRA_ENV+=" --setenv=RADISH_NCNN_SHARED32=$SHARED32 --setenv=RADISH_NCNN_TILED=$TILED --setenv=RADISH_SHARED_GROUPS=$SHARED_GROUPS --setenv=RADISH_PROFILE=1"
+if [[ $RESHAPE_ONLY == 1 && ( $OTHER_SELECTION == 1 || $TILED_ONLY == 1 || $DILATION != 1 ) ]]; then
+    echo '--reshape-only is FP32 and cannot be combined with another case selector' >&2
+    exit 2
+fi
+EXTRA_ENV+=" --setenv=RADISH_NCNN_SHARED32=$SHARED32 --setenv=RADISH_NCNN_TILED=$TILED --setenv=RADISH_NCNN_RESHAPE_ALIAS=$RESHAPE_ALIAS --setenv=RADISH_SHARED_GROUPS=$SHARED_GROUPS --setenv=RADISH_PROFILE=1"
 [[ $SHARED32 == 0 ]] || TAG+=-shared32
 [[ $TILED == 0 ]] || TAG+=-tiled
+[[ $RESHAPE_ALIAS == 0 ]] || TAG+=-reshape-alias
 [[ $SHARED_GROUPS == 1 ]] || TAG+=-shared-groups$SHARED_GROUPS
 exec 9>"${RADISH_DEVICE_LOCK:-$TOP/.device.lock}"
 flock -w 1800 9
