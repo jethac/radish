@@ -799,4 +799,5 @@ status remains unchanged.
 
 The existing norm-sum4 option on the combined graph passes identical core bytes
 at 40.723725 s warm (385.1 MiB / 71.7 MiB swap). Fresh combined norm-enabled
-synthesis and resident/sustained performance remain pending.
+T213 passes at 57.293048 s total / 41.411426 s core with identical output bytes,
+418.9 MiB / 12.6 MiB swap. Resident/sustained performance remains pending.

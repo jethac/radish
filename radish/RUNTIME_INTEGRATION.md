@@ -879,3 +879,18 @@ Evidence under WORK: `runtime-single-{full,short}-affine-deconv2d-0031-first.log
 matching `runtime-single-{full,short}-affine-deconv2d-0031-validation.json`, and
 `runtime-affine-deconv2d-0031-summary.json`. Captures are
 `kokoro-runtime-{full,short}-single-vulkan-affine-deconv2d-0031-first-affine-snake-deconv2d-planar/`.
+
+
+### Combined graph with norm sum4 enabled
+
+With frozen driver 0031 and the same integrated binary, enabling
+`RADISH_NCNN_NORM_SUM4=1` on `--affine-snake-deconv2d` passes fresh T213 core and
+waveform checks: 57.293048 s total, 41.411426 s core, 9.424234 s core load,
+5.889140 s frontend, 418.9 MiB peak / 12.6 MiB swap. All 715 neural-core layers
+execute on GPU. The eight boundary files and complete outputs match the prior
+norm-disabled full run exactly; waveform SNR remains 98.377722 dB. No fault
+occurred and both services stayed active. The preceding full total was 63.130064 s
+with a 10.326545 s frontend, so the total gain is not solely a GPU improvement.
+CPU full synthesis remains 39.789900 s. These are single startup observations;
+resident reuse and sustained performance remain pending. The earlier short
+30.156883 s result uses norm sum4 disabled. Exact logs and pins are in NOTES.

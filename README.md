@@ -33,28 +33,26 @@ and both live appliance services remained active.
 | Measurement | GPU path | Packed six-thread CPU |
 | --- | ---: | ---: |
 | Fixed full-size core, warm extraction | **40.724 s** | **32.079 s** |
-| Fresh full-length synthesis, including startup | **63.130 s** | **39.790 s** |
+| Fresh full-length synthesis, including startup | **57.293 s** | **39.790 s** |
 
 GPU inference remains slower than CPU. Enabling the existing normalization
 optimization reduces warm core time from 42.470 s to 40.724 s, with identical
-output bytes. Fresh synthesis has only been measured with that optimization
-disabled: full synthesis regresses from 59.185 s as CPU frontend startup rises
-from 5.935 s to 10.327 s. Fresh short synthesis improves from 32.105 s to
-**30.157 s**, with a **15.874 s** GPU core. These are single warm/startup
-observations; the CPU warm mean has two samples and uses the earlier
-InstanceNorm graph. All eight full-length boundary inputs match the preceding
-GPU and CPU captures.
+output bytes. Fresh full synthesis improves from 63.130 s to 57.293 s, with a
+41.411 s GPU core. Frontend startup also falls from 10.327 s to 5.889 s, so the
+whole improvement cannot be attributed to normalization. All eight boundary
+inputs, core output and waveform match the preceding validated run exactly.
 
-The latest fixed core peaks at **385.1 MiB with 71.7 MiB swap**; the preceding
-42.470 s sample used 402.1 MiB with zero swap. Fresh full synthesis peaks
-at **459.3 MiB with 38.1 MiB swap**; short synthesis uses **385.0 MiB with zero
-swap**. Memory pressure varies. Resident warm synthesis and sustained thermal
-behavior remain unmeasured.
+The latest fixed core peaks at **385.1 MiB with 71.7 MiB swap**; fresh full
+synthesis uses **418.9 MiB with 12.6 MiB swap**. The earlier norm-disabled short
+run takes **30.157 s**, with a **15.874 s** GPU core, 385.0 MiB and zero swap.
+These are single warm/startup observations with varying memory pressure; the
+CPU warm mean has two samples and uses the earlier InstanceNorm graph. Resident
+warm synthesis and sustained thermal behavior remain unmeasured.
 
 Select the measured graph with `--affine-snake-deconv2d`,
 `RADISH_NCNN_PLANAR=1` and `RADISH_BATCH_CHUNKS=8`, with one X workgroup.
-The 40.724 s fixed-core result additionally enables `RADISH_NCNN_NORM_SUM4=1`;
-the published fresh synthesis results use `RADISH_NCNN_NORM_SUM4=0`. The exact
+The latest fixed core and fresh full synthesis additionally enable
+`RADISH_NCNN_NORM_SUM4=1`; the earlier short result uses it disabled. The exact
 graph preserves every model weight and expresses
 three 1D deconvolutions as stock height-one 2D Vulkan operators with reshapes.
 The preparation/validation tools require completed full CPU reference evidence.
@@ -65,8 +63,8 @@ Earlier normalization, activation, layout and submission changes brought warm
 GPU time down from 101.275 s. The latest reduction-loop unrolling candidate is
 correct but 7–9% slower in paired operator measurements and remains excluded.
 Optional X pairing has no established overall performance win. The normalization
-optimization has one improved fixed-core sample; fresh and sustained behavior
-with the combined graph remain unmeasured.
+optimization has passing fixed-core and fresh full results; sustained behavior
+with the combined graph remains unmeasured.
 Mixed FP16 storage still fails full-model accuracy gates, so FP32 remains the
 validated path. Detailed results and failed experiments are in
 [NOTES.md](radish/NOTES.md).

@@ -7,11 +7,13 @@ positive planar indices 0030/0031, generic/tiled batch 8, norm sum4 enabled and
 X1. All 715 non-Input layers execute through Vulkan, with zero CPU fallbacks.
 The fixed core passes at 40.723725 s warm, 385.1 MiB peak and 71.7 MiB swap,
 with identical output bytes to the preceding norm-disabled 42.469886 s run.
-Fresh synthesis with norm sum4 enabled has not been measured. With it disabled,
-T213 passes at 42.943278 s core / 63.130064 s total, 459.3 MiB peak plus 38.1 MiB
-swap; slower frontend startup regresses from the preceding 59.184846 s total.
-T78 passes at 30.156883 s total / 15.873927 s core, 385.0 MiB and zero swap.
-CPU remains faster. These are single warm/startup observations.
+Fresh norm-enabled T213 passes all core/waveform gates at 41.411426 s core /
+57.293048 s total, 418.9 MiB peak plus 12.6 MiB swap. All eight boundary files
+and complete core/waveform bytes match the preceding norm-disabled run, which
+took 63.130064 s total. Frontend startup also improves from 10.326545 s to
+5.889140 s, so the total difference is not solely a normalization gain. The
+earlier norm-disabled T78 run remains 30.156883 s total / 15.873927 s core,
+385.0 MiB and zero swap. CPU remains faster. These are single observations.
 
 Driver checkpoint 0032 adds execution-time core indirect dispatch. All 36
 indirect and 16 direct-grid checks pass on A506 without new faults; both live
@@ -2463,3 +2465,31 @@ live services active. Logs: `compute-indirect-0032-first.log` and
 The private device ICD `/var/tmp/radish/libvulkan_radish.so` now contains 0032;
 immutable 0031 performance captures remain unchanged. No system Mesa or service
 configuration changed, and no device CTS case ran.
+
+
+## Fresh full synthesis with combined graph and norm sum4
+
+The frozen 0031 ICD and integrated runtime pass fresh T213 synthesis with
+`RADISH_NCNN_NORM_SUM4=1`: frontend 5.889140 s, metadata 0.022015 s, core load
+9.424234 s, core extraction 41.411426 s, complete core scope 51.209836 s,
+waveform tail 0.103896 s, total synthesis 57.293048 s. Service wall is 57.373 s;
+peak memory 418.9 MiB and swap 12.6 MiB. All 715 non-Input layer traces use GPU,
+zero CPU fallbacks, no new faults, and both appliance services remain active.
+
+Every one of the 562342 core values and 127800 waveform samples passes the
+unchanged independent reference gates. Waveform SNR is 98.377722 dB. All eight
+boundary inputs and complete core/waveform outputs are byte-identical to the
+preceding norm-disabled full capture. Compared with that 63.130064 s run, core
+extraction saves 1.531852 s while frontend startup independently saves 4.437405 s;
+memory/swap also vary. This is one startup comparison, not isolated attribution
+or sustained behavior. CPU full synthesis remains faster at 39.789900 s.
+The earlier 30.156883 s short capture still uses norm disabled.
+
+Logs and references under WORK: `runtime-single-full-affine-deconv2d-norm-0031-first.log`,
+`runtime-single-full-affine-deconv2d-norm-0031-{reference,validation}.log`,
+`runtime-single-full-affine-deconv2d-norm-0031-validation.json`, and
+`runtime-affine-deconv2d-norm-0031-summary.json`. The exact capture directory is
+`kokoro-runtime-full-single-vulkan-affine-deconv2d-norm-0031-first-affine-snake-deconv2d-planar-norm-sum4/`.
+Before this run, three identical immutable runtime/library paths were hardlinked
+to recover disk space, preserving every path and byte. Inventory and checks are
+in `dedup-runtime-assets-before-norm-full*`; no reserve or memory cap changed.

@@ -79,4 +79,7 @@ unproven.
 
 Latest combined graph with optional norm sum4 passes identical full core bytes at
 40.723725 s warm, 385.1 MiB / 71.7 MiB swap. This single fixed-core result uses
-driver 0031; fresh norm-enabled combined synthesis remains unmeasured.
+driver 0031. Fresh norm-enabled T213 also passes all core/waveform values at
+57.293048 s total / 41.411426 s core, 418.9 MiB / 12.6 MiB swap, no faults.
+The complete boundary/core/wave bytes match norm0; its slower frontend makes
+the total comparison confounded. CPU remains faster.
