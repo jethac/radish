@@ -18,6 +18,16 @@ earlier norm-disabled T78 run remains 30.156883 s total / 15.873927 s core,
 Driver checkpoint 0032 adds execution-time core indirect dispatch. All 36
 indirect and 16 direct-grid checks pass on A506 without new faults; both live
 services remain active. The performance results above used driver 0031.
+
+Bounded complete-request reuse now passes: T78 cold/resident 29.764615/20.055962 s,
+and T213 after shape reload/resident 57.301229/46.984077 s. Every request
+recomputes frontend/source and waveform, with all 715 core layers on GPU. All
+five tablet requests pass original reference gates and match prior output bytes.
+The shape session peaks at 517 MiB / 19.1 MiB swap, no faults/services active.
+Equivalent resident CPU comparison, sustained behavior and tablet cancellation
+remain pending. The canonical runtime build reproduces the tested private binary
+byte-for-byte; the public staging wrapper still uses its one-shot interface.
+
 Historical evidence follows.
 
 Overall goal active. M0–M2 bring-up is demonstrated; selected M3 paths now pass,
@@ -2493,3 +2503,84 @@ Logs and references under WORK: `runtime-single-full-affine-deconv2d-norm-0031-f
 Before this run, three identical immutable runtime/library paths were hardlinked
 to recover disk space, preserving every path and byte. Inventory and checks are
 in `dedup-runtime-assets-before-norm-full*`; no reserve or memory cap changed.
+
+
+## Bounded resident Kokoro worker
+
+`--request-loop --next-input DIR ...` adds two to four complete requests to the
+existing runtime. The positional input is request zero; each appended directory
+supplies fresh ids/style/speed. Each request runs frontend/source, exact metadata,
+one new Extractor and the waveform tail. Only one core remains resident, keyed
+by exact inferred parameter text including actual T. A shape change destroys the
+old Net/custom contexts/device before loading its replacement. One-shot defaults
+and `--repeat N` retain their original meaning.
+
+GPU request objects die after completed download and before blob/staging allocator
+budgets are cleared. Persistent weights and pipelines survive a cache hit. This
+releases request-owned workspace; Freedreno BO caches and libc/ORT may retain
+physical pages. CPU loop mode disables the Net's local activation pool. Timing
+includes phase memory sampling/progress-manifest I/O; extraction includes the
+reported workspace trim. Request latency excludes capture publication and final
+session teardown; the session duration includes both.
+
+The first tablet T78/T78 session passes at 29.764615/20.055962 s synthesis,
+15.524156/15.492647 s core, and 9.717544/0 s core load. Peak 429.2 MiB / 532 KiB
+swap. The T78/T213/T213 session passes at 29.680679/57.301229/46.984077 s total,
+15.909938/41.569559/40.930395 s core, and 9.455682/9.330206/0 s load. Cache
+pattern is miss/miss/hit, with one model at a time; peak 517 MiB / 19.1 MiB swap.
+All five requests execute 715 GPU / zero CPU layer paths. Every boundary file,
+core output and waveform matches the corresponding prior validated capture.
+Original ORT comparisons pass all 205942 or 562342 core values and 46800 or
+127800 waveform samples; waveform SNR is 97.073984 dB short / 98.377722 dB full.
+Both sessions report no faults and both live services active. Full resident
+latency still exceeds the historical 39.789900 s fresh CPU baseline; an equivalent
+resident CPU measurement is pending. These bounded sessions are not sustained
+thermal evidence or live application integration.
+
+Per-request atomic output preserves the existing v1 boundary/core/waveform/runtime
+layout under request-000/, request-001/, etc. Atomic session.json records terminal
+complete/cancelled/failed status, counts, cache decisions, timings and phase memory.
+Optional `--cancel-file /absolute/path` is polled between completed phases. It
+suppresses unpublished output and drains work before cleanup; it cannot promptly
+interrupt an active GPU extraction. Host preexisting/mid-core cancellation and
+subsequent one-shot repeat2 checks pass. Tablet cancellation remains unmeasured.
+
+Canonical integration and build pass (`build-runtime-resident-first.log`) and
+reproduce the tested binary exactly:
+`0541e68cbb9e2f04862ff6cf36c73a70036118ec2f6d415716bf658b0270bda9`.
+Runtime source SHA `9bcdf73f7a1501923864956ee41d0a542710481246657033097d4315a95f2523`;
+helper SHA `1e970df28e997cd5d67e2c573074067511592aa448399544f2a6f0564fafc220`.
+Measured driver remains 0031 (`05ea3444c6b1e38a524ffe59133dd6097634412ffc0a25356b2fbf14b312365e`),
+combined graph e211a573...fc807d, FP32/PLANAR1/NORM_SUM4=1/batch8/tiled8/X1.
+The later 0032 indirect API change is separate from these measurements.
+
+Evidence under WORK: `resident-runtime-private-9heh18vd/{source-checks.json,cross-build/build.json,host/summary.json}`,
+`resident-runtime-independent-9ofxqpn8/REPORT.md`,
+`resident-first-validation-ovkogiqt/{REPORT.md,summary.json}`,
+`resident-shape-validation-c5w7tg1v/{REPORT.md,summary.json}`,
+`resident-loop-first-request-{000,001}-validation.json`, and
+`resident-loop-shape-first-request-{000,001,002}-validation.json`.
+Captures: `kokoro-resident-loop-first` and `kokoro-resident-loop-shape-first`;
+guarded execution evidence under `evidence/resident-loop-{first,shape-first}/`.
+The private reviewed harness in `resident-device-loop-wqyh11ze/` used the shared
+lock, 640 MiB memory / 128 MiB swap / 300 s runtime, 15 s stop timeout and existing
+RAM/disk reserves. Failures drain only their own unique transient unit. Its
+source pins describe the pre-integration checkout; those historical runs are
+complete. Public loop staging is being integrated separately; the existing
+`device-runtime.sh` still accepts its one-shot options only.
+
+Before the first resident run, three byte-identical immutable runtime/library
+paths were hardlinked without changing their bytes or names. Inventory and
+checks: `dedup-runtime-assets-before-resident-first*`. No system library, kernel,
+service, memory limit or reserve changed.
+
+The accumulator-orientation shader experiment is rejected before tensor execution:
+actual A506 hot loops retain 47 encoded slots, 32 scalar MADs, three vector4 shared
+loads and no repeat MADs. Both programs use 16 full / zero half registers, four
+loops and native length 27. The proposed instruction reduction did not occur.
+Exact report: `planar-accumulator-private-cavc_tnj/actual-first/REPORT.md`;
+compile log `planar-accumulator-compile-first.log`, no faults. Canonical shader
+remains unchanged. Historical X2 targeted math was also essentially flat, so
+extending X2 admission is deferred. The next private candidate targets five
+nonaligned-input-channel convolutions; measured math exposure is 2.736140 s,
+not a predicted saving.

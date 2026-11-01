@@ -47,7 +47,17 @@ synthesis uses **418.9 MiB with 12.6 MiB swap**. The earlier norm-disabled short
 run takes **30.157 s**, with a **15.874 s** GPU core, 385.0 MiB and zero swap.
 These are single warm/startup observations with varying memory pressure; the
 CPU warm mean has two samples and uses the earlier InstanceNorm graph. Resident
-warm synthesis and sustained thermal behavior remain unmeasured.
+warm synthesis now passes at both lengths; sustained thermal behavior remains
+unmeasured.
+
+A bounded resident worker now regenerates frontend/source and waveform for every
+request while retaining one loaded core. Short synthesis falls from **29.765 s
+to 20.056 s** on reuse; full synthesis falls from **57.301 s to 46.984 s**.
+Shape changes reload the core, and all five tablet requests pass complete
+reference checks with identical prior output bytes. The short/full/full session
+peaks at **517 MiB with 19.1 MiB swap**, with no faults and both live services
+active. These are single resident observations; a matching resident CPU
+comparison, sustained behavior and live application integration remain pending.
 
 Select the measured graph with `--affine-snake-deconv2d`,
 `RADISH_NCNN_PLANAR=1` and `RADISH_BATCH_CHUNKS=8`, with one X workgroup.

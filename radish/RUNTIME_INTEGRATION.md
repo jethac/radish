@@ -894,3 +894,63 @@ with a 10.326545 s frontend, so the total gain is not solely a GPU improvement.
 CPU full synthesis remains 39.789900 s. These are single startup observations;
 resident reuse and sustained performance remain pending. The earlier short
 30.156883 s result uses norm sum4 disabled. Exact logs and pins are in NOTES.
+
+
+### Bounded complete-request reuse
+
+The runtime binary accepts an explicit request loop:
+
+```sh
+radish-kokoro-runtime --affine-snake --deconv2d --vulkan \
+  --request-loop --next-input INPUT_SHORT --next-input INPUT_FULL \
+  --threads 4 --ort-threads 4 --max-frames 512 --repeat 1 \
+  --cancel-file /private/run/cancel \
+  MODELS INPUT_SHORT PARAM WEIGHTS TAIL NEW_SESSION
+```
+
+The positional INPUT_DIR is request zero; one to three `--next-input` directories
+append complete requests, for two to four total. Loop mode requires repeat1.
+Existing one-shot `--repeat N` still computes one boundary, N core extractions
+and one tail. Each loop request regenerates frontend/source, infers actual-T
+shapes, extracts a new result and generates its waveform. A matching inferred
+graph reuses one Net; a shape change evicts it before loading the replacement.
+There is no multi-model cache or concurrent frontend/GPU execution.
+
+Completed requests atomically publish request-000/, request-001/, etc, each with
+the existing boundary/, core.f32, waveform.f32 and runtime.json v1 layout. Extra
+request metadata records index, core-cache hit and workspace trim time. A hit has
+zero core load. Top-level session.json records status, counts, ordered requests,
+phase memory samples and final teardown. Require terminal complete and exact
+requested/completed counts before accepting a successful session. The optional
+regular cancel marker suppresses uncommitted output, preserves completed requests
+and exits2 after draining the active phase. It is not prompt mid-GPU cancellation;
+only host cancellation has been tested so far.
+
+The same binary passes five full tablet reference comparisons across T78/T213:
+short cold/resident 29.764615/20.055962 s; full after shape reload/resident
+57.301229/46.984077 s. All 715 core layers use GPU; complete boundaries and outputs
+match prior validated captures. The shape session peaks at 517 MiB / 19.1 MiB
+swap, with no faults and both services active. Request timing includes phase
+memory sampling/checkpoint I/O and workspace trim, excludes capture publication
+and final session teardown. Released allocators do not guarantee immediate
+physical-page return. Resident CPU comparison and sustained behavior are pending.
+
+The existing public device-runtime.sh staging interface remains one-shot while
+loop staging is integrated. The measured private harness enforces the shared lock,
+640 MiB / 128 MiB swap / 300 s runtime and existing reserves, verifies remote and
+host hashes, and creates each request's existing device provenance only after
+service/fault checks. Its source pins are historical; do not substitute captures
+or fabricate device records. After guarded capture, use the unchanged importer
+and validator separately for every request, with unique references/reports:
+
+```sh
+"$PY" radish/scripts/import-kokoro-device-boundary.py \
+  "$CAPTURE/request-000/boundary" "$RADISH_WORK/kokoro-runtime-models" "$REFERENCE_000"
+"$PY" radish/scripts/validate-kokoro-runtime.py \
+  "$CAPTURE/request-000" "$REFERENCE_000" "$REPORT_000"
+```
+
+The canonical build matches the measured runtime SHA
+`0541e68cbb9e2f04862ff6cf36c73a70036118ec2f6d415716bf658b0270bda9`.
+Measurements use driver0031, FP32, AffineSnake/deconv, PLANAR1, NORM_SUM4=1,
+generic/tiled batch8 and X1. See NOTES for complete pins, logs and limits.

@@ -801,3 +801,19 @@ The existing norm-sum4 option on the combined graph passes identical core bytes
 at 40.723725 s warm (385.1 MiB / 71.7 MiB swap). Fresh combined norm-enabled
 T213 passes at 57.293048 s total / 41.411426 s core with identical output bytes,
 418.9 MiB / 12.6 MiB swap. Resident/sustained performance remains pending.
+
+
+## Bounded resident request loop
+
+- [x] Retain one core keyed by exact inferred graph; regenerate frontend/source
+  and waveform for every request, evict before shape changes.
+- [x] Release request-owned GPU workspaces after completed work and object teardown;
+  record memory/trim and distinguish reclaimable caches from physical return.
+- [x] Preserve one-shot/repeat behavior; atomic per-request and terminal session output.
+- [x] Pass host complete-reference, shape, phase-boundary cancellation and recovery checks.
+- [x] Pass tablet short/short and short/full/full full-reference gates, 715 GPU layers
+  each, no faults/live services active; resident20.055962/46.984077 s short/full.
+- [x] Integrate sources and reproduce tested binary exactly in canonical build.
+- [ ] Integrate public guarded loop staging and per-request provenance capture.
+- [ ] Measure tablet cancellation, equivalent resident CPU baseline and sustained behavior.
+- [ ] Beat CPU latency and integrate with the live application.

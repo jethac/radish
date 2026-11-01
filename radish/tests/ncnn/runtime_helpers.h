@@ -7,6 +7,7 @@
 #include "gpu.h"
 #endif
 #include <cstdio>
+#include <chrono>
 #include <string>
 #include <vector>
 #define RADISH_NCNN_CHECK(x) do { if (!(x)) { std::fprintf(stderr,"FAIL line %d: %s\n",__LINE__,#x); return 1; } } while (0)
@@ -19,12 +20,20 @@ struct GpuInstance {
 struct Allocators {
     const ncnn::VulkanDevice* device;
     ncnn::Option opt;
-    Allocators(const ncnn::VulkanDevice* d,const ncnn::Option& o):device(d),opt(o) {
+    bool trim;
+    double* trim_seconds;
+    Allocators(const ncnn::VulkanDevice* d,const ncnn::Option& o,bool release=false,double* seconds=nullptr):device(d),opt(o),trim(release),trim_seconds(seconds) {
         opt.blob_vkallocator=device->acquire_blob_allocator();
         opt.workspace_vkallocator=opt.blob_vkallocator;
         opt.staging_vkallocator=device->acquire_staging_allocator();
     }
     ~Allocators() {
+        if(trim) {
+            const auto start=std::chrono::steady_clock::now();
+            if(opt.blob_vkallocator) opt.blob_vkallocator->clear();
+            if(opt.staging_vkallocator) opt.staging_vkallocator->clear();
+            if(trim_seconds) *trim_seconds=std::chrono::duration<double>(std::chrono::steady_clock::now()-start).count();
+        }
         if(opt.blob_vkallocator) device->reclaim_blob_allocator(opt.blob_vkallocator);
         if(opt.staging_vkallocator) device->reclaim_staging_allocator(opt.staging_vkallocator);
     }
@@ -107,10 +116,10 @@ inline int set_shape_hints(ncnn::Net& net,bool style,bool vulkan) {
 
 #if NCNN_VULKAN
 inline int extract_gpu(ncnn::Net& net,const std::vector<ncnn::Mat>& inputs,const std::vector<std::string>& names,
-                const char* target,ncnn::Mat& output) {
+                const char* target,ncnn::Mat& output,bool trim=false,double* trim_seconds=nullptr) {
     const ncnn::VulkanDevice* device=net.vulkan_device();
     RADISH_NCNN_CHECK(device && device->is_valid() && net.opt.use_vulkan_compute);
-    Allocators allocators(device,net.opt);
+    Allocators allocators(device,net.opt,false,trim_seconds);
     RADISH_NCNN_CHECK(allocators.opt.blob_vkallocator && allocators.opt.staging_vkallocator);
     // Extractor and VkMats must die before their allocators are reclaimed.
     ncnn::Extractor ex=net.create_extractor();
@@ -141,6 +150,7 @@ inline int extract_gpu(ncnn::Net& net,const std::vector<ncnn::Mat>& inputs,const
     command.record_download(result,output,download_opt);
     RADISH_NCNN_CHECK(command.submit_and_wait()==0);
     RADISH_NCNN_CHECK(!output.empty() && output.elempack==1 && output.elemsize==4u);
+    allocators.trim=trim;
     return 0;
 }
 #endif
