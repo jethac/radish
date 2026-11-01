@@ -6,9 +6,9 @@ Checkpoint 0042 packs constant convolution weights so the A preload can store on
 contiguous vec4 into shared memory. The focused actual Convolution1D comparison
 reduces mean GPU elapsed **7.170520 → 6.517812 ms (9.102666%)**, with all four
 balanced pairs positive. This experimental, default-off change advances to
-runtime checks. A fresh fixed full-core comparison also passes correctness and
-records a 4.195% warm reduction, with a cold-start penalty described below.
-**End-to-end runtime acceptance and default changes remain pending; CPU still wins.**
+full-core and fresh runtime references. The fixed-core warm reduction is 4.195%;
+actual resident requests improve while cold/shape-load misses regress. Packed A
+remains **default off**, and CPU still wins. The GPU-efficiency goal remains open.
 
 ## Change and focused result
 
@@ -56,7 +56,7 @@ The 22 raw files total **4,468,960 bytes**, written before the helper's CPU refe
 The offline analyzer also checks their sizes/hashes against the terminal runner
 receipt and unchanged remote hash manifests.
 
-Both actual math programs use local16x8x1, grid4x2x1, 16 KiB shared memory, 16 full
+Both actual math programs use local 16x8x1, grid4x2x1, 16 KiB shared memory, 16 full
 and zero half registers, four loops and zero private memory. Private zero follows
 from the source-reviewed pipeline-creation rejection gate and the exercised exact
 candidate timer predicate. The candidate's 896 reported native dwords correspond
@@ -101,65 +101,41 @@ fall 24.684938059→22.969857545 s, saving 1.715080514 s; remaining command inte
 increase 0.217441827 s. Those command intervals include host work/submits/waits,
 not just device queued time. All 1,520 ordered command signatures match except
 58 intended native lengths, and all 23 packed shader variants use native 28,
-16F/0H, local16x8 and 16KiB shared. Their 26,256 math chunks/3,294 submits are retained.
+16F/0H, local 16x8 and 16 KiB shared. Their 26,256 math chunks/3,294 submits are retained.
 
 Cold load increases **2.397 s**, so load plus first extraction is approximately
 **0.712 s slower** despite the faster extraction. This is an observed combined
 startup cost, not an isolated packing measurement. OFF also incurred swap while
 ON did not; a single pair cannot separate that condition from whole-call latency
 or establish sustained performance. The [fixed-core summary](results/gpu-packed-a-0042-model.json)
-records source/profile/log pins. Fresh end-to-end request/waveform validation is
-still pending before any recommendation change.
+records source/profile/log pins. The fresh runtime comparison below validates
+request/waveform correctness and measures the cold/resident tradeoff.
 
 ## Reproduction in separate source/build trees
 
-The ncnn patch is **incremental over the current 17-file dirty accepted baseline**,
-not clean upstream. That baseline is ncnn `f18f3ffc94dbc76a277e94556c588ab2c2d0e1d9`,
-glslang `780b6a209132dc74e99458f62ebe5fa7e57c41cf`, with the current ordered
-[patch stack](patches/README.md) through 0035. Its exact file pins are in
-[the baseline manifest](results/gpu-packed-a-0042-baseline.json). Preserve untracked
-shader files when copying it. The existing build-ncnn.sh knows only the accepted
-prefixes and will reject an 0042 source tree; configure the opt-in tree directly.
-A fresh consistent ncnn build is required because adding a shader changes generated
-enum tables. Never link the new helper to an older generated shader table.
+The ncnn patch is incremental over the accepted 17-file baseline at ncnn
+`f18f3ffc94dbc76a277e94556c588ab2c2d0e1d9` with glslang
+`780b6a209132dc74e99458f62ebe5fa7e57c41cf`. The [baseline manifest](results/gpu-packed-a-0042-baseline.json)
+is historical pre-0042 evidence: its original Convolution1D hash is not the
+expected post-build hash. The current standard build-ncnn.sh applies/verifies 0042
+after the existing ordered patch stack. **Do not manually double-apply 0042.**
+Runtime selection remains 0 unless explicitly enabled; wrappers validate 0|1 and
+capture/serialize the exact RADISH_NCNN_PLANAR_PACKED_A key. Use a fresh consistent
+build for generated shader enums; never relink new code against old shader tables.
 
-From the repository root, with the existing cross toolchain/sysroot setup:
+With the existing external ncnn source, sysroot and loader setup, from repo root:
 
 ```bash
 export RADISH_WORK=/run/media/jethac/Shared/radish
-TOP=$PWD
 EXPERIMENT="$RADISH_WORK/packed-a-0042-repro"
-SRC="$EXPERIMENT/ncnn"
 BUILD="$EXPERIMENT/build-ncnn"
-mkdir -p "$EXPERIMENT"
-test ! -e "$SRC"
-cp -a "$RADISH_WORK/ncnn" "$SRC"
-python3 - "$SRC" "$TOP/radish/results/gpu-packed-a-0042-baseline.json" <<'PYBASE'
-import hashlib, json, pathlib, sys
-source, manifest = pathlib.Path(sys.argv[1]), json.load(open(sys.argv[2]))
-for name, pin in manifest['files'].items():
-    data = (source / name).read_bytes()
-    assert len(data) == pin['bytes'] and hashlib.sha256(data).hexdigest() == pin['sha256'], name
-PYBASE
-patch -d "$SRC" -p1 < "$TOP/radish/patches/0042-ncnn-planar-packed-a.patch"
-SYSROOT=${RADISH_SYSROOT:-$TOP/streams/gpu-mesa16/work/sysroot}
-GCC_INSTALL=${RADISH_GCC_INSTALL:-$SYSROOT/usr/lib/gcc/aarch64-linux-gnu/16}
-cmake -G Ninja -S "$TOP/radish/tests/ncnn" -B "$BUILD" \
-  -DCMAKE_TOOLCHAIN_FILE="$RADISH_WORK/loader-toolchain.cmake" \
-  -DCMAKE_BUILD_TYPE=Release -DNCNN_SOURCE="$SRC" \
-  -DCMAKE_C_FLAGS=-mcpu=cortex-a53 \
-  "-DCMAKE_CXX_FLAGS=-mcpu=cortex-a53 --gcc-install-dir=$GCC_INSTALL" \
-  -DNCNN_VULKAN=ON -DNCNN_SIMPLEVK=ON -DNCNN_THREADS=ON \
-  -DNCNN_OPENMP=OFF -DNCNN_SIMPLEOMP=OFF -DNCNN_RUNTIME_CPU=OFF \
-  -DNCNN_ARM82=OFF -DNCNN_ARM82DOT=OFF -DNCNN_ARM82FP16FML=OFF \
-  -DNCNN_ARM84BF16=OFF -DNCNN_ARM84I8MM=OFF -DNCNN_ARM86SVE=OFF \
-  -DNCNN_BUILD_TESTS=OFF -DNCNN_BUILD_TOOLS=OFF -DNCNN_BUILD_EXAMPLES=OFF \
-  -DNCNN_BUILD_BENCHMARK=OFF -DNCNN_BENCHMARK=OFF
+RADISH_NCNN_BUILD_DIR="$BUILD" radish/scripts/build-ncnn.sh
 cmake --build "$BUILD" --target radish-gpu-packed-a -j2
+radish/scripts/build-runtime.sh
 ```
 
-The new target is EXCLUDE_FROM_ALL; default builds and runtime selectors are
-unchanged. For the timer driver, use a separate Mesa checkout at base
+The paired-helper target is EXCLUDE_FROM_ALL. The supported source stack now
+includes 0042; its runtime selector remains default off. For the timer driver, use a separate Mesa checkout at base
 `ddabdd0e36bd2f5e0c8e6bd21c3d1da7e34c1230`, read its AGENTS.md, apply cumulative 0041
 instead of earlier cumulative driver patches, then apply
 `patches/0042-radish-packed-a-timer.patch`. Build with the existing scripts/build.sh
@@ -254,11 +230,38 @@ additional tablet run. [The interface](tests/ncnn/gpu_packed_a_interface.json)
 specifies exact fixtures, CLI/environment, guards and raw inventory. Portable
 runner SHA256: `bb32e4db5d7d45fdbb3722f03291ce064c6b88ffbeabc5194a395c85b032507e`.
 
-## Remaining end-to-end work
+## Fresh runtime result and remaining scope
 
-Fixed-shape forward/padded-channel/full-core outputs, native resources and matching
-batching now pass in this private experiment. Fresh runtime request shapes,
-waveforms, reload cost and end-to-end latency remain to validate before adoption.
-The fixed-core pair has one first and one warm value per variant and different
-swap observations. The accepted recommendation, global device ICD and public
-Vulkan/conformance claims remain unchanged while those checks are pending.
+All four original-ORT core/waveform references pass; all eight boundaries and both
+outputs match 0035 bytes. Each request executes 589 GPU/zero CPU layers with 58 packed
+math commands. T78/T213 retain 9760/26256 math chunks and 1238/3294 submits. The
+[compact runtime result](results/gpu-packed-a-0042-runtime.json) retains timings,
+hashes, validation and source/binary provenance.
+
+| Request | T / Net | 0035 synthesis s | 0042 synthesis s | 0042 load s |
+| --- | --- | ---: | ---: | ---: |
+| 0 | 78 / miss | 27.427916 | 28.952951 | 11.629309 |
+| 1 | 78 / hit | 18.163352 | 17.297296 | 0 |
+| 2 | 213 / miss | 45.676598 | 46.216283 | 5.929418 |
+| 3 | 213 / hit | 42.819037 | 41.225818 | 0 |
+
+Resident hits save 0.866056/1.593219 s; misses cost 1.525035/0.539685 s more. Initial
+and shape-change load increase 2.456407/2.413035 s, including packing, pipelines and
+uploads. Request synthesis totals 134.086903108→133.692347753 s save only 0.394555355 s.
+The larger 137.660401781→134.609214313 s session change includes pre-request,
+publication and cleanup differences; it cannot be credited wholly to GPU. Session
+peak 512.8 MiB plus 74.3 MiB swap compares with 531.4/57.2 previously. One historical
+and one current sequence differ in binary/link, date, caches/clocks and swap.
+
+The standard model/operator/runtime wrappers expose the option as default 0. See
+[RUNTIME_INTEGRATION.md](RUNTIME_INTEGRATION.md#optional-packed-a-runtime-0042) for
+the complete request command. Current canonical host builds reproduce measured
+helper 61285af2…, model 0b2f39fa… and runtime 0971994a… bytes exactly. The newly linked
+canonical ICD 6ae15421…7813f differs from measured private ICD a9be6b5c…12a4e despite
+identical reviewed queue source; no separate device run of that canonical link is
+claimed. The global device ICD remains 0032.
+
+Correctness permits this explicit tradeoff, not a default recommendation. CPU
+resident short/full 15.411271/36.802922 s remains faster than 17.297296/41.225818 s.
+Sustained behavior, live application integration, current-graph cancellation and
+restart remain unvalidated; neither GPU saturation nor Vulkan conformance follows.

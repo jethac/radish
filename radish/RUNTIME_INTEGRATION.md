@@ -5,17 +5,17 @@ metadata propagation, FP32 Vulkan neural core and CPU waveform tail from token
 IDs/style/speed. The new opt-in `--norm-affine-snake-deconv2d` graph fuses 42
 normalization/AffineSnake chains and executes all 589 core layers on Vulkan.
 
-Fixed warm core is **35.730754 s**, versus 37.058738 s at 0034; targeted command
-savings account for 1.297032 s of the 1.327984 s gain. The validated
-short/short/full/full loop takes **27.427916 / 18.163352 / 45.676598 / 42.819037 s**.
-All four unchanged core/waveform references pass; every boundary and output
-matches 0034 bytes. Whole-session peak is 531.4 MiB plus 57.2 MiB swap, with no
-faults and both services active. CPU remains faster at 36.802922/15.411271 s
-resident full/short on the earlier equivalent graph. These are bounded single
-observations, with different memory pressure. Sustained behavior, cancellation
-on the new graph, post-cancellation restart and live application wiring remain
-open. GPU efficiency beyond a CPU win is also required; details follow and are
-recorded in [NOTES.md](NOTES.md).
+Packed-A0042 is an additional default-off weight-layout option. The same-binary
+fixed warm core falls 35.805708→34.303633 s; actual short/short/full/full synthesis is
+**28.952951 /17.297296 /46.216283 /41.225818s**. All four original same-boundary
+core/waveform references pass and every byte matches 0035. Resident hits improve
+but cold/shape misses regress because core loading increases. The mixed sequence
+saves only 0.394555 s summed synthesis; its larger whole-session change is not an
+isolated GPU gain. Peak is 512.8 MiB plus 74.3 MiB swap; no new fault, services active.
+CPU resident short/full 15.411271/36.802922 s remains faster. The earlier0035 baseline
+and all prior results remain documented below. See [GPU_PACKED_A.md](GPU_PACKED_A.md)
+for the tradeoff; sustained behavior, cancellation/restart on this graph, live
+application integration and the GPU-efficiency goal remain open.
 
 ## Implemented route
 
@@ -1333,3 +1333,60 @@ Reference evidence: `norm-affine-runtime-validation-zat6_thf/summary.json` and
 `norm-affine0035-request-{000,001,002,003}-validation.json`.
 Runtime SHA256 `56c8969c6b32316b19007955155c9462137fc56d01f482af06e2294da11b74c2`;
 unchanged driver `c8fee96723942fca768a9026987a5d609071d2c60079058064377635155cb44c`.
+
+### Optional packed-A runtime 0042
+
+The standard build-ncnn.sh now applies/verifies 0042 after 0033 in the ordered
+Conv1D stack; fresh consistent generated shader tables are required. Do not
+manually apply0042 twice. device-model.sh, device-operators.sh and device-runtime.sh
+validate/forward RADISH_NCNN_PLANAR_PACKED_A=0|1 (default 0). The runtime serializer
+and capture verifier record that same key. Existing opt-in graph controls remain.
+
+With private models already prepared and a fresh run label:
+
+```sh
+RADISH_DEVICE_LOCK=/home/jethac/Projects/lenovo-8/.device.lock \
+RADISH_NCNN_PLANAR=1 RADISH_NCNN_PLANAR_PACKED_A=1 \
+RADISH_NCNN_PAD_CHANNELS=1 RADISH_NCNN_NORM_SUM4=1 \
+RADISH_NCNN_NORM_OUTPLACE=1 RADISH_NCNN_RESHAPE_ALIAS=1 \
+RADISH_NCNN_PIPELINE_CACHE=1 RADISH_BATCH_CHUNKS=8 \
+RADISH_PROFILE=1 RADISH_NCNN_TRACE=1 \
+  radish/scripts/device-runtime.sh runtime-short packed-a-0042-local \
+  --norm-affine-snake-deconv2d --request-loop --reuse-pipeline-cache \
+  --next-input runtime-short --next-input runtime-full --next-input runtime-full
+```
+
+| Request | T / Net | Core load s | Core extraction s | Synthesis s | 0035 synthesis s |
+| --- | --- | ---: | ---: | ---: | ---: |
+| 0 | 78 / miss | 11.629309210 | 12.961794393 | 28.952951240 | 27.427915819 |
+| 1 | 78 / hit | 0 | 12.863021557 | 17.297295788 | 18.163352088 |
+| 2 | 213 / miss | 5.929417864 | 34.306032611 | 46.216282882 | 45.676597988 |
+| 3 | 213 / hit | 0 | 35.321536017 | 41.225817843 | 42.819037213 |
+
+All four original-ORT validations pass unchanged gates. All eight boundary files,
+core and waveform bytes match 0035; short/full waveform SNR is 97.411696/97.912821 dB.
+Every request executes 589 GPU/zero CPU layers, 58 packed math owners at native 28,
+with unchanged ordered command signatures except those native lengths. Math
+chunks/submits remain 9760/1238 (short) and 26256/3294 (full); 96 transfers per request.
+Same-shape Net hits remain false/true/false/true, external cache entries 177/177/271/271
+and device entries 5 each. These are artifact counts, not occupancy or cache bytes.
+
+Resident synthesis improves 0.866056/1.593219 s, but misses regress 1.525035/0.539685 s.
+Load adds 2.456407 s initially and 2.413035 s after shape change; load includes packing,
+pipelines and uploads. Summed requests 134.086903108→133.692347753 s save 0.394555355 s.
+Session 137.660401781→134.609214313 s includes a much larger change outside request
+synthesis, so its 3.051187468 s reduction must not be credited wholly to GPU.
+Whole-session peak 512.8 MiB/74.3 MiB swap versus 531.4/57.2 differs; observations are
+not sustained controls. No fault/recovery, services active, global ICD 0032 unchanged.
+
+[Compact runtime evidence](results/gpu-packed-a-0042-runtime.json) retains request
+pins, output hashes and aggregate scopes. Private measured runtime 0971994a…31c28b
+was reproduced exactly by the canonical build, as were helper 61285af2…70678c and
+model 0b2f39fa…3c664. Canonical ICD 6ae15421…7813f has the identical reviewed queue
+source but differs from measured private driver a9be6b5c…12a4e; no separate device
+run of that linked canonical ICD is claimed. Full hashes are in the result JSON.
+
+Capture under WORK: kokoro-runtime-short-single-vulkan-packed-a-0042-first-norm-affine-snake-deconv2d-planar-packed-a1-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache/.
+The historical private suffix packed-a1 differs from the current wrapper's
+packed-a suffix. Audit/validation evidence is in packed-a-implementation-0042-a6naaxsx/
+runtime-result-audit/ and runtime-integration/packed-a-0042-first-request-{000,001,002,003}-validation.json.

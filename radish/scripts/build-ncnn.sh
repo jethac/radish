@@ -121,12 +121,14 @@ CONV_PATCHES=(
     "$TOP/radish/patches/0026-ncnn-planar-pad-local64.patch"
     "$TOP/radish/patches/0030-ncnn-planar-positive-indices.patch"
     "$TOP/radish/patches/0033-ncnn-planar-padded-channels.patch"
+    "$TOP/radish/patches/0042-ncnn-planar-packed-a.patch"
 )
 CONV_FILES=(src/layer/vulkan/convolution1d_vulkan.cpp src/layer/vulkan/convolution1d_vulkan.h
             src/layer/vulkan/shader/convolution1d_packed_gemm.comp
             src/layer/vulkan/shader/convolution1d_radish_tiled.comp
             src/layer/vulkan/shader/convolution1d_radish_tiled32.comp
             src/layer/vulkan/shader/convolution1d_radish_planar.comp
+            src/layer/vulkan/shader/convolution1d_radish_planar_packed_a.comp
             src/layer/vulkan/shader/convolution1d_radish_planar_pad.comp
             src/layer/vulkan/shader/convolution1d_radish_planar_pack1_pad.comp)
 CONV_STAGE=$(mktemp -d)

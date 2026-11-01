@@ -1,6 +1,48 @@
 # Radish status
 
-## 2026-11-02 (JST): packed convolution weights improve the real model
+## 2026-11-02 (JST): packed-A runtime passes, with resident/cold tradeoff
+
+All four fresh original-ORT core/waveform references pass at unchanged gates,
+and every boundary/output byte matches 0035. Complete short/short/full/full
+synthesis is 28.952951/17.297296/46.216283/41.225818 s versus 0035
+27.427916/18.163352/45.676598/42.819037 s. Resident hits improve 0.866056/1.593219 s;
+cold/shape misses regress 1.525035/0.539685 s. Loads 11.629309/0/5.929418/0 s add
+2.456407 s initially and 2.413035 s after shape reload. Packing/pipelines/uploads are
+combined in those load intervals; this does not isolate transpose cost.
+
+Summed request synthesis saves only 0.394555355 s (134.086903108→133.692347753 s).
+The 3.051187468 s whole-session reduction is mostly outside requests and must not be
+attributed wholly to GPU. Peak 512.8 MiB/74.3 MiB swap compares with 531.4/57.2.
+All 589 GPU/zero CPU paths and ordered signatures match except 58 intended native
+lengths; math chunks/submits remain 9760/1238 at T78 and 26256/3294 at T213. Services
+remain active, no new GPU fault/recovery, and global ICD 0032 stays unchanged.
+
+The standard build script now applies/verifies 0042; model/operator/runtime
+wrappers validate/forward RADISH_NCNN_PLANAR_PACKED_A=0|1, default 0, with matching
+capture/runtime environment keys. Host normal/runtime builds reproduce measured
+helper 61285af2…, model 0b2f39fa… and runtime 0971994a… bytes exactly. Canonical
+ICD 6ae15421… differs from measured private a9be6b5c… despite identical reviewed
+queue source. Its linked artifact has build evidence, no separate device run.
+CPU resident short/full 15.411271/36.802922 s still beats 17.297296/41.225818 s.
+No sustained, saturation, current-graph cancellation/restart or conformance claim.
+
+Before 0042 runtime staging, a frozen archive removed 22 completed paths in nine
+complete inode groups, freeing 207,427,320 bytes (197.818 MiB). Eight unique contents
+were byte-verified into host backups with metadata/restore support before unlink;
+the incomplete two-link group stayed excluded. Device free space rose 76084→278676 KiB.
+Models, captures, outputs, current/global assets and live services were retained.
+Earlier 0042 preparation separately archived two completed 0041 files, two initial
+compile assets, one qualified helper and one previous helper; their manifests
+retain exact paths/metadata. Restore records are under
+WORK/packed-a-implementation-0042-a6naaxsx/{device-executable-archive,initial-executable-archive,qualified-helper-archive,previous-helper-archive,runtime-integration/completed-executable-archive}/.
+
+See [GPU_PACKED_A.md](GPU_PACKED_A.md),[RUNTIME_INTEGRATION.md](RUNTIME_INTEGRATION.md#optional-packed-a-runtime-0042)
+and results/gpu-packed-a-0042-runtime.json. Full audit/validation pins are in
+WORK/packed-a-implementation-0042-a6naaxsx/runtime-result-audit/{REPORT.md,audit.json,release.json}.
+The measured fixed-core/focused history follows; default-off correctness
+integration does not establish a default recommendation or complete the goal.
+
+## 2026-11-02 (JST): packed convolution weights improve the real model (initial focused/fixed checkpoint)
 
 0042 packs constant weights into reduction-major/channel-minor order. The actual
 A preload now uses one vec4 shared store instead of four scalar stores; the

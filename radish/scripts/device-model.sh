@@ -13,6 +13,8 @@ SHARED32=${RADISH_NCNN_SHARED32:-0}
 TILED=${RADISH_NCNN_TILED:-0}
 TILED32=${RADISH_NCNN_TILED32:-0}
 PLANAR=${RADISH_NCNN_PLANAR:-0}
+PACKED_A=${RADISH_NCNN_PLANAR_PACKED_A:-0}
+[[ $PACKED_A == 0 || $PACKED_A == 1 ]] || { echo 'RADISH_NCNN_PLANAR_PACKED_A must be 0 or 1' >&2; exit 2; }
 [[ $PLANAR == 0 || $PLANAR == 1 ]] || { echo 'RADISH_NCNN_PLANAR must be 0 or 1' >&2; exit 2; }
 PAD_CHANNELS=${RADISH_NCNN_PAD_CHANNELS:-0}
 [[ $PAD_CHANNELS == 0 || $PAD_CHANNELS == 1 ]] || { echo 'RADISH_NCNN_PAD_CHANNELS must be 0 or 1' >&2; exit 2; }
@@ -148,6 +150,7 @@ if [[ -n ${RADISH_MODEL_RUN:-} ]]; then
     TAG+=-$RADISH_MODEL_RUN
 fi
 [[ $PLANAR == 0 ]] || TAG+=-planar
+[[ $PACKED_A == 0 ]] || TAG+=-packed-a
 [[ $NORM_SUM4 == 0 ]] || TAG+=-norm-sum4
 [[ $NORM_OUTPLACE == 0 ]] || TAG+=-norm-outplace
 [[ $PAD_CHANNELS == 0 ]] || TAG+=-pad-channels
@@ -155,11 +158,12 @@ fi
 HOST_OUTPUT=$SOURCE/ncnn-device-$OUTPUT_BACKEND-output.f32
 [[ $PAD_CHANNELS == 0 ]] || HOST_OUTPUT=$SOURCE/ncnn-device-$OUTPUT_BACKEND-pad-channels-output.f32
 [[ $NORM_OUTPLACE == 0 ]] || HOST_OUTPUT=$SOURCE/ncnn-device-$OUTPUT_BACKEND-norm-outplace-output.f32
+[[ $PACKED_A == 0 ]] || HOST_OUTPUT=$SOURCE/ncnn-device-$OUTPUT_BACKEND-packed-a-output.f32
 UNIT=radish-$TAG-$(date +%s%N)
 for file in "${FILES[@]}"; do test -f "$SOURCE/$file"; done
 test -f "$MODEL_BINARY"
 sha256sum "$MODEL_BINARY" "$WORK/build/src/freedreno/radish/libvulkan_radish.so" "$SOURCE/decoder.ncnn.param"
-echo "Radish controls: batch=$BATCH tiled_batch=$TILED_BATCH tiled_groups_x=$TILED_GROUPS_X shared_groups=$SHARED_GROUPS shared32=$SHARED32 tiled=$TILED tiled32=$TILED32 planar=$PLANAR norm_sum4=$NORM_SUM4 norm_outplace=$NORM_OUTPLACE pad_channels=$PAD_CHANNELS mixed_storage=$MIXED_STORAGE reshape_alias=$RESHAPE_ALIAS"
+echo "Radish controls: batch=$BATCH tiled_batch=$TILED_BATCH tiled_groups_x=$TILED_GROUPS_X shared_groups=$SHARED_GROUPS shared32=$SHARED32 tiled=$TILED tiled32=$TILED32 planar=$PLANAR packed_a=$PACKED_A norm_sum4=$NORM_SUM4 norm_outplace=$NORM_OUTPLACE pad_channels=$PAD_CHANNELS mixed_storage=$MIXED_STORAGE reshape_alias=$RESHAPE_ALIAS"
 exec 9>"${RADISH_DEVICE_LOCK:-$TOP/.device.lock}"
 flock -w 1800 9
 ADB=(adb -s "$SERIAL")
@@ -237,7 +241,7 @@ fi
     if [[ -n $BLOB ]]; then
         echo "DIAGNOSTIC: extracting blob $BLOB; no full-model accuracy validation is performed"
     fi
-    "${ADB[@]}" shell "chmod 755 /var/tmp/radish/radish-model; systemd-run --unit=$UNIT --wait --pipe --collect -p MemoryMax=${MEMORY}M -p MemorySwapMax=128M -p RuntimeMaxSec=$RUNTIME -p LimitCORE=0 $EXTRA_ENV --setenv=RADISH_NCNN_TRACE=$TRACE --setenv=RADISH_NCNN_PIPELINE_CACHE=$CACHE --setenv=RADISH_NCNN_SHARED32=$SHARED32 --setenv=RADISH_NCNN_TILED=$TILED --setenv=RADISH_NCNN_TILED32=$TILED32 --setenv=RADISH_NCNN_PLANAR=$PLANAR --setenv=RADISH_NCNN_NORM_SUM4=$NORM_SUM4 --setenv=RADISH_NCNN_NORM_OUTPLACE=$NORM_OUTPLACE --setenv=RADISH_NCNN_PAD_CHANNELS=$PAD_CHANNELS --setenv=RADISH_NCNN_MIXED_STORAGE=$MIXED_STORAGE --setenv=RADISH_NCNN_RESHAPE_ALIAS=$RESHAPE_ALIAS --setenv=RADISH_PROFILE=$PROFILE --setenv=RADISH_BATCH_CHUNKS=$BATCH --setenv=RADISH_TILED_BATCH_CHUNKS=$TILED_BATCH --setenv=RADISH_TILED_GROUPS_X=$TILED_GROUPS_X --setenv=RADISH_SHARED_GROUPS=$SHARED_GROUPS --setenv=LD_LIBRARY_PATH=/var/tmp/radish --setenv=VK_DRIVER_FILES=/var/tmp/radish/radish_icd.json /var/tmp/radish/radish-model $MODEL_ARGS /var/tmp/radish/kokoro-$KIND $BLOB"
+    "${ADB[@]}" shell "chmod 755 /var/tmp/radish/radish-model; systemd-run --unit=$UNIT --wait --pipe --collect -p MemoryMax=${MEMORY}M -p MemorySwapMax=128M -p RuntimeMaxSec=$RUNTIME -p LimitCORE=0 $EXTRA_ENV --setenv=RADISH_NCNN_TRACE=$TRACE --setenv=RADISH_NCNN_PIPELINE_CACHE=$CACHE --setenv=RADISH_NCNN_SHARED32=$SHARED32 --setenv=RADISH_NCNN_TILED=$TILED --setenv=RADISH_NCNN_TILED32=$TILED32 --setenv=RADISH_NCNN_PLANAR=$PLANAR --setenv=RADISH_NCNN_PLANAR_PACKED_A=$PACKED_A --setenv=RADISH_NCNN_NORM_SUM4=$NORM_SUM4 --setenv=RADISH_NCNN_NORM_OUTPLACE=$NORM_OUTPLACE --setenv=RADISH_NCNN_PAD_CHANNELS=$PAD_CHANNELS --setenv=RADISH_NCNN_MIXED_STORAGE=$MIXED_STORAGE --setenv=RADISH_NCNN_RESHAPE_ALIAS=$RESHAPE_ALIAS --setenv=RADISH_PROFILE=$PROFILE --setenv=RADISH_BATCH_CHUNKS=$BATCH --setenv=RADISH_TILED_BATCH_CHUNKS=$TILED_BATCH --setenv=RADISH_TILED_GROUPS_X=$TILED_GROUPS_X --setenv=RADISH_SHARED_GROUPS=$SHARED_GROUPS --setenv=LD_LIBRARY_PATH=/var/tmp/radish --setenv=VK_DRIVER_FILES=/var/tmp/radish/radish_icd.json /var/tmp/radish/radish-model $MODEL_ARGS /var/tmp/radish/kokoro-$KIND $BLOB"
 } 2>&1 | tee "$WORK/evidence/$TAG.txt"
 if rg -n 'vkCreateComputePipelines failed|new_pipeline failed' "$WORK/evidence/$TAG.txt"; then exit 1; fi
 if [[ -n $FIXTURE_VALIDATOR ]]; then

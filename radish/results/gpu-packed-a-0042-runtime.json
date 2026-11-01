@@ -1,0 +1,465 @@
+{
+  "format": "radish-packed-a-0042-runtime-publication-v1",
+  "generated_by": "LLM",
+  "status": "PASS all four original-ORT references, bytes, GPU paths and unchanged batching",
+  "scope": "One historical 0035 versus current0042 short/short/full/full sequence; resident hits improve, cold/shape misses regress. Default off; no CPU win or sustained/saturation claim.",
+  "source_audit": {
+    "bytes": 80144,
+    "sha256": "c73b1ef3c26eec7e2dddffb5a43aeb47fc0a8ac29ae2be066c65f2ec2f77aa33"
+  },
+  "source_report": {
+    "bytes": 6060,
+    "sha256": "86ffdc0dddf4ae76bc5e1e11f29bed5e4f113725819b90378ef7d39c6b44d787"
+  },
+  "source_release": {
+    "bytes": 3262,
+    "sha256": "5e084784d731075366e43eaa1e773526b796c134b05558cf3fb4feef1e56e812"
+  },
+  "session_pin": {
+    "bytes": 7547,
+    "sha256": "ea2b08fc8eed36f69459e1d4cd5dd7dbf6abe07d188e7dd6144ac92f6930d9bc"
+  },
+  "device_session_pin": {
+    "bytes": 16919,
+    "sha256": "a1fa675ee5bbae1cb6ce25f9a96d6743c0a5b05b1d17ce7ea0a69c3dfd7a5858"
+  },
+  "measured_private_assets": {
+    "driver": "a9be6b5c18b7bd6fa33cfe9d0d42e00532a6649090d6720128ccd6072af12a4e",
+    "helper": "61285af2adf1ce4c6b38b6939653f7df363823f8afd4ff125a767e235170678c",
+    "model": "0b2f39fa6d7263026f1d12a4b03a10a0a531788451db9e774927acfffa03c664",
+    "runtime": "0971994a6b667dd311df02e7102afa6ce7de6ba95960c3b87f3727400931c28b"
+  },
+  "canonical_host_builds": {
+    "driver": {
+      "bytes": 46490224,
+      "sha256": "6ae1542155b7ff832ec7b510469b70b4c5a98439678c858faa0112138ae7813f"
+    },
+    "helper": {
+      "bytes": 10979896,
+      "sha256": "61285af2adf1ce4c6b38b6939653f7df363823f8afd4ff125a767e235170678c"
+    },
+    "model": {
+      "bytes": 11129352,
+      "sha256": "0b2f39fa6d7263026f1d12a4b03a10a0a531788451db9e774927acfffa03c664"
+    },
+    "runtime": {
+      "bytes": 11554952,
+      "sha256": "0971994a6b667dd311df02e7102afa6ce7de6ba95960c3b87f3727400931c28b"
+    }
+  },
+  "canonical_binary_identity": {
+    "driver": false,
+    "helper": true,
+    "model": true,
+    "runtime": true
+  },
+  "canonical_build_scope": "All three ncnn binaries reproduce measured bytes exactly. Canonical separately linked ICD6ae154... differs from measured private a9be...; queue source is identical. Canonical ICD has host-build evidence, no separate device run.",
+  "requests": [
+    {
+      "index": 0,
+      "T": 78,
+      "core_cache_hit": false,
+      "synthesis_seconds": {
+        "prior_0035": 27.427915818989277,
+        "packed_a_0042": 28.95295124000404
+      },
+      "core_load_seconds": {
+        "prior_0035": 9.172902496007737,
+        "packed_a_0042": 11.629309209994972
+      },
+      "core_extract_seconds": {
+        "prior_0035": 13.788183360011317,
+        "packed_a_0042": 12.961794393020682
+      },
+      "math_command_wall_seconds": {
+        "prior_0035": 9.034036478,
+        "packed_a_0042": 8.42455316
+      },
+      "math_chunks": 9760,
+      "math_submits": 1238,
+      "commands": 1430,
+      "transfers": 96,
+      "gpu_layers": 589,
+      "cpu_fallbacks": 0,
+      "core_validation": {
+        "values": 205942,
+        "max_abs_error": 0.00018668174743652344,
+        "mismatches": 0,
+        "passed": true,
+        "actual": {
+          "bytes": 823768,
+          "sha256": "1087351cefac857cb9ce7fe7069772eaea4ff9510d9367a65e7aaa496abe74a1"
+        }
+      },
+      "waveform_validation": {
+        "values": 46800,
+        "snr_db": 97.41169624837582,
+        "mismatches": 0,
+        "passed": true,
+        "actual": {
+          "bytes": 187200,
+          "sha256": "5fe7be3ec78a26f0a387058f84a7ac57d862fd5336ca5f5da159b35b27f59e8a"
+        }
+      },
+      "all_eight_boundaries_and_outputs_byte_identical_to_0035": true,
+      "identity": {
+        "boundary/ids.i64": {
+          "bytes": 112,
+          "sha256": "3c3bfd2e56f6f778a6082ee0b183a68d2053d36c4fd1f3ee12126dc3c9d68ae6"
+        },
+        "boundary/style.f32": {
+          "bytes": 1024,
+          "sha256": "30a2c76520b76bce395b3e2c33592c56322dffb50d70f7f0f7aeaef968407d66"
+        },
+        "boundary/speed.f32": {
+          "bytes": 4,
+          "sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
+        },
+        "boundary/asr.f32": {
+          "bytes": 159744,
+          "sha256": "3a2f327d5dac194f2f9e6ad9972a061e752458da4e5473f183a3ea8e5e4482d8"
+        },
+        "boundary/f0.f32": {
+          "bytes": 624,
+          "sha256": "245f8f0c10792ef0d35b76bd113d790eaf170e01664282b632c64ee1ebfe72e5"
+        },
+        "boundary/n.f32": {
+          "bytes": 624,
+          "sha256": "a4b2b93b5d6f05dd6dafcae4ec930403f59422b52f24d4dfb1231b89c9aec63c"
+        },
+        "boundary/har.f32": {
+          "bytes": 823768,
+          "sha256": "46362e2d815fc69e49486f998ed887c1ed7740dcfa40002e6033487e61fdf34e"
+        },
+        "boundary/durations.f32": {
+          "bytes": 56,
+          "sha256": "e87476ac494910e6963ec1254409c9356243070e7cd399b6d2a424fd1dfe67bd"
+        },
+        "core.f32": {
+          "bytes": 823768,
+          "sha256": "1087351cefac857cb9ce7fe7069772eaea4ff9510d9367a65e7aaa496abe74a1"
+        },
+        "waveform.f32": {
+          "bytes": 187200,
+          "sha256": "5fe7be3ec78a26f0a387058f84a7ac57d862fd5336ca5f5da159b35b27f59e8a"
+        }
+      },
+      "validation_pin": {
+        "bytes": 2213,
+        "sha256": "32a5085ea246ef1f97e0dfba750a40593c8f8a3bf0b86c2721915081b44d65f3"
+      }
+    },
+    {
+      "index": 1,
+      "T": 78,
+      "core_cache_hit": true,
+      "synthesis_seconds": {
+        "prior_0035": 18.1633520880132,
+        "packed_a_0042": 17.29729578801198
+      },
+      "core_load_seconds": {
+        "prior_0035": 0,
+        "packed_a_0042": 0
+      },
+      "core_extract_seconds": {
+        "prior_0035": 13.654212755005574,
+        "packed_a_0042": 12.8630215570156
+      },
+      "math_command_wall_seconds": {
+        "prior_0035": 9.03573995,
+        "packed_a_0042": 8.430749038
+      },
+      "math_chunks": 9760,
+      "math_submits": 1238,
+      "commands": 1430,
+      "transfers": 96,
+      "gpu_layers": 589,
+      "cpu_fallbacks": 0,
+      "core_validation": {
+        "values": 205942,
+        "max_abs_error": 0.00018668174743652344,
+        "mismatches": 0,
+        "passed": true,
+        "actual": {
+          "bytes": 823768,
+          "sha256": "1087351cefac857cb9ce7fe7069772eaea4ff9510d9367a65e7aaa496abe74a1"
+        }
+      },
+      "waveform_validation": {
+        "values": 46800,
+        "snr_db": 97.41169624837582,
+        "mismatches": 0,
+        "passed": true,
+        "actual": {
+          "bytes": 187200,
+          "sha256": "5fe7be3ec78a26f0a387058f84a7ac57d862fd5336ca5f5da159b35b27f59e8a"
+        }
+      },
+      "all_eight_boundaries_and_outputs_byte_identical_to_0035": true,
+      "identity": {
+        "boundary/ids.i64": {
+          "bytes": 112,
+          "sha256": "3c3bfd2e56f6f778a6082ee0b183a68d2053d36c4fd1f3ee12126dc3c9d68ae6"
+        },
+        "boundary/style.f32": {
+          "bytes": 1024,
+          "sha256": "30a2c76520b76bce395b3e2c33592c56322dffb50d70f7f0f7aeaef968407d66"
+        },
+        "boundary/speed.f32": {
+          "bytes": 4,
+          "sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
+        },
+        "boundary/asr.f32": {
+          "bytes": 159744,
+          "sha256": "3a2f327d5dac194f2f9e6ad9972a061e752458da4e5473f183a3ea8e5e4482d8"
+        },
+        "boundary/f0.f32": {
+          "bytes": 624,
+          "sha256": "245f8f0c10792ef0d35b76bd113d790eaf170e01664282b632c64ee1ebfe72e5"
+        },
+        "boundary/n.f32": {
+          "bytes": 624,
+          "sha256": "a4b2b93b5d6f05dd6dafcae4ec930403f59422b52f24d4dfb1231b89c9aec63c"
+        },
+        "boundary/har.f32": {
+          "bytes": 823768,
+          "sha256": "46362e2d815fc69e49486f998ed887c1ed7740dcfa40002e6033487e61fdf34e"
+        },
+        "boundary/durations.f32": {
+          "bytes": 56,
+          "sha256": "e87476ac494910e6963ec1254409c9356243070e7cd399b6d2a424fd1dfe67bd"
+        },
+        "core.f32": {
+          "bytes": 823768,
+          "sha256": "1087351cefac857cb9ce7fe7069772eaea4ff9510d9367a65e7aaa496abe74a1"
+        },
+        "waveform.f32": {
+          "bytes": 187200,
+          "sha256": "5fe7be3ec78a26f0a387058f84a7ac57d862fd5336ca5f5da159b35b27f59e8a"
+        }
+      },
+      "validation_pin": {
+        "bytes": 2213,
+        "sha256": "0859b851222181e58073b0e46277978e715bce7505fe5406946e31777eb1cf7c"
+      }
+    },
+    {
+      "index": 2,
+      "T": 213,
+      "core_cache_hit": false,
+      "synthesis_seconds": {
+        "prior_0035": 45.67659798800014,
+        "packed_a_0042": 46.21628288200009
+      },
+      "core_load_seconds": {
+        "prior_0035": 3.516382875997806,
+        "packed_a_0042": 5.929417864012066
+      },
+      "core_extract_seconds": {
+        "prior_0035": 35.97888151201187,
+        "packed_a_0042": 34.306032610998955
+      },
+      "math_command_wall_seconds": {
+        "prior_0035": 24.845092261,
+        "packed_a_0042": 23.159648324
+      },
+      "math_chunks": 26256,
+      "math_submits": 3294,
+      "commands": 1520,
+      "transfers": 96,
+      "gpu_layers": 589,
+      "cpu_fallbacks": 0,
+      "core_validation": {
+        "values": 562342,
+        "max_abs_error": 0.0002257823944091797,
+        "mismatches": 0,
+        "passed": true,
+        "actual": {
+          "bytes": 2249368,
+          "sha256": "79e514ab290442271bd39897fe3d27693fed42556b1ab779a8707143c4016b0d"
+        }
+      },
+      "waveform_validation": {
+        "values": 127800,
+        "snr_db": 97.91282125462024,
+        "mismatches": 0,
+        "passed": true,
+        "actual": {
+          "bytes": 511200,
+          "sha256": "ee2fe0150ebc30843aeb9f073a7aa32410ceaaddb34f7b32b8851e53169c1016"
+        }
+      },
+      "all_eight_boundaries_and_outputs_byte_identical_to_0035": true,
+      "identity": {
+        "boundary/ids.i64": {
+          "bytes": 656,
+          "sha256": "59be815147b69aa3c35ec078861f234de785b4c50c1336586e3dd40b38ed29d6"
+        },
+        "boundary/style.f32": {
+          "bytes": 1024,
+          "sha256": "30a2c76520b76bce395b3e2c33592c56322dffb50d70f7f0f7aeaef968407d66"
+        },
+        "boundary/speed.f32": {
+          "bytes": 4,
+          "sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
+        },
+        "boundary/asr.f32": {
+          "bytes": 436224,
+          "sha256": "83a6df75e31be4623a756054228049af891c60c1a546f72613c1294d54e70e48"
+        },
+        "boundary/f0.f32": {
+          "bytes": 1704,
+          "sha256": "1850cd084cc6be14eb75436140e3aacf5f1886f36153297ece8846ee046a5414"
+        },
+        "boundary/n.f32": {
+          "bytes": 1704,
+          "sha256": "1202051c58424a976993b30d5b967c6c0f63898f0f634f2f55adf966140b64af"
+        },
+        "boundary/har.f32": {
+          "bytes": 2249368,
+          "sha256": "ead0797bbe00b8489d5f845e37ae8eee03b9a123c41fabc3f10e8d10b0ccef54"
+        },
+        "boundary/durations.f32": {
+          "bytes": 328,
+          "sha256": "47e8349280648aac26de5d576db3a8231e33c8d59bcb095f25f1d8412c381ebb"
+        },
+        "core.f32": {
+          "bytes": 2249368,
+          "sha256": "79e514ab290442271bd39897fe3d27693fed42556b1ab779a8707143c4016b0d"
+        },
+        "waveform.f32": {
+          "bytes": 511200,
+          "sha256": "ee2fe0150ebc30843aeb9f073a7aa32410ceaaddb34f7b32b8851e53169c1016"
+        }
+      },
+      "validation_pin": {
+        "bytes": 2214,
+        "sha256": "2d2cb99ef9b898dc7ceb8c67572713fe14dacd9090ade9e4aac4000068580af1"
+      }
+    },
+    {
+      "index": 3,
+      "T": 213,
+      "core_cache_hit": true,
+      "synthesis_seconds": {
+        "prior_0035": 42.819037212990224,
+        "packed_a_0042": 41.22581784299109
+      },
+      "core_load_seconds": {
+        "prior_0035": 0,
+        "packed_a_0042": 0
+      },
+      "core_extract_seconds": {
+        "prior_0035": 36.43786737602204,
+        "packed_a_0042": 35.321536016999744
+      },
+      "math_command_wall_seconds": {
+        "prior_0035": 25.024319343,
+        "packed_a_0042": 23.835370403
+      },
+      "math_chunks": 26256,
+      "math_submits": 3294,
+      "commands": 1520,
+      "transfers": 96,
+      "gpu_layers": 589,
+      "cpu_fallbacks": 0,
+      "core_validation": {
+        "values": 562342,
+        "max_abs_error": 0.0002257823944091797,
+        "mismatches": 0,
+        "passed": true,
+        "actual": {
+          "bytes": 2249368,
+          "sha256": "79e514ab290442271bd39897fe3d27693fed42556b1ab779a8707143c4016b0d"
+        }
+      },
+      "waveform_validation": {
+        "values": 127800,
+        "snr_db": 97.91282125462024,
+        "mismatches": 0,
+        "passed": true,
+        "actual": {
+          "bytes": 511200,
+          "sha256": "ee2fe0150ebc30843aeb9f073a7aa32410ceaaddb34f7b32b8851e53169c1016"
+        }
+      },
+      "all_eight_boundaries_and_outputs_byte_identical_to_0035": true,
+      "identity": {
+        "boundary/ids.i64": {
+          "bytes": 656,
+          "sha256": "59be815147b69aa3c35ec078861f234de785b4c50c1336586e3dd40b38ed29d6"
+        },
+        "boundary/style.f32": {
+          "bytes": 1024,
+          "sha256": "30a2c76520b76bce395b3e2c33592c56322dffb50d70f7f0f7aeaef968407d66"
+        },
+        "boundary/speed.f32": {
+          "bytes": 4,
+          "sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
+        },
+        "boundary/asr.f32": {
+          "bytes": 436224,
+          "sha256": "83a6df75e31be4623a756054228049af891c60c1a546f72613c1294d54e70e48"
+        },
+        "boundary/f0.f32": {
+          "bytes": 1704,
+          "sha256": "1850cd084cc6be14eb75436140e3aacf5f1886f36153297ece8846ee046a5414"
+        },
+        "boundary/n.f32": {
+          "bytes": 1704,
+          "sha256": "1202051c58424a976993b30d5b967c6c0f63898f0f634f2f55adf966140b64af"
+        },
+        "boundary/har.f32": {
+          "bytes": 2249368,
+          "sha256": "ead0797bbe00b8489d5f845e37ae8eee03b9a123c41fabc3f10e8d10b0ccef54"
+        },
+        "boundary/durations.f32": {
+          "bytes": 328,
+          "sha256": "47e8349280648aac26de5d576db3a8231e33c8d59bcb095f25f1d8412c381ebb"
+        },
+        "core.f32": {
+          "bytes": 2249368,
+          "sha256": "79e514ab290442271bd39897fe3d27693fed42556b1ab779a8707143c4016b0d"
+        },
+        "waveform.f32": {
+          "bytes": 511200,
+          "sha256": "ee2fe0150ebc30843aeb9f073a7aa32410ceaaddb34f7b32b8851e53169c1016"
+        }
+      },
+      "validation_pin": {
+        "bytes": 2214,
+        "sha256": "d8d9ceeece14baaec624cc03476fc800427907bdeab0c63c602d7ee399aba424"
+      }
+    }
+  ],
+  "aggregate": {
+    "prior_request_sum_seconds": 134.08690310799284,
+    "current_request_sum_seconds": 133.6923477530072,
+    "request_sum_reduction_seconds": 0.3945553549856413,
+    "prior_session_seconds": 137.6604017810023,
+    "current_session_seconds": 134.60921431300812,
+    "session_difference_seconds": 3.0511874679941684,
+    "prior_final_cleanup_seconds": 0.2962717390037142,
+    "current_final_cleanup_seconds": 0.32588442802079953,
+    "attribution": "Do not attribute the larger session change to GPU: only0.394555s is in summed synthesis; pre-request/publication/cleanup residual changes dominate the remaining difference."
+  },
+  "conditions": {
+    "current_memory_peak_MiB": 512.8,
+    "current_swap_peak_MiB": 74.3,
+    "prior_memory_peak_MiB": 531.4,
+    "prior_swap_peak_MiB": 57.2,
+    "services_before_after": "active",
+    "new_gpu_faults": false,
+    "global_device_icd_sha256": "c8fee96723942fca768a9026987a5d609071d2c60079058064377635155cb44c"
+  },
+  "cpu_resident_reference_seconds": {
+    "short": 15.411270994,
+    "full": 36.80292244
+  },
+  "limits": [
+    "Historical/current binary, driver link, execution order, date, clocks/cache history and swap differ.",
+    "Core load includes packing, pipeline setup and uploads, not isolated transpose cost.",
+    "Command intervals include host/submission/wait work; not isolated GPU timestamps.",
+    "No sustained, live application, current-graph cancellation/restart, GPU saturation or conformance claim."
+  ]
+}

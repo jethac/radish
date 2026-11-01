@@ -10,6 +10,8 @@ TILED=${RADISH_NCNN_TILED:-0}
 TILED32=${RADISH_NCNN_TILED32:-0}
 [[ $TILED32 == 0 || $TILED32 == 1 ]] || { echo 'RADISH_NCNN_TILED32 must be 0 or 1' >&2; exit 2; }
 PLANAR=${RADISH_NCNN_PLANAR:-0}
+PACKED_A=${RADISH_NCNN_PLANAR_PACKED_A:-0}
+[[ $PACKED_A == 0 || $PACKED_A == 1 ]] || { echo 'RADISH_NCNN_PLANAR_PACKED_A must be 0 or 1' >&2; exit 2; }
 [[ $PLANAR == 0 || $PLANAR == 1 ]] || { echo 'RADISH_NCNN_PLANAR must be 0 or 1' >&2; exit 2; }
 NORM_SUM4=${RADISH_NCNN_NORM_SUM4:-0}
 [[ $NORM_SUM4 == 0 || $NORM_SUM4 == 1 ]] || { echo 'RADISH_NCNN_NORM_SUM4 must be 0 or 1' >&2; exit 2; }
@@ -74,12 +76,13 @@ if [[ ( $NORM_OUTPLACE == 1 || $NORM_OUTPLACE_ONLY == 1 ) && ( $NORM_SUM4 != 1 |
     echo 'norm outplace mode requires RADISH_NCNN_NORM_SUM4=1 and RADISH_NCNN_RESHAPE_ALIAS=1' >&2
     exit 2
 fi
-EXTRA_ENV+=" --setenv=RADISH_NCNN_SHARED32=$SHARED32 --setenv=RADISH_NCNN_TILED=$TILED --setenv=RADISH_NCNN_TILED32=$TILED32 --setenv=RADISH_NCNN_PLANAR=$PLANAR --setenv=RADISH_NCNN_NORM_SUM4=$NORM_SUM4 --setenv=RADISH_NCNN_NORM_OUTPLACE=$NORM_OUTPLACE --setenv=RADISH_NCNN_RESHAPE_ALIAS=$RESHAPE_ALIAS --setenv=RADISH_SHARED_GROUPS=$SHARED_GROUPS --setenv=RADISH_TILED_BATCH_CHUNKS=$TILED_BATCH --setenv=RADISH_TILED_GROUPS_X=$TILED_GROUPS_X --setenv=RADISH_PROFILE=1"
+EXTRA_ENV+=" --setenv=RADISH_NCNN_SHARED32=$SHARED32 --setenv=RADISH_NCNN_TILED=$TILED --setenv=RADISH_NCNN_TILED32=$TILED32 --setenv=RADISH_NCNN_PLANAR=$PLANAR --setenv=RADISH_NCNN_PLANAR_PACKED_A=$PACKED_A --setenv=RADISH_NCNN_NORM_SUM4=$NORM_SUM4 --setenv=RADISH_NCNN_NORM_OUTPLACE=$NORM_OUTPLACE --setenv=RADISH_NCNN_RESHAPE_ALIAS=$RESHAPE_ALIAS --setenv=RADISH_SHARED_GROUPS=$SHARED_GROUPS --setenv=RADISH_TILED_BATCH_CHUNKS=$TILED_BATCH --setenv=RADISH_TILED_GROUPS_X=$TILED_GROUPS_X --setenv=RADISH_PROFILE=1"
 TAG+=-tiled-batch$TILED_BATCH
 [[ $SHARED32 == 0 ]] || TAG+=-shared32
 [[ $TILED == 0 ]] || TAG+=-tiled
 [[ $TILED32 == 0 ]] || TAG+=-tiled32
 [[ $PLANAR == 0 ]] || TAG+=-planar
+[[ $PACKED_A == 0 ]] || TAG+=-packed-a
 [[ $NORM_SUM4 == 0 ]] || TAG+=-norm-sum4
 [[ $NORM_OUTPLACE == 0 ]] || TAG+=-norm-outplace
 [[ $TILED_GROUPS_X == 1 ]] || TAG+=-tiled-groups-x$TILED_GROUPS_X
@@ -90,6 +93,7 @@ if [[ ( $NORM_SUM4_ONLY == 1 || $NORM_OUTPLACE_ONLY == 1 ) && $COMPILE_ONLY == 0
     NORM_DUMP=/var/tmp/radish/$TAG-$(date +%s%N).f32
     EXTRA_ENV+=" --setenv=RADISH_NCNN_NORM_OUTPUT=$NORM_DUMP"
 fi
+[[ $PACKED_A == 0 ]] || echo 'Radish controls: planar_packed_a=1'
 exec 9>"${RADISH_DEVICE_LOCK:-$TOP/.device.lock}"
 flock -w 1800 9
 ADB=(adb -s "$SERIAL")

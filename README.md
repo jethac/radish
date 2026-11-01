@@ -32,36 +32,34 @@ output bytes match the previous accepted GPU result; full waveform SNR is
 
 | Measurement | Latest GPU path | Packed six-thread CPU reference |
 | --- | ---: | ---: |
-| Neural core, full resident request | **36.438 s** | **30.703 s** |
-| Complete short synthesis, resident core | **18.163 s** | **15.411 s** |
-| Complete full synthesis, resident core | **42.819 s** | **36.803 s** |
+| Neural core, full resident request | **35.322 s** | **30.703 s** |
+| Complete short synthesis, resident core | **17.297 s** | **15.411 s** |
+| Complete full synthesis, resident core | **41.226 s** | **36.803 s** |
 
-Fixed warm core improves **37.059 → 35.731 s (3.58%)**. Profiling attributes
-**1.297 s** of the **1.328 s** improvement to the fused final stages; all 1478
-retained command signatures match. Every one of the 562,342 outputs is
-byte-identical to the accepted result. Fixed-core peak is **401.9 MiB plus
-11.6 MiB swap**. This compares one warm observation per checkpoint, with
-different binaries and execution histories.
-
-The validated short/short/full/full loop takes **27.428 / 18.163 / 45.677 /
-42.819 s** for complete synthesis. Each request regenerates frontend/source and
-waveform; matching shapes retain the core. Core load is **9.173 / 0 / 3.516 /
-0 s** with `--reuse-pipeline-cache`. External cache entries are 177/177/271/271,
-and device entries stay at five. Session peak is **531.4 MiB plus 57.2 MiB swap**.
-The prior GPU resident full/short measurements were **43.578 / 18.590 s**.
-Single observations and memory pressure limit the comparison. The CPU reference
-uses the earlier equivalent unfused graph and remains faster. Sustained behavior
-and live application integration remain unmeasured.
-
-The new [packed-weight experiment](radish/GPU_PACKED_A.md) improves the same-binary
+The [packed-weight experiment](radish/GPU_PACKED_A.md) improves the same-binary
 fixed warm core **35.806 → 34.304 s (4.20%)**, with all 562,342 outputs byte-identical.
-All 58 affected convolutions improve and retain the same batching. A balanced
-representative convolution measures **7.171 → 6.518 ms GPU elapsed (9.10%)**.
-Cold load rises **9.030 → 11.427 s**, making load plus first inference **0.712 s
-slower** in this pair. This remains an opt-in experiment; its complete synthesis
-validation is pending, so the runtime table above still describes checkpoint 0035.
+All 58 affected convolutions retain the same batching. A balanced representative
+convolution measures **7.171 → 6.518 ms GPU elapsed (9.10%)**. Fixed cold load rises
+**9.030 →11.427 s**, making load plus first inference **0.712 s slower** in that pair.
 
-GPU saturation remains unproven. The dominant 58 tiled convolutions delivered
+The actual 0042 short/short/full/full synthesis loop is **28.953 /17.297 /46.216 /
+41.226 s**, versus 0035 **27.428 /18.163 /45.677 /42.819 s**. Resident hits improve;
+initial/shape-load misses regress. Loads are **11.629 /0 /5.929 /0 s**. All four
+original-ORT core/waveform references pass; every boundary/output byte matches 0035.
+Session peak is **512.8 MiB plus 74.3 MiB swap** (prior 531.4/57.2). Summed synthesis
+improves only **0.394555 s**; the larger session reduction includes unrelated
+pre-request/publication/cleanup differences and cannot be assigned wholly to GPU.
+
+Packed A remains **default off**, exposed through the standard build and device
+wrappers. Select it explicitly for this resident-hit/cold-miss tradeoff. The
+current table records the new opt-in GPU path; CPU references use the earlier
+equivalent graph and still win. Single observations, different driver builds,
+cache/clock histories and memory pressure limit attribution. Sustained behavior
+and live application integration remain unmeasured. The prior 0035 fixed warm
+result was 35.731 s after normalization fusion; its runtime values remain in
+[RUNTIME_INTEGRATION.md](radish/RUNTIME_INTEGRATION.md#optional-normalizationaffinesnake-fusion-0035).
+
+GPU saturation remains unproven. At 0035, the dominant 58 tiled convolutions delivered
 **10.9 useful GFLOP/s on command wall time**, with only 1.2% padding overhead.
 The qualified timer measures one unchanged convolution at **7.161 ms GPU queued
 elapsed**. The [0040 paired calibration](radish/GPU_MAD_UNROLL.md) raises the
@@ -82,8 +80,8 @@ reduced GPU time only **0.42%**, below its planned 5% criterion. A separate
 instructions but added moves inside the reduction loop and was rejected before
 tensor execution. Both remain excluded. The current default-off diagnostic
 driver is **0041**; 0042 adds an incremental timer for the packed-weight
-experiment. Earlier end-to-end measurements and the global device ICD remain
-**0032**.
+experiment. The 0042 measurements use private driver a9be6b5c…12a4e. The rebuilt canonical
+ICD 6ae15421…7813f is separately linked; the global device ICD remains**0032**.
 
 Counter programming is deferred: the inspected A506 sources do not establish
 exclusive counter ownership while other services remain active. No new counter
@@ -104,7 +102,8 @@ Restart after cancellation, the new fused graph and broader cancellation
 coverage remain untested.
 
 Select the measured graph with `--norm-affine-snake-deconv2d`,
-`RADISH_NCNN_PLANAR=1` and `RADISH_BATCH_CHUNKS=8`, with one X workgroup.
+`RADISH_NCNN_PLANAR=1`, `RADISH_NCNN_PLANAR_PACKED_A=1` and
+`RADISH_BATCH_CHUNKS=8`, with one X workgroup.
 The latest measurements additionally enable `RADISH_NCNN_NORM_SUM4=1` and
 `RADISH_NCNN_PAD_CHANNELS=1`, plus `RADISH_NCNN_NORM_OUTPLACE=1` with
 `RADISH_NCNN_RESHAPE_ALIAS=1`; these optimizations remain default-off except the
@@ -154,6 +153,7 @@ build and test scripts retain their relative paths.
 | [radish/GPU_STATE_REUSE.md](radish/GPU_STATE_REUSE.md) | Rejected state-reuse experiment and paired GPU measurements |
 | [radish/GPU_REPEAT_COALESCING.md](radish/GPU_REPEAT_COALESCING.md) | Compiler repeat/copy tradeoff and compile-only rejection |
 | [radish/GPU_MAD_UNROLL.md](radish/GPU_MAD_UNROLL.md) | Paired loop-overhead calibration, exact outputs and achieved arithmetic rate |
+| [radish/GPU_PACKED_A.md](radish/GPU_PACKED_A.md) | Packed-A focused/model/runtime results and cold-load tradeoff |
 | [radish/GPU_SHARED_HOT.md](radish/GPU_SHARED_HOT.md) | Combined shared-hot diagnostic, strict admission failures and paired results |
 
 ## Building and running
@@ -172,7 +172,8 @@ kept outside the repository.
 3. For ncnn, use revision `f18f3ffc94dbc76a277e94556c588ab2c2d0e1d9` with
    glslang `780b6a209132dc74e99458f62ebe5fa7e57c41cf`. Set `RADISH_NCNN` to
    that checkout. `build-loader.sh` prepares the loader/toolchain and
-   `build-ncnn.sh` applies or verifies the supported patch stack.
+   `build-ncnn.sh` applies or verifies the supported patch stack, including0042.
+   Do not manually apply0042 again; its runtime selector defaults to0.
 4. For the private Kokoro runtime, `radish/scripts/build-runtime.sh` builds the
    combined executable. The required private model exports, device runner and
    exact-boundary validation commands are in
