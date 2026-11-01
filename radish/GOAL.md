@@ -5,7 +5,8 @@
 Build an experimental, compute-first Vulkan driver for Adreno 5xx within Mesa's
 Freedreno project, starting with the Adreno 506 in the Lenovo ThinkSmart View.
 Run useful, existing Vulkan inference workloads correctly and improve measured
-speech-inference performance on this device.
+speech-inference performance on this device. Continue optimizing beyond a CPU
+win to make full use of the GPU's attainable performance on these workloads.
 
 Radish is a separate hardware driver sharing Mesa infrastructure, not a wrapper
 around GLES and not a renamed Turnip. Vulkan is a route to existing inference
@@ -32,11 +33,18 @@ The AC8 branches and working checkout must remain usable independently.
 - For the target inference workload, warm end-to-end latency improves over the
   best applicable existing CPU/GLES baseline without unacceptable accuracy loss.
   Report cold startup, throughput, peak memory and sustained thermal behavior too.
+- Account for the gap between the dominant kernels and measured attainable GPU
+  compute/bandwidth limits. Pursue material remaining headroom in arithmetic,
+  layout, register pressure, parallelism, memory traffic, fusion and submission.
+  Completion requires evidence that no known material, actionable performance
+  opportunity remains unexplored; beating the CPU alone does not satisfy this.
 - A repeatable build, isolated installation, test and rollback procedure exists.
 
 A correct driver that does not win the target benchmark is a useful intermediate
 result, not completion of the performance goal. Report that outcome and pursue
 the measured bottleneck rather than redefining success.
+Likewise, a CPU win is a milestone, not the stopping condition. Keep optimizing
+the actual inference path until its remaining limits are measured and explained.
 
 ## Scope
 
@@ -142,6 +150,22 @@ barriers and readback where the application pays them. Report CPU and GPU
 coexistence, thermal state and memory pressure. The nominal GPU FLOPs estimate
 is unverified context, not an acceptance criterion.
 
+Maintain a GPU efficiency account for the dominant real operator shapes. Measure
+attainable arithmetic throughput and memory bandwidth under the appliance's
+actual clock, thermal and coexistence conditions, then relate useful operation
+counts and logical traffic to observed kernel time. Distinguish host emission,
+submission/waits, memory movement and GPU execution; use hardware counters only
+after their meaning and collection are validated. Unknown GPU utilization is an
+open question, not evidence that the hardware is saturated.
+
+Prioritize measured losses and revisit the largest remaining limit after each
+change. Evaluate relevant precision/storage paths, compiler output, tiling,
+occupancy, data reuse, fusion, residency and scheduling without relaxing accuracy
+or hiding work outside the timing boundary. Microbenchmarks establish attainable
+limits and guide implementation; accepted wins must reach representative model
+and sustained end-to-end measurements. Record rejected approaches and their
+evidence, and reopen them only when a concrete new mechanism changes the case.
+
 ## Milestones and exit checks
 
 | Milestone | Deliverable | Exit check |
@@ -153,6 +177,7 @@ is unverified context, not an acceptance criterion.
 | M4: inference operations | FP16/storage path and backend-required features; representative operators | Reference comparisons pass; register and cache behavior measured; no reset or stale-output false wins |
 | M5: model integration | Selected existing inference backend runs a useful model | Output/accuracy and full working-set requirements pass beside the live services; record fallback operations |
 | M6: useful performance | Profile-driven optimization and repeatable deployment | Beats the applicable CPU/GLES baseline end to end; sustained test and recovery procedure pass |
+| M7: GPU efficiency | Measured hardware limits, dominant-kernel efficiency account and remaining-headroom audit | Dominant losses are explained; material actionable opportunities have been implemented or rejected with relevant measurements, including sustained inference; a CPU win alone is insufficient |
 
 Graphics support and wider a5xx coverage are subsequent projects, not reasons to
 delay the first useful inference workload. Performance work remains in scope if
@@ -191,6 +216,7 @@ model-wide defect rate.
 | Copying plausible synchronization code | Write the dependency/cache mapping first; test chained dispatches, host visibility, buffer reuse and destruction under repeated execution. |
 | Reporting a fast kernel that did no work | Initialize outputs with changing sentinels, validate the full output for small tests and independent samples for large tests, inspect faults, and reject incomplete submissions. |
 | Optimizing a microbenchmark while inference remains slow | Profile the actual graph and report end-to-end latency, transfers, CPU fallbacks and memory. Keep operator and application wins distinct. |
+| Stopping once GPU beats CPU, or declaring the GPU saturated without evidence | Continue against measured attainable GPU limits. Account for dominant losses and keep material unexplored headroom open; theoretical FLOPs and a CPU win do not prove efficient GPU use. |
 | Inventing FP16 or quantization accuracy assumptions | Define tolerances per operator; test cancellation, extremes and accumulation; validate model accuracy before accepting a precision change. |
 | Pulling every interesting AC8 branch into the base | Pin a base; inspect individual candidate commits and dependencies; port only changes with demonstrated relevance and validation. |
 | Expanding into a complete graphics driver or framework rewrite | Keep the first backend's requirement matrix and milestone exit checks authoritative. Record new scope separately and get a decision before making it a dependency. |
