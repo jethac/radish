@@ -2,9 +2,9 @@
 #include "rd_private.h"
 #include <inttypes.h>
 
-enum { NX=17, NY=5, N=NX*NY, GUARD=16, FIELDS=16, BUFFER_COUNT=8 };
+enum { NX=17, NY=5, N=NX*NY, GUARD=16, FIELDS=16, BUFFER_COUNT=9 };
 enum { OUTPUT, UNIFORMS, SEEDS, SOURCE_TEXELS, TARGET_TEXELS, IMAGE_UPLOAD,
-       SAMPLE_UPLOAD, IMAGE_READBACK };
+       SAMPLE_UPLOAD, IMAGE_READBACK, COPY_READBACK };
 struct storage {
    VkBuffer buffer; VkDeviceMemory memory;
    uint32_t *map, *saved;
@@ -134,7 +134,7 @@ static void descriptor_buffers(const struct vk_device_dispatch_table *d,VkDevice
       .dstSet=set,.dstBinding=bindings[i],.descriptorCount=1,.descriptorType=types[i],.pBufferInfo=&bi[i]};
    d->UpdateDescriptorSets(device,4,writes,0,NULL);
 }
-static int verify(struct storage stores[BUFFER_COUNT],struct image images[2],unsigned round)
+static int verify(struct storage stores[BUFFER_COUNT],struct image images[3],unsigned round)
 {
    uint32_t a=0x10000000u+(round?3:2)*0x100u;
    uint32_t b=0x10000000u+(round?1:3)*0x100u;
@@ -150,19 +150,35 @@ static int verify(struct storage stores[BUFFER_COUNT],struct image images[2],uns
       stores[TARGET_TEXELS].saved[stores[TARGET_TEXELS].binding_words+GUARD+i]=target_texel(i)+a+b+source_texel(i);
       stores[IMAGE_READBACK].saved[stores[IMAGE_READBACK].binding_words+GUARD+i]=value;
    }
+   for (unsigned y=0;y<NY;y++) for (unsigned x=0;x<NX;x++) {
+      uint32_t expected=0x013579bdu;
+      if (x>=3 && x<14 && y>=1 && y<4) {
+         unsigned n=y*NX+x-1;
+         expected=image_value(n)^a^b^seed_value(n)^source_texel(n);
+      }
+      stores[COPY_READBACK].saved[stores[COPY_READBACK].binding_words+GUARD+y*NX+x]=expected;
+   }
    for (unsigned s=0;s<BUFFER_COUNT;s++) for (size_t i=0;i<stores[s].words;i++) {
       if (stores[s].map[i]!=stores[s].saved[i]) {
          fprintf(stderr,"FAIL round=%u buffer=%u word=%zu actual=%08x expected=%08x\n",
             round,s,i,stores[s].map[i],stores[s].saved[i]); return 1;
       }
    }
-   for (unsigned s=0;s<2;s++) for (size_t i=0;i<images[s].words;i++) {
+   for (unsigned s=0;s<3;s++) for (size_t i=0;i<images[s].words;i++) {
       uint32_t expected=poison(i,BUFFER_COUNT+s,round);
       if (i>=images[s].binding_words) {
          size_t rel=i-images[s].binding_words; unsigned y=rel/images[s].row_words,x=rel%images[s].row_words;
          if (x<images[s].width && y<images[s].height) {
             unsigned n=y*NX+x;
-            expected=s?float_word(sample_value(x,y)):image_value(n)^a^b^seed_value(n)^source_texel(n);
+            if (s==0) expected=image_value(n)^a^b^seed_value(n)^source_texel(n);
+            else if (s==1) expected=float_word(sample_value(x,y));
+            else {
+               expected=0x013579bdu;
+               if (x>=3 && x<14 && y>=1 && y<4) {
+                  n=y*NX+x-1;
+                  expected=image_value(n)^a^b^seed_value(n)^source_texel(n);
+               }
+            }
          }
       }
       if (images[s].map[i]!=expected) {
@@ -261,14 +277,15 @@ int main(int argc,char **argv)
    }
    struct storage stores[BUFFER_COUNT]={0};
    VkDeviceSize sizes[BUFFER_COUNT]={GUARD*4+N*FIELDS*4+64,64,32+N*4+64,GUARD*4+N*4+3,
-      GUARD*4+N*4+3,GUARD*4+N*4+64,GUARD*4+16*4+64,GUARD*4+N*4+64};
+      GUARD*4+N*4+3,GUARD*4+N*4+64,GUARD*4+16*4+64,GUARD*4+N*4+64,GUARD*4+N*4+64};
    VkBufferUsageFlags usages[BUFFER_COUNT]={VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
       VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT,VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT,
-      VK_BUFFER_USAGE_TRANSFER_SRC_BIT,VK_BUFFER_USAGE_TRANSFER_SRC_BIT,VK_BUFFER_USAGE_TRANSFER_DST_BIT};
+      VK_BUFFER_USAGE_TRANSFER_SRC_BIT,VK_BUFFER_USAGE_TRANSFER_SRC_BIT,VK_BUFFER_USAGE_TRANSFER_DST_BIT,VK_BUFFER_USAGE_TRANSFER_DST_BIT};
    for (unsigned i=0;i<BUFFER_COUNT;i++) REQUIRE(storage_create(d,device,&memory_properties,sizes[i],usages[i],&stores[i])==0);
-   struct image images[2]={0};
+   struct image images[3]={0};
    REQUIRE(image_create(d,device,&memory_properties,VK_FORMAT_R32_UINT,NX,NY,VK_IMAGE_USAGE_STORAGE_BIT,&images[0])==0);
    REQUIRE(image_create(d,device,&memory_properties,VK_FORMAT_R32_SFLOAT,4,4,VK_IMAGE_USAGE_SAMPLED_BIT,&images[1])==0);
+   REQUIRE(image_create(d,device,&memory_properties,VK_FORMAT_R32_UINT,NX,NY,VK_IMAGE_USAGE_STORAGE_BIT,&images[2])==0);
    VkBufferView views[2]; REQUIRE(buffer_view(d,device,stores[SOURCE_TEXELS].buffer,&views[0])==0);
    REQUIRE(buffer_view(d,device,stores[TARGET_TEXELS].buffer,&views[1])==0);
    VkDescriptorPoolSize pools[8]={{VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,1},{VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,1},
@@ -297,12 +314,15 @@ int main(int argc,char **argv)
    SUCCESS(d->AllocateCommandBuffers(device,&ca,&command));
    VkCommandBufferBeginInfo begin={.sType=VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
    SUCCESS(d->BeginCommandBuffer(command,&begin));
-   VkImageMemoryBarrier initial[2];
-   for (unsigned i=0;i<2;i++) initial[i]=(VkImageMemoryBarrier){.sType=VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+   VkImageMemoryBarrier initial[3];
+   for (unsigned i=0;i<3;i++) initial[i]=(VkImageMemoryBarrier){.sType=VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
       .dstAccessMask=VK_ACCESS_TRANSFER_WRITE_BIT,.oldLayout=VK_IMAGE_LAYOUT_UNDEFINED,.newLayout=VK_IMAGE_LAYOUT_GENERAL,
       .srcQueueFamilyIndex=VK_QUEUE_FAMILY_IGNORED,.dstQueueFamilyIndex=VK_QUEUE_FAMILY_IGNORED,
       .image=images[i].image,.subresourceRange={VK_IMAGE_ASPECT_COLOR_BIT,0,1,0,1}};
-   d->CmdPipelineBarrier(command,VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,VK_PIPELINE_STAGE_TRANSFER_BIT,0,0,NULL,0,NULL,2,initial);
+   d->CmdPipelineBarrier(command,VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,VK_PIPELINE_STAGE_TRANSFER_BIT,0,0,NULL,0,NULL,3,initial);
+   VkClearColorValue clear={.uint32={0x013579bdu,0,0,0}};
+   VkImageSubresourceRange clear_range={VK_IMAGE_ASPECT_COLOR_BIT,0,1,0,1};
+   d->CmdClearColorImage(command,images[2].image,VK_IMAGE_LAYOUT_GENERAL,&clear,1,&clear_range);
    for (unsigned i=0;i<2;i++) {
       VkBufferImageCopy copy={.bufferOffset=GUARD*4,.imageSubresource={VK_IMAGE_ASPECT_COLOR_BIT,0,0,1},
          .imageExtent={images[i].width,images[i].height,1}};
@@ -316,6 +336,16 @@ int main(int argc,char **argv)
    barriers(d,command,images,false);
    VkBufferImageCopy copy={.bufferOffset=GUARD*4,.imageSubresource={VK_IMAGE_ASPECT_COLOR_BIT,0,0,1},.imageExtent={NX,NY,1}};
    d->CmdCopyImageToBuffer(command,images[0].image,VK_IMAGE_LAYOUT_GENERAL,stores[IMAGE_READBACK].buffer,1,&copy);
+   VkMemoryBarrier transfer={.sType=VK_STRUCTURE_TYPE_MEMORY_BARRIER,
+      .srcAccessMask=VK_ACCESS_TRANSFER_WRITE_BIT,.dstAccessMask=VK_ACCESS_TRANSFER_READ_BIT|VK_ACCESS_TRANSFER_WRITE_BIT};
+   d->CmdPipelineBarrier(command,VK_PIPELINE_STAGE_TRANSFER_BIT,VK_PIPELINE_STAGE_TRANSFER_BIT,
+      0,1,&transfer,0,NULL,0,NULL);
+   VkImageCopy image_copy={.srcSubresource={VK_IMAGE_ASPECT_COLOR_BIT,0,0,1},.srcOffset={2,1,0},
+      .dstSubresource={VK_IMAGE_ASPECT_COLOR_BIT,0,0,1},.dstOffset={3,1,0},.extent={11,3,1}};
+   d->CmdCopyImage(command,images[0].image,VK_IMAGE_LAYOUT_GENERAL,images[2].image,VK_IMAGE_LAYOUT_GENERAL,1,&image_copy);
+   d->CmdPipelineBarrier(command,VK_PIPELINE_STAGE_TRANSFER_BIT,VK_PIPELINE_STAGE_TRANSFER_BIT,
+      0,1,&transfer,0,NULL,0,NULL);
+   d->CmdCopyImageToBuffer(command,images[2].image,VK_IMAGE_LAYOUT_GENERAL,stores[COPY_READBACK].buffer,1,&copy);
    VkMemoryBarrier host={.sType=VK_STRUCTURE_TYPE_MEMORY_BARRIER,
       .srcAccessMask=VK_ACCESS_SHADER_WRITE_BIT|VK_ACCESS_TRANSFER_WRITE_BIT,.dstAccessMask=VK_ACCESS_HOST_READ_BIT};
    d->CmdPipelineBarrier(command,VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT|VK_PIPELINE_STAGE_TRANSFER_BIT,
@@ -326,12 +356,12 @@ int main(int argc,char **argv)
    VkQueue queue; d->GetDeviceQueue(device,0,0,&queue);
    VkFenceCreateInfo fi={.sType=VK_STRUCTURE_TYPE_FENCE_CREATE_INFO}; VkFence fence;
    SUCCESS(d->CreateFence(device,&fi,NULL,&fence));
-   VkMappedMemoryRange ranges[BUFFER_COUNT+2];
-   for (unsigned i=0;i<BUFFER_COUNT+2;i++) ranges[i]=(VkMappedMemoryRange){.sType=VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
+   VkMappedMemoryRange ranges[BUFFER_COUNT+3];
+   for (unsigned i=0;i<BUFFER_COUNT+3;i++) ranges[i]=(VkMappedMemoryRange){.sType=VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
       .memory=i<BUFFER_COUNT?stores[i].memory:images[i-BUFFER_COUNT].memory,.size=VK_WHOLE_SIZE};
    for (unsigned round=0;round<2;round++) {
       for (unsigned s=0;s<BUFFER_COUNT;s++) for (size_t i=0;i<stores[s].words;i++) stores[s].map[i]=poison(i,s,round);
-      for (unsigned s=0;s<2;s++) for (size_t i=0;i<images[s].words;i++) images[s].map[i]=poison(i,BUFFER_COUNT+s,round);
+      for (unsigned s=0;s<3;s++) for (size_t i=0;i<images[s].words;i++) images[s].map[i]=poison(i,BUFFER_COUNT+s,round);
       for (unsigned i=0;i<16;i++) stores[UNIFORMS].map[stores[UNIFORMS].binding_words+i]=0x10000000u+(i/4)*0x100u+i%4;
       for (unsigned i=0;i<N;i++) {
          stores[SEEDS].map[stores[SEEDS].binding_words+8+i]=seed_value(i);
@@ -341,7 +371,7 @@ int main(int argc,char **argv)
       }
       for (unsigned i=0;i<16;i++) stores[SAMPLE_UPLOAD].map[stores[SAMPLE_UPLOAD].binding_words+GUARD+i]=float_word(sample_value(i%4,i/4));
       for (unsigned s=0;s<BUFFER_COUNT;s++) memcpy(stores[s].saved,stores[s].map,stores[s].words*4);
-      SUCCESS(d->FlushMappedMemoryRanges(device,BUFFER_COUNT+2,ranges));
+      SUCCESS(d->FlushMappedMemoryRanges(device,BUFFER_COUNT+3,ranges));
       descriptor_buffers(d,device,set,stores,round,false);
       SUCCESS(d->ResetFences(device,1,&fence));
       VkSubmitInfo submit={.sType=VK_STRUCTURE_TYPE_SUBMIT_INFO,.commandBufferCount=1,.pCommandBuffers=&command};
@@ -349,7 +379,7 @@ int main(int argc,char **argv)
       printf("RESOURCE_ROUND_BEGIN round=%u grid=%u,%u late_updates=1 dynamic=16,16\n",round,NX,NY); fflush(stdout);
       SUCCESS(d->QueueSubmit(queue,1,&submit,fence));
       SUCCESS(d->WaitForFences(device,1,&fence,VK_TRUE,5000000000ull));
-      SUCCESS(d->InvalidateMappedMemoryRanges(device,BUFFER_COUNT+2,ranges));
+      SUCCESS(d->InvalidateMappedMemoryRanges(device,BUFFER_COUNT+3,ranges));
       REQUIRE(verify(stores,images,round)==0);
       REQUIRE(inside->submit_count-before>=2);
       printf("RESOURCE_ROUND_PASS round=%u records=%u oracle_words=%u input_and_allocation_guards=exact submits=%" PRIu64 "\n",
@@ -358,7 +388,7 @@ int main(int argc,char **argv)
    d->DestroyFence(device,fence,NULL); d->DestroyCommandPool(device,command_pool,NULL);
    d->DestroyDescriptorPool(device,pool,NULL);
    for (unsigned i=0;i<2;i++) d->DestroyBufferView(device,views[i],NULL);
-   for (unsigned i=0;i<2;i++) {
+   for (unsigned i=0;i<3;i++) {
       d->DestroyImageView(device,images[i].view,NULL); d->UnmapMemory(device,images[i].memory);
       d->DestroyImage(device,images[i].image,NULL); d->FreeMemory(device,images[i].memory,NULL);
    }
@@ -370,6 +400,6 @@ int main(int argc,char **argv)
    for (unsigned i=0;i<2;i++) d->DestroyDescriptorSetLayout(device,sl[i],NULL);
    for (unsigned i=0;i<2;i++) d->DestroySampler(device,samplers[i],NULL);
    d->DestroyDevice(device,NULL); DestroyInstance(instance,NULL); dlclose(lib);
-   puts("PASS RESOURCE: UBO/dynamic offsets/late updates/compatible layouts/typed texels/images/nearest+linear exact/guards");
+   puts("PASS RESOURCE: UBO/dynamic offsets/late updates/compatible layouts/typed texels/images/nearest+linear/image copy+clear exact/guards");
    return 0;
 }

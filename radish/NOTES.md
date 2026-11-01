@@ -1,5 +1,19 @@
 # Radish status
 
+## 2026-11-02 (JST): original40 command exercise worklist reached
+
+The existing resource suite passes two rounds with real full color clear,
+offset image copy, complete readback and allocation/row guards on ICD4b5d6cb6.
+All40 original command paths now have representative execution evidence.
+This is not complete semantics or conformance: BASIC2D mapping, robust bounds,
+legal shared/workgroup execution and private/constant coverage remain open.
+The616ms run used5.2MiB,zero swap; no faults and both services stayed active.
+
+The new depth-source increment builds and supplies genuine sampled-depth/compare
+consumers, but this color test does not validate them. Performance remains paused.
+See [result/ledger](results/core-api-0044-image-transfers.json) and
+[checkpoint/reproduction](CORE_API_0044.md).
+
 ## 2026-11-02 (JST): public KHR paths and logical descriptor checkpoint
 
 ICD61bad822 passes API5, events/query and resource execution, including public

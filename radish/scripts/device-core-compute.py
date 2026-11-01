@@ -60,14 +60,16 @@ def main():
     parser.add_argument('--probe-dir', type=Path, required=True)
     parser.add_argument('--lock-fd', type=int, default=9)
     parser.add_argument('--serial', default=os.environ.get('RADISH_SERIAL', 'feb0bd1f028e4cb0'))
+    parser.add_argument('--suite', choices=('all', 'resources'), default='all', help='Run the consolidated batch or only the existing resource suite.')
     parser.add_argument('--check-only', action='store_true', help='Check host pins only; no lock or adb.')
     args = parser.parse_args()
     require(re.fullmatch(r'[A-Za-z0-9_-]{1,48}', args.label) is not None, 'invalid run label')
     remote = '/var/tmp/radish/core-compute-' + args.label
     evidence_root = WORK / ('core-compute-' + args.label)
+    suites = ('api5', 'event-query', 'resources', 'subgroup') if args.suite == 'all' else ('resources',)
     sources = {}
     paths = [('libvulkan_radish.so', args.driver, args.driver_sha256)]
-    for name in ('api5', 'event-query', 'resources', 'subgroup'):
+    for name in suites:
         for suffix in ('', '.spv'):
             path = (args.probe_dir / (name + suffix)).resolve(strict=True)
             paths.append((name + suffix, path, identity(path)['sha256']))
@@ -214,7 +216,7 @@ def main():
         fault_awk = 'function stamp(line, s) { s=line; sub(/^\\[ */, "", s); sub(/\\].*$/, "", s); return s+0 }\nNR==FNR { if ($0 ~ /^\\[ *[0-9]+\\.[0-9]+\\]/) { n++; t=stamp($0); if(t>cutoff)cutoff=t; old[$0]=1 } next }\n$0 ~ /^\\[ *[0-9]+\\.[0-9]+\\]/ { m++; t=stamp($0); if(t>last)last=t; line=tolower($0); if(t>=cutoff && !( $0 in old ) && (line ~ /hangcheck detected|gpu.*fault|gpu.*recover/)) { print "FAIL: new GPU fault/recovery: " $0; failed=1 } }\nEND { if(!n || !m || last<cutoff) { print "FAIL: missing/reset kernel timestamps"; failed=1 } if(!failed)print "PASS: no new GPU fault/recovery messages"; exit failed }\n'
         check_after = 'dmesg > ' + shlex.quote(remote + '/batch-dmesg-after.txt') + '; awk ' + shlex.join([fault_awk, remote + '/batch-dmesg-before.txt', remote + '/batch-dmesg-after.txt'])
         commands.append('failed=0')
-        for name in ('api5', 'event-query', 'resources', 'subgroup'):
+        for name in suites:
             argv = [remote + '/' + name, remote + '/libvulkan_radish.so', remote + '/' + name + '.spv']
             commands += ['echo BATCH_COMPILE_BEGIN ' + name,
                          'if ' + shlex.join(argv + ['--compile-only']) + '; then',
@@ -223,7 +225,7 @@ def main():
                          'else echo BATCH_COMPILE_FAILED ' + name + '; failed=1; fi', check_after]
         commands.append('exit "$failed"')
         command += ['/bin/sh', '-c', '\n'.join(commands)]
-        shell = 'chmod 755 ' + ' '.join(shlex.quote(remote + '/' + name) for name in ('api5', 'event-query', 'resources', 'subgroup')) + ' && ' + shlex.join(command)
+        shell = 'chmod 755 ' + ' '.join(shlex.quote(remote + '/' + name) for name in suites) + ' && ' + shlex.join(command)
         (evidence / 'run-command.txt').write_text(shell + '\n')
         write_json(evidence / 'launch.json', dict(mode=args.mode, unit=unit, serial=args.serial,
                    remote=remote, environment=environment, payload=assets))
@@ -239,8 +241,9 @@ def main():
         collect()
         log = (evidence / 'run.log').read_text()
         require(not re.search(r'vkCreateComputePipelines failed|new_pipeline failed|\bFAIL\b', log), 'failure in process log')
-        for marker in ('PASS API5: two real base-grid executions', 'PASS EVENT_QUERY: two rounds',
-                       'PASS RESOURCE: UBO/dynamic offsets', 'PASS BASIC: partial/multiple subgroup IDs'):
+        pass_markers = {'api5': 'PASS API5: two real base-grid executions', 'event-query': 'PASS EVENT_QUERY: two rounds',
+                        'resources': 'PASS RESOURCE: UBO/dynamic offsets', 'subgroup': 'PASS BASIC: partial/multiple subgroup IDs'}
+        for marker in (pass_markers[name] for name in suites):
             require(marker in log, 'missing functional pass: ' + marker)
         write_json(evidence / 'runner-result.json', dict(status='passed', mode=args.mode, exit_code=0,
                    payload=assets, run_log=identity(evidence / 'run.log'),

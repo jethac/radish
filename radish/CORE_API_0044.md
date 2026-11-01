@@ -21,8 +21,12 @@ resource checks pass; the full range of those source paths is not qualified.
 The measured and published source both leave BASIC supported stages/operations
 zero. The subgroup probe enables them only in its private diagnostic object.
 
-The original40 worklist now has38 representative command paths exercised.
-`CmdCopyImage` and `CmdClearColorImage` remain build-only. Core1.1 DispatchBase
+The original40 worklist now has40 representative command paths exercised.
+A subsequent resource-only run on ICD4b5d6cb6 passes full color clear and an
+offset11×3 image copy in both rounds, including full destination readback, row
+padding and allocation guards. It takes616ms,5.2MiB,zero swap, with no new faults
+and both services active. This closes the command exercise worklist, not the
+complete compute contract. See [transfer result](results/core-api-0044-image-transfers.json). Core1.1 DispatchBase
 and external-buffer-property evidence still uses internal dispatch tables;
 the corresponding public version/extensions are not advertised. See
 [the exact result and command ledger](results/core-api-0044-backports.json).
@@ -33,9 +37,15 @@ coverage remain active work. Graphics is outside scope; performance work stays
 paused. The preceding stage7 result is preserved in
 [its separate record](results/core-api-0044-consolidated.json).
 
+The fifth increment, `0044-radish-depth-consumers-wip.patch`, adds real D16/D32
+sampled-depth and compare-sampler code, depth views/barriers and matching-format
+depth image copies. It is built into4b5d6cb6, but depth consumption is not exercised
+by the color-resource result. Core compute does not gain graphics-only depth
+clear or buffer/depth copy commands.
+
 ## Consolidated reproduction
 
-Apply the four0044 incremental patches in order to the documented0042 Mesa
+Apply the five0044 incremental patches in order to the documented0042 Mesa
 stack and build the isolated driver. Build probes against its matching internal
 ABI:
 
@@ -47,6 +57,10 @@ python3 radish/scripts/device-core-compute.py probe backports-native16 \
   --driver "$API_WORK/build/src/freedreno/radish/libvulkan_radish.so" \
   --driver-sha256 "$DRIVER_SHA" --probe-dir "$API_WORK/compute-probes" --lock-fd 9
 ```
+
+Use `--suite resources` for the bounded color copy/clear resource-only run.
+The public selection option is host-checked; the actual run used the same
+existing resource-only command list in a private derivative.
 
 Set `RADISH_DEVICE_LOCK` to the same original lock and `RADISH_WORK` to the host
 evidence directory. The private driver is selected only for the bounded service.
@@ -143,6 +157,10 @@ python3 radish/scripts/device-core-api5.py probe api5-first \
   --probe-sha256 "$PROBE_SHA" --shader "$API_WORK/api5/probe.spv" \
   --shader-sha256 "$SHADER_SHA" --lock-fd 9
 ```
+
+Use `--suite resources` for the bounded color copy/clear resource-only run.
+The public selection option is host-checked; the actual run used the same
+existing resource-only command list in a private derivative.
 
 Set `RADISH_DEVICE_LOCK` to that same original lock if the public checkout is
 elsewhere. Inspect actual compiler resources before the functional phase.
