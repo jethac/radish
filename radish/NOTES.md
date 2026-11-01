@@ -1,5 +1,28 @@
 # Radish status
 
+## 2026-11-02 (JST): compute functionality priority and first 0044 API checkpoint
+
+Performance work is paused. The current campaign is complete Vulkan 1.0/1.1
+compute behavior, including execution/shared-memory limits, descriptors and
+resources, subgroup BASIC and required SPIR-V behavior; graphics is excluded.
+The 40 audited command paths are one worklist, not the completion criterion.
+
+The first isolated 0044 API probe passes on A506: two 4,160-invocation grids
+with base (3,4,5), all builtin/descriptor words and guards, secondary UPDATE
+deep-copy/reset/reuse, unaligned/zero-stride templates, layout support and honest
+external-buffer properties. Each grid executes eight compute chunks/submissions.
+The service takes 116 ms, 2.2 MiB, zero swap; no new faults and both services active.
+Four 1.1 commands use matching internal dispatch tables and remain absent from
+ordinary public lookups under API 1.0. This does not establish public 1.1 support.
+
+[CORE_API_0044.md](CORE_API_0044.md) and [compact results](results/core-api-0044-api5.json)
+provide the scoped source/evidence/reproduction. The published patch contains
+API5 plus the built image-transfer foundation; image consumers and event/query
+integration are subsequent WIP, not exercised by this probe. The integration
+branch is now building their combined implementation. Canonical inference
+sources and the installed device ICD remain unchanged. Validation will be
+batched after coherent subsystem builds, per the user's build-first priority.
+
 ## 2026-11-02 (JST): packed-A runtime passes, with resident/cold tradeoff
 
 All four fresh original-ORT core/waveform references pass at unchanged gates,

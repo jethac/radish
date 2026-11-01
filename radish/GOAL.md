@@ -253,7 +253,28 @@ model-wide defect rate.
 
 ## Immediate next step
 
-Audit inference-backend requirements against a5xx binding and shader capabilities,
-then write the implementation plan for M0–M2 with exact source revisions and test
-commands. Keep unresolved backend selection visible; do not silently choose a
-modern backend whose mandatory features the first driver cannot supply.
+At the user's 2026-11-02 direction, pause performance experiments and complete
+compute behavior required by Vulkan 1.0 and 1.1 for the fleet. Graphics remains
+outside scope. The 40 missing, broken or blocked command paths in the audit
+(33 Vulkan 1.0 paths and seven Vulkan 1.1 additions) are one tracked worklist,
+not the completion boundary.
+
+Give execution holes, descriptor/resource gaps and Vulkan 1.1 compute
+requirements equal priority. Track legal workgroup and shared-memory behavior,
+UBOs and dynamic resources, descriptor update and lifetime semantics, subgroup
+BASIC, required SPIR-V behavior, synchronization, limits and features alongside
+the command inventory. Implement the real resource consumers and dependencies;
+entrypoint stubs or metadata-only objects do not close a functional path.
+
+Keep source implementation, public availability and hardware evidence separate.
+Use applicable existing CTS cases and focused independent checks where they
+catch real gaps. Conditional commands do not all impose mandatory feature
+requirements. No API-version, profile or conformance claim follows from symbol
+counts or selected passing tests. Keep unsupported capabilities honestly
+reported while implementing the remaining required compute behavior.
+
+All implementation, integration, builds, device validation and publication are
+delegated to subagents; the root agent coordinates the campaign and user
+conversation. Resume performance experiments only after this functionality
+priority is handled or the user redirects. The original inference performance
+and GPU-efficiency goals remain in force.

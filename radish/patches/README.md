@@ -50,6 +50,8 @@ limits and validation scope. Published checkpoints remain experimental; publicat
 | `0042-ncnn-planar-packed-a.patch` | Incremental after 0033 in the ordered Conv1D stack; now applied/verified by build-ncnn.sh | Default-off packed constant-weight layout; focused GPU time falls 9.10%, same-binary fixed warm core 4.20%, exact outputs. All four fresh runtime references pass; resident hits improve, cold/shape misses regress. Default0. Requires fresh consistent shader tables. |
 | `0042-radish-packed-a-timer.patch` | Incremental over cumulative 0041 | Adds only a default-off 25-line packed-A timestamp class. All 23 changed model variants already use existing native 28 batching; no model scheduling change. |
 
+| `0044-radish-core-api-foundation.patch` | Incremental over cumulative 0041 plus the 0042 Radish timer patch, isolated WIP checkout | API5 functional probe passes; image transfer foundation builds but is not device-qualified here. Events/query/resource consumers and complete compute behavior remain in progress; API version stays 1.0. |
+
 0042 is now part of the standard verified ncnn patch stack, with its selector
 default off in all device wrappers. The runtime serializer/capture verifier use
 the same environment key. Focused, fixed-core and all four fresh runtime

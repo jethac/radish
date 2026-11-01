@@ -1,0 +1,69 @@
+{
+  "status": "scoped_functional_pass",
+  "stage": "0044 API5 and image transfer foundation",
+  "implementation_source": "API5 plus image transfer foundation; image descriptor/shader consumers and event/query integration pending",
+  "public_api": "1.0; four tested1.1 core names absent via ordinary lookup; private internal dispatch tables used",
+  "driver_sha256": "6de62b26776079a07d4e4a7269672d5d0cedc2b5b5e95af98486db2563bc6924",
+  "probe_sha256": "f4d1e0beaa895e63a3e4f6ec84fe7e552b353baca15a9e000534ac294f316a65",
+  "spirv_sha256": "b3b1a5925dcfe24ec14d3ab2b64170a69c9ae328ecc091519b32efb1c66e4421",
+  "compile_log_sha256": "7ec88ece66fdfa62169201aca4118f22987dbab8f683dd2ef31af20a8671bfea",
+  "functional_log_sha256": "58316645182ac06e919b85179a3b113c79a50cdb37e6da0979f8ad2b38c8b5fe",
+  "functional": {
+    "rounds": 2,
+    "records_each": 4160,
+    "local": [
+      4,
+      2,
+      2
+    ],
+    "grid": [
+      65,
+      2,
+      2
+    ],
+    "base": [
+      3,
+      4,
+      5
+    ],
+    "math_chunks_each": 8,
+    "math_submits_each": 8,
+    "update_submits_each": 1,
+    "all_builtin_template_words_and_guards": true,
+    "update_payload_independent": true,
+    "secondary_reset_after_fence": true,
+    "unaligned_strided_template": true,
+    "zero_stride_consecutive_bindings": true,
+    "layout_query_cases": 5,
+    "external_features": 0,
+    "external_export_from_imported": 0,
+    "external_compatible_handle": "OPAQUE_FD",
+    "service_ms": 116,
+    "peak_MiB_reported": 2.2,
+    "swap_bytes": 0,
+    "new_gpu_faults": false,
+    "services": [
+      "active",
+      "active"
+    ]
+  },
+  "limits": [
+    "Image foundation was built but not exercised in this probe.",
+    "No public1.1 availability or conformance claim.",
+    "Events/query, resource consumers and broader compute requirements remain work in progress."
+  ],
+  "source_pins": {
+    "src/freedreno/radish/rd_command.c": "b673b0bcf7067775d85211a4fbef17c1af4b7b67c25ed21a1ce1974953ba3463",
+    "src/freedreno/radish/rd_transfer.c": "a93968bf54724b1a068d7169940952286b73a0eb08f9fe78ee3ef4e608d5812b",
+    "src/freedreno/radish/rd_memory.c": "fe85c1123805df59f202ee1cfa7a1a204fb05692d555b2ca8eb86d5a14e471b1",
+    "src/freedreno/radish/rd_queue.c": "6273f0040bc0bb131f82d23943aeb07d8b9725e6028841e9071f6444eeb7f7fb",
+    "src/freedreno/radish/meson.build": "32692d45e75f1b4adae38a5268b59cee0f726f9788cbc27e5611610fefbd57f5",
+    "src/freedreno/radish/rd_instance.c": "fcbeced0bdb66550bc0661939e795d2462f1c41194391708d474e67af6ae514a",
+    "src/freedreno/radish/rd_device.c": "1a1ee7dd2708c820e31b53ac8cff0e8dcefca493941b4849557f254ff279e212",
+    "src/freedreno/radish/rd_private.h": "f30a912b028cddae14b58f83ed6b131609b242dd16e62f6d21185ea07454452f",
+    "src/freedreno/radish/rd_pipeline.c": "98c728895b9576a7e37513d8d0c40b3b0a5f2edee25aeaeb0feb5a88db6dcba6",
+    "src/freedreno/radish/rd_descriptor.c": "896c85ea2af481c42c08062358ac249357923cfcc4b89eda7705f1508114c053",
+    "src/freedreno/radish/rd_image.c": "c7c81f105e7d219aac194d7fca1900a8fa80ea34341650c6c418d158361a1e2f",
+    "src/freedreno/radish/rd_image.h": "60faa1b1b1e5e3df1d1138c3d0ea343e298d378ca5bbc350e62c193bc7e2c082"
+  }
+}

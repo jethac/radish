@@ -1,0 +1,1135 @@
+--- a/src/freedreno/radish/rd_command.c
++++ b/src/freedreno/radish/rd_command.c
+@@ -34,8 +34,6 @@
+ rd_command_create(struct vk_command_pool *pool, VkCommandBufferLevel level,
+                    struct vk_command_buffer **out)
+ {
+-   if (level != VK_COMMAND_BUFFER_LEVEL_PRIMARY)
+-      return VK_ERROR_FEATURE_NOT_PRESENT;
+    struct rd_command_buffer *command = vk_zalloc(&pool->alloc, sizeof(*command),
+       8, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT);
+    if (!command)
+@@ -163,6 +161,58 @@
+ }
+ 
+ VKAPI_ATTR void VKAPI_CALL
++rd_CmdDispatchBase(VkCommandBuffer handle, uint32_t bx, uint32_t by, uint32_t bz,
++                   uint32_t x, uint32_t y, uint32_t z)
++{
++   VK_FROM_HANDLE(rd_command_buffer, command, handle);
++   if (bx >= 65535 || by >= 65535 || bz >= 65535 ||
++       x > 65535 - bx || y > 65535 - by || z > 65535 - bz) {
++      vk_command_buffer_set_error(&command->vk, VK_ERROR_FEATURE_NOT_PRESENT);
++      return;
++   }
++   if (!x || !y || !z)
++      return;
++   struct rd_dispatch *dispatch = rd_record_dispatch(command);
++   if (!dispatch)
++      return;
++   dispatch->base[0] = bx;
++   dispatch->base[1] = by;
++   dispatch->base[2] = bz;
++   dispatch->grid[0] = x;
++   dispatch->grid[1] = y;
++   dispatch->grid[2] = z;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_CmdExecuteCommands(VkCommandBuffer handle, uint32_t count,
++                       const VkCommandBuffer *handles)
++{
++   VK_FROM_HANDLE(rd_command_buffer, primary, handle);
++   for (uint32_t i = 0; i < count; i++) {
++      VK_FROM_HANDLE(rd_command_buffer, secondary, handles[i]);
++      util_dynarray_foreach(&secondary->commands, struct rd_command, source) {
++         struct rd_command *destination = rd_command_append(primary, source->type);
++         if (!destination)
++            return;
++         *destination = *source;
++         if (source->type == RD_CMD_UPDATE) {
++            destination->transfer.data = vk_alloc(&primary->vk.pool->alloc,
++               source->transfer.size, 8, VK_SYSTEM_ALLOCATION_SCOPE_COMMAND);
++            if (!destination->transfer.data) {
++               vk_command_buffer_set_error(&primary->vk, VK_ERROR_OUT_OF_HOST_MEMORY);
++               return;
++            }
++            memcpy(destination->transfer.data, source->transfer.data,
++                   source->transfer.size);
++         }
++      }
++   }
++   primary->pipeline = NULL;
++   memset(primary->sets, 0, sizeof(primary->sets));
++   memset(primary->push, 0, sizeof(primary->push));
++}
++
++VKAPI_ATTR void VKAPI_CALL
+ rd_CmdDispatchIndirect(VkCommandBuffer handle, VkBuffer buffer_handle,
+                        VkDeviceSize offset)
+ {
+@@ -186,8 +236,12 @@
+ rd_CmdPipelineBarrier2(VkCommandBuffer handle, const VkDependencyInfo *info)
+ {
+    VK_FROM_HANDLE(rd_command_buffer, command, handle);
+-   if (info->imageMemoryBarrierCount)
+-      vk_command_buffer_set_error(&command->vk, VK_ERROR_FEATURE_NOT_PRESENT);
++   for (uint32_t i = 0; i < info->imageMemoryBarrierCount; i++) {
++      if (!rd_image_barrier_valid(&info->pImageMemoryBarriers[i])) {
++         vk_command_buffer_set_error(&command->vk, VK_ERROR_FEATURE_NOT_PRESENT);
++         return;
++      }
++   }
+ }
+ 
+ struct rd_command *
+--- a/src/freedreno/radish/rd_queue.c
++++ b/src/freedreno/radish/rd_queue.c
+@@ -389,9 +389,9 @@
+          .num_work_groups_y = dispatch->grid[1],
+          .num_work_groups_z = dispatch->grid[2],
+          .work_dim = 3,
+-         .base_group_x = group_base[0],
+-         .base_group_y = group_base[1],
+-         .base_group_z = group_base[2],
++         .base_group_x = dispatch->base[0] + group_base[0],
++         .base_group_y = dispatch->base[1] + group_base[1],
++         .base_group_z = dispatch->base[2] + group_base[2],
+          .subgroup_size = 32,
+          .local_group_size_x = v->local_size[0],
+          .local_group_size_y = v->local_size[1],
+@@ -549,7 +549,8 @@
+       max_chunks = MIN2(max_chunks, 4);
+    struct rd_gpu_elapsed storage = {0};
+    struct rd_gpu_elapsed *sample = NULL;
+-   if (profile && !dispatch->indirect && !tiled_x2 && max_chunks == 8 &&
++   const bool zero_base = !dispatch->base[0] && !dispatch->base[1] && !dispatch->base[2];
++   if (zero_base && profile && !dispatch->indirect && !tiled_x2 && max_chunks == 8 &&
+        fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) == 506 &&
+        v->local_size[0] == 16 && v->local_size[1] == 8 &&
+        v->local_size[2] == 1 && v->has_barrier && v->loops == 4 &&
+@@ -571,7 +572,7 @@
+          rd_gpu_elapsed_prepare(device, sample);
+       }
+    }
+-   if (!sample && profile && !dispatch->indirect && !tiled_x2 &&
++   if (!sample && zero_base && profile && !dispatch->indirect && !tiled_x2 &&
+        max_chunks == 1 && fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) == 506 &&
+        v->local_size[0] == 16 && v->local_size[1] == 8 &&
+        v->local_size[2] == 1 && !v->has_barrier && v->loops == 1 &&
+@@ -603,7 +604,7 @@
+          rd_gpu_elapsed_prepare(device, sample);
+       }
+    }
+-   if (!sample && profile && !dispatch->indirect && !tiled_x2 &&
++   if (!sample && zero_base && profile && !dispatch->indirect && !tiled_x2 &&
+        max_chunks == 1 && tiled_chunks == 8 &&
+        fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) == 506 &&
+        v->local_size[0] == 16 && v->local_size[1] == 8 &&
+@@ -631,7 +632,7 @@
+          }
+       }
+    }
+-   if (!sample && profile && !dispatch->indirect && !tiled_x2 &&
++   if (!sample && zero_base && profile && !dispatch->indirect && !tiled_x2 &&
+        max_chunks == 8 && fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) == 506 &&
+        v->local_size[0] == 16 && v->local_size[1] == 8 &&
+        v->local_size[2] == 1 && v->has_barrier && v->loops == 4 &&
+@@ -834,7 +835,10 @@
+             if (result == VK_SUCCESS)
+                result = rd_execute_dispatch(device, dispatch,
+                                             profile ? &submit_profile : NULL);
+-         } else
++         } else if (recorded->type == RD_CMD_IMAGE_COPY || recorded->type == RD_CMD_IMAGE_CLEAR)
++            result = rd_execute_image_transfer(device, &recorded->image_transfer,
++                                                recorded->type == RD_CMD_IMAGE_CLEAR);
++         else
+             result = rd_execute_transfer(device, recorded->type, &recorded->transfer,
+                                          profile ? &submit_profile : NULL);
+          if (profile) {
+@@ -850,6 +854,11 @@
+                        (unsigned)v->has_barrier, v->loops, v->instrlen,
+                        chunks, submits, elapsed, submit_profile.total_ns,
+                        submit_profile.max_ns, result);
++            } else if (recorded->type == RD_CMD_IMAGE_COPY || recorded->type == RD_CMD_IMAGE_CLEAR) {
++               const struct rd_image_transfer *t = &recorded->image_transfer;
++               fprintf(stderr, "RADISH_PROFILE image_transfer type=%u bytes=%" PRIu64 " ns=%" PRId64 " result=%d\n",
++                       (unsigned)recorded->type, (uint64_t)t->row_bytes * t->rows * t->slices,
++                       elapsed, result);
+             } else {
+                fprintf(stderr, "RADISH_PROFILE transfer type=%u bytes=%" PRIu64 " chunks=%u submits=%" PRIu64 " ns=%" PRId64 " submit_ns=%" PRId64 " submit_max_ns=%" PRId64 " result=%d\n",
+                        (unsigned)recorded->type, (uint64_t)recorded->transfer.size,
+--- a/src/freedreno/radish/meson.build
++++ b/src/freedreno/radish/meson.build
+@@ -11,7 +11,7 @@
+ libvulkan_radish = shared_library(
+   'vulkan_radish',
+   ['rd_instance.c', 'rd_device.c', 'rd_memory.c', 'rd_descriptor.c', 'rd_pipeline.c',
+-   'rd_command.c', 'rd_transfer.c', 'rd_queue.c', rd_entrypoints, freedreno_xml_header_files],
++   'rd_command.c', 'rd_transfer.c', 'rd_image.c', 'rd_queue.c', rd_entrypoints, freedreno_xml_header_files],
+   include_directories : [inc_freedreno, inc_include, inc_src],
+   link_with : [libfreedreno_drm, libfreedreno_ir3],
+   dependencies : [idep_libfreedreno_common, idep_vulkan_util,
+--- a/src/freedreno/radish/rd_instance.c
++++ b/src/freedreno/radish/rd_instance.c
+@@ -1,10 +1,23 @@
+ #include "rd_private.h"
++
+ #include "util/os_misc.h"
+ #include "util/u_memory.h"
+ #include "vk_util.h"
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include <xf86drm.h>
++
++VKAPI_ATTR void VKAPI_CALL
++rd_GetPhysicalDeviceExternalBufferProperties(VkPhysicalDevice handle,
++   const VkPhysicalDeviceExternalBufferInfo *info,
++   VkExternalBufferProperties *properties)
++{
++   properties->externalMemoryProperties = (VkExternalMemoryProperties) {
++      .externalMemoryFeatures = 0,
++      .exportFromImportedHandleTypes = 0,
++      .compatibleHandleTypes = info->handleType,
++   };
++}
+ 
+ static const struct vk_instance_extension_table rd_instance_extensions = {
+    .KHR_get_physical_device_properties2 = true,
+@@ -90,6 +103,16 @@
+       .deviceType = VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU,
+       .subgroupSize = 32,
+       .maxMemoryAllocationCount = 4096,
++      .maxImageDimension1D = 4096,
++      .maxImageDimension2D = 4096,
++      .maxImageDimension3D = 256,
++      .maxImageDimensionCube = 4096,
++      .maxImageArrayLayers = 256,
++      .minTexelBufferOffsetAlignment = 16,
++      .maxTexelBufferElements = 128 * 1024 * 1024,
++      .maxSamplerAllocationCount = 4096,
++      .maxSamplerLodBias = 16.0f,
++      .maxSamplerAnisotropy = 1.0f,
+       .maxBoundDescriptorSets = 4,
+       .maxStorageBufferRange = 128 * 1024 * 1024,
+       .maxUniformBufferRange = 16384,
+@@ -202,29 +225,6 @@
+ }
+ 
+ VKAPI_ATTR void VKAPI_CALL
+-rd_GetPhysicalDeviceFormatProperties2(VkPhysicalDevice handle, VkFormat format,
+-                                      VkFormatProperties2 *out)
+-{
+-   out->formatProperties = (VkFormatProperties){0};
+-   vk_foreach_struct(sType, next, out->pNext) {
+-      if (sType == VK_STRUCTURE_TYPE_FORMAT_PROPERTIES_3) {
+-         VkFormatProperties3 *properties = (VkFormatProperties3 *)next;
+-         properties->linearTilingFeatures = 0;
+-         properties->optimalTilingFeatures = 0;
+-         properties->bufferFeatures = 0;
+-      }
+-   }
+-}
+-
+-VKAPI_ATTR VkResult VKAPI_CALL
+-rd_GetPhysicalDeviceImageFormatProperties2(VkPhysicalDevice handle,
+-   const VkPhysicalDeviceImageFormatInfo2 *info, VkImageFormatProperties2 *out)
+-{
+-   out->imageFormatProperties = (VkImageFormatProperties){0};
+-   return VK_ERROR_FORMAT_NOT_SUPPORTED;
+-}
+-
+-VKAPI_ATTR void VKAPI_CALL
+ rd_GetPhysicalDeviceSparseImageFormatProperties2(VkPhysicalDevice handle,
+    const VkPhysicalDeviceSparseImageFormatInfo2 *info, uint32_t *count,
+    VkSparseImageFormatProperties2 *properties)
+--- a/src/freedreno/radish/rd_private.h
++++ b/src/freedreno/radish/rd_private.h
+@@ -4,6 +4,7 @@
+ #include "rd_entrypoints.h"
+ #include "vk_alloc.h"
+ #include "vk_buffer.h"
++#include "rd_image.h"
+ #include "vk_device.h"
+ #include "vk_device_memory.h"
+ #include "vk_drm_syncobj.h"
+@@ -90,9 +91,10 @@
+    struct rd_buffer *indirect;
+    VkDeviceSize indirect_offset;
+    struct rd_descriptor descriptors[RD_MAX_BINDINGS];
+-   uint32_t push[32], grid[3];
++   uint32_t push[32], grid[3], base[3];
+ };
+-enum rd_command_type { RD_CMD_DISPATCH, RD_CMD_COPY, RD_CMD_FILL, RD_CMD_UPDATE };
++enum rd_command_type { RD_CMD_DISPATCH, RD_CMD_COPY, RD_CMD_FILL, RD_CMD_UPDATE,
++                       RD_CMD_IMAGE_COPY, RD_CMD_IMAGE_CLEAR };
+ struct rd_transfer {
+    struct rd_buffer *src, *dst;
+    VkDeviceSize src_offset, dst_offset, size;
+@@ -101,7 +103,8 @@
+ };
+ struct rd_command {
+    enum rd_command_type type;
+-   union { struct rd_dispatch dispatch; struct rd_transfer transfer; };
++   union { struct rd_dispatch dispatch; struct rd_transfer transfer;
++           struct rd_image_transfer image_transfer; };
+ };
+ struct rd_command_buffer {
+    struct vk_command_buffer vk;
+--- a/src/freedreno/radish/rd_pipeline.c
++++ b/src/freedreno/radish/rd_pipeline.c
+@@ -189,7 +189,8 @@
+    for (uint32_t i = 0; i < count; i++) {
+       VK_FROM_HANDLE(vk_pipeline_layout, layout, infos[i].layout);
+       if (infos[i].stage.stage != VK_SHADER_STAGE_COMPUTE_BIT ||
+-          layout->set_count > RD_MAX_SETS || infos[i].flags)
++          layout->set_count > RD_MAX_SETS ||
++          (infos[i].flags & ~VK_PIPELINE_CREATE_DISPATCH_BASE_BIT))
+          return VK_ERROR_FEATURE_NOT_PRESENT;
+       struct rd_pipeline *pipeline = vk_object_zalloc(&device->vk, allocator,
+          sizeof(*pipeline), VK_OBJECT_TYPE_PIPELINE);
+--- a/src/freedreno/radish/rd_descriptor.c
++++ b/src/freedreno/radish/rd_descriptor.c
+@@ -1,4 +1,34 @@
+ #include "rd_private.h"
++#include "vk_descriptor_update_template.h"
++
++static bool
++rd_descriptor_layout_supported(const VkDescriptorSetLayoutCreateInfo *info,
++                                uint32_t *binding_count, uint32_t *descriptor_count)
++{
++   *binding_count = 0;
++   *descriptor_count = 0;
++   if (info->flags)
++      return false;
++   for (uint32_t i = 0; i < info->bindingCount; i++) {
++      const VkDescriptorSetLayoutBinding *binding = &info->pBindings[i];
++      if (!binding->descriptorCount)
++         continue;
++      if (binding->descriptorType != VK_DESCRIPTOR_TYPE_STORAGE_BUFFER ||
++          binding->descriptorCount > RD_MAX_BINDINGS - *descriptor_count)
++         return false;
++      *descriptor_count += binding->descriptorCount;
++      (*binding_count)++;
++   }
++   return true;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_GetDescriptorSetLayoutSupport(VkDevice handle,
++   const VkDescriptorSetLayoutCreateInfo *info, VkDescriptorSetLayoutSupport *support)
++{
++   uint32_t bindings, descriptors;
++   support->supported = rd_descriptor_layout_supported(info, &bindings, &descriptors);
++}
+ 
+ VKAPI_ATTR VkResult VKAPI_CALL
+ rd_CreateDescriptorSetLayout(VkDevice handle,
+@@ -6,24 +36,20 @@
+    const VkAllocationCallbacks *allocator, VkDescriptorSetLayout *out)
+ {
+    VK_FROM_HANDLE(rd_device, device, handle);
+-   if (info->flags || info->bindingCount > RD_MAX_BINDINGS)
++   uint32_t bindings, descriptors;
++   if (!rd_descriptor_layout_supported(info, &bindings, &descriptors))
+       return VK_ERROR_FEATURE_NOT_PRESENT;
+-   uint32_t descriptors = 0;
+-   for (uint32_t i = 0; i < info->bindingCount; i++) {
+-      if (info->pBindings[i].descriptorType != VK_DESCRIPTOR_TYPE_STORAGE_BUFFER ||
+-          info->pBindings[i].descriptorCount > RD_MAX_BINDINGS - descriptors)
+-         return VK_ERROR_FEATURE_NOT_PRESENT;
+-      descriptors += info->pBindings[i].descriptorCount;
+-   }
+    struct rd_set_layout *layout = vk_descriptor_set_layout_zalloc(&device->vk,
+       sizeof(*layout), info);
+    if (!layout)
+       return VK_ERROR_OUT_OF_HOST_MEMORY;
+-   layout->binding_count = info->bindingCount;
++   layout->binding_count = bindings;
+    layout->descriptor_count = descriptors;
+-   uint32_t slot = 0;
++   uint32_t slot = 0, index = 0;
+    for (uint32_t i = 0; i < info->bindingCount; i++) {
+-      layout->bindings[i] = (struct rd_binding) {
++      if (!info->pBindings[i].descriptorCount)
++         continue;
++      layout->bindings[index++] = (struct rd_binding) {
+          .binding = info->pBindings[i].binding,
+          .count = info->pBindings[i].descriptorCount,
+          .slot = slot,
+@@ -205,3 +231,31 @@
+               copies[i].descriptorCount * sizeof(struct rd_descriptor));
+    }
+ }
++
++VKAPI_ATTR void VKAPI_CALL
++rd_UpdateDescriptorSetWithTemplate(VkDevice handle, VkDescriptorSet set_handle,
++   VkDescriptorUpdateTemplate template_handle, const void *data)
++{
++   VK_FROM_HANDLE(rd_descriptor_set, set, set_handle);
++   VK_FROM_HANDLE(vk_descriptor_update_template, update, template_handle);
++   for (uint32_t i = 0; i < update->entry_count; i++) {
++      const struct vk_descriptor_template_entry *entry = &update->entries[i];
++      const struct rd_binding *binding = rd_find_binding(set->layout, entry->binding);
++      assert(binding && entry->type == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
++      assert(entry->array_element < binding->count);
++      assert(entry->array_count <= set->layout->descriptor_count -
++             binding->slot - entry->array_element);
++      for (uint32_t j = 0; j < entry->array_count; j++) {
++         VkDescriptorBufferInfo info;
++         memcpy(&info, (const uint8_t *)data + entry->offset + j * entry->stride,
++                sizeof(info));
++         VK_FROM_HANDLE(rd_buffer, buffer, info.buffer);
++         set->descriptors[binding->slot + entry->array_element + j] =
++            (struct rd_descriptor) {
++               .buffer = buffer,
++               .offset = info.offset,
++               .range = vk_buffer_range(&buffer->vk, info.offset, info.range),
++            };
++      }
++   }
++}
+--- /dev/null
++++ b/src/freedreno/radish/rd_image.c
+@@ -0,0 +1,683 @@
++#include "rd_private.h"
++#include "vk_format.h"
++#include "vk_util.h"
++#include "util/format/u_format.h"
++#include <limits.h>
++#include <math.h>
++
++static uint32_t
++rd_image_texel_size(VkFormat format)
++{
++   switch (format) {
++   case VK_FORMAT_R8_UNORM:
++   case VK_FORMAT_R8_SNORM:
++   case VK_FORMAT_R8_UINT:
++   case VK_FORMAT_R8_SINT:
++   case VK_FORMAT_R8G8_UNORM:
++   case VK_FORMAT_R8G8_SNORM:
++   case VK_FORMAT_R8G8_UINT:
++   case VK_FORMAT_R8G8_SINT:
++   case VK_FORMAT_R8G8B8A8_UNORM:
++   case VK_FORMAT_R8G8B8A8_SNORM:
++   case VK_FORMAT_R8G8B8A8_UINT:
++   case VK_FORMAT_R8G8B8A8_SINT:
++   case VK_FORMAT_R8G8B8A8_SRGB:
++   case VK_FORMAT_B8G8R8A8_UNORM:
++   case VK_FORMAT_B8G8R8A8_SRGB:
++   case VK_FORMAT_R16_UNORM:
++   case VK_FORMAT_R16_SNORM:
++   case VK_FORMAT_R16_UINT:
++   case VK_FORMAT_R16_SINT:
++   case VK_FORMAT_R16_SFLOAT:
++   case VK_FORMAT_R16G16_UNORM:
++   case VK_FORMAT_R16G16_SNORM:
++   case VK_FORMAT_R16G16_UINT:
++   case VK_FORMAT_R16G16_SINT:
++   case VK_FORMAT_R16G16_SFLOAT:
++   case VK_FORMAT_R16G16B16A16_UNORM:
++   case VK_FORMAT_R16G16B16A16_SNORM:
++   case VK_FORMAT_R16G16B16A16_UINT:
++   case VK_FORMAT_R16G16B16A16_SINT:
++   case VK_FORMAT_R16G16B16A16_SFLOAT:
++   case VK_FORMAT_R32_UINT:
++   case VK_FORMAT_R32_SINT:
++   case VK_FORMAT_R32_SFLOAT:
++   case VK_FORMAT_R32G32_UINT:
++   case VK_FORMAT_R32G32_SINT:
++   case VK_FORMAT_R32G32_SFLOAT:
++   case VK_FORMAT_R32G32B32A32_UINT:
++   case VK_FORMAT_R32G32B32A32_SINT:
++   case VK_FORMAT_R32G32B32A32_SFLOAT:
++      return vk_format_get_blocksize(format);
++   default:
++      return 0;
++   }
++}
++
++static bool
++rd_image_parameters(VkFormat format, VkImageType type, VkImageTiling tiling,
++                    VkImageUsageFlags2KHR usage, VkImageCreateFlags2KHR flags)
++{
++   return rd_image_texel_size(format) &&
++          (type == VK_IMAGE_TYPE_1D || type == VK_IMAGE_TYPE_2D || type == VK_IMAGE_TYPE_3D) &&
++          (tiling == VK_IMAGE_TILING_LINEAR || tiling == VK_IMAGE_TILING_OPTIMAL) &&
++          usage && !(usage & ~(VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT)) &&
++          !(flags & ~VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) &&
++          (!(flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) || type == VK_IMAGE_TYPE_2D);
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_GetPhysicalDeviceFormatProperties2(VkPhysicalDevice handle, VkFormat format,
++                                      VkFormatProperties2 *out)
++{
++   VkFormatFeatureFlags flags = rd_image_texel_size(format) ?
++      VK_FORMAT_FEATURE_TRANSFER_SRC_BIT | VK_FORMAT_FEATURE_TRANSFER_DST_BIT : 0;
++   out->formatProperties = (VkFormatProperties) {
++      .linearTilingFeatures = flags, .optimalTilingFeatures = flags,
++   };
++   vk_foreach_struct(sType, next, out->pNext) {
++      if (sType == VK_STRUCTURE_TYPE_FORMAT_PROPERTIES_3) {
++         VkFormatProperties3 *properties = (VkFormatProperties3 *)next;
++         properties->linearTilingFeatures = flags;
++         properties->optimalTilingFeatures = flags;
++         properties->bufferFeatures = 0;
++      }
++   }
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_GetPhysicalDeviceImageFormatProperties2(VkPhysicalDevice handle,
++   const VkPhysicalDeviceImageFormatInfo2 *info, VkImageFormatProperties2 *out)
++{
++   out->imageFormatProperties = (VkImageFormatProperties){0};
++   const VkPhysicalDeviceExternalImageFormatInfo *external =
++      vk_find_struct_const(info->pNext, PHYSICAL_DEVICE_EXTERNAL_IMAGE_FORMAT_INFO);
++   if (!rd_image_parameters(info->format, info->type, info->tiling, info->usage, info->flags) ||
++       (external && external->handleType))
++      return VK_ERROR_FORMAT_NOT_SUPPORTED;
++   uint32_t side = info->type == VK_IMAGE_TYPE_3D ? 256 : 4096;
++   out->imageFormatProperties = (VkImageFormatProperties) {
++      .maxExtent = {side, info->type == VK_IMAGE_TYPE_1D ? 1 : side,
++                    info->type == VK_IMAGE_TYPE_3D ? side : 1},
++      .maxMipLevels = info->type == VK_IMAGE_TYPE_3D ? 9 : RD_IMAGE_MAX_LEVELS,
++      .maxArrayLayers = info->type == VK_IMAGE_TYPE_3D ? 1 : 256,
++      .sampleCounts = VK_SAMPLE_COUNT_1_BIT,
++      .maxResourceSize = RD_IMAGE_MAX_SIZE,
++   };
++   vk_foreach_struct(sType, next, out->pNext) {
++      if (sType == VK_STRUCTURE_TYPE_EXTERNAL_IMAGE_FORMAT_PROPERTIES)
++         ((VkExternalImageFormatProperties *)next)->externalMemoryProperties =
++            (VkExternalMemoryProperties){0};
++   }
++   return VK_SUCCESS;
++}
++
++static bool
++rd_image_layout(struct rd_image *image)
++{
++   VkDeviceSize size = 0;
++   for (uint32_t level = 0; level < image->vk.mip_levels; level++) {
++      VkExtent3D extent = vk_image_mip_level_extent(&image->vk, level);
++      struct rd_image_level *layout = &image->levels[level];
++      layout->offset = size;
++      layout->row_pitch = align64((uint64_t)extent.width * image->texel_size, 64);
++      layout->depth_pitch = layout->row_pitch * extent.height;
++      layout->array_pitch = layout->depth_pitch * extent.depth;
++      VkDeviceSize level_size = layout->array_pitch * image->vk.array_layers;
++      if (level_size > RD_IMAGE_MAX_SIZE - size)
++         return false;
++      size += level_size;
++   }
++   image->size = size;
++   return true;
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_CreateImage(VkDevice handle, const VkImageCreateInfo *info,
++               const VkAllocationCallbacks *allocator, VkImage *out)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   *out = VK_NULL_HANDLE;
++   VkImageCreateFlags2KHR flags = vk_image_create_flags(info);
++   if (!rd_image_parameters(info->format, info->imageType, info->tiling,
++                            vk_image_usage_flags(info), flags) ||
++       info->samples != VK_SAMPLE_COUNT_1_BIT || !info->mipLevels ||
++       info->mipLevels > RD_IMAGE_MAX_LEVELS || !info->arrayLayers ||
++       info->arrayLayers > 256 || !info->extent.width || !info->extent.height ||
++       !info->extent.depth || info->sharingMode != VK_SHARING_MODE_EXCLUSIVE ||
++       (info->initialLayout != VK_IMAGE_LAYOUT_UNDEFINED &&
++        info->initialLayout != VK_IMAGE_LAYOUT_PREINITIALIZED))
++      return VK_ERROR_FORMAT_NOT_SUPPORTED;
++   uint32_t side = info->imageType == VK_IMAGE_TYPE_3D ? 256 : 4096;
++   if (info->extent.width > side || info->extent.height > side || info->extent.depth > side ||
++       (info->imageType == VK_IMAGE_TYPE_1D && (info->extent.height != 1 || info->extent.depth != 1)) ||
++       (info->imageType == VK_IMAGE_TYPE_2D && info->extent.depth != 1) ||
++       (info->imageType == VK_IMAGE_TYPE_3D && info->arrayLayers != 1) ||
++       info->mipLevels > util_logbase2(MAX3(info->extent.width, info->extent.height, info->extent.depth)) + 1 ||
++       ((flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) &&
++        (info->extent.width != info->extent.height || info->arrayLayers < 6)))
++      return VK_ERROR_FORMAT_NOT_SUPPORTED;
++   const VkExternalMemoryImageCreateInfo *external =
++      vk_find_struct_const(info->pNext, EXTERNAL_MEMORY_IMAGE_CREATE_INFO);
++   if (external && external->handleTypes)
++      return VK_ERROR_FEATURE_NOT_PRESENT;
++   struct rd_image *image = vk_image_create(&device->vk, info, allocator, sizeof(*image));
++   if (!image)
++      return VK_ERROR_OUT_OF_HOST_MEMORY;
++   image->texel_size = rd_image_texel_size(info->format);
++   if (!rd_image_layout(image)) {
++      vk_image_destroy(&device->vk, allocator, &image->vk);
++      return VK_ERROR_OUT_OF_DEVICE_MEMORY;
++   }
++   *out = rd_image_to_handle(image);
++   return VK_SUCCESS;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_DestroyImage(VkDevice handle, VkImage image_handle, const VkAllocationCallbacks *allocator)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   VK_FROM_HANDLE(rd_image, image, image_handle);
++   if (image)
++      vk_image_destroy(&device->vk, allocator, &image->vk);
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_GetImageMemoryRequirements2(VkDevice handle, const VkImageMemoryRequirementsInfo2 *info,
++                              VkMemoryRequirements2 *out)
++{
++   VK_FROM_HANDLE(rd_image, image, info->image);
++   out->memoryRequirements = (VkMemoryRequirements) {
++      .size = image->size, .alignment = 64, .memoryTypeBits = 1,
++   };
++   vk_foreach_struct(sType, next, out->pNext) {
++      if (sType == VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS) {
++         VkMemoryDedicatedRequirements *dedicated = (VkMemoryDedicatedRequirements *)next;
++         dedicated->prefersDedicatedAllocation = false;
++         dedicated->requiresDedicatedAllocation = false;
++      }
++   }
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_GetImageMemoryRequirements(VkDevice handle, VkImage image, VkMemoryRequirements *out)
++{
++   VkImageMemoryRequirementsInfo2 info = {
++      .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_REQUIREMENTS_INFO_2, .image = image,
++   };
++   VkMemoryRequirements2 result = {.sType = VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2};
++   rd_GetImageMemoryRequirements2(handle, &info, &result);
++   *out = result.memoryRequirements;
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_BindImageMemory2(VkDevice handle, uint32_t count, const VkBindImageMemoryInfo *infos)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   for (uint32_t i = 0; i < count; i++) {
++      VK_FROM_HANDLE(rd_image, image, infos[i].image);
++      VK_FROM_HANDLE(rd_memory, memory, infos[i].memory);
++      if (!image || !memory || image->vk.base.device != &device->vk ||
++          memory->vk.base.device != &device->vk || image->memory || (infos[i].memoryOffset & 63) ||
++          infos[i].memoryOffset > memory->vk.size || image->size > memory->vk.size - infos[i].memoryOffset)
++         return VK_ERROR_OUT_OF_DEVICE_MEMORY;
++   }
++   for (uint32_t i = 0; i < count; i++) {
++      VK_FROM_HANDLE(rd_image, image, infos[i].image);
++      image->memory = rd_memory_from_handle(infos[i].memory);
++      image->memory_offset = infos[i].memoryOffset;
++   }
++   return VK_SUCCESS;
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_BindImageMemory(VkDevice handle, VkImage image, VkDeviceMemory memory, VkDeviceSize offset)
++{
++   VkBindImageMemoryInfo info = {.sType = VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_INFO,
++                               .image = image, .memory = memory, .memoryOffset = offset};
++   return rd_BindImageMemory2(handle, 1, &info);
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_GetImageSparseMemoryRequirements(VkDevice handle, VkImage image, uint32_t *count,
++                                   VkSparseImageMemoryRequirements *out)
++{
++   *count = 0;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_GetImageSparseMemoryRequirements2(VkDevice handle, const VkImageSparseMemoryRequirementsInfo2 *info,
++                                    uint32_t *count, VkSparseImageMemoryRequirements2 *out)
++{
++   *count = 0;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_GetImageSubresourceLayout(VkDevice handle, VkImage image_handle,
++                            const VkImageSubresource *subresource, VkSubresourceLayout *out)
++{
++   VK_FROM_HANDLE(rd_image, image, image_handle);
++   *out = (VkSubresourceLayout){0};
++   if (subresource->aspectMask != VK_IMAGE_ASPECT_COLOR_BIT ||
++       subresource->mipLevel >= image->vk.mip_levels || subresource->arrayLayer >= image->vk.array_layers)
++      return;
++   const struct rd_image_level *level = &image->levels[subresource->mipLevel];
++   *out = (VkSubresourceLayout) {
++      .offset = level->offset + subresource->arrayLayer * level->array_pitch,
++      .size = level->array_pitch, .rowPitch = level->row_pitch,
++      .arrayPitch = level->array_pitch, .depthPitch = level->depth_pitch,
++   };
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_CreateImageView(VkDevice handle, const VkImageViewCreateInfo *info,
++                   const VkAllocationCallbacks *allocator, VkImageView *out)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   VK_FROM_HANDLE(rd_image, image, info->image);
++   *out = VK_NULL_HANDLE;
++   VkImageUsageFlags2KHR view_usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT |
++      VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT;
++   const VkImageSubresourceRange *r = &info->subresourceRange;
++   if (!image || info->flags || info->format != image->vk.format ||
++       !(image->vk.usage & view_usage) || r->aspectMask != VK_IMAGE_ASPECT_COLOR_BIT ||
++       r->baseMipLevel >= image->vk.mip_levels || r->baseArrayLayer >= image->vk.array_layers)
++      return VK_ERROR_FORMAT_NOT_SUPPORTED;
++   uint32_t levels = vk_image_subresource_level_count(&image->vk, r);
++   uint32_t layers = vk_image_subresource_layer_count(&image->vk, r);
++   if (!levels || levels > image->vk.mip_levels - r->baseMipLevel || !layers ||
++       layers > image->vk.array_layers - r->baseArrayLayer)
++      return VK_ERROR_FORMAT_NOT_SUPPORTED;
++   bool compatible = (image->vk.image_type == VK_IMAGE_TYPE_1D &&
++      (info->viewType == VK_IMAGE_VIEW_TYPE_1D || info->viewType == VK_IMAGE_VIEW_TYPE_1D_ARRAY)) ||
++      (image->vk.image_type == VK_IMAGE_TYPE_2D &&
++      (info->viewType == VK_IMAGE_VIEW_TYPE_2D || info->viewType == VK_IMAGE_VIEW_TYPE_2D_ARRAY)) ||
++      (image->vk.image_type == VK_IMAGE_TYPE_3D && info->viewType == VK_IMAGE_VIEW_TYPE_3D);
++   if (!compatible || ((info->viewType == VK_IMAGE_VIEW_TYPE_1D || info->viewType == VK_IMAGE_VIEW_TYPE_2D) && layers != 1))
++      return VK_ERROR_FORMAT_NOT_SUPPORTED;
++   struct rd_image_view *view = vk_image_view_create(&device->vk, info, allocator, sizeof(*view));
++   if (!view)
++      return VK_ERROR_OUT_OF_HOST_MEMORY;
++   *out = rd_image_view_to_handle(view);
++   return VK_SUCCESS;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_DestroyImageView(VkDevice handle, VkImageView view_handle, const VkAllocationCallbacks *allocator)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   VK_FROM_HANDLE(rd_image_view, view, view_handle);
++   if (view)
++      vk_image_view_destroy(&device->vk, allocator, &view->vk);
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_CreateBufferView(VkDevice handle, const VkBufferViewCreateInfo *info,
++                    const VkAllocationCallbacks *allocator, VkBufferView *out)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   VK_FROM_HANDLE(rd_buffer, buffer, info->buffer);
++   *out = VK_NULL_HANDLE;
++   uint32_t size = rd_image_texel_size(info->format);
++   if (!buffer || info->flags || !size || info->offset >= buffer->vk.size ||
++       (info->offset & 15) || !(buffer->vk.usage &
++       (VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT)))
++      return VK_ERROR_FORMAT_NOT_SUPPORTED;
++   VkDeviceSize range = info->range == VK_WHOLE_SIZE ? buffer->vk.size - info->offset : info->range;
++   if (range > buffer->vk.size - info->offset ||
++       (info->range != VK_WHOLE_SIZE && (!range || range % size)) ||
++       range / size > 128 * 1024 * 1024)
++      return VK_ERROR_FORMAT_NOT_SUPPORTED;
++   range -= range % size;
++   struct rd_buffer_view *view = vk_buffer_view_create(&device->vk, info, allocator, sizeof(*view));
++   if (!view)
++      return VK_ERROR_OUT_OF_HOST_MEMORY;
++   view->vk.range = range;
++   view->vk.elements = range / size;
++   *out = rd_buffer_view_to_handle(view);
++   return VK_SUCCESS;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_DestroyBufferView(VkDevice handle, VkBufferView view_handle, const VkAllocationCallbacks *allocator)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   VK_FROM_HANDLE(rd_buffer_view, view, view_handle);
++   if (view)
++      vk_buffer_view_destroy(&device->vk, allocator, &view->vk);
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_CreateSampler(VkDevice handle, const VkSamplerCreateInfo *info,
++                  const VkAllocationCallbacks *allocator, VkSampler *out)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   *out = VK_NULL_HANDLE;
++   if (info->flags || info->anisotropyEnable ||
++       (info->magFilter != VK_FILTER_NEAREST && info->magFilter != VK_FILTER_LINEAR) ||
++       (info->minFilter != VK_FILTER_NEAREST && info->minFilter != VK_FILTER_LINEAR) ||
++       info->mipmapMode > VK_SAMPLER_MIPMAP_MODE_LINEAR ||
++       info->addressModeU > VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER ||
++       info->addressModeV > VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER ||
++       info->addressModeW > VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER ||
++       info->borderColor > VK_BORDER_COLOR_INT_OPAQUE_WHITE ||
++       info->compareOp > VK_COMPARE_OP_ALWAYS || info->minLod > info->maxLod ||
++       fabsf(info->mipLodBias) > 16.0f ||
++       !isfinite(info->minLod) || !isfinite(info->maxLod) || !isfinite(info->mipLodBias))
++      return VK_ERROR_FEATURE_NOT_PRESENT;
++   struct rd_sampler *sampler = vk_sampler_create(&device->vk, info, allocator, sizeof(*sampler));
++   if (!sampler)
++      return VK_ERROR_OUT_OF_HOST_MEMORY;
++   vk_sampler_state_init(&sampler->state, info);
++   *out = rd_sampler_to_handle(sampler);
++   return VK_SUCCESS;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_DestroySampler(VkDevice handle, VkSampler sampler_handle, const VkAllocationCallbacks *allocator)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   VK_FROM_HANDLE(rd_sampler, sampler, sampler_handle);
++   if (sampler)
++      vk_sampler_destroy(&device->vk, allocator, &sampler->vk);
++}
++
++static bool
++rd_image_range(const struct rd_image *image, const VkImageSubresourceRange *range)
++{
++   if (!image || range->aspectMask != VK_IMAGE_ASPECT_COLOR_BIT ||
++       range->baseMipLevel >= image->vk.mip_levels || range->baseArrayLayer >= image->vk.array_layers)
++      return false;
++   uint32_t levels = vk_image_subresource_level_count(&image->vk, range);
++   uint32_t layers = vk_image_subresource_layer_count(&image->vk, range);
++   return levels && levels <= image->vk.mip_levels - range->baseMipLevel &&
++          layers && layers <= image->vk.array_layers - range->baseArrayLayer;
++}
++
++bool
++rd_image_barrier_valid(const VkImageMemoryBarrier2 *barrier)
++{
++   VK_FROM_HANDLE(rd_image, image, barrier->image);
++   if (!rd_image_range(image, &barrier->subresourceRange))
++      return false;
++   switch (barrier->oldLayout) {
++   case VK_IMAGE_LAYOUT_UNDEFINED:
++   case VK_IMAGE_LAYOUT_PREINITIALIZED:
++   case VK_IMAGE_LAYOUT_GENERAL:
++   case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
++   case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
++      break;
++   default:
++      return false;
++   }
++   if (barrier->newLayout != VK_IMAGE_LAYOUT_GENERAL &&
++       barrier->newLayout != VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL &&
++       barrier->newLayout != VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
++      return false;
++   if ((barrier->srcQueueFamilyIndex != VK_QUEUE_FAMILY_IGNORED && barrier->srcQueueFamilyIndex != 0) ||
++       (barrier->dstQueueFamilyIndex != VK_QUEUE_FAMILY_IGNORED && barrier->dstQueueFamilyIndex != 0))
++      return false;
++   return (barrier->newLayout != VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL || (image->vk.usage & VK_IMAGE_USAGE_TRANSFER_SRC_BIT)) &&
++          (barrier->newLayout != VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL || (image->vk.usage & VK_IMAGE_USAGE_TRANSFER_DST_BIT));
++}
++
++static bool
++rd_image_box(struct rd_image *image, const VkImageSubresourceLayers *subresource,
++             VkOffset3D offset, VkExtent3D extent, VkDeviceSize *base,
++             VkDeviceSize *row, VkDeviceSize *slice, uint32_t *slices)
++{
++   if (!image || subresource->aspectMask != VK_IMAGE_ASPECT_COLOR_BIT ||
++       subresource->mipLevel >= image->vk.mip_levels || !subresource->layerCount ||
++       subresource->baseArrayLayer >= image->vk.array_layers ||
++       subresource->layerCount > image->vk.array_layers - subresource->baseArrayLayer ||
++       offset.x < 0 || offset.y < 0 || offset.z < 0 || !extent.width || !extent.height || !extent.depth)
++      return false;
++   VkExtent3D limit = vk_image_mip_level_extent(&image->vk, subresource->mipLevel);
++   if ((uint32_t)offset.x > limit.width || extent.width > limit.width - offset.x ||
++       (uint32_t)offset.y > limit.height || extent.height > limit.height - offset.y ||
++       (uint32_t)offset.z > limit.depth || extent.depth > limit.depth - offset.z)
++      return false;
++   const struct rd_image_level *level = &image->levels[subresource->mipLevel];
++   *base = level->offset + subresource->baseArrayLayer * level->array_pitch +
++           offset.z * level->depth_pitch + offset.y * level->row_pitch + offset.x * image->texel_size;
++   *row = level->row_pitch;
++   *slice = image->vk.image_type == VK_IMAGE_TYPE_3D ? level->depth_pitch : level->array_pitch;
++   *slices = image->vk.image_type == VK_IMAGE_TYPE_3D ? extent.depth : subresource->layerCount;
++   return true;
++}
++
++static bool
++rd_image_copy_layout(VkImageLayout layout, bool source)
++{
++   return layout == VK_IMAGE_LAYOUT_GENERAL || layout ==
++      (source ? VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL : VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
++}
++
++static bool
++rd_image_command_valid(struct rd_command_buffer *command, bool valid)
++{
++   if (!valid)
++      vk_command_buffer_set_error(&command->vk, VK_ERROR_UNKNOWN);
++   return valid;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_CmdCopyImage(VkCommandBuffer handle, VkImage src_handle, VkImageLayout src_layout,
++                VkImage dst_handle, VkImageLayout dst_layout, uint32_t count, const VkImageCopy *regions)
++{
++   VK_FROM_HANDLE(rd_command_buffer, command, handle);
++   VK_FROM_HANDLE(rd_image, src, src_handle);
++   VK_FROM_HANDLE(rd_image, dst, dst_handle);
++   if (!rd_image_command_valid(command, src && dst && src->texel_size == dst->texel_size &&
++       (src->vk.image_type == dst->vk.image_type ||
++        (src->vk.image_type == VK_IMAGE_TYPE_2D && dst->vk.image_type == VK_IMAGE_TYPE_3D) ||
++        (src->vk.image_type == VK_IMAGE_TYPE_3D && dst->vk.image_type == VK_IMAGE_TYPE_2D)) &&
++       (src->vk.usage & VK_IMAGE_USAGE_TRANSFER_SRC_BIT) &&
++       (dst->vk.usage & VK_IMAGE_USAGE_TRANSFER_DST_BIT) &&
++       rd_image_copy_layout(src_layout, true) && rd_image_copy_layout(dst_layout, false)))
++      return;
++   for (uint32_t i = 0; i < count; i++) {
++      struct rd_image_transfer transfer = {.src_image = src, .dst_image = dst};
++      VkExtent3D src_extent = regions[i].extent;
++      VkExtent3D dst_extent = regions[i].extent;
++      if (src->vk.image_type != dst->vk.image_type) {
++         if (src->vk.image_type == VK_IMAGE_TYPE_2D)
++            src_extent.depth = 1;
++         else
++            dst_extent.depth = 1;
++      }
++      uint32_t src_slices, dst_slices;
++      if (!rd_image_command_valid(command,
++          rd_image_box(src, &regions[i].srcSubresource, regions[i].srcOffset, src_extent,
++             &transfer.src_offset, &transfer.src_row_pitch, &transfer.src_slice_pitch, &src_slices) &&
++          rd_image_box(dst, &regions[i].dstSubresource, regions[i].dstOffset, dst_extent,
++             &transfer.dst_offset, &transfer.dst_row_pitch, &transfer.dst_slice_pitch, &dst_slices) && src_slices == dst_slices))
++         return;
++      transfer.row_bytes = (uint64_t)regions[i].extent.width * src->texel_size;
++      transfer.rows = regions[i].extent.height;
++      transfer.slices = src_slices;
++      struct rd_command *recorded = rd_command_append(command, RD_CMD_IMAGE_COPY);
++      if (!recorded)
++         return;
++      recorded->image_transfer = transfer;
++   }
++}
++
++static void
++rd_record_buffer_image(struct rd_command_buffer *command, struct rd_buffer *buffer,
++                       struct rd_image *image, VkImageLayout layout, bool to_image,
++                       uint32_t count, const VkBufferImageCopy *regions)
++{
++   if (!rd_image_command_valid(command, buffer && image &&
++       (buffer->vk.usage & (to_image ? VK_BUFFER_USAGE_TRANSFER_SRC_BIT : VK_BUFFER_USAGE_TRANSFER_DST_BIT)) &&
++       (image->vk.usage & (to_image ? VK_IMAGE_USAGE_TRANSFER_DST_BIT : VK_IMAGE_USAGE_TRANSFER_SRC_BIT)) &&
++       rd_image_copy_layout(layout, !to_image)))
++      return;
++   for (uint32_t i = 0; i < count; i++) {
++      const VkBufferImageCopy *region = &regions[i];
++      VkDeviceSize image_offset, image_row, image_slice;
++      uint32_t slices;
++      if (!rd_image_command_valid(command,
++          rd_image_box(image, &region->imageSubresource, region->imageOffset, region->imageExtent,
++             &image_offset, &image_row, &image_slice, &slices)))
++         return;
++      uint64_t row_length = region->bufferRowLength ? region->bufferRowLength : region->imageExtent.width;
++      uint64_t height = region->bufferImageHeight ? region->bufferImageHeight : region->imageExtent.height;
++      uint64_t row = row_length * image->texel_size;
++      if (!rd_image_command_valid(command, row_length >= region->imageExtent.width &&
++          height >= region->imageExtent.height && row <= RD_IMAGE_MAX_SIZE &&
++          height <= RD_IMAGE_MAX_SIZE / row && !(region->bufferOffset % image->texel_size) &&
++          !(region->bufferOffset & 3)))
++         return;
++      uint64_t slice = row * height;
++      uint64_t row_bytes = (uint64_t)region->imageExtent.width * image->texel_size;
++      uint64_t end = slice * (slices - 1) + row * (region->imageExtent.height - 1) + row_bytes;
++      if (!rd_image_command_valid(command, region->bufferOffset <= buffer->vk.size &&
++          end <= buffer->vk.size - region->bufferOffset))
++         return;
++      struct rd_image_transfer transfer = {
++         .src_image = to_image ? NULL : image, .dst_image = to_image ? image : NULL,
++         .src_buffer = to_image ? buffer : NULL, .dst_buffer = to_image ? NULL : buffer,
++         .src_offset = to_image ? region->bufferOffset : image_offset,
++         .dst_offset = to_image ? image_offset : region->bufferOffset,
++         .src_row_pitch = to_image ? row : image_row, .dst_row_pitch = to_image ? image_row : row,
++         .src_slice_pitch = to_image ? slice : image_slice, .dst_slice_pitch = to_image ? image_slice : slice,
++         .row_bytes = row_bytes, .rows = region->imageExtent.height, .slices = slices,
++      };
++      struct rd_command *recorded = rd_command_append(command, RD_CMD_IMAGE_COPY);
++      if (!recorded)
++         return;
++      recorded->image_transfer = transfer;
++   }
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_CmdCopyBufferToImage(VkCommandBuffer handle, VkBuffer src, VkImage dst, VkImageLayout layout,
++                       uint32_t count, const VkBufferImageCopy *regions)
++{
++   VK_FROM_HANDLE(rd_command_buffer, command, handle);
++   rd_record_buffer_image(command, rd_buffer_from_handle(src), rd_image_from_handle(dst), layout, true, count, regions);
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_CmdCopyImageToBuffer(VkCommandBuffer handle, VkImage src, VkImageLayout layout, VkBuffer dst,
++                       uint32_t count, const VkBufferImageCopy *regions)
++{
++   VK_FROM_HANDLE(rd_command_buffer, command, handle);
++   rd_record_buffer_image(command, rd_buffer_from_handle(dst), rd_image_from_handle(src), layout, false, count, regions);
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_CmdClearColorImage(VkCommandBuffer handle, VkImage image_handle, VkImageLayout layout,
++                      const VkClearColorValue *color, uint32_t count, const VkImageSubresourceRange *ranges)
++{
++   VK_FROM_HANDLE(rd_command_buffer, command, handle);
++   VK_FROM_HANDLE(rd_image, image, image_handle);
++   if (!rd_image_command_valid(command, image && (image->vk.usage & VK_IMAGE_USAGE_TRANSFER_DST_BIT) &&
++       rd_image_copy_layout(layout, false)))
++      return;
++   uint8_t clear[16] = {0};
++   util_format_pack_rgba(vk_format_to_pipe_format(image->vk.format), clear, color, 1);
++   for (uint32_t i = 0; i < count; i++) {
++      if (!rd_image_command_valid(command, rd_image_range(image, &ranges[i])))
++         return;
++      uint32_t levels = vk_image_subresource_level_count(&image->vk, &ranges[i]);
++      uint32_t layers = vk_image_subresource_layer_count(&image->vk, &ranges[i]);
++      for (uint32_t m = 0; m < levels; m++) {
++         uint32_t level = ranges[i].baseMipLevel + m;
++         VkExtent3D extent = vk_image_mip_level_extent(&image->vk, level);
++         struct rd_image_transfer transfer = {
++            .dst_image = image,
++            .dst_offset = image->levels[level].offset + ranges[i].baseArrayLayer * image->levels[level].array_pitch,
++            .dst_row_pitch = image->levels[level].row_pitch,
++            .dst_slice_pitch = image->vk.image_type == VK_IMAGE_TYPE_3D ? image->levels[level].depth_pitch : image->levels[level].array_pitch,
++            .row_bytes = (uint64_t)extent.width * image->texel_size,
++            .rows = extent.height, .slices = image->vk.image_type == VK_IMAGE_TYPE_3D ? extent.depth : layers,
++            .texel_size = image->texel_size,
++         };
++         memcpy(transfer.clear, clear, sizeof(clear));
++         struct rd_command *recorded = rd_command_append(command, RD_CMD_IMAGE_CLEAR);
++         if (!recorded)
++            return;
++         recorded->image_transfer = transfer;
++      }
++   }
++}
++
++static bool
++rd_image_transfer_memory(struct rd_image *image, struct rd_buffer *buffer,
++                         struct rd_memory **memory, VkDeviceSize *offset, VkDeviceSize *size)
++{
++   if (image) {
++      *memory = image->memory;
++      *offset = image->memory_offset;
++      *size = image->size;
++   } else if (buffer) {
++      *memory = buffer->memory;
++      *offset = buffer->offset;
++      *size = buffer->vk.size;
++   } else {
++      return false;
++   }
++   return *memory && *offset <= (*memory)->vk.size && *size <= (*memory)->vk.size - *offset;
++}
++
++static bool
++rd_image_transfer_bounds(VkDeviceSize offset, VkDeviceSize row, VkDeviceSize slice,
++                         const struct rd_image_transfer *transfer, VkDeviceSize size)
++{
++   if (!transfer->rows || !transfer->slices || !transfer->row_bytes || offset > size)
++      return false;
++   uint64_t remaining = size - offset;
++   if (transfer->row_bytes > remaining ||
++       (transfer->rows > 1 && row > (remaining - transfer->row_bytes) / (transfer->rows - 1)))
++      return false;
++   uint64_t rows = row * (transfer->rows - 1) + transfer->row_bytes;
++   return transfer->slices == 1 || slice <= (remaining - rows) / (transfer->slices - 1);
++}
++
++VkResult
++rd_execute_image_transfer(struct rd_device *device, const struct rd_image_transfer *transfer, bool clear)
++{
++   struct rd_memory *src = NULL, *dst = NULL;
++   VkDeviceSize src_offset = 0, dst_offset = 0, src_size = 0, dst_size = 0;
++   if (!rd_image_transfer_memory(transfer->dst_image, transfer->dst_buffer, &dst, &dst_offset, &dst_size) ||
++       !rd_image_transfer_bounds(transfer->dst_offset, transfer->dst_row_pitch,
++                                 transfer->dst_slice_pitch, transfer, dst_size))
++      return VK_ERROR_UNKNOWN;
++   if (!clear && (!rd_image_transfer_memory(transfer->src_image, transfer->src_buffer, &src, &src_offset, &src_size) ||
++       !rd_image_transfer_bounds(transfer->src_offset, transfer->src_row_pitch,
++                                 transfer->src_slice_pitch, transfer, src_size)))
++      return VK_ERROR_UNKNOWN;
++   if (clear && (!transfer->texel_size || transfer->texel_size > sizeof(transfer->clear) ||
++                 transfer->row_bytes % transfer->texel_size))
++      return VK_ERROR_UNKNOWN;
++   if (src && src->bo != dst->bo && fd_bo_cpu_prep(src->bo, device->pipe, FD_BO_PREP_READ | FD_BO_PREP_NOSYNC))
++      return VK_ERROR_DEVICE_LOST;
++   uint32_t flags = FD_BO_PREP_WRITE | FD_BO_PREP_NOSYNC;
++   if (src && src->bo == dst->bo)
++      flags |= FD_BO_PREP_READ;
++   if (fd_bo_cpu_prep(dst->bo, device->pipe, flags))
++      return VK_ERROR_DEVICE_LOST;
++   uint8_t *dst_map = fd_bo_map(dst->bo);
++   const uint8_t *src_map = src ? fd_bo_map(src->bo) : NULL;
++   if (!dst_map || (src && !src_map))
++      return VK_ERROR_MEMORY_MAP_FAILED;
++   __sync_synchronize();
++   for (uint32_t z = 0; z < transfer->slices; z++) {
++      for (uint32_t y = 0; y < transfer->rows; y++) {
++         uint8_t *to = dst_map + dst_offset + transfer->dst_offset +
++                       z * transfer->dst_slice_pitch + y * transfer->dst_row_pitch;
++         if (clear) {
++            for (VkDeviceSize x = 0; x < transfer->row_bytes; x += transfer->texel_size)
++               memcpy(to + x, transfer->clear, transfer->texel_size);
++         } else {
++            const uint8_t *from = src_map + src_offset + transfer->src_offset +
++                                  z * transfer->src_slice_pitch + y * transfer->src_row_pitch;
++            memmove(to, from, transfer->row_bytes);
++         }
++      }
++   }
++   __sync_synchronize();
++   return VK_SUCCESS;
++}
+--- /dev/null
++++ b/src/freedreno/radish/rd_image.h
+@@ -0,0 +1,55 @@
++#ifndef RD_IMAGE_H
++#define RD_IMAGE_H
++
++#include "vk_image.h"
++#include "vk_buffer_view.h"
++#include "vk_sampler.h"
++
++#define RD_IMAGE_MAX_LEVELS 13
++#define RD_IMAGE_MAX_SIZE (128ull * 1024 * 1024)
++
++struct rd_device;
++struct rd_memory;
++struct rd_buffer;
++struct rd_command_buffer;
++
++struct rd_image_level {
++   VkDeviceSize offset, row_pitch, depth_pitch, array_pitch;
++};
++
++struct rd_image {
++   struct vk_image vk;
++   struct rd_memory *memory;
++   VkDeviceSize memory_offset, size;
++   uint32_t texel_size;
++   struct rd_image_level levels[RD_IMAGE_MAX_LEVELS];
++};
++
++struct rd_image_view { struct vk_image_view vk; };
++struct rd_buffer_view { struct vk_buffer_view vk; };
++struct rd_sampler {
++   struct vk_sampler vk;
++   struct vk_sampler_state state;
++};
++
++struct rd_image_transfer {
++   struct rd_image *src_image, *dst_image;
++   struct rd_buffer *src_buffer, *dst_buffer;
++   VkDeviceSize src_offset, dst_offset;
++   VkDeviceSize src_row_pitch, dst_row_pitch;
++   VkDeviceSize src_slice_pitch, dst_slice_pitch;
++   VkDeviceSize row_bytes;
++   uint32_t rows, slices, texel_size;
++   uint8_t clear[16];
++};
++
++VK_DEFINE_NONDISP_HANDLE_CASTS(rd_image, vk.base, VkImage, VK_OBJECT_TYPE_IMAGE)
++VK_DEFINE_NONDISP_HANDLE_CASTS(rd_image_view, vk.base, VkImageView, VK_OBJECT_TYPE_IMAGE_VIEW)
++VK_DEFINE_NONDISP_HANDLE_CASTS(rd_buffer_view, vk.base, VkBufferView, VK_OBJECT_TYPE_BUFFER_VIEW)
++VK_DEFINE_NONDISP_HANDLE_CASTS(rd_sampler, vk.base, VkSampler, VK_OBJECT_TYPE_SAMPLER)
++
++VkResult rd_execute_image_transfer(struct rd_device *device,
++                                   const struct rd_image_transfer *transfer,
++                                   bool clear);
++bool rd_image_barrier_valid(const VkImageMemoryBarrier2 *barrier);
++#endif
