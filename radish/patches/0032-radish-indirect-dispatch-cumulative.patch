@@ -1,0 +1,2037 @@
+diff --git c/meson.build i/meson.build
+index 96f8770..cc02486 100644
+--- c/meson.build
++++ i/meson.build
+@@ -303,6 +303,7 @@ with_intel_vk = _vulkan_drivers.contains('intel')
+ with_intel_hasvk = _vulkan_drivers.contains('intel_hasvk')
+ with_amd_vk = _vulkan_drivers.contains('amd')
+ with_freedreno_vk = _vulkan_drivers.contains('freedreno')
++with_radish_vk = _vulkan_drivers.contains('radish')
+ with_panfrost_vk = _vulkan_drivers.contains('panfrost')
+ with_swrast_vk = _vulkan_drivers.contains('swrast')
+ with_virtio_vk = _vulkan_drivers.contains('virtio')
+diff --git c/meson.options i/meson.options
+index beb2837..e6a4646 100644
+--- c/meson.options
++++ i/meson.options
+@@ -192,7 +192,7 @@ option(
+   'vulkan-drivers',
+   type : 'array',
+   value : ['auto'],
+-  choices : ['auto', 'amd', 'broadcom', 'freedreno', 'intel', 'intel_hasvk',
++  choices : ['auto', 'amd', 'broadcom', 'freedreno', 'radish', 'intel', 'intel_hasvk',
+              'panfrost', 'swrast', 'virtio', 'imagination',
+              'microsoft-experimental', 'nouveau', 'asahi', 'gfxstream',
+              'kosmickrisp', 'all'],
+diff --git c/src/freedreno/meson.build i/src/freedreno/meson.build
+index e8f01b8..6c0da7a 100644
+--- c/src/freedreno/meson.build
++++ i/src/freedreno/meson.build
+@@ -53,6 +53,10 @@ if with_freedreno_vk
+   subdir('vulkan')
+ endif
+ 
++if with_radish_vk
++  subdir('radish')
++endif
++
+ # 77 is a convention used by Meson and other build systems to skip tests.
+ SKIP_RETURN_CODE = 77
+ 
+diff --git c/src/freedreno/radish/meson.build i/src/freedreno/radish/meson.build
+new file mode 100644
+index 0000000..6183ff3
+--- /dev/null
++++ i/src/freedreno/radish/meson.build
+@@ -0,0 +1,38 @@
++rd_entrypoints = custom_target(
++  'rd_entrypoints',
++  input : [vk_entrypoints_gen, vk_api_xml],
++  output : ['rd_entrypoints.h', 'rd_entrypoints.c'],
++  command : [prog_python, '@INPUT0@', '--xml', '@INPUT1@', '--proto', '--weak',
++             '--out-h', '@OUTPUT0@', '--out-c', '@OUTPUT1@', '--prefix', 'rd',
++             '--beta', with_vulkan_beta.to_string()],
++  depend_files : vk_entrypoints_gen_depend_files,
++)
++
++libvulkan_radish = shared_library(
++  'vulkan_radish',
++  ['rd_instance.c', 'rd_device.c', 'rd_memory.c', 'rd_descriptor.c', 'rd_pipeline.c',
++   'rd_command.c', 'rd_transfer.c', 'rd_queue.c', rd_entrypoints, freedreno_xml_header_files],
++  include_directories : [inc_freedreno, inc_include, inc_src],
++  link_with : [libfreedreno_drm, libfreedreno_ir3],
++  dependencies : [idep_libfreedreno_common, idep_vulkan_util,
++                  idep_vulkan_runtime, idep_mesautil, dep_libdrm, dep_thread,
++                  dep_dl, dep_m],
++  c_args : [no_override_init_args],
++  gnu_symbol_visibility : 'hidden',
++  link_args : [vulkan_icd_link_args, ld_args_bsymbolic, ld_args_gc_sections],
++  link_depends : vulkan_icd_link_depends,
++  install : true,
++)
++
++custom_target(
++  'radish_icd',
++  input : [vk_icd_gen, vk_api_xml],
++  output : 'radish_icd.' + vulkan_manifest_suffix,
++  command : [prog_python, '@INPUT0@', '--api-version', '1.0', '--xml', '@INPUT1@',
++             '--sizeof-pointer', sizeof_pointer,
++             '--icd-lib-path', vulkan_icd_lib_path,
++             '--icd-filename', 'libvulkan_radish.so', '--out', '@OUTPUT@'],
++  build_by_default : true,
++  install : true,
++  install_dir : with_vulkan_icd_dir,
++)
+diff --git c/src/freedreno/radish/rd_command.c i/src/freedreno/radish/rd_command.c
+new file mode 100644
+index 0000000..ecf4107
+--- /dev/null
++++ i/src/freedreno/radish/rd_command.c
+@@ -0,0 +1,205 @@
++#include "rd_private.h"
++#include "vk_util.h"
++
++static void
++rd_command_reset(struct vk_command_buffer *base, VkCommandBufferResetFlags flags)
++{
++   struct rd_command_buffer *command = container_of(base, struct rd_command_buffer, vk);
++   util_dynarray_foreach(&command->commands, struct rd_command, recorded) {
++      if (recorded->type == RD_CMD_UPDATE)
++         vk_free(&base->pool->alloc, recorded->transfer.data);
++   }
++   vk_command_buffer_reset(base);
++   command->pipeline = NULL;
++   memset(command->sets, 0, sizeof(command->sets));
++   memset(command->push, 0, sizeof(command->push));
++   util_dynarray_clear(&command->commands);
++}
++
++static void
++rd_command_destroy(struct vk_command_buffer *base)
++{
++   struct rd_command_buffer *command = container_of(base, struct rd_command_buffer, vk);
++   VkAllocationCallbacks alloc = base->pool->alloc;
++   util_dynarray_foreach(&command->commands, struct rd_command, recorded) {
++      if (recorded->type == RD_CMD_UPDATE)
++         vk_free(&base->pool->alloc, recorded->transfer.data);
++   }
++   util_dynarray_fini(&command->commands);
++   vk_command_buffer_finish(base);
++   vk_free(&alloc, command);
++}
++
++static VkResult
++rd_command_create(struct vk_command_pool *pool, VkCommandBufferLevel level,
++                   struct vk_command_buffer **out)
++{
++   if (level != VK_COMMAND_BUFFER_LEVEL_PRIMARY)
++      return VK_ERROR_FEATURE_NOT_PRESENT;
++   struct rd_command_buffer *command = vk_zalloc(&pool->alloc, sizeof(*command),
++      8, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT);
++   if (!command)
++      return VK_ERROR_OUT_OF_HOST_MEMORY;
++   VkResult result = vk_command_buffer_init(pool, &command->vk,
++      &rd_command_buffer_ops, level);
++   if (result != VK_SUCCESS) {
++      vk_free(&pool->alloc, command);
++      return result;
++   }
++   util_dynarray_init(&command->commands, NULL);
++   *out = &command->vk;
++   return VK_SUCCESS;
++}
++
++const struct vk_command_buffer_ops rd_command_buffer_ops = {
++   .create = rd_command_create,
++   .reset = rd_command_reset,
++   .destroy = rd_command_destroy,
++};
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_BeginCommandBuffer(VkCommandBuffer handle, const VkCommandBufferBeginInfo *info)
++{
++   VK_FROM_HANDLE(rd_command_buffer, command, handle);
++   rd_command_reset(&command->vk, 0);
++   vk_command_buffer_begin(&command->vk, info);
++   return VK_SUCCESS;
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_EndCommandBuffer(VkCommandBuffer handle)
++{
++   VK_FROM_HANDLE(rd_command_buffer, command, handle);
++   return vk_command_buffer_end(&command->vk);
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_CmdBindPipeline(VkCommandBuffer handle, VkPipelineBindPoint bind_point,
++                   VkPipeline pipeline)
++{
++   VK_FROM_HANDLE(rd_command_buffer, command, handle);
++   if (bind_point != VK_PIPELINE_BIND_POINT_COMPUTE) {
++      vk_command_buffer_set_error(&command->vk, VK_ERROR_FEATURE_NOT_PRESENT);
++      return;
++   }
++   command->pipeline = rd_pipeline_from_handle(pipeline);
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_CmdBindDescriptorSets(VkCommandBuffer handle, VkPipelineBindPoint bind_point,
++   VkPipelineLayout layout, uint32_t first, uint32_t count,
++   const VkDescriptorSet *sets, uint32_t dynamic_count, const uint32_t *offsets)
++{
++   VK_FROM_HANDLE(rd_command_buffer, command, handle);
++   if (bind_point != VK_PIPELINE_BIND_POINT_COMPUTE || dynamic_count ||
++       first > RD_MAX_SETS || count > RD_MAX_SETS - first) {
++      vk_command_buffer_set_error(&command->vk, VK_ERROR_FEATURE_NOT_PRESENT);
++      return;
++   }
++   for (uint32_t i = 0; i < count; i++)
++      command->sets[first + i] = rd_descriptor_set_from_handle(sets[i]);
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_CmdPushConstants(VkCommandBuffer handle, VkPipelineLayout layout,
++   VkShaderStageFlags stages, uint32_t offset, uint32_t size, const void *values)
++{
++   VK_FROM_HANDLE(rd_command_buffer, command, handle);
++   if ((stages & ~VK_SHADER_STAGE_COMPUTE_BIT) || offset > 128 || size > 128 - offset) {
++      vk_command_buffer_set_error(&command->vk, VK_ERROR_FEATURE_NOT_PRESENT);
++      return;
++   }
++   memcpy((uint8_t *)command->push + offset, values, size);
++}
++
++static struct rd_dispatch *
++rd_record_dispatch(struct rd_command_buffer *command)
++{
++   if (!command->pipeline) {
++      vk_command_buffer_set_error(&command->vk, VK_ERROR_FEATURE_NOT_PRESENT);
++      return NULL;
++   }
++   struct rd_command *recorded = rd_command_append(command, RD_CMD_DISPATCH);
++   if (!recorded)
++      return NULL;
++   struct rd_dispatch *dispatch = &recorded->dispatch;
++   dispatch->pipeline = command->pipeline;
++   memcpy(dispatch->push, command->push, sizeof(dispatch->push));
++   for (uint32_t i = 0; i < command->pipeline->layout->set_count; i++) {
++      struct rd_set_layout *expected = container_of(command->pipeline->layout->set_layouts[i],
++         struct rd_set_layout, vk);
++      if (!expected->descriptor_count)
++         continue;
++      uint32_t used = command->pipeline->used_descriptors >> command->pipeline->set_offsets[i];
++      if (!(used & BITFIELD_MASK(expected->descriptor_count)))
++         continue;
++      struct rd_descriptor_set *set = command->sets[i];
++      if (!set) {
++         vk_command_buffer_set_error(&command->vk, VK_ERROR_UNKNOWN);
++         return NULL;
++      }
++      memcpy(&dispatch->descriptors[command->pipeline->set_offsets[i]],
++         set->descriptors, set->layout->descriptor_count * sizeof(struct rd_descriptor));
++   }
++   return dispatch;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_CmdDispatch(VkCommandBuffer handle, uint32_t x, uint32_t y, uint32_t z)
++{
++   VK_FROM_HANDLE(rd_command_buffer, command, handle);
++   if (!x || !y || !z)
++      return;
++   if (x > 65535 || y > 65535 || z > 65535) {
++      vk_command_buffer_set_error(&command->vk, VK_ERROR_FEATURE_NOT_PRESENT);
++      return;
++   }
++   struct rd_dispatch *dispatch = rd_record_dispatch(command);
++   if (!dispatch)
++      return;
++   dispatch->grid[0] = x;
++   dispatch->grid[1] = y;
++   dispatch->grid[2] = z;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_CmdDispatchIndirect(VkCommandBuffer handle, VkBuffer buffer_handle,
++                       VkDeviceSize offset)
++{
++   VK_FROM_HANDLE(rd_command_buffer, command, handle);
++   VK_FROM_HANDLE(rd_buffer, buffer, buffer_handle);
++   if (!buffer || !buffer->memory || (offset & 3) ||
++       !(buffer->vk.usage & VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT) ||
++       offset > buffer->vk.size ||
++       sizeof(VkDispatchIndirectCommand) > buffer->vk.size - offset) {
++      vk_command_buffer_set_error(&command->vk, VK_ERROR_UNKNOWN);
++      return;
++   }
++   struct rd_dispatch *dispatch = rd_record_dispatch(command);
++   if (!dispatch)
++      return;
++   dispatch->indirect = buffer;
++   dispatch->indirect_offset = offset;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_CmdPipelineBarrier2(VkCommandBuffer handle, const VkDependencyInfo *info)
++{
++   VK_FROM_HANDLE(rd_command_buffer, command, handle);
++   if (info->imageMemoryBarrierCount)
++      vk_command_buffer_set_error(&command->vk, VK_ERROR_FEATURE_NOT_PRESENT);
++}
++
++struct rd_command *
++rd_command_append(struct rd_command_buffer *command, enum rd_command_type type)
++{
++   struct rd_command *recorded = util_dynarray_grow_bytes(&command->commands,
++      1, sizeof(struct rd_command));
++   if (!recorded) {
++      vk_command_buffer_set_error(&command->vk, VK_ERROR_OUT_OF_HOST_MEMORY);
++      return NULL;
++   }
++   memset(recorded, 0, sizeof(*recorded));
++   recorded->type = type;
++   return recorded;
++}
+diff --git c/src/freedreno/radish/rd_descriptor.c i/src/freedreno/radish/rd_descriptor.c
+new file mode 100644
+index 0000000..69fcc8c
+--- /dev/null
++++ i/src/freedreno/radish/rd_descriptor.c
+@@ -0,0 +1,207 @@
++#include "rd_private.h"
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_CreateDescriptorSetLayout(VkDevice handle,
++   const VkDescriptorSetLayoutCreateInfo *info,
++   const VkAllocationCallbacks *allocator, VkDescriptorSetLayout *out)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   if (info->flags || info->bindingCount > RD_MAX_BINDINGS)
++      return VK_ERROR_FEATURE_NOT_PRESENT;
++   uint32_t descriptors = 0;
++   for (uint32_t i = 0; i < info->bindingCount; i++) {
++      if (info->pBindings[i].descriptorType != VK_DESCRIPTOR_TYPE_STORAGE_BUFFER ||
++          info->pBindings[i].descriptorCount > RD_MAX_BINDINGS - descriptors)
++         return VK_ERROR_FEATURE_NOT_PRESENT;
++      descriptors += info->pBindings[i].descriptorCount;
++   }
++   struct rd_set_layout *layout = vk_descriptor_set_layout_zalloc(&device->vk,
++      sizeof(*layout), info);
++   if (!layout)
++      return VK_ERROR_OUT_OF_HOST_MEMORY;
++   layout->binding_count = info->bindingCount;
++   layout->descriptor_count = descriptors;
++   uint32_t slot = 0;
++   for (uint32_t i = 0; i < info->bindingCount; i++) {
++      layout->bindings[i] = (struct rd_binding) {
++         .binding = info->pBindings[i].binding,
++         .count = info->pBindings[i].descriptorCount,
++         .slot = slot,
++         .type = info->pBindings[i].descriptorType,
++      };
++      slot += info->pBindings[i].descriptorCount;
++   }
++   for (uint32_t i = 1; i < layout->binding_count; i++) {
++      struct rd_binding binding = layout->bindings[i];
++      uint32_t j = i;
++      while (j && layout->bindings[j - 1].binding > binding.binding) {
++         layout->bindings[j] = layout->bindings[j - 1];
++         j--;
++      }
++      layout->bindings[j] = binding;
++   }
++   slot = 0;
++   for (uint32_t i = 0; i < layout->binding_count; i++) {
++      layout->bindings[i].slot = slot;
++      slot += layout->bindings[i].count;
++   }
++   *out = rd_set_layout_to_handle(layout);
++   return VK_SUCCESS;
++}
++
++static const struct rd_binding *
++rd_find_binding(struct rd_set_layout *layout, uint32_t binding)
++{
++   for (uint32_t i = 0; i < layout->binding_count; i++)
++      if (layout->bindings[i].binding == binding)
++         return &layout->bindings[i];
++   return NULL;
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_CreateDescriptorPool(VkDevice handle, const VkDescriptorPoolCreateInfo *info,
++                        const VkAllocationCallbacks *allocator, VkDescriptorPool *out)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   if (info->flags & ~VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT)
++      return VK_ERROR_FEATURE_NOT_PRESENT;
++   uint64_t count = 0;
++   for (uint32_t i = 0; i < info->poolSizeCount; i++) {
++      if (info->pPoolSizes[i].type != VK_DESCRIPTOR_TYPE_STORAGE_BUFFER)
++         return VK_ERROR_FEATURE_NOT_PRESENT;
++      count += info->pPoolSizes[i].descriptorCount;
++   }
++   if (count > UINT32_MAX)
++      return VK_ERROR_OUT_OF_POOL_MEMORY;
++   struct rd_descriptor_pool *pool = vk_object_zalloc(&device->vk, allocator,
++      sizeof(*pool), VK_OBJECT_TYPE_DESCRIPTOR_POOL);
++   if (!pool)
++      return VK_ERROR_OUT_OF_HOST_MEMORY;
++   pool->alloc = allocator ? *allocator : device->vk.alloc;
++   pool->max_sets = info->maxSets;
++   pool->max_descriptors = count;
++   list_inithead(&pool->sets);
++   *out = rd_descriptor_pool_to_handle(pool);
++   return VK_SUCCESS;
++}
++
++static void
++rd_free_set(struct rd_device *device, struct rd_descriptor_set *set)
++{
++   list_del(&set->link);
++   set->pool->used_sets--;
++   set->pool->used_descriptors -= set->layout->descriptor_count;
++   vk_descriptor_set_layout_unref(&device->vk, &set->layout->vk);
++   vk_object_free(&device->vk, &set->pool->alloc, set);
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_ResetDescriptorPool(VkDevice handle, VkDescriptorPool pool_handle,
++                       VkDescriptorPoolResetFlags flags)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   VK_FROM_HANDLE(rd_descriptor_pool, pool, pool_handle);
++   list_for_each_entry_safe(struct rd_descriptor_set, set, &pool->sets, link)
++      rd_free_set(device, set);
++   return VK_SUCCESS;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_DestroyDescriptorPool(VkDevice handle, VkDescriptorPool pool_handle,
++                         const VkAllocationCallbacks *allocator)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   VK_FROM_HANDLE(rd_descriptor_pool, pool, pool_handle);
++   if (!pool)
++      return;
++   rd_ResetDescriptorPool(handle, pool_handle, 0);
++   vk_object_free(&device->vk, allocator, pool);
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_AllocateDescriptorSets(VkDevice handle, const VkDescriptorSetAllocateInfo *info,
++                          VkDescriptorSet *out)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   VK_FROM_HANDLE(rd_descriptor_pool, pool, info->descriptorPool);
++   memset(out, 0, info->descriptorSetCount * sizeof(*out));
++   uint64_t descriptors = 0;
++   for (uint32_t i = 0; i < info->descriptorSetCount; i++) {
++      VK_FROM_HANDLE(rd_set_layout, layout, info->pSetLayouts[i]);
++      descriptors += layout->descriptor_count;
++   }
++   if (info->descriptorSetCount > pool->max_sets - pool->used_sets ||
++       descriptors > pool->max_descriptors - pool->used_descriptors)
++      return VK_ERROR_OUT_OF_POOL_MEMORY;
++   for (uint32_t i = 0; i < info->descriptorSetCount; i++) {
++      VK_FROM_HANDLE(rd_set_layout, layout, info->pSetLayouts[i]);
++      struct rd_descriptor_set *set = vk_object_zalloc(&device->vk, &pool->alloc,
++         sizeof(*set), VK_OBJECT_TYPE_DESCRIPTOR_SET);
++      if (!set) {
++         for (uint32_t j = 0; j < i; j++) {
++            rd_free_set(device, rd_descriptor_set_from_handle(out[j]));
++            out[j] = VK_NULL_HANDLE;
++         }
++         return VK_ERROR_OUT_OF_HOST_MEMORY;
++      }
++      vk_descriptor_set_layout_ref(&layout->vk);
++      set->layout = layout;
++      set->pool = pool;
++      pool->used_sets++;
++      pool->used_descriptors += layout->descriptor_count;
++      list_addtail(&set->link, &pool->sets);
++      out[i] = rd_descriptor_set_to_handle(set);
++   }
++   return VK_SUCCESS;
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_FreeDescriptorSets(VkDevice handle, VkDescriptorPool pool, uint32_t count,
++                      const VkDescriptorSet *sets)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   for (uint32_t i = 0; i < count; i++)
++      if (sets[i])
++         rd_free_set(device, rd_descriptor_set_from_handle(sets[i]));
++   return VK_SUCCESS;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_UpdateDescriptorSets(VkDevice handle, uint32_t write_count,
++                         const VkWriteDescriptorSet *writes,
++                         uint32_t copy_count, const VkCopyDescriptorSet *copies)
++{
++   for (uint32_t i = 0; i < write_count; i++) {
++      VK_FROM_HANDLE(rd_descriptor_set, set, writes[i].dstSet);
++      const struct rd_binding *binding = rd_find_binding(set->layout, writes[i].dstBinding);
++      assert(binding && writes[i].descriptorType == binding->type);
++      assert(writes[i].dstArrayElement < binding->count);
++      assert(writes[i].descriptorCount <= set->layout->descriptor_count -
++             binding->slot - writes[i].dstArrayElement);
++      for (uint32_t j = 0; j < writes[i].descriptorCount; j++) {
++         const VkDescriptorBufferInfo *info = &writes[i].pBufferInfo[j];
++         VK_FROM_HANDLE(rd_buffer, buffer, info->buffer);
++         set->descriptors[binding->slot + writes[i].dstArrayElement + j] =
++            (struct rd_descriptor) {
++               .buffer = buffer, .offset = info->offset,
++               .range = vk_buffer_range(&buffer->vk, info->offset, info->range),
++            };
++      }
++   }
++   for (uint32_t i = 0; i < copy_count; i++) {
++      VK_FROM_HANDLE(rd_descriptor_set, src, copies[i].srcSet);
++      VK_FROM_HANDLE(rd_descriptor_set, dst, copies[i].dstSet);
++      const struct rd_binding *sb = rd_find_binding(src->layout, copies[i].srcBinding);
++      const struct rd_binding *db = rd_find_binding(dst->layout, copies[i].dstBinding);
++      assert(sb && db && sb->type == db->type);
++      assert(copies[i].srcArrayElement < sb->count);
++      assert(copies[i].descriptorCount <= src->layout->descriptor_count -
++             sb->slot - copies[i].srcArrayElement);
++      assert(copies[i].dstArrayElement < db->count);
++      assert(copies[i].descriptorCount <= dst->layout->descriptor_count -
++             db->slot - copies[i].dstArrayElement);
++      memmove(&dst->descriptors[db->slot + copies[i].dstArrayElement],
++              &src->descriptors[sb->slot + copies[i].srcArrayElement],
++              copies[i].descriptorCount * sizeof(struct rd_descriptor));
++   }
++}
+diff --git c/src/freedreno/radish/rd_device.c i/src/freedreno/radish/rd_device.c
+new file mode 100644
+index 0000000..2c4a4aa
+--- /dev/null
++++ i/src/freedreno/radish/rd_device.c
+@@ -0,0 +1,80 @@
++#include "rd_private.h"
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_CreateDevice(VkPhysicalDevice handle, const VkDeviceCreateInfo *info,
++                const VkAllocationCallbacks *allocator, VkDevice *out)
++{
++   VK_FROM_HANDLE(rd_physical_device, physical, handle);
++   if (info->queueCreateInfoCount != 1 ||
++       info->pQueueCreateInfos[0].queueFamilyIndex != 0 ||
++       info->pQueueCreateInfos[0].queueCount != 1 ||
++       info->pQueueCreateInfos[0].flags)
++      return VK_ERROR_INITIALIZATION_FAILED;
++   struct rd_device *device = vk_zalloc2(&physical->vk.instance->alloc, allocator,
++      sizeof(*device), 8, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE);
++   if (!device)
++      return VK_ERROR_OUT_OF_HOST_MEMORY;
++   struct vk_device_dispatch_table dispatch;
++   vk_device_dispatch_table_from_entrypoints(&dispatch, &rd_device_entrypoints, true);
++   VkResult result = vk_device_init(&device->vk, &physical->vk, &dispatch,
++                                    info, allocator);
++   if (result != VK_SUCCESS) {
++      vk_free2(&physical->vk.instance->alloc, allocator, device);
++      return result;
++   }
++   device->fd = fd_device_ref(physical->fd);
++   device->pipe = fd_pipe_new(device->fd, FD_PIPE_3D);
++   if (!device->pipe) {
++      result = VK_ERROR_INITIALIZATION_FAILED;
++      goto fail;
++   }
++   if (fd_pipe_get_param(device->pipe, FD_CTX_FAULTS, &device->faults)) {
++      fd_pipe_del(device->pipe);
++      result = VK_ERROR_INITIALIZATION_FAILED;
++      goto fail;
++   }
++   vk_device_set_drm_fd(&device->vk, physical->render_fd);
++   result = vk_queue_init(&device->queue, &device->vk,
++                          &info->pQueueCreateInfos[0], 0);
++   if (result != VK_SUCCESS) {
++      fd_pipe_del(device->pipe);
++      goto fail;
++   }
++   device->queue.driver_submit = rd_queue_submit;
++   device->vk.command_buffer_ops = &rd_command_buffer_ops;
++   device->info = fd_dev_info(fd_pipe_dev_id(device->pipe));
++   const struct ir3_compiler_options options = { .disable_cache = true };
++   device->compiler = ir3_compiler_create(device->fd, fd_pipe_dev_id(device->pipe),
++                                         &device->info, &options);
++   device->control = fd_bo_new(device->fd, 4096, 0, "radish-control");
++   if (!device->compiler || !device->control) {
++      if (device->compiler) ir3_compiler_destroy(device->compiler);
++      if (device->control) fd_bo_del(device->control);
++      vk_queue_finish(&device->queue);
++      fd_pipe_del(device->pipe);
++      result = VK_ERROR_OUT_OF_DEVICE_MEMORY;
++      goto fail;
++   }
++   *out = rd_device_to_handle(device);
++   return VK_SUCCESS;
++fail:
++   fd_device_del(device->fd);
++   vk_device_finish(&device->vk);
++   vk_free(&device->vk.alloc, device);
++   return result;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_DestroyDevice(VkDevice handle, const VkAllocationCallbacks *allocator)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   if (!device)
++      return;
++   vk_queue_finish(&device->queue);
++   fd_bo_del(device->control);
++   ir3_compiler_destroy(device->compiler);
++   fd_pipe_del(device->pipe);
++   fd_device_del(device->fd);
++   vk_device_finish(&device->vk);
++   vk_free(&device->vk.alloc, device);
++}
+diff --git c/src/freedreno/radish/rd_instance.c i/src/freedreno/radish/rd_instance.c
+new file mode 100644
+index 0000000..1ce828c
+--- /dev/null
++++ i/src/freedreno/radish/rd_instance.c
+@@ -0,0 +1,233 @@
++#include "rd_private.h"
++#include "util/os_misc.h"
++#include "util/u_memory.h"
++#include "vk_util.h"
++#include <fcntl.h>
++#include <unistd.h>
++#include <xf86drm.h>
++
++static const struct vk_instance_extension_table rd_instance_extensions = {
++   .KHR_get_physical_device_properties2 = true,
++};
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_EnumerateInstanceVersion(uint32_t *version)
++{
++   *version = VK_API_VERSION_1_0;
++   return VK_SUCCESS;
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_EnumerateInstanceExtensionProperties(const char *layer, uint32_t *count,
++                                      VkExtensionProperties *properties)
++{
++   if (layer)
++      return VK_ERROR_LAYER_NOT_PRESENT;
++   return vk_enumerate_instance_extension_properties(&rd_instance_extensions,
++                                                     count, properties);
++}
++
++static void
++rd_destroy_physical(struct vk_physical_device *base)
++{
++   struct rd_physical_device *physical = container_of(base, struct rd_physical_device, vk);
++   fd_device_del(physical->fd);
++   close(physical->render_fd);
++   vk_physical_device_finish(base);
++   vk_free(&base->instance->alloc, physical);
++}
++
++static VkResult
++rd_try_create_physical(struct vk_instance *instance, drmDevicePtr drm,
++                       struct vk_physical_device **out)
++{
++   if (!(drm->available_nodes & (1 << DRM_NODE_RENDER)))
++      return VK_ERROR_INCOMPATIBLE_DRIVER;
++   int render_fd = open(drm->nodes[DRM_NODE_RENDER], O_RDWR | O_CLOEXEC);
++   if (render_fd < 0)
++      return VK_ERROR_INCOMPATIBLE_DRIVER;
++   drmVersionPtr version = drmGetVersion(render_fd);
++   bool is_msm = version && !strcmp(version->name, "msm");
++   drmFreeVersion(version);
++   if (!is_msm) {
++      close(render_fd);
++      return VK_ERROR_INCOMPATIBLE_DRIVER;
++   }
++   struct fd_device *fd = fd_device_new_dup(render_fd);
++   if (!fd) {
++      close(render_fd);
++      return VK_ERROR_INITIALIZATION_FAILED;
++   }
++   struct fd_pipe *pipe = fd_pipe_new(fd, FD_PIPE_3D);
++   if (!pipe) {
++      fd_device_del(fd);
++      close(render_fd);
++      return VK_ERROR_INITIALIZATION_FAILED;
++   }
++   uint64_t gpu_id = 0;
++   int ret = fd_pipe_get_param(pipe, FD_GPU_ID, &gpu_id);
++   fd_pipe_del(pipe);
++   if (ret || gpu_id != 506) {
++      fd_device_del(fd);
++      close(render_fd);
++      return VK_ERROR_INCOMPATIBLE_DRIVER;
++   }
++   struct rd_physical_device *physical = vk_zalloc(&instance->alloc,
++      sizeof(*physical), 8, VK_SYSTEM_ALLOCATION_SCOPE_INSTANCE);
++   if (!physical) {
++      fd_device_del(fd);
++      close(render_fd);
++      return VK_ERROR_OUT_OF_HOST_MEMORY;
++   }
++   struct vk_physical_device_dispatch_table dispatch;
++   vk_physical_device_dispatch_table_from_entrypoints(&dispatch,
++      &rd_physical_device_entrypoints, true);
++   struct vk_properties properties = {
++      .apiVersion = VK_API_VERSION_1_0,
++      .driverVersion = 1,
++      .vendorID = 0x5143,
++      .deviceID = 506,
++      .deviceType = VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU,
++      .subgroupSize = 32,
++      .maxMemoryAllocationCount = 4096,
++      .maxBoundDescriptorSets = 4,
++      .maxStorageBufferRange = 128 * 1024 * 1024,
++      .maxUniformBufferRange = 16384,
++      .maxPushConstantsSize = 128,
++      .minMemoryMapAlignment = 64,
++      .minStorageBufferOffsetAlignment = 16,
++      .minUniformBufferOffsetAlignment = 16,
++      .nonCoherentAtomSize = 64,
++      .maxComputeSharedMemorySize = RD_MAX_SHARED_SIZE,
++      .maxComputeWorkGroupCount = {65535, 65535, 65535},
++      .maxComputeWorkGroupInvocations = 128,
++      .maxComputeWorkGroupSize = {128, 128, 64},
++   };
++   snprintf(properties.deviceName, sizeof(properties.deviceName),
++            "Radish Adreno 506 (experimental compute)");
++   VkResult result = vk_physical_device_init(&physical->vk, instance, NULL,
++                                             NULL, &properties, &dispatch);
++   if (result != VK_SUCCESS) {
++      vk_free(&instance->alloc, physical);
++      fd_device_del(fd);
++      close(render_fd);
++      return result;
++   }
++   physical->fd = fd;
++   physical->render_fd = render_fd;
++   physical->sync_type = vk_drm_syncobj_get_type(render_fd);
++   physical->sync_types[0] = &physical->sync_type;
++   physical->vk.supported_sync_types = physical->sync_types;
++   *out = &physical->vk;
++   return VK_SUCCESS;
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_CreateInstance(const VkInstanceCreateInfo *info,
++                  const VkAllocationCallbacks *allocator, VkInstance *out)
++{
++   if (!allocator)
++      allocator = vk_default_allocator();
++   struct rd_instance *instance = vk_zalloc(allocator, sizeof(*instance), 8,
++                                           VK_SYSTEM_ALLOCATION_SCOPE_INSTANCE);
++   if (!instance)
++      return VK_ERROR_OUT_OF_HOST_MEMORY;
++   struct vk_instance_dispatch_table dispatch;
++   vk_instance_dispatch_table_from_entrypoints(&dispatch,
++                                               &rd_instance_entrypoints, true);
++   VkResult result = vk_instance_init(&instance->vk, &rd_instance_extensions,
++                                      &dispatch, info, allocator);
++   if (result != VK_SUCCESS) {
++      vk_free(allocator, instance);
++      return result;
++   }
++   instance->vk.physical_devices.try_create_for_drm = rd_try_create_physical;
++   instance->vk.physical_devices.destroy = rd_destroy_physical;
++   *out = rd_instance_to_handle(instance);
++   return VK_SUCCESS;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_DestroyInstance(VkInstance handle, const VkAllocationCallbacks *allocator)
++{
++   VK_FROM_HANDLE(rd_instance, instance, handle);
++   if (!instance)
++      return;
++   vk_instance_finish(&instance->vk);
++   vk_free(&instance->vk.alloc, instance);
++}
++
++VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL
++rd_GetInstanceProcAddr(VkInstance handle, const char *name)
++{
++   VK_FROM_HANDLE(rd_instance, instance, handle);
++   return vk_instance_get_proc_addr(instance ? &instance->vk : NULL,
++                                    &rd_instance_entrypoints, name);
++}
++
++PUBLIC VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL
++vk_icdGetInstanceProcAddr(VkInstance instance, const char *name)
++{
++   return rd_GetInstanceProcAddr(instance, name);
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_GetPhysicalDeviceQueueFamilyProperties2(VkPhysicalDevice handle,
++   uint32_t *count, VkQueueFamilyProperties2 *properties)
++{
++   VK_OUTARRAY_MAKE_TYPED(VkQueueFamilyProperties2, out, properties, count);
++   vk_outarray_append_typed(VkQueueFamilyProperties2, &out, p) {
++      p->queueFamilyProperties = (VkQueueFamilyProperties) {
++         .queueFlags = VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT,
++         .queueCount = 1,
++         .minImageTransferGranularity = {1, 1, 1},
++      };
++   }
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_GetPhysicalDeviceMemoryProperties2(VkPhysicalDevice handle,
++                                     VkPhysicalDeviceMemoryProperties2 *out)
++{
++   uint64_t total = 0;
++   os_get_total_physical_memory(&total);
++   out->memoryProperties = (VkPhysicalDeviceMemoryProperties) {
++      .memoryTypeCount = 1,
++      .memoryTypes = {{ .propertyFlags = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT |
++                        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
++                        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, .heapIndex = 0 }},
++      .memoryHeapCount = 1,
++      .memoryHeaps = {{ .size = total / 2, .flags = VK_MEMORY_HEAP_DEVICE_LOCAL_BIT }},
++   };
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_GetPhysicalDeviceFormatProperties2(VkPhysicalDevice handle, VkFormat format,
++                                      VkFormatProperties2 *out)
++{
++   out->formatProperties = (VkFormatProperties){0};
++   vk_foreach_struct(sType, next, out->pNext) {
++      if (sType == VK_STRUCTURE_TYPE_FORMAT_PROPERTIES_3) {
++         VkFormatProperties3 *properties = (VkFormatProperties3 *)next;
++         properties->linearTilingFeatures = 0;
++         properties->optimalTilingFeatures = 0;
++         properties->bufferFeatures = 0;
++      }
++   }
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_GetPhysicalDeviceImageFormatProperties2(VkPhysicalDevice handle,
++   const VkPhysicalDeviceImageFormatInfo2 *info, VkImageFormatProperties2 *out)
++{
++   out->imageFormatProperties = (VkImageFormatProperties){0};
++   return VK_ERROR_FORMAT_NOT_SUPPORTED;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_GetPhysicalDeviceSparseImageFormatProperties2(VkPhysicalDevice handle,
++   const VkPhysicalDeviceSparseImageFormatInfo2 *info, uint32_t *count,
++   VkSparseImageFormatProperties2 *properties)
++{
++   *count = 0;
++}
+diff --git c/src/freedreno/radish/rd_memory.c i/src/freedreno/radish/rd_memory.c
+new file mode 100644
+index 0000000..43a6534
+--- /dev/null
++++ i/src/freedreno/radish/rd_memory.c
+@@ -0,0 +1,141 @@
++#include "rd_private.h"
++#include <limits.h>
++#include "util/u_math.h"
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_AllocateMemory(VkDevice handle, const VkMemoryAllocateInfo *info,
++                  const VkAllocationCallbacks *allocator, VkDeviceMemory *out)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   *out = VK_NULL_HANDLE;
++   if (info->memoryTypeIndex != 0 || !info->allocationSize ||
++       info->allocationSize > UINT32_MAX - 4095)
++      return VK_ERROR_OUT_OF_DEVICE_MEMORY;
++   struct rd_memory *memory = vk_device_memory_create(&device->vk, info,
++                                                      allocator, sizeof(*memory));
++   if (!memory)
++      return VK_ERROR_OUT_OF_HOST_MEMORY;
++   memory->bo = fd_bo_new(device->fd, align64(info->allocationSize, 4096),
++                           FD_BO_HINT_BUFFER, "radish-memory");
++   if (!memory->bo) {
++      vk_device_memory_destroy(&device->vk, allocator, &memory->vk);
++      return VK_ERROR_OUT_OF_DEVICE_MEMORY;
++   }
++   *out = rd_memory_to_handle(memory);
++   return VK_SUCCESS;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_FreeMemory(VkDevice handle, VkDeviceMemory memory_handle,
++              const VkAllocationCallbacks *allocator)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   VK_FROM_HANDLE(rd_memory, memory, memory_handle);
++   if (!memory)
++      return;
++   fd_bo_del(memory->bo);
++   vk_device_memory_destroy(&device->vk, allocator, &memory->vk);
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_MapMemory2(VkDevice handle, const VkMemoryMapInfo *info, void **out)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   VK_FROM_HANDLE(rd_memory, memory, info->memory);
++   if (info->flags || memory->map || info->offset >= memory->vk.size ||
++       (info->size != VK_WHOLE_SIZE && info->size > memory->vk.size - info->offset))
++      return VK_ERROR_MEMORY_MAP_FAILED;
++   if (fd_bo_cpu_prep(memory->bo, device->pipe,
++                      FD_BO_PREP_READ | FD_BO_PREP_WRITE))
++      return VK_ERROR_MEMORY_MAP_FAILED;
++   void *base = fd_bo_map(memory->bo);
++   if (!base)
++      return VK_ERROR_MEMORY_MAP_FAILED;
++   memory->map = base;
++   *out = (uint8_t *)base + info->offset;
++   return VK_SUCCESS;
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_UnmapMemory2(VkDevice handle, const VkMemoryUnmapInfo *info)
++{
++   VK_FROM_HANDLE(rd_memory, memory, info->memory);
++   __sync_synchronize();
++   memory->map = NULL;
++   return VK_SUCCESS;
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_FlushMappedMemoryRanges(VkDevice handle, uint32_t count,
++                           const VkMappedMemoryRange *ranges)
++{
++   __sync_synchronize();
++   return VK_SUCCESS;
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_InvalidateMappedMemoryRanges(VkDevice handle, uint32_t count,
++                                const VkMappedMemoryRange *ranges)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   for (uint32_t i = 0; i < count; i++) {
++      VK_FROM_HANDLE(rd_memory, memory, ranges[i].memory);
++      if (fd_bo_cpu_prep(memory->bo, device->pipe, FD_BO_PREP_READ))
++         return VK_ERROR_DEVICE_LOST;
++   }
++   __sync_synchronize();
++   return VK_SUCCESS;
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_CreateBuffer(VkDevice handle, const VkBufferCreateInfo *info,
++                const VkAllocationCallbacks *allocator, VkBuffer *out)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   if (info->flags || info->size > UINT32_MAX - 4095)
++      return VK_ERROR_FEATURE_NOT_PRESENT;
++   struct rd_buffer *buffer = vk_buffer_create(&device->vk, info, allocator,
++                                               sizeof(*buffer));
++   if (!buffer)
++      return VK_ERROR_OUT_OF_HOST_MEMORY;
++   *out = rd_buffer_to_handle(buffer);
++   return VK_SUCCESS;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_DestroyBuffer(VkDevice handle, VkBuffer buffer_handle,
++                 const VkAllocationCallbacks *allocator)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   VK_FROM_HANDLE(rd_buffer, buffer, buffer_handle);
++   if (buffer)
++      vk_buffer_destroy(&device->vk, allocator, &buffer->vk);
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_GetBufferMemoryRequirements2(VkDevice handle,
++   const VkBufferMemoryRequirementsInfo2 *info, VkMemoryRequirements2 *out)
++{
++   VK_FROM_HANDLE(rd_buffer, buffer, info->buffer);
++   out->memoryRequirements = (VkMemoryRequirements) {
++      .size = align64(buffer->vk.size, 64), .alignment = 64, .memoryTypeBits = 1,
++   };
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_BindBufferMemory2(VkDevice handle, uint32_t count,
++                     const VkBindBufferMemoryInfo *infos)
++{
++   for (uint32_t i = 0; i < count; i++) {
++      VK_FROM_HANDLE(rd_buffer, buffer, infos[i].buffer);
++      VK_FROM_HANDLE(rd_memory, memory, infos[i].memory);
++      if (!memory || infos[i].memoryOffset > memory->vk.size ||
++          buffer->vk.size > memory->vk.size - infos[i].memoryOffset ||
++          infos[i].memoryOffset % 64)
++         return VK_ERROR_OUT_OF_DEVICE_MEMORY;
++      buffer->memory = memory;
++      buffer->offset = infos[i].memoryOffset;
++      buffer->vk.device_address = fd_bo_get_iova(memory->bo) + buffer->offset;
++   }
++   return VK_SUCCESS;
++}
+diff --git c/src/freedreno/radish/rd_pipeline.c i/src/freedreno/radish/rd_pipeline.c
+new file mode 100644
+index 0000000..5100670
+--- /dev/null
++++ i/src/freedreno/radish/rd_pipeline.c
+@@ -0,0 +1,225 @@
++#include "rd_private.h"
++#include "compiler/nir/nir_builder.h"
++#include "compiler/spirv/nir_spirv.h"
++#include "vk_pipeline.h"
++#include "ir3/ir3_nir.h"
++#include "util/u_math.h"
++
++struct rd_lower_state { struct rd_pipeline *pipeline; bool failed; };
++
++static void
++rd_shared_type_info(const struct glsl_type *type, unsigned *size, unsigned *alignment)
++{
++   assert(glsl_type_is_vector_or_scalar(type));
++   unsigned component_size = glsl_type_is_boolean(type) ? 4 : glsl_get_bit_size(type) / 8;
++   *size = component_size * glsl_get_vector_elements(type);
++   *alignment = component_size;
++}
++
++static bool
++rd_lower_intrinsic(nir_builder *b, nir_intrinsic_instr *intr, void *data)
++{
++   struct rd_lower_state *state = data;
++   b->cursor = nir_before_instr(&intr->instr);
++   nir_def *replacement = NULL;
++   switch (intr->intrinsic) {
++   case nir_intrinsic_vulkan_resource_index: {
++      uint32_t set = nir_intrinsic_desc_set(intr), binding = nir_intrinsic_binding(intr);
++      if (set >= state->pipeline->layout->set_count) {
++         state->failed = true;
++         return false;
++      }
++      struct rd_set_layout *layout = container_of(state->pipeline->layout->set_layouts[set],
++                                                 struct rd_set_layout, vk);
++      const struct rd_binding *found = NULL;
++      for (uint32_t i = 0; i < layout->binding_count; i++)
++         if (layout->bindings[i].binding == binding)
++            found = &layout->bindings[i];
++      if (!found) {
++         state->failed = true;
++         return false;
++      }
++      uint32_t first = state->pipeline->set_offsets[set] + found->slot;
++      if (nir_src_is_const(intr->src[0])) {
++         uint32_t index = nir_src_as_uint(intr->src[0]);
++         if (index >= found->count) {
++            state->failed = true;
++            return false;
++         }
++         state->pipeline->used_descriptors |= 1u << (first + index);
++      } else {
++         for (uint32_t i = 0; i < found->count; i++)
++            state->pipeline->used_descriptors |= 1u << (first + i);
++      }
++      replacement = nir_vec2(b, nir_iadd_imm(b, intr->src[0].ssa,
++         state->pipeline->set_offsets[set] + found->slot), nir_imm_int(b, 0));
++      break;
++   }
++   case nir_intrinsic_vulkan_resource_reindex:
++      replacement = nir_vec2(b, nir_iadd(b, nir_channel(b, intr->src[0].ssa, 0),
++                                        intr->src[1].ssa),
++                               nir_channel(b, intr->src[0].ssa, 1));
++      break;
++   case nir_intrinsic_load_vulkan_descriptor:
++      replacement = intr->src[0].ssa;
++      break;
++   case nir_intrinsic_load_push_constant:
++      replacement = nir_load_const_ir3(b, intr->num_components, intr->def.bit_size,
++         nir_ushr_imm(b, intr->src[0].ssa, 2), .base = nir_intrinsic_base(intr) / 4);
++      break;
++   default:
++      return false;
++   }
++   nir_def_replace(&intr->def, replacement);
++   return true;
++}
++
++VkResult
++rd_compile_pipeline(struct rd_device *device, struct rd_pipeline *pipeline,
++                     const VkPipelineShaderStageCreateInfo *stage)
++{
++   const struct spirv_to_nir_options spirv_options = {
++      .ubo_addr_format = nir_address_format_32bit_index_offset,
++      .ssbo_addr_format = nir_address_format_32bit_index_offset,
++      .push_const_addr_format = nir_address_format_logical,
++      .shared_addr_format = nir_address_format_32bit_offset,
++      .min_ubo_alignment = 16, .min_ssbo_alignment = 4,
++   };
++   nir_shader *nir = NULL;
++   VkResult result = vk_pipeline_shader_stage_to_nir(&device->vk, 0, stage,
++      &spirv_options, ir3_get_compiler_options(device->compiler), NULL, &nir);
++   if (result != VK_SUCCESS)
++      return result;
++   NIR_PASS(_, nir, nir_lower_global_vars_to_local);
++   NIR_PASS(_, nir, nir_lower_system_values);
++   NIR_PASS(_, nir, nir_lower_vars_to_explicit_types, nir_var_mem_shared,
++            rd_shared_type_info);
++   NIR_PASS(_, nir, nir_lower_explicit_io, nir_var_mem_shared,
++            nir_address_format_32bit_offset);
++   NIR_PASS(_, nir, nir_lower_explicit_io, nir_var_mem_ssbo | nir_var_mem_ubo,
++            nir_address_format_32bit_index_offset);
++   NIR_PASS(_, nir, nir_lower_explicit_io, nir_var_mem_push_const,
++            nir_address_format_32bit_offset);
++   if (nir->info.num_ubos || nir->info.num_images || nir->info.num_textures ||
++       nir->info.shared_size > RD_MAX_SHARED_SIZE) {
++      ralloc_free(nir);
++      return VK_ERROR_FEATURE_NOT_PRESENT;
++   }
++   nir->info.num_ssbos = pipeline->descriptor_count;
++   struct rd_lower_state lower = { .pipeline = pipeline };
++   nir_shader_intrinsics_pass(nir, rd_lower_intrinsic,
++      nir_metadata_control_flow, &lower);
++   if (lower.failed) {
++      ralloc_free(nir);
++      return VK_ERROR_FEATURE_NOT_PRESENT;
++   }
++   const struct nir_lower_compute_system_values_options sysvals = {
++      .has_base_workgroup_id = true,
++   };
++   NIR_PASS(_, nir, nir_lower_compute_system_values, &sysvals);
++   ir3_nir_lower_io_vars_to_temporaries(nir);
++   ir3_nir_lower_io(nir);
++   struct ir3_shader_options options = {
++      .api_wavesize = IR3_SINGLE_ONLY,
++      .real_wavesize = IR3_SINGLE_ONLY,
++      .push_consts_type = IR3_PUSH_CONSTS_PER_STAGE,
++      .push_consts_dwords = 32,
++      .const_allocs = {
++         .consts[IR3_CONST_ALLOC_PUSH_CONSTS] = { .offset_vec4 = 0, .size_vec4 = 8 },
++         .max_const_offset_vec4 = 8,
++      },
++   };
++   ir3_finalize_nir(device->compiler, &options.nir_options, nir);
++   struct ir3_shader *shader = ir3_shader_from_nir(device->compiler, nir, &options);
++   if (!shader) {
++      ralloc_free(nir);
++      return VK_ERROR_OUT_OF_HOST_MEMORY;
++   }
++   shader->cs.req_local_mem = nir->info.shared_size;
++   struct ir3_shader_key key = {0};
++   pipeline->variant = ir3_shader_create_variant(shader, &key, false);
++   ir3_shader_destroy(shader);
++   struct ir3_shader_variant *v = pipeline->variant;
++   if (!v)
++      return VK_ERROR_UNKNOWN;
++   v->shader = NULL;
++   if (v->pvtmem_size || v->constant_data_size ||
++       !v->local_size[0] || !v->local_size[1] || !v->local_size[2] ||
++       (uint64_t)v->local_size[0] * v->local_size[1] * v->local_size[2] > 128)
++      return VK_ERROR_FEATURE_NOT_PRESENT;
++   unsigned local_size = v->local_size[0] * v->local_size[1] * v->local_size[2];
++   unsigned wave_size = device->info.threadsize_base *
++                        (v->info.double_threadsize ? 2 : 1);
++   unsigned resident_threads = v->has_barrier ?
++      DIV_ROUND_UP(local_size, wave_size) * wave_size : wave_size;
++   if ((uint64_t)resident_threads * ir3_shader_halfregs(v) > 4096)
++      return VK_ERROR_FEATURE_NOT_PRESENT;
++   pipeline->bo = fd_bo_new(device->fd, align(v->info.size, 128),
++                            FD_BO_GPUREADONLY, "radish-shader");
++   if (!pipeline->bo)
++      return VK_ERROR_OUT_OF_DEVICE_MEMORY;
++   fd_bo_mark_for_dump(pipeline->bo);
++   void *map = fd_bo_map(pipeline->bo);
++   if (!map)
++      return VK_ERROR_MEMORY_MAP_FAILED;
++   memcpy(map, v->bin, v->info.size);
++   return VK_SUCCESS;
++}
++
++static void
++rd_destroy_pipeline(struct rd_device *device, struct rd_pipeline *pipeline,
++                     const VkAllocationCallbacks *allocator)
++{
++   if (pipeline->bo)
++      fd_bo_del(pipeline->bo);
++   if (pipeline->variant)
++      ralloc_free(pipeline->variant);
++   vk_pipeline_layout_unref(&device->vk, pipeline->layout);
++   vk_object_free(&device->vk, allocator, pipeline);
++}
++
++VKAPI_ATTR VkResult VKAPI_CALL
++rd_CreateComputePipelines(VkDevice handle, VkPipelineCache cache, uint32_t count,
++   const VkComputePipelineCreateInfo *infos, const VkAllocationCallbacks *allocator,
++   VkPipeline *out)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   VkResult result = VK_SUCCESS;
++   memset(out, 0, count * sizeof(*out));
++   for (uint32_t i = 0; i < count; i++) {
++      VK_FROM_HANDLE(vk_pipeline_layout, layout, infos[i].layout);
++      if (infos[i].stage.stage != VK_SHADER_STAGE_COMPUTE_BIT ||
++          layout->set_count > RD_MAX_SETS || infos[i].flags)
++         return VK_ERROR_FEATURE_NOT_PRESENT;
++      struct rd_pipeline *pipeline = vk_object_zalloc(&device->vk, allocator,
++         sizeof(*pipeline), VK_OBJECT_TYPE_PIPELINE);
++      if (!pipeline)
++         return VK_ERROR_OUT_OF_HOST_MEMORY;
++      pipeline->layout = vk_pipeline_layout_ref(layout);
++      for (uint32_t j = 0; j < layout->set_count; j++) {
++         struct rd_set_layout *set = container_of(layout->set_layouts[j], struct rd_set_layout, vk);
++         pipeline->set_offsets[j] = pipeline->descriptor_count;
++         pipeline->descriptor_count += set->descriptor_count;
++      }
++      if (pipeline->descriptor_count > RD_MAX_BINDINGS)
++         result = VK_ERROR_FEATURE_NOT_PRESENT;
++      else
++         result = rd_compile_pipeline(device, pipeline, &infos[i].stage);
++      if (result != VK_SUCCESS) {
++         rd_destroy_pipeline(device, pipeline, allocator);
++         return result;
++      }
++      out[i] = rd_pipeline_to_handle(pipeline);
++   }
++   return result;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_DestroyPipeline(VkDevice handle, VkPipeline pipeline_handle,
++                   const VkAllocationCallbacks *allocator)
++{
++   VK_FROM_HANDLE(rd_device, device, handle);
++   VK_FROM_HANDLE(rd_pipeline, pipeline, pipeline_handle);
++   if (pipeline)
++      rd_destroy_pipeline(device, pipeline, allocator);
++}
+diff --git c/src/freedreno/radish/rd_private.h i/src/freedreno/radish/rd_private.h
+new file mode 100644
+index 0000000..85c14cc
+--- /dev/null
++++ i/src/freedreno/radish/rd_private.h
+@@ -0,0 +1,124 @@
++#ifndef RD_PRIVATE_H
++#define RD_PRIVATE_H
++
++#include "rd_entrypoints.h"
++#include "vk_alloc.h"
++#include "vk_buffer.h"
++#include "vk_device.h"
++#include "vk_device_memory.h"
++#include "vk_drm_syncobj.h"
++#include "vk_instance.h"
++#include "vk_physical_device.h"
++#include "vk_queue.h"
++#include "vk_descriptor_set_layout.h"
++#include "vk_pipeline_layout.h"
++#include "vk_command_buffer.h"
++#include "vk_command_pool.h"
++#include "ir3/ir3_shader.h"
++#include "drm/freedreno_drmif.h"
++#include "common/freedreno_dev_info.h"
++
++struct rd_instance { struct vk_instance vk; };
++struct rd_physical_device {
++   struct vk_physical_device vk;
++   struct fd_device *fd;
++   int render_fd;
++   struct vk_sync_type sync_type;
++   const struct vk_sync_type *sync_types[2];
++};
++struct rd_device {
++   struct vk_device vk;
++   struct fd_device *fd;
++   struct fd_pipe *pipe;
++   struct vk_queue queue;
++   struct fd_dev_info info;
++   struct ir3_compiler *compiler;
++   struct fd_bo *control;
++   uint32_t seqno;
++   uint64_t submit_count;
++   uint64_t faults;
++};
++struct rd_memory {
++   struct vk_device_memory vk;
++   struct fd_bo *bo;
++   void *map;
++};
++struct rd_buffer {
++   struct vk_buffer vk;
++   struct rd_memory *memory;
++   VkDeviceSize offset;
++};
++
++VK_DEFINE_HANDLE_CASTS(rd_instance, vk.base, VkInstance, VK_OBJECT_TYPE_INSTANCE)
++VK_DEFINE_HANDLE_CASTS(rd_physical_device, vk.base, VkPhysicalDevice, VK_OBJECT_TYPE_PHYSICAL_DEVICE)
++VK_DEFINE_HANDLE_CASTS(rd_device, vk.base, VkDevice, VK_OBJECT_TYPE_DEVICE)
++VK_DEFINE_NONDISP_HANDLE_CASTS(rd_memory, vk.base, VkDeviceMemory, VK_OBJECT_TYPE_DEVICE_MEMORY)
++VK_DEFINE_NONDISP_HANDLE_CASTS(rd_buffer, vk.base, VkBuffer, VK_OBJECT_TYPE_BUFFER)
++
++#define RD_MAX_BINDINGS 32
++#define RD_MAX_SETS 4
++#define RD_MAX_SHARED_SIZE 16384
++struct rd_binding { uint32_t binding, count, slot; VkDescriptorType type; };
++struct rd_set_layout {
++   struct vk_descriptor_set_layout vk;
++   uint32_t binding_count, descriptor_count;
++   struct rd_binding bindings[RD_MAX_BINDINGS];
++};
++struct rd_descriptor { struct rd_buffer *buffer; VkDeviceSize offset, range; };
++struct rd_descriptor_pool {
++   struct vk_object_base base;
++   struct list_head sets;
++   VkAllocationCallbacks alloc;
++   uint32_t max_sets, used_sets, max_descriptors, used_descriptors;
++};
++struct rd_descriptor_set {
++   struct vk_object_base base;
++   struct list_head link;
++   struct rd_descriptor_pool *pool;
++   struct rd_set_layout *layout;
++   struct rd_descriptor descriptors[RD_MAX_BINDINGS];
++};
++struct rd_pipeline {
++   struct vk_object_base base;
++   struct vk_pipeline_layout *layout;
++   struct ir3_shader_variant *variant;
++   struct fd_bo *bo;
++   uint32_t set_offsets[RD_MAX_SETS], descriptor_count, used_descriptors;
++};
++struct rd_dispatch {
++   struct rd_pipeline *pipeline;
++   struct rd_buffer *indirect;
++   VkDeviceSize indirect_offset;
++   struct rd_descriptor descriptors[RD_MAX_BINDINGS];
++   uint32_t push[32], grid[3];
++};
++enum rd_command_type { RD_CMD_DISPATCH, RD_CMD_COPY, RD_CMD_FILL, RD_CMD_UPDATE };
++struct rd_transfer {
++   struct rd_buffer *src, *dst;
++   VkDeviceSize src_offset, dst_offset, size;
++   uint32_t value;
++   void *data;
++};
++struct rd_command {
++   enum rd_command_type type;
++   union { struct rd_dispatch dispatch; struct rd_transfer transfer; };
++};
++struct rd_command_buffer {
++   struct vk_command_buffer vk;
++   struct rd_pipeline *pipeline;
++   struct rd_descriptor_set *sets[RD_MAX_SETS];
++   uint32_t push[32];
++   struct util_dynarray commands;
++};
++VK_DEFINE_NONDISP_HANDLE_CASTS(rd_set_layout, vk.base, VkDescriptorSetLayout, VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT)
++VK_DEFINE_NONDISP_HANDLE_CASTS(rd_descriptor_pool, base, VkDescriptorPool, VK_OBJECT_TYPE_DESCRIPTOR_POOL)
++VK_DEFINE_NONDISP_HANDLE_CASTS(rd_descriptor_set, base, VkDescriptorSet, VK_OBJECT_TYPE_DESCRIPTOR_SET)
++VK_DEFINE_NONDISP_HANDLE_CASTS(rd_pipeline, base, VkPipeline, VK_OBJECT_TYPE_PIPELINE)
++VK_DEFINE_HANDLE_CASTS(rd_command_buffer, vk.base, VkCommandBuffer, VK_OBJECT_TYPE_COMMAND_BUFFER)
++extern const struct vk_command_buffer_ops rd_command_buffer_ops;
++struct rd_command *rd_command_append(struct rd_command_buffer *command,
++                                     enum rd_command_type type);
++VkResult rd_queue_submit(struct vk_queue *queue, struct vk_queue_submit *submit);
++VkResult rd_compile_pipeline(struct rd_device *device, struct rd_pipeline *pipeline,
++                             const VkPipelineShaderStageCreateInfo *stage);
++#endif
+diff --git c/src/freedreno/radish/rd_queue.c i/src/freedreno/radish/rd_queue.c
+new file mode 100644
+index 0000000..fa82085
+--- /dev/null
++++ i/src/freedreno/radish/rd_queue.c
+@@ -0,0 +1,591 @@
++/*
++ * Copyright © 2016 Rob Clark <robclark@freedesktop.org>
++ * SPDX-License-Identifier: MIT
++ */
++
++#include "rd_private.h"
++#include "common/fd5_hw.h"
++#include "drm/freedreno_ringbuffer.h"
++#include "vk_sync.h"
++#include "util/u_math.h"
++#include "util/os_time.h"
++#include "util/u_debug.h"
++#include <inttypes.h>
++#include <stdio.h>
++
++struct rd_submit_profile {
++   int64_t total_ns;
++   int64_t max_ns;
++};
++
++static void
++cs_restore_emit(struct fd_ringbuffer *ring, struct rd_device *device)
++{
++   OUT_PKT7(ring, CP_SET_RENDER_MODE, 5);
++   OUT_RING(ring, CP_SET_RENDER_MODE_0_MODE(BYPASS));
++   OUT_RING(ring, 0x00000000); /* ADDR_LO */
++   OUT_RING(ring, 0x00000000); /* ADDR_HI */
++   OUT_RING(ring, 0x00000000);
++   OUT_RING(ring, 0x00000000);
++
++   OUT_PKT4(ring, REG_A5XX_UCHE_CACHE_INVALIDATE_MIN, 5);
++   OUT_RING(ring, 0x00000000); /* UCHE_CACHE_INVALIDATE_MIN_LO */
++   OUT_RING(ring, 0x00000000); /* UCHE_CACHE_INVALIDATE_MIN_HI */
++   OUT_RING(ring, 0x00000000); /* UCHE_CACHE_INVALIDATE_MAX_LO */
++   OUT_RING(ring, 0x00000000); /* UCHE_CACHE_INVALIDATE_MAX_HI */
++   OUT_RING(ring, 0x00000012); /* UCHE_CACHE_INVALIDATE */
++
++   OUT_WFI5(ring);
++
++   OUT_PKT4(ring, REG_A5XX_HLSQ_UPDATE_CNTL, 1);
++   OUT_RING(ring, 0x000fffff);
++
++   OUT_PKT4(ring, REG_A5XX_RB_MODE_CNTL, 1);
++   OUT_RING(ring, 0x00000044);
++
++   OUT_PKT4(ring, REG_A5XX_RB_DBG_ECO_CNTL, 1);
++   OUT_RING(ring, 0x00100000);
++
++   OUT_PKT4(ring, REG_A5XX_PC_MODE_CNTL, 1);
++   OUT_RING(ring, 0x0000001f);
++
++   OUT_PKT4(ring, REG_A5XX_SP_MODE_CNTL, 1);
++   OUT_RING(ring, 0x0000001e);
++
++   if (fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) == 540) {
++      OUT_PKT4(ring, REG_A5XX_SP_DBG_ECO_CNTL, 1);
++      OUT_RING(ring, 0x00000800);
++
++      OUT_PKT4(ring, REG_A5XX_HLSQ_DBG_ECO_CNTL, 1);
++      OUT_RING(ring, 0x00000000);
++   } else {
++      OUT_PKT4(ring, REG_A5XX_SP_DBG_ECO_CNTL, 1);
++      OUT_RING(ring, 0x40000800);
++   }
++
++   OUT_PKT4(ring, REG_A5XX_TPL1_MODE_CNTL, 1);
++   OUT_RING(ring, 0x00000544);
++
++   OUT_PKT4(ring, REG_A5XX_HLSQ_TIMEOUT_THRESHOLD_0, 2);
++   OUT_RING(ring, 0x00000080); /* HLSQ_TIMEOUT_THRESHOLD_0 */
++   OUT_RING(ring, 0x00000000); /* HLSQ_TIMEOUT_THRESHOLD_1 */
++
++   OUT_PKT4(ring, REG_A5XX_VPC_DBG_ECO_CNTL, 1);
++   OUT_RING(ring, 0x00000400);
++
++   OUT_PKT4(ring, REG_A5XX_HLSQ_MODE_CNTL, 1);
++   OUT_RING(ring, 0x00000001);
++
++   OUT_PKT4(ring, REG_A5XX_VPC_MODE_CNTL, 1);
++   OUT_RING(ring, 0x00000000);
++}
++
++static void
++cs_program_emit(struct fd_ringbuffer *ring, struct rd_pipeline *pipeline)
++{
++   struct ir3_shader_variant *v = pipeline->variant;
++   const struct ir3_info *i = &v->info;
++   enum a3xx_threadsize thrsz = i->double_threadsize ? FOUR_QUADS : TWO_QUADS;
++
++   /* if shader is more than 32*16 instructions, don't preload it.  Similar
++    * to the combined restriction of 64*16 for VS+FS
++    */
++   unsigned instrlen = (v->instrlen > 32) ? 0 : v->instrlen;
++
++   OUT_PKT4(ring, REG_A5XX_SP_SP_CNTL, 1);
++   OUT_RING(ring, 0x00000000); /* SP_SP_CNTL */
++
++   OUT_PKT4(ring, REG_A5XX_HLSQ_CONTROL_0_REG, 1);
++   OUT_RING(ring, A5XX_HLSQ_CONTROL_0_REG_FSTHREADSIZE(TWO_QUADS) |
++                     A5XX_HLSQ_CONTROL_0_REG_CSTHREADSIZE(thrsz) |
++                     0x00000880 /* XXX */);
++
++   OUT_PKT4(ring, REG_A5XX_SP_CS_CTRL_REG0, 1);
++   OUT_RING(ring,
++            A5XX_SP_CS_CTRL_REG0_THREADSIZE(thrsz) |
++               A5XX_SP_CS_CTRL_REG0_HALFREGFOOTPRINT(i->max_half_reg + 1) |
++               A5XX_SP_CS_CTRL_REG0_FULLREGFOOTPRINT(i->max_reg + 1) |
++               A5XX_SP_CS_CTRL_REG0_BRANCHSTACK(ir3_shader_branchstack_hw(v)) |
++               COND(instrlen != 0, A5XX_SP_CS_CTRL_REG0_BUFFER) |
++               0x2 /* XXX */);
++
++   OUT_PKT4(ring, REG_A5XX_HLSQ_CS_CONFIG, 1);
++   OUT_RING(ring, A5XX_HLSQ_CS_CONFIG_CONSTOBJECTOFFSET(0) |
++                     A5XX_HLSQ_CS_CONFIG_SHADEROBJOFFSET(0) |
++                     A5XX_HLSQ_CS_CONFIG_ENABLED);
++
++   OUT_PKT4(ring, REG_A5XX_HLSQ_CS_CNTL, 1);
++   OUT_RING(ring, A5XX_HLSQ_CS_CNTL_INSTRLEN(instrlen) |
++                     COND(pipeline->descriptor_count > 0, A5XX_HLSQ_CS_CNTL_SSBO_ENABLE));
++
++   OUT_PKT4(ring, REG_A5XX_SP_CS_CONFIG, 1);
++   OUT_RING(ring, A5XX_SP_CS_CONFIG_CONSTOBJECTOFFSET(0) |
++                     A5XX_SP_CS_CONFIG_SHADEROBJOFFSET(0) |
++                     A5XX_SP_CS_CONFIG_ENABLED);
++
++   OUT_PKT4(ring, REG_A5XX_HLSQ_CS_CONSTLEN, 2);
++   OUT_RING(ring, align(v->constlen, 4) / 4); /* HLSQ_CS_CONSTLEN */
++   OUT_RING(ring, instrlen);                  /* HLSQ_CS_INSTRLEN */
++
++   OUT_PKT4(ring, REG_A5XX_TPL1_CS_TEX_COUNT, 1);
++   OUT_RING(ring, v->num_samp);
++
++   uint32_t per_fiber_size = v->pvtmem_size;
++   uint32_t per_sp_size =
++      align(per_fiber_size * v->compiler->info->fibers_per_sp, 1 << 12);
++
++   OUT_PKT4(ring, REG_A5XX_SP_CS_OBJ_START, 6);
++   OUT_RELOC(ring, pipeline->bo, 0, 0, 0); /* SP_CS_OBJ_START */
++   OUT_RING(ring, A5XX_SP_CS_PVT_MEM_PARAM_MEMSIZEPERITEM(per_fiber_size) |
++                     A5XX_SP_CS_PVT_MEM_PARAM_HWSTACKOFFSET(per_sp_size));
++   if (v->pvtmem_size > 0) { /* SP_CS_PVT_MEM_ADDR */
++      uint32_t total_size = per_sp_size * v->compiler->info->num_sp_cores;
++      struct fd_bo *pvtmem =
++         fd_bo_new(v->compiler->dev, total_size, FD_BO_NOMAP, "pvtmem");
++      OUT_RELOC(ring, pvtmem, 0, 0, 0);
++   } else {
++      OUT_RING(ring, 0);
++      OUT_RING(ring, 0);
++   }
++   OUT_RING(ring, A5XX_SP_CS_PVT_MEM_SIZE_TOTALPVTMEMSIZE(per_sp_size));
++
++   OUT_PKT4(ring, REG_A5XX_HLSQ_UPDATE_CNTL, 1);
++   OUT_RING(ring, 0x01f00000);
++
++   uint32_t local_invocation_id, work_group_id;
++   local_invocation_id =
++      ir3_find_sysval_regid(v, SYSTEM_VALUE_LOCAL_INVOCATION_ID);
++   work_group_id = ir3_find_sysval_regid(v, SYSTEM_VALUE_WORKGROUP_ID);
++
++   OUT_PKT4(ring, REG_A5XX_HLSQ_CS_CNTL_0, 2);
++   OUT_RING(ring, A5XX_HLSQ_CS_CNTL_0_WGIDCONSTID(work_group_id) |
++                     A5XX_HLSQ_CS_CNTL_0_UNK0(INVALID_REG) |
++                     A5XX_HLSQ_CS_CNTL_0_UNK1(INVALID_REG) |
++                     A5XX_HLSQ_CS_CNTL_0_LOCALIDREGID(local_invocation_id));
++   OUT_RING(ring, 0x1);
++
++   if (instrlen > 0) {
++      /* preload the shader into the instruction cache: */
++      OUT_PKT7(ring, CP_LOAD_STATE4, 3);
++      OUT_RING(ring, CP_LOAD_STATE4_0_DST_OFF(0) |
++                        CP_LOAD_STATE4_0_STATE_SRC(SS4_INDIRECT) |
++                        CP_LOAD_STATE4_0_STATE_BLOCK(SB4_CS_SHADER) |
++                        CP_LOAD_STATE4_0_NUM_UNIT(instrlen));
++      OUT_RELOC(ring, pipeline->bo, 0, CP_LOAD_STATE4_1_STATE_TYPE(ST4_SHADER), 0);
++   }
++}
++
++static void
++emit_const(struct fd_ringbuffer *ring, uint32_t constid, uint32_t sizedwords,
++           const uint32_t *dwords)
++{
++   uint32_t align_sz;
++
++   assert((constid % 4) == 0);
++
++   align_sz = align(sizedwords, 4);
++
++   OUT_PKT7(ring, CP_LOAD_STATE4, 3 + align_sz);
++   OUT_RING(ring, CP_LOAD_STATE4_0_DST_OFF(constid / 4) |
++                     CP_LOAD_STATE4_0_STATE_SRC(SS4_DIRECT) |
++                     CP_LOAD_STATE4_0_STATE_BLOCK(SB4_CS_SHADER) |
++                     CP_LOAD_STATE4_0_NUM_UNIT(DIV_ROUND_UP(sizedwords, 4)));
++   OUT_RING(ring, CP_LOAD_STATE4_1_EXT_SRC_ADDR(0) |
++                     CP_LOAD_STATE4_1_STATE_TYPE(ST4_CONSTANTS));
++   OUT_RING(ring, CP_LOAD_STATE4_2_EXT_SRC_ADDR_HI(0));
++   for (unsigned i = 0; i < sizedwords; i++) {
++      OUT_RING(ring, dwords[i]);
++   }
++
++   /* Zero-pad to multiple of 4 dwords */
++   for (uint32_t i = sizedwords; i < align_sz; i++) {
++      OUT_RING(ring, 0);
++   }
++}
++
++
++static void
++rd_emit_buffers(struct rd_device *device, struct fd_ringbuffer *ring,
++                 const struct rd_dispatch *dispatch)
++{
++   unsigned count = dispatch->pipeline->descriptor_count;
++   if (!count)
++      return;
++   OUT_PKT7(ring, CP_LOAD_STATE4, 3 + 2 * count);
++   OUT_RING(ring, CP_LOAD_STATE4_0_STATE_SRC(SS4_DIRECT) |
++      CP_LOAD_STATE4_0_STATE_BLOCK(SB4_CS_SSBO) | CP_LOAD_STATE4_0_NUM_UNIT(count));
++   OUT_RING(ring, CP_LOAD_STATE4_1_STATE_TYPE(ST4_CONSTANTS));
++   OUT_RING(ring, 0);
++   for (unsigned i = 0; i < count; i++) {
++      uint32_t bytes = dispatch->descriptors[i].buffer ? dispatch->descriptors[i].range : 0;
++      OUT_RING(ring, A5XX_SSBO_1_0_WIDTH(bytes));
++      OUT_RING(ring, A5XX_SSBO_1_1_HEIGHT(bytes >> 16));
++   }
++   OUT_PKT7(ring, CP_LOAD_STATE4, 3 + 2 * count);
++   OUT_RING(ring, CP_LOAD_STATE4_0_STATE_SRC(SS4_DIRECT) |
++      CP_LOAD_STATE4_0_STATE_BLOCK(SB4_CS_SSBO) | CP_LOAD_STATE4_0_NUM_UNIT(count));
++   OUT_RING(ring, CP_LOAD_STATE4_1_STATE_TYPE(ST4_UBO));
++   OUT_RING(ring, 0);
++   for (unsigned i = 0; i < count; i++) {
++      const struct rd_descriptor *desc = &dispatch->descriptors[i];
++      if (desc->buffer && desc->buffer->memory)
++         OUT_RELOC(ring, desc->buffer->memory->bo,
++                    desc->buffer->offset + desc->offset, 0, 0);
++      else
++         OUT_RELOC(ring, device->control, 0, 0, 0);
++   }
++}
++
++static void
++rd_emit_constants(struct fd_ringbuffer *ring, const struct rd_dispatch *dispatch,
++                  const uint32_t group_base[3])
++{
++   const struct ir3_shader_variant *v = dispatch->pipeline->variant;
++   const struct ir3_const_state *state = ir3_const_state(v);
++   emit_const(ring, 0, MIN2(32, v->constlen * 4), dispatch->push);
++   if (v->need_driver_params) {
++      struct ir3_driver_params_cs params = {
++         .num_work_groups_x = dispatch->grid[0],
++         .num_work_groups_y = dispatch->grid[1],
++         .num_work_groups_z = dispatch->grid[2],
++         .work_dim = 3,
++         .base_group_x = group_base[0],
++         .base_group_y = group_base[1],
++         .base_group_z = group_base[2],
++         .subgroup_size = 32,
++         .local_group_size_x = v->local_size[0],
++         .local_group_size_y = v->local_size[1],
++         .local_group_size_z = v->local_size[2],
++      };
++      unsigned base = state->allocs.consts[IR3_CONST_ALLOC_DRIVER_PARAMS].offset_vec4 * 4;
++      unsigned size = MIN2(state->num_driver_params, v->constlen * 4 - base);
++      if (size)
++         emit_const(ring, base, size, (const uint32_t *)&params);
++   }
++   unsigned base = state->allocs.max_const_offset_vec4 * 4;
++   if (v->imm_state.count && base < v->constlen * 4)
++      emit_const(ring, base, MIN2(align(v->imm_state.count, 4),
++                                v->constlen * 4 - base), v->imm_state.values);
++}
++
++static void
++rd_flush(struct rd_device *device, struct fd_ringbuffer *ring)
++{
++   uint32_t seqno = ++device->seqno;
++   OUT_PKT7(ring, CP_EVENT_WRITE, 4);
++   OUT_RING(ring, CACHE_FLUSH_TS);
++   OUT_RELOC(ring, device->control, 0, 0, 0);
++   OUT_RING(ring, seqno);
++   OUT_PKT7(ring, CP_WAIT_REG_MEM, 6);
++   OUT_RING(ring, CP_WAIT_REG_MEM_0_FUNCTION(WRITE_EQ) |
++                  CP_WAIT_REG_MEM_0_POLL(POLL_MEMORY));
++   OUT_RELOC(ring, device->control, 0, 0, 0);
++   OUT_RING(ring, seqno);
++   OUT_RING(ring, ~0u);
++   OUT_RING(ring, CP_WAIT_REG_MEM_5_DELAY_LOOP_CYCLES(16));
++}
++
++static VkResult
++rd_finish_submit(struct rd_device *device, struct fd_submit *submit,
++                  struct fd_ringbuffer *ring, struct rd_submit_profile *profile)
++{
++   device->submit_count++;
++   int64_t start = profile ? os_time_get_nano() : 0;
++   struct fd_fence *fence = fd_submit_flush(submit, -1, false);
++   VkResult result = VK_ERROR_DEVICE_LOST;
++   if (fence) {
++      fd_fence_flush(fence);
++      if (!fd_pipe_wait_timeout(device->pipe, fence, 5000000000ull)) {
++         uint64_t faults = 0;
++         if (!fd_pipe_get_param(device->pipe, FD_CTX_FAULTS, &faults) &&
++             faults == device->faults)
++            result = VK_SUCCESS;
++      }
++   }
++   if (profile) {
++      int64_t elapsed = os_time_get_nano() - start;
++      profile->total_ns += elapsed;
++      profile->max_ns = MAX2(profile->max_ns, elapsed);
++   }
++   if (fence)
++      fd_fence_del(fence);
++   fd_ringbuffer_del(ring);
++   fd_submit_del(submit);
++   return result;
++}
++
++static void
++rd_emit_dispatch_chunk(struct rd_device *device, struct fd_ringbuffer *ring,
++                       const struct rd_dispatch *dispatch,
++                       const uint32_t grid[3], const uint32_t base[3])
++{
++   const struct ir3_shader_variant *v = dispatch->pipeline->variant;
++   cs_restore_emit(ring, device);
++   cs_program_emit(ring, dispatch->pipeline);
++   rd_emit_constants(ring, dispatch, base);
++   rd_emit_buffers(device, ring, dispatch);
++   OUT_PKT4(ring, REG_A5XX_HLSQ_CS_NDRANGE_0, 7);
++   OUT_RING(ring, A5XX_HLSQ_CS_NDRANGE_0_KERNELDIM(3) |
++      A5XX_HLSQ_CS_NDRANGE_0_LOCALSIZEX(v->local_size[0] - 1) |
++      A5XX_HLSQ_CS_NDRANGE_0_LOCALSIZEY(v->local_size[1] - 1) |
++      A5XX_HLSQ_CS_NDRANGE_0_LOCALSIZEZ(v->local_size[2] - 1));
++   for (unsigned i = 0; i < 3; i++) {
++      OUT_RING(ring, v->local_size[i] * grid[i]);
++      OUT_RING(ring, 0);
++   }
++   OUT_PKT4(ring, REG_A5XX_HLSQ_CS_KERNEL_GROUP_X, 3);
++   OUT_RING(ring, 1);
++   OUT_RING(ring, 1);
++   OUT_RING(ring, 1);
++   OUT_PKT7(ring, CP_EXEC_CS, 4);
++   OUT_RING(ring, 0);
++   OUT_RING(ring, grid[0]);
++   OUT_RING(ring, grid[1]);
++   OUT_RING(ring, grid[2]);
++   OUT_WFI5(ring);
++   rd_flush(device, ring);
++}
++
++static VkResult
++rd_execute_dispatch(struct rd_device *device, const struct rd_dispatch *dispatch,
++                    struct rd_submit_profile *profile)
++{
++   if (!dispatch->grid[0] || !dispatch->grid[1] || !dispatch->grid[2])
++      return VK_SUCCESS;
++   for (unsigned i = 0; i < dispatch->pipeline->descriptor_count; i++) {
++      const struct rd_descriptor *desc = &dispatch->descriptors[i];
++      if ((dispatch->pipeline->used_descriptors & (1u << i)) &&
++          (!desc->buffer || !desc->buffer->memory))
++         return VK_ERROR_UNKNOWN;
++   }
++   const struct ir3_shader_variant *v = dispatch->pipeline->variant;
++   uint32_t tile[3], budget = v->has_barrier ? 1 : 64;
++   int64_t shared_groups = debug_get_num_option("RADISH_SHARED_GROUPS", 1);
++   if (v->has_barrier &&
++       (uint64_t)v->local_size[0] * v->local_size[1] * v->local_size[2] <= 32 &&
++       shared_groups >= 1 && shared_groups <= 8)
++      budget = shared_groups;
++   bool tiled_x2 = debug_get_num_option("RADISH_TILED_GROUPS_X", 1) == 2 &&
++      dispatch->grid[0] >= 2 &&
++      fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) == 506 &&
++      v->local_size[0] == 16 && v->local_size[1] == 8 &&
++      v->local_size[2] == 1 && v->has_barrier && v->loops == 4 &&
++      v->shared_size == 16384 && !v->pvtmem_size &&
++      !v->info.double_threadsize && v->info.max_reg + 1 <= 16 &&
++      v->info.max_half_reg == -1 &&
++      dispatch->pipeline->descriptor_count == 4 && v->instrlen == 31;
++   if (tiled_x2)
++      budget = 2;
++   for (unsigned i = 0; i < 3; i++) {
++      if (dispatch->grid[i] > 65535)
++         return VK_ERROR_FEATURE_NOT_PRESENT;
++      tile[i] = MIN2(budget, dispatch->grid[i]);
++      budget /= tile[i];
++   }
++   int64_t requested_chunks = debug_get_num_option("RADISH_BATCH_CHUNKS", 1);
++   unsigned max_chunks = 1;
++   if (!v->loops && !v->has_barrier && v->instrlen <= 32 &&
++       ((requested_chunks >= 1 && requested_chunks <= 4) || requested_chunks == 8))
++      max_chunks = requested_chunks;
++   int64_t tiled_chunks = debug_get_num_option("RADISH_TILED_BATCH_CHUNKS", 1);
++   if ((tiled_chunks == 2 || tiled_chunks == 4 || tiled_chunks == 8) &&
++       fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) == 506 &&
++       v->local_size[0] == 16 && v->local_size[1] == 8 &&
++       v->local_size[2] == 1 && v->has_barrier && v->loops == 4 &&
++       v->shared_size == 16384 && !v->pvtmem_size &&
++       !v->info.double_threadsize && v->info.max_reg + 1 <= 16 &&
++       v->info.max_half_reg == -1 &&
++       dispatch->pipeline->descriptor_count == 4 &&
++       (v->instrlen == 27 || v->instrlen == 28 || v->instrlen == 31 ||
++        v->instrlen == 36 || v->instrlen == 37))
++      max_chunks = tiled_chunks;
++   if (tiled_x2)
++      max_chunks = MIN2(max_chunks, 4);
++   struct fd_submit *submit = NULL;
++   struct fd_ringbuffer *ring = NULL;
++   unsigned chunks = 0;
++   uint32_t base[3];
++   for (base[2] = 0; base[2] < dispatch->grid[2]; base[2] += tile[2]) {
++      for (base[1] = 0; base[1] < dispatch->grid[1]; base[1] += tile[1]) {
++         for (base[0] = 0; base[0] < dispatch->grid[0]; base[0] += tile[0]) {
++            if (!submit) {
++               submit = fd_submit_new(device->pipe);
++               if (!submit)
++                  return VK_ERROR_OUT_OF_HOST_MEMORY;
++               ring = fd_submit_new_ringbuffer(submit, 0,
++                  FD_RINGBUFFER_PRIMARY | FD_RINGBUFFER_GROWABLE);
++               if (!ring) {
++                  fd_submit_del(submit);
++                  return VK_ERROR_OUT_OF_HOST_MEMORY;
++               }
++            }
++            uint32_t grid[3];
++            for (unsigned i = 0; i < 3; i++)
++               grid[i] = MIN2(tile[i], dispatch->grid[i] - base[i]);
++            rd_emit_dispatch_chunk(device, ring, dispatch, grid, base);
++            if (++chunks == max_chunks) {
++               VkResult result = rd_finish_submit(device, submit, ring, profile);
++               submit = NULL;
++               ring = NULL;
++               chunks = 0;
++               if (result != VK_SUCCESS)
++                  return result;
++            }
++         }
++      }
++   }
++   if (submit)
++      return rd_finish_submit(device, submit, ring, profile);
++   return VK_SUCCESS;
++}
++
++static VkResult
++rd_execute_transfer(struct rd_device *device, enum rd_command_type type,
++                      const struct rd_transfer *transfer,
++                      struct rd_submit_profile *profile)
++{
++   if (!transfer->dst || !transfer->dst->memory ||
++       (type == RD_CMD_COPY && (!transfer->src || !transfer->src->memory)))
++      return VK_ERROR_UNKNOWN;
++   if (type == RD_CMD_COPY &&
++       ((transfer->src_offset | transfer->dst_offset | transfer->size) & 3)) {
++      struct fd_bo *src = transfer->src->memory->bo;
++      struct fd_bo *dst = transfer->dst->memory->bo;
++      if (src == dst) {
++         if (fd_bo_cpu_prep(src, device->pipe, FD_BO_PREP_READ | FD_BO_PREP_WRITE))
++            return VK_ERROR_DEVICE_LOST;
++      } else if (fd_bo_cpu_prep(src, device->pipe, FD_BO_PREP_READ) ||
++                 fd_bo_cpu_prep(dst, device->pipe, FD_BO_PREP_WRITE)) {
++         return VK_ERROR_DEVICE_LOST;
++      }
++      void *src_map = fd_bo_map(src);
++      void *dst_map = fd_bo_map(dst);
++      if (!src_map || !dst_map)
++         return VK_ERROR_MEMORY_MAP_FAILED;
++      memmove((uint8_t *)dst_map + transfer->dst->offset + transfer->dst_offset,
++              (uint8_t *)src_map + transfer->src->offset + transfer->src_offset,
++              transfer->size);
++      __sync_synchronize();
++      return VK_SUCCESS;
++   }
++   for (VkDeviceSize done = 0; done < transfer->size;) {
++      unsigned bytes = MIN2(transfer->size - done, 4096);
++      struct fd_submit *submit = fd_submit_new(device->pipe);
++      if (!submit)
++         return VK_ERROR_OUT_OF_HOST_MEMORY;
++      struct fd_ringbuffer *ring = fd_submit_new_ringbuffer(submit, 0,
++         FD_RINGBUFFER_PRIMARY | FD_RINGBUFFER_GROWABLE);
++      if (!ring) {
++         fd_submit_del(submit);
++         return VK_ERROR_OUT_OF_HOST_MEMORY;
++      }
++      struct rd_buffer *dst = transfer->dst;
++      unsigned dst_offset = dst->offset + transfer->dst_offset + done;
++      if (type == RD_CMD_COPY) {
++         struct rd_buffer *src = transfer->src;
++         unsigned src_offset = src->offset + transfer->src_offset + done;
++         for (unsigned i = 0; i < bytes; i += 4) {
++            OUT_PKT7(ring, CP_MEM_TO_MEM, 5);
++            OUT_RING(ring, 0);
++            OUT_RELOC(ring, dst->memory->bo, dst_offset + i, 0, 0);
++            OUT_RELOC(ring, src->memory->bo, src_offset + i, 0, 0);
++         }
++      } else {
++         OUT_PKT7(ring, CP_MEM_WRITE, 2 + bytes / 4);
++         OUT_RELOC(ring, dst->memory->bo, dst_offset, 0, 0);
++         for (unsigned i = 0; i < bytes; i += 4)
++            OUT_RING(ring, type == RD_CMD_FILL ? transfer->value :
++               ((const uint32_t *)transfer->data)[(done + i) / 4]);
++      }
++      OUT_PKT7(ring, CP_WAIT_MEM_WRITES, 0);
++      rd_flush(device, ring);
++      VkResult result = rd_finish_submit(device, submit, ring, profile);
++      if (result != VK_SUCCESS)
++         return result;
++      done += bytes;
++   }
++   return VK_SUCCESS;
++}
++
++static VkResult
++rd_resolve_indirect(struct rd_device *device, struct rd_dispatch *dispatch)
++{
++   struct rd_buffer *buffer = dispatch->indirect;
++   if (!buffer || !buffer->memory ||
++       dispatch->indirect_offset > buffer->vk.size ||
++       sizeof(VkDispatchIndirectCommand) > buffer->vk.size - dispatch->indirect_offset)
++      return VK_ERROR_UNKNOWN;
++   struct fd_bo *bo = buffer->memory->bo;
++   if (fd_bo_cpu_prep(bo, device->pipe, FD_BO_PREP_READ))
++      return VK_ERROR_DEVICE_LOST;
++   const uint8_t *map = fd_bo_map(bo);
++   if (!map)
++      return VK_ERROR_MEMORY_MAP_FAILED;
++   __sync_synchronize();
++   VkDispatchIndirectCommand args;
++   memcpy(&args, map + buffer->offset + dispatch->indirect_offset, sizeof(args));
++   dispatch->grid[0] = args.x;
++   dispatch->grid[1] = args.y;
++   dispatch->grid[2] = args.z;
++   return VK_SUCCESS;
++}
++
++VkResult
++rd_queue_submit(struct vk_queue *queue, struct vk_queue_submit *submit)
++{
++   struct rd_device *device = container_of(queue->base.device, struct rd_device, vk);
++   bool profile = debug_get_bool_option("RADISH_PROFILE", false);
++   __sync_synchronize();
++   VkResult result = vk_sync_wait_many(&device->vk, submit->wait_count,
++      submit->waits, VK_SYNC_WAIT_COMPLETE, UINT64_MAX);
++   if (result != VK_SUCCESS)
++      return result;
++   for (uint32_t i = 0; i < submit->command_buffer_count; i++) {
++      struct rd_command_buffer *command = container_of(submit->command_buffers[i],
++         struct rd_command_buffer, vk);
++      util_dynarray_foreach(&command->commands, struct rd_command, recorded) {
++         int64_t start = profile ? os_time_get_nano() : 0;
++         uint32_t seqno = device->seqno;
++         uint64_t submit_count = device->submit_count;
++         struct rd_submit_profile submit_profile = {0};
++         const struct rd_dispatch *dispatch = &recorded->dispatch;
++         struct rd_dispatch indirect;
++         if (recorded->type == RD_CMD_DISPATCH) {
++            result = VK_SUCCESS;
++            if (dispatch->indirect) {
++               indirect = *dispatch;
++               dispatch = &indirect;
++               result = rd_resolve_indirect(device, &indirect);
++            }
++            if (result == VK_SUCCESS)
++               result = rd_execute_dispatch(device, dispatch,
++                                            profile ? &submit_profile : NULL);
++         } else
++            result = rd_execute_transfer(device, recorded->type, &recorded->transfer,
++                                         profile ? &submit_profile : NULL);
++         if (profile) {
++            int64_t elapsed = os_time_get_nano() - start;
++            uint32_t chunks = device->seqno - seqno;
++            uint64_t submits = device->submit_count - submit_count;
++            if (recorded->type == RD_CMD_DISPATCH) {
++               const struct rd_dispatch *d = dispatch;
++               const struct ir3_shader_variant *v = d->pipeline->variant;
++               fprintf(stderr, "RADISH_PROFILE dispatch pipeline=%p grid=%u,%u,%u local=%u,%u,%u barrier=%u loops=%u instrlen=%u chunks=%u submits=%" PRIu64 " ns=%" PRId64 " submit_ns=%" PRId64 " submit_max_ns=%" PRId64 " result=%d\n",
++                       (void *)d->pipeline, d->grid[0], d->grid[1], d->grid[2],
++                       v->local_size[0], v->local_size[1], v->local_size[2],
++                       (unsigned)v->has_barrier, v->loops, v->instrlen,
++                       chunks, submits, elapsed, submit_profile.total_ns,
++                       submit_profile.max_ns, result);
++            } else {
++               fprintf(stderr, "RADISH_PROFILE transfer type=%u bytes=%" PRIu64 " chunks=%u submits=%" PRIu64 " ns=%" PRId64 " submit_ns=%" PRId64 " submit_max_ns=%" PRId64 " result=%d\n",
++                       (unsigned)recorded->type, (uint64_t)recorded->transfer.size,
++                       chunks, submits, elapsed, submit_profile.total_ns,
++                       submit_profile.max_ns, result);
++            }
++         }
++         if (result != VK_SUCCESS)
++            return vk_queue_set_lost(queue, "Radish dispatch failed or timed out");
++      }
++   }
++   return vk_sync_signal_many(&device->vk, submit->signal_count, submit->signals);
++}
+diff --git c/src/freedreno/radish/rd_transfer.c i/src/freedreno/radish/rd_transfer.c
+new file mode 100644
+index 0000000..99926f9
+--- /dev/null
++++ i/src/freedreno/radish/rd_transfer.c
+@@ -0,0 +1,80 @@
++#include "rd_private.h"
++
++static bool
++rd_transfer_range(struct rd_command_buffer *command, struct rd_buffer *buffer,
++                   VkDeviceSize offset, VkDeviceSize size)
++{
++   if (!buffer || offset > buffer->vk.size || size > buffer->vk.size - offset) {
++      vk_command_buffer_set_error(&command->vk, VK_ERROR_UNKNOWN);
++      return false;
++   }
++   return true;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_CmdCopyBuffer(VkCommandBuffer handle, VkBuffer src_handle, VkBuffer dst_handle,
++                  uint32_t count, const VkBufferCopy *regions)
++{
++   VK_FROM_HANDLE(rd_command_buffer, command, handle);
++   VK_FROM_HANDLE(rd_buffer, src, src_handle);
++   VK_FROM_HANDLE(rd_buffer, dst, dst_handle);
++   for (uint32_t i = 0; i < count; i++) {
++      if (!rd_transfer_range(command, src, regions[i].srcOffset, regions[i].size) ||
++          !rd_transfer_range(command, dst, regions[i].dstOffset, regions[i].size))
++         return;
++      struct rd_command *recorded = rd_command_append(command, RD_CMD_COPY);
++      if (!recorded)
++         return;
++      recorded->transfer = (struct rd_transfer) {
++         .src = src, .dst = dst, .src_offset = regions[i].srcOffset,
++         .dst_offset = regions[i].dstOffset, .size = regions[i].size,
++      };
++   }
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_CmdFillBuffer(VkCommandBuffer handle, VkBuffer dst_handle, VkDeviceSize offset,
++                  VkDeviceSize size, uint32_t value)
++{
++   VK_FROM_HANDLE(rd_command_buffer, command, handle);
++   VK_FROM_HANDLE(rd_buffer, dst, dst_handle);
++   if (size == VK_WHOLE_SIZE && offset <= dst->vk.size)
++      size = (dst->vk.size - offset) & ~3ull;
++   if ((offset & 3) || (size & 3)) {
++      vk_command_buffer_set_error(&command->vk, VK_ERROR_UNKNOWN);
++      return;
++   }
++   if (!rd_transfer_range(command, dst, offset, size))
++      return;
++   struct rd_command *recorded = rd_command_append(command, RD_CMD_FILL);
++   if (recorded)
++      recorded->transfer = (struct rd_transfer) {
++         .dst = dst, .dst_offset = offset, .size = size, .value = value,
++      };
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_CmdUpdateBuffer(VkCommandBuffer handle, VkBuffer dst_handle,
++                    VkDeviceSize offset, VkDeviceSize size, const void *data)
++{
++   VK_FROM_HANDLE(rd_command_buffer, command, handle);
++   VK_FROM_HANDLE(rd_buffer, dst, dst_handle);
++   if (size > 65536 || (offset & 3) || (size & 3) ||
++       !rd_transfer_range(command, dst, offset, size)) {
++      vk_command_buffer_set_error(&command->vk, VK_ERROR_UNKNOWN);
++      return;
++   }
++   struct rd_command *recorded = rd_command_append(command, RD_CMD_UPDATE);
++   if (!recorded)
++      return;
++   void *copy = vk_alloc(&command->vk.pool->alloc, size, 8,
++                         VK_SYSTEM_ALLOCATION_SCOPE_COMMAND);
++   if (!copy) {
++      vk_command_buffer_set_error(&command->vk, VK_ERROR_OUT_OF_HOST_MEMORY);
++      return;
++   }
++   memcpy(copy, data, size);
++   recorded->transfer = (struct rd_transfer) {
++      .dst = dst, .dst_offset = offset, .size = size, .data = copy,
++   };
++}
+diff --git c/src/meson.build i/src/meson.build
+index c4dece9..f9ebd4d 100644
+--- c/src/meson.build
++++ i/src/meson.build
+@@ -92,7 +92,7 @@ endif
+ if with_gallium_etnaviv
+   subdir('etnaviv')
+ endif
+-if with_gallium_freedreno or with_freedreno_vk or with_tools.contains('freedreno')
++if with_gallium_freedreno or with_freedreno_vk or with_radish_vk or with_tools.contains('freedreno')
+   subdir('freedreno')
+ endif
+ if with_imagination_vk or with_tools.contains('imagination') or get_option('html-docs').allowed()

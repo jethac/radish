@@ -19,6 +19,8 @@ static uint32_t *read_spirv(const char *path, size_t *size)
 int main(int argc, char **argv)
 {
     REQUIRE(argc == 4);
+    const int indirect = getenv("RADISH_INDIRECT") != NULL;
+    REQUIRE(!indirect || (!getenv("RADISH_SHARED") && !getenv("RADISH_CHAIN")));
     void *lib = dlopen(argv[1], RTLD_NOW | RTLD_LOCAL);
     if (!lib) { fprintf(stderr, "%s\n", dlerror()); return 1; }
     PFN_vkGetInstanceProcAddr gipa = (PFN_vkGetInstanceProcAddr)dlsym(lib, "vk_icdGetInstanceProcAddr");
@@ -83,6 +85,8 @@ int main(int argc, char **argv)
     DEVICE_FN(CmdBindDescriptorSets);
     DEVICE_FN(CmdPushConstants);
     DEVICE_FN(CmdDispatch);
+    DEVICE_FN(CmdDispatchIndirect);
+    DEVICE_FN(CmdUpdateBuffer);
     DEVICE_FN(CmdFillBuffer);
     DEVICE_FN(CmdPipelineBarrier);
     DEVICE_FN(GetDeviceQueue);
@@ -126,7 +130,7 @@ int main(int argc, char **argv)
     VkBuffer buffers[3];
     VkMemoryRequirements req;
     for (unsigned j=0; j<3; j++) {
-        VkBufferCreateInfo bci = { .sType=VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO, .size=(4099+16)*4, .usage=VK_BUFFER_USAGE_STORAGE_BUFFER_BIT|VK_BUFFER_USAGE_TRANSFER_SRC_BIT|VK_BUFFER_USAGE_TRANSFER_DST_BIT };
+        VkBufferCreateInfo bci = { .sType=VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO, .size=(4099+16)*4, .usage=VK_BUFFER_USAGE_STORAGE_BUFFER_BIT|VK_BUFFER_USAGE_TRANSFER_SRC_BIT|VK_BUFFER_USAGE_TRANSFER_DST_BIT|(indirect?VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT:0) };
         SUCCESS(CreateBuffer(device, &bci, NULL, &buffers[j]));
     }
     GetBufferMemoryRequirements(device, buffers[0], &req);
@@ -179,11 +183,11 @@ int main(int argc, char **argv)
     SUCCESS(CreateFence(device, &fci, NULL, &fence));
     REQUIRE(WaitForFences(device, 1, &fence, VK_TRUE, 0) == VK_TIMEOUT);
     unsigned dispatches=0;
-    const uint32_t sizes[] = {1,31,32,33,127,128,129,4099};
+    const uint32_t sizes[] = {1,31,32,33,127,128,129,4099,0};
     unsigned local_size=getenv("RADISH_SHARED") ? (unsigned)atoi(getenv("RADISH_LOCAL_SIZE")?getenv("RADISH_LOCAL_SIZE"):"64") : 32;
     REQUIRE(local_size==32 || local_size==64 || local_size==128);
     unsigned shader_count=getenv("RADISH_SMOKE") || getenv("RADISH_SHARED") ? 1 : 2;
-    unsigned size_count=getenv("RADISH_SMOKE") ? 1 : 8;
+    unsigned size_count=getenv("RADISH_SMOKE") ? 1 : indirect ? 9 : 8;
     unsigned repeat_count=getenv("RADISH_SMOKE") ? 1 : 2;
     for (unsigned shader=0; shader<shader_count; shader++) {
         size_t code_size;
@@ -216,6 +220,9 @@ int main(int argc, char **argv)
                 b[i]=(float)((int)(i%31)-15)*0.25f;
                 out[i]=0x7fc12345u+repeat;
             }
+            const VkDeviceSize indirect_offset = (4099 + 4) * sizeof(uint32_t);
+            uint32_t groups[] = {(n+local_size-1)/local_size,1,1};
+            if (indirect) memset((uint8_t *)b+indirect_offset,0,sizeof(groups));
             if (!getenv("RADISH_COHERENT")) SUCCESS(FlushMappedMemoryRanges(device, 1, &mr));
             SUCCESS(ResetCommandBuffer(command, 0));
             VkCommandBufferBeginInfo cbi = { .sType=VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO };
@@ -230,7 +237,14 @@ int main(int argc, char **argv)
             CmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_COMPUTE, layout, 0, 1, &selected_set, 0, NULL);
             uint32_t push[]={n,salt};
             CmdPushConstants(command, layout, VK_SHADER_STAGE_COMPUTE_BIT, 0, sizeof(push), push);
-            CmdDispatch(command, (n+local_size-1)/local_size, 1, 1);
+            if (indirect) {
+                if (repeat) {
+                    CmdUpdateBuffer(command,buffers[1],indirect_offset,sizeof(groups),groups);
+                    VkMemoryBarrier dependency={.sType=VK_STRUCTURE_TYPE_MEMORY_BARRIER,.srcAccessMask=VK_ACCESS_TRANSFER_WRITE_BIT,.dstAccessMask=VK_ACCESS_INDIRECT_COMMAND_READ_BIT};
+                    CmdPipelineBarrier(command,VK_PIPELINE_STAGE_TRANSFER_BIT,VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT,0,1,&dependency,0,NULL,0,NULL);
+                }
+                CmdDispatchIndirect(command,buffers[1],indirect_offset);
+            } else CmdDispatch(command, (n+local_size-1)/local_size, 1, 1);
             if (chain_set && shader) {
                 VkMemoryBarrier dependency={.sType=VK_STRUCTURE_TYPE_MEMORY_BARRIER,.srcAccessMask=VK_ACCESS_SHADER_WRITE_BIT,.dstAccessMask=VK_ACCESS_SHADER_READ_BIT|VK_ACCESS_SHADER_WRITE_BIT};
                 CmdPipelineBarrier(command,VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,0,1,&dependency,0,NULL,0,NULL);
@@ -238,6 +252,10 @@ int main(int argc, char **argv)
                 CmdDispatch(command,(n+31)/32,1,1);
             }
             SUCCESS(EndCommandBuffer(command));
+            if (indirect && !repeat) {
+                memcpy((uint8_t *)b+indirect_offset,groups,sizeof(groups));
+                SUCCESS(FlushMappedMemoryRanges(device,1,&mr));
+            }
             SUCCESS(ResetFences(device, 1, &fence));
             VkSubmitInfo submit = { .sType=VK_STRUCTURE_TYPE_SUBMIT_INFO, .commandBufferCount=1, .pCommandBuffers=&command };
             SUCCESS(QueueSubmit(queue, 1, &submit, fence));
@@ -289,6 +307,6 @@ int main(int argc, char **argv)
     if (getenv("RADISH_COMPILE_ONLY"))
         puts("COMPILE ONLY: pipelines created; no GPU dispatch executed");
     else if (dispatches)
-        printf("PASS: %u dispatches, full outputs and guard regions\n",dispatches);
+        printf("PASS: %u %sdispatches, full outputs and guard regions\n",dispatches,indirect?"indirect ":"");
     return 0;
 }

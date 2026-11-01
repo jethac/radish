@@ -37,6 +37,14 @@ copies use a serial CPU fallback; bounded 3D dispatches preserve logical IDs;
 recovered GPU faults now return DEVICE_LOST. Internal dispatch bases do not
 implement the missing public `vkCmdDispatchBase` command.
 
+Cumulative 0032 supersedes the initial missing core indirect-dispatch finding.
+Arguments are read at queue execution through a synchronized CPU mapping and
+then passed to the bounded direct executor. All 36 selected indirect checks pass,
+including late host writes, transfer-produced arguments, offsets and zero grids;
+16 direct-grid regression cases also pass. Shader-produced arguments, 3D indirect
+and command-buffer replay remain untested. This closes the absent entrypoint
+path for the tested cases; it is not a conformance result.
+
 ncnn's 32-thread reduction adaptation, FP32 convolution/projection cases and
 the complete Kokoro neural core pass output comparisons. The latest explicit
 AffineSnake/deconvolution graph executes all 715 non-Input layers through Vulkan,

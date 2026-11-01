@@ -32,25 +32,30 @@ and both live appliance services remained active.
 
 | Measurement | GPU path | Packed six-thread CPU |
 | --- | ---: | ---: |
-| Fixed full-size core, warm extraction | **42.470 s** | **32.079 s** |
+| Fixed full-size core, warm extraction | **40.724 s** | **32.079 s** |
 | Fresh full-length synthesis, including startup | **63.130 s** | **39.790 s** |
 
-GPU inference remains slower than CPU. Warm core time improves from the preceding
-43.124 s, but full synthesis regresses from 59.185 s as CPU frontend startup
-rises from 5.935 s to 10.327 s. Fresh short synthesis improves from 32.105 s to
+GPU inference remains slower than CPU. Enabling the existing normalization
+optimization reduces warm core time from 42.470 s to 40.724 s, with identical
+output bytes. Fresh synthesis has only been measured with that optimization
+disabled: full synthesis regresses from 59.185 s as CPU frontend startup rises
+from 5.935 s to 10.327 s. Fresh short synthesis improves from 32.105 s to
 **30.157 s**, with a **15.874 s** GPU core. These are single warm/startup
 observations; the CPU warm mean has two samples and uses the earlier
 InstanceNorm graph. All eight full-length boundary inputs match the preceding
 GPU and CPU captures.
 
-The fixed core peaks at **402.1 MiB with zero swap**. Fresh full synthesis peaks
+The latest fixed core peaks at **385.1 MiB with 71.7 MiB swap**; the preceding
+42.470 s sample used 402.1 MiB with zero swap. Fresh full synthesis peaks
 at **459.3 MiB with 38.1 MiB swap**; short synthesis uses **385.0 MiB with zero
 swap**. Memory pressure varies. Resident warm synthesis and sustained thermal
 behavior remain unmeasured.
 
 Select the measured graph with `--affine-snake-deconv2d`,
-`RADISH_NCNN_PLANAR=1` and `RADISH_BATCH_CHUNKS=8`; keep norm fusion off and
-one X workgroup. The exact graph preserves every model weight and expresses
+`RADISH_NCNN_PLANAR=1` and `RADISH_BATCH_CHUNKS=8`, with one X workgroup.
+The 40.724 s fixed-core result additionally enables `RADISH_NCNN_NORM_SUM4=1`;
+the published fresh synthesis results use `RADISH_NCNN_NORM_SUM4=0`. The exact
+graph preserves every model weight and expresses
 three 1D deconvolutions as stock height-one 2D Vulkan operators with reshapes.
 The preparation/validation tools require completed full CPU reference evidence.
 Existing graph defaults remain unchanged. See
@@ -59,15 +64,19 @@ Existing graph defaults remain unchanged. See
 Earlier normalization, activation, layout and submission changes brought warm
 GPU time down from 101.275 s. The latest reduction-loop unrolling candidate is
 correct but 7–9% slower in paired operator measurements and remains excluded.
-Optional X pairing and norm fusion have no established overall performance win.
+Optional X pairing has no established overall performance win. The normalization
+optimization has one improved fixed-core sample; fresh and sustained behavior
+with the combined graph remain unmeasured.
 Mixed FP16 storage still fails full-model accuracy gates, so FP32 remains the
 validated path. Detailed results and failed experiments are in
 [NOTES.md](radish/NOTES.md).
 
 This is an experimental compute-only ICD. It provides no graphics or presentation
-and has no Vulkan 1.0 or 1.1 conformance claim. Indirect dispatch, additional
-resource types, secondary command buffers, events and subgroup support remain
-among the API gaps. CTS is built but has not run on the device. See
+and has no Vulkan 1.0 or 1.1 conformance claim. Core indirect dispatch now reads
+arguments at execution time and passes 36 device checks, including host changes
+after recording and arguments written by a GPU transfer. Additional resource
+types, public dispatch bases, secondary command buffers, events and subgroup
+support remain among the API gaps. CTS is built but has not run on the device. See
 [VULKAN_AUDIT.md](radish/VULKAN_AUDIT.md).
 
 ## Repository contents
@@ -95,7 +104,7 @@ kept outside the repository.
 
 1. Check out Mesa at `ddabdd0e36bd2f5e0c8e6bd21c3d1da7e34c1230` in a
    separate worktree. Apply
-   `radish/patches/0031-radish-planar-index-batching-cumulative.patch` to that base.
+   `radish/patches/0032-radish-indirect-dispatch-cumulative.patch` to that base.
    Earlier cumulative Mesa patches are historical alternatives, not a series.
 2. Set `RADISH_WORK` to the scratch/build directory, `RADISH_MESA` to the Mesa
    checkout, `RADISH_SYSROOT` to the aarch64 sysroot and `RADISH_VENV` to the

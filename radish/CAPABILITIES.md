@@ -22,7 +22,7 @@ scope; untested limits remain unproven.
 | Push constants | ncnn `src/command.cpp` | Required; audit constant-register budget and ir3 ABI |
 | Shared workgroup memory/barriers | `shared-cap-lastword-green.log`, `shared-reject-green.log` | 16 KiB driver cap; tree barriers/last word tested at 128 invocations; >16 KiB addressing fault unresolved; no general memory-model claim |
 | Host-visible buffers | Default Freedreno WC BO mappings; `coherent-green.log` | Host coherent; 32 dispatches verified without flush/invalidate; broader memory-model coverage pending |
-| Direct and indirect dispatch | `fd5_compute.c` | Direct first; indirect before backends that require it |
+| Direct and indirect dispatch | Cumulative 0032; `compute-indirect-0032-first.log`, `grid-direct-indirect-0032-first.log` | Direct bounded 3D grids pass; execution-time indirect argument reads pass 36 checks including late host writes, GPU transfer writes, offsets and zero grid. Synchronous CPU argument read; shader-written arguments, 3D indirect and replay untested. No public DispatchBase |
 | Dispatch subdivision / builtins | `grid-base{,-shared}-green.log`, `dispatch-chunk-green.log` | Logical IDs/counts preserved across bounded hardware chunks; internal base ABI only, no DispatchBase advertisement |
 | Bounded submission batching | Patch 0009, `core-shapes-batch4.log` | Opt-in 1..4 short, loop-free, non-barrier chunks per submit; grid/shared/dependency/full-core checks pass; default 1 |
 | Sequential tiled batching | Cumulative 0022; `operators-tiled-submit-0022-d*-batch*.log`, `core-instancenorm-tiled-submit-0022-repeat2.log` | Historical 2/4 sequential single-group local128 tiled chunks per submit; existing waits/flushes retained, narrow resource gate, driver default 1; full core byte-identical at 56.013717 s warm, 428.5 MiB/zero swap/no faults; fresh T78 core/waveform pass; runtime wrapper selected 4 at that checkpoint |
@@ -76,3 +76,7 @@ download (`ncnn-relu-default32.log`). The fixed real-model core and saved-source
 waveform now pass; general API compatibility, packed-FP16 model accuracy, native
 FP16 features, live waveform integration and an end-to-end performance win remain
 unproven.
+
+Latest combined graph with optional norm sum4 passes identical full core bytes at
+40.723725 s warm, 385.1 MiB / 71.7 MiB swap. This single fixed-core result uses
+driver 0031; fresh norm-enabled combined synthesis remains unmeasured.

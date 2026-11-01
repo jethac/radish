@@ -37,6 +37,7 @@ limits and validation scope. Published checkpoints remain experimental; publicat
 | `0029-radish-short-batch8-cumulative.patch` | Same Mesa base as0001; alternative to0027 | Adds generic batch8 under unchanged short/no-loop/no-barrier gate and profile-only submit sum/max timers; geometry/synchronization/defaults unchanged. Build/reconstruction/grid/paired full core pass, warm47.413913→45.339510 s, identical outputs/no faults; submits26292→15398. Fresh T78/T213 references pass32.622528/61.429138 s,0/16.7 MiB swap; T78 total regresses. Opt-in recommendation/norm0/X1, defaults unchanged |
 | `0030-ncnn-planar-positive-indices.patch` | After0026 in ordered Conv1D stack | Six equivalent positive-domain integer substitutions, float/layout/barriers unchanged. Builds/focused d1,d3,d5 references pass; all20 programs/53 layers compile16 full/0 half/no private,16 KiB/four loops, lengths27/28. Full fixed core passes identical outputs, warm44.956105 s/current30.6 MiB swap; modest single-pair improvement |
 | `0031-radish-planar-index-batching-cumulative.patch` | Same Mesa base as0001; alternative to0029 | Adds only27/28 to existing tiled batch length guard; all resource/packet/fence/fault/default controls preserved, X2 still31. Build/all14 reconstruction and focused batch8 pass; full fixed core passes identical bytes, warm44.956105 s/current30.6 MiB swap |
+| `0032-radish-indirect-dispatch-cumulative.patch` | Same Mesa base as 0001; alternative to 0031 | Core indirect dispatch reads arguments at execution time, then uses the bounded direct executor. Build/reconstruction, 36 indirect checks and 16 direct-grid checks pass; public DispatchBase and conformance remain pending |
 
 To reconstruct the accepted driver checkpoint, make a separate checkout/worktree at the
 Mesa base, read its `AGENTS.md`, and apply 0023 with `git apply` instead of
@@ -490,6 +491,15 @@ faster core; CPU remains faster. See `RUNTIME_INTEGRATION.md` and `NOTES.md` for
 preparation, exact source pins, tolerances and memory/swap evidence. Defaults
 remain unchanged.
 
+Cumulative 0032 adds core indirect dispatch with synchronized execution-time CPU
+argument reads. The direct executor, chunk limits, synchronization and batching
+defaults remain unchanged. The 36 indirect checks cover late host writes and GPU
+transfer-produced arguments, offsets and zero grids; 16 direct-grid regressions
+also pass. No fault occurred. Public DispatchBase, shader-produced indirect
+arguments, 3D indirect and replay remain outside this evidence. See NOTES for
+exact source/binary pins. Apply 0032 to the pinned Mesa base instead of earlier
+cumulative patches, not after them.
+
 SHA-256:
 
 ```
@@ -524,4 +534,5 @@ adc9ae8506e91abbacea3674a416b1e907672fecf60eb7c62dbe7c319367f6a1  0027-radish-ti
 4d46236f83dfd943080241d05822479aaae6b2fa70e5fa8584b9a557f509995c  0029-radish-short-batch8-cumulative.patch
 d706738bce01ab6fc5d2dc45776c843c3fa18e7c40157c4d9fe1627b94c4c65f  0030-ncnn-planar-positive-indices.patch
 24090b6d37daf2533f6f5557e1c634cbd362603721d3fdf4b6852587b918be96  0031-radish-planar-index-batching-cumulative.patch
+923c05c1fc31b6d690e5d93af4c1d3ced3cb48262004ace3ff8ab8d4ff347eef  0032-radish-indirect-dispatch-cumulative.patch
 ```

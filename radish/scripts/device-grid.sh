@@ -22,6 +22,10 @@ if [[ $MODE == *compile* ]]; then
 fi
 [[ $BATCH == 1 ]] || TAG+=-batch$BATCH
 [[ $SHARED_GROUPS == 1 ]] || TAG+=-shared-groups$SHARED_GROUPS
+if [[ -n ${RADISH_GRID_RUN:-} ]]; then
+    [[ $RADISH_GRID_RUN =~ ^[A-Za-z0-9_-]+$ ]] || exit 2
+    TAG+=-$RADISH_GRID_RUN
+fi
 ENV_ARGS+=" --setenv=RADISH_BATCH_CHUNKS=$BATCH --setenv=RADISH_SHARED_GROUPS=$SHARED_GROUPS --setenv=RADISH_PROFILE=1"
 exec 9>"${RADISH_DEVICE_LOCK:-$TOP/.device.lock}"
 flock -w 1800 9

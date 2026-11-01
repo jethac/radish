@@ -785,6 +785,18 @@ reports stay outside the public repository.
 - [ ] Beat CPU end-to-end latency; establish resident and sustained behavior.
 
 The K2 planar loop experiment is correct but7–9% slower in the three paired
-operator samples and remains outside the canonical shader. DispatchIndirect
-and public DispatchBase source analysis has begun; no implementation is accepted
-and Vulkan conformance status remains unchanged.
+operator samples and remains outside the canonical shader. Vulkan conformance
+status remains unchanged.
+
+## Core indirect dispatch 0032
+
+- [x] Record the argument buffer/offset and resolve values at queue execution.
+- [x] Reuse bounded direct execution without modifying recorded dispatch state.
+- [x] Build and reconstruct the cumulative patch; pass 36 indirect checks and
+  16 direct-grid regression cases, no faults and both live services active.
+- [ ] Cover shader-produced arguments, 3D indirect grids and command-buffer reuse.
+- [ ] Implement public DispatchBase and remaining required compute API semantics.
+
+The existing norm-sum4 option on the combined graph passes identical core bytes
+at 40.723725 s warm (385.1 MiB / 71.7 MiB swap). Fresh combined norm-enabled
+synthesis and resident/sustained performance remain pending.

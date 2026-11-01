@@ -11,6 +11,7 @@ SMOKE=0
 COMPILE_ONLY=0
 COHERENT=0
 CHAIN=0
+INDIRECT=0
 SHARED=0
 SHARED_SMALL=0
 SHARED_VARIANT=
@@ -23,6 +24,7 @@ if [[ ${1:-} == --compile-only ]]; then COMPILE_ONLY=1; fi
 if [[ ${1:-} == --write-span ]]; then SPAN_MODE=WRITE; fi
 if [[ ${1:-} == --copy-span ]]; then SPAN_MODE=COPY; fi
 if [[ ${1:-} == --chain ]]; then CHAIN=1; fi
+if [[ ${1:-} == --indirect ]]; then INDIRECT=1; fi
 if [[ ${1:-} == --coherent ]]; then COHERENT=1; fi
 if [[ ${1:-} == --shared ]]; then SHARED=1; fi
 if [[ ${1:-} == --shared-compile ]]; then SHARED=1; COMPILE_ONLY=1; fi
@@ -45,6 +47,7 @@ if (( SMOKE )); then TAG=compute-smoke; fi
 if (( COMPILE_ONLY )); then TAG=compile; fi
 if [[ -n $SPAN_MODE ]]; then TAG=span-$SPAN_MODE; fi
 if (( CHAIN )); then TAG=compute-chain; fi
+if (( INDIRECT )); then TAG=compute-indirect; fi
 if (( COHERENT )); then TAG=compute-coherent; fi
 if (( SHARED )); then TAG=compute-shared-${RADISH_LOCAL_SIZE:-64}; fi
 if (( SHARED_SMALL )); then TAG=compute-shared-small-${RADISH_LOCAL_SIZE:-64}; fi
@@ -53,6 +56,10 @@ if (( SHARED_REJECT )); then TAG=compute-shared-reject; fi
 if [[ -n $MIX_SHADER ]]; then TAG=compute${1#-}; fi
 [[ $BATCH == 1 ]] || TAG+=-batch$BATCH
 [[ $SHARED_GROUPS == 1 ]] || TAG+=-shared-groups$SHARED_GROUPS
+if [[ -n ${RADISH_COMPUTE_RUN:-} ]]; then
+    [[ $RADISH_COMPUTE_RUN =~ ^[A-Za-z0-9_-]+$ ]] || exit 2
+    TAG+=-$RADISH_COMPUTE_RUN
+fi
 "${ADB[@]}" shell 'systemctl is-active straylight-listen straylight-voice'
 "${ADB[@]}" shell dmesg > "$WORK/evidence/$TAG-dmesg-before.txt"
 finish() {
@@ -85,6 +92,7 @@ if (( SMOKE )); then ENV_ARG='--setenv=RADISH_SMOKE=1'; fi
 if (( COMPILE_ONLY )); then ENV_ARG='--setenv=RADISH_COMPILE_ONLY=1 --setenv=IR3_SHADER_DEBUG=disasm'; fi
 if [[ -n $SPAN_MODE ]]; then ENV_ARG="--setenv=RADISH_SPAN=1 --setenv=RADISH_${SPAN_MODE}_SPAN=1"; fi
 if (( CHAIN )); then ENV_ARG="--setenv=RADISH_CHAIN=1"; fi
+if (( INDIRECT )); then ENV_ARG="--setenv=RADISH_INDIRECT=1"; fi
 if (( COHERENT )); then ENV_ARG="--setenv=RADISH_COHERENT=1"; fi
 if (( SHARED )); then ENV_ARG="--setenv=RADISH_SHARED=1 --setenv=RADISH_LOCAL_SIZE=${RADISH_LOCAL_SIZE:-64}"; fi
 if (( SHARED && COMPILE_ONLY )); then ENV_ARG+=" --setenv=RADISH_COMPILE_ONLY=1 --setenv=IR3_SHADER_DEBUG=disasm"; fi
@@ -92,4 +100,4 @@ if (( SHARED_REJECT )); then ENV_ARG+=" --setenv=RADISH_EXPECT_SHARED_REJECT=1";
 if [[ -n $MIX_SHADER ]]; then ENV_ARG+=" --setenv=RADISH_MIX_ROUNDS=$MIX_ROUNDS"; fi
 if (( SMOKE )); then ENV_ARG+=" --setenv=RADISH_SMOKE=1"; fi
 ENV_ARG+=" --setenv=RADISH_BATCH_CHUNKS=$BATCH --setenv=RADISH_SHARED_GROUPS=$SHARED_GROUPS --setenv=RADISH_PROFILE=1"
-"${ADB[@]}" shell "systemd-run --quiet --wait --pipe --collect -p MemoryMax=384M -p RuntimeMaxSec=45 $ENV_ARG /var/tmp/radish/compute /var/tmp/radish/libvulkan_radish.so /var/tmp/radish/index.spv /var/tmp/radish/vector-add.spv" 2>&1 | tee "$WORK/evidence/$TAG.txt"
+"${ADB[@]}" shell "systemd-run --quiet --wait --pipe --collect -p MemoryMax=384M -p RuntimeMaxSec=45 -p LimitCORE=0 $ENV_ARG /var/tmp/radish/compute /var/tmp/radish/libvulkan_radish.so /var/tmp/radish/index.spv /var/tmp/radish/vector-add.spv" 2>&1 | tee "$WORK/evidence/$TAG.txt"

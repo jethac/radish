@@ -3,13 +3,20 @@
 ## 2026-11-01
 
 Latest fixed-core path: explicit AffineSnake with height-one deconvolutions,
-positive planar indices 0030/0031, generic/tiled batch 8, norm 0 and X1. All
-715 non-Input layers execute through Vulkan, with zero CPU fallbacks. The fixed
-core passes at 42.469886 s warm, 402.1 MiB peak and zero swap. Fresh T213 also
-passes all core/waveform gates: 42.943278 s core, 63.130064 s total, 459.3 MiB
-peak plus 38.1 MiB swap. Its slower frontend startup makes total synthesis worse
-than the preceding 59.184846 s sample. CPU remains faster. Fresh T78 passes at 30.156883 s total / 15.873927 s core, 385.0 MiB and zero
-swap. Historical evidence follows.
+positive planar indices 0030/0031, generic/tiled batch 8, norm sum4 enabled and
+X1. All 715 non-Input layers execute through Vulkan, with zero CPU fallbacks.
+The fixed core passes at 40.723725 s warm, 385.1 MiB peak and 71.7 MiB swap,
+with identical output bytes to the preceding norm-disabled 42.469886 s run.
+Fresh synthesis with norm sum4 enabled has not been measured. With it disabled,
+T213 passes at 42.943278 s core / 63.130064 s total, 459.3 MiB peak plus 38.1 MiB
+swap; slower frontend startup regresses from the preceding 59.184846 s total.
+T78 passes at 30.156883 s total / 15.873927 s core, 385.0 MiB and zero swap.
+CPU remains faster. These are single warm/startup observations.
+
+Driver checkpoint 0032 adds execution-time core indirect dispatch. All 36
+indirect and 16 direct-grid checks pass on A506 without new faults; both live
+services remain active. The performance results above used driver 0031.
+Historical evidence follows.
 
 Overall goal active. M0–M2 bring-up is demonstrated; selected M3 paths now pass,
 including 16 KiB shared reductions, transfers, dependent compute and bounded
@@ -2391,3 +2398,68 @@ Evidence under WORK: `runtime-single-{full,short}-affine-deconv2d-0031-first.log
 matching `runtime-single-{full,short}-affine-deconv2d-0031-validation.json`, and
 `runtime-affine-deconv2d-0031-summary.json`. Captures are
 `kokoro-runtime-{full,short}-single-vulkan-affine-deconv2d-0031-first-affine-snake-deconv2d-planar/`.
+
+### Rejected private K2 inner-loop unroll
+
+The factor-two inner-K candidate is not integrated. All20 compiled variants
+fit16full/0half,16KiB shared,local128,4loops and native length31 (through END,
+not trailing padding); existing batching covers them. Focused padded K11/C128
+runs for dilation1/3/5 pass all27,264 output pairs bit-identically, unchanged
+2e-5 reference gates and input preservation, with no faults/zero swap. Math
+command wall nevertheless rises7.744450→8.275129 ms,7.772575→8.337265 ms and
+7.847836→8.554088 ms (+6.85%,+7.27%,+9.00%). All have the same8 chunks/1 submit
+under batch8/X1. These are three single bounded A/B observations, not pure GPU
+timestamps. K2 adds17 wholeprogram MOV sites and increases native length27/28→31;
+static instruction/stall counts do not isolate the cause. Keep the accepted
+single-K kernel; no full-model K2 run. Exact attribution and frozen log hashes:
+`planar-k2-operator-q5tg7bik/EXECUTION-REJECTION.md` and `execution-rejection.json`;
+logs `k2-operator-execute-d{1,3,5}-first.log`.
+
+
+## Combined graph with norm sum4; core indirect dispatch 0032
+
+The existing opt-in 0028 normalization path on AffineSnake/deconv reduces fixed
+warm extraction from 42.469886 s to 40.723725 s (4.11% in this single pair).
+First extraction is 41.036178 s and cold load 9.683 s; peak memory 385.1 MiB,
+swap 71.7 MiB. Both 562342-value extractions pass unchanged reference gates,
+all 715 non-Input layers execute on Vulkan, and output SHA-256 remains
+`d11801ba74bedbf4772b446b2d703bbfdf1d4f901a7fb7f730ed3a75f997240f`.
+No new GPU fault occurred and both live services remained active. Warm core
+remains 8.644681 s (26.95%) slower than the 32.079044 s CPU mean. This result
+uses driver 0031 and `RADISH_NCNN_NORM_SUM4=1`; the preceding fresh synthesis
+measurements use norm 0. No fresh norm-1 or sustained result is claimed.
+Evidence: `core-affine-deconv2d-norm-0031-repeat2.log` and
+`affine-deconv2d-norm-fixed-validation.json` under WORK.
+
+Cumulative Mesa patch 0032 implements `vkCmdDispatchIndirect`. Recording retains
+pipeline, push constants, descriptors, argument buffer and offset. Queue execution
+waits for preceding work and reads the three argument words from the buffer;
+it does not capture argument values while recording. A local dispatch copy keeps
+recorded state unchanged. The existing bounded direct executor handles the resolved
+grid, preserving chunk limits, waits, cache operations and fault reporting.
+The argument read is synchronous on the CPU; no native GPU-indirect packet or
+performance improvement is claimed. Public `vkCmdDispatchBase` remains absent,
+and API advertisement, optional features and conformance status are unchanged.
+
+Build and all 14-file reconstruction checks pass. Patch SHA-256:
+`923c05c1fc31b6d690e5d93af4c1d3ced3cb48262004ace3ff8ab8d4ff347eef`.
+ICD SHA-256:
+`c8fee96723942fca768a9026987a5d609071d2c60079058064377635155cb44c`.
+The base remains `ddabdd0e36bd2f5e0c8e6bd21c3d1da7e34c1230`.
+Frozen source comparison, reconstruction and binaries are under
+`indirect-dispatch-0032/`; build log is `build-indirect-0032.log`.
+
+`RADISH_BATCH_CHUNKS=8 radish/scripts/device-compute.sh --indirect` passes
+36 dispatches across index/vector-add, boundary sizes and a zero grid. One
+iteration writes arguments on the host after command recording; the other uses
+`vkCmdUpdateBuffer` and a transfer-to-indirect barrier. A nonzero buffer binding
+offset and nonzero argument offset are exercised. Full outputs and guard regions
+pass. Shader-written arguments, 3D indirect grids and command-buffer replay have
+not been tested. The 16-case direct-grid regression passes all builtins, partial
+bounds, zero dimensions and guards. Both runs report no new GPU faults and both
+live services active. Logs: `compute-indirect-0032-first.log` and
+`grid-direct-indirect-0032-first.log`. Optional `RADISH_COMPUTE_RUN` and
+`RADISH_GRID_RUN` labels preserve separate evidence for later invocations.
+The private device ICD `/var/tmp/radish/libvulkan_radish.so` now contains 0032;
+immutable 0031 performance captures remain unchanged. No system Mesa or service
+configuration changed, and no device CTS case ran.
