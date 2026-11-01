@@ -31,9 +31,11 @@ now passes every reference gate with identical GPU input boundaries: resident
 short/full synthesis is 15.411271/36.802922 s, faster than GPU 20.089174/46.984077 s.
 CPU peak is 404.8 MiB with zero swap and 715 CPU / zero GPU core layers per request.
 These are single resident observations with different session sequences; the
-full GPU result uses driver 0031. Sustained behavior and tablet cancellation remain
-pending. Public staging supports two to four complete requests and preserves
-per-request reference validation.
+full GPU result uses driver 0031. A tablet phase-boundary cancellation probe now
+preserves the completed request and discards the active request after its GPU
+core drains; marker-return to process exit is 15.793739 s. Prompt interruption,
+a new request after cancellation and sustained behavior remain unproven. Public
+staging supports two to four complete requests and per-request validation.
 
 Historical evidence follows.
 
@@ -2550,7 +2552,8 @@ complete/cancelled/failed status, counts, cache decisions, timings and phase mem
 Optional `--cancel-file /absolute/path` is polled between completed phases. It
 suppresses unpublished output and drains work before cleanup; it cannot promptly
 interrupt an active GPU extraction. Host preexisting/mid-core cancellation and
-subsequent one-shot repeat2 checks pass. Tablet cancellation remains unmeasured.
+subsequent one-shot repeat2 checks pass. The later tablet phase-boundary probe is
+recorded below; this initial evidence was host-only.
 
 Canonical integration and build pass (`build-runtime-resident-first.log`) and
 reproduce the tested binary exactly:
@@ -2627,8 +2630,8 @@ ordered trace rows match that prior session. Fresh/resident synthesis is
 29.521695246/20.089174476 s, core 15.717958607/15.750590681 s and
 load 9.475816580/0 s. The 9.432520770 s reduction mainly avoids loading the Net;
 the extraction itself is slightly slower. One warm observation is not sustained
-performance or an equivalent resident CPU comparison. Tablet cancellation and
-live application integration remain untested.
+performance or an equivalent resident CPU comparison. Later CPU and tablet
+cancellation evidence follows below; live application integration remains untested.
 
 `session.json` records 49.928546931 s including final cleanup 0.254041777 s;
 the service reports 50.038 s, 432.1 MiB peak, zero swap, no new GPU faults and
@@ -2702,8 +2705,8 @@ boundary bytes match; CPU uses six inference threads and GPU four host threads.
 CPU ran short/short/full/full, short GPU ran short/short with driver 0032, and
 full GPU ran short/full/full with driver 0031. There is one resident observation
 per length/backend with different session histories and memory pressure, not
-controlled sustained evidence. Tablet cancellation and live application work
-remain open.
+controlled sustained evidence. The later tablet cancellation probe follows below;
+live application work remains open.
 
 Session 108.114303525 s including final cleanup 0.002831208 s; service 112.503 s
 wall / 430.462 s CPU time, 404.8 MiB peak and zero swap. No new GPU fault occurred
@@ -2713,3 +2716,37 @@ Evidence: `resident-cpu-0032-validation-ch3gouod/{REPORT.md,summary.json}`,
 `resident-cpu-0032-request-{000,001,002,003}-validation.json`, and
 `runtime-resident-cpu-0032-first.log`. Capture:
 `kokoro-runtime-short-single-cpu-packed-resident-cpu-0032-first-affine-snake-deconv2d-planar-norm-sum4-loop/`.
+
+## Tablet phase-boundary cancellation
+
+A private guarded probe reuses the frozen public 0032 driver/runtime assets
+(ICD c8fee967...55cb44c, runtime 0541e68c...70bda9) and requests two T78 syntheses.
+After request 0 publishes, the harness observes request 1 at `after_core_load`
+with at least one completed GPU dispatch in its profile, then creates the regular
+`--cancel-file` marker. The active core finishes before the runtime observes
+cancellation at `after_core`. Exit code 2 and terminal `status=cancelled` record
+one completed of two requested inputs, active index 1, with no request 1 directory
+or temporary active output. No completed-session marker or v1 device provenance
+was fabricated for this cancelled diagnostic run.
+
+Request 0's eight raw boundary files, core and waveform are byte-identical to the
+independently validated public short capture. The remote output inventory/hashes
+match the pulled files; all reused asset and installed ORT hashes match before
+and after. This preserves the earlier complete-output accuracy evidence by byte
+identity; it does not claim a newly generated original-ORT reference run.
+
+Host-observed marker-call return to process exit is 15.793738505 s, including
+host polling/transport effects; final core cleanup is 0.263654331 s. This is
+phase-boundary cancellation, not prompt interruption of an active GPU extraction
+or an upper response-time bound. Session 51.683906729 s, service 51.789 s,
+485.7 MiB peak /zero swap, no new faults, both live services active. The probe
+uses 640 MiB / 128 MiB swap / 120 s runtime and 15 s stop timeout. No new tablet
+request was executed after cancellation; recovery/restart and broader phase
+coverage remain open.
+
+Evidence under WORK: `resident-cancel-0032-private/{run.py,launch.json,marker-observed-session.json,marker.json,run.log,validation.json,output/}`,
+its before/after asset and remote-output hash records, and
+`resident-cancel-0032-first.log`. Independent read-only rechecks of terminal
+state, retained bytes, asset/output hashes and fault log pass:
+`resident-cancel-independent-kw7685ve/audit.json`. The public staging wrapper
+still accepts completed sessions only and does not expose `--cancel-file`.

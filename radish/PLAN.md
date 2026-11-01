@@ -355,8 +355,10 @@ required.
   frontend boundary files match the GPU run byte-for-byte.
 - [x] Measure bounded complete-request reuse and shape reload; see the later
   resident task for private/public staging evidence and remaining limits.
-- [ ] Measure tablet cancellation and sustained behavior; bounded sessions do
-  not establish a sustained runtime win.
+- [x] Measure one tablet cancellation during active core work; later phase-boundary
+  evidence preserves the completed request and discards the active request.
+- [ ] Extend cancellation/restart coverage and sustained behavior; bounded
+  sessions do not establish a sustained runtime win.
 - [x] Audit and measure pack4 reshape aliases. Bidirectional aliases preserve
   output but regress to109.107981s due20 large transfer clones; reject them.
   Restrict to output rank3→rank2 aliases: 67.138187/66.919494s first/warm,
@@ -763,7 +765,8 @@ reports stay outside the public repository.
   original graph/defaults and unchanged accuracy thresholds.
 - [x] Establish bounded resident reuse on the later combined graph; see the
   resident task below. Existing live services remain unchanged.
-- [ ] Measure tablet cancellation and sustained performance.
+- [x] Measure bounded tablet phase-boundary cancellation; see the resident task.
+- [ ] Extend cancellation/restart coverage and sustained performance.
 
 ## Private three-deconvolution functionality trial
 
@@ -834,5 +837,11 @@ performance remains unmeasured.
   GPU 20.089174/46.984077 s; 404.8 MiB/zero swap, no faults/services active. Different
   sequences and full GPU 0031 limit causal comparisons; one resident observation each.
   Evidence: `resident-cpu-0032-validation-ch3gouod/summary.json`.
-- [ ] Measure tablet cancellation and controlled repeated/sustained behavior.
+- [x] Validate tablet cancellation during the second active GPU core: exit 2,
+  cancelled at after_core, one completed request byte-identical to its validated
+  capture, no active output. Host marker-return→exit 15.793739 s; cleanup 0.263654 s,
+  485.7 MiB/zero swap, no faults/services active. Evidence:
+  `resident-cancel-0032-private/validation.json`; independent audit in NOTES.
+- [ ] Test a new tablet request after cancellation and broader phase coverage;
+  establish controlled repeated/sustained behavior and response-time limits.
 - [ ] Beat CPU latency and integrate with the live application.

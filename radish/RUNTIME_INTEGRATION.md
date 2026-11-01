@@ -457,9 +457,9 @@ The full T213 startup table above predates the output-alias optimization.
   conditions, and measure sustained throughput. The initial same-graph CPU
   baseline passes and remains faster. Frontend/source are regenerated per request;
   no concurrent frontend/GPU execution is implemented.
-- Measure tablet cancellation and cleanup before application wiring. Host
-  phase-boundary cancellation passes, but does not establish tablet behavior or
-  prompt interruption during an active GPU extraction.
+- Extend tablet cancellation coverage and run a new request after cancellation
+  before application wiring. Cancellation after an active core now passes;
+  prompt interruption during extraction and other phase/recovery cases remain open.
 - Integrate the existing token/style/duration interfaces into the live application
   only after these private-runtime checks. Models, weights and generated captures
   remain outside the public repository.
@@ -928,7 +928,7 @@ phase memory samples and final teardown. Require terminal complete and exact
 requested/completed counts before accepting a successful session. The optional
 regular cancel marker suppresses uncommitted output, preserves completed requests
 and exits2 after draining the active phase. It is not prompt mid-GPU cancellation;
-only host cancellation has been tested so far.
+host checks and the later tablet probe below demonstrate this boundary behavior.
 
 The same binary passes five full tablet reference comparisons across T78/T213:
 short cold/resident 29.764615/20.055962 s; full after shape reload/resident
@@ -985,7 +985,7 @@ Peak memory 432.1 MiB, zero swap, no faults, both services active. The session
 manifest records 49.928546931 s including final cleanup 0.254041777 s; service wall
 time 50.038 s. The 9.432521 s saving primarily avoids core loading; it is not a
 compute-speedup or sustained-performance claim. The later CPU comparison follows
-below; tablet cancellation remains unmeasured.
+below; the later tablet cancellation probe also follows.
 
 The canonical build matches the measured runtime SHA
 `0541e68cbb9e2f04862ff6cf36c73a70036118ec2f6d415716bf658b0270bda9`.
@@ -1031,8 +1031,35 @@ CPU remains faster in these observations. Graph, binary, ORT4 and exact boundari
 match; CPU uses six inference threads and GPU four host threads. Short GPU uses current
 driver 0032; full GPU is the earlier driver 0031 short/full/full session. There is
 one resident sample per length/backend, with differing sequence and memory
-pressure; sustained throughput and tablet cancellation are still open.
+pressure; sustained throughput remains open. The bounded tablet cancellation
+result below does not establish prompt interruption or restart after cancellation.
 
 Evidence under WORK: `resident-cpu-0032-validation-ch3gouod/{REPORT.md,summary.json}`,
 `resident-cpu-0032-request-{000,001,002,003}-validation.json`, and capture
 `kokoro-runtime-short-single-cpu-packed-resident-cpu-0032-first-affine-snake-deconv2d-planar-norm-sum4-loop/`.
+
+### Tablet cancellation at a completed phase boundary
+
+A private probe using frozen runtime 0541e68c...70bda9 and driver 0032 observes
+actual GPU progress in the second T78 core, then creates the binary's regular
+`--cancel-file` marker. The core drains; the runtime observes cancellation at
+`after_core` and exits 2. The terminal session is cancelled with one completed of
+two requests. Request 0 remains byte-identical across all eight boundary files,
+core and waveform to its validated public capture; request 1 and its temporary
+output are absent. Reused assets/ORT and pulled output hashes pass before/after
+checks. This diagnostic preserves existing accuracy evidence by identity; it
+does not fabricate a complete-session or per-request device-capture marker.
+
+Marker-call return to process exit takes 15.793738505 s as observed by the host;
+final core cleanup takes 0.263654331 s. Polling and transport contribute to the
+observed interval. Peak 485.7 MiB /zero swap, service 51.789 s, no new faults and
+both live services active. This validates phase-boundary cancellation only;
+active GPU work is not promptly interrupted. A new tablet request after
+cancellation, broader phase coverage and response-time bounds remain untested.
+The public wrapper still requires complete sessions and does not expose the
+cancel marker option; these measurements come from the private guarded probe.
+
+Evidence: `WORK/resident-cancel-0032-private/validation.json`, marker/session,
+launch and hash records alongside it; independent audit
+`WORK/resident-cancel-independent-kw7685ve/audit.json`. No application/service
+wiring changed.

@@ -67,8 +67,14 @@ requests at **15.411 s short / 36.803 s full**, with **404.8 MiB peak and zero s
 All 715 core layers use CPU; full output references pass with no faults and both
 services active. CPU remains faster. These are single resident observations:
 CPU ran short/short/full/full, short GPU used driver 0032 and full GPU used the
-earlier driver 0031 short/full/full session. Sustained behavior, tablet
-cancellation and live application integration remain unmeasured.
+earlier driver 0031 short/full/full session. Sustained behavior and live
+application integration remain unmeasured.
+
+A tablet cancellation probe preserves the completed request and discards the
+second request after its active GPU core finishes. Exit follows the cancel marker
+by about 15.8 s in this observation; it does not interrupt GPU work promptly.
+The probe reports 485.7 MiB/zero swap, no faults and both services active.
+Restart after cancellation and broader cancellation coverage remain untested.
 
 Select the measured graph with `--affine-snake-deconv2d`,
 `RADISH_NCNN_PLANAR=1` and `RADISH_BATCH_CHUNKS=8`, with one X workgroup.
