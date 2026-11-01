@@ -1,5 +1,21 @@
 # Radish status
 
+## 2026-11-02 (JST): public KHR paths and logical descriptor checkpoint
+
+ICD61bad822 passes API5, events/query and resource execution, including public
+KHR template/layout/buffer/image memory aliases and both sparse-image queries.
+The original40 ledger is38 representative paths exercised, with image copy/clear
+still build-only. Logical1024 layouts, static active-element compaction, corrected
+limits and texture-format/operation increments are integrated. Scope remains
+experimental; the complete semantics are not proven by these small suites.
+
+The16-lane subgroup contract passes local32/33 but fails8×8 election/member
+checks;128 is unattempted and public BASIC remains disabled. All four compile
+checks pass. The batch exits1 honestly;2.257s,7.3MiB,zero swap,no new faults,
+services active. See [checkpoint](CORE_API_0044.md) and
+[result](results/core-api-0044-backports.json). Robustness and remaining execution
+work continue; no performance experiments resumed.
+
 ## 2026-11-02 (JST): consolidated compute execution, partial success
 
 Three suites pass on private ICD e4bd958f: API5 regression, events/queries and

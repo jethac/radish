@@ -36,8 +36,10 @@ static int storage_create(const struct vk_device_dispatch_table *d, VkDevice dev
    VkBufferCreateInfo info={.sType=VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
       .size=bytes,.usage=usage};
    SUCCESS(d->CreateBuffer(device,&info,NULL,&s->buffer));
-   VkMemoryRequirements requirements;
-   d->GetBufferMemoryRequirements(device,s->buffer,&requirements);
+   VkBufferMemoryRequirementsInfo2 requirement_info={.sType=VK_STRUCTURE_TYPE_BUFFER_MEMORY_REQUIREMENTS_INFO_2,.buffer=s->buffer};
+   VkMemoryRequirements2 requirement_result={.sType=VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2};
+   d->GetBufferMemoryRequirements2(device,&requirement_info,&requirement_result);
+   VkMemoryRequirements requirements=requirement_result.memoryRequirements;
    REQUIRE(requirements.size>=bytes && requirements.size<=1024*1024 && !(requirements.size%4));
    uint32_t type=UINT32_MAX;
    for (uint32_t i=0;i<properties->memoryTypeCount;i++) {
@@ -49,7 +51,8 @@ static int storage_create(const struct vk_device_dispatch_table *d, VkDevice dev
    VkMemoryAllocateInfo allocation={.sType=VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
       .allocationSize=requirements.size,.memoryTypeIndex=type};
    SUCCESS(d->AllocateMemory(device,&allocation,NULL,&s->memory));
-   SUCCESS(d->BindBufferMemory(device,s->buffer,s->memory,0));
+   VkBindBufferMemoryInfo binding={.sType=VK_STRUCTURE_TYPE_BIND_BUFFER_MEMORY_INFO,.buffer=s->buffer,.memory=s->memory};
+   SUCCESS(d->BindBufferMemory2(device,1,&binding));
    SUCCESS(d->MapMemory(device,s->memory,0,VK_WHOLE_SIZE,0,(void **)&s->map));
    s->words=requirements.size/4;
    return 0;
@@ -126,7 +129,9 @@ int main(int argc,char **argv)
    VkInstance instance=VK_NULL_HANDLE;
    INSTANCE_FN(CreateInstance);
    VkApplicationInfo app={.sType=VK_STRUCTURE_TYPE_APPLICATION_INFO,.apiVersion=VK_API_VERSION_1_0};
-   VkInstanceCreateInfo ici={.sType=VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,.pApplicationInfo=&app};
+   const char *instance_extensions[]={VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME};
+   VkInstanceCreateInfo ici={.sType=VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,.pApplicationInfo=&app,
+      .enabledExtensionCount=1,.ppEnabledExtensionNames=instance_extensions};
    SUCCESS(CreateInstance(&ici,NULL,&instance));
    INSTANCE_FN(EnumeratePhysicalDevices); INSTANCE_FN(GetPhysicalDeviceMemoryProperties);
    INSTANCE_FN(GetPhysicalDeviceProperties); INSTANCE_FN(CreateDevice);
@@ -141,14 +146,31 @@ int main(int argc,char **argv)
    float priority=1.0f;
    VkDeviceQueueCreateInfo qci={.sType=VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
       .queueCount=1,.pQueuePriorities=&priority};
+   const char *extensions[]={VK_KHR_DESCRIPTOR_UPDATE_TEMPLATE_EXTENSION_NAME,VK_KHR_MAINTENANCE_3_EXTENSION_NAME,
+      VK_KHR_BIND_MEMORY_2_EXTENSION_NAME,VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME};
    VkDeviceCreateInfo dci={.sType=VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-      .queueCreateInfoCount=1,.pQueueCreateInfos=&qci};
+      .queueCreateInfoCount=1,.pQueueCreateInfos=&qci,.enabledExtensionCount=4,.ppEnabledExtensionNames=extensions};
    VkDevice device;
    SUCCESS(CreateDevice(physical,&dci,NULL,&device));
    PFN_vkGetDeviceProcAddr gdpa=GetDeviceProcAddr;
    DEVICE_FN(CmdExecuteCommands);
    struct rd_device *inside_device=rd_device_from_handle(device);
-   const struct vk_device_dispatch_table *d=&inside_device->vk.dispatch_table;
+   struct vk_device_dispatch_table aliases=inside_device->vk.dispatch_table;
+   aliases.GetDescriptorSetLayoutSupport=(PFN_vkGetDescriptorSetLayoutSupport)gdpa(device,"vkGetDescriptorSetLayoutSupportKHR");
+   aliases.CreateDescriptorUpdateTemplate=(PFN_vkCreateDescriptorUpdateTemplate)gdpa(device,"vkCreateDescriptorUpdateTemplateKHR");
+   aliases.DestroyDescriptorUpdateTemplate=(PFN_vkDestroyDescriptorUpdateTemplate)gdpa(device,"vkDestroyDescriptorUpdateTemplateKHR");
+   aliases.UpdateDescriptorSetWithTemplate=(PFN_vkUpdateDescriptorSetWithTemplate)gdpa(device,"vkUpdateDescriptorSetWithTemplateKHR");
+   aliases.BindBufferMemory2=(PFN_vkBindBufferMemory2)gdpa(device,"vkBindBufferMemory2KHR");
+   aliases.GetBufferMemoryRequirements2=(PFN_vkGetBufferMemoryRequirements2)gdpa(device,"vkGetBufferMemoryRequirements2KHR");
+   REQUIRE(aliases.GetDescriptorSetLayoutSupport && aliases.CreateDescriptorUpdateTemplate && aliases.DestroyDescriptorUpdateTemplate && aliases.UpdateDescriptorSetWithTemplate && aliases.BindBufferMemory2 && aliases.GetBufferMemoryRequirements2);
+   PFN_vkGetPhysicalDeviceProperties2KHR properties2=(PFN_vkGetPhysicalDeviceProperties2KHR)gipa(instance,"vkGetPhysicalDeviceProperties2KHR");
+   REQUIRE(properties2);
+   VkPhysicalDeviceMaintenance3Properties maintenance={.sType=VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES};
+   VkPhysicalDeviceProperties2 properties_chain={.sType=VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2,.pNext=&maintenance};
+   properties2(physical,&properties_chain);
+   REQUIRE(maintenance.maxPerSetDescriptors==1024 && maintenance.maxMemoryAllocationSize==UINT32_MAX-4095ull);
+   puts("API5 KHR aliases reachable: templates/layout support/bind memory2/memory requirements2/properties2");
+   const struct vk_device_dispatch_table *d=&aliases;
    const struct vk_physical_device_dispatch_table *pd=&rd_physical_device_from_handle(physical)->vk.dispatch_table;
    REQUIRE(d->CmdDispatchBase && d->GetDescriptorSetLayoutSupport &&
            d->UpdateDescriptorSetWithTemplate && d->CreateDescriptorUpdateTemplate &&

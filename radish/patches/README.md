@@ -604,3 +604,5 @@ d468a7b2dcadda77b4e06a286eba806aac28c6222f0f3ec9e8330cddf8dba657  0035-ncnn-inst
 ```
 
 | `0044-radish-resource-layout-storage-wip.patch` | After0044 foundation and combined resource WIP | Broader native formats/layouts/mips/cubes/border colors, compact buffer slots, private/constant backing and lost-queue cleanup. Three consolidated suites pass; BASIC election fails. Experimental source, not complete qualification. |
+
+| `0044-radish-descriptor-backports-wip.patch` | After the three earlier0044 incremental patches | Logical1024 descriptors/static compaction, truthful resource limits, pipeline batch semantics, texture operations/formats, four public KHR backports and API subgroup16 plumbing. Three functional suites pass;2D BASIC fails and remains disabled. |

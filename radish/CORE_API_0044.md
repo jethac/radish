@@ -1,62 +1,58 @@
 # Core compute implementation: checkpoint 0044
 
-The consolidated A506 run passes three functional suites: API5, events/queries,
-and native resources. Subgroup BASIC compiles but fails its first local32
-election-count oracle. The batch is therefore **partial success**, not a driver
-conformance pass. No GPU faults occurred; both services stayed active. Published source reports
-subgroup stages/operations as zero until this is fixed; the measured private
-qualification build enabled BASIC and the diagnostic helper explicitly enables
-it locally. This two-field safety change is distinct from the measured binary.
+The latest A506 batch passes API5, events/queries and native resources on ICD
+`61bad8227b07355bd174f1d7255ce0a3545ce8562fb006bea1ee626d696c52be`.
+Public KHR aliases now exercise descriptor templates, layout support,
+buffer/image binding and memory requirements, and sparse-image queries returning
+zero requirements. The driver still reports API 1.0.
 
-Apply `0044-radish-resource-layout-storage-wip.patch` after the foundation and
-combined resource WIP patches to reproduce this source. It adds the broader
-format/layout/mip/cube code, border colors, compact buffer slots, pipeline-owned
-private/constant storage and lost-queue cleanup correction. Those added source
-paths are not all exercised by the passing suites. The measured private ICD is
-`e4bd958f474249670e9df455af6660db91ba8fced590b8997d71dfa641870bb2`.
-See [the per-command/result record](results/core-api-0044-consolidated.json).
+Subgroup BASIC remains disabled. The revised 16-lane API contract passes local
+sizes32 and33, including a partial subgroup, but fails the8×8 election/member
+oracle. The128-invocation case is unattempted. This is **partial success**, not
+conformance. All four suites compile; three execute successfully. No GPU faults
+occurred and both services stayed active:2.257s,7.3MiB,zero swap.
 
-The original40 worklist now has36 representative paths exercised, including
-common-wrapper routes for two1.1 image APIs; sparse-image queries, CmdCopyImage
-and CmdClearColorImage remain build-only. This count does not establish complete
-semantics. Public core1.1 names remain filtered under API1.0. BASIC is not accepted;
-required limits, large descriptor layouts, dynamic resource indexing, legal
-shared-memory/workgroup execution, broader formats/views and applicable CTS
-remain active work. Performance remains paused.
+Apply `0044-radish-descriptor-backports-wip.patch` after the three earlier0044
+patches. This increment adds1024 logical descriptor storage with statically
+referenced element compaction, corrected resource limits, pipeline derivative
+and multi-create handling, explicit texture gradients/gather, packed formats,
+the four KHR backports and the16-lane subgroup compiler option. Representative
+resource checks pass; the full range of those source paths is not qualified.
+The measured and published source both leave BASIC supported stages/operations
+zero. The subgroup probe enables them only in its private diagnostic object.
 
-The service used2.286s,7.3MiB and zero swap. API5 checked two4,160-invocation
-runs; events/query checked two256-invocation runs plus host-release/events,
-statistics, timestamps, result availability/copies/reset; resources checked
-two85-record runs with full outputs/guards, dynamic UBO/SSBO offsets, updates
-after recording, typed texels/images and nearest/linear sampling.
+The original40 worklist now has38 representative command paths exercised.
+`CmdCopyImage` and `CmdClearColorImage` remain build-only. Core1.1 DispatchBase
+and external-buffer-property evidence still uses internal dispatch tables;
+the corresponding public version/extensions are not advertised. See
+[the exact result and command ledger](results/core-api-0044-backports.json).
 
-An initial runner attempt stopped before probes because Python was absent on
-the tablet. A second stopped before functional execution on a probe-only
-16-bit/32-bit memcmp bug. Both failed captures remain preserved. The final runner
-uses awk for between-process fault checks, and the helper compares numeric
-local dimensions. It continues across independent non-fault failures and stops
-on new fault evidence. The public runner changes only root-path discovery from
-the measured private script.
+Robust buffer access, complete subgroup semantics, legal shared-memory/workgroup
+execution, remaining mandatory resource/feature behavior and applicable CTS
+coverage remain active work. Graphics is outside scope; performance work stays
+paused. The preceding stage7 result is preserved in
+[its separate record](results/core-api-0044-consolidated.json).
 
 ## Consolidated reproduction
 
-Apply the three0044 incremental patches in order to the documented0042 Mesa
-stack and build the isolated driver. Build the matching internal-ABI probes:
+Apply the four0044 incremental patches in order to the documented0042 Mesa
+stack and build the isolated driver. Build probes against its matching internal
+ABI:
 
 ```sh
 python3 radish/scripts/build-core-compute.py "$API_WORK/build" "$API_WORK/compute-probes"
 exec 9>"$ORIGINAL_DEVICE_LOCK"
 flock -w 1800 9
-python3 radish/scripts/device-core-compute.py probe combined-first \
+python3 radish/scripts/device-core-compute.py probe backports-native16 \
   --driver "$API_WORK/build/src/freedreno/radish/libvulkan_radish.so" \
   --driver-sha256 "$DRIVER_SHA" --probe-dir "$API_WORK/compute-probes" --lock-fd 9
 ```
 
-Set `RADISH_DEVICE_LOCK` to the same original lock and `RADISH_WORK` to the
-host evidence directory. The private driver is selected only for the bounded
-service. The current BASIC failure makes the overall process exit1 while
-preserving the three passing suite outcomes; do not reinterpret that as a full
-pass. No separate human gate is inserted between compile and execution checks.
+Set `RADISH_DEVICE_LOCK` to the same original lock and `RADISH_WORK` to the host
+evidence directory. The private driver is selected only for the bounded service.
+The current BASIC failure makes the overall process exit1 while preserving
+three passing suites. Independent non-fault failures remain separate; new GPU
+fault evidence stops the batch. Do not interpret compile success as execution.
 
 ## Earlier API5 foundation evidence
 

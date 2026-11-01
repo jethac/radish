@@ -22,11 +22,14 @@ a separate driver, with its own a5xx resource bindings and command emission.
 ## Current status
 
 **Current priority:** performance experiments are paused while the driver fills
-its Vulkan 1.0/1.1 compute execution and resource gaps. The first
-[0044 API checkpoint](radish/CORE_API_0044.md) passes bounded A506 dispatch-base,
-secondary-command and descriptor-template checks. The consolidated API, event/query and UBO/dynamic/image-resource suites pass on A506; subgroup BASIC fails its first election-count check. Broader semantics and limits remain incomplete. This is WIP,
-not a version or conformance claim. The inference results below remain the
-previous qualified performance baseline.
+its Vulkan1.0/1.1 compute execution and resource gaps. The latest
+[0044 checkpoint](radish/CORE_API_0044.md) passes API, event/query and
+UBO/dynamic/image-resource suites, including public KHR aliases. The16-lane
+subgroup correction passes1D cases but fails2D election checks, so BASIC stays
+disabled. There are38 representative paths exercised from the original40;
+this is WIP, not a version or conformance claim. Broader semantics and limits
+remain active work. The inference results below are the previous qualified
+performance baseline.
 
 Radish runs every core layer of Kokoro's neural decoder on the GPU through ncnn.
 The latest opt-in graph fuses 42 normalization/AffineSnake chains and executes

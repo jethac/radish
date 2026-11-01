@@ -55,12 +55,12 @@ static int storage_create(const struct vk_device_dispatch_table *d, VkDevice dev
 static int check_output(const struct storage *out, const struct storage *exchange, unsigned test)
 {
    const uint32_t *local=locals[test];
-   const uint32_t n=local[0]*local[1]*local[2], groups=(n+31)/32, salt=0x23450000u+test*997u;
-   uint32_t members[4]={0}, elected[4]={0}, odd_members[4]={0}, odd_elected[4]={0}, first_index[4]={0};
-   uint32_t seen[4]={0};
+   const uint32_t n=local[0]*local[1]*local[2], groups=(n+15)/16, salt=0x23450000u+test*997u;
+   uint32_t members[8]={0}, elected[8]={0}, odd_members[8]={0}, odd_elected[8]={0}, first_index[8]={0};
+   uint32_t seen[8]={0};
    for (uint32_t i=0;i<n;i++) {
       const uint32_t *r=out->map+GUARD+16*i;
-      REQUIRE(r[0]==i && r[1]==32 && r[2]==groups && r[3]<groups && r[4]<32);
+      REQUIRE(r[0]==i && r[1]==16 && r[2]==groups && r[3]<groups && r[4]<16);
       uint32_t g=r[3], lane=r[4];
       REQUIRE(!(seen[g] & (1u<<lane)));
       seen[g]|=1u<<lane; members[g]++;
@@ -70,7 +70,7 @@ static int check_output(const struct storage *out, const struct storage *exchang
       odd_elected[g]+=r[6];
    }
    for (uint32_t g=0;g<groups;g++)
-      REQUIRE(members[g]>0 && members[g]<=32 && elected[g]==1 && odd_elected[g]==(odd_members[g]>0));
+      REQUIRE(members[g]>0 && members[g]<=16 && elected[g]==1 && odd_elected[g]==(odd_members[g]>0));
    for (uint32_t i=0;i<n;i++) {
       const uint32_t *r=out->map+GUARD+16*i;
       uint32_t g=r[3], value=first_index[g]^salt;
@@ -113,7 +113,7 @@ int main(int argc,char **argv)
    uint32_t count=1; VkPhysicalDevice physical;
    SUCCESS(EnumeratePhysicalDevices(instance,&count,&physical)); REQUIRE(count==1);
    struct rd_physical_device *inside=rd_physical_device_from_handle(physical);
-   REQUIRE(inside->vk.properties.apiVersion==VK_API_VERSION_1_0 && inside->vk.properties.subgroupSize==32);
+   REQUIRE(inside->vk.properties.apiVersion==VK_API_VERSION_1_0 && inside->vk.properties.subgroupSize==16);
    VkPhysicalDeviceMemoryProperties memory_properties;
    GetPhysicalDeviceMemoryProperties(physical,&memory_properties);
    inside->vk.properties.subgroupSupportedStages=VK_SHADER_STAGE_COMPUTE_BIT;
@@ -226,7 +226,19 @@ int main(int argc,char **argv)
       SUCCESS(d->WaitForFences(device,1,&fence,VK_TRUE,5000000000ull));
       REQUIRE(inside_device->submit_count==before+1);
       SUCCESS(d->InvalidateMappedMemoryRanges(device,2,ranges));
-      REQUIRE(check_output(&output,&exchange,test)==0); fflush(stdout);
+      if (check_output(&output,&exchange,test)!=0) {
+         uint32_t count=locals[test][0]*locals[test][1]*locals[test][2];
+         for (uint32_t i=0;i<count;i++) {
+            fprintf(stderr,"BASIC RECORD case=%u index=%u",test,i);
+            for (unsigned field=0;field<16;field++)
+               fprintf(stderr," %08x",output.map[GUARD+16*i+field]);
+            fputc('\n',stderr);
+         }
+         for (size_t i=0;i<EXCHANGE_WORDS;i++)
+            fprintf(stderr,"BASIC EXCHANGE case=%u word=%zu value=%08x\n",test,i,exchange.map[i]);
+         return 1;
+      }
+      fflush(stdout);
    }
    d->DestroyFence(device,fence,NULL); d->DestroyCommandPool(device,command_pool,NULL);
    d->DestroyDescriptorPool(device,descriptor_pool,NULL);

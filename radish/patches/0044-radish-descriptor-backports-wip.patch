@@ -1,0 +1,979 @@
+--- a/src/freedreno/radish/rd_command.c
++++ b/src/freedreno/radish/rd_command.c
+@@ -188,22 +188,18 @@
+    memcpy(dispatch->push, command->push, sizeof(dispatch->push));
+    uint8_t compatibility[RD_MAX_SETS][BLAKE3_OUT_LEN];
+    rd_layout_compatibility(command->pipeline->layout, compatibility);
+-   for (uint32_t i = 0; i < command->pipeline->layout->set_count; i++) {
+-      struct rd_set_layout *expected = container_of(command->pipeline->layout->set_layouts[i],
+-         struct rd_set_layout, vk);
+-      if (!expected->descriptor_count)
++   for (uint32_t i = 0; i < command->pipeline->resource_count; i++) {
++      if (!(command->pipeline->used_descriptors & (UINT64_C(1) << i)))
+          continue;
+-      uint32_t used = command->pipeline->used_descriptors >> command->pipeline->set_offsets[i];
+-      if (!(used & BITFIELD_MASK(expected->descriptor_count)))
+-         continue;
+-      struct rd_descriptor_set *set = command->sets[i];
+-      if (!set || memcmp(command->set_compatibility[i][i], compatibility[i], BLAKE3_OUT_LEN)) {
++      const struct rd_nir_resource_binding *resource = &command->pipeline->resources[i];
++      uint32_t index = resource->descriptor_set;
++      struct rd_descriptor_set *set = command->sets[index];
++      if (!set || memcmp(command->set_compatibility[index][index], compatibility[index], BLAKE3_OUT_LEN)) {
+          vk_command_buffer_set_error(&command->vk, VK_ERROR_UNKNOWN);
+          return NULL;
+       }
+-      dispatch->sets[i] = set;
+-      memcpy(&dispatch->dynamic_offsets[command->pipeline->set_offsets[i]],
+-             command->dynamic_offsets[i], expected->descriptor_count * sizeof(uint32_t));
++      dispatch->sets[index] = set;
++      dispatch->dynamic_offsets[i] = command->dynamic_offsets[index][resource->logical_slot];
+    }
+    return dispatch;
+ }
+--- a/src/freedreno/radish/rd_descriptor.c
++++ b/src/freedreno/radish/rd_descriptor.c
+@@ -59,11 +59,22 @@
+    uint32_t bindings, descriptors;
+    if (!rd_descriptor_layout_supported(info, &bindings, &descriptors))
+       return VK_ERROR_FEATURE_NOT_PRESENT;
+-   struct rd_set_layout *layout = vk_descriptor_set_layout_zalloc(&device->vk,
+-      sizeof(*layout), info);
++   uint32_t immutable_count = 0;
++   for (uint32_t i = 0; i < info->bindingCount; i++) {
++      const VkDescriptorSetLayoutBinding *binding = &info->pBindings[i];
++      if (binding->pImmutableSamplers &&
++          (binding->descriptorType == VK_DESCRIPTOR_TYPE_SAMPLER ||
++           binding->descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER))
++         immutable_count += binding->descriptorCount;
++   }
++   size_t size = sizeof(struct rd_set_layout) + bindings * sizeof(struct rd_binding) +
++                 immutable_count * sizeof(struct vk_sampler_state);
++   struct rd_set_layout *layout = vk_descriptor_set_layout_zalloc(&device->vk, size, info);
+    if (!layout)
+       return VK_ERROR_OUT_OF_HOST_MEMORY;
+    layout->binding_count = bindings;
++   layout->immutable_count = immutable_count;
++   layout->immutable_sampler_states = (void *)&layout->bindings[bindings];
+    layout->descriptor_count = descriptors;
+    uint32_t slot = 0, index = 0;
+    for (uint32_t i = 0; i < info->bindingCount; i++) {
+@@ -75,6 +86,9 @@
+          .slot = slot,
+          .type = info->pBindings[i].descriptorType,
+          .stages = info->pBindings[i].stageFlags,
++         .immutable_offset = info->pBindings[i].pImmutableSamplers &&
++            (info->pBindings[i].descriptorType == VK_DESCRIPTOR_TYPE_SAMPLER ||
++             info->pBindings[i].descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER) ? 0 : UINT32_MAX,
+       };
+       slot += info->pBindings[i].descriptorCount;
+    }
+@@ -88,7 +102,12 @@
+       layout->bindings[j] = binding;
+    }
+    slot = 0;
++   uint32_t immutable_offset = 0;
+    for (uint32_t i = 0; i < layout->binding_count; i++) {
++      if (layout->bindings[i].immutable_offset != UINT32_MAX) {
++         layout->bindings[i].immutable_offset = immutable_offset;
++         immutable_offset += layout->bindings[i].count;
++      }
+       layout->bindings[i].slot = slot;
+       slot += layout->bindings[i].count;
+       if (layout->bindings[i].type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC ||
+@@ -105,10 +124,9 @@
+          if (layout->bindings[j].binding != binding->binding)
+             continue;
+          for (uint32_t k = 0; k < binding->descriptorCount; k++) {
+-            uint32_t slot = layout->bindings[j].slot + k;
++            uint32_t offset = layout->bindings[j].immutable_offset + k;
+             VK_FROM_HANDLE(rd_sampler, sampler, binding->pImmutableSamplers[k]);
+-            layout->immutable_samplers |= 1u << slot;
+-            layout->immutable_sampler_states[slot] = sampler->state;
++            layout->immutable_sampler_states[offset] = sampler->state;
+          }
+       }
+    }
+@@ -117,12 +135,9 @@
+    _mesa_blake3_update(&hash, &layout->binding_count, sizeof(layout->binding_count));
+    _mesa_blake3_update(&hash, layout->bindings,
+                        layout->binding_count * sizeof(struct rd_binding));
+-   _mesa_blake3_update(&hash, &layout->immutable_samplers, sizeof(layout->immutable_samplers));
+-   for (uint32_t i = 0; i < layout->descriptor_count; i++) {
+-      if (layout->immutable_samplers & (1u << i))
+-         _mesa_blake3_update(&hash, &layout->immutable_sampler_states[i],
+-                             sizeof(struct vk_sampler_state));
+-   }
++   _mesa_blake3_update(&hash, &layout->immutable_count, sizeof(layout->immutable_count));
++   _mesa_blake3_update(&hash, layout->immutable_sampler_states,
++                       layout->immutable_count * sizeof(struct vk_sampler_state));
+    _mesa_blake3_final(&hash, layout->vk.blake3);
+    *out = rd_set_layout_to_handle(layout);
+    return VK_SUCCESS;
+@@ -134,6 +149,20 @@
+    for (uint32_t i = 0; i < layout->binding_count; i++)
+       if (layout->bindings[i].binding == binding)
+          return &layout->bindings[i];
++   return NULL;
++}
++
++static const struct vk_sampler_state *
++rd_immutable_sampler(const struct rd_set_layout *layout, uint32_t slot)
++{
++   for (uint32_t i = 0; i < layout->binding_count; i++) {
++      const struct rd_binding *binding = &layout->bindings[i];
++      if (slot >= binding->slot && slot - binding->slot < binding->count) {
++         if (binding->immutable_offset != UINT32_MAX)
++            return &layout->immutable_sampler_states[binding->immutable_offset + slot - binding->slot];
++         return NULL;
++      }
++   }
+    return NULL;
+ }
+ 
+@@ -215,7 +244,7 @@
+    for (uint32_t i = 0; i < info->descriptorSetCount; i++) {
+       VK_FROM_HANDLE(rd_set_layout, layout, info->pSetLayouts[i]);
+       struct rd_descriptor_set *set = vk_object_zalloc(&device->vk, &pool->alloc,
+-         sizeof(*set), VK_OBJECT_TYPE_DESCRIPTOR_SET);
++         sizeof(*set) + layout->descriptor_count * sizeof(struct rd_descriptor), VK_OBJECT_TYPE_DESCRIPTOR_SET);
+       if (!set) {
+          for (uint32_t j = 0; j < i; j++) {
+             rd_free_set(device, rd_descriptor_set_from_handle(out[j]));
+@@ -230,10 +259,10 @@
+          for (uint32_t k = 0; k < binding->count; k++) {
+             uint32_t slot = binding->slot + k;
+             set->descriptors[slot].type = binding->type;
+-            if (layout->immutable_samplers & (1u << slot)) {
++            const struct vk_sampler_state *immutable = rd_immutable_sampler(layout, slot);
++            if (immutable) {
+                set->descriptors[slot].has_sampler = true;
+-               rd_sampler_descriptor(&layout->immutable_sampler_states[slot],
+-                                       set->descriptors[slot].sampler);
++               rd_sampler_descriptor(immutable, set->descriptors[slot].sampler);
+             }
+          }
+       }
+@@ -261,8 +290,8 @@
+ rd_write_descriptor(struct rd_descriptor_set *set, uint32_t slot,
+                      VkDescriptorType type, const void *data)
+ {
+-   if (type == VK_DESCRIPTOR_TYPE_SAMPLER &&
+-       (set->layout->immutable_samplers & (1u << slot)))
++   const struct vk_sampler_state *immutable = rd_immutable_sampler(set->layout, slot);
++   if (type == VK_DESCRIPTOR_TYPE_SAMPLER && immutable)
+       return;
+    struct rd_descriptor descriptor = { .type = type };
+    switch (type) {
+@@ -291,9 +320,9 @@
+          descriptor.image_view = rd_image_view_from_handle(info.imageView);
+       if (type == VK_DESCRIPTOR_TYPE_SAMPLER ||
+           type == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER) {
+-         if (set->layout->immutable_samplers & (1u << slot)) {
++         if (immutable) {
+             descriptor.has_sampler = true;
+-            rd_sampler_descriptor(&set->layout->immutable_sampler_states[slot], descriptor.sampler);
++            rd_sampler_descriptor(immutable, descriptor.sampler);
+          } else {
+             VK_FROM_HANDLE(rd_sampler, sampler, info.sampler);
+             descriptor.has_sampler = sampler != NULL;
+@@ -353,10 +382,10 @@
+               copies[i].descriptorCount * sizeof(struct rd_descriptor));
+       for (uint32_t j = 0; j < copies[i].descriptorCount; j++) {
+          uint32_t slot = first + j;
+-         if (dst->layout->immutable_samplers & (1u << slot)) {
++         const struct vk_sampler_state *immutable = rd_immutable_sampler(dst->layout, slot);
++         if (immutable) {
+             dst->descriptors[slot].has_sampler = true;
+-            rd_sampler_descriptor(&dst->layout->immutable_sampler_states[slot],
+-                                    dst->descriptors[slot].sampler);
++            rd_sampler_descriptor(immutable, dst->descriptors[slot].sampler);
+          }
+       }
+    }
+--- a/src/freedreno/radish/rd_image.c
++++ b/src/freedreno/radish/rd_image.c
+@@ -49,6 +49,27 @@
+    case VK_FORMAT_R32G32B32A32_SINT:
+    case VK_FORMAT_R32G32B32A32_SFLOAT:
+       return vk_format_get_blocksize(format);
++   case VK_FORMAT_R5G6B5_UNORM_PACK16:
++   case VK_FORMAT_A1R5G5B5_UNORM_PACK16:
++   case VK_FORMAT_A8B8G8R8_UNORM_PACK32:
++   case VK_FORMAT_A8B8G8R8_SNORM_PACK32:
++   case VK_FORMAT_A8B8G8R8_UINT_PACK32:
++   case VK_FORMAT_A8B8G8R8_SINT_PACK32:
++   case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
++   case VK_FORMAT_A2R10G10B10_UNORM_PACK32:
++   case VK_FORMAT_A2R10G10B10_UINT_PACK32:
++   case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
++   case VK_FORMAT_A2B10G10R10_UINT_PACK32:
++   case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
++   case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32:
++      return vk_format_get_blocksize(format);
++   case VK_FORMAT_R4G4B4A4_UNORM_PACK16:
++   case VK_FORMAT_B4G4R4A4_UNORM_PACK16:
++   case VK_FORMAT_B5G6R5_UNORM_PACK16:
++   case VK_FORMAT_B8G8R8A8_SNORM:
++   case VK_FORMAT_B8G8R8A8_UINT:
++   case VK_FORMAT_B8G8R8A8_SINT:
++      return vk_format_get_blocksize(format);
+    default:
+       return 0;
+    }
+@@ -81,8 +102,9 @@
+       VK_FORMAT_FEATURE_TRANSFER_SRC_BIT | VK_FORMAT_FEATURE_TRANSFER_DST_BIT : 0;
+    VkFormatFeatureFlags buffer = 0;
+    if (rd_shader_format_supported(format)) {
+-      flags |= VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT;
+-      if (rd_shader_format_filterable(format))
++      if (rd_image_texel_size(format))
++         flags |= VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT;
++      if (rd_image_texel_size(format) && rd_shader_format_filterable(format))
+          flags |= VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT;
+       if (!vk_format_is_srgb(format))
+          buffer |= VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT;
+@@ -381,7 +403,7 @@
+    VK_FROM_HANDLE(rd_device, device, handle);
+    VK_FROM_HANDLE(rd_buffer, buffer, info->buffer);
+    *out = VK_NULL_HANDLE;
+-   uint32_t size = rd_image_texel_size(info->format);
++   uint32_t size = vk_format_get_blocksize(info->format);
+    if (!buffer || info->flags || !rd_shader_format_supported(info->format) ||
+        vk_format_is_srgb(info->format) ||
+        !size || info->offset >= buffer->vk.size ||
+--- a/src/freedreno/radish/rd_instance.c
++++ b/src/freedreno/radish/rd_instance.c
+@@ -21,6 +21,13 @@
+ 
+ static const struct vk_instance_extension_table rd_instance_extensions = {
+    .KHR_get_physical_device_properties2 = true,
++};
++
++static const struct vk_device_extension_table rd_device_extensions = {
++   .KHR_descriptor_update_template = true,
++   .KHR_maintenance3 = true,
++   .KHR_bind_memory2 = true,
++   .KHR_get_memory_requirements2 = true,
+ };
+ 
+ VKAPI_ATTR VkResult VKAPI_CALL
+@@ -101,10 +108,12 @@
+       .vendorID = 0x5143,
+       .deviceID = 506,
+       .deviceType = VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU,
+-      .subgroupSize = 32,
++      .subgroupSize = 16,
+       .subgroupSupportedStages = 0,
+       .subgroupSupportedOperations = 0,
+       .maxMemoryAllocationCount = 4096,
++      .maxPerSetDescriptors = 1024,
++      .maxMemoryAllocationSize = UINT32_MAX - 4095ull,
+       .maxImageDimension1D = 4096,
+       .maxImageDimension2D = 4096,
+       .maxImageDimension3D = 256,
+@@ -117,18 +126,18 @@
+       .maxSamplerAnisotropy = 1.0f,
+       .maxBoundDescriptorSets = 4,
+       .maxPerStageDescriptorSamplers = 16,
+-      .maxPerStageDescriptorUniformBuffers = 16,
+-      .maxPerStageDescriptorStorageBuffers = 16,
++      .maxPerStageDescriptorUniformBuffers = 12,
++      .maxPerStageDescriptorStorageBuffers = 4,
+       .maxPerStageDescriptorSampledImages = 16,
+-      .maxPerStageDescriptorStorageImages = 16,
+-      .maxPerStageResources = 16,
+-      .maxDescriptorSetSamplers = 16,
+-      .maxDescriptorSetUniformBuffers = 16,
++      .maxPerStageDescriptorStorageImages = 4,
++      .maxPerStageResources = 128,
++      .maxDescriptorSetSamplers = 96,
++      .maxDescriptorSetUniformBuffers = 72,
+       .maxDescriptorSetUniformBuffersDynamic = 8,
+-      .maxDescriptorSetStorageBuffers = 16,
++      .maxDescriptorSetStorageBuffers = 24,
+       .maxDescriptorSetStorageBuffersDynamic = 4,
+-      .maxDescriptorSetSampledImages = 16,
+-      .maxDescriptorSetStorageImages = 16,
++      .maxDescriptorSetSampledImages = 96,
++      .maxDescriptorSetStorageImages = 24,
+       .timestampComputeAndGraphics = true,
+       .timestampPeriod = 1000000000.0f / 19200000.0f,
+       .maxStorageBufferRange = 128 * 1024 * 1024,
+@@ -146,7 +155,7 @@
+    snprintf(properties.deviceName, sizeof(properties.deviceName),
+             "Radish Adreno 506 (experimental compute)");
+    const struct vk_features features = { .pipelineStatisticsQuery = true };
+-   VkResult result = vk_physical_device_init(&physical->vk, instance, NULL,
++   VkResult result = vk_physical_device_init(&physical->vk, instance, &rd_device_extensions,
+                                              &features, &properties, &dispatch);
+    if (result != VK_SUCCESS) {
+       vk_free(&instance->alloc, physical);
+--- a/src/freedreno/radish/rd_memory.c
++++ b/src/freedreno/radish/rd_memory.c
+@@ -120,6 +120,13 @@
+    out->memoryRequirements = (VkMemoryRequirements) {
+       .size = align64(buffer->vk.size, 64), .alignment = 64, .memoryTypeBits = 1,
+    };
++   vk_foreach_struct(sType, next, out->pNext) {
++      if (sType == VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS) {
++         VkMemoryDedicatedRequirements *dedicated = (VkMemoryDedicatedRequirements *)next;
++         dedicated->prefersDedicatedAllocation = false;
++         dedicated->requiresDedicatedAllocation = false;
++      }
++   }
+ }
+ 
+ VKAPI_ATTR VkResult VKAPI_CALL
+--- a/src/freedreno/radish/rd_nir_resources.c
++++ b/src/freedreno/radish/rd_nir_resources.c
+@@ -4,8 +4,8 @@
+ #include <string.h>
+ 
+ struct rd_resource_lower {
+-   const struct rd_nir_resource_binding *bindings;
+-   uint32_t binding_count;
++   rd_nir_resource_resolver resolve;
++   void *data;
+    struct rd_nir_resource_usage *usage;
+    uint32_t textures_by_txf, texture_buffers, image_buffers;
+    bool failed;
+@@ -32,15 +32,8 @@
+    if (!deref || deref->deref_type != nir_deref_type_var || index > UINT32_MAX)
+       return NULL;
+    const nir_variable *var = deref->var;
+-   for (uint32_t i = 0; i < state->binding_count; i++) {
+-      const struct rd_nir_resource_binding *entry = &state->bindings[i];
+-      if (entry->descriptor_set == var->data.descriptor_set &&
+-          entry->binding == var->data.binding && index < entry->count) {
+-         *element = index;
+-         return entry;
+-      }
+-   }
+-   return NULL;
++   *element = 0;
++   return state->resolve(state->data, var->data.descriptor_set, var->data.binding, index);
+ }
+ 
+ static bool
+@@ -48,12 +41,12 @@
+                  const struct rd_nir_resource_binding *entry, uint32_t element,
+                  uint32_t base, uint32_t *mask, uint32_t *count)
+ {
+-   if (base >= 16 || element >= 16 - base || entry->descriptor_slot >= 32 ||
+-       element >= 32 - entry->descriptor_slot)
++   if (base >= 16 || element >= 16 - base || entry->descriptor_slot >= 64 ||
++       element >= 64 - entry->descriptor_slot)
+       return false;
+    *mask |= 1u << (base + element);
+    *count = MAX2(*count, base + element + 1);
+-   state->usage->descriptors |= 1u << (entry->descriptor_slot + element);
++   state->usage->descriptors |= UINT64_C(1) << (entry->descriptor_slot + element);
+    return true;
+ }
+ 
+@@ -77,6 +70,8 @@
+       return false;
+    switch (tex->op) {
+    case nir_texop_txl:
++   case nir_texop_txd:
++   case nir_texop_tg4:
+    case nir_texop_txf:
+    case nir_texop_txs:
+    case nir_texop_query_levels:
+@@ -120,7 +115,8 @@
+          return false;
+       tex->sampler_index = entry->sampler_slot + element;
+       nir_tex_instr_remove_src(tex, sampler);
+-   } else if (tex->op == nir_texop_txl) {
++   } else if (tex->op == nir_texop_txl || tex->op == nir_texop_txd ||
++              tex->op == nir_texop_tg4) {
+       return false;
+    }
+    return true;
+@@ -157,6 +153,9 @@
+    case PIPE_FORMAT_R16G16B16A16_UINT:
+    case PIPE_FORMAT_R16G16B16A16_SINT:
+    case PIPE_FORMAT_R16G16B16A16_FLOAT:
++   case PIPE_FORMAT_R10G10B10A2_UNORM:
++   case PIPE_FORMAT_R10G10B10A2_UINT:
++   case PIPE_FORMAT_R11G11B10_FLOAT:
+    case PIPE_FORMAT_R32_UINT:
+    case PIPE_FORMAT_R32_SINT:
+    case PIPE_FORMAT_R32_FLOAT:
+@@ -271,21 +270,14 @@
+ 
+ bool
+ rd_nir_lower_compute_resources(nir_shader *shader,
+-   const struct rd_nir_resource_binding *bindings, uint32_t binding_count,
++   rd_nir_resource_resolver resolve, void *data,
+    struct rd_nir_resource_usage *usage)
+ {
+-   if (!shader || shader->info.stage != MESA_SHADER_COMPUTE || !usage ||
+-       (binding_count && !bindings))
++   if (!shader || shader->info.stage != MESA_SHADER_COMPUTE || !usage || !resolve)
+       return false;
+    memset(usage, 0, sizeof(*usage));
+-   for (uint32_t i = 0; i < binding_count; i++) {
+-      const struct rd_nir_resource_binding *entry = &bindings[i];
+-      if (!entry->count || entry->descriptor_slot >= 32 ||
+-          entry->count > 32 - entry->descriptor_slot)
+-         return false;
+-   }
+    struct rd_resource_lower state = {
+-      .bindings = bindings, .binding_count = binding_count, .usage = usage,
++      .resolve = resolve, .data = data, .usage = usage,
+    };
+    nir_shader_instructions_pass(shader, rd_lower_resource,
+                                 nir_metadata_control_flow, &state);
+--- a/src/freedreno/radish/rd_nir_resources.h
++++ b/src/freedreno/radish/rd_nir_resources.h
+@@ -8,18 +8,22 @@
+ struct nir_shader;
+ 
+ struct rd_nir_resource_binding {
+-   uint32_t descriptor_set, binding, count, descriptor_slot;
++   uint32_t descriptor_set, binding, array_element, logical_slot, descriptor_slot;
+    VkDescriptorType type;
+    uint32_t buffer_slot, texture_slot, sampler_slot, image_slot;
+ };
+ 
+ struct rd_nir_resource_usage {
+-   uint32_t descriptors, textures, samplers, images;
++   uint64_t descriptors;
++   uint32_t textures, samplers, images;
+    uint32_t texture_count, sampler_count, image_count;
+ };
+ 
++typedef const struct rd_nir_resource_binding *(*rd_nir_resource_resolver)(
++   void *data, uint32_t descriptor_set, uint32_t binding, uint32_t element);
++
+ bool rd_nir_lower_compute_resources(struct nir_shader *shader,
+-   const struct rd_nir_resource_binding *bindings, uint32_t binding_count,
++   rd_nir_resource_resolver resolve, void *data,
+    struct rd_nir_resource_usage *usage);
+ 
+ #endif
+--- a/src/freedreno/radish/rd_pipeline.c
++++ b/src/freedreno/radish/rd_pipeline.c
+@@ -16,6 +16,93 @@
+    *alignment = component_size;
+ }
+ 
++static const struct rd_nir_resource_binding *
++rd_pipeline_resource(void *data, uint32_t set, uint32_t binding, uint32_t element)
++{
++   struct rd_pipeline *pipeline = data;
++   for (uint32_t i = 0; i < pipeline->resource_count; i++) {
++      const struct rd_nir_resource_binding *resource = &pipeline->resources[i];
++      if (resource->descriptor_set == set && resource->binding == binding &&
++          resource->array_element == element)
++         return resource;
++   }
++   if (set >= pipeline->layout->set_count ||
++       pipeline->resource_count >= RD_MAX_ACTIVE_RESOURCES)
++      return NULL;
++   const struct rd_set_layout *layout = container_of(pipeline->layout->set_layouts[set],
++                                                     const struct rd_set_layout, vk);
++   const struct rd_binding *found = NULL;
++   for (uint32_t i = 0; i < layout->binding_count; i++)
++      if (layout->bindings[i].binding == binding)
++         found = &layout->bindings[i];
++   if (!found || element >= found->count)
++      return NULL;
++   bool buffer = found->type == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER ||
++      found->type == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC ||
++      found->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER ||
++      found->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
++   bool texture = found->type == VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE ||
++      found->type == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER ||
++      found->type == VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER;
++   bool sampler = found->type == VK_DESCRIPTOR_TYPE_SAMPLER ||
++      found->type == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
++   bool image = found->type == VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ||
++      found->type == VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
++   if ((!buffer && !texture && !sampler && !image) ||
++       (buffer && pipeline->buffer_count >= 32))
++      return NULL;
++   uint32_t textures = 0, samplers = 0, images = 0;
++   for (uint32_t i = 0; i < pipeline->resource_count; i++) {
++      const struct rd_nir_resource_binding *resource = &pipeline->resources[i];
++      textures += resource->texture_slot != UINT32_MAX;
++      samplers += resource->sampler_slot != UINT32_MAX;
++      images += resource->image_slot != UINT32_MAX;
++   }
++   if ((texture && textures >= 16) || (sampler && samplers >= 16) || (image && images >= 16))
++      return NULL;
++   uint32_t slot = pipeline->resource_count++;
++   struct rd_nir_resource_binding *resource = &pipeline->resources[slot];
++   *resource = (struct rd_nir_resource_binding) {
++      .descriptor_set = set, .binding = binding, .array_element = element,
++      .logical_slot = found->slot + element, .descriptor_slot = slot, .type = found->type,
++      .buffer_slot = buffer ? pipeline->buffer_count : UINT32_MAX,
++      .texture_slot = texture ? textures : UINT32_MAX,
++      .sampler_slot = sampler ? samplers : UINT32_MAX,
++      .image_slot = image ? images : UINT32_MAX,
++   };
++   if (buffer)
++      pipeline->buffer_descriptors[pipeline->buffer_count++] = slot;
++   if (texture)
++      pipeline->texture_descriptors[textures] = slot;
++   if (sampler)
++      pipeline->sampler_descriptors[samplers] = slot;
++   if (image)
++      pipeline->image_descriptors[images] = slot;
++   return resource;
++}
++
++static const struct rd_nir_resource_binding *
++rd_buffer_resource(struct rd_pipeline *pipeline, nir_def *index)
++{
++   uint32_t element = 0;
++   while (nir_def_instr(index)->type == nir_instr_type_intrinsic) {
++      const nir_intrinsic_instr *intr = nir_instr_as_intrinsic(nir_def_instr(index));
++      if (intr->intrinsic == nir_intrinsic_vulkan_resource_index) {
++         if (!nir_src_is_const(intr->src[0]))
++            return NULL;
++         element += nir_src_as_uint(intr->src[0]);
++         return rd_pipeline_resource(pipeline, nir_intrinsic_desc_set(intr),
++                                       nir_intrinsic_binding(intr), element);
++      }
++      if (intr->intrinsic != nir_intrinsic_vulkan_resource_reindex ||
++          !nir_src_is_const(intr->src[1]))
++         return NULL;
++      element += nir_src_as_uint(intr->src[1]);
++      index = intr->src[0].ssa;
++   }
++   return NULL;
++}
++
+ static bool
+ rd_lower_intrinsic(nir_builder *b, nir_intrinsic_instr *intr, void *data)
+ {
+@@ -23,58 +110,17 @@
+    b->cursor = nir_before_instr(&intr->instr);
+    nir_def *replacement = NULL;
+    switch (intr->intrinsic) {
+-   case nir_intrinsic_vulkan_resource_index: {
+-      uint32_t set = nir_intrinsic_desc_set(intr), binding = nir_intrinsic_binding(intr);
+-      if (set >= state->pipeline->layout->set_count) {
++   case nir_intrinsic_load_vulkan_descriptor: {
++      const struct rd_nir_resource_binding *resource =
++         rd_buffer_resource(state->pipeline, intr->src[0].ssa);
++      if (!resource || resource->buffer_slot == UINT32_MAX) {
+          state->failed = true;
+          return false;
+       }
+-      struct rd_set_layout *layout = container_of(state->pipeline->layout->set_layouts[set],
+-                                                 struct rd_set_layout, vk);
+-      const struct rd_binding *found = NULL;
+-      for (uint32_t i = 0; i < layout->binding_count; i++)
+-         if (layout->bindings[i].binding == binding)
+-            found = &layout->bindings[i];
+-      if (!found) {
+-         state->failed = true;
+-         return false;
+-      }
+-      uint32_t first = state->pipeline->set_offsets[set] + found->slot;
+-      uint32_t buffer_slot = UINT32_MAX;
+-      for (uint32_t i = 0; i < state->pipeline->resource_count; i++) {
+-         const struct rd_nir_resource_binding *resource = &state->pipeline->resources[i];
+-         if (resource->descriptor_set == set && resource->binding == binding) {
+-            buffer_slot = resource->buffer_slot;
+-            break;
+-         }
+-      }
+-      if (buffer_slot == UINT32_MAX) {
+-         state->failed = true;
+-         return false;
+-      }
+-      if (nir_src_is_const(intr->src[0])) {
+-         uint32_t index = nir_src_as_uint(intr->src[0]);
+-         if (index >= found->count) {
+-            state->failed = true;
+-            return false;
+-         }
+-         state->pipeline->used_descriptors |= 1u << (first + index);
+-      } else {
+-         for (uint32_t i = 0; i < found->count; i++)
+-            state->pipeline->used_descriptors |= 1u << (first + i);
+-      }
+-      replacement = nir_vec2(b, nir_iadd_imm(b, intr->src[0].ssa,
+-         buffer_slot), nir_imm_int(b, 0));
++      state->pipeline->used_descriptors |= UINT64_C(1) << resource->descriptor_slot;
++      replacement = nir_vec2(b, nir_imm_int(b, resource->buffer_slot), nir_imm_int(b, 0));
+       break;
+    }
+-   case nir_intrinsic_vulkan_resource_reindex:
+-      replacement = nir_vec2(b, nir_iadd(b, nir_channel(b, intr->src[0].ssa, 0),
+-                                        intr->src[1].ssa),
+-                               nir_channel(b, intr->src[0].ssa, 1));
+-      break;
+-   case nir_intrinsic_load_vulkan_descriptor:
+-      replacement = intr->src[0].ssa;
+-      break;
+    case nir_intrinsic_load_ubo:
+       replacement = nir_load_ssbo(b, intr->num_components, intr->def.bit_size,
+          intr->src[0].ssa, intr->src[1].ssa,
+@@ -123,14 +169,14 @@
+       ralloc_free(nir);
+       return VK_ERROR_FEATURE_NOT_PRESENT;
+    }
+-   if (!rd_nir_lower_compute_resources(nir, pipeline->resources,
+-          pipeline->resource_count, &pipeline->resource_usage)) {
++   NIR_PASS(_, nir, nir_opt_constant_folding);
++   NIR_PASS(_, nir, nir_opt_dce);
++   if (!rd_nir_lower_compute_resources(nir, rd_pipeline_resource,
++          pipeline, &pipeline->resource_usage)) {
+       ralloc_free(nir);
+       return VK_ERROR_FEATURE_NOT_PRESENT;
+    }
+    pipeline->used_descriptors |= pipeline->resource_usage.descriptors;
+-   nir->info.num_ubos = 0;
+-   nir->info.num_ssbos = pipeline->buffer_count;
+    struct rd_lower_state lower = { .pipeline = pipeline };
+    nir_shader_intrinsics_pass(nir, rd_lower_intrinsic,
+       nir_metadata_control_flow, &lower);
+@@ -138,6 +184,10 @@
+       ralloc_free(nir);
+       return VK_ERROR_FEATURE_NOT_PRESENT;
+    }
++   NIR_PASS(_, nir, nir_opt_dce);
++   pipeline->descriptor_count = pipeline->resource_count;
++   nir->info.num_ubos = 0;
++   nir->info.num_ssbos = pipeline->buffer_count;
+    const struct nir_lower_compute_system_values_options sysvals = {
+       .has_base_workgroup_id = true,
+    };
+@@ -146,6 +196,7 @@
+    ir3_nir_lower_io(nir);
+    struct ir3_shader_options options = {
+       .api_wavesize = IR3_SINGLE_ONLY,
++      .api_subgroup_size = 16,
+       .real_wavesize = IR3_SINGLE_ONLY,
+       .push_consts_type = IR3_PUSH_CONSTS_PER_STAGE,
+       .push_consts_dwords = 32,
+@@ -232,54 +283,6 @@
+    return VK_SUCCESS;
+ }
+ 
+-static bool
+-rd_pipeline_resources(struct rd_pipeline *pipeline)
+-{
+-   uint32_t textures = 0, samplers = 0, images = 0;
+-   for (uint32_t i = 0; i < pipeline->layout->set_count; i++) {
+-      struct rd_set_layout *set = container_of(pipeline->layout->set_layouts[i],
+-                                              struct rd_set_layout, vk);
+-      for (uint32_t j = 0; j < set->binding_count; j++) {
+-         const struct rd_binding *binding = &set->bindings[j];
+-         uint32_t slot = pipeline->set_offsets[i] + binding->slot;
+-         bool buffer = binding->type == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER ||
+-            binding->type == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC ||
+-            binding->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER ||
+-            binding->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+-         bool texture = binding->type == VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE ||
+-            binding->type == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER ||
+-            binding->type == VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER;
+-         bool sampler = binding->type == VK_DESCRIPTOR_TYPE_SAMPLER ||
+-            binding->type == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+-         bool image = binding->type == VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ||
+-            binding->type == VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
+-         if ((texture && binding->count > 16 - textures) ||
+-             (sampler && binding->count > 16 - samplers) ||
+-             (image && binding->count > 16 - images))
+-            return false;
+-         struct rd_nir_resource_binding *resource =
+-            &pipeline->resources[pipeline->resource_count++];
+-         *resource = (struct rd_nir_resource_binding) {
+-            .descriptor_set = i, .binding = binding->binding, .count = binding->count,
+-            .descriptor_slot = slot, .type = binding->type,
+-            .buffer_slot = buffer ? pipeline->buffer_count : UINT32_MAX,
+-            .texture_slot = textures, .sampler_slot = samplers, .image_slot = images,
+-         };
+-         for (uint32_t k = 0; k < binding->count; k++) {
+-            if (buffer)
+-               pipeline->buffer_descriptors[pipeline->buffer_count++] = slot + k;
+-            if (texture)
+-               pipeline->texture_descriptors[textures++] = slot + k;
+-            if (sampler)
+-               pipeline->sampler_descriptors[samplers++] = slot + k;
+-            if (image)
+-               pipeline->image_descriptors[images++] = slot + k;
+-         }
+-      }
+-   }
+-   return true;
+-}
+-
+ static void
+ rd_destroy_pipeline(struct rd_device *device, struct rd_pipeline *pipeline,
+                      const VkAllocationCallbacks *allocator)
+@@ -300,36 +303,33 @@
+    VkPipeline *out)
+ {
+    VK_FROM_HANDLE(rd_device, device, handle);
+-   VkResult result = VK_SUCCESS;
++   VkResult failure = VK_SUCCESS;
+    memset(out, 0, count * sizeof(*out));
+    for (uint32_t i = 0; i < count; i++) {
+       VK_FROM_HANDLE(vk_pipeline_layout, layout, infos[i].layout);
+       if (infos[i].stage.stage != VK_SHADER_STAGE_COMPUTE_BIT ||
+           layout->set_count > RD_MAX_SETS ||
+-          (infos[i].flags & ~VK_PIPELINE_CREATE_DISPATCH_BASE_BIT))
+-         return VK_ERROR_FEATURE_NOT_PRESENT;
++          (infos[i].flags & ~(VK_PIPELINE_CREATE_DISPATCH_BASE_BIT |
++             VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT | VK_PIPELINE_CREATE_DERIVATIVE_BIT))) {
++         failure = VK_ERROR_FEATURE_NOT_PRESENT;
++         continue;
++      }
+       struct rd_pipeline *pipeline = vk_object_zalloc(&device->vk, allocator,
+          sizeof(*pipeline), VK_OBJECT_TYPE_PIPELINE);
+-      if (!pipeline)
+-         return VK_ERROR_OUT_OF_HOST_MEMORY;
++      if (!pipeline) {
++         failure = VK_ERROR_OUT_OF_HOST_MEMORY;
++         continue;
++      }
+       pipeline->layout = vk_pipeline_layout_ref(layout);
+-      for (uint32_t j = 0; j < layout->set_count; j++) {
+-         struct rd_set_layout *set = container_of(layout->set_layouts[j], struct rd_set_layout, vk);
+-         pipeline->set_offsets[j] = pipeline->descriptor_count;
+-         pipeline->descriptor_count += set->descriptor_count;
+-      }
+-      if (pipeline->descriptor_count > RD_MAX_BINDINGS ||
+-          !rd_pipeline_resources(pipeline))
+-         result = VK_ERROR_FEATURE_NOT_PRESENT;
+-      else
+-         result = rd_compile_pipeline(device, pipeline, &infos[i].stage);
++      VkResult result = rd_compile_pipeline(device, pipeline, &infos[i].stage);
+       if (result != VK_SUCCESS) {
+          rd_destroy_pipeline(device, pipeline, allocator);
+-         return result;
++         failure = result;
++         continue;
+       }
+       out[i] = rd_pipeline_to_handle(pipeline);
+    }
+-   return result;
++   return failure;
+ }
+ 
+ VKAPI_ATTR void VKAPI_CALL
+--- a/src/freedreno/radish/rd_private.h
++++ b/src/freedreno/radish/rd_private.h
+@@ -67,16 +67,17 @@
+ VK_DEFINE_NONDISP_HANDLE_CASTS(rd_memory, vk.base, VkDeviceMemory, VK_OBJECT_TYPE_DEVICE_MEMORY)
+ VK_DEFINE_NONDISP_HANDLE_CASTS(rd_buffer, vk.base, VkBuffer, VK_OBJECT_TYPE_BUFFER)
+ 
+-#define RD_MAX_BINDINGS 32
++#define RD_MAX_BINDINGS 1024
++#define RD_MAX_ACTIVE_RESOURCES 64
+ #define RD_MAX_SETS 4
+ #define RD_MAX_SHARED_SIZE 16384
+-struct rd_binding { uint32_t binding, count, slot; VkDescriptorType type; VkShaderStageFlags stages; };
++struct rd_binding { uint32_t binding, count, slot; VkDescriptorType type; VkShaderStageFlags stages; uint32_t immutable_offset; };
+ struct rd_set_layout {
+    struct vk_descriptor_set_layout vk;
+    uint32_t binding_count, descriptor_count;
+-   struct rd_binding bindings[RD_MAX_BINDINGS];
+-   uint32_t immutable_samplers;
+-   struct vk_sampler_state immutable_sampler_states[RD_MAX_BINDINGS];
++   uint32_t immutable_count;
++   struct vk_sampler_state *immutable_sampler_states;
++   struct rd_binding bindings[];
+ };
+ struct rd_descriptor {
+    VkDescriptorType type;
+@@ -98,7 +99,7 @@
+    struct list_head link;
+    struct rd_descriptor_pool *pool;
+    struct rd_set_layout *layout;
+-   struct rd_descriptor descriptors[RD_MAX_BINDINGS];
++   struct rd_descriptor descriptors[];
+ };
+ struct rd_pipeline {
+    struct vk_object_base base;
+@@ -106,20 +107,21 @@
+    struct ir3_shader_variant *variant;
+    struct fd_bo *bo, *private_bo;
+    uint32_t private_per_sp;
+-   uint32_t set_offsets[RD_MAX_SETS], descriptor_count, used_descriptors;
+-   struct rd_nir_resource_binding resources[RD_MAX_BINDINGS];
++   uint32_t descriptor_count;
++   uint64_t used_descriptors;
++   struct rd_nir_resource_binding resources[RD_MAX_ACTIVE_RESOURCES];
+    uint32_t resource_count;
+    struct rd_nir_resource_usage resource_usage;
+    uint32_t texture_descriptors[16], sampler_descriptors[16], image_descriptors[16];
+-   uint32_t buffer_count, buffer_descriptors[RD_MAX_BINDINGS];
++   uint32_t buffer_count, buffer_descriptors[32];
+ };
+ struct rd_dispatch {
+    struct rd_pipeline *pipeline;
+    struct rd_buffer *indirect;
+    VkDeviceSize indirect_offset;
+-   struct rd_descriptor descriptors[RD_MAX_BINDINGS];
++   struct rd_descriptor descriptors[RD_MAX_ACTIVE_RESOURCES];
+    struct rd_descriptor_set *sets[RD_MAX_SETS];
+-   uint32_t dynamic_offsets[RD_MAX_BINDINGS];
++   uint32_t dynamic_offsets[RD_MAX_ACTIVE_RESOURCES];
+    uint32_t push[32], grid[3], base[3];
+ };
+ struct rd_event {
+--- a/src/freedreno/radish/rd_queue.c
++++ b/src/freedreno/radish/rd_queue.c
+@@ -390,8 +390,8 @@
+          .base_group_x = dispatch->base[0] + group_base[0],
+          .base_group_y = dispatch->base[1] + group_base[1],
+          .base_group_z = dispatch->base[2] + group_base[2],
+-         .subgroup_size = 32,
+-         .subgroup_id_shift = 5,
++         .subgroup_size = 16,
++         .subgroup_id_shift = 4,
+          .local_group_size_x = v->local_size[0],
+          .local_group_size_y = v->local_size[1],
+          .local_group_size_z = v->local_size[2],
+@@ -565,7 +565,7 @@
+       return VK_SUCCESS;
+    for (unsigned i = 0; i < dispatch->pipeline->descriptor_count; i++) {
+       const struct rd_descriptor *desc = &dispatch->descriptors[i];
+-      if ((dispatch->pipeline->used_descriptors & (1u << i)) &&
++      if ((dispatch->pipeline->used_descriptors & (UINT64_C(1) << i)) &&
+           !rd_descriptor_ready(desc))
+          return VK_ERROR_UNKNOWN;
+    }
+@@ -902,20 +902,16 @@
+             result = VK_SUCCESS;
+             indirect = *dispatch;
+             dispatch = &indirect;
+-            for (uint32_t i = 0; i < dispatch->pipeline->layout->set_count; i++) {
+-               if (!dispatch->sets[i])
++            for (uint32_t i = 0; i < dispatch->pipeline->resource_count; i++) {
++               if (!(dispatch->pipeline->used_descriptors & (UINT64_C(1) << i)))
+                   continue;
+-               struct rd_set_layout *layout = container_of(
+-                  dispatch->pipeline->layout->set_layouts[i], struct rd_set_layout, vk);
+-               uint32_t first = dispatch->pipeline->set_offsets[i];
+-               memcpy(&indirect.descriptors[first], dispatch->sets[i]->descriptors,
+-                      layout->descriptor_count * sizeof(struct rd_descriptor));
+-               for (uint32_t j = 0; j < layout->descriptor_count; j++) {
+-                  struct rd_descriptor *descriptor = &indirect.descriptors[first + j];
+-                  if (descriptor->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC ||
+-                      descriptor->type == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC)
+-                     descriptor->offset += dispatch->dynamic_offsets[first + j];
+-               }
++               const struct rd_nir_resource_binding *resource = &dispatch->pipeline->resources[i];
++               const struct rd_descriptor_set *set = dispatch->sets[resource->descriptor_set];
++               indirect.descriptors[i] = set->descriptors[resource->logical_slot];
++               struct rd_descriptor *descriptor = &indirect.descriptors[i];
++               if (descriptor->type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC ||
++                   descriptor->type == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC)
++                  descriptor->offset += dispatch->dynamic_offsets[i];
+             }
+             if (dispatch->indirect)
+                result = rd_resolve_indirect(device, &indirect);
+--- a/src/freedreno/radish/rd_resources.c
++++ b/src/freedreno/radish/rd_resources.c
+@@ -124,6 +124,28 @@
+    case VK_FORMAT_R32G32B32A32_UINT: return TFMT5_32_32_32_32_UINT;
+    case VK_FORMAT_R32G32B32A32_SINT: return TFMT5_32_32_32_32_SINT;
+    case VK_FORMAT_R32G32B32A32_SFLOAT: return TFMT5_32_32_32_32_FLOAT;
++   case VK_FORMAT_R5G6B5_UNORM_PACK16: return TFMT5_5_6_5_UNORM;
++   case VK_FORMAT_A1R5G5B5_UNORM_PACK16: return TFMT5_5_5_5_1_UNORM;
++   case VK_FORMAT_A8B8G8R8_UNORM_PACK32: return TFMT5_8_8_8_8_UNORM;
++   case VK_FORMAT_A8B8G8R8_SNORM_PACK32: return TFMT5_8_8_8_8_SNORM;
++   case VK_FORMAT_A8B8G8R8_UINT_PACK32: return TFMT5_8_8_8_8_UINT;
++   case VK_FORMAT_A8B8G8R8_SINT_PACK32: return TFMT5_8_8_8_8_SINT;
++   case VK_FORMAT_A8B8G8R8_SRGB_PACK32: return TFMT5_8_8_8_8_UNORM;
++   case VK_FORMAT_A2R10G10B10_UNORM_PACK32: return TFMT5_10_10_10_2_UNORM;
++   case VK_FORMAT_A2R10G10B10_UINT_PACK32: return TFMT5_10_10_10_2_UINT;
++   case VK_FORMAT_A2B10G10R10_UNORM_PACK32: return TFMT5_10_10_10_2_UNORM;
++   case VK_FORMAT_A2B10G10R10_UINT_PACK32: return TFMT5_10_10_10_2_UINT;
++   case VK_FORMAT_B10G11R11_UFLOAT_PACK32: return TFMT5_11_11_10_FLOAT;
++   case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32: return TFMT5_9_9_9_E5_FLOAT;
++   case VK_FORMAT_R32G32B32_UINT: return TFMT5_32_32_32_UINT;
++   case VK_FORMAT_R32G32B32_SINT: return TFMT5_32_32_32_SINT;
++   case VK_FORMAT_R32G32B32_SFLOAT: return TFMT5_32_32_32_FLOAT;
++   case VK_FORMAT_R4G4B4A4_UNORM_PACK16: return TFMT5_4_4_4_4_UNORM;
++   case VK_FORMAT_B4G4R4A4_UNORM_PACK16: return TFMT5_4_4_4_4_UNORM;
++   case VK_FORMAT_B5G6R5_UNORM_PACK16: return TFMT5_5_6_5_UNORM;
++   case VK_FORMAT_B8G8R8A8_SNORM: return TFMT5_8_8_8_8_SNORM;
++   case VK_FORMAT_B8G8R8A8_UINT: return TFMT5_8_8_8_8_UINT;
++   case VK_FORMAT_B8G8R8A8_SINT: return TFMT5_8_8_8_8_SINT;
+    default: return TFMT5_NONE;
+    }
+ }
+@@ -137,8 +159,32 @@
+ bool
+ rd_storage_shader_format_supported(VkFormat format)
+ {
+-   return rd_shader_format_supported(format) && !vk_format_is_srgb(format) &&
+-          format != VK_FORMAT_B8G8R8A8_UNORM;
++   switch (format) {
++   case VK_FORMAT_R4G4B4A4_UNORM_PACK16:
++   case VK_FORMAT_B4G4R4A4_UNORM_PACK16:
++   case VK_FORMAT_B5G6R5_UNORM_PACK16:
++   case VK_FORMAT_B8G8R8A8_SNORM:
++   case VK_FORMAT_B8G8R8A8_UINT:
++   case VK_FORMAT_B8G8R8A8_SINT:
++
++   case VK_FORMAT_R5G6B5_UNORM_PACK16:
++   case VK_FORMAT_A1R5G5B5_UNORM_PACK16:
++   case VK_FORMAT_A8B8G8R8_UNORM_PACK32:
++   case VK_FORMAT_A8B8G8R8_SNORM_PACK32:
++   case VK_FORMAT_A8B8G8R8_UINT_PACK32:
++   case VK_FORMAT_A8B8G8R8_SINT_PACK32:
++   case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
++   case VK_FORMAT_A2R10G10B10_UNORM_PACK32:
++   case VK_FORMAT_A2R10G10B10_UINT_PACK32:
++   case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32:
++   case VK_FORMAT_R32G32B32_UINT:
++   case VK_FORMAT_R32G32B32_SINT:
++   case VK_FORMAT_R32G32B32_SFLOAT:
++      return false;
++   default:
++      return rd_shader_format_supported(format) && !vk_format_is_srgb(format) &&
++             format != VK_FORMAT_B8G8R8A8_UNORM;
++   }
+ }
+ 
+ bool
+--- a/src/freedreno/ir3/ir3_shader.c
++++ b/src/freedreno/ir3/ir3_shader.c
+@@ -1385,6 +1385,15 @@
+                              mesa_shader_stage stage, unsigned *subgroup_size,
+                              unsigned *max_subgroup_size)
+ {
++   if (options->api_subgroup_size) {
++      assert(mesa_shader_stage_is_compute(stage));
++      assert(options->api_wavesize == IR3_SINGLE_ONLY);
++      assert(util_is_power_of_two_nonzero(options->api_subgroup_size));
++      assert(options->api_subgroup_size <= compiler->info->threadsize_base);
++      *subgroup_size = *max_subgroup_size = options->api_subgroup_size;
++      return;
++   }
++
+    switch (options->api_wavesize) {
+    case IR3_SINGLE_ONLY:
+       *subgroup_size = *max_subgroup_size = compiler->info->threadsize_base;
+--- a/src/freedreno/ir3/ir3_shader.h
++++ b/src/freedreno/ir3/ir3_shader.h
+@@ -621,6 +621,7 @@
+     * application simply sees the upper half as always disabled.
+     */
+    enum ir3_wavesize_option api_wavesize;
++   uint32_t api_subgroup_size;
+    /* What wavesizes we're allowed to actually use. If the API wavesize is
+     * single-only, then this must be single-only too.
+     */
+--- a/src/freedreno/ir3/ir3_disk_cache.cpp
++++ b/src/freedreno/ir3/ir3_disk_cache.cpp
+@@ -82,6 +82,8 @@
+ 
+    _mesa_blake3_update(&ctx, &shader->options.api_wavesize,
+                      sizeof(shader->options.api_wavesize));
++   _mesa_blake3_update(&ctx, &shader->options.api_subgroup_size,
++                     sizeof(shader->options.api_subgroup_size));
+    _mesa_blake3_update(&ctx, &shader->options.real_wavesize,
+                      sizeof(shader->options.real_wavesize));
+    _mesa_blake3_update(&ctx, &shader->options.nir_options,

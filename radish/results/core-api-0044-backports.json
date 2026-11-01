@@ -1,0 +1,412 @@
+{
+  "status": "partial_success",
+  "driver_sha256": "61bad8227b07355bd174f1d7255ce0a3545ce8562fb006bea1ee626d696c52be",
+  "patch_sha256": "fd2181c466e9b14b88c42a84b80d3412f106758d834e8758f77ba3561568838c",
+  "source_files": {
+    "src/freedreno/radish/rd_command.c": "50afaf5324b859985b9d9c7f6221d6aa2c066d3c89a93288c7115d4fc1edb726",
+    "src/freedreno/radish/rd_descriptor.c": "b17f24bd0fddc4cc18ba301c5a5981006baae510737d311b38e8ff7d26fa2653",
+    "src/freedreno/radish/rd_image.c": "c94ae918845a4fd73fbac151f7650261d8e7d62095970a5375c7464da867e687",
+    "src/freedreno/radish/rd_instance.c": "e02e2419523bc9b61ad507d8b6c3cbeec9f2b9db940a304504235aa69788f822",
+    "src/freedreno/radish/rd_memory.c": "7582196eddd5f09c6fae602f2e8f41cd9903b67fe547cd316050f43769ba1d52",
+    "src/freedreno/radish/rd_nir_resources.c": "d335f531284ed971e895eceed7715463b6181f4f4599d7003f464d43329396db",
+    "src/freedreno/radish/rd_nir_resources.h": "b642ecf489b172cd7903e9222c4fcc54cc06afad2e7a4da4b7e3b0c6da7f44bb",
+    "src/freedreno/radish/rd_pipeline.c": "01da0913ffcc6b0f18603f80cd34a5a8fcd946c75a5627d1041b16004b67e38b",
+    "src/freedreno/radish/rd_private.h": "4f101efbbcaae248880a1d5b72c5e9dc84ad8a8c795a3dd49b0bcb9b6035cee6",
+    "src/freedreno/radish/rd_queue.c": "30462bcc2cc5e44d20bcb21b99bf4812d76996e261770e045dc5b77e9ed2db8e",
+    "src/freedreno/radish/rd_resources.c": "9eb9325c21d80f57c5faead58355c0756f4d782e872e973e955e01bb3629321e",
+    "src/freedreno/ir3/ir3_shader.c": "b5b30098c80aa4f905e943bb86cd539848667acb02e72aed855724d906ddc856",
+    "src/freedreno/ir3/ir3_shader.h": "8c1fafa9c8ae10c1b672ee33bb4be2fb38a894e5b7a2d2eccc6e8b6359925fad",
+    "src/freedreno/ir3/ir3_disk_cache.cpp": "0ab8f6824fac71e1676341a707431a7bb2496ab27db7011b70e3dbc704796c51"
+  },
+  "files": {
+    "api5.spv": {
+      "bytes": 4572,
+      "sha256": "b3b1a5925dcfe24ec14d3ab2b64170a69c9ae328ecc091519b32efb1c66e4421"
+    },
+    "resources": {
+      "bytes": 675440,
+      "sha256": "a909789a88092fc5bbfaa0a7fe30d9953f06b9be41d00ed80e6402396f275687"
+    },
+    "subgroup.spv": {
+      "bytes": 5380,
+      "sha256": "19226d99d5986c0e92258ddeccf7809112d8e77e16f83a03320e186ce382459d"
+    },
+    "event-query": {
+      "bytes": 635984,
+      "sha256": "1972dd8d6ffeea44c458f580cf20ec879358532d9b6be0be6a81c8dc2a02b058"
+    },
+    "resources.spv": {
+      "bytes": 6868,
+      "sha256": "681812746fe27cfbe5dc44728dbededd62758bd6c61a35aca616ac5121987ae0"
+    },
+    "api5": {
+      "bytes": 671664,
+      "sha256": "64c38f81d2c4a017fea67db847caff2133bbfe74778d1549bf2b5763fde64b99"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 48433240,
+      "sha256": "61bad8227b07355bd174f1d7255ce0a3545ce8562fb006bea1ee626d696c52be"
+    },
+    "event-query.spv": {
+      "bytes": 1468,
+      "sha256": "b1fc3768389d446b6a4d296d15f13b7906b8fec2a7fa98622122a0d417c5640c"
+    },
+    "subgroup": {
+      "bytes": 647672,
+      "sha256": "c8074a22325d747a646fefac0c0c850a5e79d3c73fa23f7592e369b2d924d826"
+    }
+  },
+  "capture": "/run/media/jethac/Shared/radish/core-compute-0044-backports-native16/probe",
+  "run_log_sha256": "fb0f8f84fa5a8ee42c5a90f19d9c4f701822161ec3b819fff746569dfe807545",
+  "compile_suites_passed": [
+    "api5",
+    "event-query",
+    "resources",
+    "subgroup"
+  ],
+  "functional_suites_passed": [
+    "api5",
+    "event-query",
+    "resources"
+  ],
+  "subgroup_basic": {
+    "api_size": 16,
+    "public_supported_operations": 0,
+    "passed_locals": [
+      [
+        32,
+        1,
+        1
+      ],
+      [
+        33,
+        1,
+        1
+      ]
+    ],
+    "failed_local": [
+      8,
+      8,
+      1
+    ],
+    "failure": "election/member oracle",
+    "unattempted_local": [
+      128,
+      1,
+      1
+    ],
+    "no_complete_BASIC_claim": true
+  },
+  "public_KHR_extensions_exercised": [
+    "VK_KHR_descriptor_update_template",
+    "VK_KHR_maintenance3",
+    "VK_KHR_bind_memory2",
+    "VK_KHR_get_memory_requirements2"
+  ],
+  "API_version": "1.0",
+  "service_seconds": 2.257,
+  "peak_mib": 7.3,
+  "swap_mib": 0,
+  "new_gpu_faults": false,
+  "services": [
+    "straylight-listen active",
+    "straylight-voice active"
+  ],
+  "original40": {
+    "representative_paths_exercised": 38,
+    "build_only_not_exercised": [
+      "vkCmdCopyImage",
+      "vkCmdClearColorImage"
+    ],
+    "not_full_semantics_or_conformance": true
+  },
+  "commands": [
+    {
+      "command": "vkBindImageMemory",
+      "version": "1.0",
+      "previous_status": "Broken chain / images",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkGetImageMemoryRequirements",
+      "version": "1.0",
+      "previous_status": "Broken chain / images",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkGetImageSparseMemoryRequirements",
+      "version": "1.0",
+      "previous_status": "Broken chain / conditional",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative zero-result query exercised in backports batch; sparse binding unsupported"
+    },
+    {
+      "command": "vkCreateQueryPool",
+      "version": "1.0",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkDestroyQueryPool",
+      "version": "1.0",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkGetQueryPoolResults",
+      "version": "1.0",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkCreateImage",
+      "version": "1.0",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkDestroyImage",
+      "version": "1.0",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkGetImageSubresourceLayout",
+      "version": "1.0",
+      "previous_status": "Images missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkCreateImageView",
+      "version": "1.0",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkDestroyImageView",
+      "version": "1.0",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkCmdCopyImage",
+      "version": "1.0",
+      "previous_status": "Images missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "implemented/build-only; not exercised"
+    },
+    {
+      "command": "vkCmdCopyBufferToImage",
+      "version": "1.0",
+      "previous_status": "Images missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkCmdCopyImageToBuffer",
+      "version": "1.0",
+      "previous_status": "Images missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkCmdBeginQuery",
+      "version": "1.0",
+      "previous_status": "Broken chain",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkCmdEndQuery",
+      "version": "1.0",
+      "previous_status": "Broken chain",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkCmdResetQueryPool",
+      "version": "1.0",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkCmdWriteTimestamp",
+      "version": "1.0",
+      "previous_status": "Broken chain / disabled",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkCmdCopyQueryPoolResults",
+      "version": "1.0",
+      "previous_status": "Broken chain",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkCmdExecuteCommands",
+      "version": "1.0",
+      "previous_status": "Blocked",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkCreateEvent",
+      "version": "1.0",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkDestroyEvent",
+      "version": "1.0",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkGetEventStatus",
+      "version": "1.0",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkSetEvent",
+      "version": "1.0",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkResetEvent",
+      "version": "1.0",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkCreateBufferView",
+      "version": "1.0",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkDestroyBufferView",
+      "version": "1.0",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkCreateSampler",
+      "version": "1.0",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkDestroySampler",
+      "version": "1.0",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkCmdClearColorImage",
+      "version": "1.0",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "implemented/build-only; not exercised"
+    },
+    {
+      "command": "vkCmdSetEvent",
+      "version": "1.0",
+      "previous_status": "Broken chain",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkCmdResetEvent",
+      "version": "1.0",
+      "previous_status": "Broken chain",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkCmdWaitEvents",
+      "version": "1.0",
+      "previous_status": "Broken chain",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch"
+    },
+    {
+      "command": "vkBindImageMemory2",
+      "version": "1.1",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised through public KHR alias",
+      "public_availability": "public KHR alias exercised under API1.0 with corresponding extension enabled"
+    },
+    {
+      "command": "vkGetImageMemoryRequirements2",
+      "version": "1.1",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised through public KHR alias",
+      "public_availability": "public KHR alias exercised under API1.0 with corresponding extension enabled"
+    },
+    {
+      "command": "vkGetImageSparseMemoryRequirements2",
+      "version": "1.1",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative zero-result query exercised in backports batch; sparse binding unsupported",
+      "public_availability": "public KHR alias exercised under API1.0 with corresponding extension enabled"
+    },
+    {
+      "command": "vkGetPhysicalDeviceExternalBufferProperties",
+      "version": "1.1",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch",
+      "public_availability": "core name filtered under API1.0; internal implementation evidence only"
+    },
+    {
+      "command": "vkCmdDispatchBase",
+      "version": "1.1",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised in consolidated batch",
+      "public_availability": "core name filtered under API1.0; internal implementation evidence only"
+    },
+    {
+      "command": "vkUpdateDescriptorSetWithTemplate",
+      "version": "1.1",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised through public KHR alias",
+      "public_availability": "public KHR alias exercised under API1.0 with corresponding extension enabled"
+    },
+    {
+      "command": "vkGetDescriptorSetLayoutSupport",
+      "version": "1.1",
+      "previous_status": "Missing",
+      "implementation": "implemented, experimental bounded compute scope",
+      "device_evidence": "representative passing path exercised through public KHR alias",
+      "public_availability": "public KHR alias exercised under API1.0 with corresponding extension enabled"
+    }
+  ]
+}

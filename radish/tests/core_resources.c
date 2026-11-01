@@ -61,13 +61,19 @@ static int image_create(const struct vk_device_dispatch_table *d,VkDevice device
       .usage=usage|VK_IMAGE_USAGE_TRANSFER_SRC_BIT|VK_IMAGE_USAGE_TRANSFER_DST_BIT,
       .initialLayout=VK_IMAGE_LAYOUT_UNDEFINED};
    SUCCESS(d->CreateImage(device,&ci,NULL,&image->image));
-   VkMemoryRequirements r; d->GetImageMemoryRequirements(device,image->image,&r);
+   VkImageMemoryRequirementsInfo2 ri={.sType=VK_STRUCTURE_TYPE_IMAGE_MEMORY_REQUIREMENTS_INFO_2,.image=image->image};
+   VkMemoryRequirements2 rr={.sType=VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2};
+   d->GetImageMemoryRequirements2(device,&ri,&rr); VkMemoryRequirements r=rr.memoryRequirements;
+   uint32_t sparse=UINT32_MAX; d->GetImageSparseMemoryRequirements(device,image->image,&sparse,NULL); REQUIRE(!sparse);
+   VkImageSparseMemoryRequirementsInfo2 si={.sType=VK_STRUCTURE_TYPE_IMAGE_SPARSE_MEMORY_REQUIREMENTS_INFO_2,.image=image->image};
+   sparse=UINT32_MAX; d->GetImageSparseMemoryRequirements2(device,&si,&sparse,NULL); REQUIRE(!sparse);
    unsigned type=memory_type(&r,properties); REQUIRE(type!=UINT32_MAX);
    REQUIRE(r.alignment && !(r.alignment%4) && r.size<1024*1024);
    VkMemoryAllocateInfo ai={.sType=VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
       .allocationSize=r.alignment+r.size+64,.memoryTypeIndex=type};
    SUCCESS(d->AllocateMemory(device,&ai,NULL,&image->memory));
-   SUCCESS(d->BindImageMemory(device,image->image,image->memory,r.alignment));
+   VkBindImageMemoryInfo bind={.sType=VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_INFO,.image=image->image,.memory=image->memory,.memoryOffset=r.alignment};
+   SUCCESS(d->BindImageMemory2(device,1,&bind));
    SUCCESS(d->MapMemory(device,image->memory,0,VK_WHOLE_SIZE,0,(void **)&image->map));
    image->words=ai.allocationSize/4; image->binding_words=r.alignment/4;
    VkImageSubresource sub={.aspectMask=VK_IMAGE_ASPECT_COLOR_BIT}; VkSubresourceLayout layout;
@@ -177,7 +183,8 @@ int main(int argc,char **argv)
    PFN_vkGetInstanceProcAddr gipa=(PFN_vkGetInstanceProcAddr)dlsym(lib,"vk_icdGetInstanceProcAddr"); REQUIRE(gipa);
    VkInstance instance=VK_NULL_HANDLE; INSTANCE_FN(CreateInstance);
    VkApplicationInfo app={.sType=VK_STRUCTURE_TYPE_APPLICATION_INFO,.apiVersion=VK_API_VERSION_1_0};
-   VkInstanceCreateInfo ici={.sType=VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,.pApplicationInfo=&app};
+   const char *iex[]={VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME};
+   VkInstanceCreateInfo ici={.sType=VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,.pApplicationInfo=&app,.enabledExtensionCount=1,.ppEnabledExtensionNames=iex};
    SUCCESS(CreateInstance(&ici,NULL,&instance));
    INSTANCE_FN(EnumeratePhysicalDevices); INSTANCE_FN(GetPhysicalDeviceMemoryProperties);
    INSTANCE_FN(GetPhysicalDeviceProperties); INSTANCE_FN(GetPhysicalDeviceFormatProperties);
@@ -195,9 +202,17 @@ int main(int argc,char **argv)
    REQUIRE((fp.bufferFeatures & (VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT|VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT))==
       (VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT|VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT));
    float priority=1; VkDeviceQueueCreateInfo qci={.sType=VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,.queueCount=1,.pQueuePriorities=&priority};
-   VkDeviceCreateInfo dci={.sType=VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,.queueCreateInfoCount=1,.pQueueCreateInfos=&qci};
+   const char *dex[]={VK_KHR_BIND_MEMORY_2_EXTENSION_NAME,VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME};
+   VkDeviceCreateInfo dci={.sType=VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,.queueCreateInfoCount=1,.pQueueCreateInfos=&qci,.enabledExtensionCount=2,.ppEnabledExtensionNames=dex};
    VkDevice device; SUCCESS(CreateDevice(physical,&dci,NULL,&device));
-   struct rd_device *inside=rd_device_from_handle(device); const struct vk_device_dispatch_table *d=&inside->vk.dispatch_table;
+   struct rd_device *inside=rd_device_from_handle(device);
+   PFN_vkGetDeviceProcAddr gdpa=(PFN_vkGetDeviceProcAddr)gipa(instance,"vkGetDeviceProcAddr"); REQUIRE(gdpa);
+   struct vk_device_dispatch_table aliases=inside->vk.dispatch_table;
+   aliases.BindImageMemory2=(PFN_vkBindImageMemory2)gdpa(device,"vkBindImageMemory2KHR");
+   aliases.GetImageMemoryRequirements2=(PFN_vkGetImageMemoryRequirements2)gdpa(device,"vkGetImageMemoryRequirements2KHR");
+   aliases.GetImageSparseMemoryRequirements2=(PFN_vkGetImageSparseMemoryRequirements2)gdpa(device,"vkGetImageSparseMemoryRequirements2KHR");
+   REQUIRE(aliases.BindImageMemory2 && aliases.GetImageMemoryRequirements2 && aliases.GetImageSparseMemoryRequirements2);
+   const struct vk_device_dispatch_table *d=&aliases;
    VkSampler samplers[2];
    for (unsigned i=0;i<2;i++) {
       VkSamplerCreateInfo si={.sType=VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
