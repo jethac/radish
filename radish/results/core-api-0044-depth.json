@@ -1,0 +1,59 @@
+{
+  "status": "passed",
+  "driver": {
+    "bytes": 48574592,
+    "sha256": "a601f68d1507d6ea72f9a5cde034cdcf359232c932526bd39761ee6e944b26eb"
+  },
+  "source_snapshot": "checkpoint-depth-qualified-source",
+  "public_patch": {
+    "bytes": 9387,
+    "sha256": "dd62e150ae1de70a430afb26deac4d8366268357cd2c42e5ecc3c0fa456ed05e"
+  },
+  "capture": "WORK/core-compute-0044-depth-consumers/probe",
+  "run_log": {
+    "bytes": 2640,
+    "sha256": "e9a7149743498678916e85b1f5727d6ff60f01cae30a94f8096e315aae336e0c"
+  },
+  "helper": {
+    "bytes": 694280,
+    "sha256": "f95a0c540746a9177e9ed0c0786116b4cc993ee3b5140308e6771533dcb6563d"
+  },
+  "shader": {
+    "bytes": 8340,
+    "sha256": "be754a570d7ddb0805b72657b7a7cd649f90e5774c014b74c0a3788f9e7dbe34"
+  },
+  "rounds": 2,
+  "records_per_round": 85,
+  "words_per_record": 20,
+  "total_output_words": 3400,
+  "depth_scope": [
+    "D16_UNORM and D32_SFLOAT normalized nearest samples",
+    "LESS_OR_EQUAL shadow comparison at reference0.5",
+    "Host PREINITIALIZED source visibility",
+    "D32 same-format depth-image copy consumed by native sampling"
+  ],
+  "guards": {
+    "image_allocations": 6,
+    "buffer_allocations": 9,
+    "all_exact": true
+  },
+  "retained_scope": "UBO/dynamic offsets/late descriptor updates/mutable view/singleton fullsplit/color copy+clear/typed texels/nearest+linear checks pass",
+  "conditions": {
+    "service_seconds": 0.631,
+    "peak_mib": 7.7,
+    "swap_mib": 0,
+    "new_gpu_faults": false,
+    "services_active": true
+  },
+  "source_only_increments": [
+    "Image EXTENDED_USAGE and 2D_ARRAY_COMPATIBLE creation/view semantics",
+    "StorageBuffer-storage-class and relaxed-block-layout KHR extension exposure",
+    "Internal gen5 raw global-load primitive, no current consumer in this payload"
+  ],
+  "limitations": [
+    "Other compare operations, linear depth, stencil, large sampled arrays/cubes and full CTS not qualified.",
+    "No graphics-only depth clear or buffer/depth copies added.",
+    "Internal global-load primitive does not yet close sampled-array stride gap.",
+    "API remains1.0; no Vulkan1.1 or CTS conformance claim."
+  ]
+}

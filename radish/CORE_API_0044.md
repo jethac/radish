@@ -1,5 +1,13 @@
 # Core compute implementation: checkpoint 0044
 
+## 2026-11-02: native depth consumers pass
+
+ICDa601f68d passes D16/D32 nearest normalized sampling, LESS_OR_EQUAL comparison at reference0.5, host PREINITIALIZED source visibility and a same-format D32 depth-image copy consumed by native sampling. Both85-record rounds pass all20 fields per record (3400 words total) and full6 image/9 buffer allocation guards. The existing UBO, dynamic-offset, late-update, mutable/fullsplit, color transfer and typed-texel checks remain intact. Service631ms,7.7MiB,zero swap; no new GPU faults and both services active. [Exact paired result](results/core-api-0044-depth.json).
+
+Apply the tenth increment `0044-radish-image-maintenance-wip.patch` after barrier-image-size. Additional source/build work supplies EXTENDED_USAGE and 2D_ARRAY_COMPATIBLE image contracts, the StorageBuffer-storage-class and relaxed-block-layout KHR backports, and an internal gen5 raw global-load primitive. Those newly added paths have not all been exercised by this depth consumer; raw global loads are not yet consumed in this payload and do not close large-array sampling. The published resource helper now includes the exact depth checks under the existing `--suite resources` route.
+
+Other depth compare/filter modes, stencil, large sampled arrays/cubes and general workgroup/CTS coverage remain incomplete. The API stays1.0. The pinned CTS startup source has a mixed instance/device-version extension-routing defect under investigation; no CTS case has passed. Performance experiments remain paused.
+
 ## 2026-11-02: historical barrier reduction now passes
 
 The exact original ncnn width1/C3 reduction passes for logical local sizes32 and64 (stride32), with all three output means exact. The compiler now maps these even1D workgroup-barrier shapes to physical16×2 and32×2 while reconstructing the original logical IDs. Both use the unchanged residency guards,1KiB shared memory,16 full/13 half registers and no private memory. The measured ICD is934665fe; service2.901s,63MiB, no new GPU faults and both live services active. This closes the reproduced historical consumer failure, not all odd/general legal-workgroup behavior. [Paired source and result](results/core-api-0044-barrier-repack.json).
@@ -85,7 +93,7 @@ budget. It does not solve the earlier legal-workgroup/shared-memory failures.
 
 ## Consolidated reproduction
 
-Apply the nine0044 incremental patches in order to the documented0042 Mesa
+Apply the ten0044 incremental patches in order to the documented0042 Mesa
 stack and build the isolated driver. Build probes against its matching internal
 ABI:
 

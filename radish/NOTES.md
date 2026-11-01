@@ -1,5 +1,9 @@
 # Radish status
 
+## 2026-11-02: native depth consumers pass
+
+ICDa601f68d passes D16/D32 nearest normalized sampling, LESS_OR_EQUAL comparison at reference0.5, host PREINITIALIZED source visibility and a same-format D32 depth-image copy consumed by native sampling. Both85-record rounds pass all20 fields per record (3400 words total) and full6 image/9 buffer allocation guards. The existing UBO, dynamic-offset, late-update, mutable/fullsplit, color transfer and typed-texel checks remain intact. Service631ms,7.7MiB,zero swap; no new GPU faults and both services active. [Exact paired result](results/core-api-0044-depth.json).
+
 ## 2026-11-02: historical barrier reduction now passes
 
 The exact original ncnn width1/C3 reduction passes for logical local sizes32 and64 (stride32), with all three output means exact. The compiler now maps these even1D workgroup-barrier shapes to physical16×2 and32×2 while reconstructing the original logical IDs. Both use the unchanged residency guards,1KiB shared memory,16 full/13 half registers and no private memory. The measured ICD is934665fe; service2.901s,63MiB, no new GPU faults and both live services active. This closes the reproduced historical consumer failure, not all odd/general legal-workgroup behavior. [Paired source and result](results/core-api-0044-barrier-repack.json).

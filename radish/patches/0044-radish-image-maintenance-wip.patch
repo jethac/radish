@@ -1,0 +1,189 @@
+--- a/src/freedreno/ir3/ir3_a4xx.c
++++ b/src/freedreno/ir3/ir3_a4xx.c
+@@ -408,6 +408,58 @@
+    return atomic;
+ }
+ 
++static void
++add_global_address(struct ir3_builder *b, struct ir3_instruction **lo,
++                    struct ir3_instruction **hi, struct ir3_instruction *add_lo,
++                    struct ir3_instruction *add_hi)
++{
++   struct ir3_instruction *previous = *lo;
++   *lo = ir3_ADD_U(b, previous, 0, add_lo, 0);
++   struct ir3_instruction *carry = ir3_CMPS_U(b, *lo, 0, previous, 0);
++   carry->cat2.condition = IR3_COND_LT;
++   *hi = ir3_ADD_U(b, ir3_ADD_U(b, *hi, 0, add_hi, 0), 0, carry, 0);
++}
++
++static void
++emit_intrinsic_load_global(struct ir3_context *ctx, nir_intrinsic_instr *intr,
++                           struct ir3_instruction **dst)
++{
++   assert(ctx->compiler->gen == 5 &&
++          ctx->so->shader_options.nir_options.a5xx_raw_global_loads);
++   assert(intr->def.bit_size == 32 && nir_src_bit_size(intr->src[0]) == 64);
++   struct ir3_builder *b = &ctx->build;
++   struct ir3_instruction *address = ir3_get_src(ctx, &intr->src[0])[0];
++   struct ir3_instruction *lo = ir3_64b_get_lo(address);
++   struct ir3_instruction *hi = ir3_64b_get_hi(address);
++   if (intr->intrinsic == nir_intrinsic_load_global_offset) {
++      unsigned shift = nir_intrinsic_offset_shift(intr);
++      assert(shift <= 2 && nir_src_bit_size(intr->src[1]) == 32);
++      struct ir3_instruction *offset = ir3_get_src(ctx, &intr->src[1])[0];
++      struct ir3_instruction *offset_lo = shift ?
++         ir3_SHL_B(b, offset, 0, create_immed(b, shift), 0) : offset;
++      struct ir3_instruction *offset_hi = shift ?
++         ir3_SHR_B(b, offset, 0, create_immed(b, 32 - shift), 0) : create_immed(b, 0);
++      add_global_address(b, &lo, &hi, offset_lo, offset_hi);
++      uint64_t base = (uint64_t)nir_intrinsic_base(intr) << shift;
++      add_global_address(b, &lo, &hi, create_immed(b, (uint32_t)base),
++                          create_immed(b, base >> 32));
++   } else {
++      assert(intr->intrinsic == nir_intrinsic_load_global);
++   }
++   for (unsigned i = 0; i < intr->num_components; i++) {
++      struct ir3_instruction *part_lo = lo, *part_hi = hi;
++      if (i)
++         add_global_address(b, &part_lo, &part_hi, create_immed(b, i * 4),
++                             create_immed(b, 0));
++      struct ir3_instruction *load = ir3_LDG(b, ir3_collect(b, part_lo, part_hi), 0,
++         create_immed(b, 0), 0, create_immed(b, 1), 0);
++      load->cat6.type = TYPE_U32;
++      load->barrier_class = IR3_BARRIER_BUFFER_R | IR3_BARRIER_IMAGE_R;
++      load->barrier_conflict = IR3_BARRIER_BUFFER_W | IR3_BARRIER_IMAGE_W;
++      dst[i] = load;
++   }
++}
++
+ static struct ir3_instruction *
+ emit_intrinsic_atomic_global(struct ir3_context *ctx, nir_intrinsic_instr *intr)
+ {
+@@ -423,4 +475,5 @@
+    .emit_intrinsic_atomic_image = emit_intrinsic_atomic_image,
+    .emit_intrinsic_image_size = emit_intrinsic_image_size_tex,
+    .emit_intrinsic_atomic_global = emit_intrinsic_atomic_global,
++   .emit_intrinsic_load_global = emit_intrinsic_load_global,
+ };
+--- a/src/freedreno/ir3/ir3_shader.h
++++ b/src/freedreno/ir3/ir3_shader.h
+@@ -615,6 +615,7 @@
+    nir_variable_mode robust_modes;
+    uint32_t disable_optimizations;
+    uint32_t a5xx_image_buffer_2d;
++   uint32_t a5xx_raw_global_loads;
+ };
+ 
+ struct ir3_shader_options {
+--- a/src/freedreno/radish/rd_image.c
++++ b/src/freedreno/radish/rd_image.c
+@@ -79,28 +79,51 @@
+    }
+ }
+ 
++static VkImageUsageFlags2KHR
++rd_image_shader_usage(VkFormat format)
++{
++   if (!rd_image_texel_size(format) || !rd_shader_format_supported(format))
++      return 0;
++   VkImageUsageFlags2KHR usage = VK_IMAGE_USAGE_SAMPLED_BIT;
++   if (rd_storage_shader_format_supported(format))
++      usage |= VK_IMAGE_USAGE_STORAGE_BIT;
++   return usage;
++}
++
+ static bool
+ rd_image_parameters(VkFormat format, VkImageType type, VkImageTiling tiling,
+                     VkImageUsageFlags2KHR usage, VkImageCreateFlags2KHR flags)
+ {
++   if (!rd_image_texel_size(format))
++      return false;
+    if (vk_format_is_depth_or_stencil(format) && type != VK_IMAGE_TYPE_2D)
+       return false;
+    VkImageUsageFlags2KHR shader_usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT;
+-   if ((usage & shader_usage) && !rd_shader_format_supported(format))
++   VkImageUsageFlags2KHR supported = rd_image_shader_usage(format);
++   if ((flags & VK_IMAGE_CREATE_EXTENDED_USAGE_BIT) &&
++       (flags & VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT) &&
++       !vk_format_is_depth_or_stencil(format)) {
++      const struct vk_format_class_info *class = vk_format_get_class_info(format);
++      for (uint32_t i = 0; i < class->format_count; i++) {
++         if (!vk_format_is_depth_or_stencil(class->formats[i]))
++            supported |= rd_image_shader_usage(class->formats[i]);
++      }
++   }
++   if (usage & shader_usage & ~supported)
+       return false;
+    if ((flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) && (usage & VK_IMAGE_USAGE_STORAGE_BIT))
+-      return false;
+-   if ((usage & VK_IMAGE_USAGE_STORAGE_BIT) && !rd_storage_shader_format_supported(format))
+       return false;
+    return rd_image_texel_size(format) &&
+           (type == VK_IMAGE_TYPE_1D || type == VK_IMAGE_TYPE_2D || type == VK_IMAGE_TYPE_3D) &&
+           (tiling == VK_IMAGE_TILING_LINEAR || tiling == VK_IMAGE_TILING_OPTIMAL) &&
+           usage && !(usage & ~(VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | shader_usage)) &&
+           !(flags & ~(VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT | VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT |
+-                       VK_IMAGE_CREATE_ALIAS_BIT | VK_IMAGE_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT)) &&
++                       VK_IMAGE_CREATE_ALIAS_BIT | VK_IMAGE_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT |
++                       VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT | VK_IMAGE_CREATE_EXTENDED_USAGE_BIT)) &&
+           (!(flags & VK_IMAGE_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT) ||
+            (type == VK_IMAGE_TYPE_2D && tiling == VK_IMAGE_TILING_OPTIMAL)) &&
+-          (!(flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) || type == VK_IMAGE_TYPE_2D);
++          (!(flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) || type == VK_IMAGE_TYPE_2D) &&
++          (!(flags & VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT) || type == VK_IMAGE_TYPE_3D);
+ }
+ 
+ VKAPI_ATTR void VKAPI_CALL
+@@ -407,18 +430,27 @@
+        vk_format_get_class_info(info->format) == vk_format_get_class_info(image->vk.format)));
+    if (!image || info->flags || !format_compatible ||
+        !(image->vk.usage & view_usage) || r->aspectMask != vk_format_aspects(image->vk.format) ||
+-       r->baseMipLevel >= image->vk.mip_levels || r->baseArrayLayer >= image->vk.array_layers)
++       r->baseMipLevel >= image->vk.mip_levels)
++      return VK_ERROR_FORMAT_NOT_SUPPORTED;
++   bool slice_view = image->vk.image_type == VK_IMAGE_TYPE_3D &&
++      (image->vk.create_flags & VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT) &&
++      (info->viewType == VK_IMAGE_VIEW_TYPE_2D || info->viewType == VK_IMAGE_VIEW_TYPE_2D_ARRAY);
++   uint32_t max_layers = slice_view ?
++      vk_image_mip_level_extent(&image->vk, r->baseMipLevel).depth : image->vk.array_layers;
++   if (r->baseArrayLayer >= max_layers)
+       return VK_ERROR_FORMAT_NOT_SUPPORTED;
+    uint32_t levels = vk_image_subresource_level_count(&image->vk, r);
+-   uint32_t layers = vk_image_subresource_layer_count(&image->vk, r);
++   uint32_t layers = r->layerCount == VK_REMAINING_ARRAY_LAYERS ?
++      max_layers - r->baseArrayLayer : r->layerCount;
+    if (!levels || levels > image->vk.mip_levels - r->baseMipLevel || !layers ||
+-       layers > image->vk.array_layers - r->baseArrayLayer)
++       layers > max_layers - r->baseArrayLayer || (slice_view && levels != 1))
+       return VK_ERROR_FORMAT_NOT_SUPPORTED;
+    bool compatible = (image->vk.image_type == VK_IMAGE_TYPE_1D &&
+       (info->viewType == VK_IMAGE_VIEW_TYPE_1D || info->viewType == VK_IMAGE_VIEW_TYPE_1D_ARRAY)) ||
+       (image->vk.image_type == VK_IMAGE_TYPE_2D &&
+       (info->viewType == VK_IMAGE_VIEW_TYPE_2D || info->viewType == VK_IMAGE_VIEW_TYPE_2D_ARRAY)) ||
+-      (image->vk.image_type == VK_IMAGE_TYPE_3D && info->viewType == VK_IMAGE_VIEW_TYPE_3D);
++      (image->vk.image_type == VK_IMAGE_TYPE_3D && info->viewType == VK_IMAGE_VIEW_TYPE_3D) ||
++      slice_view;
+    if ((info->viewType == VK_IMAGE_VIEW_TYPE_CUBE || info->viewType == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY) &&
+        image->vk.image_type == VK_IMAGE_TYPE_2D &&
+        (image->vk.create_flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) &&
+--- a/src/freedreno/radish/rd_instance.c
++++ b/src/freedreno/radish/rd_instance.c
+@@ -33,6 +33,8 @@
+    .KHR_maintenance3 = true,
+    .KHR_bind_memory2 = true,
+    .KHR_get_memory_requirements2 = true,
++   .KHR_storage_buffer_storage_class = true,
++   .KHR_relaxed_block_layout = true,
+ };
+ 
+ VKAPI_ATTR VkResult VKAPI_CALL
+--- a/src/freedreno/radish/rd_pipeline.c
++++ b/src/freedreno/radish/rd_pipeline.c
+@@ -307,6 +307,7 @@
+    struct ir3_shader_options options = {
+       .nir_options.robust_modes = device->vk.enabled_features.robustBufferAccess ? nir_var_mem_ssbo : 0,
+       .nir_options.a5xx_image_buffer_2d = true,
++      .nir_options.a5xx_raw_global_loads = true,
+       .nir_options.disable_optimizations = flags & VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT,
+       .api_wavesize = IR3_SINGLE_ONLY,
+       .api_subgroup_size = 16,

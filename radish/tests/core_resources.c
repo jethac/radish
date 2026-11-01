@@ -2,7 +2,7 @@
 #include "rd_private.h"
 #include <inttypes.h>
 
-enum { NX=17, NY=5, N=NX*NY, GUARD=16, FIELDS=16, BUFFER_COUNT=9 };
+enum { NX=17, NY=5, N=NX*NY, GUARD=16, FIELDS=20, BUFFER_COUNT=9 };
 enum { OUTPUT, UNIFORMS, SEEDS, SOURCE_TEXELS, TARGET_TEXELS, IMAGE_UPLOAD,
        SAMPLE_UPLOAD, IMAGE_READBACK, COPY_READBACK };
 struct storage {
@@ -60,7 +60,10 @@ static int image_create(const struct vk_device_dispatch_table *d,VkDevice device
       .samples=VK_SAMPLE_COUNT_1_BIT,.tiling=VK_IMAGE_TILING_LINEAR,
       .usage=usage|VK_IMAGE_USAGE_TRANSFER_SRC_BIT|VK_IMAGE_USAGE_TRANSFER_DST_BIT,
       .initialLayout=VK_IMAGE_LAYOUT_UNDEFINED};
-   ci.flags=VK_IMAGE_CREATE_ALIAS_BIT|VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT;
+   bool depth=format==VK_FORMAT_D16_UNORM || format==VK_FORMAT_D32_SFLOAT;
+   VkImageAspectFlags aspect=depth?VK_IMAGE_ASPECT_DEPTH_BIT:VK_IMAGE_ASPECT_COLOR_BIT;
+   if (depth) ci.initialLayout=VK_IMAGE_LAYOUT_PREINITIALIZED;
+   ci.flags=depth?0:VK_IMAGE_CREATE_ALIAS_BIT|VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT;
    if (format==VK_FORMAT_R32_UINT) ci.format=VK_FORMAT_R32_SFLOAT;
    if (split) { ci.flags|=VK_IMAGE_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT; ci.tiling=VK_IMAGE_TILING_OPTIMAL; }
    SUCCESS(d->CreateImage(device,&ci,NULL,&image->image));
@@ -82,16 +85,16 @@ static int image_create(const struct vk_device_dispatch_table *d,VkDevice device
    SUCCESS(d->BindImageMemory2(device,1,&bind));
    SUCCESS(d->MapMemory(device,image->memory,0,VK_WHOLE_SIZE,0,(void **)&image->map));
    image->words=ai.allocationSize/4; image->binding_words=r.alignment/4;
-   VkImageSubresource sub={.aspectMask=VK_IMAGE_ASPECT_COLOR_BIT}; VkSubresourceLayout layout;
+   VkImageSubresource sub={.aspectMask=aspect}; VkSubresourceLayout layout;
    if (!split) { d->GetImageSubresourceLayout(device,image->image,&sub,&layout); } else {
       struct rd_image *internal=rd_image_from_handle(image->image);
       layout=(VkSubresourceLayout){.offset=internal->levels[0].offset,.rowPitch=internal->levels[0].row_pitch};
    }
-   REQUIRE(layout.offset==0 && !(layout.rowPitch%4) && layout.rowPitch>=width*4);
+   REQUIRE(layout.offset==0 && !(layout.rowPitch%4) && layout.rowPitch>=width*(format==VK_FORMAT_D16_UNORM?2:4));
    image->width=width; image->height=height; image->row_words=layout.rowPitch/4;
    VkImageViewCreateInfo vi={.sType=VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,.image=image->image,
       .viewType=VK_IMAGE_VIEW_TYPE_2D,.format=format,
-      .subresourceRange={VK_IMAGE_ASPECT_COLOR_BIT,0,1,0,1}};
+      .subresourceRange={aspect,0,1,0,1}};
    SUCCESS(d->CreateImageView(device,&vi,NULL,&image->view));
    return 0;
 }
@@ -143,7 +146,7 @@ static void descriptor_buffers(const struct vk_device_dispatch_table *d,VkDevice
       .dstSet=set,.dstBinding=bindings[i],.descriptorCount=1,.descriptorType=types[i],.pBufferInfo=&bi[i]};
    d->UpdateDescriptorSets(device,4,writes,0,NULL);
 }
-static int verify(struct storage stores[BUFFER_COUNT],struct image images[3],unsigned round)
+static int verify(struct storage stores[BUFFER_COUNT],struct image images[6],unsigned round)
 {
    uint32_t a=0x10000000u+(round?3:2)*0x100u;
    uint32_t b=0x10000000u+(round?1:3)*0x100u;
@@ -154,7 +157,9 @@ static int verify(struct storage stores[BUFFER_COUNT],struct image images[3],uns
       float linear=(sample_value(x0,ty)+sample_value(x1,ty)+sample_value(x0,y1)+sample_value(x1,y1))*0.25f;
       uint32_t value=image_value(i)^a^b^seed_value(i)^source_texel(i);
       uint32_t record[FIELDS]={a,b,seed_value(i),source_texel(i),target_texel(i),image_value(i),
-         float_word(sample_value(x0,ty)),float_word(linear),0,0,1,value,NX,NY,N,N};
+         float_word(sample_value(x0,ty)),float_word(linear),0,0,1,value,NX,NY,N,N,
+         float_word((float)((x%4+y%4)&1)),float_word((float)((x%4+y%4)&1)),
+         float_word(((x%4+y%4)%4+1)*0.25f),float_word((x%4+y%4)%4?1.0f:0.0f)};
       memcpy(stores[OUTPUT].saved+stores[OUTPUT].binding_words+GUARD+i*FIELDS,record,sizeof(record));
       stores[TARGET_TEXELS].saved[stores[TARGET_TEXELS].binding_words+GUARD+i]=target_texel(i)+a+b+source_texel(i);
       stores[IMAGE_READBACK].saved[stores[IMAGE_READBACK].binding_words+GUARD+i]=value;
@@ -195,6 +200,23 @@ static int verify(struct storage stores[BUFFER_COUNT],struct image images[3],uns
             round,s,i,images[s].map[i],expected); return 1;
       }
    }
+   for (unsigned s=3;s<6;s++) for (size_t i=0;i<images[s].words;i++) {
+      uint32_t expected=poison(i,BUFFER_COUNT+s,0);
+      if (i>=images[s].binding_words) {
+         size_t rel=i-images[s].binding_words;
+         unsigned y=rel/images[s].row_words,x=rel%images[s].row_words;
+         if (y<4 && x<(s==3?2:4)) {
+            if (s==3) {
+               unsigned pixel=x*2;
+               expected=((pixel+y)&1?65535u:0u)|(((pixel+1+y)&1?65535u:0u)<<16);
+            } else expected=float_word(((x+y)%4+1)*0.25f);
+         }
+      }
+      if (images[s].map[i]!=expected) {
+         fprintf(stderr,"FAIL depth image=%u word=%zu actual=%08x expected=%08x\n",
+            s,i,images[s].map[i],expected); return 1;
+      }
+   }
    return 0;
 }
 int main(int argc,char **argv)
@@ -226,6 +248,15 @@ int main(int argc,char **argv)
    REQUIRE(fp.linearTilingFeatures & VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT);
    REQUIRE((fp.bufferFeatures & (VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT|VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT))==
       (VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT|VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT));
+   VkFormat depth_formats[2]={VK_FORMAT_D16_UNORM,VK_FORMAT_D32_SFLOAT};
+   for (unsigned i=0;i<2;i++) {
+      GetPhysicalDeviceFormatProperties(physical,depth_formats[i],&fp);
+      REQUIRE((fp.linearTilingFeatures & (VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT |
+         VK_FORMAT_FEATURE_TRANSFER_SRC_BIT | VK_FORMAT_FEATURE_TRANSFER_DST_BIT)) ==
+         (VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT | VK_FORMAT_FEATURE_TRANSFER_SRC_BIT |
+          VK_FORMAT_FEATURE_TRANSFER_DST_BIT));
+      REQUIRE(!(fp.linearTilingFeatures & VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT) && !fp.bufferFeatures);
+   }
    float priority=1; VkDeviceQueueCreateInfo qci={.sType=VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,.queueCount=1,.pQueuePriorities=&priority};
    const char *dex[]={VK_KHR_BIND_MEMORY_2_EXTENSION_NAME,VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME,VK_KHR_DEVICE_GROUP_EXTENSION_NAME};
    VkDeviceCreateInfo dci={.sType=VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,.queueCreateInfoCount=1,.pQueueCreateInfos=&qci,.enabledExtensionCount=3,.ppEnabledExtensionNames=dex};
@@ -238,24 +269,27 @@ int main(int argc,char **argv)
    aliases.GetImageSparseMemoryRequirements2=(PFN_vkGetImageSparseMemoryRequirements2)gdpa(device,"vkGetImageSparseMemoryRequirements2KHR");
    REQUIRE(aliases.BindImageMemory2 && aliases.GetImageMemoryRequirements2 && aliases.GetImageSparseMemoryRequirements2);
    const struct vk_device_dispatch_table *d=&aliases;
-   VkSampler samplers[2];
-   for (unsigned i=0;i<2;i++) {
+   VkSampler samplers[3];
+   for (unsigned i=0;i<3;i++) {
       VkSamplerCreateInfo si={.sType=VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
-         .magFilter=i?VK_FILTER_LINEAR:VK_FILTER_NEAREST,.minFilter=i?VK_FILTER_LINEAR:VK_FILTER_NEAREST,
+         .magFilter=i==1?VK_FILTER_LINEAR:VK_FILTER_NEAREST,.minFilter=i==1?VK_FILTER_LINEAR:VK_FILTER_NEAREST,
          .mipmapMode=VK_SAMPLER_MIPMAP_MODE_NEAREST,.addressModeU=VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
          .addressModeV=VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,.addressModeW=VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE};
+      if (i==2) { si.compareEnable=VK_TRUE; si.compareOp=VK_COMPARE_OP_LESS_OR_EQUAL; }
       SUCCESS(d->CreateSampler(device,&si,NULL,&samplers[i]));
    }
-   uint32_t numbers[9]={19,7,0,13,2,17,9,5,11};
-   VkDescriptorType types[9]={VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC,
+   uint32_t numbers[13]={19,7,0,13,2,17,9,5,11,23,29,31,37};
+   VkDescriptorType types[13]={VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC,
       VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
       VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER,
-      VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC,VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER};
-   VkDescriptorSetLayoutBinding bindings[9];
-   for (unsigned i=0;i<9;i++) bindings[i]=(VkDescriptorSetLayoutBinding){.binding=numbers[i],.descriptorType=types[i],
+      VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC,VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER,
+      VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+      VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER};
+   VkDescriptorSetLayoutBinding bindings[13];
+   for (unsigned i=0;i<13;i++) bindings[i]=(VkDescriptorSetLayoutBinding){.binding=numbers[i],.descriptorType=types[i],
       .descriptorCount=1,.stageFlags=VK_SHADER_STAGE_COMPUTE_BIT,.pImmutableSamplers=numbers[i]==17?&samplers[0]:NULL};
    VkDescriptorSetLayout sl[3]; VkDescriptorSetLayoutCreateInfo sci={.sType=VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO};
-   SUCCESS(d->CreateDescriptorSetLayout(device,&sci,NULL,&sl[0])); sci.bindingCount=9; sci.pBindings=bindings;
+   SUCCESS(d->CreateDescriptorSetLayout(device,&sci,NULL,&sl[0])); sci.bindingCount=13; sci.pBindings=bindings;
    SUCCESS(d->CreateDescriptorSetLayout(device,&sci,NULL,&sl[1]));
    SUCCESS(d->CreateDescriptorSetLayout(device,&sci,NULL,&sl[2]));
    VkPipelineLayout layouts[2];
@@ -280,7 +314,7 @@ int main(int argc,char **argv)
       d->DestroyPipeline(device,pipeline,NULL);
       for (unsigned i=0;i<2;i++) d->DestroyPipelineLayout(device,layouts[i],NULL);
       for (unsigned i=0;i<3;i++) d->DestroyDescriptorSetLayout(device,sl[i],NULL);
-      for (unsigned i=0;i<2;i++) d->DestroySampler(device,samplers[i],NULL);
+      for (unsigned i=0;i<3;i++) d->DestroySampler(device,samplers[i],NULL);
       d->DestroyDevice(device,NULL); DestroyInstance(instance,NULL); dlclose(lib);
       puts("PASS RESOURCE compile-only: all pipelines created before buffers/images/commands/dispatch"); return 0;
    }
@@ -291,16 +325,19 @@ int main(int argc,char **argv)
       VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT,VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT,
       VK_BUFFER_USAGE_TRANSFER_SRC_BIT,VK_BUFFER_USAGE_TRANSFER_SRC_BIT,VK_BUFFER_USAGE_TRANSFER_DST_BIT,VK_BUFFER_USAGE_TRANSFER_DST_BIT};
    for (unsigned i=0;i<BUFFER_COUNT;i++) REQUIRE(storage_create(d,device,&memory_properties,sizes[i],usages[i],&stores[i])==0);
-   struct image images[3]={0};
+   struct image images[6]={0};
    REQUIRE(image_create(d,device,&memory_properties,VK_FORMAT_R32_UINT,NX,NY,VK_IMAGE_USAGE_STORAGE_BIT,&images[0],false)==0);
    REQUIRE(image_create(d,device,&memory_properties,VK_FORMAT_R32_SFLOAT,4,4,VK_IMAGE_USAGE_SAMPLED_BIT,&images[1],false)==0);
    REQUIRE(image_create(d,device,&memory_properties,VK_FORMAT_R32_UINT,NX,NY,VK_IMAGE_USAGE_STORAGE_BIT,&images[2],true)==0);
+   REQUIRE(image_create(d,device,&memory_properties,VK_FORMAT_D16_UNORM,4,4,VK_IMAGE_USAGE_SAMPLED_BIT,&images[3],false)==0);
+   REQUIRE(image_create(d,device,&memory_properties,VK_FORMAT_D32_SFLOAT,4,4,VK_IMAGE_USAGE_SAMPLED_BIT,&images[4],false)==0);
+   REQUIRE(image_create(d,device,&memory_properties,VK_FORMAT_D32_SFLOAT,4,4,VK_IMAGE_USAGE_SAMPLED_BIT,&images[5],false)==0);
    VkBufferView views[2]; REQUIRE(buffer_view(d,device,stores[SOURCE_TEXELS].buffer,&views[0])==0);
    REQUIRE(buffer_view(d,device,stores[TARGET_TEXELS].buffer,&views[1])==0);
    VkDescriptorPoolSize pools[8]={{VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,1},{VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,1},
       {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC,1},{VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC,1},
       {VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER,1},{VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER,1},
-      {VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,1},{VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,2}};
+      {VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,1},{VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,6}};
    VkDescriptorPoolCreateInfo dpi={.sType=VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,.maxSets=1,.poolSizeCount=8,.pPoolSizes=pools};
    VkDescriptorPool pool; SUCCESS(d->CreateDescriptorPool(device,&dpi,NULL,&pool));
    VkDescriptorSetAllocateInfo ai={.sType=VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,.descriptorPool=pool,.descriptorSetCount=1,.pSetLayouts=&sl[1]};
@@ -316,6 +353,16 @@ int main(int argc,char **argv)
                            i==2?VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
       .pTexelBufferView=i<2?&views[i]:NULL,.pImageInfo=i>=2?&ii[i-2]:NULL};
    d->UpdateDescriptorSets(device,5,writes,0,NULL);
+   VkDescriptorImageInfo depth_info[4]; VkWriteDescriptorSet depth_writes[4];
+   uint32_t depth_bindings[4]={23,29,31,37};
+   for (unsigned i=0;i<4;i++) {
+      depth_info[i]=(VkDescriptorImageInfo){.sampler=samplers[(i&1)?2:0],
+         .imageView=images[i<2?3:5].view,.imageLayout=VK_IMAGE_LAYOUT_GENERAL};
+      depth_writes[i]=(VkWriteDescriptorSet){.sType=VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+         .dstSet=set,.dstBinding=depth_bindings[i],.descriptorCount=1,
+         .descriptorType=VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,.pImageInfo=&depth_info[i]};
+   }
+   d->UpdateDescriptorSets(device,4,depth_writes,0,NULL);
    VkCommandPoolCreateInfo ci={.sType=VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO}; VkCommandPool command_pool;
    SUCCESS(d->CreateCommandPool(device,&ci,NULL,&command_pool));
    VkCommandBufferAllocateInfo ca={.sType=VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,.commandPool=command_pool,
@@ -368,6 +415,44 @@ int main(int argc,char **argv)
    VkMappedMemoryRange ranges[BUFFER_COUNT+3];
    for (unsigned i=0;i<BUFFER_COUNT+3;i++) ranges[i]=(VkMappedMemoryRange){.sType=VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
       .memory=i<BUFFER_COUNT?stores[i].memory:images[i-BUFFER_COUNT].memory,.size=VK_WHOLE_SIZE};
+   for (unsigned s=3;s<6;s++) {
+      for (size_t i=0;i<images[s].words;i++) images[s].map[i]=poison(i,BUFFER_COUNT+s,0);
+      if (s==5) continue;
+      for (unsigned y=0;y<4;y++) for (unsigned x=0;x<4;x++) {
+         size_t word=images[s].binding_words+y*images[s].row_words;
+         if (s==3) ((uint16_t *)(images[s].map+word))[x]=((x+y)&1)?65535:0;
+         else images[s].map[word+x]=float_word(((x+y)%4+1)*0.25f);
+      }
+   }
+   VkMappedMemoryRange depth_ranges[3];
+   for (unsigned i=0;i<3;i++) depth_ranges[i]=(VkMappedMemoryRange){
+      .sType=VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,.memory=images[i+3].memory,.size=VK_WHOLE_SIZE};
+   SUCCESS(d->FlushMappedMemoryRanges(device,3,depth_ranges));
+   VkCommandBuffer depth_init; SUCCESS(d->AllocateCommandBuffers(device,&ca,&depth_init));
+   SUCCESS(d->BeginCommandBuffer(depth_init,&begin));
+   VkImageMemoryBarrier depth_initial[3];
+   for (unsigned i=0;i<3;i++) depth_initial[i]=(VkImageMemoryBarrier){
+      .sType=VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,.srcAccessMask=VK_ACCESS_HOST_WRITE_BIT,
+      .dstAccessMask=VK_ACCESS_TRANSFER_READ_BIT|VK_ACCESS_TRANSFER_WRITE_BIT|VK_ACCESS_SHADER_READ_BIT,
+      .oldLayout=VK_IMAGE_LAYOUT_PREINITIALIZED,.newLayout=VK_IMAGE_LAYOUT_GENERAL,
+      .srcQueueFamilyIndex=VK_QUEUE_FAMILY_IGNORED,.dstQueueFamilyIndex=VK_QUEUE_FAMILY_IGNORED,
+      .image=images[i+3].image,.subresourceRange={VK_IMAGE_ASPECT_DEPTH_BIT,0,1,0,1}};
+   d->CmdPipelineBarrier(depth_init,VK_PIPELINE_STAGE_HOST_BIT,
+      VK_PIPELINE_STAGE_TRANSFER_BIT|VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,0,0,NULL,0,NULL,3,depth_initial);
+   VkImageCopy depth_copy={.srcSubresource={VK_IMAGE_ASPECT_DEPTH_BIT,0,0,1},
+      .dstSubresource={VK_IMAGE_ASPECT_DEPTH_BIT,0,0,1},.extent={4,4,1}};
+   d->CmdCopyImage(depth_init,images[4].image,VK_IMAGE_LAYOUT_GENERAL,
+      images[5].image,VK_IMAGE_LAYOUT_GENERAL,1,&depth_copy);
+   VkImageMemoryBarrier depth_ready=depth_initial[2];
+   depth_ready.srcAccessMask=VK_ACCESS_TRANSFER_WRITE_BIT; depth_ready.dstAccessMask=VK_ACCESS_SHADER_READ_BIT;
+   depth_ready.oldLayout=VK_IMAGE_LAYOUT_GENERAL;
+   d->CmdPipelineBarrier(depth_init,VK_PIPELINE_STAGE_TRANSFER_BIT,VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+      0,0,NULL,0,NULL,1,&depth_ready);
+   SUCCESS(d->EndCommandBuffer(depth_init));
+   VkSubmitInfo depth_submit={.sType=VK_STRUCTURE_TYPE_SUBMIT_INFO,.commandBufferCount=1,.pCommandBuffers=&depth_init};
+   SUCCESS(d->QueueSubmit(queue,1,&depth_submit,fence));
+   SUCCESS(d->WaitForFences(device,1,&fence,VK_TRUE,5000000000ull));
+   SUCCESS(d->InvalidateMappedMemoryRanges(device,3,depth_ranges));
    for (unsigned round=0;round<2;round++) {
       for (unsigned s=0;s<BUFFER_COUNT;s++) for (size_t i=0;i<stores[s].words;i++) stores[s].map[i]=poison(i,s,round);
       for (unsigned s=0;s<3;s++) for (size_t i=0;i<images[s].words;i++) images[s].map[i]=poison(i,BUFFER_COUNT+s,round);
@@ -397,7 +482,7 @@ int main(int argc,char **argv)
    d->DestroyFence(device,fence,NULL); d->DestroyCommandPool(device,command_pool,NULL);
    d->DestroyDescriptorPool(device,pool,NULL);
    for (unsigned i=0;i<2;i++) d->DestroyBufferView(device,views[i],NULL);
-   for (unsigned i=0;i<3;i++) {
+   for (unsigned i=0;i<6;i++) {
       d->DestroyImageView(device,images[i].view,NULL); d->UnmapMemory(device,images[i].memory);
       d->DestroyImage(device,images[i].image,NULL); d->FreeMemory(device,images[i].memory,NULL);
    }
@@ -407,8 +492,9 @@ int main(int argc,char **argv)
    }
    d->DestroyPipeline(device,pipeline,NULL); d->DestroyPipelineLayout(device,layouts[0],NULL);
    for (unsigned i=0;i<2;i++) d->DestroyDescriptorSetLayout(device,sl[i],NULL);
-   for (unsigned i=0;i<2;i++) d->DestroySampler(device,samplers[i],NULL);
+   for (unsigned i=0;i<3;i++) d->DestroySampler(device,samplers[i],NULL);
    d->DestroyDevice(device,NULL); DestroyInstance(instance,NULL); dlclose(lib);
+   puts("PASS DEPTH: D16/D32 sampling/comparison, host PREINITIALIZED sources and D32 depth-image copy, all allocation guards");
    puts("PASS IMAGE_GROUP: full singleton split copy/clear/readback and mutable R32_SFLOAT-to-UINT storage view");
    puts("PASS RESOURCE: UBO/dynamic offsets/late updates/compatible layouts/typed texels/images/nearest+linear/image copy+clear exact/guards");
    return 0;
