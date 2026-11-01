@@ -1,0 +1,228 @@
+diff --git a/src/layer/vulkan/instancenorm_vulkan.cpp b/src/layer/vulkan/instancenorm_vulkan.cpp
+--- a/src/layer/vulkan/instancenorm_vulkan.cpp
++++ b/src/layer/vulkan/instancenorm_vulkan.cpp
+@@ -3,9 +3,26 @@
+ 
+ #include "instancenorm_vulkan.h"
+ 
++#include <limits.h>
++#include <stdlib.h>
++#include <string.h>
++
+ #include "layer_shader_type.h"
+ 
+ namespace ncnn {
++
++static bool radish_norm_sum4_fp32(const Option& opt)
++{
++    return opt.use_vulkan_compute && opt.use_packing_layout
++           && !opt.use_fp16_packed && !opt.use_fp16_storage
++           && !opt.use_fp16_arithmetic && !opt.use_fp16_uniform
++           && !opt.use_bf16_packed && !opt.use_bf16_storage
++           && !opt.use_int8_inference && !opt.use_int8_packed && !opt.use_int8_storage
++           && !opt.use_int8_arithmetic && !opt.use_int8_uniform
++           && !opt.use_int16_packed && !opt.use_int16_storage
++           && !opt.use_subgroup_ops && !opt.use_shader_local_memory
++           && !opt.use_cooperative_matrix && !opt.use_tensor_storage;
++}
+ 
+ InstanceNorm_vulkan::InstanceNorm_vulkan()
+ {
+@@ -25,6 +42,7 @@
+     pipeline_instancenorm_reduce_sum4_fp32_pack4[1] = 0;
+     pipeline_instancenorm_reduce_mean_pack4 = 0;
+     pipeline_instancenorm_sub_mean_square_pack4 = 0;
++    pipeline_instancenorm_radish_sum4_pack4 = 0;
+     pipeline_instancenorm_coeffs_pack4 = 0;
+     pipeline_instancenorm_norm_pack4 = 0;
+ 
+@@ -45,6 +63,18 @@
+     }
+     const Mat& shape = top_shapes.empty() ? Mat() : top_shapes[0];
+ 
++    const char* norm_sum4 = getenv("RADISH_NCNN_NORM_SUM4");
++    const bool use_radish_norm_sum4 = norm_sum4 && strcmp(norm_sum4, "1") == 0
++                                     && vkdev->info.vendor_id() == 0x5143
++                                     && vkdev->info.device_id() == 506
++                                     && strcmp(vkdev->info.device_name(), "Radish Adreno 506 (experimental compute)") == 0
++                                     && radish_norm_sum4_fp32(opt) && !use_subgroup_ops
++                                     && affine == 0 && eps == 1.e-5f
++                                     && (channels == 128 || channels == 256 || channels == 512 || channels == 1024)
++                                     && shape.dims == 3 && shape.n == 1 && shape.h == 1 && shape.d == 1
++                                     && shape.elempack == 4 && shape.elemsize == 16u && shape.c == channels / 4
++                                     && shape.w > 0 && shape.w <= INT_MAX - 3;
++
+     int _channels = channels;
+     if (shape.dims == 3 || shape.dims == 4) _channels = shape.c * shape.elempack;
+ 
+@@ -133,6 +163,22 @@
+                 pipeline_instancenorm_reduce_sum4_fp32_pack4[1] = new Pipeline(vkdev);
+                 pipeline_instancenorm_reduce_sum4_fp32_pack4[1]->set_optimal_local_size_xyz(local_size_xyz);
+                 pipeline_instancenorm_reduce_sum4_fp32_pack4[1]->create(LayerShaderType::instancenorm_reduce_sum4_fp32_pack4, opt, std::vector<vk_specialization_type>());
++
++                if (use_radish_norm_sum4)
++                {
++                    pipeline_instancenorm_radish_sum4_pack4 = new Pipeline(vkdev);
++                    pipeline_instancenorm_radish_sum4_pack4->set_local_size_xyz(16, 1, 4);
++                    int ret = pipeline_instancenorm_radish_sum4_pack4->create(LayerShaderType::instancenorm_radish_sum4_pack4, opt, std::vector<vk_specialization_type>());
++                    if (ret != 0)
++                        return ret;
++                    if (!pipeline_instancenorm_radish_sum4_pack4->pipeline()
++                        || pipeline_instancenorm_radish_sum4_pack4->local_size_x() != 16
++                        || pipeline_instancenorm_radish_sum4_pack4->local_size_y() != 1
++                        || pipeline_instancenorm_radish_sum4_pack4->local_size_z() != 4
++                        || pipeline_instancenorm_radish_sum4_pack4->shader_info().binding_count != 3
++                        || pipeline_instancenorm_radish_sum4_pack4->shader_info().push_constant_count != 8)
++                        return -1;
++                }
+             }
+         }
+ 
+@@ -305,6 +351,9 @@
+     delete pipeline_instancenorm_sub_mean_square_pack4;
+     pipeline_instancenorm_sub_mean_square_pack4 = 0;
+ 
++    delete pipeline_instancenorm_radish_sum4_pack4;
++    pipeline_instancenorm_radish_sum4_pack4 = 0;
++
+     delete pipeline_instancenorm_coeffs_pack4;
+     pipeline_instancenorm_coeffs_pack4 = 0;
+ 
+@@ -340,9 +389,20 @@
+     size_t elemsize = bottom_top_blob.elemsize;
+     int elempack = bottom_top_blob.elempack;
+ 
++    const bool use_radish_norm_sum4 = pipeline_instancenorm_radish_sum4_pack4
++                                     && radish_norm_sum4_fp32(opt)
++                                     && bottom_top_blob.dims == 3 && bottom_top_blob.n == 1
++                                     && bottom_top_blob.h == 1 && bottom_top_blob.d == 1
++                                     && elempack == 4 && elemsize == 16u && c > 0 && c == channels / 4
++                                     && !top_shapes.empty() && w == top_shapes[0].w
++                                     && w > 0 && w <= INT_MAX - 3 && bottom_top_blob.cstep == (size_t)w
++                                     && (size_t)w <= vkdev->info.physicalDeviceProperties().limits.maxStorageBufferRange / 16u / c;
++
+     // mean and var
+     VkMat mean_workspace(c, 4u * elempack, elempack, opt.workspace_vkallocator);
+     VkMat var_workspace(c, 4u * elempack, elempack, opt.workspace_vkallocator);
++    if (use_radish_norm_sum4 && (mean_workspace.empty() || var_workspace.empty()))
++        return -100;
+ 
+     const Pipeline* pipeline_reduce_subgroup = elempack == 4 ? pipeline_instancenorm_reduce_subgroup_pack4 : pipeline_instancenorm_reduce_subgroup;
+     if (pipeline_reduce_subgroup)
+@@ -458,8 +518,9 @@
+         {
+             // sub mean and square
+             VkMat square_workspace;
+-            square_workspace.create(w, h, c, 4u * elempack, elempack, opt.workspace_vkallocator);
+-            {
++            if (!use_radish_norm_sum4)
++            {
++                square_workspace.create(w, h, c, 4u * elempack, elempack, opt.workspace_vkallocator);
+                 std::vector<VkMat> bindings(3);
+                 bindings[0] = bottom_top_blob;
+                 bindings[1] = mean_workspace;
+@@ -487,26 +548,30 @@
+             {
+                 int reduced_w = (size + 3) / 4;
+                 int reduced_h = 1;
+-                int reduced_c = square_workspace.c;
++                int reduced_c = use_radish_norm_sum4 ? bottom_top_blob.c : square_workspace.c;
+ 
+                 sqsum_workspace.create(reduced_w, reduced_h, reduced_c, 4u * elempack, elempack, opt.workspace_vkallocator);
++                if (use_radish_norm_sum4 && sqsum_workspace.empty())
++                    return -100;
+ 
+                 {
+-                    std::vector<VkMat> bindings(2);
+-                    bindings[0] = square_workspace;
++                    std::vector<VkMat> bindings(use_radish_norm_sum4 ? 3 : 2);
++                    bindings[0] = use_radish_norm_sum4 ? bottom_top_blob : square_workspace;
+                     bindings[1] = sqsum_workspace;
++                    if (use_radish_norm_sum4)
++                        bindings[2] = mean_workspace;
+ 
+                     std::vector<vk_constant_type> constants(8);
+                     constants[0].i = size;
+                     constants[1].i = 1;
+-                    constants[2].i = square_workspace.c;
+-                    constants[3].i = square_workspace.cstep;
++                    constants[2].i = use_radish_norm_sum4 ? bottom_top_blob.c : square_workspace.c;
++                    constants[3].i = use_radish_norm_sum4 ? bottom_top_blob.cstep : square_workspace.cstep;
+                     constants[4].i = sqsum_workspace.w;
+                     constants[5].i = 1;
+                     constants[6].i = sqsum_workspace.c;
+                     constants[7].i = sqsum_workspace.cstep;
+ 
+-                    const Pipeline* pipeline = elempack == 4 ? pipeline_instancenorm_reduce_sum4_fp32_pack4[0] : pipeline_instancenorm_reduce_sum4_fp32[0];
++                    const Pipeline* pipeline = use_radish_norm_sum4 ? pipeline_instancenorm_radish_sum4_pack4 : (elempack == 4 ? pipeline_instancenorm_reduce_sum4_fp32_pack4[0] : pipeline_instancenorm_reduce_sum4_fp32[0]);
+ 
+                     cmd.record_pipeline(pipeline, bindings, constants, sqsum_workspace);
+                 }
+diff --git a/src/layer/vulkan/instancenorm_vulkan.h b/src/layer/vulkan/instancenorm_vulkan.h
+--- a/src/layer/vulkan/instancenorm_vulkan.h
++++ b/src/layer/vulkan/instancenorm_vulkan.h
+@@ -36,6 +36,7 @@
+     Pipeline* pipeline_instancenorm_reduce_sum4_fp32_pack4[2];
+     Pipeline* pipeline_instancenorm_reduce_mean_pack4;
+     Pipeline* pipeline_instancenorm_sub_mean_square_pack4;
++    Pipeline* pipeline_instancenorm_radish_sum4_pack4;
+     Pipeline* pipeline_instancenorm_coeffs_pack4;
+     Pipeline* pipeline_instancenorm_norm_pack4;
+ 
+diff --git a/src/layer/vulkan/shader/instancenorm_radish_sum4_pack4.comp b/src/layer/vulkan/shader/instancenorm_radish_sum4_pack4.comp
+new file mode 100644
+--- /dev/null
++++ b/src/layer/vulkan/shader/instancenorm_radish_sum4_pack4.comp
+@@ -0,0 +1,52 @@
++#version 450
++
++layout(binding = 0) readonly buffer input_blob { vec4 input_blob_data[]; };
++layout(binding = 1) writeonly buffer sum_blob { vec4 sum_blob_data[]; };
++layout(binding = 2) readonly buffer mean_blob { vec4 mean_blob_data[]; };
++
++layout(push_constant) uniform parameter
++{
++    int w;
++    int h;
++    int c;
++    int cstep;
++    int outw;
++    int outh;
++    int outc;
++    int outcstep;
++} p;
++
++void main()
++{
++    int gx = int(gl_GlobalInvocationID.x);
++    int gy = int(gl_GlobalInvocationID.y);
++    int gz = int(gl_GlobalInvocationID.z);
++    if (gx >= p.outw || gy >= p.outh || gz >= p.outc)
++        return;
++
++    int sx = gx * 4;
++    int offset = gz * p.cstep + sx;
++    vec4 mean = mean_blob_data[gz];
++    precise vec4 d0 = input_blob_data[offset] - mean;
++    precise vec4 q0 = d0 * d0;
++    precise vec4 sum = q0;
++    if (sx + 1 < p.w)
++    {
++        precise vec4 d1 = input_blob_data[offset + 1] - mean;
++        precise vec4 q1 = d1 * d1;
++        sum = sum + q1;
++    }
++    if (sx + 2 < p.w)
++    {
++        precise vec4 d2 = input_blob_data[offset + 2] - mean;
++        precise vec4 q2 = d2 * d2;
++        sum = sum + q2;
++    }
++    if (sx + 3 < p.w)
++    {
++        precise vec4 d3 = input_blob_data[offset + 3] - mean;
++        precise vec4 q3 = d3 * d3;
++        sum = sum + q3;
++    }
++    sum_blob_data[gz * p.outcstep + gx] = sum;
++}

@@ -33,6 +33,7 @@ limits and validation scope. Published checkpoints remain experimental; publicat
 | `0025-radish-planar-batching-cumulative.patch` | Same Mesa base as 0001; alternative to 0023 | Candidate adds only native instrlen31 beside36/37 in existing tiled-batch resource gate; build/all14-file reconstruction, padded operators and full fixed core pass; all53 math commands retain batch8 schedule. Remaining conditions/defaults and ncnn K bound unchanged; PLANAR remains opt-in |
 | `0026-ncnn-planar-pad-local64.patch` | After0024 in the ordered Conv1D stack | Four reviewed host changes: planar prepass local8x4→8x8, two pipeline guards and group-count formula; shader bodies/defaults unchanged. Reconstruction/builds/compile/focused/full-core gates pass, first48.370236/warm46.932926 s, identical outputs,418.4 MiB/zero swap; single warm3.9501% below0024. Fresh T78/T213 passes31.890578/63.320730 s, all core/waveform values, zero swap/no faults; PLANAR default0 |
 | `0027-radish-tiled-x2-cumulative.patch` | Same Mesa base as0001; alternative to0025 | Default groups1, opt-in2 for narrow A506/instrlen31 tiled resources; X pairs/odd tails, cap4 EXEC chunks per submit, synchronization unchanged. Build/reconstruction/operators/full core pass, all562342 outputs byte-identical,45.621586/47.975705 s first/warm,no faults;417.4 MiB plus25.3 MiB swap. Warm2.2218% slower than0026 in confounded single pair; no performance acceptance |
+| `0028-ncnn-instancenorm-sum4.patch` | Independent InstanceNorm files on current ncnn stack | Default-off FP32 pack4 variance-first fusion; initial hint-gate failure corrected. Builds/compiler/focused/full core pass byte-identically; first47.302535/warm46.983200 s,418.5 MiB/zero swap.49 targeted stages save1.632487 s but whole warm stays flat. Fresh T78/T213 core/wave outputs pass31.783290/65.988211 s,0/46.9 MiB swap,no faults; no overall latency win/default change |
 
 To reconstruct the accepted driver checkpoint, make a separate checkout/worktree at the
 Mesa base, read its `AGENTS.md`, and apply 0023 with `git apply` instead of
@@ -81,7 +82,7 @@ Mesa base, recorded in
 
 The pinned ncnn/glslang checkout is separate. `../scripts/build-ncnn.sh` applies
 0005 if applicable, accepts an already-applied patch, migrates the exact earlier
-0002 adaptation, then applies/verifies 0006, 0008, 0010, 0011 and candidates 0013–0015/0017/0018/0020/0021/0024/0026, plus independent 0019.
+0002 adaptation, then applies/verifies 0006, 0008, 0010, 0011 and candidates 0013–0015/0017/0018/0020/0021/0024/0026, plus independent 0019/0028.
 The first candidate build stopped at overlapping earlier-patch verification.
 The build script accepts exact ordered 0010/0011/0013/0014/0017/0018/0020/0021/0024/0026 Conv1D prefixes
 and 0006/0015 net.cpp prefixes, rejecting unrelated edits. This preserves the
@@ -375,6 +376,46 @@ No fresh-runtime repeat or default change is claimed for this non-winning case.
 Both first/warm maps are documented in `warm-planar-x2-result-0027-nf2vcmi7/REPORT.md`;
 the faster first extraction also comes mainly from retained-command timing.
 
+0028 is independent of the Conv1D stack and changes only InstanceNorm host/header
+plus a new local16x1x4 shader. Explicit NORM_SUM4=1 selects a narrow exact-Radish
+FP32 pack4/rank3/h1/n1/known-channel/affine0/epsilon1e-5 contract; default0 and
+unsupported paths remain original. It replaces sub-mean/square plus first sum4,
+preserving mean/later variance tree/final normalization and exact guarded-tail
+arithmetic. Private source/SPIR-V and five-case probe/provenance reviews pass;
+canonical/SIMPLEOMP builds pass. Initial actual compile-only
+`operators-norm-sum4-0028-compile.log` rejects fused selection before VkCompute:
+Net packs Vulkan top_shapes, so the initial pack1/C gate cannot match. The revised
+patch requires pack4/16B/c=channels/4; both builds and all three reconstructed
+files pass (`norm-sum4-0028-reconstruction-cpwcmz6a/reconstruction.json`). The
+initial source/log are archived in `norm-sum4-0028-integration/failed-hint-evidence/`.
+Corrected actual compile-only `operators-norm-sum4-0028-compile-packed-hint.log`
+passes all five cases. Fused programs use179 repeat-expanded instructions/198 padded dwords/instrlen6,
+8 full/1 half/zero loops, local16x1x4 and accepted no-private gate. Precise NIR
+fmad is unfused. Original/fused hardware probes pass all independent gates and
+all36606 dumped values match byte-for-byte, SHA256
+`78e80ff3b454f44f7fbb4e15818e5ba0c4ee29ba89a9ccb147f38f10809c54ff`
+(`norm-sum4-0028-integration/focused-identity.json`); no faults/services active.
+Runtime builds; full repeat passes in `core-snake-planar-norm-sum4-0028-repeat2.log`
+with X1/generic batch4/tiled8: cold9.694 s, first47.302535/warm46.983200 s,
+all562342 values at unchanged gates and byte-identical fixed output SHA0550fe07…f18e4,
+418.5 MiB/zero swap/no faults/services active. Prior fixed-waveform evidence
+applies without a new tail run. Single warm wall is essentially flat versus0026
+(+0.050274 s/0.1071%). Actual49 square commands1.778057033 s plus49 first
+reductions0.368136867 s become49 fused reductions0.513706515 s, saving1.632487385 s.
+Other1700 command signatures/901 layer paths match, but retained timing adds
+1.547037747 s. Comparison: `norm0028-compare-prepared-l4fxn44o/comparison.json`.
+The earlier focused7 claim was a padded-size counting error:95 encoded
+instructions→ceil(95/16)=6, then four NOPs yield198 dwords (`ir3.c:396`). Actual
+focused/model execution both report6. Frozen proof and independent profile audit:
+`norm0028-result-audit-zm_1noi9/REPORT.md`. Fresh T78/T213 both pass exact-boundary
+host references for all core/waveform values: synthesis31.783290/65.988211 s,
+core17.777928/46.628144 s,328.6/436.9 MiB and0/46.9 MiB swap, no faults/services
+active. Waveform SNR96.917732/98.355163 dB; validation files
+`runtime-single-{short,full}-norm-sum4-0028-validation.json`. Full eight-input and
+core/wave byte identity is recorded in `runtime-full-norm-sum4-0028-boundary-identity.json`.
+No overall latency win; default0 and0026/groups1 recommendation remain unchanged.
+The ledger pins revised source; initial97b28ffe…95bea remains historical only.
+
 SHA-256:
 
 ```
@@ -405,4 +446,5 @@ a29dbbe0c3edf8912e4548cc873beca0ba3f1ba3197b6f1ee5f386bfd4f57dc0  0021-ncnn-conv
 fd0a0bb37e562535488406e183c46a233edf616939ad416efb6b09070bc0c17b  0025-radish-planar-batching-cumulative.patch
 3bbc418cf86b74ef32c1789b4bdc88c2b88ba4f1368c19ab1d62ee9103996a5c  0026-ncnn-planar-pad-local64.patch
 adc9ae8506e91abbacea3674a416b1e907672fecf60eb7c62dbe7c319367f6a1  0027-radish-tiled-x2-cumulative.patch
+4aa4d0983dd680492a35db3993bce02030e6700e3add4bc22369f03239a3af33  0028-ncnn-instancenorm-sum4.patch
 ```

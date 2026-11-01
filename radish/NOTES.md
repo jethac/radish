@@ -1993,3 +1993,98 @@ maps and source-backed ownership are retained in
 Keep0026/groups1 as the performance recommendation;0027 remains an opt-in narrow
 correctness capability. No fresh-runtime repeat is required for this non-winning
 candidate, and no performance acceptance/default change is claimed.
+
+### Candidate 0028: fused InstanceNorm variance-first reduction
+
+`0028-ncnn-instancenorm-sum4.patch` adds default-off
+`RADISH_NCNN_NORM_SUM4=1` for exact Radish FP32 pack4, rank3/height1/batch1,
+known C128/256/512/1024, affine0/epsilon1e-5 and matching checked shape/range.
+It fuses subtraction/square with the first sum4 variance reduction, removing
+one full-width workspace and dispatch. Mean computation, later variance tree,
+coefficients and final normalization remain unchanged; unsupported cases retain
+the original path. The local16x1x4 shader preserves subtraction→square and
+left-associated sums with guarded tails and NoContraction. Source review,
+private syntax/SPIR-V checks and probe/wrapper integration review pass; these
+are not actual IR3 or tensor-execution evidence.
+
+The initial integrated public bundle was SHA159de90a…a1fd5; initial0028 SHA256 was
+`97b28ffe25c693db4e3f57398556a593d6c92adccb075ff24c5f6d4a46995bea`.
+Canonical/SIMPLEOMP builds pass (`build-norm-sum4-0028.log` for canonical).
+Initial actual compile-only fails the expected fused-selection assertion before
+VkCompute/upload (`operators-norm-sum4-0028-compile.log`), with no faults. The
+static gate incorrectly expected logical pack1 hints; ncnn `net.cpp:1951–1977`
+already supplies packed Vulkan top_shapes. The correction requires
+pack4/16-byte elements and shape.c=channels/4, preserving all other guards.
+Revised0028 SHA256 is
+`4aa4d0983dd680492a35db3993bce02030e6700e3add4bc22369f03239a3af33`, with all three
+files reconstructed exactly in `norm-sum4-0028-reconstruction-cpwcmz6a/reconstruction.json`.
+Both corrected builds pass. Failed evidence remains archived under
+`norm-sum4-0028-integration/failed-hint-evidence/`.
+`--norm-sum4-only` checks C128/W33..36 plus pack1
+fallback C3/W213, original/fused selection and exact dispatch count, preserving
+full independent numeric/residual checks. Compile-only returns before upload;
+optional output publishes36606 values only after all five cases pass. Wrappers
+validate0|1/default0 and preserve X2/provenance; runtime appends norm at argv31.
+
+Corrected actual compile-only passes all five cases in
+`operators-norm-sum4-0028-compile-packed-hint.log`: packed hints C32/pack4 select
+the fused pipeline for W33..36, while C3 stays original. Four new compiled
+programs each use179 repeat-expanded instructions (85 NOP/94 non-NOP),198 padded dwords,
+instrlen6,
+8 full/1 half registers, zero loops, local16x1x4 and accepted zero private
+storage. Actual NIR uses precise fsub/fmul and unfused fmad, whose separate
+rounding is specified in `nir_opcodes.py:1138`; native mad.f32 alone does not
+establish contraction, as in the earlier Snake audit.
+
+Both actual original/fused probe runs pass all independent numeric/residual
+checks (`operators-norm-sum4-0028-{original,fused}.log`). All36606 dumped values
+are byte-identical, SHA256
+`78e80ff3b454f44f7fbb4e15818e5ba0c4ee29ba89a9ccb147f38f10809c54ff`, with evidence in
+`norm-sum4-0028-integration/focused-identity.json`. No faults, services active.
+The runtime build passes; frozen binaries and hashes are preserved in
+`norm-sum4-0028-integration/bin/` and `binary-checkpoint.json`. Full repeat2 passes
+in `core-snake-planar-norm-sum4-0028-repeat2.log`, with PLANAR1/NORM_SUM4=1,
+X groups1/generic batch4/tiled batch8: cold9.694 s, first47.302535/warm46.983200 s,
+all562342 outputs at unchanged gates (max0.000129699707/RMS7.72155564e-7),
+418.5 MiB/zero swap/no faults/services active. Pulled output SHA256 is
+`0550fe07becc684c3dc7b0113bfef0b4e3c87ff8d888acf779e98de4d8af18e4`, identical to
+0026, so prior fixed-waveform evidence applies without a new tail run. Warm wall
+is essentially flat versus46.932926 s (+0.050274 s/0.1071%, one warm each).
+Actual attribution replaces49 square commands (1.778057033 s) and49 first
+variance reductions (0.368136867 s) with49 fused first reductions (0.513706515 s),
+saving1.632487385 s in targeted work. All1700 remaining command signatures and
+901 layer paths match, but retained command timing adds1.547037747 s. This
+explains the nearly flat whole wall without assigning variation to isolated GPU
+cost. Evidence: `norm0028-compare-prepared-l4fxn44o/comparison.json`.
+The earlier focused-instrlen7 report was a counting error, not a different model
+program length: `ir3.c:396` computes ceil(95 encoded instructions/16)=6 before
+adding four trailing NOPs, giving198 padded dwords. Actual focused and model
+execution both report instrlen6. `ir3_compiler.c:359` supplies alignment16;
+`ir3.c:498–517` explains the printed repeat-expanded179 count. Frozen native
+excerpts, source/log pins and independent regeneration of the full profile are
+in `norm0028-result-audit-zm_1noi9/REPORT.md` and `audit.json`. The padded allocation
+size must not be used to infer the instruction-length field. This comparison
+uses the later0027 driver with X2 disabled, not the same driver binary as0026;
+retained signatures independently confirm unchanged observed scheduling.
+
+Fresh T78/T213 runtimes both pass exact-boundary ORT validation:
+
+| Capture | Core s | Synthesis s | Peak MiB / swap MiB |
+| --- | ---: | ---: | ---: |
+| T78 | 17.777928 | 31.783290 | 328.6 / 0 |
+| T213 | 46.628144 | 65.988211 | 436.9 / 46.9 |
+
+All205942/562342 core values and46800/127800 waveform samples pass, waveform
+SNR96.917732/98.355163 dB; no faults/services active. Evidence:
+`runtime-single-{short,full}-norm-sum4-0028-{first.log,validation.json}`. The full
+run's eight inputs match prior CPU/0026 boundaries, and core/waveform bytes match
+0026 (`runtime-full-norm-sum4-0028-boundary-identity.json`). There is no established
+overall latency win; T213 uses swap unlike0026's zero-swap run. NORM_SUM4 stays0,
+and0026/groups1 remains the performance recommendation.
+
+Before this candidate, immutable runtime assets were deduplicated under the
+shared device lock:14 byte-identical path replacements with matched hashes,
+byte comparisons, modes and owners; all paths remain present. This recovered
+219876 KiB, leaving393784 KiB free; services stayed active. Evidence:
+`dedup-immutable-runtime-assets-pre-norm-{plan,summary}.json` and the corresponding
+`.log`. This housekeeping supplies no inference or performance evidence.

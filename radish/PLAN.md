@@ -676,3 +676,35 @@ reports stay outside the public repository.
 - [x] Retain0027 as opt-in correctness capability only; keep0026/groups1 as the
   performance recommendation. No fresh-runtime repeat or default change for this
   non-winning candidate.
+
+## Candidate 0028: variance-first InstanceNorm fusion
+
+- [x] Review/integrate default-off exact Radish FP32 pack4 sum4 fusion, preserving
+  original subtraction/square/sum ordering, tails and later normalization tree.
+- [x] Review five-case probe, compile-only boundary,36606-value validated dump,
+  wrapper toggle/provenance and unchanged X2/runtime argument positions.
+- [x] Complete canonical/SIMPLEOMP builds. Initial compile-only correctly rejects
+  the absent fused pipeline before upload: static gate expected logical hints,
+  but Net supplies packed top_shapes. Preserve failed log and original hash.
+- [x] Correct gate to pack4/16-byte/c=channels/4, reconstruct all three files and
+  rebuild both variants. Actual compile-only passes all five cases; fused shader
+  local16x1x4/8 full/1 half/instrlen6/zero loops/no private. Initial failure is
+  archived separately; revised patch hash is recorded in NOTES/patch README.
+- [x] Pass original/fused five-case hardware gates; all36606 normalized/residual
+  values byte-identical, retained residual unchanged, no faults/services active.
+  Runtime build passes; binaries/checkpoint frozen privately.
+- [x] Pass full-model repeat2 at PLANAR1/NORM1/X1/generic batch4/tiled8:
+  cold9.694 s, first47.302535/warm46.983200 s, all562342 values byte-identical,
+  418.5 MiB/zero swap/no faults/services active. Existing fixed-waveform evidence
+  applies without a rerun.
+- [x] Attribute49 square+first-reduction pairs→49 fused commands, saving1.632487385 s.
+  Other1700 signatures/901 paths match, but retained timing adds1.547037747 s;
+  single warm total is essentially flat versus0026 (+0.050274 s/0.1071%).
+- [x] Resolve the false length discrepancy:95 encoded instructions round to6
+  native blocks before four padding NOPs yield198 dwords; actual focused/model
+  execution both report6.
+- [x] Validate fresh T78/T213 against the same captured boundaries: all core/wave
+  outputs pass, synthesis31.783290/65.988211 s,328.6/436.9 MiB and0/46.9 MiB swap,
+  no faults/services active. Full inputs and outputs match prior CPU/GPU evidence.
+- [x] Preserve NORM_SUM4=0 and0026/groups1 recommendation: targeted norm saving is
+  proven, but these single observations establish no overall latency win.

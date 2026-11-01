@@ -59,6 +59,13 @@ workgroups with `RADISH_TILED_GROUPS_X=2`. Full output remains identical, but
 the affected math time stays near 24.1 s and establishes no performance gain.
 The recommended setting remains one workgroup; the measurements above use it.
 
+Optional ncnn patch 0028 fuses the first variance reduction in normalization,
+removing 49 full-width intermediate passes. All fixed-core and fresh core/audio
+outputs remain byte-identical. The affected commands save 1.632 s, but whole
+warm time stays near 47 s; a full fresh run takes 65.988 s with 46.9 MiB of swap.
+This establishes no overall speedup. `RADISH_NCNN_NORM_SUM4=1` enables it;
+the default remains off and the table retains the preceding checkpoint.
+
 - Fused FP32 normalization and tiled convolution, including dilation 3/5,
   guarded output reshape aliases, sequential submission batching and Snake
   activation fusion reduce fixed-core warm GPU time from 101.275 s to 49.429 s.

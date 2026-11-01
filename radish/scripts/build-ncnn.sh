@@ -36,7 +36,8 @@ else
     exit 1
 fi
 for EXTRA_PATCH in "$TOP/radish/patches/0008-ncnn-radish-pipeline-cache.patch" \
-                   "$TOP/radish/patches/0019-ncnn-radish-reshape-alias.patch"; do
+                   "$TOP/radish/patches/0019-ncnn-radish-reshape-alias.patch" \
+                   "$TOP/radish/patches/0028-ncnn-instancenorm-sum4.patch"; do
     if git -C "$SRC" apply --check "$EXTRA_PATCH" 2>/dev/null; then
         git -C "$SRC" apply "$EXTRA_PATCH"
     elif ! git -C "$SRC" apply --check --reverse "$EXTRA_PATCH" 2>/dev/null; then

@@ -675,3 +675,39 @@ work explains most of the first/warm latency variation. No performance gain is
 established; retain the 0026/groups-one recommendation. No new GPU fault occurs.
 Evidence: `core-snake-planar-x2-0027-repeat2.log` and
 `warm-planar-x2-result-0027-nf2vcmi7/REPORT.md` under WORK.
+
+### Fused normalization variance reduction: checkpoint 0028
+
+Independent ncnn patch `0028-ncnn-instancenorm-sum4.patch` is disabled by
+default. Set `RADISH_NCNN_NORM_SUM4=1` alongside `RADISH_NCNN_PLANAR=1` and
+`--snake` to select its guarded FP32 pack4 path. It combines the full-width
+variance square with the first sum4 reduction; mean, remaining reductions,
+epsilon and final normalization retain their previous arithmetic.
+
+The fixed full core passes all 562,342 values with identical output bytes.
+First/warm extraction takes 47.302535/46.983200 s at 418.5 MiB and zero swap.
+Removing 49 square passes saves 1.632487385 s in the affected commands, while
+other commands vary by +1.547037747 s. Whole warm time remains effectively
+flat against 46.932926 s; this is no established overall speedup.
+
+Fresh synthesis also passes the unchanged full core and waveform gates:
+
+| Input | Core extraction | Complete synthesis | Peak memory | Swap | Waveform SNR |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Full, T=213 | 46.628144 s | 65.988211 s | 436.9 MiB | 46.9 MiB | 98.355 dB |
+| Short, T=78 | 17.777928 s | 31.783290 s | 328.6 MiB | 0 | 96.918 dB |
+
+Both runs keep the appliance services active and report no new GPU faults.
+All eight boundary files and complete core/waveform bytes match checkpoint
+0026 at the same input length. The full run's frontend time and swap differ;
+its slower total cannot be attributed solely to the normalization kernel.
+Keep checkpoint 0026 as the performance recommendation pending paired evidence.
+
+Evidence under WORK: `runtime-single-{full,short}-norm-sum4-0028-first.log`,
+`runtime-single-{full,short}-norm-sum4-0028-validation.json`, and
+`runtime-{full,short}-norm-sum4-0028-boundary-identity.json`.
+Captures are `kokoro-runtime-{full,short}-single-vulkan-norm-sum4-0028-first-snake-planar-norm-sum4/`.
+`norm0028-result-audit-zm_1noi9/REPORT.md` independently verifies fixed-core
+command attribution and corrects the initial compiler-length accounting:
+95 encoded instructions give `instrlen=6`; 198 allocated dwords include
+trailing padding. Both focused execution and full-model profiles report 6.
