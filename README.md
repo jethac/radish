@@ -50,14 +50,17 @@ CPU warm mean has two samples and uses the earlier InstanceNorm graph. Resident
 warm synthesis now passes at both lengths; sustained thermal behavior remains
 unmeasured.
 
-A bounded resident worker now regenerates frontend/source and waveform for every
-request while retaining one loaded core. Short synthesis falls from **29.765 s
-to 20.056 s** on reuse; full synthesis falls from **57.301 s to 46.984 s**.
-Shape changes reload the core, and all five tablet requests pass complete
-reference checks with identical prior output bytes. The short/full/full session
-peaks at **517 MiB with 19.1 MiB swap**, with no faults and both live services
-active. These are single resident observations; a matching resident CPU
-comparison, sustained behavior and live application integration remain pending.
+A bounded resident worker regenerates frontend/source and waveform for every
+request while retaining one loaded core. The public device wrapper now passes
+two complete short requests with driver 0032: **29.522 s fresh / 20.089 s on reuse**,
+**432.1 MiB peak and zero swap**. Core extraction takes 15.718/15.751 s; the saving
+primarily comes from avoiding 9.476 s of model loading. Both requests pass complete
+reference checks with byte-identical prior boundaries and outputs, 715 GPU / zero
+CPU core layers, no faults and both live services active. The earlier private
+short/full/full session proves shape-change reload and **46.984 s** full resident
+synthesis, at 517 MiB / 19.1 MiB swap. These are single resident observations;
+equivalent resident CPU, sustained performance, tablet cancellation and live
+application integration remain unmeasured.
 
 Select the measured graph with `--affine-snake-deconv2d`,
 `RADISH_NCNN_PLANAR=1` and `RADISH_BATCH_CHUNKS=8`, with one X workgroup.
@@ -136,6 +139,26 @@ check for new GPU faults. A fresh checkout does not contain the original
 workspace's sysroot, tool environment, model fixtures or historical logs.
 For the existing Lenovo workspace, use its shared
 `/home/jethac/Projects/lenovo-8/.device.lock` when running from either checkout.
+
+With the private fixtures prepared, the public wrapper accepts two to four
+ordered `runtime-short`/`runtime-full` requests. For two short requests, choose a
+new run label and use:
+
+```sh
+RADISH_DEVICE_LOCK=/home/jethac/Projects/lenovo-8/.device.lock \
+RADISH_NCNN_PLANAR=1 RADISH_NCNN_NORM_SUM4=1 RADISH_BATCH_CHUNKS=8 \
+  radish/scripts/device-runtime.sh runtime-short resident-short-NEW \
+  --affine-snake-deconv2d --vulkan --request-loop --next-input runtime-short \
+  --threads 4 --ort-threads 4 --max-frames 512 --repeat 1
+```
+
+Loop mode requires the explicit combined graph and repeat 1; one to three
+`--next-input` selectors follow the first positional fixture. Each request keeps
+the existing boundary/core/waveform capture and device provenance; a session
+manifest records ordering, reuse and terminal status. Run the unchanged
+same-boundary reference importer and full validator separately for each request
+after capture. Generation alone does not establish accuracy. One-shot defaults
+and `--repeat N` semantics remain unchanged.
 
 ## License
 

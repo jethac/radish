@@ -353,8 +353,10 @@ required.
   all 562342 core values and 127800 samples pass; 457.2 MiB/zero swap/no faults.
   Equivalent six-thread packed CPU synthesis takes 39.789900 s; all eight
   frontend boundary files match the GPU run byte-for-byte.
-- [ ] Measure resident reuse, cancellation and sustained behavior; single
-  startup runs do not establish a warm runtime win.
+- [x] Measure bounded complete-request reuse and shape reload; see the later
+  resident task for private/public staging evidence and remaining limits.
+- [ ] Measure tablet cancellation and sustained behavior; bounded sessions do
+  not establish a sustained runtime win.
 - [x] Audit and measure pack4 reshape aliases. Bidirectional aliases preserve
   output but regress to109.107981s due20 large transfer clones; reject them.
   Restrict to output rank3→rank2 aliases: 67.138187/66.919494s first/warm,
@@ -759,8 +761,9 @@ reports stay outside the public repository.
   59.184846 s, exact prior bytes. Peak330.3/415.6 MiB, swap0/74.2 MiB; no faults,
   services active. Keep single-observation/startup/swap caveats, explicit selector,
   original graph/defaults and unchanged accuracy thresholds.
-- [ ] Establish warm resident reuse, cancellation and sustained performance;
-  current success does not change live services.
+- [x] Establish bounded resident reuse on the later combined graph; see the
+  resident task below. Existing live services remain unchanged.
+- [ ] Measure tablet cancellation and sustained performance.
 
 ## Private three-deconvolution functionality trial
 
@@ -782,7 +785,8 @@ reports stay outside the public repository.
 - [x] Compose with AffineSnake; add exact metadata and explicit runtime selectors.
 - [x] Validate fresh T78/T213 core and waveform output; all715 neural-core layers
   execute on Vulkan. Fixed warm42.469886 s; fresh30.156883/63.130064 s.
-- [ ] Beat CPU end-to-end latency; establish resident and sustained behavior.
+- [x] Establish bounded resident reuse and shape reload on the combined graph.
+- [ ] Beat CPU end-to-end latency and measure sustained behavior.
 
 The K2 planar loop experiment is correct but7–9% slower in the three paired
 operator samples and remains outside the canonical shader. Vulkan conformance
@@ -800,7 +804,8 @@ status remains unchanged.
 The existing norm-sum4 option on the combined graph passes identical core bytes
 at 40.723725 s warm (385.1 MiB / 71.7 MiB swap). Fresh combined norm-enabled
 T213 passes at 57.293048 s total / 41.411426 s core with identical output bytes,
-418.9 MiB / 12.6 MiB swap. Resident/sustained performance remains pending.
+418.9 MiB / 12.6 MiB swap. Later resident results follow below; sustained
+performance remains unmeasured.
 
 
 ## Bounded resident request loop
@@ -814,6 +819,14 @@ T213 passes at 57.293048 s total / 41.411426 s core with identical output bytes,
 - [x] Pass tablet short/short and short/full/full full-reference gates, 715 GPU layers
   each, no faults/live services active; resident20.055962/46.984077 s short/full.
 - [x] Integrate sources and reproduce tested binary exactly in canonical build.
-- [ ] Integrate public guarded loop staging and per-request provenance capture.
+- [x] Integrate public guarded loop staging and per-request/session provenance:
+  explicit combined graph, repeat 1, two to four ordered short/full fixtures;
+  preserve one-shot defaults and hold the shared lock until failed work drains.
+- [x] Validate canonical public wrapper with driver 0032 on T78/T78: synthesis
+  29.521695246/20.089174476 s, core 15.717958607/15.750590681 s, load 9.475816580/0 s;
+  432.1 MiB/zero swap, no faults/live services active. Both full core/wave gates
+  pass with exact prior boundary/output bytes and 715 GPU/zero CPU paths each.
+  The repeat mainly avoids loading; no extraction-speed or sustained claim.
+  Evidence: `resident-public-0032-validation-mcnh4qu7/summary.json`.
 - [ ] Measure tablet cancellation, equivalent resident CPU baseline and sustained behavior.
 - [ ] Beat CPU latency and integrate with the live application.

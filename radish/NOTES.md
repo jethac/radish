@@ -19,14 +19,17 @@ Driver checkpoint 0032 adds execution-time core indirect dispatch. All 36
 indirect and 16 direct-grid checks pass on A506 without new faults; both live
 services remain active. The performance results above used driver 0031.
 
-Bounded complete-request reuse now passes: T78 cold/resident 29.764615/20.055962 s,
-and T213 after shape reload/resident 57.301229/46.984077 s. Every request
-recomputes frontend/source and waveform, with all 715 core layers on GPU. All
-five tablet requests pass original reference gates and match prior output bytes.
-The shape session peaks at 517 MiB / 19.1 MiB swap, no faults/services active.
-Equivalent resident CPU comparison, sustained behavior and tablet cancellation
-remain pending. The canonical runtime build reproduces the tested private binary
-byte-for-byte; the public staging wrapper still uses its one-shot interface.
+Public guarded request-loop staging now passes with driver 0032: T78 fresh/resident
+synthesis takes 29.521695246/20.089174476 s, with 15.717958607/15.750590681 s
+core extraction and 9.475816580/0 s core load. Both complete requests pass original
+reference gates; all eight boundary files and core/waveform bytes match earlier
+validated captures. Each request has 715 GPU / zero CPU core layers. Peak memory
+is 432.1 MiB with zero swap, no faults and both live services active. The earlier
+private T213 shape-change session remains 57.301229/46.984077 s after reload/reuse,
+517 MiB / 19.1 MiB swap. Equivalent resident CPU comparison, sustained behavior
+and tablet cancellation remain pending. The canonical runtime build reproduces
+the tested private binary byte-for-byte; public staging supports two to four
+complete requests and preserves per-request reference validation.
 
 Historical evidence follows.
 
@@ -2566,8 +2569,8 @@ The private reviewed harness in `resident-device-loop-wqyh11ze/` used the shared
 lock, 640 MiB memory / 128 MiB swap / 300 s runtime, 15 s stop timeout and existing
 RAM/disk reserves. Failures drain only their own unique transient unit. Its
 source pins describe the pre-integration checkout; those historical runs are
-complete. Public loop staging is being integrated separately; the existing
-`device-runtime.sh` still accepts its one-shot options only.
+complete. The later public wrapper integration and driver 0032 measurement are
+recorded below; these original five requests used the private harness.
 
 Before the first resident run, three byte-identical immutable runtime/library
 paths were hardlinked without changing their bytes or names. Inventory and
@@ -2584,3 +2587,74 @@ remains unchanged. Historical X2 targeted math was also essentially flat, so
 extending X2 admission is deferred. The next private candidate targets five
 nonaligned-input-channel convolutions; measured math exposure is 2.736140 s,
 not a predicted saving.
+
+## Public resident staging with driver 0032
+
+`device-runtime.sh` now accepts `--request-loop` with one to three
+`--next-input runtime-short|runtime-full` arguments, for two to four requests
+including the positional fixture. Loop mode requires explicit
+`--affine-snake-deconv2d` and `--repeat 1`; existing one-shot options/defaults are
+unchanged. The measured command was:
+
+```sh
+RADISH_NCNN_PLANAR=1 RADISH_NCNN_NORM_SUM4=1 RADISH_BATCH_CHUNKS=8 \
+  radish/scripts/device-runtime.sh runtime-short public-resident-0032-first \
+  --affine-snake-deconv2d --vulkan --request-loop --next-input runtime-short \
+  --threads 4 --ort-threads 4 --max-frames 512 --repeat 1
+```
+
+Use a new run label when reproducing it. The wrapper retains the shared device
+lock, 640 MiB memory / 128 MiB swap / 300 s runtime, 15 s stop timeout and
+existing RAM/disk reserves. On failure it drains only its unique unit while
+holding the lock. `kokoro-runtime-capture.py` freezes actual runtime/driver/ICD,
+graph/input and observed source hashes, checks host and remote assets plus the
+installed ORT library before/after, and verifies every pulled output hash.
+Completed `request-NNN/` directories retain v1 `device-runtime.json` and
+`boundary/device-capture.json`; `device-session.json` records the ordered complete
+session with accuracy pending. Original-ORT references and full accuracy checks
+still run separately for each exact captured boundary after synthesis.
+
+Both T78 requests pass all 205942 core values and 46800 waveform samples:
+max core error 0.000104188919, relative RMS 9.032957511e-7, waveform max
+1.387670636e-5/SNR97.073984074 dB, zero mismatches. All eight raw boundaries,
+core and waveform bytes match each other, the prior validated short capture and
+the earlier resident session. Each has 715 GPU / zero CPU layers; all 1430
+ordered trace rows match that prior session. Fresh/resident synthesis is
+29.521695246/20.089174476 s, core 15.717958607/15.750590681 s and
+load 9.475816580/0 s. The 9.432520770 s reduction mainly avoids loading the Net;
+the extraction itself is slightly slower. One warm observation is not sustained
+performance or an equivalent resident CPU comparison. Tablet cancellation and
+live application integration remain untested.
+
+`session.json` records 49.928546931 s including final cleanup 0.254041777 s;
+the service reports 50.038 s, 432.1 MiB peak, zero swap, no new GPU faults and
+both services active. Runtime SHA remains
+`0541e68cbb9e2f04862ff6cf36c73a70036118ec2f6d415716bf658b0270bda9`;
+actual 0032 ICD SHA is
+`c8fee96723942fca768a9026987a5d609071d2c60079058064377635155cb44c`.
+Wrapper/helper review and offline historical-capture checks passed before the
+device run: `public-resident-wrapper-eduzj417/`, patch SHA
+`18575e76bbae0da5cf1ff1e9aa954fabd6bc8ea2e19aa45cc36a5a213a075f2b`.
+
+Evidence: `resident-public-0032-validation-mcnh4qu7/{REPORT.md,summary.json}` and
+`public-resident-0032-request-{000,001}-validation.json`. Capture:
+`kokoro-runtime-short-single-vulkan-public-resident-0032-first-affine-snake-deconv2d-planar-norm-sum4-loop/`.
+The complete wrapper log and hashes use the corresponding
+`evidence/runtime-runtime-short-vulkan-public-resident-0032-first-affine-snake-deconv2d-planar-norm-sum4-loop*` prefix.
+
+Before this run, two hardlinked private 0026 ICD paths were archived to one
+hash-verified host backup, recovering 45384 KiB (free 234880→280264 KiB).
+The old shader/ICD bytes and original path/mode/owner records remain in
+`device-runtime-executable-archive-pad64-before-public-resident/manifest.json`;
+log: `archive-pad64-driver-before-public-resident.log`. Model weights, captures,
+outputs and live services were retained; no memory cap or reserve changed.
+
+Subsequent staging housekeeping preserved three identical immutable runtime/library
+paths via verified hardlinks (hashes, modes and owners unchanged), increasing
+free space 218852→242020 KiB: `dedup-runtime-assets-before-resident-cpu*`.
+Exactly two older 0029 private ICD paths were then archived to a verified host
+backup with original path/mode/owner records, increasing free space to 287408 KiB:
+`device-runtime-executable-archive-batch8-before-resident-cpu/manifest.json` and
+`archive-batch8-driver-before-resident-cpu.log`. No model, capture or output was
+removed; both services remained active. These are disk-maintenance records,
+not resident CPU benchmark evidence.

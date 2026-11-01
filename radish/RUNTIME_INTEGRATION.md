@@ -256,12 +256,13 @@ values, sessions and the runtime before GPU allocation. The tail retains the
 pinned inverse basis, window and double-precision arithmetic.
 
 `tests/ncnn/kokoro_runtime.cpp` joins these modules with the existing ncnn
-helpers. It generates one boundary, rebuilds all logical shape hints for the
+helpers. Its one-shot mode generates one boundary, rebuilds all logical shape hints for the
 actual T, loads the selected graph, checks its 1307 InstanceNorm or 1067 Snake
 loaded hints, and runs FP32
 core inference. It destroys the Net, GPU allocators and device before the CPU
 tail. Thus a new invocation with a different T gets new hints and pipelines;
-there is no cross-input resident Net cache. `--repeat N` reuses one boundary
+one-shot mode retains no cross-input Net cache. The bounded request-loop mode
+described below now retains one core across complete requests. `--repeat N` reuses one boundary
 and loaded Net for N extractions, then applies the tail once to the last result.
 It measures loaded-core reuse, not N complete requests or changing shapes.
 `--cpu-packed` selects a separate CPU invocation; a numerical comparison must
@@ -451,12 +452,12 @@ The full T213 startup table above predates the output-alias optimization.
 - Retain full-output checks across additional supported inputs and lengths.
   Complete T78/T213 success, T bounds and metadata formulas alone do not
   establish arbitrary-input accuracy.
-- Measure loaded-core repeats, cold/warm behavior and sustained throughput.
-  Resident frontend/core reuse across requests and changing T is not implemented;
-  a future cache must keep dimensions, hints and compiled pipelines consistent.
-- Add and measure cancellation and cleanup behavior before application wiring.
-  Current bounded one-shot processes do not establish production cancellation
-  or memory use with simultaneously resident frontend and core sessions.
+- Measure an equivalent resident CPU baseline and sustained throughput. Bounded
+  core reuse and shape-change reload now pass; frontend/source are regenerated
+  per request and no concurrent frontend/GPU execution is implemented.
+- Measure tablet cancellation and cleanup before application wiring. Host
+  phase-boundary cancellation passes, but does not establish tablet behavior or
+  prompt interruption during an active GPU extraction.
 - Integrate the existing token/style/duration interfaces into the live application
   only after these private-runtime checks. Models, weights and generated captures
   remain outside the public repository.
@@ -892,7 +893,7 @@ norm-disabled full run exactly; waveform SNR remains 98.377722 dB. No fault
 occurred and both services stayed active. The preceding full total was 63.130064 s
 with a 10.326545 s frontend, so the total gain is not solely a GPU improvement.
 CPU full synthesis remains 39.789900 s. These are single startup observations;
-resident reuse and sustained performance remain pending. The earlier short
+bounded resident results follow below; sustained performance remains pending. The earlier short
 30.156883 s result uses norm sum4 disabled. Exact logs and pins are in NOTES.
 
 
@@ -909,7 +910,7 @@ radish-kokoro-runtime --affine-snake --deconv2d --vulkan \
 ```
 
 The positional INPUT_DIR is request zero; one to three `--next-input` directories
-append complete requests, for two to four total. Loop mode requires repeat1.
+append complete requests, for two to four total. Loop mode requires repeat 1.
 Existing one-shot `--repeat N` still computes one boundary, N core extractions
 and one tail. Each loop request regenerates frontend/source, infers actual-T
 shapes, extracts a new result and generates its waveform. A matching inferred
@@ -935,12 +936,33 @@ memory sampling/checkpoint I/O and workspace trim, excludes capture publication
 and final session teardown. Released allocators do not guarantee immediate
 physical-page return. Resident CPU comparison and sustained behavior are pending.
 
-The existing public device-runtime.sh staging interface remains one-shot while
-loop staging is integrated. The measured private harness enforces the shared lock,
-640 MiB / 128 MiB swap / 300 s runtime and existing reserves, verifies remote and
-host hashes, and creates each request's existing device provenance only after
-service/fault checks. Its source pins are historical; do not substitute captures
-or fabricate device records. After guarded capture, use the unchanged importer
+Public guarded loop staging is implemented and validated with driver 0032. After
+preparing the exact combined-graph fixture and frontend assets above, the measured
+two-short command is:
+
+```sh
+RADISH_NCNN_PLANAR=1 RADISH_NCNN_NORM_SUM4=1 RADISH_BATCH_CHUNKS=8 \
+  radish/scripts/device-runtime.sh runtime-short public-resident-0032-first \
+  --affine-snake-deconv2d --vulkan --request-loop --next-input runtime-short \
+  --threads 4 --ort-threads 4 --max-frames 512 --repeat 1
+```
+
+Choose a new run label for another execution. The positional `runtime-short` or
+`runtime-full` selects request zero; one to three `--next-input` fixture selectors
+append requests, in order, for two to four total. Public loop staging requires
+`--affine-snake-deconv2d` and repeat 1. One-shot behavior/defaults are unchanged;
+the wrapper does not expose the binary's cancellation marker option.
+
+The wrapper preserves the shared lock, 640 MiB / 128 MiB swap / 300 s runtime,
+15 s stop timeout and existing reserves. A failed or timed-out run drains only
+its own unit while retaining the lock. `kokoro-runtime-capture.py` freezes actual
+binary/driver/loader/graph/input hashes, records observed sources separately from
+binary identity, verifies host and remote assets and installed ORT before/after,
+and verifies the pulled output hashes. Publication requires a complete session,
+exact request order/counts and expected same-T cache/reload decisions. Each
+`request-NNN/` keeps v1 `device-runtime.json` and
+`boundary/device-capture.json`; `device-session.json` records the complete ordered
+session with accuracy pending. After guarded capture, use the unchanged importer
 and validator separately for every request, with unique references/reports:
 
 ```sh
@@ -950,7 +972,24 @@ and validator separately for every request, with unique references/reports:
   "$CAPTURE/request-000" "$REFERENCE_000" "$REPORT_000"
 ```
 
+The public-wrapper0032 T78/T78 run passes both full core/waveform references with
+all eight boundary files and outputs byte-identical to earlier validated captures.
+Fresh/resident synthesis is 29.521695246/20.089174476 s, core
+15.717958607/15.750590681 s and load 9.475816580/0 s. Each request executes 715 GPU /
+zero CPU layers; all 1430 ordered trace rows match the earlier private session.
+Peak memory 432.1 MiB, zero swap, no faults, both services active. The session
+manifest records 49.928546931 s including final cleanup 0.254041777 s; service wall
+time 50.038 s. The 9.432521 s saving primarily avoids core loading; it is not a
+compute-speedup or sustained-performance claim. No equivalent resident CPU or
+tablet cancellation measurement is established.
+
 The canonical build matches the measured runtime SHA
 `0541e68cbb9e2f04862ff6cf36c73a70036118ec2f6d415716bf658b0270bda9`.
-Measurements use driver0031, FP32, AffineSnake/deconv, PLANAR1, NORM_SUM4=1,
-generic/tiled batch8 and X1. See NOTES for complete pins, logs and limits.
+The original five private-harness requests used driver0031; the two public-wrapper
+requests use driver 0032 SHA
+`c8fee96723942fca768a9026987a5d609071d2c60079058064377635155cb44c`.
+Both use FP32, AffineSnake/deconv, PLANAR1, NORM_SUM4=1, generic/tiled batch8 and X1.
+New evidence under WORK: `resident-public-0032-validation-mcnh4qu7/{REPORT.md,summary.json}`,
+`public-resident-0032-request-{000,001}-validation.json`, and capture
+`kokoro-runtime-short-single-vulkan-public-resident-0032-first-affine-snake-deconv2d-planar-norm-sum4-loop/`.
+See NOTES for complete pins, logs and limits.
