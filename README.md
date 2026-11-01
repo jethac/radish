@@ -27,48 +27,39 @@ executed core layers use Vulkan**. Frontend/source generation and the waveform
 tail still run on the CPU in one private tablet executable.
 
 Full core and waveform comparisons pass at two input lengths. The full output
-contains 127,800 samples and passes at **98.38 dB SNR**. No GPU faults occurred,
+contains 127,800 samples and passes at **97.91 dB SNR**. No GPU faults occurred,
 and both live appliance services remained active.
 
 | Measurement | GPU path | Packed six-thread CPU |
 | --- | ---: | ---: |
-| Fixed full-size core, warm extraction | **40.724 s** | **32.079 s** |
-| Fresh full-length synthesis, including startup | **57.293 s** | **39.790 s** |
-| Complete short synthesis, resident core | **20.089 s** | **15.411 s** |
-| Complete full synthesis, resident core | **46.984 s** | **36.803 s** |
+| Fixed full-size core, warm extraction | **38.557 s** | **32.079 s** |
+| Fresh full-length synthesis, including startup | **54.928 s** | **39.790 s** |
+| Complete short synthesis, resident core | **18.768 s** | **15.411 s** |
+| Complete full synthesis, resident core | **45.501 s** | **36.803 s** |
 
-GPU inference remains slower than CPU. Enabling the existing normalization
-optimization reduces warm core time from 42.470 s to 40.724 s, with identical
-output bytes. Fresh full synthesis improves from 63.130 s to 57.293 s, with a
-41.411 s GPU core. Frontend startup also falls from 10.327 s to 5.889 s, so the
-whole improvement cannot be attributed to normalization. All eight boundary
-inputs, core output and waveform match the preceding validated run exactly.
-
-The latest fixed core peaks at **385.1 MiB with 71.7 MiB swap**; fresh full
-synthesis uses **418.9 MiB with 12.6 MiB swap**. The earlier norm-disabled short
-run takes **30.157 s**, with a **15.874 s** GPU core, 385.0 MiB and zero swap.
-These are single warm/startup observations with varying memory pressure; the
-CPU warm mean has two samples and uses the earlier InstanceNorm graph. Resident
-warm synthesis now passes at both lengths; sustained thermal behavior remains
-unmeasured.
+The latest optional channel padding moves five general convolutions onto the
+existing tiled kernel. Their padding/math commands save **2.090 s** of the
+**2.167 s** observed warm-core reduction from 40.724 s; the other 1601 command
+signatures match. Outputs differ from the previous GPU result but pass every
+unchanged accuracy gate. Fixed-core peak is **405.9 MiB with zero swap**; the
+prior run used 71.7 MiB swap, so whole-wall timing is not an isolated comparison.
 
 A bounded resident worker regenerates frontend/source and waveform for every
-request while retaining one loaded core. The public device wrapper now passes
-two complete short requests with driver 0032: **29.522 s fresh / 20.089 s on reuse**,
-**432.1 MiB peak and zero swap**. Core extraction takes 15.718/15.751 s; the saving
-primarily comes from avoiding 9.476 s of model loading. Both requests pass complete
-reference checks with byte-identical prior boundaries and outputs, 715 GPU / zero
-CPU core layers, no faults and both live services active. The earlier private
-short/full/full session proves shape-change reload and **46.984 s** full resident
-synthesis, at 517 MiB / 19.1 MiB swap.
+request while retaining one loaded core. The public wrapper passes four complete
+full/full/short/short requests with driver 0032 and channel padding: **54.928 s
+fresh full / 45.501 s resident full**, then **28.965 s short after shape reload /
+18.768 s resident short**. Core extraction takes 39.689/39.181/14.378/14.371 s.
+Every request passes original-ORT core/waveform references and has 715 GPU / zero
+CPU core layers. All eight boundary inputs match prior validated CPU/GPU captures;
+new same-length outputs match each other. The whole four-request session peaks
+at **525.8 MiB plus 80.1 MiB swap**, not an isolated fresh-request peak.
 
-The same combined graph and exact input boundaries now pass four resident CPU
-requests at **15.411 s short / 36.803 s full**, with **404.8 MiB peak and zero swap**.
-All 715 core layers use CPU; full output references pass with no faults and both
-services active. CPU remains faster. These are single resident observations:
-CPU ran short/short/full/full, short GPU used driver 0032 and full GPU used the
-earlier driver 0031 short/full/full session. Sustained behavior and live
-application integration remain unmeasured.
+CPU remains faster on the same combined graph and exact boundaries: **15.411 s
+short / 36.803 s full**, **404.8 MiB peak and zero swap**, with all reference
+gates passing. These are single resident observations with different sequences
+(CPU short/short/full/full) and memory pressure. The older fixed-core CPU mean
+and fresh CPU result use the earlier InstanceNorm graph. Sustained behavior and
+live application integration remain unmeasured; earlier results are in NOTES.
 
 A tablet cancellation probe preserves the completed request and discards the
 second request after its active GPU core finishes. Exit follows the cancel marker
@@ -78,8 +69,8 @@ Restart after cancellation and broader cancellation coverage remain untested.
 
 Select the measured graph with `--affine-snake-deconv2d`,
 `RADISH_NCNN_PLANAR=1` and `RADISH_BATCH_CHUNKS=8`, with one X workgroup.
-The latest fixed core and fresh full synthesis additionally enable
-`RADISH_NCNN_NORM_SUM4=1`; the earlier short result uses it disabled. The exact
+The latest measurements additionally enable `RADISH_NCNN_NORM_SUM4=1` and
+`RADISH_NCNN_PAD_CHANNELS=1`; channel padding remains default-off. The exact
 graph preserves every model weight and expresses
 three 1D deconvolutions as stock height-one 2D Vulkan operators with reshapes.
 The preparation/validation tools require completed full CPU reference evidence.
@@ -155,14 +146,16 @@ For the existing Lenovo workspace, use its shared
 `/home/jethac/Projects/lenovo-8/.device.lock` when running from either checkout.
 
 With the private fixtures prepared, the public wrapper accepts two to four
-ordered `runtime-short`/`runtime-full` requests. For two short requests, choose a
-new run label and use:
+ordered `runtime-short`/`runtime-full` requests. To reproduce the latest
+full/full/short/short sequence, choose a new run label and use:
 
 ```sh
 RADISH_DEVICE_LOCK=/home/jethac/Projects/lenovo-8/.device.lock \
 RADISH_NCNN_PLANAR=1 RADISH_NCNN_NORM_SUM4=1 RADISH_BATCH_CHUNKS=8 \
-  radish/scripts/device-runtime.sh runtime-short resident-short-NEW \
-  --affine-snake-deconv2d --vulkan --request-loop --next-input runtime-short \
+RADISH_NCNN_PAD_CHANNELS=1 \
+  radish/scripts/device-runtime.sh runtime-full padded-channels-NEW \
+  --affine-snake-deconv2d --vulkan --request-loop \
+  --next-input runtime-full --next-input runtime-short --next-input runtime-short \
   --threads 4 --ort-threads 4 --max-frames 512 --repeat 1
 ```
 

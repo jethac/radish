@@ -5,14 +5,17 @@ metadata shape propagation, a complete FP32 Vulkan neural core and the portable
 CPU waveform tail from token IDs/style/speed. The opt-in
 `--affine-snake-deconv2d` graph has zero CPU fallbacks in its neural core.
 
-Current fixed-core warm time is **42.469886 s**, compared with **32.079044 s**
-for the packed six-thread CPU baseline. Fresh T78/T213 synthesis passes every
-core and waveform comparison at **30.156883/63.130064 s**. Full synthesis remains
-slower than the CPU's **39.789900 s** and the preceding GPU sample's59.184846 s
-because frontend startup varies. No GPU faults occurred; both services stayed
-active. Defaults remain unchanged. Resident synthesis, sustained thermal behavior,
-cancellation and live application integration remain unfinished. Detailed current
-and historical measurements follow below and in [NOTES.md](NOTES.md).
+With opt-in padded channels 0033, fixed-core warm time is **38.556751 s**.
+The validated full/full/short/short loop takes **54.928111 s** fresh full and
+**45.500714 s** resident full; short takes **28.964791 s** after shape reload
+and **18.767525 s** on reuse. Every core/waveform reference passes, with 715 GPU
+layers per request. Whole-session memory is 525.8 MiB plus80.1 MiB swap, no faults
+and both services active. CPU remains faster at **36.802922/15.411271 s** resident
+full/short. These are single observations with different session sequences and
+memory pressure. Defaults remain unchanged. Bounded resident reuse, shape reload
+and phase-boundary cancellation pass; sustained behavior, post-cancellation
+restart and live application wiring remain open. Details and earlier checkpoints
+follow below and in [NOTES.md](NOTES.md).
 
 ## Implemented route
 
@@ -1063,3 +1066,76 @@ Evidence: `WORK/resident-cancel-0032-private/validation.json`, marker/session,
 launch and hash records alongside it; independent audit
 `WORK/resident-cancel-independent-kw7685ve/audit.json`. No application/service
 wiring changed.
+
+### Padded-channel runtime 0033
+
+`RADISH_NCNN_PAD_CHANNELS=1` enables five additional tiled convolutions for the
+three measured K3 channel tuples. It requires `RADISH_NCNN_PLANAR=1` and the
+existing FP32 tiled path; default0 and all other routes remain unchanged.
+Graph, boundary contract and stored weights are unchanged. The ncnn patch adds
+checked channel-padded GPU weights and a pack1 padding prepass. Rebuild both
+model/runtime helpers before enabling it; their manifests now record the toggle.
+Enabled output names add `-pad-channels`, preserving earlier captures.
+
+The actual four-request sequence, using a new label when repeating it, is:
+
+```sh
+RADISH_DEVICE_LOCK=/home/jethac/Projects/lenovo-8/.device.lock \
+RADISH_NCNN_PLANAR=1 RADISH_NCNN_NORM_SUM4=1 RADISH_BATCH_CHUNKS=8 \
+RADISH_NCNN_PAD_CHANNELS=1 \
+  radish/scripts/device-runtime.sh runtime-full padded-channels-0033-first \
+  --affine-snake-deconv2d --vulkan --request-loop \
+  --next-input runtime-full --next-input runtime-short --next-input runtime-short \
+  --threads 4 --ort-threads 4 --max-frames 512 --repeat 1
+```
+
+| Request | T / core reuse | Core load s | Core extraction s | Complete synthesis s |
+| --- | --- | ---: | ---: | ---: |
+| 000 | 213 / fresh process | 9.071568673 | 39.689168303 | 54.928111002 |
+| 001 | 213 / retained core | 0 | 39.181154535 | 45.500714193 |
+| 002 | 78 / shape reload | 9.328510884 | 14.378352951 | 28.964790620 |
+| 003 | 78 / retained core | 0 | 14.370964223 | 18.767524719 |
+
+The new core is still keyed by exact inferred metadata, with fresh frontend/source
+and one waveform tail for every request. Each request has 715 ordered GPU/zero CPU
+paths. Original-ORT references were generated only after device completion from
+each exact captured boundary: device frontend ORT 1.28.2, host references 1.31.1.
+Full requests pass all 562342 core values (max 0.000225782394, relative RMS 8.11419901e-7)
+and 127800 waveform samples (max 2.09733844e-5, SNR 97.912821255 dB). Short requests
+pass all 205942 core values (max 0.000186681747, relative RMS 1.09851758e-6) and 46800
+waveform samples (max 1.13752903e-5, SNR97.411696248 dB). Thresholds are unchanged.
+All eight boundary files match the earlier validated CPU/GPU captures exactly.
+New same-T outputs are byte-identical within this session; they differ from the
+previous GPU outputs and pass their own references.
+
+Whole-session peak is 525.8 MiB plus 80.1 MiB swap, no faults/services active.
+This is not an isolated fresh-request memory measurement. Session JSON records
+149.175802788 s including final cleanup 0.270881183 s; outer printed elapsed is
+149.188578 s and service wall 153.529 s. Request synthesis excludes publication
+and final teardown, while extraction includes allocator trim. The short miss
+includes eviction/reload after full synthesis, not fresh-process startup.
+CPU remains faster at 36.802922440/15.411270994 s full/short. Previous GPU resident
+46.984076563/20.089174476 s came from different session sequences and, for full,
+driver 0031. One resident sample per length, binary changes and memory pressure
+preclude sustained or isolated whole-runtime performance claims.
+
+Capture: `WORK/kokoro-runtime-full-single-vulkan-padded-channels-0033-first-affine-snake-deconv2d-planar-norm-sum4-pad-channels-loop/`.
+For each `request-000` through `request-003`, use a fresh reference/report path:
+
+```sh
+PY=streams/tts/downloads/kokoro-venv/bin/python
+"$PY" radish/scripts/import-kokoro-device-boundary.py "$CAPTURE/request-000/boundary" \
+  "$WORK/kokoro-runtime-models" "$WORK/NEW-reference-000" --threads 4 --max-frames 512
+"$PY" radish/scripts/validate-kokoro-runtime.py "$CAPTURE/request-000" \
+  "$WORK/NEW-reference-000" "$WORK/NEW-validation-000.json"
+```
+
+Evidence: `WORK/padded0033-runtime-validation-i_6pkny1/{REPORT.md,summary.json}`,
+`padded0033-runtime-request-{000,001,002,003}-validation.json`, and
+`runtime-padded-channels-0033-first.log`. Patch SHA
+`ee30ca55756e7a67283353803621a78a8cb6e78ba11a37606ab0c5981dba8878`;
+runtime `5057a939f068bfcd96590067bf2874427df29ab346996b5057f5696bf9949c60`;
+driver remains 0032 `c8fee96723942fca768a9026987a5d609071d2c60079058064377635155cb44c`.
+The checkpoint and unchanged graph/weight hashes are in
+`WORK/padded-channel-integration-0033-checkpoint/after.json` and per-request device
+provenance. No live application/service integration or sustained/restart claim.

@@ -66,6 +66,8 @@ TILED=${RADISH_NCNN_TILED:-1}
 TILED32=${RADISH_NCNN_TILED32:-0}
 PLANAR=${RADISH_NCNN_PLANAR:-0}
 [[ $PLANAR == 0 || $PLANAR == 1 ]] || { echo 'RADISH_NCNN_PLANAR must be 0 or 1' >&2; exit 2; }
+PAD_CHANNELS=${RADISH_NCNN_PAD_CHANNELS:-0}
+[[ $PAD_CHANNELS == 0 || $PAD_CHANNELS == 1 ]] || { echo 'RADISH_NCNN_PAD_CHANNELS must be 0 or 1' >&2; exit 2; }
 NORM_SUM4=${RADISH_NCNN_NORM_SUM4:-0}
 [[ $NORM_SUM4 == 0 || $NORM_SUM4 == 1 ]] || { echo 'RADISH_NCNN_NORM_SUM4 must be 0 or 1' >&2; exit 2; }
 SHARED32=${RADISH_NCNN_SHARED32:-0}
@@ -99,6 +101,7 @@ TAG=runtime-$KIND-$BACKEND-$RUN
 [[ $CORE_GRAPH == instancenorm ]] || TAG+=-$CORE_GRAPH
 [[ $PLANAR == 0 ]] || TAG+=-planar
 [[ $NORM_SUM4 == 0 ]] || TAG+=-norm-sum4
+[[ $PAD_CHANNELS == 0 ]] || TAG+=-pad-channels
 [[ $TILED_GROUPS_X == 1 ]] || TAG+=-tiled-groups-x$TILED_GROUPS_X
 if $REQUEST_LOOP; then TAG+=-loop; fi
 UNIT=radish-$TAG
@@ -107,6 +110,7 @@ OUTPUT=$WORK/kokoro-$KIND-single-$BACKEND-$RUN
 [[ $CORE_GRAPH == instancenorm ]] || OUTPUT+=-$CORE_GRAPH
 [[ $PLANAR == 0 ]] || OUTPUT+=-planar
 [[ $NORM_SUM4 == 0 ]] || OUTPUT+=-norm-sum4
+[[ $PAD_CHANNELS == 0 ]] || OUTPUT+=-pad-channels
 [[ $TILED_GROUPS_X == 1 ]] || OUTPUT+=-tiled-groups-x$TILED_GROUPS_X
 if $REQUEST_LOOP; then OUTPUT+=-loop; fi
 [[ ! -e $OUTPUT && ! -L $OUTPUT ]] || { echo 'host output already exists' >&2; exit 2; }
@@ -133,7 +137,7 @@ python3 "$CAPTURE" prepare --source "$SOURCE" --models "$MODELS" --template "$TE
     --max-frames "$MAX_FRAMES" --repeat "$REPEAT" --core-graph "$CORE_GRAPH" --validator "$VALIDATOR" \
     --wrapper "$TOP/radish/scripts/device-runtime.sh" --source-root "$TOP" \
     --env RADISH_NCNN_TILED=$TILED --env RADISH_NCNN_TILED32=$TILED32 --env RADISH_NCNN_PLANAR=$PLANAR \
-    --env RADISH_NCNN_NORM_SUM4=$NORM_SUM4 --env RADISH_NCNN_SHARED32=$SHARED32 \
+    --env RADISH_NCNN_PAD_CHANNELS=$PAD_CHANNELS --env RADISH_NCNN_NORM_SUM4=$NORM_SUM4 --env RADISH_NCNN_SHARED32=$SHARED32 \
     --env RADISH_NCNN_MIXED_STORAGE=$MIXED --env RADISH_NCNN_RESHAPE_ALIAS=$RESHAPE_ALIAS \
     --env RADISH_NCNN_PIPELINE_CACHE=$CACHE --env RADISH_NCNN_TRACE=$TRACE --env RADISH_PROFILE=$PROFILE \
     --env RADISH_BATCH_CHUNKS=$BATCH --env RADISH_TILED_BATCH_CHUNKS=$TILED_BATCH \
@@ -289,9 +293,9 @@ REMOTE_CHECK=$(python3 "$CAPTURE" remote-script --record "$WORK/evidence/$TAG-in
 python3 "$CAPTURE" verify-remote --record "$WORK/evidence/$TAG-inputs.json" --shared-weights "$DEVICE_WEIGHTS" --hashes "$WORK/evidence/$TAG-assets-before.txt"
 python3 "$CAPTURE" recheck --record "$WORK/evidence/$TAG-inputs.json"
 echo "Runtime backend=$BACKEND graph=$CORE_GRAPH repeat=$REPEAT threads=$THREADS ort_threads=$ORT_THREADS; shared weights=$DEVICE_WEIGHTS"
-echo "GPU controls: tiled=$TILED tiled32=$TILED32 planar=$PLANAR norm_sum4=$NORM_SUM4 batch=$BATCH tiled_batch=$TILED_BATCH tiled_groups_x=$TILED_GROUPS_X shared_groups=$GROUPS_PER_CHUNK shared32=$SHARED32 mixed=$MIXED cache=$CACHE trace=$TRACE profile=$PROFILE reshape_alias=$RESHAPE_ALIAS"
+echo "GPU controls: tiled=$TILED tiled32=$TILED32 planar=$PLANAR norm_sum4=$NORM_SUM4 pad_channels=$PAD_CHANNELS batch=$BATCH tiled_batch=$TILED_BATCH tiled_groups_x=$TILED_GROUPS_X shared_groups=$GROUPS_PER_CHUNK shared32=$SHARED32 mixed=$MIXED cache=$CACHE trace=$TRACE profile=$PROFILE reshape_alias=$RESHAPE_ALIAS"
 STARTED=true
-timeout 330s "${ADB[@]}" shell "chmod 755 $REMOTE/radish-kokoro-runtime && systemd-run --unit=$UNIT --wait --pipe --collect -p MemoryMax=640M -p MemorySwapMax=128M -p RuntimeMaxSec=300 -p TimeoutStopSec=15 -p LimitCORE=0 --setenv=RADISH_NCNN_TILED=$TILED --setenv=RADISH_NCNN_TILED32=$TILED32 --setenv=RADISH_NCNN_PLANAR=$PLANAR --setenv=RADISH_NCNN_NORM_SUM4=$NORM_SUM4 --setenv=RADISH_NCNN_SHARED32=$SHARED32 --setenv=RADISH_NCNN_MIXED_STORAGE=$MIXED --setenv=RADISH_NCNN_RESHAPE_ALIAS=$RESHAPE_ALIAS --setenv=RADISH_NCNN_PIPELINE_CACHE=$CACHE --setenv=RADISH_NCNN_TRACE=$TRACE --setenv=RADISH_PROFILE=$PROFILE --setenv=RADISH_BATCH_CHUNKS=$BATCH --setenv=RADISH_TILED_BATCH_CHUNKS=$TILED_BATCH --setenv=RADISH_TILED_GROUPS_X=$TILED_GROUPS_X --setenv=RADISH_SHARED_GROUPS=$GROUPS_PER_CHUNK --setenv=LD_LIBRARY_PATH=$REMOTE --setenv=VK_DRIVER_FILES=$REMOTE/radish_icd.json $REMOTE/radish-kokoro-runtime $CORE_ARGS $LOOP_ARGS --$BACKEND --threads $THREADS --ort-threads $ORT_THREADS --max-frames $MAX_FRAMES --repeat $REPEAT $REMOTE/models $INPUT_REMOTE $REMOTE/decoder.ncnn.param $DEVICE_WEIGHTS $REMOTE/kokoro-tail.bin $REMOTE/output" 2>&1 | tee "$WORK/evidence/$TAG.txt"
+timeout 330s "${ADB[@]}" shell "chmod 755 $REMOTE/radish-kokoro-runtime && systemd-run --unit=$UNIT --wait --pipe --collect -p MemoryMax=640M -p MemorySwapMax=128M -p RuntimeMaxSec=300 -p TimeoutStopSec=15 -p LimitCORE=0 --setenv=RADISH_NCNN_TILED=$TILED --setenv=RADISH_NCNN_TILED32=$TILED32 --setenv=RADISH_NCNN_PLANAR=$PLANAR --setenv=RADISH_NCNN_NORM_SUM4=$NORM_SUM4 --setenv=RADISH_NCNN_PAD_CHANNELS=$PAD_CHANNELS --setenv=RADISH_NCNN_SHARED32=$SHARED32 --setenv=RADISH_NCNN_MIXED_STORAGE=$MIXED --setenv=RADISH_NCNN_RESHAPE_ALIAS=$RESHAPE_ALIAS --setenv=RADISH_NCNN_PIPELINE_CACHE=$CACHE --setenv=RADISH_NCNN_TRACE=$TRACE --setenv=RADISH_PROFILE=$PROFILE --setenv=RADISH_BATCH_CHUNKS=$BATCH --setenv=RADISH_TILED_BATCH_CHUNKS=$TILED_BATCH --setenv=RADISH_TILED_GROUPS_X=$TILED_GROUPS_X --setenv=RADISH_SHARED_GROUPS=$GROUPS_PER_CHUNK --setenv=LD_LIBRARY_PATH=$REMOTE --setenv=VK_DRIVER_FILES=$REMOTE/radish_icd.json $REMOTE/radish-kokoro-runtime $CORE_ARGS $LOOP_ARGS --$BACKEND --threads $THREADS --ort-threads $ORT_THREADS --max-frames $MAX_FRAMES --repeat $REPEAT $REMOTE/models $INPUT_REMOTE $REMOTE/decoder.ncnn.param $DEVICE_WEIGHTS $REMOTE/kokoro-tail.bin $REMOTE/output" 2>&1 | tee "$WORK/evidence/$TAG.txt"
 DRAINED=true
 if rg -n 'vkCreateComputePipelines failed|new_pipeline failed' "$WORK/evidence/$TAG.txt"; then exit 1; fi
 "${ADB[@]}" shell "$REMOTE_CHECK" > "$WORK/evidence/$TAG-assets-after.txt"

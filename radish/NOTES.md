@@ -2,40 +2,34 @@
 
 ## 2026-11-01
 
-Latest fixed-core path: explicit AffineSnake with height-one deconvolutions,
-positive planar indices 0030/0031, generic/tiled batch 8, norm sum4 enabled and
-X1. All 715 non-Input layers execute through Vulkan, with zero CPU fallbacks.
-The fixed core passes at 40.723725 s warm, 385.1 MiB peak and 71.7 MiB swap,
-with identical output bytes to the preceding norm-disabled 42.469886 s run.
-Fresh norm-enabled T213 passes all core/waveform gates at 41.411426 s core /
-57.293048 s total, 418.9 MiB peak plus 12.6 MiB swap. All eight boundary files
-and complete core/waveform bytes match the preceding norm-disabled run, which
-took 63.130064 s total. Frontend startup also improves from 10.326545 s to
-5.889140 s, so the total difference is not solely a normalization gain. The
-earlier norm-disabled T78 run remains 30.156883 s total / 15.873927 s core,
-385.0 MiB and zero swap. CPU remains faster. These are single observations.
+Latest opt-in path adds padded channels 0033 to AffineSnake, height-one
+deconvolutions, planar FP32 convolution, norm sum4 and generic/tiled batch 8,
+with X1. All 715 non-Input layers use Vulkan. Five formerly general convolutions
+now use the existing tiled kernel, raising the tiled count from 53 to 58.
+Fixed-core first/warm extraction passes at 38.788999/38.556751 s, 405.9 MiB and
+zero swap. The intended five padding/math pairs save 2.090428300 s of the
+2.166974 s warm reduction from 40.723725 s. Other 1601 command signatures match.
+Outputs differ from the earlier GPU result but pass every unchanged reference
+gate; the prior run's 71.7 MiB swap and different binary/driver remain caveats.
 
-Driver checkpoint 0032 adds execution-time core indirect dispatch. All 36
-indirect and 16 direct-grid checks pass on A506 without new faults; both live
-services remain active. The performance results above used driver 0031.
+The public four-request full/full/short/short loop passes all original-ORT
+core/waveform gates. Fresh full synthesis is 54.928111 s; resident full is
+45.500714 s. Short after shape reload takes 28.964791 s, then 18.767525 s on
+reuse. Core times are 39.689168/39.181155/14.378353/14.370964 s. Every request
+has 715 GPU / zero CPU layers and identical boundaries to prior CPU/GPU captures.
+Whole-session peak is 525.8 MiB plus 80.1 MiB swap, not an isolated request peak;
+no faults occur and both live services stay active. Resident CPU remains faster
+at 36.802922 s full / 15.411271 s short (404.8 MiB, zero swap). These are single
+observations with different session sequences and memory pressure, not sustained
+or isolated whole-runtime speedup evidence. PAD_CHANNELS remains default-off.
 
-Public guarded request-loop staging now passes with driver 0032: T78 fresh/resident
-synthesis takes 29.521695246/20.089174476 s, with 15.717958607/15.750590681 s
-core extraction and 9.475816580/0 s core load. Both complete requests pass original
-reference gates; all eight boundary files and core/waveform bytes match earlier
-validated captures. Each request has 715 GPU / zero CPU core layers. Peak memory
-is 432.1 MiB with zero swap, no faults and both live services active. The earlier
-private T213 shape-change session remains 57.301229/46.984077 s after reload/reuse,
-517 MiB / 19.1 MiB swap. A same-graph six-thread CPU short/short/full/full session
-now passes every reference gate with identical GPU input boundaries: resident
-short/full synthesis is 15.411271/36.802922 s, faster than GPU 20.089174/46.984077 s.
-CPU peak is 404.8 MiB with zero swap and 715 CPU / zero GPU core layers per request.
-These are single resident observations with different session sequences; the
-full GPU result uses driver 0031. A tablet phase-boundary cancellation probe now
-preserves the completed request and discards the active request after its GPU
-core drains; marker-return to process exit is 15.793739 s. Prompt interruption,
-a new request after cancellation and sustained behavior remain unproven. Public
-staging supports two to four complete requests and per-request validation.
+Driver 0032 is unchanged by 0033; its 36 indirect and 16 direct-grid checks
+pass on A506. API advertisement remains experimental 1.0. Public staging
+supports two to four complete requests and per-request validation. The earlier
+tablet cancellation probe preserves the completed request after its active GPU
+core drains; marker-return to exit is 15.793739 s. Prompt interruption, a new
+request after cancellation, sustained behavior and live application wiring remain
+unproven. Detailed earlier checkpoints and the new 0033 evidence follow below.
 
 Historical evidence follows.
 
@@ -206,6 +200,13 @@ accepted local128 tile is retained; later sequential batching improves its
   No Mesa commits, pushes or community interactions performed.
 
 ## Next
+
+Use the validated 0033 opt-in checkpoint for the next comparison: 38.556751 s
+fixed-core warm, 45.500714/18.767525 s complete resident full/short synthesis,
+with every original accuracy gate retained. CPU remains faster. Improve the
+remaining measured work and memory pressure, then collect matched sustained
+CPU/GPU evidence. Keep the new output differences and whole-session 80.1 MiB
+swap explicit. The earlier optimization sequence below is retained as history.
 
 Continue from the passing FP32 InstanceNorm+tiled+dilation core and waveform:
 56.013717 s GPU warm with 0022 batching versus 32.079044 s packed CPU warm mean
@@ -2750,3 +2751,83 @@ its before/after asset and remote-output hash records, and
 state, retained bytes, asset/output hashes and fault log pass:
 `resident-cancel-independent-kw7685ve/audit.json`. The public staging wrapper
 still accepts completed sessions only and does not expose `--cancel-file`.
+
+## Padded-channel convolution 0033
+
+Incremental ncnn patch `0033-ncnn-planar-padded-channels.patch` adds default-off
+`RADISH_NCNN_PAD_CHANNELS=1`. It requires the existing exact-Radish FP32 tiled
+and planar path, TILED32 off, K3/stride1/dilation1, explicit pad1 on both sides,
+positive zero padding, bias and no activation. Only 514→1024, 1090→1024 and
+1090→512 channel tuples qualify: five graph layers, alongside the existing 53
+tiled layers. Channels are padded to 544/1120; graph and stored model weights
+remain unchanged, with 1,658,880 additional persistent GPU weight bytes.
+Other configurations retain the original route. Physical rank2 input alignment
+is checked separately from logical row stride; the prepass initializes every
+halo, rounded spatial tail and added channel. Accepted planar math is unchanged.
+
+All three focused classes pass their complete 218112-value independent double
+references and workspace/weight/input guards. Observed pad+math seconds are
+0.302640→0.076974 (514→1024/W213), 0.628814→0.149949 (1090→1024/W213) and
+0.570616→0.134817 (1090→512/W426). These single operator pairs exclude common
+download/reference work. All report zero swap, no faults and active services.
+Integrated builds and actual full load-only compiler audit pass: 23 tiled
+specializations, 16 full/0 half registers, 16 KiB shared, four loops and native
+length 27/28; the new pad uses local8x8, 8 full/3 half, native8 and no loops/shared.
+Accepted pipelines reject private allocation. Driver 0032 and its gates are
+unchanged; load-only setup may submit transfers, so it is not a no-submit proof.
+
+Fixed core: cold 9.007 s, first 38.788999 s and warm 38.556751 s, 405.9 MiB/zero swap,
+service 86.954 s, no faults/services active. Both full 562342-output checks and
+715 GPU/zero CPU traces pass. Independent saved warm validation gives max
+0.000110626221, relative RMS 7.47965004e-7 and zero mismatches at unchanged
+0.002 absolute/relative tolerances. Output SHA is
+`e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287`.
+It differs in 502869 values from the earlier norm-enabled core, maximum delta
+6.86049461e-5; both pass the original reference. Do not inherit earlier waveform
+byte-identity evidence for this result.
+
+Exact profile mapping preserves 1601 command signatures and replaces five
+padding/math pairs. Their warm wall time is 2.773070719→0.682642419 s, saving
+2.090428300 s; retained commands are 37.748006386→37.690152513 s. Whole warm
+40.723725→38.556751 s is 5.32% lower in this pair. Total commands remain 1611,
+submits 13194→13179 and chunks 90695→90715. The intended five pairs account for
+most observed savings, while the prior 71.7 MiB swap, different model binary
+and driver 0031→0032 prevent an isolated whole-wall claim.
+
+The public full/full/short/short runtime loop independently passes all four
+original-ORT decoder/waveform references from exact captured boundaries. It
+uses 715 ordered GPU/zero CPU paths per request and cache miss/hit/miss/hit.
+Fresh full synthesis 54.928111002 s/core 39.689168303 s becomes resident
+45.500714193 s/core 39.181154535 s. Short after shape reload takes28.964790620 s/
+core 14.378352951 s, then resident18.767524719 s/core 14.370964223 s. Load is
+9.071568673/0/9.328510884/0 s. Full waveform SNR is 97.912821255 dB; short is
+97.411696248 dB. All eight boundary files match validated CPU and GPU captures;
+new same-T outputs match each other but differ from previous GPU output bytes.
+Session 149.175802788 s includes final cleanup; service 153.529 s, peak 525.8 MiB
+plus 80.1 MiB swap, no faults/services active. Those memory peaks cover all four
+requests. CPU remains faster at 36.802922440/15.411270994 s full/short; single
+resident observations and different session sequences limit comparisons.
+Exact invocation and per-request reference commands are in
+[RUNTIME_INTEGRATION.md](RUNTIME_INTEGRATION.md#padded-channel-runtime-0033).
+
+Frozen patch SHA `ee30ca55756e7a67283353803621a78a8cb6e78ba11a37606ab0c5981dba8878`;
+model `794aefa840c277ae58a133b5470f4dd2059178e0af2de9fff7c2680feee2eab1`;
+runtime `5057a939f068bfcd96590067bf2874427df29ab346996b5057f5696bf9949c60`;
+unchanged driver `c8fee96723942fca768a9026987a5d609071d2c60079058064377635155cb44c`.
+Evidence under WORK: `padded-channel-integration-0033-checkpoint/after.json`,
+`planar-pad-channels-integration-tynxtu63/model-load-audit/REPORT.md`,
+`padded0033-fixed-independent-vgiws1ob/validation.json`,
+`padded-channels-result-0033-t90dqoh4/REPORT.md`,
+`padded0033-runtime-validation-i_6pkny1/{REPORT.md,summary.json}` and
+`padded0033-runtime-request-{000,001,002,003}-validation.json`. Logs are
+`core-padded-channels-0033-repeat2.log` and `runtime-padded-channels-0033-first.log`.
+Focused reports are in `padded-channel-classes-m66voh3d/remaining-classes-actual-pwf2x31p/`
+and `planar-padded-channels-private-8dpxowcq/tensor/focused-first-result/`.
+
+Before runtime staging, five byte-identical immutable executable/library paths
+were deduplicated with hashes, mode and ownership preserved; all paths remain
+(`dedup-runtime-assets-before-padded-runtime*`). Exactly two obsolete private
+probe executables were then archived with verified host backups and a restore
+manifest in `device-probe-executable-archive-before-padded-runtime/`; log
+`archive-probes-before-padded-runtime.log` records free 249408→270756 KiB.
+Models, captures and outputs were retained; both services stayed active.

@@ -845,3 +845,25 @@ performance remains unmeasured.
 - [ ] Test a new tablet request after cancellation and broader phase coverage;
   establish controlled repeated/sustained behavior and response-time limits.
 - [ ] Beat CPU latency and integrate with the live application.
+
+## Padded-channel convolution 0033
+
+- [x] Keep PAD_CHANNELS default0; require existing FP32 tiled/planar gates and
+  exactly three K3 channel tuples. Preserve graph/stored weights and fallback.
+- [x] Validate full padding/weight/input guards and all focused references for
+  514→1024/W213, 1090→1024/W213 and 1090→512/W426.
+- [x] Build and inspect all 23 tiled compiler variants; new paths fit unchanged
+  driver 0032 gates, with no private allocation and no driver patch.
+- [x] Pass both full562342-output gates and 715 GPU/zero CPU paths: first 38.788999 s,
+  warm 38.556751 s, 405.9 MiB/zero swap, no faults/services active. Five pad/math
+  pairs save 2.090428300 s; all 1601 retained signatures match. New output is not
+  byte-identical, but original reference tolerances are unchanged.
+- [x] Pass all four full/full/short/short original-ORT runtime references and
+  ordered 715 GPU paths each. Fresh full 54.928111 s/resident 45.500714 s; short
+  after reload 28.964791 s/resident 18.767525 s. All 8 boundary files match prior
+  CPU/GPU; same-T new outputs are identical. Session 525.8 MiB/80.1 MiB swap,
+  no faults/services active. CPU resident 36.802922/15.411271 s remains faster.
+  Evidence: `padded0033-runtime-validation-i_6pkny1/summary.json` and NOTES.
+- [ ] Repeat matched CPU/GPU resident measurements and address memory pressure;
+  preserve default-off selection and single-observation/swap limitations.
+  Continue broader input, sustained and cancellation/restart work above.

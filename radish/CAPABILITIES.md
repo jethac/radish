@@ -70,6 +70,8 @@ scope; untested limits remain unproven.
 | Bounded resident synthesis | Public `device-runtime.sh --request-loop`; `resident-public-0032-validation-mcnh4qu7/summary.json` plus earlier resident-first/shape reports | Public staging supports 2–4 short/full fixtures with explicit combined graph and repeat 1; ordered per-request v1 captures and session provenance pass. Driver 0032 short fresh/resident 29.521695246/20.089174476 s, core 15.717958607/15.750590681 s, 432.1 MiB/zero swap. Both full core/wave references pass, exact prior bytes, 715 GPU / 0 CPU layers each, no faults/services active. Earlier five private requests retain shape-reload proof and full resident 46.984077 s (517 MiB/ 19.1 MiB swap). Host and bounded tablet phase-boundary cancellation pass; sustained behavior remains unmeasured; CPU baseline is recorded below |
 | Resident packed CPU baseline | `resident-cpu-0032-validation-ch3gouod/summary.json`; four per-request validation reports | Same combined graph/runtime, six CPU threads/ORT4, T78/78/213/213 miss/hit/miss/hit. All eight boundary files match GPU captures; full original-ORT core/wave gates pass, 715 CPU / 0 GPU layers each. Resident short/full 15.411271/36.802922 s versus GPU 20.089174/46.984077 s; CPU remains faster. Peak 404.8 MiB/zero swap, no faults/services active. Single observations, differing sequences, prior full GPU driver 0031; sustained and post-cancellation restart unmeasured |
 | Tablet phase-boundary cancellation | `resident-cancel-0032-private/validation.json`; `resident-cancel-independent-kw7685ve/audit.json` | Marker sent after GPU progress in second T78 core; active core drains, exit 2/cancelled at after_core, completed 1/2. Completed request all 8 boundary/core/wave bytes match validated capture, active output absent; assets/output hashes pass. Host marker-return→exit 15.793739 s, cleanup 0.263654 s, 485.7 MiB/zero swap, no faults/services active. No prompt interruption, response-time bound, post-cancel new request or successful-session marker claim |
+| Padded-channel convolution | Ordered ncnn 0033; focused reports, `padded0033-fixed-independent-vgiws1ob/validation.json`, `padded-channels-result-0033-t90dqoh4/REPORT.md` | Default-off PAD_CHANNELS requires exact FP32 tiled/planar K3 gates and three channel tuples; five general convolutions become tiled, 58 total. All focused references/guards and actual compiler gates pass. Fixed core 38.788999/38.556751 s first/warm, 405.9 MiB/zero swap; all 562342 references pass, output differs from prior GPU. Five pad/math pairs save 2.090428300 s of 2.166974 s warm reduction; other 1601 command signatures match. Single pair, prior swap and binary/driver changes remain caveats |
+| Padded-channel complete runtime | `padded0033-runtime-validation-i_6pkny1/summary.json`; four `padded0033-runtime-request-*-validation.json` | Full/full/short/short miss/hit/miss/hit, 715 GPU/zero CPU paths each; all original-ORT core/wave gates pass, SNR 97.912821/97.411696 dB. All 8 boundaries match prior CPU/GPU; new same-T outputs match each other but differ from prior GPU. Fresh full 54.928111 s, resident full 45.500714 s; short after shape reload 28.964791 s, resident 18.767525 s. Whole-session 525.8 MiB/80.1 MiB swap, no faults/services active. CPU remains faster at 36.802922/15.411271 s; one resident observation each, different sequences, no sustained claim |
 | CTS | `build-cts/{BINARY,CASELIST_REVIEW}.json` | Pinned headless binary and bounded case lists prepared; no device CTS execution |
 | ggml compatibility | Local `ggml-vulkan.cpp:5194,:4642` | Later target: Vulkan 1.2 instance floor and 16-bit storage requirement need resolution |
 | Bindless descriptors | Public 2025 maintainer discussion; a5xx uses bindful resources | Separate mapping; no descriptor-indexing advertisement |
@@ -80,9 +82,10 @@ waveform now pass; general API compatibility, packed-FP16 model accuracy, native
 FP16 features, live waveform integration and an end-to-end performance win remain
 unproven.
 
-Latest combined graph with optional norm sum4 passes identical full core bytes at
-40.723725 s warm, 385.1 MiB / 71.7 MiB swap. This single fixed-core result uses
-driver 0031. Fresh norm-enabled T213 also passes all core/waveform values at
-57.293048 s total / 41.411426 s core, 418.9 MiB / 12.6 MiB swap, no faults.
-The complete boundary/core/wave bytes match norm0; its slower frontend makes
-the total comparison confounded. CPU remains faster.
+Latest opt-in padded-channel 0033 path passes all fixed-core references at
+38.556751 s warm, 405.9 MiB/zero swap. Complete four-request runtime validation
+passes with driver 0032: fresh full 54.928111 s and resident full/short45.500714/
+18.767525 s. The whole session peaks 525.8 MiB plus 80.1 MiB swap. Outputs differ
+from the previous GPU checkpoint but pass unchanged reference gates; boundaries
+match CPU/GPU captures. CPU remains faster. Earlier norm-only 40.723725 s fixed
+and 57.293048 s fresh results remain recorded in NOTES; defaults are unchanged.
