@@ -7,10 +7,11 @@ including 16 KiB shared reductions, transfers, dependent compute and bounded
 3D dispatch subdivision. Recovery now propagates DEVICE_LOST. ncnn ReLU,
 32-thread means, Conv1D K3/K7/K11 and InnerProduct pass full GPU output checks.
 The fixed Kokoro neural core passes all 562342 outputs. A guarded FP32
-InstanceNorm+tiled graph now passes first/warm extractions in 69.862/69.678 s,
+InstanceNorm+tiled graph with output reshape aliases now passes first/warm
+extractions in 67.138/66.919 s,
 including input/output transfer, and its device waveform passes all 127800
 samples. The same fused graph's packed six-thread CPU warm mean is 32.079 s:
-the GPU remains about 2.17 times slower, despite a 31.2% reduction from the prior
+the GPU remains about 2.09 times slower, despite a 33.9% reduction from the prior
 graph's 101.275 s warm extraction. GPU evidence has one warm iteration; CPU has
 two. These are core measurements. The new single-process runtime completes
 fresh tablet T=78 synthesis in 43.652 s including frontend startup/release,
@@ -141,11 +142,12 @@ advertisement and conformance status are unchanged.
 ## Next
 
 Continue from the passing FP32 InstanceNorm+tiled+dilation core and waveform:
-69.678044 s GPU warm versus 32.079044 s packed CPU warm mean. The GPU has one
+66.919494 s GPU warm versus 32.079044 s packed CPU warm mean. The GPU has one
 warm sample and CPU two; sustained end-to-end evidence remains open. Incremental
 0018 now covers the 16 dilation3/5 convolutions, with unchanged operator/model
-accuracy gates and no new faults. Profile the remaining convolution and
-pointwise/normalization costs before choosing the next kernel change.
+accuracy gates and no new faults. The narrowed output-only reshape alias removes copies without introducing
+protective clones. Next, inspect and measure a separate local32/tile64x32
+convolution candidate using the recorded conservative resource gates.
 
 The new metadata-only shape pass matches every original and fused shape at
 T78/T213. The integrated frontend/core/tail executable builds for host and
@@ -1245,3 +1247,54 @@ this rejected run they account for 212.572 s, of which 210.232 s (98.9%) is at
 650 MHz. These are the counters' accounted times between wrapper snapshots,
 not a per-kernel or complete-wall-clock frequency measurement. No power or
 clock settings were changed.
+
+The rejected bidirectional run removes 98 reshape commands but adds 20 large
+clones: 174494720 bytes and 42610 extra DRM submits, costing 43.602329 s.
+Total transfer wall rises from 0.057461 to 43.664125 s. The remaining 1941
+command signatures match the accepted 0018 sequence exactly. See private
+`warm-reshape-alias-result-0019-roigw0rw/REPORT.md` and public rejected source
+commit `bf4d98f10f46d849de9d5ee97014eca7178afcf4`.
+
+The revised 0019 admits only rank3(h=1)→rank2 output aliases, retaining the
+original input-copy path. Its patch SHA is
+`3f38da1822f50b5b46857e091e2366c96baf350136dd585615c7e663ec72ce57`.
+Both builds pass. `operators-reshape0019-to2d-execute.log` passes all three
+focused cases and verifies normalization reuses its copied input without
+an extra clone, plus complete numeric and retained-residual checks. No faults.
+The revised full-model repeat passes in 67.138187 s first and 66.919494 s warm,
+all 562342 values, identical max/RMS errors to 0018 and bit-identical frozen
+output SHA256 `0550fe07becc684c3dc7b0113bfef0b4e3c87ff8d888acf779e98de4d8af18e4`.
+Peak memory is 417.6 MiB, zero swap, no faults and both services active
+(`core-instancenorm-reshape-to2d-repeat2.log`). This is 4.0% less wall time than
+0018's 69.678044 s warm sample, with one warm observation per variant; do not
+attribute the whole timing difference to the removed copies. The validated
+waveform for the byte-identical core output remains applicable. Across the
+wrapper snapshots, devfreq accounts for 128.264 s, 126.152 s (98.4%) at650MHz;
+this is not a complete wall-time partition or per-kernel frequency measurement.
+
+Completed runtime captures retain all their device paths and bytes. To recover
+scratch space, hash-verified identical frontend graphs, driver/loader, parameter,
+tail and executable files in the three completed single-process directories now
+share hardlinks. No captured output or evidence file was removed. The bounded
+locked maintenance log is `dedupe-completed-runtime-assets.log`; free space rose
+from 364276 to 697432 KiB, and both services remained active.
+
+The narrow candidate's exact command comparison confirms49 copy dispatches and
+1516 submits removed, with no new transfers or large clones. All1990 retained
+command signatures match0018 in order. Existing transfers remain96 small copies
+(73728 total bytes). Removed copies account for1.230514 s of the baseline;
+retained commands also ran1.373294 s faster, so the observed2.758550 s warm
+improvement includes variation beyond this change. Private full evidence:
+`warm-reshape-to2d-result-0019-2evqfkor/REPORT.md`.
+
+The accepted output-only alias also passes the complete T78 runtime
+(`runtime-single-short-to2d-first.log` and matching validation JSON): frontend
+including cleanup 4.168688 s, metadata 0.032164 s, core load 9.847798 s,
+core extraction 25.451257 s, synthesis 39.846221 s, through publication
+39.850121 s, service wall41.872 s. Peak330.8 MiB, zero swap, no new faults,
+both services active. All205942 core values and46800 audio samples pass, and
+both output files are byte-identical to the earlier T78 run (SNR96.917732 dB).
+The earlier first core was25.190135 s, so do not infer a T78 core speedup or
+attribute the lower total to aliases; frontend startup fell from8.364384 s.
+The private runtime wrapper now defaults this accepted alias control to1;
+model/operator comparison wrappers retain explicit opt-in selection.

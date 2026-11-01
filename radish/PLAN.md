@@ -355,10 +355,45 @@ required.
   frontend boundary files match the GPU run byte-for-byte.
 - [ ] Measure resident reuse, cancellation and sustained behavior; single
   startup runs do not establish a warm runtime win.
-- [ ] Audit narrow pack4 metadata aliases for normalization reshapes before
-  removing copies; retain scalar/padding cases and normal refcount lifetimes.
-  Then consider the 48 measured five-operation Snake activation chains.
+- [x] Audit and measure pack4 reshape aliases. Bidirectional aliases preserve
+  output but regress to109.107981s due20 large transfer clones; reject them.
+  Restrict to output rank3→rank2 aliases: 67.138187/66.919494s first/warm,
+  bit-identical output,417.6MiB/zero swap/no faults. Keep original input copies.
+- [ ] Prioritize the local32/tile64x32 convolution experiment below, then consider
+  the48 measured five-operation Snake chains. Both remain unvalidated designs.
 - [ ] Attribute remaining convolution, reduction and CPU fallback costs; compare
   equivalent warm work against an optimized CPU baseline before declaring a win.
   Use the current fused+dilation profile; earlier unfused convolution/reduction
   totals are historical. GPU performance still trails the CPU.
+
+
+## Next convolution experiment: local32, tile64x32
+
+After the narrowed reshape candidate is measured and published, prioritize the
+53 tiled convolution math commands (40.111 s in the fixed 0018 warm profile).
+Keep the current local128/tile64x64 kernel and all unsupported shapes as the
+baseline. Add a separate default-off local8x4 kernel with a 64-channel by
+32-position tile, BK32, 16 vec4 accumulators per thread, and 12 KiB shared memory
+(A8 KiB + B4 KiB). Preserve weight/input/output layout, K accumulation order,
+dilation1/3/5 and existing exact-device/FP32/packing gates. Do not alter the
+Vulkan feature advertisement or general dispatch limits.
+
+Source audit: the current compiler caps full registers at48 and accounts local32
+in a wave pair; the existing driver guard alone does not prove this new resource
+mix safe. Require no private memory and the conservative compiled condition
+F+H/2<=32, where F/H are full/half register counts, before any execution. Reject
+or revise a candidate that misses that condition. Do not raise budgets to make
+it run. Inspect the generated shader and use the existing full-output operator
+reference at groups1 before bounded groups2/4/8 checks. Stop after any new fault.
+
+The current53 grids project to51776 smaller tiles and6512 groups8 submissions,
+versus25944 submissions for the validated local128 path. This is a count
+projection, not a promised latency gain; doubled weight-block traffic, compiler
+pressure and scheduling can offset it. Shared-memory allocation and multi-group
+scheduling at12KiB/these registers remain unproven. The older shared32 kernel's
+198.453s result is a different design and stays rejected.
+
+Only after operator/resource checks pass, measure the same fixed full core,
+waveform and warm profile with unchanged gates. Keep published successful and
+rejected candidates reproducible. The independent48-chain Snake design remains
+available as a subsequent measured opportunity (6.978s current command wall).

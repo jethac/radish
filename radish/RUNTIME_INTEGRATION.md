@@ -413,6 +413,26 @@ These are separate first-process runs with verified identical boundaries, not a
 sustained or resident benchmark. The Vulkan path is functionally complete for
 these inputs but has not beaten the six-thread CPU baseline.
 
+## Output reshape optimization
+
+The accepted revised0019 adds `RADISH_NCNN_RESHAPE_ALIAS=1` to the private
+runtime wrapper defaults. It aliases only compatible FP32 pack4 rank3(h=1)
+outputs back to rank2, retaining original input copies and all scalar fallbacks.
+The fixed full core passes bit-identically in67.138187/66.919494 s first/warm;
+49 copy dispatches disappear without adding transfer clones. The earlier
+bidirectional alias is rejected for its109.107981 s warm regression and remains
+reproducible in commit `bf4d98f`.
+
+`runtime-single-short-to2d-first.log` validates this control through fresh T78
+synthesis. Frontend4.168688 s, metadata0.032164 s, core load9.847798 s, core
+extraction25.451257 s, synthesis39.846221 s, publication39.850121 s, service
+wall41.872 s; peak330.8 MiB and zero swap. Both services stay active with no
+new faults. Matching validation JSON passes all205942 core values and46800 audio
+samples, both byte-identical to the earlier T78 run; waveform SNR96.917732 dB.
+This does not isolate a synthesis speedup from aliasing: frontend startup varies
+and this first core extraction is slightly slower than the earlier25.190135 s.
+The full T213 startup table above predates the output-alias optimization.
+
 ## Remaining integration work
 
 - Retain full-output checks across additional supported inputs and lengths.

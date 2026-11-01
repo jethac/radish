@@ -423,7 +423,7 @@ int reshape_norm_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
     std::printf("CASE Reshape/InstanceNorm roundtrip: width=%d channels=%d retained Split residual\n", width, channels);
     const int pack = channels % 4 == 0 ? 4 : 1;
     const char* alias_env = std::getenv("RADISH_NCNN_RESHAPE_ALIAS");
-    const bool alias = pack == 4 && alias_env && !std::strcmp(alias_env, "1");
+    const bool alias2d = pack == 4 && alias_env && !std::strcmp(alias_env, "1");
     CHECK(device->info.vendor_id() == 0x5143 && device->info.device_id() == 506);
     CHECK(!std::strcmp(device->info.device_name(), "Radish Adreno 506 (experimental compute)"));
     CHECK(!opt.use_fp16_packed && scalar_size(opt) == 4u);
@@ -487,13 +487,11 @@ int reshape_norm_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
     CHECK(ex.extract("retained", retained, command) == 0);
     CHECK(rank3.dims == 3 && rank3.w == width && rank3.h == 1 && rank3.c * pack == channels);
     CHECK(rank3.elempack == pack && rank3.elemsize == 4u * pack);
-    CHECK((command.pending_dispatch_total() == before3) == alias);
-    CHECK((rank3.data == retained.data) == alias);
-    if (alias) {
+    CHECK(command.pending_dispatch_total() > before3);
+    CHECK(rank3.data != retained.data);
+    if (pack == 4) {
         CHECK(rank3.cstep == static_cast<size_t>(width));
         CHECK(rank3.total() == retained.total() && rank3.buffer_capacity() == retained.buffer_capacity());
-        CHECK(rank3.buffer_offset() == retained.buffer_offset() && rank3.refcount == retained.refcount);
-        CHECK(rank3.data->access_flags == retained.data->access_flags && rank3.data->stage_flags == retained.data->stage_flags);
 #if NCNN_BATCH
         CHECK(rank3.n == 1 && rank3.nstep == rank3.total() && retained.nstep == rank3.nstep);
 #endif
@@ -501,6 +499,7 @@ int reshape_norm_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
         CHECK(rank3.cstep > static_cast<size_t>(width));
     }
     ncnn::VkBufferMemory* retained_data = retained.data;
+    ncnn::VkBufferMemory* rank3_data = rank3.data;
     rank3.release();
     retained.release();
 
@@ -509,12 +508,13 @@ int reshape_norm_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
     CHECK(ex.extract("normalized", normalized, command) == 0);
     CHECK(command.pending_dispatch_total() > before_norm);
     CHECK(normalized.data != retained_data);
+    CHECK(normalized.data == rank3_data);
     const auto before2 = command.pending_dispatch_total();
     CHECK(ex.extract("norm2", norm2, command) == 0);
-    CHECK((command.pending_dispatch_total() == before2) == alias);
-    CHECK((norm2.data == normalized.data) == alias);
+    CHECK((command.pending_dispatch_total() == before2) == alias2d);
+    CHECK((norm2.data == normalized.data) == alias2d);
     CHECK(norm2.dims == 2 && norm2.w == width && norm2.h * pack == channels);
-    if (alias) {
+    if (alias2d) {
         CHECK(norm2.cstep == static_cast<size_t>(width) * channels / pack);
         CHECK(norm2.total() == normalized.total() && norm2.buffer_capacity() == normalized.buffer_capacity());
         CHECK(norm2.buffer_offset() == normalized.buffer_offset() && norm2.refcount == normalized.refcount);
@@ -555,7 +555,7 @@ int reshape_norm_case(const ncnn::VulkanDevice* device, const ncnn::Option& opt,
         CHECK(!std::memcmp(residual.row<float>(c), original, static_cast<size_t>(width) * sizeof(float)));
     }
     std::printf("PASS: %s roundtrip, all %d normalized + %d residual-sum outputs, retained residual bit-exact, max abs error %.9g\n",
-                alias ? "pack4 alias" : "copy fallback", width * channels, width * channels, max_error);
+                alias2d ? "pack4 to2d alias with to3d copy" : "copy fallback", width * channels, width * channels, max_error);
     return 0;
 }
 

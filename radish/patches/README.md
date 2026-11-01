@@ -24,7 +24,7 @@ limits and validation scope. Published checkpoints remain experimental; publicat
 | `0016-radish-register-budget-cumulative.patch` | Same Mesa base as 0001 | Current driver; includes 0012 and rejects combined full/half register footprints beyond the measured A506 budget before shader upload |
 | `0017-ncnn-conv1d-shared-a-transpose.patch` | After 0014 in the ordered Conv1D stack | Both builds/operator/full fused FP32 core/waveform pass; 76.534312 s first/74.317956 s warm (one warm), versus same-graph CPU 32.079044 s (two warm); GPU remains slower |
 | `0018-ncnn-conv1d-tiled-dilation.patch` | After 0017 in the ordered Conv1D stack | Extends only dilation1/3/5; operator/full fused FP32 core/waveform pass; 69.862470 s first/69.678044 s warm, 416.7 MiB/zero swap, no faults |
-| `0019-ncnn-radish-reshape-alias.patch` | Same ncnn base; independent Reshape file | Default-off exact Radish FP32 pack4 rank2↔rank3 alias; both builds and focused/full-model cases pass bit-identically, but protective transfer clones regress warm time to 109.107981 s; rejected for performance |
+| `0019-ncnn-radish-reshape-alias.patch` | Same ncnn base; independent Reshape file | Default-off exact Radish FP32 pack4 rank3→rank2 output alias; original input copies retained; builds/operator/full-core gates pass, output bit-identical, 67.138187 s first/66.919494 s warm. Earlier bidirectional variant in bf4d98f is rejected at 109.107981 s warm |
 
 To reconstruct the current driver, make a separate checkout/worktree at the
 Mesa base, read its `AGENTS.md`, and apply 0016 with `git apply` instead of
@@ -183,5 +183,5 @@ d1081b712ae8a4518b494ced59c7c1ba5fa1da501e3758e33030ddfb22d14695  0014-ncnn-conv
 fc4095829ad35385e505d4e233c12657cd54fe7dc50d88566f1a1c512f167598  0016-radish-register-budget-cumulative.patch
 f9e2c39cfab97fbcc58a34c1464af42d4f0b9be08ce1a14dc2f494fe40322d06  0017-ncnn-conv1d-shared-a-transpose.patch
 e89d516bca15980a599f96e797b7726546913b05b370bac87a3ac88c8ebc9695  0018-ncnn-conv1d-tiled-dilation.patch
-d58adcbc88c6b12c0560ec31a46e8b3d38496bfa123cd5c073f6f13e0ff4c9d4  0019-ncnn-radish-reshape-alias.patch
+3f38da1822f50b5b46857e091e2366c96baf350136dd585615c7e663ec72ce57  0019-ncnn-radish-reshape-alias.patch
 ```
