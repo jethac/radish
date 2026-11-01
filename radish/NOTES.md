@@ -1,5 +1,26 @@
 # Radish status
 
+## 2026-11-02 (JST): MAD loop unrolling raises the arithmetic lower bound
+
+The balanced 0040 calibration reduces mean GPU elapsed **12.597682→11.916471 ms**
+(**5.407433%**) with identical work, yielding **22.526423 GFLOP/s**. All four
+measured pairs improve (5.116835%, 6.097896%, 5.374200%, 5.033579%). Fourfold
+unrolling reduces expanded hot-loop slots 168→138 per four original iterations,
+but that 17.857% instruction-count reduction is not an equivalent timing gain or
+measured issue rate. The original shader remains byte-identical; candidate
+native length 12 retains 16 full and zero half registers, with no moves or
+memory accesses inside the loop and no private storage.
+
+All 393,216 output scalars, 48 guards, actual GPU input readbacks and twelve valid
+timers with one chunk and one submit each pass. Downloads follow all twelve compute waits.
+The cumulative 0040 driver adds only a default-off timing class over 0037; no
+model shader or public Vulkan feature changes. Full-core 35.730754 s remains the
+model result. Peak memory is 61 MiB with zero swap; service time is 0.992 s,
+with no new faults and both services active. See `GPU_MAD_UNROLL.md` for scope,
+evidence and reproduction. The portable TOP-only runner is host-checked; hardware used the
+frozen private runner.
+
+
 ## 2026-11-02 (JST): repeat coalescing rejected before tensors
 
 Private compiler candidate 0039 permits 13 `rpt1` MADs plus 6 scalar MADs in the
@@ -12,8 +33,8 @@ additional 3685 pre-output MOV executions per invocation at K1408 are a
 control-flow count, not a GPU performance measurement.
 
 OFF/ON compile-only captures pass process/service/fault checks; no candidate
-tensors, reference checks, timing or model run followed. Canonical Mesa stays
-0037 and the global device ICD 0032. Exact incremental patch 9633ded5 and a
+tensors, reference checks, timing or model run followed. That experiment left canonical Mesa
+0037 and the global device ICD 0032 unchanged. Exact incremental patch 9633ded5 and a
 portable compile-only wrapper preserve the rejected experiment; the wrapper
 adaptation is host-checked only, while hardware used private runner 2e8d7bb0.
 See `GPU_REPEAT_COALESCING.md` and private independent audit
@@ -34,7 +55,7 @@ lower. All four balanced pairs are positive (0.379671%, 0.433345%, 0.232565%,
 0.622563%), but this fails the prospective **at least 5% mean GPU improvement**
 criterion. Host math-submit/whole-forward means improve 0.577876% / 1.311693%;
 the latter includes output poison and download. No full-model run or expanded
-rollout follows. 0037 remains recommended; the incremental patch, helper and
+rollout followed. 0037 remained recommended at that checkpoint; the patch, helper and
 analyzer are retained only as reproducible rejected history. See
 `GPU_STATE_REUSE.md`.
 

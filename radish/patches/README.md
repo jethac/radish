@@ -45,15 +45,26 @@ limits and validation scope. Published checkpoints remain experimental; publicat
 | `0037-radish-gpu-calibration-cumulative.patch` | Same Mesa base as 0001; alternative to 0036 | Default-off fixed MAD/vec4-copy elapsed calibration; ten valid samples and full exact output/guard/input checks; deferred-readback medians 21.3185 GFLOP/s and 4.3011 logical read+write GB/s, without a ceiling or model-speedup claim |
 | `0038-radish-tiled-state-reuse.patch` | Incremental over 0037 in a separate experimental checkout only | **Rejected performance experiment:** full poisoned-output correctness passes, but 0.417119% mean GPU reduction fails the prospective 5% gate. Optional reproduction/history only; not part of the recommended driver stack. |
 | `0039-ir3-cold-output-collect.patch` | Incremental over 0037 in a separate experimental checkout; 0038 not needed | **Rejected before tensors:** 13 repeat MADs form, but 2 hot register moves and outer-boundary shuffling fail compiler admission; native 27→29 is outside batching/timing gates. Compile-only reproduction/history; no tensor or performance claim. |
+| `0040-radish-mad-unroll-calibration-cumulative.patch` | Same Mesa base as 0001; alternative to 0037, without 0038/0039 | Default-off elapsed class for fourfold MAD-loop calibration; full exact output/guard/input checks pass and balanced mean GPU interval falls 5.407433% (12.597682→11.916471 ms), yielding 22.526423 GFLOP/s. No model dispatch or public-feature change. |
+
+0040 is cumulative from the same pinned Mesa base, preserving all 0037 policies
+and adding only three timer-selection lines. SHA256
+`f627d0af11ea9ac77e0bccdc2d8e8aaff972ec500ef8698381004eb3700ee030`.
+All fourteen source files reconstruct exactly; 0038/0039 are excluded. See
+`../GPU_MAD_UNROLL.md` for paired results, exact checks and reproduction.
+
+Current diagnostic reconstruction uses 0040; the measured model/global device
+ICD remain 0032. The canonical 0040 ICD is 366948ba…51a8e (host-built); actual
+calibration used private 30e19d89…8758d. The helper binary matches exactly.
 
 0039 is not cumulative and is not in the recommended stack. SHA256
 `9633ded58bf108c543d536582f795adbc40bafab0c591457bdfeb89ac4b9eaac`.
 The compiler option is default-off; actual OFF/ON compilation used private
-ICD `8189ca1f…a0633` with the unchanged optional 2510 helper. Canonical Mesa
-remains 0037. See `../GPU_REPEAT_COALESCING.md` for source/native findings and
+ICD `8189ca1f…a0633` with the unchanged optional 2510 helper. That experiment
+left canonical Mesa 0037 unchanged at that checkpoint. See `../GPU_REPEAT_COALESCING.md` for source/native findings and
 the host-checked portable compile-only runner.
 
-0038 is not cumulative. SHA256 `0d3a34785a96f50aabba75529372d83838a71e22ae5613bc350a33cd4d37a72e`; its tested driver was private `bd2a672a…e1a0f`. Keep canonical 0037 and the global device 0032 unchanged. See `../GPU_STATE_REUSE.md` for scope, paired results and optional reproduction.
+0038 is not cumulative. SHA256 `0d3a34785a96f50aabba75529372d83838a71e22ae5613bc350a33cd4d37a72e`; its tested driver was private `bd2a672a…e1a0f`. The experiment left canonical 0037 and the global device 0032 unchanged at that checkpoint. See `../GPU_STATE_REUSE.md` for scope, paired results and optional reproduction.
 
 0037 is cumulative and preserves 0036's convolution class and all model dispatch
 policies. Apply it instead of another cumulative Mesa patch. SHA256
@@ -63,7 +74,7 @@ Calibration used private ICD `393383ce…a2900`; canonical ICD
 `2f4fde0e…1b1682` has only host-build evidence. See `../GPU_CALIBRATION.md`.
 
 To reconstruct the accepted driver checkpoint, make a separate checkout/worktree at the
-Mesa base, read its `AGENTS.md`, and apply 0037 with `git apply` instead of
+Mesa base, read its `AGENTS.md`, and apply 0040 with `git apply` instead of
 earlier cumulative Mesa patches. Set
 `RADISH_MESA` to that checkout and run `../scripts/build.sh`. Preserve the AC8
 checkout and use the shared scratch disk for source/build outputs. The existing

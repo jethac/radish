@@ -56,24 +56,31 @@ and live application integration remain unmeasured.
 GPU saturation remains unproven. The dominant 58 tiled convolutions delivered
 **10.9 useful GFLOP/s on command wall time**, with only 1.2% padding overhead.
 The qualified timer measures one unchanged convolution at **7.161 ms GPU queued
-elapsed**. A separate fixed calibration now achieves median **21.32 GFLOP/s**
-for FP32 arithmetic and **4.30 GB/s logical read+write** for vec4 copying after
-deferring CPU downloads. These are observed lower bounds, not hardware ceilings
-or physical DRAM counters; workload and packet geometry differ from convolution.
-All outputs, guards and GPU input readbacks pass. The model has no new speedup
-from this diagnostic. See [GPU_TIMING.md](radish/GPU_TIMING.md) and
-[GPU_CALIBRATION.md](radish/GPU_CALIBRATION.md).
+elapsed**. The [0040 paired calibration](radish/GPU_MAD_UNROLL.md) raises the
+achieved arithmetic lower bound to **22.53 GFLOP/s**: fourfold loop unrolling
+reduces mean GPU time **12.597682 → 11.916471 ms (5.41%)**, with exact outputs.
+Its 17.86% reduction in expanded instruction slots does not imply an equivalent
+timing gain or a hardware ceiling. The earlier copy calibration achieves
+**4.30 GB/s logical read+write**, not measured physical DRAM bandwidth. Workload
+and packet geometry differ from convolution; model performance is unchanged.
+See [GPU_TIMING.md](radish/GPU_TIMING.md) and
+[GPU_CALIBRATION.md](radish/GPU_CALIBRATION.md) for the earlier measurements.
 
-The conservative per-group register guard does not establish total physical
-capacity, and compiler wave estimates do not establish occupancy. Reusing state
-within the existing batch preserves every output but reduces GPU time only
-**0.42%**, below the planned 5% criterion. The rejected experiment is recorded
-in [GPU_STATE_REUSE.md](radish/GPU_STATE_REUSE.md); the recommended driver stays
-at 0037. A separate [compiler experiment](radish/GPU_REPEAT_COALESCING.md)
-forms repeat MAD instructions but adds moves inside the reduction loops; it was
-rejected before tensor execution. The next measurement target is shared-memory
-stalls and ALU activity on the unchanged kernel. A CPU win alone will not close
-the goal.
+The per-group register guard does not establish total physical capacity, and
+compiler wave estimates do not establish occupancy. The
+[state-reuse experiment](radish/GPU_STATE_REUSE.md) preserved every output but
+reduced GPU time only **0.42%**, below its planned 5% criterion. A separate
+[compiler experiment](radish/GPU_REPEAT_COALESCING.md) formed repeat MAD
+instructions but added moves inside the reduction loop and was rejected before
+tensor execution. Both remain excluded. The current default-off diagnostic
+driver is **0040**; model measurements and the global device ICD remain **0032**.
+
+Counter programming is deferred: the inspected A506 sources do not establish
+exclusive counter ownership while other services remain active. No new counter
+code is implemented. The next proposed measurement loads a shared-memory tile
+once and repeats the accepted convolution's inner loop, to separate inner-loop
+costs from repeated tile loading. This is still a source-only design. A CPU win
+alone will not close the goal.
 
 A tablet cancellation probe preserves the completed request and discards the
 second request after its active GPU core finishes. Exit follows the cancel marker
@@ -95,7 +102,7 @@ Existing graph defaults remain unchanged. See
 [RUNTIME_INTEGRATION.md](radish/RUNTIME_INTEGRATION.md) for preparation and use.
 
 Earlier normalization, activation, layout and submission changes brought warm
-GPU time down from 101.275 s. The latest reduction-loop unrolling candidate is
+GPU time down from 101.275 s. The earlier K2 convolution-loop unrolling candidate was
 correct but 7–9% slower in paired operator measurements and remains excluded.
 Optional X pairing has no established overall performance win. The normalization
 optimization has passing fixed-core and fresh full results; sustained behavior
@@ -132,6 +139,7 @@ build and test scripts retain their relative paths.
 | [radish/GPU_CALIBRATION.md](radish/GPU_CALIBRATION.md) | Measured arithmetic/copy rates, raw correctness and reproduction |
 | [radish/GPU_STATE_REUSE.md](radish/GPU_STATE_REUSE.md) | Rejected state-reuse experiment and paired GPU measurements |
 | [radish/GPU_REPEAT_COALESCING.md](radish/GPU_REPEAT_COALESCING.md) | Compiler repeat/copy tradeoff and compile-only rejection |
+| [radish/GPU_MAD_UNROLL.md](radish/GPU_MAD_UNROLL.md) | Paired loop-overhead calibration, exact outputs and achieved arithmetic rate |
 
 ## Building and running
 
@@ -141,7 +149,7 @@ kept outside the repository.
 
 1. Check out Mesa at `ddabdd0e36bd2f5e0c8e6bd21c3d1da7e34c1230` in a
    separate worktree. Apply
-   `radish/patches/0037-radish-gpu-calibration-cumulative.patch` to that base.
+   `radish/patches/0040-radish-mad-unroll-calibration-cumulative.patch` to that base.
    Earlier cumulative Mesa patches are historical alternatives, not a series.
 2. Set `RADISH_WORK` to the scratch/build directory, `RADISH_MESA` to the Mesa
    checkout, `RADISH_SYSROOT` to the aarch64 sysroot and `RADISH_VENV` to the
