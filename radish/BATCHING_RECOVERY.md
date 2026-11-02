@@ -52,3 +52,37 @@ why identifier domains need explicit mapping and why record counts/guards
 qualify measurement separately from successful execution. Selected fcd/d332
 is unchanged. See results/hotspot-timestamps-unmeasured-0045.json and the
 frozen failing source patch; there is no identical-payload retry or speed claim.
+
+The corrected selector now resolves set/binding/array identity through the
+pipeline resource map. Actual weights/output/bias use compact slots 1/3/0,
+confirming why the old ordinal test selected nothing. The new runner requires
+one enabled CONFIG, 24 SELECT records, 2,400 valid batches and 24 summaries,
+in addition to the unchanged full model checks. Independent raw analysis
+validates every tick, pipeline, owner, count and host interval. Both full
+562,342-value comparisons and exact accepted output bytes pass; all 179 native
+programs and 1,520 ordered commands per extraction remain unchanged.
+
+The twelve targeted layers per extraction retain 100 batches each, eight
+original workgroups per batch. Their measured totals are:
+
+| Interval | First extraction | Resident extraction |
+| --- | ---: | ---: |
+| GPU elapsed interval |8.111877s|8.085171s|
+| Host submit through completion |9.240584s|9.121785s|
+| Complete command wall |9.473531s|9.358794s|
+| Measured host instrumentation |0.105004s|0.109481s|
+| Issued dot work / GPU interval |13.6503GFLOP/s|13.6954GFLOP/s|
+
+The resident interval covers 86.39% of target command wall time. It includes
+command-processor setup, native work, inter-chunk restores/flushes/waits and
+diagnostic events; it is not ALU busy time or a utilization percentage. The
+rate uses 110.729626 billion issued dot FLOPs, including padded positions;
+useful dot work is 110.560936 billion FLOPs (13.6745GFLOP/s over that interval).
+The measured host instrumentation is only a partial observer-cost account.
+
+The complete instrumented core takes 34.418739s first and 33.810578s resident,
+with 406.7MiB peak and no swap. These are diagnostic observations, not a speed
+comparison with the uninstrumented selected stack. No clocks, shader work,
+scheduling, numerical guards, resource limits or service defaults changed.
+Selected fcd/d332 remains unchanged. Source, count-gate delta and strict
+analyzer are pinned in results/hotspot-timestamps-qualified-0045.json.

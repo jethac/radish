@@ -1,0 +1,28 @@
+--- a/run-model.py
++++ b/run-model.py
+@@ -240,6 +240,25 @@
+                 call(['pull', remote + '/' + name, str(evidence / name)], 'pull-' + name + '.txt')
+                 require(identity(evidence / name) == pins['output'], 'output must match accepted 0035 bytes')
+             call(['shell', 'sh -s'], 'outputs-after.txt', text=verify_files(remote, expected_outputs))
++            if args.hotspot_timestamps:
++                groups = {prefix: [dict(part.split('=', 1) for part in line.split()[1:])
++                                   for line in log.splitlines() if line.startswith(prefix + ' ')]
++                          for prefix in ('RADISH_GPU_HOTSPOT_CONFIG', 'RADISH_GPU_HOTSPOT_SELECT',
++                                         'RADISH_GPU_HOTSPOT', 'RADISH_GPU_HOTSPOT_TOTAL')}
++                config, selected, raw, totals = (groups[key] for key in groups)
++                require(len(config) == 1 and config[0] == dict(version='2', enabled='1', command_limit='24', binding_lookup='logical_set_binding_element'), 'missing exact enabled hotspot CONFIG')
++                require(len(selected) == 24 and len(raw) == 2400 and len(totals) == 24, 'incomplete hotspot measurement counts')
++                for index, row in enumerate(selected):
++                    require(row['version'] == '2' and int(row['command']) == index and int(row['selected_count']) == index + 1, 'hotspot selection sequence changed')
++                    require(int(row['weight_range']) == 720896 and int(row['output_range']) >= 25561 * 128 * 4 and int(row['bias_range']) >= 512 and int(row['output_w']) == 25561, 'hotspot logical resource ranges changed')
++                    slots = [int(row[key]) for key in ('weight_slot', 'output_slot', 'bias_slot')]
++                    require(len(set(slots)) == 3 and all(0 <= slot < 4 for slot in slots), 'invalid compact resource mapping')
++                for index, row in enumerate(raw):
++                    require(row['version'] == row['valid'] == '1' and row['reason'] == 'ok' and row['result'] == '0', 'invalid hotspot timestamp record')
++                    require(int(row['command']) == index // 100 and int(row['batch']) == index % 100, 'hotspot raw sequence changed')
++                for index, row in enumerate(totals):
++                    require(row['version'] == '1' and int(row['command']) == index and int(row['batches']) == int(row['valid_batches']) == 100, 'invalid hotspot summary')
++                write_json(evidence / 'hotspot-count-admission.json', dict(status='passed', config=config, selected=selected, raw_records=len(raw), total_records=len(totals), scope='Count/selection/raw-valid gates only; full tick/interval/owner accounting remains independent finite analysis.'))
+         for path, pin in pins['host_files'].items():
+             require(identity(Path(path)) == pin, 'host input changed during run: ' + path)
+         require(contract == dict(pins=identity(HERE / 'pins.json'), runner=identity(Path(__file__).resolve()), packed_a=args.packed_a, tiled_batch=args.tiled_batch, hotspot_timestamps=args.hotspot_timestamps), 'runner contract changed')

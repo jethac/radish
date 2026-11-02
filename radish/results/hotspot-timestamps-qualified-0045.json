@@ -1,0 +1,586 @@
+{
+  "status": "bounded_hotspot_timestamp_diagnostic_passed",
+  "scope": "Selected d332 model unchanged; diagnostic-only adae driver. This measures elapsed command-processor intervals, not ALU busy or performance improvement. Selected inference fcd/d332 remains unchanged.",
+  "driver": {
+    "bytes": 49035984,
+    "sha256": "adae11d935362fb4ab7d831eb2b971994939b26dae6541301f8df15498fad2b5"
+  },
+  "source_patch": {
+    "bytes": 4547,
+    "sha256": "c00048ad70246dfab819f2cdcd2ab5f223dc28f619d1bc20eee1987c9464e75f"
+  },
+  "applies_after": "0045-hotspot-timestamps-unmeasured.patch on the selected fcd source snapshot",
+  "analyzer": {
+    "bytes": 7477,
+    "sha256": "c3788b454cfb321857c557c75c1fbe837d39058db0677b9a376ecd67411b1f22"
+  },
+  "required_runner_counts_patch": {
+    "bytes": 3128,
+    "sha256": "7f18d286de14b99d64ae28d8937c4eec273e0f9181a133c81f7cd047e5a43c75"
+  },
+  "runner": {
+    "bytes": 20926,
+    "sha256": "6fa36eceec34e637a3050fd7466e664b9dcd790069640c84c7eae6a14e4cb21f"
+  },
+  "count_admission": {
+    "CONFIG": 1,
+    "SELECT": 24,
+    "raw_batches": 2400,
+    "TOTAL": 24,
+    "batches_per_command": 100,
+    "actual_compact_slots": {
+      "weights_binding0": 1,
+      "output_binding2": 3,
+      "bias_binding3": 0
+    }
+  },
+  "intervals": {
+    "status": "passed",
+    "run_log": {
+      "path": "/run/media/jethac/Shared/radish/packed-hotspot-selector-v2-replay-0045/evidence-core0045-hotspot-selector-v2/full/run.log",
+      "bytes": 1581579,
+      "sha256": "29bdb666db8e444e823f667d85c85ff226135184691f5f7b6b463170895110ad"
+    },
+    "maps": [
+      {
+        "path": "/run/media/jethac/Shared/radish/packed-hotspot-selector-v2-y_d6ryzi/first-map.json",
+        "bytes": 1283210,
+        "sha256": "0859e67d70d92fe295d0188d56db616b4fba36183d986bb80d636608307277a1"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/packed-hotspot-selector-v2-y_d6ryzi/warm-map.json",
+        "bytes": 1285161,
+        "sha256": "1ea9897977a3f1c8142f99f22e60b997d040b48e578170af2dbd1cf14809edc2"
+      }
+    ],
+    "batch_records": 2400,
+    "commands": 24,
+    "iterations": [
+      {
+        "iteration": 1,
+        "totals": {
+          "gpu_interval_ns": 8111877254,
+          "host_submit_ns": 9240584391,
+          "command_wall_ns": 9473531001,
+          "measured_host_instrumentation_ns": 105003658,
+          "issued_dot_flops": 110729625600,
+          "useful_dot_flops": 110560935936,
+          "issued_dot_GFLOPs_per_interval_second": 13.6503083235633,
+          "gpu_interval_fraction_of_command_wall": 0.8562675578032871
+        },
+        "commands": [
+          {
+            "owner": "conv1d_28",
+            "command_index": 911,
+            "sample_command": 0,
+            "gpu_interval_ns": 696672298,
+            "host_submit_ns": 825483950,
+            "command_wall_ns": 845363430,
+            "measured_host_instrumentation_ns": 8900330,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.245063463109021,
+            "max_batch_gpu_ns": 31312239,
+            "max_batch_submit_ns": 58546863
+          },
+          {
+            "owner": "conv1d_32",
+            "command_index": 938,
+            "sample_command": 1,
+            "gpu_interval_ns": 674800474,
+            "host_submit_ns": 768920697,
+            "command_wall_ns": 788733605,
+            "measured_host_instrumentation_ns": 8956327,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.674366209766474,
+            "max_batch_gpu_ns": 6853802,
+            "max_batch_submit_ns": 13143418
+          },
+          {
+            "owner": "conv1d_36",
+            "command_index": 966,
+            "sample_command": 2,
+            "gpu_interval_ns": 674951255,
+            "host_submit_ns": 766449127,
+            "command_wall_ns": 785935889,
+            "measured_host_instrumentation_ns": 9012413,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.671311419370573,
+            "max_batch_gpu_ns": 6777656,
+            "max_batch_submit_ns": 8025541
+          },
+          {
+            "owner": "conv1d_40",
+            "command_index": 993,
+            "sample_command": 3,
+            "gpu_interval_ns": 671229070,
+            "host_submit_ns": 767138611,
+            "command_wall_ns": 786224848,
+            "measured_host_instrumentation_ns": 8541526,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.747123318124467,
+            "max_batch_gpu_ns": 6755781,
+            "max_batch_submit_ns": 14906183
+          },
+          {
+            "owner": "conv1d_43",
+            "command_index": 1021,
+            "sample_command": 4,
+            "gpu_interval_ns": 678561309,
+            "host_submit_ns": 772718827,
+            "command_wall_ns": 791051996,
+            "measured_host_instrumentation_ns": 8105853,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.5985778699917,
+            "max_batch_gpu_ns": 6823489,
+            "max_batch_submit_ns": 8063874
+          },
+          {
+            "owner": "conv1d_46",
+            "command_index": 1048,
+            "sample_command": 5,
+            "gpu_interval_ns": 671422144,
+            "host_submit_ns": 767085373,
+            "command_wall_ns": 786048859,
+            "measured_host_instrumentation_ns": 8510647,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.743170198449695,
+            "max_batch_gpu_ns": 6757760,
+            "max_batch_submit_ns": 10367734
+          },
+          {
+            "owner": "conv1d_67",
+            "command_index": 1375,
+            "sample_command": 6,
+            "gpu_interval_ns": 673690838,
+            "host_submit_ns": 761027448,
+            "command_wall_ns": 781296193,
+            "measured_host_instrumentation_ns": 9424182,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.696889254711818,
+            "max_batch_gpu_ns": 6764895,
+            "max_batch_submit_ns": 7930488
+          },
+          {
+            "owner": "conv1d_70",
+            "command_index": 1402,
+            "sample_command": 7,
+            "gpu_interval_ns": 671378184,
+            "host_submit_ns": 763210313,
+            "command_wall_ns": 781687965,
+            "measured_host_instrumentation_ns": 8207932,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.744070063497922,
+            "max_batch_gpu_ns": 6748437,
+            "max_batch_submit_ns": 8095645
+          },
+          {
+            "owner": "conv1d_73",
+            "command_index": 1430,
+            "sample_command": 8,
+            "gpu_interval_ns": 673795784,
+            "host_submit_ns": 759835300,
+            "command_wall_ns": 779713637,
+            "measured_host_instrumentation_ns": 8993866,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.694755917321086,
+            "max_batch_gpu_ns": 6767864,
+            "max_batch_submit_ns": 8028145
+          },
+          {
+            "owner": "conv1d_76",
+            "command_index": 1457,
+            "sample_command": 9,
+            "gpu_interval_ns": 672780890,
+            "host_submit_ns": 758980881,
+            "command_wall_ns": 778021550,
+            "measured_host_instrumentation_ns": 8318877,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.715414538602605,
+            "max_batch_gpu_ns": 6758750,
+            "max_batch_submit_ns": 7912050
+          },
+          {
+            "owner": "conv1d_79",
+            "command_index": 1485,
+            "sample_command": 10,
+            "gpu_interval_ns": 679761673,
+            "host_submit_ns": 771134033,
+            "command_wall_ns": 790567623,
+            "measured_host_instrumentation_ns": 8767782,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.574564684231616,
+            "max_batch_gpu_ns": 6831145,
+            "max_batch_submit_ns": 8203354
+          },
+          {
+            "owner": "conv1d_82",
+            "command_index": 1512,
+            "sample_command": 11,
+            "gpu_interval_ns": 672833335,
+            "host_submit_ns": 758599831,
+            "command_wall_ns": 778885406,
+            "measured_host_instrumentation_ns": 9263923,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.714345470115568,
+            "max_batch_gpu_ns": 6754531,
+            "max_batch_submit_ns": 7970176
+          }
+        ]
+      },
+      {
+        "iteration": 2,
+        "totals": {
+          "gpu_interval_ns": 8085170793,
+          "host_submit_ns": 9121785264,
+          "command_wall_ns": 9358794244,
+          "measured_host_instrumentation_ns": 109481414,
+          "issued_dot_flops": 110729625600,
+          "useful_dot_flops": 110560935936,
+          "issued_dot_GFLOPs_per_interval_second": 13.695397219792534,
+          "gpu_interval_fraction_of_command_wall": 0.8639115875619843
+        },
+        "commands": [
+          {
+            "owner": "conv1d_28",
+            "command_index": 911,
+            "sample_command": 12,
+            "gpu_interval_ns": 671771988,
+            "host_submit_ns": 755113374,
+            "command_wall_ns": 775237484,
+            "measured_host_instrumentation_ns": 9170131,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.736013059240571,
+            "max_batch_gpu_ns": 6759114,
+            "max_batch_submit_ns": 7926998
+          },
+          {
+            "owner": "conv1d_32",
+            "command_index": 938,
+            "sample_command": 13,
+            "gpu_interval_ns": 673911828,
+            "host_submit_ns": 747474923,
+            "command_wall_ns": 765235012,
+            "measured_host_instrumentation_ns": 8108764,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.69239775384978,
+            "max_batch_gpu_ns": 6838697,
+            "max_batch_submit_ns": 8054446
+          },
+          {
+            "owner": "conv1d_36",
+            "command_index": 966,
+            "sample_command": 14,
+            "gpu_interval_ns": 674776572,
+            "host_submit_ns": 764245686,
+            "command_wall_ns": 784296935,
+            "measured_host_instrumentation_ns": 9453203,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.674850584468722,
+            "max_batch_gpu_ns": 6783020,
+            "max_batch_submit_ns": 8073458
+          },
+          {
+            "owner": "conv1d_40",
+            "command_index": 993,
+            "sample_command": 15,
+            "gpu_interval_ns": 671178760,
+            "host_submit_ns": 757500625,
+            "command_wall_ns": 777325615,
+            "measured_host_instrumentation_ns": 9239401,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.748153770539462,
+            "max_batch_gpu_ns": 6746770,
+            "max_batch_submit_ns": 7989812
+          },
+          {
+            "owner": "conv1d_43",
+            "command_index": 1021,
+            "sample_command": 16,
+            "gpu_interval_ns": 678498080,
+            "host_submit_ns": 768043090,
+            "command_wall_ns": 787359703,
+            "measured_host_instrumentation_ns": 9216797,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.599845116731943,
+            "max_batch_gpu_ns": 6827291,
+            "max_batch_submit_ns": 8090905
+          },
+          {
+            "owner": "conv1d_46",
+            "command_index": 1048,
+            "sample_command": 17,
+            "gpu_interval_ns": 671543908,
+            "host_submit_ns": 758212342,
+            "command_wall_ns": 777838325,
+            "measured_host_instrumentation_ns": 8946214,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.740678293816046,
+            "max_batch_gpu_ns": 6748229,
+            "max_batch_submit_ns": 8094864
+          },
+          {
+            "owner": "conv1d_67",
+            "command_index": 1375,
+            "sample_command": 18,
+            "gpu_interval_ns": 673526253,
+            "host_submit_ns": 763175219,
+            "command_wall_ns": 783602560,
+            "measured_host_instrumentation_ns": 9058194,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.700236269780563,
+            "max_batch_gpu_ns": 6761093,
+            "max_batch_submit_ns": 7908561
+          },
+          {
+            "owner": "conv1d_70",
+            "command_index": 1402,
+            "sample_command": 19,
+            "gpu_interval_ns": 671399797,
+            "host_submit_ns": 758980834,
+            "command_wall_ns": 778707443,
+            "measured_host_instrumentation_ns": 8979338,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.743627628770344,
+            "max_batch_gpu_ns": 6742447,
+            "max_batch_submit_ns": 7897520
+          },
+          {
+            "owner": "conv1d_73",
+            "command_index": 1430,
+            "sample_command": 20,
+            "gpu_interval_ns": 673824739,
+            "host_submit_ns": 760934908,
+            "command_wall_ns": 781232190,
+            "measured_host_instrumentation_ns": 9366431,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.694167438396766,
+            "max_batch_gpu_ns": 6765572,
+            "max_batch_submit_ns": 7963457
+          },
+          {
+            "owner": "conv1d_76",
+            "command_index": 1457,
+            "sample_command": 21,
+            "gpu_interval_ns": 672684171,
+            "host_submit_ns": 759368654,
+            "command_wall_ns": 779533800,
+            "measured_host_instrumentation_ns": 9659812,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.717386550485665,
+            "max_batch_gpu_ns": 6772239,
+            "max_batch_submit_ns": 7947364
+          },
+          {
+            "owner": "conv1d_79",
+            "command_index": 1485,
+            "sample_command": 22,
+            "gpu_interval_ns": 679434692,
+            "host_submit_ns": 767969294,
+            "command_wall_ns": 788115437,
+            "measured_host_instrumentation_ns": 9379769,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.581097504511883,
+            "max_batch_gpu_ns": 6828958,
+            "max_batch_submit_ns": 7987415
+          },
+          {
+            "owner": "conv1d_82",
+            "command_index": 1512,
+            "sample_command": 23,
+            "gpu_interval_ns": 672620005,
+            "host_submit_ns": 760766315,
+            "command_wall_ns": 780309740,
+            "measured_host_instrumentation_ns": 8903360,
+            "issued_dot_flops": 9227468800,
+            "useful_dot_flops": 9213411328,
+            "issued_dot_GFLOPs_per_interval_second": 13.718695149425418,
+            "max_batch_gpu_ns": 6749114,
+            "max_batch_submit_ns": 7895019
+          }
+        ]
+      }
+    ],
+    "limitations": [
+      "GPU elapsed includes CP/setup/inter-chunk restore/flush/waits and diagnostic event overhead; not ALU busy or historical uninstrumented time.",
+      "Host instrumentation count excludes final summary/free/branch/packet-encoding overhead and GPU event/WFI overhead.",
+      "Full numerical/fault/service/payload/native and unchanged scheduling gates remain the original runner and independent pairing review responsibility."
+    ]
+  },
+  "independent_full_review": {
+    "status": "passed",
+    "run_log": {
+      "path": "/run/media/jethac/Shared/radish/packed-hotspot-selector-v2-replay-0045/evidence-core0045-hotspot-selector-v2/full/run.log",
+      "bytes": 1581579,
+      "sha256": "29bdb666db8e444e823f667d85c85ff226135184691f5f7b6b463170895110ad"
+    },
+    "runner_result": {
+      "path": "/run/media/jethac/Shared/radish/packed-hotspot-selector-v2-replay-0045/evidence-core0045-hotspot-selector-v2/full/result.json",
+      "bytes": 761,
+      "sha256": "d91ac7db54fc4ac614e48d29a95b3eef7bb96e0640f13f7ba19a1207205af02c"
+    },
+    "native_admission": {
+      "path": "/run/media/jethac/Shared/radish/packed-hotspot-selector-v2-y_d6ryzi/native-admission.json",
+      "bytes": 778,
+      "sha256": "4df6072ba4465704dadf3254b9b1fc17150c67a57f75e08fc129a0031049eebd"
+    },
+    "interval_review": {
+      "path": "/run/media/jethac/Shared/radish/packed-hotspot-selector-v2-y_d6ryzi/interval-review.json",
+      "bytes": 14846,
+      "sha256": "c2eef521e6a07d02a51a273f6ca20a250e672e78cc3ebf2734be7b4940e00fdd"
+    },
+    "outputs": [
+      {
+        "path": "/run/media/jethac/Shared/radish/packed-hotspot-selector-v2-replay-0045/evidence-core0045-hotspot-selector-v2/full/ncnn-vulkan-candidate.f32",
+        "bytes": 2249368,
+        "sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287",
+        "elements": 562342,
+        "mismatches": 0,
+        "max_abs": 0.000110626220703125
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/packed-hotspot-selector-v2-replay-0045/evidence-core0045-hotspot-selector-v2/full/ncnn-vulkan-output.f32",
+        "bytes": 2249368,
+        "sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287",
+        "elements": 562342,
+        "mismatches": 0,
+        "max_abs": 0.000110626220703125
+      }
+    ],
+    "iterations": [
+      {
+        "map": {
+          "path": "/run/media/jethac/Shared/radish/packed-hotspot-selector-v2-y_d6ryzi/first-map.json",
+          "bytes": 1283210,
+          "sha256": "0859e67d70d92fe295d0188d56db616b4fba36183d986bb80d636608307277a1"
+        },
+        "ordered_commands_equal": 1520,
+        "window": {
+          "first_line": 17,
+          "last_line": 3516,
+          "wall_seconds": 34.418739
+        },
+        "totals": {
+          "commands": 1520,
+          "ns": 34157060055,
+          "seconds": 34.157060055,
+          "submits": 10809,
+          "chunks": 71750
+        },
+        "tiled_conv": {
+          "commands": 58,
+          "ns": 23118298255,
+          "seconds": 23.118298255,
+          "submits": 3294,
+          "chunks": 26256
+        }
+      },
+      {
+        "map": {
+          "path": "/run/media/jethac/Shared/radish/packed-hotspot-selector-v2-y_d6ryzi/warm-map.json",
+          "bytes": 1285161,
+          "sha256": "1ea9897977a3f1c8142f99f22e60b997d040b48e578170af2dbd1cf14809edc2"
+        },
+        "ordered_commands_equal": 1520,
+        "window": {
+          "first_line": 3518,
+          "last_line": 7021,
+          "wall_seconds": 33.810578
+        },
+        "totals": {
+          "commands": 1520,
+          "ns": 33618338242,
+          "seconds": 33.618338242,
+          "submits": 10809,
+          "chunks": 71750
+        },
+        "tiled_conv": {
+          "commands": 58,
+          "ns": 22893672402,
+          "seconds": 22.893672402,
+          "submits": 3294,
+          "chunks": 26256
+        }
+      }
+    ],
+    "interval_totals": [
+      {
+        "gpu_interval_ns": 8111877254,
+        "host_submit_ns": 9240584391,
+        "command_wall_ns": 9473531001,
+        "measured_host_instrumentation_ns": 105003658,
+        "issued_dot_flops": 110729625600,
+        "useful_dot_flops": 110560935936,
+        "issued_dot_GFLOPs_per_interval_second": 13.6503083235633,
+        "gpu_interval_fraction_of_command_wall": 0.8562675578032871
+      },
+      {
+        "gpu_interval_ns": 8085170793,
+        "host_submit_ns": 9121785264,
+        "command_wall_ns": 9358794244,
+        "measured_host_instrumentation_ns": 109481414,
+        "issued_dot_flops": 110729625600,
+        "useful_dot_flops": 110560935936,
+        "issued_dot_GFLOPs_per_interval_second": 13.695397219792534,
+        "gpu_interval_fraction_of_command_wall": 0.8639115875619843
+      }
+    ],
+    "actual_compact_mapping": {
+      "weights": 1,
+      "output": 3,
+      "bias": 0
+    },
+    "limitations": [
+      "GPU interval includes CP/setup/restore/flush/waits and event overhead, not ALU busy or historical uninstrumented time.",
+      "Measured host instrumentation excludes final summary/free/branch/packet encoding and GPU event costs; no causal timing gain claim.",
+      "Both iterations pass original full numerical log oracle; retained raw files are final iteration only.",
+      "Existing failed zero-record78166 is preserved. Selected inference remains frozen fcd/d332."
+    ]
+  },
+  "second_independent_review": {
+    "bytes": 9545,
+    "sha256": "67dabdc31086c7384434a6f6003ec656ef3b772c47e25a943241a521a80e6881"
+  },
+  "integrator_analyzer_reexecution_byte_exact": true,
+  "cold_load_s": 11.836,
+  "first_core_s": 34.418739,
+  "resident_core_s": 33.810578,
+  "process_peak_mib": 406.7,
+  "swap_mib": 0,
+  "limits_retained": {
+    "memory_mib": 640,
+    "swap_mib": 128,
+    "runtime_s": 300,
+    "disk_reserve_mib": 64
+  },
+  "notes": [
+    "First unmeasured78166/zero-record source and capture remain preserved and published.",
+    "The semantic mapping correction changes only diagnostic selection/reporting. All179 native programs and all1520 per-iteration ordered command signatures/scheduling remain unchanged.",
+    "Actual first+resident is one instrumented sequence, not a randomized speed comparison.",
+    "GPU intervals include setup, CP work, flushes, waits and observer event overhead; host-submit intervals include fence completion/wakeup outside the GPU timestamp.",
+    "Measured host instrumentation omits final summary/free/branch/packet-encoding and GPU event/WFI overhead.",
+    "Issued dot work includes padded output positions; useful dot work is reported separately. No pure utilization, cache-miss or energy conclusion."
+  ]
+}
