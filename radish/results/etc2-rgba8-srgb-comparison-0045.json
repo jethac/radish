@@ -1,0 +1,312 @@
+{
+  "status": "Original numerical FAIL preserved; matching compressed/uncompressed taps is diagnostic only",
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/etc2-eac-uncompressed-srgb-taps-0045/actual-equivalent-srgb-review.json",
+      "bytes": 3313,
+      "sha256": "2973294be887eda66ca6a62eed8798e774319611fa1a22c3dcff6a44f1f3b4f9"
+    },
+    "result": {
+      "status": "diagnostic discriminator complete; original numerical FAIL retained",
+      "capture": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-etc2-rgba8-srgb-taps/probe/run.log",
+        "sha256": "1d168bdd91923cb9f8e4b0755290a07332ab9246faabcf4423446995b982c7c4"
+      },
+      "fault_check": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-etc2-rgba8-srgb-taps/probe/fault-check.txt",
+        "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+      },
+      "encoded_rgba8_uploaded": [
+        [
+          41,
+          211,
+          255,
+          255
+        ],
+        [
+          36,
+          207,
+          52,
+          255
+        ],
+        [
+          92,
+          245,
+          58,
+          255
+        ],
+        [
+          31,
+          188,
+          97,
+          255
+        ]
+      ],
+      "compressed_srgb_bits": [
+        [
+          1018740736,
+          1059553280,
+          1065353216,
+          1065353216
+        ],
+        [
+          1016225792,
+          1059094528,
+          1024311296,
+          1065353216
+        ],
+        [
+          1037778944,
+          1063952384,
+          1026498560,
+          1065353216
+        ],
+        [
+          1013006336,
+          1057021952,
+          1039400960,
+          1065353216
+        ]
+      ],
+      "same_image_unorm_bits": [
+        [
+          1042588837,
+          1062458324,
+          1065353216,
+          1065353216
+        ],
+        [
+          1041272977,
+          1062195152,
+          1045483729,
+          1065353216
+        ],
+        [
+          1052293305,
+          1064695286,
+          1047062761,
+          1065353216
+        ],
+        [
+          1039726841,
+          1060945085,
+          1052951235,
+          1065353216
+        ]
+      ],
+      "rgba8_srgb_bits": [
+        [
+          1018740736,
+          1059553280,
+          1065353216,
+          1065353216
+        ],
+        [
+          1016225792,
+          1059094528,
+          1024311296,
+          1065353216
+        ],
+        [
+          1037778944,
+          1063952384,
+          1026498560,
+          1065353216
+        ],
+        [
+          1013006336,
+          1057021952,
+          1039400960,
+          1065353216
+        ]
+      ],
+      "comparison": {
+        "all16_unorm_values_exact_float32_code_over255": true,
+        "all16_rgba8_srgb_values_bit_equal_compressed_srgb": true,
+        "gpu_tap_green": [
+          0.654296875,
+          0.626953125,
+          0.91650390625,
+          0.50341796875
+        ],
+        "gpu_tap_mean": [
+          0.04030609130859375,
+          0.67529296875,
+          0.29912567138671875,
+          1.0
+        ],
+        "filtered_bits": [
+          1025843200,
+          1059905536,
+          1050222592,
+          1065353216
+        ],
+        "green_mean_equals_filter_bit_exact": true
+      },
+      "interpretation": [
+        "For these sixteen components, conversion is identical for compressed ETC2_SRGB and ordinary RGBA8_SRGB with identical encoded texels. The discrepancy is therefore general native sRGB conversion for this fixture, not an ETC2 block decode or four-half-tap filter difference.",
+        "This does not establish allowed error or conformance. Original expected values/tolerance and failing predicate remain unchanged; textureCompressionETC2 remains false.",
+        "All four appended image tap vectors written; extra-image immutable snapshots/outer guards are checked before original numeric failure. Original output/upload end-of-check full-allocation scan is not reached because original predicate fails first; separate full-family observer73709 provides full guard results.",
+        "No same-payload retry, tolerance change, new feature, driver mutation or performance claim. Frozen d903/helper f964/module9f03 used."
+      ]
+    }
+  },
+  "source_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/etc2-eac-uncompressed-srgb-taps-0045/independent-source-review.json",
+      "bytes": 1613,
+      "sha256": "db6b31d135131bf29fa931bf3063619fe4d348eecdf30938a15c893dd4761f5f"
+    },
+    "result": {
+      "status": "passed finite diagnostic delta source",
+      "release_sha256": "353e65708e8bc222e035f0eec1169bc978a6bb66d66368c2e31226391d736c5f",
+      "candidate": {
+        "source": {
+          "path": "/run/media/jethac/Shared/radish/etc2-eac-uncompressed-srgb-taps-0045/probe/etc_rgba8_srgb_taps.c",
+          "bytes": 31003,
+          "sha256": "448eb4c380c5f5037aaada7802e4e03d477755386ff28ffff1fb7d6269a0ba0b"
+        },
+        "shader": {
+          "path": "/run/media/jethac/Shared/radish/etc2-eac-uncompressed-srgb-taps-0045/probe/etc_rgba8_srgb_taps.comp",
+          "bytes": 2104,
+          "sha256": "0442762339ce6012c5be1b0526cb9b8e8dcbab679d6f77371127606a1fe2069e"
+        }
+      },
+      "checks": [
+        "New 2x2 color SRGB image receives exact detex encoded RGBA bytes for four retained compressed taps, no EOTF inverse repacking.",
+        "Appended upload 16 bytes inside new 64-byte region; original compressed transfer offsets unchanged.",
+        "Six combined sampled descriptors plus one SSBO, added observation indices 2272..2287 within enlarged output.",
+        "Transfer-write to compute-read barrier and fenced immutable image snapshot; all seven allocation checks precede original numeric fail.",
+        "Original 2240 words, tolerances, numerical failure and data preserved; one format1 round0 only.",
+        "Extra observation values never substituted into expected reference.",
+        "New sampled view destroyed before image/free after fence; frozen d903 ABI explicitly required."
+      ],
+      "limitations": [
+        "Native admission still required.",
+        "Diagnostic observations are not additional numerical acceptance or whole-family qualification."
+      ]
+    }
+  },
+  "host_pairing": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/etc2-eac-uncompressed-srgb-taps-0045/independent-host-build-review.json",
+      "bytes": 1756,
+      "sha256": "8f57e23635b3fb4f8ce9413ff367a03bb474b0c8b1677c4f9315e188d1c0dd5a"
+    },
+    "result": {
+      "status": "PASS finite exact source/module/AArch64/header-driver pairing; native/actual separate",
+      "build_result": {
+        "path": "/run/media/jethac/Shared/radish/compute11-etc2-rgba8-srgb-taps-build-0045/result.json",
+        "bytes": 3837,
+        "sha256": "65477fe0a84713cff61aa77f3f18141343fafaf9bed7c435208dffa32547857e"
+      },
+      "helper": {
+        "path": "/run/media/jethac/Shared/radish/compute11-etc2-rgba8-srgb-taps-build-0045/probe/etc_rgba8_srgb_taps",
+        "bytes": 865208,
+        "sha256": "f964bea4c5abafdd0fa34a814a39ac593b4ea8e274c079b40e411932f6d05ef3"
+      },
+      "module": {
+        "path": "/run/media/jethac/Shared/radish/compute11-etc2-rgba8-srgb-taps-build-0045/probe/etc_rgba8_srgb_taps.spv",
+        "bytes": 8648,
+        "sha256": "9f030a4a6d2b83f7602edcf8b040a706f7d466fb5ad461157fcf46f88377b7b6"
+      },
+      "module_caps_numeric": [
+        1,
+        50
+      ],
+      "driver": {
+        "path": "/run/media/jethac/Shared/radish/compute11-etc2-resource-build-0045/libvulkan_radish.so",
+        "bytes": 49050456,
+        "sha256": "d903348c8170e0fd4dcf1d3ec959813e7d93170f2a6aa1fb6bd89ad24065e30d"
+      },
+      "header_image_sha256": "6781ec3a4968c07cee9cdc6db0e40991649a37ca55848baf90b15faadef73d10",
+      "checks": [
+        "Rehashed all recorded source/oracle files and all recorded private headers. AArch64 ELF183 confirmed. SPIR-V1.0 header/capabilities independently parsed; owner Vulkan1.0 validator output retained.",
+        "ETC uses explicitly first immutable d903 header include and dependency proof. D24 uses new6c0847 ABI matching exact composed940703ee driver. These header domains remain separate."
+      ],
+      "scope": "Frozen d903 Radish header root explicitly first in every compile command; no new D24 header ABI. NoGPU/native/numerical qualification or compressionfeaturepromotion."
+    }
+  },
+  "native": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/etc2-eac-uncompressed-srgb-taps-0045/native-admission-review.json",
+      "bytes": 1577,
+      "sha256": "10b133f172245d2bf5046dfe8ac06193a9c43d181f5b751ca44296351446ec6c"
+    },
+    "result": {
+      "status": "PASS finite native/interface admission, diagnostic actual pending",
+      "run_log": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-etc2-rgba8-srgb-taps/compile/run.log",
+        "sha256": "2ca45f35302a29d22343e0d85ccb6c3ccc94b0b9d6757fe0c6b17ff03a6fd96b"
+      },
+      "tuple": {
+        "native_units": 12,
+        "full_registers": 21,
+        "half_registers": 3,
+        "constants_vec4": 16,
+        "loops": 0,
+        "textures": 6,
+        "samplers": 2,
+        "ssbo": 1
+      },
+      "actual_compact_texture_mapping": {
+        "0": "SRGB compressed nearest and mip fetches, binding0",
+        "1": "SRGB compressed explicitLOD linear, binding1",
+        "2": "same-image UNORM nearest, binding5",
+        "3": "new2x2RGBA8_SRGB nearest, binding6",
+        "4": "raw UINT compressedblock view, binding2",
+        "5": "raw UINT copiedblock image, binding3"
+      },
+      "instruction_checks": {
+        "ISAM_counts_by_texture": {
+          "0": 4,
+          "1": 0,
+          "2": 4,
+          "3": 4,
+          "4": 1,
+          "5": 1
+        },
+        "ISAML_texture0": 2,
+        "linear_sampler": "SAML.a s1/t1 retained",
+        "new_rgba8_coordinates": "Four non-array t3 ISAMs use constant(0,0),(1,0),(0,1),(1,1); 16observations stored offsets2272..2287",
+        "original_observables": "Original sampler/mip/size/raw words survive; compressedtap2240..2255 andUNORM2256..2271 remain before newRGBA8 observations",
+        "no_global_or_private_spill_memory_in_native": true
+      },
+      "limit": "One original bounded source-changed diagnostic; no shader numerical, permitted-precision or compressionfeature claim. Frozen d903/header6781 baseline retained."
+    }
+  },
+  "failure": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-etc2-rgba8-srgb-taps/probe/failure.json",
+      "bytes": 272,
+      "sha256": "d939c9633eeb3fbaaa4b64765c411c16718f151f8dcd337840f32fe21abf2c57"
+    },
+    "result": {
+      "status": "failed",
+      "error": "probe/compile process returned 1",
+      "started": true,
+      "terminal": false,
+      "process_returncode": 1,
+      "remote": "/var/tmp/radish/core-compute-core0045-etc2-rgba8-srgb-taps",
+      "unit": "radish-core-compute-probe-1793619768695998897"
+    }
+  },
+  "collection": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-etc2-rgba8-srgb-taps/probe/collection.json",
+      "bytes": 37,
+      "sha256": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e"
+    },
+    "result": {
+      "passed": true,
+      "errors": []
+    }
+  },
+  "limits": "All16 RGBA8_SRGB taps equal compressed SRGB bits; all16 UNORM float32(code/255) exact. For this fixture native conversion behavior is shared; no normative precision conclusion/tolerance change/feature promotion. Original failing output, guards and clean drain retained. Driverd903 uses old rd_image.h6781, do not build against newD24 header unnoticed.",
+  "public_builder": {
+    "path": "/run/media/jethac/Shared/radish/compute11-public-rgba8-srgb-builder-check-0045/receipt.json",
+    "bytes": 43738,
+    "sha256": "d2ec3f9ab7c2187702410c62a68d289938e9e9fef11bf0ad78a80730a3b80d0c"
+  },
+  "public_builder_matching_old_header_first": true
+}

@@ -1,0 +1,199 @@
+--- a/src/freedreno/radish/rd_image.c
++++ b/src/freedreno/radish/rd_image.c
+@@ -85,6 +85,7 @@
+    case VK_FORMAT_D16_UNORM:
+    case VK_FORMAT_D32_SFLOAT:
+    case VK_FORMAT_S8_UINT:
++   case VK_FORMAT_D24_UNORM_S8_UINT:
+       return vk_format_get_blocksize(format);
+    default:
+       return 0;
+@@ -100,7 +101,7 @@
+    if (format == VK_FORMAT_R8G8B8A8_UNORM)
+       usage |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT;
+    if (format == VK_FORMAT_D16_UNORM || format == VK_FORMAT_D32_SFLOAT ||
+-       format == VK_FORMAT_S8_UINT)
++       format == VK_FORMAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT)
+       usage |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT;
+    if (rd_storage_shader_format_supported(format))
+       usage |= VK_IMAGE_USAGE_STORAGE_BIT;
+@@ -457,7 +458,8 @@
+ {
+    VK_FROM_HANDLE(rd_image, image, image_handle);
+    *out = (VkSubresourceLayout){0};
+-   if (subresource->aspectMask != vk_format_aspects(image->vk.format) ||
++   if (!subresource->aspectMask || (subresource->aspectMask & ~vk_format_aspects(image->vk.format)) ||
++       (subresource->aspectMask & (subresource->aspectMask - 1)) ||
+        subresource->mipLevel >= image->vk.mip_levels || subresource->arrayLayer >= image->vk.array_layers)
+       return;
+    const struct rd_image_level *level = &image->levels[subresource->mipLevel];
+@@ -488,7 +490,8 @@
+        !vk_format_is_depth_or_stencil(info->format) &&
+        vk_format_get_class_info(info->format) == vk_format_get_class_info(image->vk.format)));
+    if (!image || info->flags || !format_compatible ||
+-       !(image->vk.usage & view_usage) || r->aspectMask != vk_format_aspects(image->vk.format) ||
++       !(image->vk.usage & view_usage) || !r->aspectMask ||
++       (r->aspectMask & ~vk_format_aspects(image->vk.format)) ||
+        r->baseMipLevel >= image->vk.mip_levels)
+       return VK_ERROR_FORMAT_NOT_SUPPORTED;
+    bool slice_view = image->vk.image_type == VK_IMAGE_TYPE_3D &&
+@@ -683,7 +686,8 @@
+              VkOffset3D offset, VkExtent3D extent, VkDeviceSize *base,
+              VkDeviceSize *row, VkDeviceSize *slice, uint32_t *slices)
+ {
+-   if (!image || subresource->aspectMask != vk_format_aspects(image->vk.format) ||
++   if (!image || !subresource->aspectMask ||
++       (subresource->aspectMask & ~vk_format_aspects(image->vk.format)) ||
+        subresource->mipLevel >= image->vk.mip_levels || !subresource->layerCount ||
+        subresource->baseArrayLayer >= image->vk.array_layers ||
+        subresource->layerCount > image->vk.array_layers - subresource->baseArrayLayer ||
+@@ -749,6 +753,15 @@
+       return;
+    for (uint32_t i = 0; i < count; i++) {
+       struct rd_image_transfer transfer = {.src_image = src, .dst_image = dst};
++      if (!rd_image_command_valid(command,
++          regions[i].srcSubresource.aspectMask == regions[i].dstSubresource.aspectMask))
++         return;
++      if (src->vk.format == VK_FORMAT_D24_UNORM_S8_UINT) {
++         if (regions[i].srcSubresource.aspectMask == VK_IMAGE_ASPECT_DEPTH_BIT)
++            transfer.copy_mask = 0x00ffffffu;
++         else if (regions[i].srcSubresource.aspectMask == VK_IMAGE_ASPECT_STENCIL_BIT)
++            transfer.copy_mask = 0xff000000u;
++      }
+       VkExtent3D src_extent = regions[i].extent;
+       VkExtent3D dst_extent = regions[i].extent;
+       if (src->vk.image_type != dst->vk.image_type) {
+@@ -946,10 +959,12 @@
+    if (clear && (!transfer->texel_size || transfer->texel_size > sizeof(transfer->clear) ||
+                  transfer->row_bytes % transfer->texel_size))
+       return VK_ERROR_UNKNOWN;
++   if (transfer->copy_mask && (clear || transfer->row_bytes % 4))
++      return VK_ERROR_UNKNOWN;
+    if (src && src->bo != dst->bo && fd_bo_cpu_prep(src->bo, device->pipe, FD_BO_PREP_READ | FD_BO_PREP_NOSYNC))
+       return VK_ERROR_DEVICE_LOST;
+    uint32_t flags = FD_BO_PREP_WRITE | FD_BO_PREP_NOSYNC;
+-   if (src && src->bo == dst->bo)
++   if ((src && src->bo == dst->bo) || transfer->copy_mask)
+       flags |= FD_BO_PREP_READ;
+    if (fd_bo_cpu_prep(dst->bo, device->pipe, flags))
+       return VK_ERROR_DEVICE_LOST;
+@@ -968,7 +983,17 @@
+          } else {
+             const uint8_t *from = src_map + src_offset + transfer->src_offset +
+                                   z * transfer->src_slice_pitch + y * transfer->src_row_pitch;
+-            memmove(to, from, transfer->row_bytes);
++            if (transfer->copy_mask) {
++               for (VkDeviceSize x = 0; x < transfer->row_bytes; x += 4) {
++                  uint32_t source, target;
++                  memcpy(&source, from + x, 4);
++                  memcpy(&target, to + x, 4);
++                  target = (target & ~transfer->copy_mask) | (source & transfer->copy_mask);
++                  memcpy(to + x, &target, 4);
++               }
++            } else {
++               memmove(to, from, transfer->row_bytes);
++            }
+          }
+       }
+    }
+--- a/src/freedreno/radish/rd_image.h
++++ b/src/freedreno/radish/rd_image.h
+@@ -41,7 +41,7 @@
+    VkDeviceSize src_row_pitch, dst_row_pitch;
+    VkDeviceSize src_slice_pitch, dst_slice_pitch;
+    VkDeviceSize row_bytes;
+-   uint32_t rows, slices, texel_size;
++   uint32_t rows, slices, texel_size, copy_mask;
+    uint8_t clear[16];
+ };
+ 
+--- a/src/freedreno/radish/rd_nir_sampling.c
++++ b/src/freedreno/radish/rd_nir_sampling.c
+@@ -44,6 +44,7 @@
+ {
+    return view->format == VK_FORMAT_D16_UNORM ? PIPE_FORMAT_R16_UNORM :
+       view->format == VK_FORMAT_D32_SFLOAT ? PIPE_FORMAT_R32_FLOAT :
++      view->format == VK_FORMAT_X8_D24_UNORM_PACK32 ? PIPE_FORMAT_R32_FLOAT :
+       view->format == VK_FORMAT_S8_UINT ? PIPE_FORMAT_R8_UINT : vk_format_to_pipe_format(view->format);
+ }
+ 
+@@ -70,7 +71,16 @@
+    nir_def *packed = nir_load_global(b, MAX2(view->cpp, 4) / 4, 32, address, .align_mul = 4);
+    if (view->cpp < 4)
+       packed = nir_ushr(b, packed, nir_imul_imm(b, nir_iand_imm(b, offset, 3), 8));
+-   nir_def *rgba = nir_format_unpack_rgba(b, packed, rd_sample_format(view));
++   if (view->format == VK_FORMAT_S8_UINT && view->cpp == 4)
++      packed = nir_ushr_imm(b, packed, 24);
++   nir_def *rgba;
++   if (view->format == VK_FORMAT_X8_D24_UNORM_PACK32) {
++      unsigned bits[1] = {24};
++      nir_def *depth = nir_format_unorm_to_float(b, nir_iand_imm(b, packed, 0x00ffffff), bits);
++      rgba = nir_vec4(b, depth, nir_imm_float(b, 0), nir_imm_float(b, 0), nir_imm_float(b, 1));
++   } else {
++      rgba = nir_format_unpack_rgba(b, packed, rd_sample_format(view));
++   }
+    nir_pop_if(b, NULL);
+    return nir_if_phi(b, rgba, zero);
+ }
+@@ -228,7 +238,7 @@
+    nir_def *alpha = border >= 2 ? one : zero;
+    rgba = nir_bcsel(b, inside, rgba, nir_vec4(b, rgb, rgb, rgb, alpha));
+    if (tex->is_shadow) {
+-      if (view->format == VK_FORMAT_D16_UNORM)
++      if (view->format == VK_FORMAT_D16_UNORM || view->format == VK_FORMAT_X8_D24_UNORM_PACK32)
+          reference = nir_fsat(b, reference);
+       nir_def *comparison = rd_depth_compare(b, (sampler[1] >> 1) & 7,
+          reference, nir_channel(b, rgba, 0));
+--- a/src/freedreno/radish/rd_resources.c
++++ b/src/freedreno/radish/rd_resources.c
+@@ -160,6 +160,7 @@
+    case VK_FORMAT_D16_UNORM: return TFMT5_16_UNORM;
+    case VK_FORMAT_D32_SFLOAT: return TFMT5_32_FLOAT;
+    case VK_FORMAT_S8_UINT: return TFMT5_8_UINT;
++   case VK_FORMAT_D24_UNORM_S8_UINT: return TFMT5_X8Z24_UNORM;
+    default: return TFMT5_NONE;
+    }
+ }
+@@ -251,6 +252,8 @@
+       format = view->format;
+       samples = image->vk.samples == VK_SAMPLE_COUNT_4_BIT ? MSAA_FOUR : MSAA_ONE;
+       out->format = rd_resource_format(format);
++      if (format == VK_FORMAT_D24_UNORM_S8_UINT && view->aspects == VK_IMAGE_ASPECT_STENCIL_BIT)
++         out->format = TFMT5_8_8_8_8_UINT;
+       out->cpp = image->texel_size;
+       out->width = extent.width;
+       out->height = extent.height;
+@@ -305,15 +308,21 @@
+    }
+    VkFormat sampled_format = format == VK_FORMAT_D16_UNORM ? VK_FORMAT_R16_UNORM :
+                              format == VK_FORMAT_D32_SFLOAT ? VK_FORMAT_R32_SFLOAT :
++                             format == VK_FORMAT_D24_UNORM_S8_UINT ? VK_FORMAT_R32_SFLOAT :
+                              format == VK_FORMAT_S8_UINT ? VK_FORMAT_R8_UINT : format;
+    const struct util_format_description *description = vk_format_description(sampled_format);
+    unsigned char swizzle[4];
+    memcpy(swizzle, description->swizzle, sizeof(swizzle));
++   if (format == VK_FORMAT_D24_UNORM_S8_UINT && descriptor->image_view &&
++       descriptor->image_view->vk.aspects == VK_IMAGE_ASPECT_STENCIL_BIT)
++      swizzle[0] = PIPE_SWIZZLE_W;
+    if (descriptor->image_view) {
+       const VkComponentMapping *view = &descriptor->image_view->vk.swizzle;
+       unsigned char requested[4] = {rd_view_swizzle(view->r), rd_view_swizzle(view->g),
+                                     rd_view_swizzle(view->b), rd_view_swizzle(view->a)};
+-      util_format_compose_swizzles(description->swizzle, requested, swizzle);
++      unsigned char native_swizzle[4];
++      memcpy(native_swizzle, swizzle, sizeof(native_swizzle));
++      util_format_compose_swizzles(native_swizzle, requested, swizzle);
+    }
+    out->format_word = A5XX_TEX_CONST_0_FMT(out->format) |
+       A5XX_TEX_CONST_0_SAMPLES(samples) |
+--- a/src/freedreno/radish/rd_sampling.c
++++ b/src/freedreno/radish/rd_sampling.c
+@@ -36,6 +36,8 @@
+       key.mask |= 1u << i;
+       struct rd_sampling_view *target = &key.views[i];
+       target->format = view->format;
++      if (view->format == VK_FORMAT_D24_UNORM_S8_UINT)
++         target->format = view->view_format;
+       target->swizzle = view->swizzle;
+       target->levels = view->level_count;
+       target->layers = view->layer_count;

@@ -1,0 +1,363 @@
+{
+  "status": "Representative initialized single-sample D24S8 PASS; no complete format/conformance claim",
+  "prior": "depth-host-layouts-0045.json",
+  "patch_order": [
+    {
+      "path": "/home/jethac/Projects/radish/radish/patches/0045-radish-combined-d24s8.patch",
+      "bytes": 9740,
+      "sha256": "9c71aec578de036fd3f69388ab483102027fb0597749db6c9e05aede89011edb"
+    },
+    {
+      "path": "/home/jethac/Projects/radish/radish/patches/0045-radish-compressed-blit-src-query.patch",
+      "bytes": 817,
+      "sha256": "cdc1d6578cae6be33521abbe4a67d3b13d89c4b1da52f40321f5681dcb1f06dc"
+    }
+  ],
+  "reconstructed_source": {
+    "src/freedreno/radish/rd_nir_resources.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-blit-query-build-0045/source/src/freedreno/radish/rd_nir_resources.c",
+      "bytes": 14792,
+      "sha256": "49ba435efd7edaa8bee8563cf3121297bbf06091a79f0e3736cbd4b2111c21b9"
+    },
+    "src/freedreno/radish/rd_command.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-blit-query-build-0045/source/src/freedreno/radish/rd_command.c",
+      "bytes": 12468,
+      "sha256": "f042130607b3de3d03733f3ea9017621892db3a4f023695f479b9bbbb42aff82"
+    },
+    "src/freedreno/radish/rd_transfer.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-blit-query-build-0045/source/src/freedreno/radish/rd_transfer.c",
+      "bytes": 2992,
+      "sha256": "a93968bf54724b1a068d7169940952286b73a0eb08f9fe78ee3ef4e608d5812b"
+    },
+    "src/freedreno/radish/rd_nir_robust.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-blit-query-build-0045/source/src/freedreno/radish/rd_nir_robust.c",
+      "bytes": 9502,
+      "sha256": "eb7b2f530891fd81fbb5e9d048f2d4c93ad22b10476b0202fb9bca4dda28111c"
+    },
+    "src/freedreno/radish/rd_image.h": {
+      "path": "/run/media/jethac/Shared/radish/compute11-blit-query-build-0045/source/src/freedreno/radish/rd_image.h",
+      "bytes": 1793,
+      "sha256": "6c0847bb62fd18eef4e4398a7efc89afde57fbed64d64ab152586078d9555747"
+    },
+    "src/freedreno/radish/rd_memory.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-blit-query-build-0045/source/src/freedreno/radish/rd_memory.c",
+      "bytes": 5990,
+      "sha256": "358fdead558a70a164bd7f6c1bd51c7414132ea3b44996b8c23e9f651ba812af"
+    },
+    "src/freedreno/radish/rd_sampling.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-blit-query-build-0045/source/src/freedreno/radish/rd_sampling.c",
+      "bytes": 6391,
+      "sha256": "2e1832d37ce206d98d7d8c778c231e19565c0d810b133c56ed46af107b360599"
+    },
+    "src/freedreno/radish/rd_query.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-blit-query-build-0045/source/src/freedreno/radish/rd_query.c",
+      "bytes": 14017,
+      "sha256": "8f83148f39b51411963dd2b201979f0e7d94f496a3e34b81601278bcdf622978"
+    },
+    "src/freedreno/radish/rd_nir_resources.h": {
+      "path": "/run/media/jethac/Shared/radish/compute11-blit-query-build-0045/source/src/freedreno/radish/rd_nir_resources.h",
+      "bytes": 953,
+      "sha256": "0afa75cc3e1c856496b4b52b6c65eca90ac751cbefaf807e3af1421fbca93599"
+    },
+    "src/freedreno/radish/rd_event.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-blit-query-build-0045/source/src/freedreno/radish/rd_event.c",
+      "bytes": 4999,
+      "sha256": "324cd260d6cb805d6b8548f9f518df1fba8110dd6bef25ae7f072c7ac17ac49c"
+    },
+    "src/freedreno/radish/rd_sampling.h": {
+      "path": "/run/media/jethac/Shared/radish/compute11-blit-query-build-0045/source/src/freedreno/radish/rd_sampling.h",
+      "bytes": 1096,
+      "sha256": "541a70b8aca605c0719aa03d551241da16136d6a17ff801bb5d379d7e6d86932"
+    },
+    "src/freedreno/radish/rd_queue.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-blit-query-build-0045/source/src/freedreno/radish/rd_queue.c",
+      "bytes": 45229,
+      "sha256": "da170e7c4d4a1fc9db0da5ded100376fab80b57fb70af2427a4ff81fbbdc4890"
+    },
+    "src/freedreno/radish/meson.build": {
+      "path": "/run/media/jethac/Shared/radish/compute11-blit-query-build-0045/source/src/freedreno/radish/meson.build",
+      "bytes": 1777,
+      "sha256": "8b5d6cd1839eb92a2dd9a0038ea3f1c9840935694b7acdfc36a1dd46714d732d"
+    },
+    "src/freedreno/radish/rd_instance.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-blit-query-build-0045/source/src/freedreno/radish/rd_instance.c",
+      "bytes": 13077,
+      "sha256": "697e58afd7e1df74c4820ab6e18721246ebf6020e26ecc1e028d7ba909000814"
+    },
+    "src/freedreno/radish/rd_resources.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-blit-query-build-0045/source/src/freedreno/radish/rd_resources.c",
+      "bytes": 27624,
+      "sha256": "8c2c129bcc6129d910fd992a2563de1feae7e675619dc0fa571bd664fb380e3b"
+    },
+    "src/freedreno/radish/rd_nir_sampling.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-blit-query-build-0045/source/src/freedreno/radish/rd_nir_sampling.c",
+      "bytes": 23572,
+      "sha256": "64bed3318324ec74b2dde5bd2fb3d9b8dc996eb4077d2d09daf1dc2aec6c0b7a"
+    },
+    "src/freedreno/radish/rd_image.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-blit-query-build-0045/source/src/freedreno/radish/rd_image.c",
+      "bytes": 50355,
+      "sha256": "be031b4ffe443d085a66c1adf2fe800400eae403ec701ce09978b52dbebc8def"
+    },
+    "src/freedreno/radish/rd_device.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-blit-query-build-0045/source/src/freedreno/radish/rd_device.c",
+      "bytes": 6266,
+      "sha256": "b47a9e92dbdcca9ef58f62066c03d3b10a6ba4cb795a7a737ccfe1c4e67021df"
+    },
+    "src/freedreno/radish/rd_private.h": {
+      "path": "/run/media/jethac/Shared/radish/compute11-blit-query-build-0045/source/src/freedreno/radish/rd_private.h",
+      "bytes": 8794,
+      "sha256": "b4fd0b4017316865f92f740285bf900fb93fe59189f2bba658fb665d5bc91502"
+    },
+    "src/freedreno/radish/rd_pipeline.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-blit-query-build-0045/source/src/freedreno/radish/rd_pipeline.c",
+      "bytes": 25457,
+      "sha256": "db56340993aeffdf8e945058864f4f7737f350ed990f559f95be66d553bcd599"
+    },
+    "src/freedreno/radish/rd_descriptor.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-blit-query-build-0045/source/src/freedreno/radish/rd_descriptor.c",
+      "bytes": 17524,
+      "sha256": "b3cd22b2ace3540674a9cb98c55d4a9fcd62c1ffcb90fabe37fa478791ceb147"
+    }
+  },
+  "driver": {
+    "path": "/run/media/jethac/Shared/radish/compute11-blit-query-build-0045/libvulkan_radish.so",
+    "bytes": 49074248,
+    "sha256": "940703eeacac2c8ec27448cc1ad3a3964aa80f9ef284098b0759eb62b168d9f7"
+  },
+  "source_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-combined-d24s8-0045/independent-source-review.json",
+      "bytes": 2484,
+      "sha256": "0f16996198b0236e87e900f66b6d5208f64e0f0c43ab3249a2f29aee5f8d9d25"
+    },
+    "result": {
+      "status": "PASS finite source review; native/public numerical qualification remains required",
+      "patch": {
+        "path": "/run/media/jethac/Shared/radish/compute11-combined-d24s8-0045/combined-d24s8.patch",
+        "bytes": 9740,
+        "sha256": "9c71aec578de036fd3f69388ab483102027fb0597749db6c9e05aede89011edb"
+      },
+      "release": {
+        "path": "/run/media/jethac/Shared/radish/compute11-combined-d24s8-0045/release.json",
+        "bytes": 5171,
+        "sha256": "abc410368780453054c299d89a8ef83676ebd8bd683974941ac8b9dfa3f527b4"
+      },
+      "checks": [
+        "All five baseline/candidate hashes and exact unified patch independently reconstructed.",
+        "D24 uses existing FD5 X8Z24_UNORM, cpp4 unchanged. Stencil sampled view selects 8_8_8_8_UINT, explicitly maps W to logical R and (0,0,1) defaults before existing user-swizzle composition; unlike Gallium ssss convention Vulkan defaults are retained. Source/native numerical gate must check actual W byte selection.",
+        "Common vk_image_view aspect view_format produces X8_D24_UNORM_PACK32 or S8_UINT. Lazy-child cache key records that format, source cpp4/sample count/address stride remain exact. Raw depth masks low24 then Mesa unorm conversion, stencil shifts high8 then existing UINT unpack. Native and raw user swizzles agree at source level.",
+        "Image boxes retain cpp4*samples offsets/rowbytes; partial masks are low24 or high8, source/destination masks and DS format must match. Per-word memcpy avoids alignment UB. Existing two-sided allocation/row/slice bounds precede all accesses.",
+        "Masked copies add destination READ CPU preparation before read-modify-write, retain other aspect exactly. Full aspect/image transfers retain prior memmove. Valid Vulkan overlapping copy restrictions remain caller obligations.",
+        "Linear individual aspect subresource queries preserve shared interleaved offset/size, reject empty/multiaspect query. Views accept valid nonempty subset and common runtime handles aspect view semantics.",
+        "Header transfer ABI adds copy_mask: all helpers and driver must be rebuilt from same candidate headers; frozen d903 ETC consumers stay paired to frozen d903 headers."
+      ],
+      "remaining": [
+        "Actual stencil W/default/component remap, depth normalized endpoints, partial-copy preservation and native-vs-raw sample results need consumer evidence.",
+        "No MS lane qualification inferred from host object creation; no feature/property/sample-mask change or full combinedDS conformance claim."
+      ]
+    }
+  },
+  "consumer_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-combined-d24s8-0045/probe/independent-pattern-v2-review.json",
+      "bytes": 1851,
+      "sha256": "710c6f308bcaa57c6437b3992d8573fe51a199138e4bf6de7690db4ba494a958"
+    },
+    "result": {
+      "status": "PASS exact one-expression pattern correction",
+      "source_sha256": "88fa83cff2b202ba6311f1b8fcab3b8e6e56abafa1800a054ca16123274c7c1f",
+      "original_preserved_sha256": "2379e8acad05aa8ea495e8341f9505d95331201727a8282d17cac760cf69800e",
+      "checks": [
+        "Only depth pattern coefficient changes3 to2, all geometry/layout/API/shader/tolerance/expected-copy algorithm unchanged.",
+        "Independently enumerated all four depth changes and all four stencil changes in each round. Masks preserve the opposite aspect.",
+        "V1 depth pattern was degenerate; prior source review missed this. Preserve v1 actual only as sampling/stencil/copy/readback evidence, not changing-depth-copy qualification."
+      ],
+      "proof": [
+        {
+          "round": 0,
+          "depth_changed_indices": [
+            5,
+            6,
+            9,
+            10
+          ],
+          "stencil_changed_indices": [
+            0,
+            1,
+            4,
+            5
+          ],
+          "final_packed_expected": [
+            1207959552,
+            1845493759,
+            1247106389,
+            1873455786,
+            2102744405,
+            2726297600,
+            2139095039,
+            2759852031,
+            1786773504,
+            2399141889,
+            3036676094,
+            3657433086,
+            2667577345,
+            3305111550,
+            3909091328,
+            251658239
+          ]
+        },
+        {
+          "round": 1,
+          "depth_changed_indices": [
+            5,
+            6,
+            9,
+            10
+          ],
+          "stencil_changed_indices": [
+            0,
+            1,
+            4,
+            5
+          ],
+          "final_packed_expected": [
+            2415919103,
+            3025491285,
+            2443881130,
+            3061841920,
+            3299519146,
+            3917479935,
+            3321888769,
+            3942645761,
+            2977955839,
+            3607101438,
+            4211081216,
+            536870912,
+            3875536894,
+            184549376,
+            822083583,
+            1431655765
+          ]
+        }
+      ]
+    }
+  },
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-d24s8-public-runner-0045/actual-v2-review.json",
+      "bytes": 2444,
+      "sha256": "d3ea27389383e495c8837e1a47928228f5427d8cfc9d2e99cd128c264d50242c"
+    },
+    "result": {
+      "status": "passed finite initialized single-sample D24S8 numerical/aspect-copy gate",
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 153,
+          "sha256": "600fb1ee779df60a57d02e30bc7b2d64132f6acf13bd097c427fe9383eee3cd4"
+        },
+        "resources": {
+          "bytes": 751816,
+          "sha256": "c5d369d247240bc4f3e8fec1638b8e24e820f1c29493e07c4668bb0fd4cf4262"
+        },
+        "resources.spv": {
+          "bytes": 2208,
+          "sha256": "13443c288bb17b061bf82e38b3bf57cda674a99a90fd29c610348f36025023d1"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13620400,
+          "sha256": "d1a25d2ff03f3c6466cfdc56eb73e183e8ff176e1aac7fab6d6d5a2ace634e96"
+        },
+        "payload.json": {
+          "bytes": 818,
+          "sha256": "8fde1af44a2a50ed89801ebe48757aa30126bfe270f629fdf12415ea86727366"
+        }
+      },
+      "run_log": {
+        "bytes": 26202,
+        "sha256": "0f101912f5fe4ab12c08f49da8c2567a0a868bbc2e230ad169da2201d35ec76f"
+      },
+      "rounds": 2,
+      "dispatches": 2,
+      "image_copies": 8,
+      "copy_bytes": 320,
+      "sample_words": 256,
+      "depth_float_values": 32,
+      "depth_abs_tolerance": 2.384185791015625e-07,
+      "other_sample_words_exact": 224,
+      "packed_readback_texels_exact": 32,
+      "changed_depth_components": 8,
+      "changed_stencil_components": 8,
+      "guards": [
+        "Whole linear source and readback allocations, including row padding.",
+        "Whole output allocation, after explicitly bounded32 normalized depth comparisons.",
+        "Optimal image outer allocation guards; internal padding is not a defined oracle."
+      ],
+      "query_traits": "ten compressed formats BLIT_SRC and false ETC2 feature checked; no blit command execution",
+      "source_review": "e0f29eeb plus corrected pattern710c6f30",
+      "native_review": "154c8558; v2 module/full native text unchanged",
+      "earlier_v1": "88550 passed sampling/stencil/readback, but depth rectangle copied identical codes. Preserved v1 is not changed-depth-copy evidence; v2 is a changed input, not unchanged retry.",
+      "limits": [
+        "Public API initializer uses queried linear layout plus pinned Radish interleaved packing.",
+        "Single-sample only; no initialized MS/rendering/raw-child coverage.",
+        "Helper compared all data in process; no separate exported raw-allocation reference claim.",
+        "No complete depth-format/conformance or strict texture-precision qualification."
+      ]
+    }
+  },
+  "runner": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-d24s8-public-v2/probe/runner-result.json",
+      "bytes": 1160,
+      "sha256": "9e3aab3ff2613ab499cdd4f9a45863f78dbf9656f9c07d1b295975e2c7ac5862"
+    },
+    "result": {
+      "status": "passed",
+      "mode": "probe",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 153,
+          "sha256": "600fb1ee779df60a57d02e30bc7b2d64132f6acf13bd097c427fe9383eee3cd4"
+        },
+        "resources": {
+          "bytes": 751816,
+          "sha256": "c5d369d247240bc4f3e8fec1638b8e24e820f1c29493e07c4668bb0fd4cf4262"
+        },
+        "resources.spv": {
+          "bytes": 2208,
+          "sha256": "13443c288bb17b061bf82e38b3bf57cda674a99a90fd29c610348f36025023d1"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13620400,
+          "sha256": "d1a25d2ff03f3c6466cfdc56eb73e183e8ff176e1aac7fab6d6d5a2ace634e96"
+        },
+        "payload.json": {
+          "bytes": 818,
+          "sha256": "8fde1af44a2a50ed89801ebe48757aa30126bfe270f629fdf12415ea86727366"
+        }
+      },
+      "run_log": {
+        "bytes": 26202,
+        "sha256": "0f101912f5fe4ab12c08f49da8c2567a0a868bbc2e230ad169da2201d35ec76f"
+      },
+      "scope": "Raw ICD assets/services/faults and consolidated assertions passed. This is experimental compute coverage, not Vulkan conformance."
+    }
+  },
+  "earlier_fixture": "V1 passed sampling/stencil/readback but copied identical depth codes. Preserved evidence is not changing-depth-copy qualification; v2 changes only input coefficient3 to2.",
+  "limits": "Single-sample native path only; no initialized MS, raw child, rendering/sample masks or complete depth-format precision claim. Ten BLIT_SRC query traits checked; graphics-only blit command not executed on compute queue. ETC2 feature remains false.",
+  "reproduction": "Apply patches after published c2aa stack; build --only combined-ds against matching new rd_image.h6c0847 ABI. Stage as resources/resources.spv; split compile then probe with same exact payload.",
+  "public_builder": {
+    "path": "/run/media/jethac/Shared/radish/compute11-public-d24-builder-check-0045/receipt.json",
+    "bytes": 8120,
+    "sha256": "f6fe18d1311a6654b10095487d3b7679601b773589b8f3be84997f88df3838c9"
+  }
+}

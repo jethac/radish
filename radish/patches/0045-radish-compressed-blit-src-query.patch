@@ -1,0 +1,15 @@
+--- a/src/freedreno/radish/rd_image.c
++++ b/src/freedreno/radish/rd_image.c
+@@ -182,8 +182,11 @@
+    if (rd_shader_format_supported(format)) {
+       if (rd_image_texel_size(format))
+          flags |= VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT;
+-      if (rd_image_texel_size(format) && rd_shader_format_filterable(format))
++      if (rd_image_texel_size(format) && rd_shader_format_filterable(format)) {
+          flags |= VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT;
++         if (vk_format_is_compressed(format))
++            flags |= VK_FORMAT_FEATURE_BLIT_SRC_BIT;
++      }
+       if (!vk_format_is_compressed(format) && !vk_format_is_srgb(format) && !vk_format_is_depth_or_stencil(format))
+          buffer |= VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT;
+       if (rd_storage_shader_format_supported(format)) {

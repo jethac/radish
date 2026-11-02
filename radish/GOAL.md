@@ -348,3 +348,14 @@ fcd/d332 is unchanged. Source preload/barrier work increases are recorded withou
 claiming a measured bottleneck cause. No identical retry or extra factor follows
 from this result; the broader model efficiency and ASR functional/memory goals
 remain incomplete.
+
+Current conformance-first delta: legal public1.1 BASIC, bounded shared/command
+semantics and22 further original buffer/atomic CTS cases pass; initialized
+single-sample D24S8 aspect copies now have meaningful changing-input evidence.
+The official properties case still fails, compressed sRGB strict observations
+remain unresolved, core lookup repair is pending public-loader validation, and
+full applicable shader, format, memory, descriptor and synchronization CTS is
+still missing. No small test inventory establishes conformance. The full later
+model correctness, placement, memory, speed, thermal and deployment goal remains
+unchanged. GPU resources are for compute; CPU graphics does not waive normative
+requirements or justify reserving GPU capacity for unimplemented graphics.

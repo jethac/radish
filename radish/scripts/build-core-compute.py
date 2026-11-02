@@ -18,6 +18,7 @@ def main():
     parser.add_argument('mesa_build', type=Path)
     parser.add_argument('output', type=Path)
     parser.add_argument('--gcc-install-dir', type=Path, default=os.environ.get('RADISH_GCC_INSTALL'))
+    parser.add_argument('--radish-headers', type=Path, help='Matching frozen Radish header directory when reproducing an older private driver ABI.')
     parser.add_argument('--only', nargs='+', help='Build only the named probe units.')
     args = parser.parse_args()
     top = Path(__file__).resolve().parents[2]
@@ -58,9 +59,11 @@ def main():
              ('attachment', 'core_attachment.c', 'core-attachment.comp', 'vulkan1.0'),
              ('descriptor-host', 'core_descriptor_host.c', None, None),
              ('mixed-depth', 'core_mixed_depth.c', None, None),
+             ('combined-ds', 'core_combined_ds.c', 'core-combined-ds.comp', 'vulkan1.0'),
              ('etc2', 'core_etc2.c', 'core-etc2.comp', 'vulkan1.0'),
              ('etc2-observe', 'core_etc2_observe.c', 'core-etc2.comp', 'vulkan1.0'),
-             ('etc2-unorm-taps', 'core_etc2_unorm_taps.c', 'core-etc2-unorm-taps.comp', 'vulkan1.0')]
+             ('etc2-unorm-taps', 'core_etc2_unorm_taps.c', 'core-etc2-unorm-taps.comp', 'vulkan1.0'),
+             ('etc2-rgba8-srgb-taps', 'core_etc2_rgba8_srgb_taps.c', 'core-etc2-rgba8-srgb-taps.comp', 'vulkan1.0')]
     if args.only:
         unknown = set(args.only) - {unit[0] for unit in units}
         if unknown:
@@ -72,8 +75,14 @@ def main():
         shader = top / 'radish/tests/shaders' / glsl if glsl else None
         prefix = command + ['-fuse-ld=lld', '--gcc-install-dir=' + str(gcc),
                             '-I' + str(top / 'radish/tests')]
+        if args.radish_headers:
+            headers = args.radish_headers.resolve(strict=True)
+            for required in ('rd_private.h', 'rd_image.h', 'rd_sampling.h'):
+                if not (headers / required).is_file():
+                    parser.error('Missing matching private header: ' + str(headers / required))
+            prefix.insert(1, '-I' + str(headers))
         inputs = [source]
-        if name in ('etc2', 'etc2-observe', 'etc2-unorm-taps'):
+        if name in ('etc2', 'etc2-observe', 'etc2-unorm-taps', 'etc2-rgba8-srgb-taps'):
             oracle = top / 'radish/tests/etc2-oracle'
             prefix += ['-I' + str(oracle)]
             inputs += [oracle / path for path in ['etc_oracle.c', 'vendor/decompress-etc.c',

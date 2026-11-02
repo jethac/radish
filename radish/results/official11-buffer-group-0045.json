@@ -1,0 +1,1136 @@
+{
+  "status": "22 distinct original bounded CTS cases PASS; not full CTS coverage",
+  "source_bounds": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-buffer-group-next-0045/source-bounds.json",
+      "bytes": 8634,
+      "sha256": "301e4061e5010a3b816a95709636e32f29b565f41ee3a344b314053e3064a286"
+    },
+    "result": {
+      "status": "source bounded original unmodified mandatory compute buffer/synchronization group",
+      "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+      "source": {
+        "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/compute/vktComputeBasicComputeShaderTests.cpp",
+        "sha256": "4f0c98ac26949bac477a2286f26943a73b2bd1bba9aac32ddd5527baac3fd3e2"
+      },
+      "cases": [
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_single_invocation",
+          "values": 256,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "family": "ubo_invert",
+          "max_iterations_per_invocation": 256
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_single_group",
+          "values": 1024,
+          "local": [
+            2,
+            1,
+            4
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "family": "ubo_invert",
+          "max_iterations_per_invocation": 128
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_multiple_invocations",
+          "values": 1024,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            2,
+            4,
+            1
+          ],
+          "family": "ubo_invert",
+          "max_iterations_per_invocation": 128
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_multiple_groups",
+          "values": 1024,
+          "local": [
+            1,
+            4,
+            2
+          ],
+          "grid": [
+            2,
+            2,
+            4
+          ],
+          "family": "ubo_invert",
+          "max_iterations_per_invocation": 8
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.copy_ssbo_single_invocation",
+          "values": 256,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "family": "ssbo_invert",
+          "max_iterations_per_invocation": 256
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.copy_ssbo_multiple_invocations",
+          "values": 1024,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            2,
+            4,
+            1
+          ],
+          "family": "ssbo_invert",
+          "max_iterations_per_invocation": 128
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.copy_ssbo_multiple_groups",
+          "values": 1024,
+          "local": [
+            1,
+            4,
+            2
+          ],
+          "grid": [
+            2,
+            2,
+            4
+          ],
+          "family": "ssbo_invert",
+          "max_iterations_per_invocation": 8
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ssbo_rw_single_invocation",
+          "values": 256,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "family": "in_place",
+          "max_iterations_per_invocation": 256
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ssbo_rw_multiple_groups",
+          "values": 1024,
+          "local": [
+            1,
+            4,
+            2
+          ],
+          "grid": [
+            2,
+            2,
+            4
+          ],
+          "family": "in_place",
+          "max_iterations_per_invocation": 8
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ssbo_unsized_arr_single_invocation",
+          "values": 256,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "family": "in_place",
+          "max_iterations_per_invocation": 256
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ssbo_unsized_arr_multiple_groups",
+          "values": 1024,
+          "local": [
+            1,
+            4,
+            2
+          ],
+          "grid": [
+            2,
+            2,
+            4
+          ],
+          "family": "in_place",
+          "max_iterations_per_invocation": 8
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.write_multiple_arr_single_invocation",
+          "values": 256,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "family": "multiple_output",
+          "max_iterations_per_invocation": 256
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.write_multiple_arr_multiple_groups",
+          "values": 1024,
+          "local": [
+            1,
+            4,
+            2
+          ],
+          "grid": [
+            2,
+            2,
+            4
+          ],
+          "family": "multiple_output",
+          "max_iterations_per_invocation": 8
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.write_multiple_unsized_arr_single_invocation",
+          "values": 256,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "family": "multiple_output",
+          "max_iterations_per_invocation": 256
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.write_multiple_unsized_arr_multiple_groups",
+          "values": 1024,
+          "local": [
+            1,
+            4,
+            2
+          ],
+          "grid": [
+            2,
+            2,
+            4
+          ],
+          "family": "multiple_output",
+          "max_iterations_per_invocation": 8
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ssbo_local_barrier_single_invocation",
+          "values": 1,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "family": "ssbo_local_barrier",
+          "max_iterations_per_invocation": 0
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ssbo_local_barrier_single_group",
+          "values": 30,
+          "local": [
+            3,
+            2,
+            5
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "family": "ssbo_local_barrier",
+          "max_iterations_per_invocation": 0
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ssbo_local_barrier_multiple_groups",
+          "values": 504,
+          "local": [
+            3,
+            4,
+            1
+          ],
+          "grid": [
+            2,
+            7,
+            3
+          ],
+          "family": "ssbo_local_barrier",
+          "max_iterations_per_invocation": 0
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.shared_atomic_op_single_invocation",
+          "values": 1,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "family": "shared_atomic",
+          "max_iterations_per_invocation": 0
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.shared_atomic_op_single_group",
+          "values": 30,
+          "local": [
+            3,
+            2,
+            5
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "family": "shared_atomic",
+          "max_iterations_per_invocation": 0
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.shared_atomic_op_multiple_invocations",
+          "values": 40,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            2,
+            5,
+            4
+          ],
+          "family": "shared_atomic",
+          "max_iterations_per_invocation": 0
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.shared_atomic_op_multiple_groups",
+          "values": 504,
+          "local": [
+            3,
+            4,
+            1
+          ],
+          "grid": [
+            2,
+            7,
+            3
+          ],
+          "family": "shared_atomic",
+          "max_iterations_per_invocation": 0
+        }
+      ],
+      "bounds": {
+        "cases": 22,
+        "max_local": 30,
+        "max_groups": 42,
+        "max_total_invocations": 504,
+        "max_loop_trip_count": 256,
+        "max_shared_bytes": 4,
+        "max_UBO_bytes": 16384,
+        "max_SSBO_bytes": 16384,
+        "peak_declared_buffer_bytes": 49152,
+        "max_storage_buffers": 2,
+        "optional_features": []
+      },
+      "source_spans": [
+        "359-498 shared uint atomicAdd/barrier and exact sequential-result oracle; four registrations5887-5899",
+        "1260-1593 UBO/std140 SSBO inversion: three buffers <=16KiB each, one fill then one dispatch; no device-local readback copy selected",
+        "1647-1789 fixed/runtime array in-place inversion exact all-N oracle",
+        "1954-2118 two fixed/runtime array outputs, exact increasing/decreasing CPU oracles",
+        "548-695 two coherent SSBO RMW workgroup phases, original exact rotated oracle",
+        "5797-5853 buffer registrations,5860-5868 local barrier registrations"
+      ],
+      "exclusions": [
+        "copy_ssbo_bounds requires optional VK_EXT_robustness2; deliberately not selected",
+        "read_unbound_ssbo, maximum local/large buffers, image, shader-object and 64-bit variants not selected"
+      ],
+      "controls": [
+        "Same original grouped per-case CTS process and fault/service-stop semantics; no shader or executable edits.",
+        "One original 90s/384MiB scope; sequential child allocations do not coexist.",
+        "Stop first unexpected failure; all distinct QPA/raw logs retained.",
+        "No assertion that finite group completes mandatory buffer/atomic conformance."
+      ]
+    }
+  },
+  "cases": [
+    "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_single_invocation",
+    "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_single_group",
+    "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_multiple_invocations",
+    "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_multiple_groups",
+    "dEQP-VK.compute.pipeline.basic.copy_ssbo_single_invocation",
+    "dEQP-VK.compute.pipeline.basic.copy_ssbo_multiple_invocations",
+    "dEQP-VK.compute.pipeline.basic.copy_ssbo_multiple_groups",
+    "dEQP-VK.compute.pipeline.basic.ssbo_rw_single_invocation",
+    "dEQP-VK.compute.pipeline.basic.ssbo_rw_multiple_groups",
+    "dEQP-VK.compute.pipeline.basic.ssbo_unsized_arr_single_invocation",
+    "dEQP-VK.compute.pipeline.basic.ssbo_unsized_arr_multiple_groups",
+    "dEQP-VK.compute.pipeline.basic.write_multiple_arr_single_invocation",
+    "dEQP-VK.compute.pipeline.basic.write_multiple_arr_multiple_groups",
+    "dEQP-VK.compute.pipeline.basic.write_multiple_unsized_arr_single_invocation",
+    "dEQP-VK.compute.pipeline.basic.write_multiple_unsized_arr_multiple_groups",
+    "dEQP-VK.compute.pipeline.basic.ssbo_local_barrier_single_invocation",
+    "dEQP-VK.compute.pipeline.basic.ssbo_local_barrier_single_group",
+    "dEQP-VK.compute.pipeline.basic.ssbo_local_barrier_multiple_groups",
+    "dEQP-VK.compute.pipeline.basic.shared_atomic_op_single_invocation",
+    "dEQP-VK.compute.pipeline.basic.shared_atomic_op_single_group",
+    "dEQP-VK.compute.pipeline.basic.shared_atomic_op_multiple_invocations",
+    "dEQP-VK.compute.pipeline.basic.shared_atomic_op_multiple_groups"
+  ],
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-buffer-group-runner-0045/actual-review.json",
+      "bytes": 14822,
+      "sha256": "e4994b513abd4ee111665bc7e50864020febfb2566e09e4ad49680481d689006"
+    },
+    "result": {
+      "status": "passed finite original22case actual",
+      "cases": [
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_single_invocation",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_single_group",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_multiple_invocations",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_multiple_groups",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.copy_ssbo_single_invocation",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.copy_ssbo_multiple_invocations",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.copy_ssbo_multiple_groups",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ssbo_rw_single_invocation",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ssbo_rw_multiple_groups",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ssbo_unsized_arr_single_invocation",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ssbo_unsized_arr_multiple_groups",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.write_multiple_arr_single_invocation",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.write_multiple_arr_multiple_groups",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.write_multiple_unsized_arr_single_invocation",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.write_multiple_unsized_arr_multiple_groups",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ssbo_local_barrier_single_invocation",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ssbo_local_barrier_single_group",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ssbo_local_barrier_multiple_groups",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.shared_atomic_op_single_invocation",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.shared_atomic_op_single_group",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.shared_atomic_op_multiple_invocations",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.shared_atomic_op_multiple_groups",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        }
+      ],
+      "actual_profiles": [
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_single_invocation",
+          "profile": {
+            "pipeline": "0xaaaafc9b4d40",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "1",
+            "instrlen": "8",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "769325",
+            "submit_ns": "516512",
+            "submit_max_ns": "516512",
+            "result": "0"
+          }
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_single_group",
+          "profile": {
+            "pipeline": "0xaaaafedb3bf0",
+            "grid": "1,1,1",
+            "local": "2,1,4",
+            "barrier": "0",
+            "loops": "1",
+            "instrlen": "8",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "766147",
+            "submit_ns": "686720",
+            "submit_max_ns": "686720",
+            "result": "0"
+          }
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_multiple_invocations",
+          "profile": {
+            "pipeline": "0xaaaaea53db00",
+            "grid": "2,4,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "1",
+            "instrlen": "8",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "771824",
+            "submit_ns": "684794",
+            "submit_max_ns": "684794",
+            "result": "0"
+          }
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_multiple_groups",
+          "profile": {
+            "pipeline": "0xaaaaf07a2b30",
+            "grid": "2,2,4",
+            "local": "1,4,2",
+            "barrier": "0",
+            "loops": "1",
+            "instrlen": "8",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "808440",
+            "submit_ns": "725470",
+            "submit_max_ns": "725470",
+            "result": "0"
+          }
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.copy_ssbo_single_invocation",
+          "profile": {
+            "pipeline": "0xaaaaf7a00080",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "1",
+            "instrlen": "9",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "963335",
+            "submit_ns": "871252",
+            "submit_max_ns": "871252",
+            "result": "0"
+          }
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.copy_ssbo_multiple_invocations",
+          "profile": {
+            "pipeline": "0xaaaaf8b74e00",
+            "grid": "2,4,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "1",
+            "instrlen": "9",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "969898",
+            "submit_ns": "874481",
+            "submit_max_ns": "874481",
+            "result": "0"
+          }
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.copy_ssbo_multiple_groups",
+          "profile": {
+            "pipeline": "0xaaaacf181780",
+            "grid": "2,2,4",
+            "local": "1,4,2",
+            "barrier": "0",
+            "loops": "1",
+            "instrlen": "9",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "691668",
+            "submit_ns": "596564",
+            "submit_max_ns": "596564",
+            "result": "0"
+          }
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ssbo_rw_single_invocation",
+          "profile": {
+            "pipeline": "0xaaab10364930",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "1",
+            "instrlen": "8",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4118291",
+            "submit_ns": "3830894",
+            "submit_max_ns": "3830894",
+            "result": "0"
+          }
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ssbo_rw_multiple_groups",
+          "profile": {
+            "pipeline": "0xaaaaf47239e0",
+            "grid": "2,2,4",
+            "local": "1,4,2",
+            "barrier": "0",
+            "loops": "1",
+            "instrlen": "8",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4274593",
+            "submit_ns": "4005009",
+            "submit_max_ns": "4005009",
+            "result": "0"
+          }
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ssbo_unsized_arr_single_invocation",
+          "profile": {
+            "pipeline": "0xaaaae58dcdf0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "1",
+            "instrlen": "9",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3976831",
+            "submit_ns": "3724435",
+            "submit_max_ns": "3724435",
+            "result": "0"
+          }
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ssbo_unsized_arr_multiple_groups",
+          "profile": {
+            "pipeline": "0xaaaabbdef950",
+            "grid": "2,2,4",
+            "local": "1,4,2",
+            "barrier": "0",
+            "loops": "1",
+            "instrlen": "9",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4270426",
+            "submit_ns": "4014280",
+            "submit_max_ns": "4014280",
+            "result": "0"
+          }
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.write_multiple_arr_single_invocation",
+          "profile": {
+            "pipeline": "0xaaaae57c0480",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "2",
+            "instrlen": "9",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4102249",
+            "submit_ns": "3817144",
+            "submit_max_ns": "3817144",
+            "result": "0"
+          }
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.write_multiple_arr_multiple_groups",
+          "profile": {
+            "pipeline": "0xaaaae729c500",
+            "grid": "2,2,4",
+            "local": "1,4,2",
+            "barrier": "0",
+            "loops": "2",
+            "instrlen": "9",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4214437",
+            "submit_ns": "3949801",
+            "submit_max_ns": "3949801",
+            "result": "0"
+          }
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.write_multiple_unsized_arr_single_invocation",
+          "profile": {
+            "pipeline": "0xaaaae0711d00",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "2",
+            "instrlen": "13",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4194644",
+            "submit_ns": "3886832",
+            "submit_max_ns": "3886832",
+            "result": "0"
+          }
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.write_multiple_unsized_arr_multiple_groups",
+          "profile": {
+            "pipeline": "0xaaaaeac93890",
+            "grid": "2,2,4",
+            "local": "1,4,2",
+            "barrier": "0",
+            "loops": "2",
+            "instrlen": "13",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3857092",
+            "submit_ns": "3551310",
+            "submit_max_ns": "3551310",
+            "result": "0"
+          }
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ssbo_local_barrier_single_invocation",
+          "profile": {
+            "pipeline": "0xaaab219d7f00",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "1",
+            "loops": "0",
+            "instrlen": "3",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3823133",
+            "submit_ns": "3572456",
+            "submit_max_ns": "3572456",
+            "result": "0"
+          }
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ssbo_local_barrier_single_group",
+          "profile": {
+            "pipeline": "0xaaaaef3b7fe0",
+            "grid": "1,1,1",
+            "local": "30,1,1",
+            "barrier": "1",
+            "loops": "0",
+            "instrlen": "8",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3999332",
+            "submit_ns": "3722405",
+            "submit_max_ns": "3722405",
+            "result": "0"
+          }
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ssbo_local_barrier_multiple_groups",
+          "profile": {
+            "pipeline": "0xaaaad3723f50",
+            "grid": "2,7,3",
+            "local": "12,1,1",
+            "barrier": "1",
+            "loops": "0",
+            "instrlen": "5",
+            "chunks": "42",
+            "submits": "42",
+            "ns": "9827574",
+            "submit_ns": "8925384",
+            "submit_max_ns": "3911728",
+            "result": "0"
+          }
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.shared_atomic_op_single_invocation",
+          "profile": {
+            "pipeline": "0xaaaad8c9b500",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "1",
+            "loops": "0",
+            "instrlen": "3",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3961519",
+            "submit_ns": "3708654",
+            "submit_max_ns": "3708654",
+            "result": "0"
+          }
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.shared_atomic_op_single_group",
+          "profile": {
+            "pipeline": "0xaaab1cc05ad0",
+            "grid": "1,1,1",
+            "local": "30,1,1",
+            "barrier": "1",
+            "loops": "0",
+            "instrlen": "3",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4178187",
+            "submit_ns": "3917665",
+            "submit_max_ns": "3917665",
+            "result": "0"
+          }
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.shared_atomic_op_multiple_invocations",
+          "profile": {
+            "pipeline": "0xaaab01de1530",
+            "grid": "2,5,4",
+            "local": "1,1,1",
+            "barrier": "1",
+            "loops": "0",
+            "instrlen": "3",
+            "chunks": "40",
+            "submits": "40",
+            "ns": "8189237",
+            "submit_ns": "7356739",
+            "submit_max_ns": "3232195",
+            "result": "0"
+          }
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.shared_atomic_op_multiple_groups",
+          "profile": {
+            "pipeline": "0xaaaaf0f8f500",
+            "grid": "2,7,3",
+            "local": "12,1,1",
+            "barrier": "1",
+            "loops": "0",
+            "instrlen": "3",
+            "chunks": "42",
+            "submits": "42",
+            "ns": "12232163",
+            "submit_ns": "11255598",
+            "submit_max_ns": "3803550",
+            "result": "0"
+          }
+        }
+      ],
+      "dispatches": 22,
+      "chunks": 143,
+      "submits": 143,
+      "original_cpu_checked_values": 14422,
+      "per_case_fault_checks": 22,
+      "service_wall_s": 23.512,
+      "memory_peak_MiB": 83.9,
+      "swap_peak": 0,
+      "run_log": {
+        "bytes": 910816,
+        "sha256": "a16245c076da4af21c6154f767468102ce507e5bc6c2c58667a1bda72288b6dc"
+      },
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 161,
+          "sha256": "72ff4614a0b751195a59bb96ffaa626efad90172b05d0f13492dd2ec7bd42890"
+        },
+        "deqp-vk": {
+          "bytes": 97536760,
+          "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+        },
+        "libvulkan.so.1": {
+          "bytes": 703696,
+          "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+        },
+        "info-cases.txt": {
+          "bytes": 1401,
+          "sha256": "4b62f890c68a2df8ce2b77913ebb8e8de1b2600b68b1c91ff84eee5eb57dafb3"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13618928,
+          "sha256": "7cfbbbfb1da8e20b62a571c71a0dee5887d14c380d7799e30f791654353fafd4"
+        },
+        "payload.json": {
+          "bytes": 964,
+          "sha256": "22bdf173fc9333be852a71336781c704d8ff3714fae58fac1129de771b1a564f"
+        }
+      },
+      "limits": [
+        "Only exact22 selected original cases; not full buffer/atomic conformance.",
+        "Recorded local dimensions for barrier shaders are physical linearizations; original all-value oracle covers logical IDs.",
+        "Shared atomic evidence is original finite atomicAdd case, not all atomic operations."
+      ]
+    }
+  },
+  "runner": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-buffer-group/probe/runner-result.json",
+      "bytes": 4849,
+      "sha256": "200419bbb2b60fea2d9c4c68856a1fcaeda8b6a96e5fc7a163a7aaf3349e7891"
+    },
+    "result": {
+      "status": "passed",
+      "mode": "probe",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 161,
+          "sha256": "72ff4614a0b751195a59bb96ffaa626efad90172b05d0f13492dd2ec7bd42890"
+        },
+        "deqp-vk": {
+          "bytes": 97536760,
+          "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+        },
+        "libvulkan.so.1": {
+          "bytes": 703696,
+          "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+        },
+        "info-cases.txt": {
+          "bytes": 1401,
+          "sha256": "4b62f890c68a2df8ce2b77913ebb8e8de1b2600b68b1c91ff84eee5eb57dafb3"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13618928,
+          "sha256": "7cfbbbfb1da8e20b62a571c71a0dee5887d14c380d7799e30f791654353fafd4"
+        },
+        "payload.json": {
+          "bytes": 964,
+          "sha256": "22bdf173fc9333be852a71336781c704d8ff3714fae58fac1129de771b1a564f"
+        }
+      },
+      "run_log": {
+        "bytes": 910816,
+        "sha256": "a16245c076da4af21c6154f767468102ce507e5bc6c2c58667a1bda72288b6dc"
+      },
+      "qpa": {
+        "bytes": 40515,
+        "sha256": "d231cb04fd7d306b2cc1b5f181abea76089c403be9c02c8379d210ef46b354e4"
+      },
+      "cases": [
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_single_invocation",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_single_group",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_multiple_invocations",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_multiple_groups",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.copy_ssbo_single_invocation",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.copy_ssbo_multiple_invocations",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.copy_ssbo_multiple_groups",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ssbo_rw_single_invocation",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ssbo_rw_multiple_groups",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ssbo_unsized_arr_single_invocation",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ssbo_unsized_arr_multiple_groups",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.write_multiple_arr_single_invocation",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.write_multiple_arr_multiple_groups",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.write_multiple_unsized_arr_single_invocation",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.write_multiple_unsized_arr_multiple_groups",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ssbo_local_barrier_single_invocation",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ssbo_local_barrier_single_group",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ssbo_local_barrier_multiple_groups",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.shared_atomic_op_single_invocation",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.shared_atomic_op_single_group",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.shared_atomic_op_multiple_invocations",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.shared_atomic_op_multiple_groups",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        }
+      ],
+      "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+    }
+  },
+  "controls": "Unmodified exact CTS0e715 on frozenac2a; original90s384MiB/per-case fault stop, independent QPA outcomes, strengthened8MiB log headroom plus unchanged64MiB reserve."
+}

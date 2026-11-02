@@ -7,20 +7,21 @@
     "status": "frozen"
   },
   "candidate": {
-    "driver": "ac2a5bbe108bb972c9628b2e9606f900ba19d5176ca9b42f4ed7e6cafebb8a46",
-    "status": "private integrated source; representative resource fixes pass; property case still fails; not selected inference/conformance"
+    "driver": "940703eeacac2c8ec27448cc1ad3a3964aa80f9ef284098b0759eb62b168d9f7",
+    "status": "Published9407 exact D24S8+BLIT query stack; representative single-sample D24S8 passes; ETC2 featurefalse; not conformance or selected inference"
   },
   "official_cts": {
     "source_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
     "binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
-    "state": "Exact unmodified binary: five distinct info cases4Pass/1Fail, ten initial shader casesPASS, four shared-memory and two command-barrier casesPASS. Twenty-one distinct executed cases20Pass/1Fail, not total required coverage; property replay remains same failed case.",
+    "state": "Original binary: five info cases4Pass/1Fail, ten initial shader casesPASS, four shared/two command-barrier casesPASS,22 additional buffer/atomic/barrier casesPASS.43 distinct executed cases42Pass/1Fail is inventory, not required coverage denominator.",
     "modified_harness": "f85cb13b diagnostics only, never official passes",
     "remaining_property_failures": 15,
     "actual_record": "official11-integrated-info-0045.json",
     "shader_record": "official11-cts-shaders-0045.json",
     "additional_normative_gap": "maxFramebufferLayers is now256 in actual query; old CTS did not check required minimum. This closure does not make the failure list exhaustive.",
     "historical_property_failures": 31,
-    "additional_record": "official11-shared-command-0045.json"
+    "additional_record": "official11-shared-command-0045.json",
+    "buffer_group_record": "official11-buffer-group-0045.json"
   },
   "categories": [
     {
@@ -51,7 +52,7 @@
       "id": "format-compression",
       "requirement": "At least one complete BC/ETC2+EAC/ASTC-LDR family required by mandatory-format footer",
       "implementation": "Complete10-format private resource backing host-built d903 using Mesa block/layout/view helpers; compression feature remainsfalse.",
-      "evidence": "etc2-eac-family-observations-0045.json: all20fixedcases/44800words/fullguards completed. Seven non-sRGB formats pass; three sRGB variants have42linear mismatches, zero nearest/nonfinite failures.",
+      "evidence": "etc2-eac-family-observations-0045.json: all20fixedcases/44800words/fullguards completed. Seven non-sRGB formats pass; three sRGB variants have42linear mismatches, zero nearest/nonfinite failures.; etc2-rgba8-srgb-comparison-0045.json all16 compressed and uncompressed sRGB taps matchbitwise, original strict failure preserved.",
       "remaining": "Resolve normative sRGB conversion/filter precision and implement any required correction, then full applicable format/copy/view/filter CTS before compression-family promotion.",
       "owner": "resource"
     },
@@ -59,7 +60,7 @@
       "id": "format-graphics-properties",
       "requirement": "Required blit/attachment/vertex format feature columns",
       "implementation": "RGBA8 optimal attachment usage/view/layout/copy resources and host input descriptors now pass representative checks; rendering, blend and broader required cells remain open.",
-      "evidence": "Current format query and explicit compute queue; primary required-format table retained",
+      "evidence": "Current format query and explicit compute queue; primary required-format table retained; exact command-applicability review permits native compressed BLIT_SRC querytrait; tenactualqueries pass, no graphics-only blit executed.",
       "remaining": "Resolve standard conformance versus explicit compute scope, without fake flags or treating table cells as automatically waived. Blit queue applicability is separate from property obligation.",
       "owner": "resource"
     },
@@ -67,7 +68,7 @@
       "id": "images",
       "requirement": "Required image types, mips/layers/cube/views, copies, clear and sampled/storage/atomics",
       "implementation": "Native single/MS sampling plus software oversized-array/cube path; mutable/alias/extended/split-instance and2D-of3D view creation; storageCube face layers",
-      "evidence": "core_resources/core_array_resources/core_subword_resources/core_multisample/core_ms_lanes/core_oversized_image/core_oversized_ms/core_storage_cube; paired actual results; depth-host-layouts-0045.json six D16/D32/S8x1/4 host/layout cases and24fenced maintenance2 transitions pass, no initialized samples.",
+      "evidence": "core_resources/core_array_resources/core_subword_resources/core_multisample/core_ms_lanes/core_oversized_image/core_oversized_ms/core_storage_cube; paired actual results; depth-host-layouts-0045.json six D16/D32/S8x1/4 host/layout cases and24fenced maintenance2 transitions pass, no initialized samples.; d24s8-public-0045.json initialized single-sample depth/stencil sampling and genuinely changing masked aspect copies pass256samplewords/32exactpackedreadbacktexels/fullguards.",
       "remaining": "Full required-format/type/filter/mip/view/transfer CTS, all valid flag combinations, precision and alias cases remain. Optional cubeArray/multisampled storage/anisotropy/extended-format feature bits may remainfalse.",
       "owner": "resource"
     },
@@ -75,7 +76,7 @@
       "id": "buffers-robust",
       "requirement": "Exact UBO/SSBO/texel ranges, dynamic offsets,32bit load/store/atomics and robust access",
       "implementation": "Exact current descriptor size constants; logical RBA before memory widening; no inflated ranges",
-      "evidence": "Valid v4 large-SSBO consumer spans160004/65540/65536/131072 plus original40 outputs/full5BOs; large40001 texel add/CAS actuals",
+      "evidence": "Valid v4 large-SSBO consumer spans160004/65540/65536/131072 plus original40 outputs/full5BOs; large40001 texel add/CAS actuals; official11-buffer-group-0045.json22originalcases pass14422integer values across UBO/SSBOcopy,inplace/multipleoutputs,localbarriers/sharedatomicAdd.",
       "remaining": "Original invalid constant-negative-index module evidence remains erratum; only corrected legal-SPV actuals count. Broader scalar/vector/array/alias/atomic CTS still required.",
       "owner": "resource"
     },
@@ -315,5 +316,5 @@
     "system_scope": "No globalgraphics/service/clock/kernelchanges"
   },
   "depth_layout_erratum": "Pinned Vulkan1.1 DEPTH_STENCIL_READ_ONLY_OPTIMAL requires DEPTH_STENCIL_ATTACHMENT usage. Earlier sampled-only depth consumers are implementation observations for that path until valid-usage requalification; no retroactive public qualification.",
-  "next_private_source": "D24S8 combined packed format candidate9c71 hostbuilt1a8f; private rd_image.h ABI changed. Not part of published c2aa host/layout actual or selected inference; native/numerical/guard consumer pending."
+  "next_private_source": "Core required-entrypoint lookup candidate1cd9 source/host built over9407. Five real baseline GDPA absences measured; loader-global GIPA route correction pending. Experimental ETC2 enablement source52975 is separate, not this publishedfalse-feature checkpoint."
 }

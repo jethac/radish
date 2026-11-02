@@ -160,3 +160,31 @@ no tolerance or feature flag was changed. Build `--only etc2-observe` and stage
 as `resources`/`resources.spv` for the split `device-core-etc-observe.py` runner.
 Numerical-only exit2 is recorded as failure; API, guard and GPU faults stop
 before the next case. Fresh per-case images do not claim two-round image reuse.
+
+## Initialized D24S8 and another22 original CTS cases
+
+The9407 resource checkpoint passes two initialized single-sample D24S8 rounds:
+256 sampled words,32 exact packed readback texels and full allocation guards.
+Eight depth and eight stencil components genuinely change while each copy
+preserves the opposite aspect. The first fixture copied identical depth values;
+that earlier pass remains sampling/stencil evidence only. The corrected input,
+unchanged shader and all actual limits are in [the paired record](results/d24s8-public-0045.json).
+This does not qualify multisample initialization, rendering, raw children or
+framebuffer sample masks. The compressed BLIT_SRC query traits follow the
+reviewed graphics-command applicability basis; no blit ran on the compute queue.
+
+Another22 original CTS buffer cases pass14,422 exact integer values under the
+unchanged90s/384MiB controls. They cover UBO inversion, SSBO copies, fixed/runtime
+arrays, in-place and multiple-output updates, local barriers and shared atomicAdd.
+[Individual cases and QPA outcomes](results/official11-buffer-group-0045.json)
+remain separate from complete memory/atomic conformance. The current43 distinct
+executed cases have42 passes and one properties failure; this is an inventory,
+not a percentage or denominator of required coverage.
+
+The new [same-byte uncompressed sRGB discriminator](results/etc2-rgba8-srgb-comparison-0045.json)
+reproduces all16 compressed sRGB tap bits with RGBA8_SRGB. The original filtered
+numerical failure persists. This identifies shared native conversion behavior
+for the fixture; it does not establish a normative precision allowance or justify
+changing the oracle. ETC2 remains false in this checkpoint. Reproduce this older
+d903 diagnostic with its frozen Radish headers through `--radish-headers`; the
+new D24S8 transfer structure has a different private ABI.
