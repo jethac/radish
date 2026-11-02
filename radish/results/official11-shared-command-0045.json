@@ -1,0 +1,352 @@
+{
+  "status": "six additional original cases PASS; not full CTS coverage",
+  "driver": "ac2a5bbe108bb972c9628b2e9606f900ba19d5176ca9b42f4ed7e6cafebb8a46",
+  "cts": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
+  "shared": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-shared/probe/runner-result.json",
+      "bytes": 2061,
+      "sha256": "048a5011cbc5ad2c3cb93f7aa7a6028706414a167f7a8fb827cf88925a6ec196"
+    },
+    "result": {
+      "status": "passed",
+      "mode": "probe",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 155,
+          "sha256": "68c16f5d86634c25347b3a338ab72e36e05fa3a555f7cfc9f8f6d664c90d366a"
+        },
+        "deqp-vk": {
+          "bytes": 97536760,
+          "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+        },
+        "libvulkan.so.1": {
+          "bytes": 703696,
+          "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+        },
+        "info-cases.txt": {
+          "bytes": 236,
+          "sha256": "f57c5c8ec53ed852eda0f6028a40cee6eab7fc978deb72bf8e92e54bba9415fc"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13618928,
+          "sha256": "7cfbbbfb1da8e20b62a571c71a0dee5887d14c380d7799e30f791654353fafd4"
+        },
+        "payload.json": {
+          "bytes": 957,
+          "sha256": "63a7450e922bf9d93a336169007021c8f48ea86c02193dbce2c6dd8dd446bd87"
+        }
+      },
+      "run_log": {
+        "bytes": 95522,
+        "sha256": "8d5c663f577d77a2cfc11627886f00e00de2b9de461d15f8e3f49ec1ebdc8187"
+      },
+      "qpa": {
+        "bytes": 7236,
+        "sha256": "8bd280d611da50c85b9b183f8c29d33707c56e6af8b78024b9e30ed6ffc435ac"
+      },
+      "cases": [
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.shared_var_single_invocation",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.shared_var_single_group",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.shared_var_multiple_invocations",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.shared_var_multiple_groups",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        }
+      ],
+      "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+    }
+  },
+  "shared_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-shared-runner-0045/actual-review.json",
+      "bytes": 3539,
+      "sha256": "2349c3df14df2e823ac98fca7f5c560cf8d76b826183b46edb1a406141172fd7"
+    },
+    "result": {
+      "status": "passed",
+      "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-shared/probe",
+      "pins": {
+        "run.log": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-shared/probe/run.log",
+          "bytes": 95522,
+          "sha256": "8d5c663f577d77a2cfc11627886f00e00de2b9de461d15f8e3f49ec1ebdc8187"
+        },
+        "info.qpa": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-shared/probe/info.qpa",
+          "bytes": 7236,
+          "sha256": "8bd280d611da50c85b9b183f8c29d33707c56e6af8b78024b9e30ed6ffc435ac"
+        },
+        "runner-result.json": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-shared/probe/runner-result.json",
+          "bytes": 2061,
+          "sha256": "048a5011cbc5ad2c3cb93f7aa7a6028706414a167f7a8fb827cf88925a6ec196"
+        },
+        "collection.json": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-shared/probe/collection.json",
+          "bytes": 37,
+          "sha256": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e"
+        },
+        "fault-check.txt": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-shared/probe/fault-check.txt",
+          "bytes": 41,
+          "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+        },
+        "services-after.txt": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-shared/probe/services-after.txt",
+          "bytes": 14,
+          "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+        }
+      },
+      "cases": [
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.shared_var_single_invocation",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.shared_var_single_group",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.shared_var_multiple_invocations",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.shared_var_multiple_groups",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        }
+      ],
+      "dispatches": [
+        "RADISH_PROFILE dispatch pipeline=0xaaab2355a4f0 grid=1,1,1 local=1,1,1 barrier=1 loops=0 instrlen=3 chunks=1 submits=1 ns=4051145 submit_ns=3771718 submit_max_ns=3771718 result=0",
+        "RADISH_PROFILE dispatch pipeline=0xaaab091d86d0 grid=1,1,1 local=30,1,1 barrier=1 loops=0 instrlen=4 chunks=1 submits=1 ns=4038437 submit_ns=3723854 submit_max_ns=3723854 result=0",
+        "RADISH_PROFILE dispatch pipeline=0xaaaaf6763760 grid=2,5,4 local=1,1,1 barrier=1 loops=0 instrlen=3 chunks=40 submits=40 ns=12324582 submit_ns=11199946 submit_max_ns=3513177 result=0",
+        "RADISH_PROFILE dispatch pipeline=0xaaaaf1ce8cb0 grid=2,7,3 local=12,1,1 barrier=1 loops=0 instrlen=3 chunks=42 submits=42 ns=11108436 submit_ns=10235988 submit_max_ns=3853229 result=0"
+      ],
+      "source_bound": "712313256c9b5b3a40c8f7247e7d470a82f669fcf0e7ce10cd4db394341cb8b1",
+      "actual": "4originalcases/575integeroutputs exact;4dispatches/84chunks andsubmits,barriers1,loops0,localphysical1/30/1/12. Multidimensional logicalworkgroups are linearizedinactualnative; exactlogicaladdressing oraclepasses. Native3/4/3/3blocks,full4/6/4/5 andhalf0. Service4.350s/84.8MiB/0swap,4between-casefaultchecks,cleanpostflight.",
+      "scope": "Finite mandatory Workgroup memory/barrier/addressing evidence only; notatomic/descriptorlifecycle/allconformance."
+    }
+  },
+  "command_barrier": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-command-barrier/probe/runner-result.json",
+      "bytes": 1757,
+      "sha256": "0fd76bbe515efcfad0d9a17d88be4523714938986812c4c946c1cf1448f972a0"
+    },
+    "result": {
+      "status": "passed",
+      "mode": "probe",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 164,
+          "sha256": "30c305c1a64fb0a78ae0aa4679f58bfae9f26b879cce82200dfbbf4c4c88ec07"
+        },
+        "deqp-vk": {
+          "bytes": 97536760,
+          "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+        },
+        "libvulkan.so.1": {
+          "bytes": 703696,
+          "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+        },
+        "info-cases.txt": {
+          "bytes": 112,
+          "sha256": "2f12758b311ed87e5401409e96d4e480fcd216b7457ea47635dcc37253fe9142"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13618928,
+          "sha256": "7cfbbbfb1da8e20b62a571c71a0dee5887d14c380d7799e30f791654353fafd4"
+        },
+        "payload.json": {
+          "bytes": 966,
+          "sha256": "9fd705b30cc13ae24033f084241b371f2940b32f9f33ca8f1b8eaecaf6d30d60"
+        }
+      },
+      "run_log": {
+        "bytes": 63328,
+        "sha256": "af3fc54a2c35d397c0f4dd6d85b8fbe6ab765a86319fd72937a1ca3d6a584fec"
+      },
+      "qpa": {
+        "bytes": 4572,
+        "sha256": "a003c098ed4955247aba278ea0ac6719c94d1705c602ad43a0457f55918a60fd"
+      },
+      "cases": [
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ssbo_cmd_barrier_single",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ssbo_cmd_barrier_multiple",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        }
+      ],
+      "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+    }
+  },
+  "command_bounds": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-command-barrier-next-0045/source-bounds.json",
+      "bytes": 2537,
+      "sha256": "deb3f59d924037b9a5f055c2d14b3087d8e60966fcf6846d509d230f75fee039"
+    },
+    "result": {
+      "status": "source-bounded original next partition; no deviceaction",
+      "cts_commit": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+      "source": {
+        "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/compute/vktComputeBasicComputeShaderTests.cpp",
+        "bytes": 274403,
+        "sha256": "4f0c98ac26949bac477a2286f26943a73b2bd1bba9aac32ddd5527baac3fd3e2"
+      },
+      "lines": "2344-2572 implementation;5870-5875 registrations",
+      "cases": [
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ssbo_cmd_barrier_single",
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "workgroups": 1,
+          "SSBO_bytes": [
+            4,
+            4
+          ],
+          "UBO_bytes": 4,
+          "pipelines": 2,
+          "dispatches": 2,
+          "expected_sum": 127
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.basic.ssbo_cmd_barrier_multiple",
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            11,
+            5,
+            7
+          ],
+          "workgroups": 385,
+          "SSBO_bytes": [
+            1540,
+            4
+          ],
+          "UBO_bytes": 4,
+          "pipelines": 2,
+          "dispatches": 2,
+          "expected_sum": 122815
+        }
+      ],
+      "case_file": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-command-barrier-next-0045/cases.txt",
+        "bytes": 112,
+        "sha256": "2f12758b311ed87e5401409e96d4e480fcd216b7457ea47635dcc37253fe9142"
+      },
+      "scope": "Mandatory command-buffer pipeline-state switching with compatible descriptor retention; HOST\u2192COMPUTE UBOvisibility, COMPUTE\u2192COMPUTE SSBOwrite/readbarrier and COMPUTE\u2192HOST visibility; scalar32-bitstorage atomicAdd reduction. Differentcontract from Workgroup barriers.",
+      "bound": "2cases/4pipelines/4dispatches total,currentonequeue. Eachcaseone3bindinglayout/1descriptorSet/3allocations,peakrequested1548bytes; local1/no shared/loops/optionalfeatures. Bothdispatchesgrid\u2264385workgroups; samecommandbuffer and originalfullCPUinteger sum oracle. Eachcase resources destroyed before next. Allocationpayload notprocessRSS; original90s384MiB/faultstopremain.",
+      "oracle": "Firstshader writes127+index throughSSBO; explicit commandbarrier then secondpipeline atomicAdd intohostinitializedzero output, with descriptorbinding retained acrosscompatiblelayouts. Expected127 and122815. No tolerance ororaclechange.",
+      "runner": "Reuse grouped unchangedCTScaseprocess/per-caseQPA/faultstop mechanism; two exactcases, no wildcard. Actualnative/outcomes pending."
+    }
+  },
+  "controls": "Separate bounded original90s/384MiB groups, per-case fault stop, exact original binaries/oracles; no harness changes. Neither repeated properties nor already passed BASIC cases were rerun.",
+  "independent_actual_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-command-barrier-runner-0045/actual-review.json",
+      "bytes": 3183,
+      "sha256": "b88ea6cd7b2ad0ad42d19073c09a644e2b8fba86e7f99a5a18d1120ad4da5626"
+    },
+    "review": {
+      "status": "passed",
+      "scope": "Two unchanged official commandbarrier/state tests, notallCTS/conformance.",
+      "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-command-barrier/probe",
+      "pins": {
+        "run.log": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-command-barrier/probe/run.log",
+          "bytes": 63328,
+          "sha256": "af3fc54a2c35d397c0f4dd6d85b8fbe6ab765a86319fd72937a1ca3d6a584fec"
+        },
+        "info.qpa": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-command-barrier/probe/info.qpa",
+          "bytes": 4572,
+          "sha256": "a003c098ed4955247aba278ea0ac6719c94d1705c602ad43a0457f55918a60fd"
+        },
+        "runner-result.json": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-command-barrier/probe/runner-result.json",
+          "bytes": 1757,
+          "sha256": "0fd76bbe515efcfad0d9a17d88be4523714938986812c4c946c1cf1448f972a0"
+        },
+        "collection.json": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-command-barrier/probe/collection.json",
+          "bytes": 37,
+          "sha256": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e"
+        },
+        "fault-check.txt": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-command-barrier/probe/fault-check.txt",
+          "bytes": 41,
+          "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+        },
+        "services-after.txt": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-command-barrier/probe/services-after.txt",
+          "bytes": 14,
+          "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+        }
+      },
+      "cases": [
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ssbo_cmd_barrier_single",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.ssbo_cmd_barrier_multiple",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        }
+      ],
+      "dispatches": [
+        "RADISH_PROFILE dispatch pipeline=0xaaaad67c9230 grid=1,1,1 local=1,1,1 barrier=0 loops=0 instrlen=2 chunks=1 submits=1 ns=4202398 submit_ns=3858752 submit_max_ns=3858752 result=0",
+        "RADISH_PROFILE dispatch pipeline=0xaaaad59ec750 grid=1,1,1 local=1,1,1 barrier=0 loops=0 instrlen=2 chunks=1 submits=1 ns=682396 submit_ns=616407 submit_max_ns=616407 result=0",
+        "RADISH_PROFILE dispatch pipeline=0xaaab14a8f8d0 grid=11,5,7 local=1,1,1 barrier=0 loops=0 instrlen=2 chunks=7 submits=7 ns=6880524 submit_ns=6432815 submit_max_ns=3829533 result=0",
+        "RADISH_PROFILE dispatch pipeline=0xaaab13ca4040 grid=11,5,7 local=1,1,1 barrier=0 loops=0 instrlen=2 chunks=7 submits=7 ns=1986928 submit_ns=1841408 submit_max_ns=405053 result=0"
+      ],
+      "bounds_review": "deb3f59d924037b9a5f055c2d14b3087d8e60966fcf6846d509d230f75fee039",
+      "actual": "Both integerCPU sumoracles PASS127/122815; HOST\u2192COMPUTE UBO, COMPUTE\u2192COMPUTE workSSBO, pipeline switchretainingcompatiblebindings andatomic32reduction, COMPUTE\u2192HOST result. Fourdispatchestotal, originalcaps/per-casefaultchecks/assetpins retained."
+    }
+  }
+}

@@ -1,0 +1,317 @@
+{
+  "status": "representative host/layout PASS; no initialized sample/rendering/conformance claim",
+  "prior": "compute11-private-source-stack-0045.json",
+  "patch_order": [
+    {
+      "path": "/home/jethac/Projects/radish/radish/patches/0045-radish-depth-attachment-host.patch",
+      "bytes": 6263,
+      "sha256": "f8ae471ece47a622fca8f8f01f1d54d67dbc61fde06280fae87ea22961fc1608"
+    },
+    {
+      "path": "/home/jethac/Projects/radish/radish/patches/0045-radish-mixed-depth-layouts.patch",
+      "bytes": 2036,
+      "sha256": "3060ee34ad2c16315456b7f3cfaba2c398e3a2b4d81047abdd36d19618c24ffe"
+    }
+  ],
+  "reconstructed_source": {
+    "src/freedreno/radish/rd_nir_resources.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-build-0045/source/src/freedreno/radish/rd_nir_resources.c",
+      "bytes": 14792,
+      "sha256": "49ba435efd7edaa8bee8563cf3121297bbf06091a79f0e3736cbd4b2111c21b9"
+    },
+    "src/freedreno/radish/rd_command.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-build-0045/source/src/freedreno/radish/rd_command.c",
+      "bytes": 12468,
+      "sha256": "f042130607b3de3d03733f3ea9017621892db3a4f023695f479b9bbbb42aff82"
+    },
+    "src/freedreno/radish/rd_transfer.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-build-0045/source/src/freedreno/radish/rd_transfer.c",
+      "bytes": 2992,
+      "sha256": "a93968bf54724b1a068d7169940952286b73a0eb08f9fe78ee3ef4e608d5812b"
+    },
+    "src/freedreno/radish/rd_nir_robust.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-build-0045/source/src/freedreno/radish/rd_nir_robust.c",
+      "bytes": 9502,
+      "sha256": "eb7b2f530891fd81fbb5e9d048f2d4c93ad22b10476b0202fb9bca4dda28111c"
+    },
+    "src/freedreno/radish/rd_image.h": {
+      "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-build-0045/source/src/freedreno/radish/rd_image.h",
+      "bytes": 1782,
+      "sha256": "6781ec3a4968c07cee9cdc6db0e40991649a37ca55848baf90b15faadef73d10"
+    },
+    "src/freedreno/radish/rd_memory.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-build-0045/source/src/freedreno/radish/rd_memory.c",
+      "bytes": 5990,
+      "sha256": "358fdead558a70a164bd7f6c1bd51c7414132ea3b44996b8c23e9f651ba812af"
+    },
+    "src/freedreno/radish/rd_sampling.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-build-0045/source/src/freedreno/radish/rd_sampling.c",
+      "bytes": 6291,
+      "sha256": "877805f9bf4e681786ff7014ee61bd548b82b58875820508d0283879771165f1"
+    },
+    "src/freedreno/radish/rd_query.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-build-0045/source/src/freedreno/radish/rd_query.c",
+      "bytes": 14017,
+      "sha256": "8f83148f39b51411963dd2b201979f0e7d94f496a3e34b81601278bcdf622978"
+    },
+    "src/freedreno/radish/rd_nir_resources.h": {
+      "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-build-0045/source/src/freedreno/radish/rd_nir_resources.h",
+      "bytes": 953,
+      "sha256": "0afa75cc3e1c856496b4b52b6c65eca90ac751cbefaf807e3af1421fbca93599"
+    },
+    "src/freedreno/radish/rd_event.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-build-0045/source/src/freedreno/radish/rd_event.c",
+      "bytes": 4999,
+      "sha256": "324cd260d6cb805d6b8548f9f518df1fba8110dd6bef25ae7f072c7ac17ac49c"
+    },
+    "src/freedreno/radish/rd_sampling.h": {
+      "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-build-0045/source/src/freedreno/radish/rd_sampling.h",
+      "bytes": 1096,
+      "sha256": "541a70b8aca605c0719aa03d551241da16136d6a17ff801bb5d379d7e6d86932"
+    },
+    "src/freedreno/radish/rd_queue.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-build-0045/source/src/freedreno/radish/rd_queue.c",
+      "bytes": 45229,
+      "sha256": "da170e7c4d4a1fc9db0da5ded100376fab80b57fb70af2427a4ff81fbbdc4890"
+    },
+    "src/freedreno/radish/meson.build": {
+      "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-build-0045/source/src/freedreno/radish/meson.build",
+      "bytes": 1777,
+      "sha256": "8b5d6cd1839eb92a2dd9a0038ea3f1c9840935694b7acdfc36a1dd46714d732d"
+    },
+    "src/freedreno/radish/rd_instance.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-build-0045/source/src/freedreno/radish/rd_instance.c",
+      "bytes": 13077,
+      "sha256": "697e58afd7e1df74c4820ab6e18721246ebf6020e26ecc1e028d7ba909000814"
+    },
+    "src/freedreno/radish/rd_resources.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-build-0045/source/src/freedreno/radish/rd_resources.c",
+      "bytes": 27050,
+      "sha256": "1c2ef719892178591d49fcb9f6623be1e32ade4e489633bde53da2407dd4a157"
+    },
+    "src/freedreno/radish/rd_nir_sampling.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-build-0045/source/src/freedreno/radish/rd_nir_sampling.c",
+      "bytes": 23033,
+      "sha256": "1a1f55d444fcecc9d4e92a11abc9e38da235646d6075d1a5e00d08d69719b001"
+    },
+    "src/freedreno/radish/rd_image.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-build-0045/source/src/freedreno/radish/rd_image.c",
+      "bytes": 48964,
+      "sha256": "4864aaac6ba761d1e42cb53b8ba8a021706f71253b7cee408e0810f86e9a5bf5"
+    },
+    "src/freedreno/radish/rd_device.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-build-0045/source/src/freedreno/radish/rd_device.c",
+      "bytes": 6266,
+      "sha256": "b47a9e92dbdcca9ef58f62066c03d3b10a6ba4cb795a7a737ccfe1c4e67021df"
+    },
+    "src/freedreno/radish/rd_private.h": {
+      "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-build-0045/source/src/freedreno/radish/rd_private.h",
+      "bytes": 8794,
+      "sha256": "b4fd0b4017316865f92f740285bf900fb93fe59189f2bba658fb665d5bc91502"
+    },
+    "src/freedreno/radish/rd_pipeline.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-build-0045/source/src/freedreno/radish/rd_pipeline.c",
+      "bytes": 25457,
+      "sha256": "db56340993aeffdf8e945058864f4f7737f350ed990f559f95be66d553bcd599"
+    },
+    "src/freedreno/radish/rd_descriptor.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-build-0045/source/src/freedreno/radish/rd_descriptor.c",
+      "bytes": 17524,
+      "sha256": "b3cd22b2ace3540674a9cb98c55d4a9fcd62c1ffcb90fabe37fa478791ceb147"
+    }
+  },
+  "driver": {
+    "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-build-0045/libvulkan_radish.so",
+    "bytes": 49070584,
+    "sha256": "c2aaeed6c656643d563ba7492be45f8cc8d4f624fae6c6d221b852eeef8236e3"
+  },
+  "helper": {
+    "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-build-0045/probe/mixed_depth",
+    "bytes": 193472,
+    "sha256": "a8e3e90ecb4f7ffae916e10783e35b810b6bd0a12aff51c689e5710f13fb7665"
+  },
+  "source_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-layouts-0045/independent-source-consumer-review.json",
+      "bytes": 2137,
+      "sha256": "a0ade63cd1015019e016395143c373515fc757eb0700032f504bcc3b6f8a258e"
+    },
+    "review": {
+      "status": "passed",
+      "scope": "Finite additive maintenance2 source and public consumer review, pending build/actual record-submit evidence.",
+      "pins": {
+        "release.json": {
+          "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-layouts-0045/release.json",
+          "bytes": 1663,
+          "sha256": "f04ebbf7cb98aecaa7c50bd07184b9b37f9aea55ef33899ad5b22763431cddb0"
+        },
+        "mixed-depth-layouts.patch": {
+          "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-layouts-0045/mixed-depth-layouts.patch",
+          "bytes": 2036,
+          "sha256": "3060ee34ad2c16315456b7f3cfaba2c398e3a2b4d81047abdd36d19618c24ffe"
+        },
+        "candidate/rd_image.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-layouts-0045/candidate/rd_image.c",
+          "bytes": 48964,
+          "sha256": "4864aaac6ba761d1e42cb53b8ba8a021706f71253b7cee408e0810f86e9a5bf5"
+        },
+        "probe/mixed_depth.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-layouts-0045/probe/mixed_depth.c",
+          "bytes": 10402,
+          "sha256": "4eef6285fb64bf940c4027a779c1620e432cee13de63e44555d2923c8b29ad4e"
+        }
+      },
+      "normative": "Pinned Vulkan1.1.126 resources2682-2708 permits both mixed depth/stencil layouts for DS_ATTACHMENT usage; core1.1 no optional1.2 separateDepthStencilLayouts dependency. Single-aspect formats have no second-aspect data to initialize or preserve.",
+      "implementation": "Both old/new enum admission paths and DS format/usage predicate changed only. Physical FDL layout, format/sample admission, descriptors and guards retained.",
+      "consumer": "Same six D16/D32/S8 x1/4 cases/five allocations each. Four transitions start UNDEFINED then track oldLayout; TOP_OF_PIPE/ALL_COMMANDS with generic MEMORY_READ/WRITE are valid for compute queue. Every submit fence completes before command pool reset or image/view/pass/framebuffer/memory destruction. No image access, rendering, shaders or dispatch.",
+      "limits": "This establishes legal object/transition mechanism only. No initialized depth values, sample identity, combinedDS format, sample mask promotion or full conformance claim."
+    }
+  },
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-mixed-depth-runner-0045/actual-review.json",
+      "bytes": 4118,
+      "sha256": "f0fff4154f5327c55c9dfd677a29aee2d231972102b265490375dc5abbb191c3"
+    },
+    "review": {
+      "status": "passed",
+      "scope": "Six public1.1 depth/stencil attachment host-object and maintenance2 layout cases; no numerical sample data or rendering.",
+      "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-mixed-depth/probe",
+      "pins": {
+        "run.log": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-mixed-depth/probe/run.log",
+          "bytes": 2762,
+          "sha256": "8c32ac4d0a40809c3c7dcfab6fbf83820d31b58bc0016846defbe3b26b846525"
+        },
+        "runner-result.json": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-mixed-depth/probe/runner-result.json",
+          "bytes": 1025,
+          "sha256": "7e7e8d575d53207dbf1cc8eec23ac3125f9eaf17f2269e1e0067c8415e5e29b5"
+        },
+        "collection.json": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-mixed-depth/probe/collection.json",
+          "bytes": 37,
+          "sha256": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e"
+        },
+        "fault-check.txt": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-mixed-depth/probe/fault-check.txt",
+          "bytes": 41,
+          "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+        },
+        "services-after.txt": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-mixed-depth/probe/services-after.txt",
+          "bytes": 14,
+          "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+        },
+        "service.txt": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-mixed-depth/probe/service.txt",
+          "bytes": 1322,
+          "sha256": "bfc1ea7dc737b2dcc201a61702ef269c4eba780798b39dd55e0b6eba252ba677"
+        }
+      },
+      "driver_sha256": "ba3c27c2bed204efcdfebb896a99d4ff7be2981de0b609d32962fbcd3dcd00b0",
+      "helper_sha256": "a8e3e90ecb4f7ffae916e10783e35b810b6bd0a12aff51c689e5710f13fb7665",
+      "cases": 6,
+      "recorded_transitions": 24,
+      "fenced_submissions": 6,
+      "native_programs": 0,
+      "shader_dispatches": 0,
+      "image_transfers": 0,
+      "queried_allocation_sizes": [
+        {
+          "format": 37,
+          "samples": 1,
+          "bytes": 8192,
+          "alignment": 64,
+          "aspect": 1
+        },
+        {
+          "format": 124,
+          "samples": 1,
+          "bytes": 4096,
+          "alignment": 64,
+          "aspect": 2
+        },
+        {
+          "format": 37,
+          "samples": 4,
+          "bytes": 32768,
+          "alignment": 64,
+          "aspect": 1
+        },
+        {
+          "format": 124,
+          "samples": 4,
+          "bytes": 16384,
+          "alignment": 64,
+          "aspect": 2
+        },
+        {
+          "format": 37,
+          "samples": 1,
+          "bytes": 8192,
+          "alignment": 64,
+          "aspect": 1
+        },
+        {
+          "format": 126,
+          "samples": 1,
+          "bytes": 8192,
+          "alignment": 64,
+          "aspect": 2
+        },
+        {
+          "format": 37,
+          "samples": 4,
+          "bytes": 32768,
+          "alignment": 64,
+          "aspect": 1
+        },
+        {
+          "format": 126,
+          "samples": 4,
+          "bytes": 32768,
+          "alignment": 64,
+          "aspect": 2
+        },
+        {
+          "format": 37,
+          "samples": 1,
+          "bytes": 8192,
+          "alignment": 64,
+          "aspect": 1
+        },
+        {
+          "format": 127,
+          "samples": 1,
+          "bytes": 4096,
+          "alignment": 64,
+          "aspect": 4
+        },
+        {
+          "format": 37,
+          "samples": 4,
+          "bytes": 32768,
+          "alignment": 64,
+          "aspect": 1
+        },
+        {
+          "format": 127,
+          "samples": 4,
+          "bytes": 8192,
+          "alignment": 64,
+          "aspect": 4
+        }
+      ],
+      "actual": "D16,D32,S8 eachsamples1/4; fourindependentRGBA8colorimages+oneDSimage bound/viewed in fiveattachmentrenderpass/framebuffer. SuccessincludesEndCommandBuffer/QueueSubmit/fencecomplete beforedestruction/reuse. Sourceactualarrayhas5allocations, peak163840B. Service324ms/4.3MiB/0swap, cleanpostflight.",
+      "limits": "S8size4x is2x roundedbytes(4096\u21928192), notmissing samples: FDL source usescpp*samples withalignment. No evidenceofinitializedsample identity, depthmath, combinedDSaspecthandling, fullformatset, framebuffer samplemask permission or graphics execution. maxColorAttachments4 hostmechanism is actual; old31\u219215info staysunchanged untilnextquery."
+    }
+  },
+  "limits": "Six D16/D32/S8x1/4 object/lifetime cases,24 mixedDS layout transitions/six fences. Zero shaders/dispatch/data initialization. Framebuffer sample masks, combined DS, rendering and full format CTS remain unqualified.",
+  "reproduction": "Build --only mixed-depth, stage as resources with no SPIR-V, then existing device-core-mixed-depth.py probe under original controls. Public runner only normalizes repository TOP path.",
+  "public_builder_actual": {
+    "path": "/run/media/jethac/Shared/radish/compute11-public-mixed-depth-builder-check-0045/receipt.json",
+    "bytes": 7195,
+    "sha256": "aef6f011190dc1bca0ae3ff07c0761b5cb0c9b6650895804343cf91b62407531"
+  }
+}

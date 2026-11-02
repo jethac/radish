@@ -57,7 +57,10 @@ def main():
              ('mixed-push', 'core_mixed_push.c', 'core-mixed-push.comp', 'vulkan1.0'),
              ('attachment', 'core_attachment.c', 'core-attachment.comp', 'vulkan1.0'),
              ('descriptor-host', 'core_descriptor_host.c', None, None),
-             ('etc2', 'core_etc2.c', 'core-etc2.comp', 'vulkan1.0')]
+             ('mixed-depth', 'core_mixed_depth.c', None, None),
+             ('etc2', 'core_etc2.c', 'core-etc2.comp', 'vulkan1.0'),
+             ('etc2-observe', 'core_etc2_observe.c', 'core-etc2.comp', 'vulkan1.0'),
+             ('etc2-unorm-taps', 'core_etc2_unorm_taps.c', 'core-etc2-unorm-taps.comp', 'vulkan1.0')]
     if args.only:
         unknown = set(args.only) - {unit[0] for unit in units}
         if unknown:
@@ -70,12 +73,12 @@ def main():
         prefix = command + ['-fuse-ld=lld', '--gcc-install-dir=' + str(gcc),
                             '-I' + str(top / 'radish/tests')]
         inputs = [source]
-        if name == 'etc2':
+        if name in ('etc2', 'etc2-observe', 'etc2-unorm-taps'):
             oracle = top / 'radish/tests/etc2-oracle'
             prefix += ['-I' + str(oracle)]
             inputs += [oracle / path for path in ['etc_oracle.c', 'vendor/decompress-etc.c',
                                                   'vendor/decompress-eac.c', 'vendor/clamp.c']]
-            objects = [output / ('etc2-%d.o' % i) for i in range(len(inputs))]
+            objects = [output / (name + '-%d.o' % i) for i in range(len(inputs))]
             commands = [prefix + (['-Wno-error=missing-prototypes'] if 'vendor' in path.parts else []) +
                         ['-c', str(path), '-o', str(obj)] for path, obj in zip(inputs, objects)]
             commands += [prefix + list(map(str, objects)) + ['-o', str(output / name), '-ldl', '-pthread', '-lm']]

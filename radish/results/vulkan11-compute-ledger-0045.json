@@ -13,13 +13,14 @@
   "official_cts": {
     "source_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
     "binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
-    "state": "Exact unmodified binary: first5info4Pass/1propertiesFail, then4SPIRVversion+6BASICcompute casesPass. These15executedcases are14Pass/1Fail, not totalrequiredcoverage.",
+    "state": "Exact unmodified binary: five distinct info cases4Pass/1Fail, ten initial shader casesPASS, four shared-memory and two command-barrier casesPASS. Twenty-one distinct executed cases20Pass/1Fail, not total required coverage; property replay remains same failed case.",
     "modified_harness": "f85cb13b diagnostics only, never official passes",
     "remaining_property_failures": 15,
     "actual_record": "official11-integrated-info-0045.json",
     "shader_record": "official11-cts-shaders-0045.json",
     "additional_normative_gap": "maxFramebufferLayers is now256 in actual query; old CTS did not check required minimum. This closure does not make the failure list exhaustive.",
-    "historical_property_failures": 31
+    "historical_property_failures": 31,
+    "additional_record": "official11-shared-command-0045.json"
   },
   "categories": [
     {
@@ -50,8 +51,8 @@
       "id": "format-compression",
       "requirement": "At least one complete BC/ETC2+EAC/ASTC-LDR family required by mandatory-format footer",
       "implementation": "Complete10-format private resource backing host-built d903 using Mesa block/layout/view helpers; compression feature remainsfalse.",
-      "evidence": "etc2-eac-partial-0045.json: host decoder/sanitizers and native gate pass; format0 passes, format1 sRGB filtering fails; tap observations retained.",
-      "remaining": "Resolve sampled tap decode/conversion discrepancy without weakening oracle, then complete ten-format and applicable CTS before feature admission.",
+      "evidence": "etc2-eac-family-observations-0045.json: all20fixedcases/44800words/fullguards completed. Seven non-sRGB formats pass; three sRGB variants have42linear mismatches, zero nearest/nonfinite failures.",
+      "remaining": "Resolve normative sRGB conversion/filter precision and implement any required correction, then full applicable format/copy/view/filter CTS before compression-family promotion.",
       "owner": "resource"
     },
     {
@@ -66,7 +67,7 @@
       "id": "images",
       "requirement": "Required image types, mips/layers/cube/views, copies, clear and sampled/storage/atomics",
       "implementation": "Native single/MS sampling plus software oversized-array/cube path; mutable/alias/extended/split-instance and2D-of3D view creation; storageCube face layers",
-      "evidence": "core_resources/core_array_resources/core_subword_resources/core_multisample/core_ms_lanes/core_oversized_image/core_oversized_ms/core_storage_cube; paired actual results",
+      "evidence": "core_resources/core_array_resources/core_subword_resources/core_multisample/core_ms_lanes/core_oversized_image/core_oversized_ms/core_storage_cube; paired actual results; depth-host-layouts-0045.json six D16/D32/S8x1/4 host/layout cases and24fenced maintenance2 transitions pass, no initialized samples.",
       "remaining": "Full required-format/type/filter/mip/view/transfer CTS, all valid flag combinations, precision and alias cases remain. Optional cubeArray/multisampled storage/anisotropy/extended-format feature bits may remainfalse.",
       "owner": "resource"
     },
@@ -122,7 +123,7 @@
       "id": "execution-sync",
       "requirement": "Direct/indirect dispatch, shared/barrier, transfer\u2192shader\u2192host, events/queries/binary fence/semaphore and command order",
       "implementation": "Serialized worker/DRM sync, conservative waits/flushes, runtime sync support, real event/query transfer/compute paths",
-      "evidence": "core_api5/core_events_queries/core_workgroup_barriers/resource producers+consumers and actual guards; mixed COMPUTE|VERTEX push update and graphics-only poison preserve compute seed in full timeline consumer95866.",
+      "evidence": "core_api5/core_events_queries/core_workgroup_barriers/resource producers+consumers and actual guards; mixed COMPUTE|VERTEX push update and graphics-only poison preserve compute seed in full timeline consumer95866.; four original shared_var and two ssbo_cmd_barrier CTS cases pass exact numerical oracles.",
       "remaining": "Original applicable pipeline/memory-model/synchronization/lifetime CTS, cross-submit visibility, alias dependencies and all legal workgroup forms; model output is not substitute.",
       "owner": "resource"
     },
@@ -313,5 +314,6 @@
     "next": "Resourceauthor sourceprovenancetrace; removeonly actualdocumentedreservation withoutblanketguardrelaxation",
     "system_scope": "No globalgraphics/service/clock/kernelchanges"
   },
-  "depth_layout_erratum": "Pinned Vulkan1.1 DEPTH_STENCIL_READ_ONLY_OPTIMAL requires DEPTH_STENCIL_ATTACHMENT usage. Earlier sampled-only depth consumers are implementation observations for that path until valid-usage requalification; no retroactive public qualification."
+  "depth_layout_erratum": "Pinned Vulkan1.1 DEPTH_STENCIL_READ_ONLY_OPTIMAL requires DEPTH_STENCIL_ATTACHMENT usage. Earlier sampled-only depth consumers are implementation observations for that path until valid-usage requalification; no retroactive public qualification.",
+  "next_private_source": "D24S8 combined packed format candidate9c71 hostbuilt1a8f; private rd_image.h ABI changed. Not part of published c2aa host/layout actual or selected inference; native/numerical/guard consumer pending."
 }

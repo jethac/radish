@@ -1,0 +1,581 @@
+{
+  "status": "NUMERICAL FAIL; complete bounded observation inventory, not family qualification",
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-etc2-observe/probe/runner-result.json",
+      "bytes": 7125,
+      "sha256": "ac0142d85acd94f040bec6075c350b2544e370229ace997851de2b60d03baab1"
+    },
+    "result": {
+      "status": "numerical_failures",
+      "mode": "probe",
+      "exit_code": 2,
+      "cases": [
+        {
+          "format": 0,
+          "round": 0,
+          "nearest_mismatches": 0,
+          "linear_mismatches": 0,
+          "nonfinite_nearest": 0,
+          "nonfinite_linear": 0,
+          "max_nearest_error": 0.0,
+          "max_linear_error": 0.000490248203278,
+          "guards": "exact",
+          "exit_code": 0
+        },
+        {
+          "format": 0,
+          "round": 1,
+          "nearest_mismatches": 0,
+          "linear_mismatches": 0,
+          "nonfinite_nearest": 0,
+          "nonfinite_linear": 0,
+          "max_nearest_error": 0.0,
+          "max_linear_error": 0.000490248203278,
+          "guards": "exact",
+          "exit_code": 0
+        },
+        {
+          "format": 1,
+          "round": 0,
+          "nearest_mismatches": 0,
+          "linear_mismatches": 1,
+          "nonfinite_nearest": 0,
+          "nonfinite_linear": 0,
+          "max_nearest_error": 0.00172695908342,
+          "max_linear_error": 0.00245517492294,
+          "guards": "exact",
+          "exit_code": 2
+        },
+        {
+          "format": 1,
+          "round": 1,
+          "nearest_mismatches": 0,
+          "linear_mismatches": 3,
+          "nonfinite_nearest": 0,
+          "nonfinite_linear": 0,
+          "max_nearest_error": 0.00172980378725,
+          "max_linear_error": 0.00299274921417,
+          "guards": "exact",
+          "exit_code": 2
+        },
+        {
+          "format": 2,
+          "round": 0,
+          "nearest_mismatches": 0,
+          "linear_mismatches": 0,
+          "nonfinite_nearest": 0,
+          "nonfinite_linear": 0,
+          "max_nearest_error": 0.0,
+          "max_linear_error": 0.000490248203278,
+          "guards": "exact",
+          "exit_code": 0
+        },
+        {
+          "format": 2,
+          "round": 1,
+          "nearest_mismatches": 0,
+          "linear_mismatches": 0,
+          "nonfinite_nearest": 0,
+          "nonfinite_linear": 0,
+          "max_nearest_error": 0.0,
+          "max_linear_error": 0.000490248203278,
+          "guards": "exact",
+          "exit_code": 0
+        },
+        {
+          "format": 3,
+          "round": 0,
+          "nearest_mismatches": 0,
+          "linear_mismatches": 10,
+          "nonfinite_nearest": 0,
+          "nonfinite_linear": 0,
+          "max_nearest_error": 0.00172980378725,
+          "max_linear_error": 0.00340580940247,
+          "guards": "exact",
+          "exit_code": 2
+        },
+        {
+          "format": 3,
+          "round": 1,
+          "nearest_mismatches": 0,
+          "linear_mismatches": 11,
+          "nonfinite_nearest": 0,
+          "nonfinite_linear": 0,
+          "max_nearest_error": 0.00169454232765,
+          "max_linear_error": 0.00340580940247,
+          "guards": "exact",
+          "exit_code": 2
+        },
+        {
+          "format": 4,
+          "round": 0,
+          "nearest_mismatches": 0,
+          "linear_mismatches": 0,
+          "nonfinite_nearest": 0,
+          "nonfinite_linear": 0,
+          "max_nearest_error": 0.0,
+          "max_linear_error": 0.000490248203278,
+          "guards": "exact",
+          "exit_code": 0
+        },
+        {
+          "format": 4,
+          "round": 1,
+          "nearest_mismatches": 0,
+          "linear_mismatches": 0,
+          "nonfinite_nearest": 0,
+          "nonfinite_linear": 0,
+          "max_nearest_error": 0.0,
+          "max_linear_error": 0.000490248203278,
+          "guards": "exact",
+          "exit_code": 0
+        },
+        {
+          "format": 5,
+          "round": 0,
+          "nearest_mismatches": 0,
+          "linear_mismatches": 7,
+          "nonfinite_nearest": 0,
+          "nonfinite_linear": 0,
+          "max_nearest_error": 0.00172842452593,
+          "max_linear_error": 0.00340580940247,
+          "guards": "exact",
+          "exit_code": 2
+        },
+        {
+          "format": 5,
+          "round": 1,
+          "nearest_mismatches": 0,
+          "linear_mismatches": 10,
+          "nonfinite_nearest": 0,
+          "nonfinite_linear": 0,
+          "max_nearest_error": 0.00172980378725,
+          "max_linear_error": 0.0034738779068,
+          "guards": "exact",
+          "exit_code": 2
+        },
+        {
+          "format": 6,
+          "round": 0,
+          "nearest_mismatches": 0,
+          "linear_mismatches": 0,
+          "nonfinite_nearest": 0,
+          "nonfinite_linear": 0,
+          "max_nearest_error": 0.0,
+          "max_linear_error": 0.000366449356079,
+          "guards": "exact",
+          "exit_code": 0
+        },
+        {
+          "format": 6,
+          "round": 1,
+          "nearest_mismatches": 0,
+          "linear_mismatches": 0,
+          "nonfinite_nearest": 0,
+          "nonfinite_linear": 0,
+          "max_nearest_error": 0.0,
+          "max_linear_error": 0.000366449356079,
+          "guards": "exact",
+          "exit_code": 0
+        },
+        {
+          "format": 7,
+          "round": 0,
+          "nearest_mismatches": 0,
+          "linear_mismatches": 0,
+          "nonfinite_nearest": 0,
+          "nonfinite_linear": 0,
+          "max_nearest_error": 0.0,
+          "max_linear_error": 0.000488758087158,
+          "guards": "exact",
+          "exit_code": 0
+        },
+        {
+          "format": 7,
+          "round": 1,
+          "nearest_mismatches": 0,
+          "linear_mismatches": 0,
+          "nonfinite_nearest": 0,
+          "nonfinite_linear": 0,
+          "max_nearest_error": 0.0,
+          "max_linear_error": 0.000488758087158,
+          "guards": "exact",
+          "exit_code": 0
+        },
+        {
+          "format": 8,
+          "round": 0,
+          "nearest_mismatches": 0,
+          "linear_mismatches": 0,
+          "nonfinite_nearest": 0,
+          "nonfinite_linear": 0,
+          "max_nearest_error": 0.0,
+          "max_linear_error": 0.000366449356079,
+          "guards": "exact",
+          "exit_code": 0
+        },
+        {
+          "format": 8,
+          "round": 1,
+          "nearest_mismatches": 0,
+          "linear_mismatches": 0,
+          "nonfinite_nearest": 0,
+          "nonfinite_linear": 0,
+          "max_nearest_error": 0.0,
+          "max_linear_error": 0.000366449356079,
+          "guards": "exact",
+          "exit_code": 0
+        },
+        {
+          "format": 9,
+          "round": 0,
+          "nearest_mismatches": 0,
+          "linear_mismatches": 0,
+          "nonfinite_nearest": 0,
+          "nonfinite_linear": 0,
+          "max_nearest_error": 0.0,
+          "max_linear_error": 0.000488817691803,
+          "guards": "exact",
+          "exit_code": 0
+        },
+        {
+          "format": 9,
+          "round": 1,
+          "nearest_mismatches": 0,
+          "linear_mismatches": 0,
+          "nonfinite_nearest": 0,
+          "nonfinite_linear": 0,
+          "max_nearest_error": 0.0,
+          "max_linear_error": 0.000488817691803,
+          "guards": "exact",
+          "exit_code": 0
+        }
+      ],
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 150,
+          "sha256": "7c62b58e0d164a1c1196db5142f2302baed5a70ef5121e0cbe87ac3deed33fc9"
+        },
+        "resources": {
+          "bytes": 849352,
+          "sha256": "03163fa31c6ee1faaed4dac5ce38004d82af8b10238feee7fdaf4810cda6ce91"
+        },
+        "resources.spv": {
+          "bytes": 6268,
+          "sha256": "e3dad84921bf3bf960080a92ebf2fce879d4021cd393ccdcc0a34fe7db8278a4"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13613880,
+          "sha256": "c7079a33e30a9269d858bfe1d82a165cda8e2c0dc254bcac18d46a132682be91"
+        },
+        "payload.json": {
+          "bytes": 815,
+          "sha256": "8d59e7c2878e77629ea13da18524277065f888a68912c43777eda74372e00834"
+        }
+      },
+      "run_log": {
+        "bytes": 1644484,
+        "sha256": "9e9e7523d2faf8d675ad8e5c2ac0450e3baf7e5eb26834184395bd6792e3ef2d"
+      },
+      "scope": "Raw ICD assets/services/faults and consolidated assertions passed. This is experimental compute coverage, not Vulkan conformance."
+    }
+  },
+  "source_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/etc2-eac-family-observe-0045/independent-source-review.json",
+      "bytes": 2156,
+      "sha256": "4e20dd593fac70514d37400104a9b8b2022d1b9c0e89fddf3b0a9cf9b00b58db"
+    },
+    "result": {
+      "status": "passed",
+      "scope": "Finite originalconsumer observation derivative source review; no numerical acceptance relaxation/device result.",
+      "pins": {
+        "release.json": {
+          "path": "/run/media/jethac/Shared/radish/etc2-eac-family-observe-0045/release.json",
+          "bytes": 2328,
+          "sha256": "ddbf3244854b063e4225c6d9439ca38fb1049faabfce8f21b4d70f9d180149b8"
+        },
+        "consumer.diff": {
+          "path": "/run/media/jethac/Shared/radish/etc2-eac-family-observe-0045/consumer.diff",
+          "bytes": 15682,
+          "sha256": "4f4aaf8e8799e948e23501aeb9b016c4c37f9e201d364821904ca79a9f584e5b"
+        },
+        "probe/etc_observe.c": {
+          "path": "/run/media/jethac/Shared/radish/etc2-eac-family-observe-0045/probe/etc_observe.c",
+          "bytes": 26738,
+          "sha256": "e57dc509711e79cf5e6ca429c26c6a9ba928c5599cd08e7a32cdcfae2eeebc8a"
+        },
+        "probe/etc_observe.comp": {
+          "path": "/run/media/jethac/Shared/radish/etc2-eac-family-observe-0045/probe/etc_observe.comp",
+          "bytes": 1409,
+          "sha256": "4fd7d2dd55ed72a8c58a2e00f6e90acc73cb364176baf3b3fc0882e7a316593a"
+        }
+      },
+      "oracles": "All originalexpectednumericvalues/tolerances/exactsize/rawcopyfields and sixfullallocation guards retained. Onlynumericfloatfailures accumulate; originalsizes/copy/padding/poison/memory/APIconditions stillhardreturn1. Actualfloatwords copiedtosaved only aftereachoriginalnumericcomparison/count, preventingfullguard comparison from duplicatingknownnumericfailure without erasingit.",
+      "output": "Perprocess oneF/R,64x35fields,atmost16detailprints; bothfinite maxima and separate nonfinitecounts; summaryonlyafterextraimagefullguards. Return2onlynumericalmismatches,0allpass,1harderror. CLIboundsformat<10/round<2; staticcountersresetperprocess.",
+      "lifetime": "Sameallocations/ranges/shader/descriptorcopy/barrier/fence path. Freshround1 correctlyUNDEFINED, no sameBOtwo-roundreuseclaim. Originalsampledtextures4/samplers2/SSBO1 unchanged.",
+      "owner_gate": "Campaignmustretainall20predeterminedF/R andfinalFAILifanyreturn2; immediatelystopAPI/guard/fault/serviceerror. Rootauthorizedboundedobserver, original90s/resourcecapsnotwidened."
+    }
+  },
+  "native_reuse": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-etc2-family-observe-runner-0045/native-reuse.json",
+      "bytes": 512,
+      "sha256": "7cf27a0728ac3b9387518c7a82f712cfe7bfabd427e07e5a85cbfa21e5050cc3"
+    },
+    "result": {
+      "status": "exact original native records reused",
+      "original": "/run/media/jethac/Shared/radish/core-compute-core0045-etc2-family/compile/run.log",
+      "current": "/run/media/jethac/Shared/radish/core-compute-core0045-etc2-observe/compile/run.log",
+      "mesa_bytes": 79297,
+      "mesa_sha256": "5bf9eafe4061501eef035584615d4908704a856fc5aac00d7dcac041168851f0",
+      "admission": "625eca38 original modulee3dad849/driverd903 unchanged; same payload compile prerequisite passed; no new shader qualification claimed"
+    }
+  },
+  "host_pairing": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-etc2-family-observe-build-0045/independent-host-pairing-review.json",
+      "bytes": 943,
+      "sha256": "17dcaa3966c1337e11602052bc213cc874edc48f852fa4c5338a116a3dd6ac13"
+    },
+    "result": {
+      "status": "PASS finite host/source/module identity",
+      "helper": {
+        "bytes": 849352,
+        "sha256": "03163fa31c6ee1faaed4dac5ce38004d82af8b10238feee7fdaf4810cda6ce91"
+      },
+      "module_sha256": "e3dad84921bf3bf960080a92ebf2fce879d4021cd393ccdcc0a34fe7db8278a4",
+      "driver": {
+        "bytes": 49050456,
+        "sha256": "d903348c8170e0fd4dcf1d3ec959813e7d93170f2a6aa1fb6bd89ad24065e30d"
+      },
+      "checks": "Allsourcesbyteequalreviewedobservere57d/4fd+db96vendor; fourprivateheadersrehashed, AArch64helper. SPIRVmodule byteexact originale3da, same5bindinglayout/compileflags/API1.1/d903 driver; native625eca proof reusable, not20differentshader variants.",
+      "scope": "20predeterminedformat/roundcases preserve44800originalexpectedrecordwords/tolerances/all6allocationguards. Numericreturn2onlyafterhardchecks; ownerfault/servicechecks aftereach beforecontinue. FinalFAILany2; no sameBOsecondroundreuseclaim; original90s/caps/reserve notenlarged."
+    }
+  },
+  "source": {
+    "path": "/home/jethac/Projects/radish/radish/tests/core_etc2_observe.c",
+    "bytes": 26738,
+    "sha256": "e57dc509711e79cf5e6ca429c26c6a9ba928c5599cd08e7a32cdcfae2eeebc8a"
+  },
+  "shader": {
+    "path": "/home/jethac/Projects/radish/radish/tests/shaders/core-etc2.comp",
+    "bytes": 1409,
+    "sha256": "4fd7d2dd55ed72a8c58a2e00f6e90acc73cb364176baf3b3fc0882e7a316593a"
+  },
+  "public_builder": {
+    "path": "/run/media/jethac/Shared/radish/compute11-public-etc-observe-builder-check-0045/receipt.json",
+    "bytes": 42917,
+    "sha256": "d903dd5f8fc416d08492d848d26652c6471f9ae53259fdcea1edbe7aca3e0234"
+  },
+  "encoded_discriminator": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/etc2-eac-srgb-unorm-taps-0045/actual-encoded-comparison.json",
+      "bytes": 2043,
+      "sha256": "eed9fa435fa593595cb2361ef356c6acfac0bd23595ec2b78d6ac68806316087"
+    },
+    "result": {
+      "status": "PASS exact16component encodeddecode discriminator; originalSRGBnumericalFAIL retained",
+      "log_sha256": "4a59fa891c12aa758e02dd52fa760ab8befeb74cd111d71b8e165c5f73bf68c2",
+      "rows": [
+        {
+          "xy": [
+            3,
+            4
+          ],
+          "encoded_rgba8": [
+            41,
+            211,
+            255,
+            255
+          ],
+          "unorm_f32_bits": [
+            "3e24a4a5",
+            "3f53d3d4",
+            "3f800000",
+            "3f800000"
+          ],
+          "exact_float32_code_over255": true
+        },
+        {
+          "xy": [
+            4,
+            4
+          ],
+          "encoded_rgba8": [
+            36,
+            207,
+            52,
+            255
+          ],
+          "unorm_f32_bits": [
+            "3e109091",
+            "3f4fcfd0",
+            "3e50d0d1",
+            "3f800000"
+          ],
+          "exact_float32_code_over255": true
+        },
+        {
+          "xy": [
+            3,
+            5
+          ],
+          "encoded_rgba8": [
+            92,
+            245,
+            58,
+            255
+          ],
+          "unorm_f32_bits": [
+            "3eb8b8b9",
+            "3f75f5f6",
+            "3e68e8e9",
+            "3f800000"
+          ],
+          "exact_float32_code_over255": true
+        },
+        {
+          "xy": [
+            4,
+            5
+          ],
+          "encoded_rgba8": [
+            31,
+            188,
+            97,
+            255
+          ],
+          "unorm_f32_bits": [
+            "3df8f8f9",
+            "3f3cbcbd",
+            "3ec2c2c3",
+            "3f800000"
+          ],
+          "exact_float32_code_over255": true
+        }
+      ],
+      "descriptor": "t0SRGB/t2UNORM sameBO102a000/address102f840/cpp8/8x8x2/row512/array20480, all12descriptorwords identical exceptSRGBbit0x4 inword0.",
+      "conclusion": "NativeETC2 H+planar encoded8bit decode matches detex for all4tapRGBAcomponents. SRGBobserved differences therefore begin in nativeSRGB conversion path for these taps, not thoseblockdecodes orhalfweightfilter. This is a boundedcausaldiscriminator, not arbitrary-normativeprecision/conformance verdict.",
+      "next": "EquivalentuncompressedRGBA8SRGBtap comparison canseparatecompressed-format-specific/generalconversion. Fullfamilyobservations proceedindependently withoriginaloracles/guards."
+    }
+  },
+  "summary": {
+    "cases": 20,
+    "formats": 10,
+    "record_words": 44800,
+    "passing_cases": 14,
+    "failing_cases": 6,
+    "linear_mismatches": 42,
+    "nearest_mismatches": 0,
+    "nonfinite": 0,
+    "failed_formats": [
+      1,
+      3,
+      5
+    ],
+    "max_linear_error": 0.0034738779068,
+    "seconds": 7.643,
+    "peak_MiB": 10,
+    "swap_MiB": 0
+  },
+  "controls": "All original fields/tolerances/full six-allocation guards retained. One fresh process/image per fixed F/R; return2 only numerical, hard API/guard/fault stop before next process; both services checked each time. All20 complete, original90s384MiB;4MiB log headroom plus unchanged64MiB reserve.",
+  "limits": "Seven non-sRGB formats pass these fixed cases only. Three sRGB variants fail unchanged linear checks. Same-image UNORM taps exactly match detex float32(code/255), localizing those four-tap differences to native sRGB conversion. Normative precision is unresolved; no tolerance change/compression feature promotion/full format or same-image round reuse claim.",
+  "independent_actual_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/etc2-eac-family-observe-0045/independent-actual-review.json",
+      "bytes": 2602,
+      "sha256": "5cc10432dbbd5ae4e8ea84d002a64033ee7e78dd63bb8342331e1f38e9703225"
+    },
+    "review": {
+      "status": "finite coverage complete; numerical FAIL retained, no feature admission",
+      "capture": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-etc2-observe/probe/run.log",
+        "bytes": 1644484,
+        "sha256": "9e9e7523d2faf8d675ad8e5c2ac0450e3baf7e5eb26834184395bd6792e3ef2d"
+      },
+      "owner_result": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-etc2-observe/probe/runner-result.json",
+        "bytes": 7125,
+        "sha256": "ac0142d85acd94f040bec6075c350b2544e370229ace997851de2b60d03baab1"
+      },
+      "scope": {
+        "cases": 20,
+        "records_per_case": 64,
+        "fields_per_record": 35,
+        "total_original_output_words": 44800,
+        "full_allocations_checked_per_case": 6,
+        "same_image_round_reuse": false,
+        "separate_prior_evidence": "original format0 both rounds on same image passed in 2759"
+      },
+      "mismatches": {
+        "nearest": 0,
+        "nonfinite": 0,
+        "linear_by_format": {
+          "0": 0,
+          "1": 4,
+          "2": 0,
+          "3": 21,
+          "4": 0,
+          "5": 17,
+          "6": 0,
+          "7": 0,
+          "8": 0,
+          "9": 0
+        },
+        "linear_total": 42,
+        "max_linear_error": 0.0034738779068
+      },
+      "interpretation": [
+        "Seven non-sRGB formats pass both cases under unchanged original numeric thresholds.",
+        "All three sRGB formats have filtered numeric mismatches. Original nearest sRGB predicate compares in encoded domain, so zero nearest failures does not imply exact EOTF.",
+        "Same-BO eed9 encoded-tap evidence independently isolates native sRGB conversion for the selected H/planar fixture. No arbitrary tolerance change or normative nonconformance conclusion.",
+        "Twenty raw guard summaries and twenty successful fault checks corroborate owner final status; no API/guard/fault numerical bypass."
+      ],
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 150,
+          "sha256": "7c62b58e0d164a1c1196db5142f2302baed5a70ef5121e0cbe87ac3deed33fc9"
+        },
+        "resources": {
+          "bytes": 849352,
+          "sha256": "03163fa31c6ee1faaed4dac5ce38004d82af8b10238feee7fdaf4810cda6ce91"
+        },
+        "resources.spv": {
+          "bytes": 6268,
+          "sha256": "e3dad84921bf3bf960080a92ebf2fce879d4021cd393ccdcc0a34fe7db8278a4"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13613880,
+          "sha256": "c7079a33e30a9269d858bfe1d82a165cda8e2c0dc254bcac18d46a132682be91"
+        },
+        "payload.json": {
+          "bytes": 815,
+          "sha256": "8d59e7c2878e77629ea13da18524277065f888a68912c43777eda74372e00834"
+        }
+      }
+    }
+  },
+  "encoded_discriminator_sources": {
+    "tests/core_etc2_unorm_taps.c": {
+      "path": "/home/jethac/Projects/radish/radish/tests/core_etc2_unorm_taps.c",
+      "bytes": 27484,
+      "sha256": "ba65dca2537ee45c27f8b90264f1f2db72fba0a4a42129d5851ace1efe771f19"
+    },
+    "tests/shaders/core-etc2-unorm-taps.comp": {
+      "path": "/home/jethac/Projects/radish/radish/tests/shaders/core-etc2-unorm-taps.comp",
+      "bytes": 1902,
+      "sha256": "7187e95c57cb87d7af3f1414331350d295131724e3e34f8c8ad8acf6a79d935f"
+    }
+  },
+  "precision_note": "The sRGB nearest comparison operates in encoded domain; zero nearest mismatches does not prove an exact linear EOTF. No transferable normative SSBO tolerance allowance has been established, so no tolerance or conformance conclusion is drawn."
+}

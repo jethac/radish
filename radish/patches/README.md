@@ -692,3 +692,5 @@ Apply these increments after `0045-radish-public11-contract.patch`, in order:
 7. `0045-radish-snorm-storage.patch`
 
 The exact reconstruction pins are in `../results/compute11-private-source-stack-0045.json`. Original packed SNORM and the core supplement pass after correction; host descriptors, mixed push/timeline and tiny attachment resource paths pass. The original official property case improves31→15 messages but still fails. ETC2/EAC remains private and numerically unqualified: its sRGB case fails; compression features are not promoted. No rendering, full format matrix or conformance claim follows. See `../VULKAN11_COMPUTE_STATUS.md`.
+
+`0045-radish-depth-attachment-host.patch` and then `0045-radish-mixed-depth-layouts.patch` follow the ac2a integrated stack. They add D16/D32/S8 attachment host objects and core1.1 maintenance2 layouts, qualified by six bounded host/fenced-transition cases. They do not promote framebuffer sample masks or claim initialized sample, combined depth/stencil, or rendering support. See `../results/depth-host-layouts-0045.json`.

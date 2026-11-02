@@ -129,3 +129,34 @@ For the consolidated resource scope, stage builder outputs as `descriptor_host`,
 probe with the same immutable payload and matching internal headers. The
 [build and runner reproduction receipt](results/compute11-reproduction-0045.json)
 records actual builder validation and the sole repository-path normalization.
+
+## Further bounded shared/resource results
+
+Four original `shared_var_*` cases and two `ssbo_cmd_barrier_*` cases now pass
+on frozen ac2a. They cover shared ordering and numerical results, host UBO
+visibility, a compute-to-compute SSBO dependency, compatible pipeline switching
+with retained descriptors, atomic sums and readback in their fixed source
+configurations. [Exact cases and original CTS evidence](results/official11-shared-command-0045.json)
+remain distinct from complete memory-model or synchronization coverage.
+
+The separate c2aa depth/layout candidate passes six D16/D32/S8 single/four-sample
+host-object cases and24 maintenance2 layout transitions with fenced reuse.
+There are no shaders, initialized samples or rendering in this scope; required
+framebuffer masks and combined depth/stencil qualification remain open.
+[Source and actual evidence](results/depth-host-layouts-0045.json) include the
+valid-usage correction for depth/stencil read-only layout. Build `--only
+mixed-depth`, stage it as `resources`, and use `device-core-mixed-depth.py probe`.
+
+The [full fixed ETC2/EAC observation inventory](results/etc2-eac-family-observations-0045.json)
+completes all20 cases with complete guards: seven non-sRGB formats pass both
+fixtures; the three sRGB variants produce42 linear mismatches across six cases.
+All nearest checks pass (encoded-domain comparisons for sRGB, not exact EOTF),
+and no nonfinite values or API/guard/fault failures
+occur. The overall result remains **numerical failure**. A compatible UNORM
+view of the same compressed bytes reproduces all16 encoded channels at the
+original failing location exactly, narrowing that discrepancy to the native
+sRGB conversion path. The normative precision obligation is still unresolved;
+no tolerance or feature flag was changed. Build `--only etc2-observe` and stage
+as `resources`/`resources.spv` for the split `device-core-etc-observe.py` runner.
+Numerical-only exit2 is recorded as failure; API, guard and GPU faults stop
+before the next case. Fresh per-case images do not claim two-round image reuse.

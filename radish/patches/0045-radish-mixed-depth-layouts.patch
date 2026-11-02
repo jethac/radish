@@ -1,0 +1,31 @@
+--- a/src/freedreno/radish/rd_image.c
++++ b/src/freedreno/radish/rd_image.c
+@@ -640,6 +640,8 @@
+    case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
+    case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
+    case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
++   case VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL:
++   case VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL:
+    case VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL:
+    case VK_IMAGE_LAYOUT_GENERAL:
+    case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
+@@ -652,6 +654,8 @@
+        barrier->newLayout != VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL &&
+        barrier->newLayout != VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL &&
+        barrier->newLayout != VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL &&
++       barrier->newLayout != VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL &&
++       barrier->newLayout != VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL &&
+        barrier->newLayout != VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL &&
+        barrier->newLayout != VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL &&
+        barrier->newLayout != VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
+@@ -659,7 +663,9 @@
+    if ((barrier->srcQueueFamilyIndex != VK_QUEUE_FAMILY_IGNORED && barrier->srcQueueFamilyIndex != 0) ||
+        (barrier->dstQueueFamilyIndex != VK_QUEUE_FAMILY_IGNORED && barrier->dstQueueFamilyIndex != 0))
+       return false;
+-   return (barrier->newLayout != VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL ||
++   return ((barrier->newLayout != VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL &&
++            barrier->newLayout != VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL &&
++            barrier->newLayout != VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL) ||
+            (vk_format_is_depth_or_stencil(image->vk.format) &&
+             (image->vk.usage & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT))) &&
+           (barrier->newLayout != VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL ||
