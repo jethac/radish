@@ -1,5 +1,5 @@
 {
-  "status": "exact_buffer_size_and_original_RBA_cases_pass; first_convolution_prefix_pass; full_model_pending",
+  "status": "exact_buffer_size_original_RBA_first_convolution_and_full_repeat2_pass",
   "driver": {
     "bytes": 49015104,
     "sha256": "32df6c0db213d0999a9cd386a50a800984f9b43a07e4f07574b9cb16cc88edb1"
@@ -179,5 +179,6 @@
       "sha256": "4dfaec48f29e956fd71f7af1e46cc6e292664170ab287c28f4b6bf2698fd33da"
     }
   },
-  "limits": "Exact current descriptor byte sizes replace native RESINFO for Radish. Requested robustness, allocation residency guard, arithmetic, geometry, batch policy and all numerical gates are unchanged. Prefix success does not establish full-model correctness. No RBA2/general image robustness/conformance claim."
+  "limits": "Exact current descriptor byte sizes replace native RESINFO for Radish. Requested robustness, allocation residency guard, arithmetic, geometry, batch policy and all numerical gates are unchanged. Prefix success does not establish full-model correctness. No RBA2/general image robustness/conformance claim.",
+  "full_model_result": "core-api-0044-full-model-correctness.json"
 }

@@ -1,5 +1,13 @@
 # Radish status
 
+## 2026-11-02: full model correctness restored; latency regresses
+
+The unchanged fixed-core model now passes both complete 562,342-value reference comparisons on ICD `32df6c0d`, and the saved outputs match the accepted GPU bytes exactly. Each extraction executes all 589 layers on the GPU, with no CPU fallback. The first-convolution fix therefore extends to the full graph. The reviewed 179-program load admission was reused from the successful prefix capture; the full run uses normal logging and the original two-extraction oracle and resource limits. [Exact source, outputs, admission and timings](results/core-api-0044-full-model-correctness.json).
+
+Cold load takes 20.212 seconds; first extraction takes 67.058970 seconds and the resident extraction 67.913643 seconds. The same accepted0042 fixed-core workload took 34.514664 and 34.303633 seconds respectively. The current resident time is 97.98% higher in this uncontrolled comparison. This is not the separate end-to-end synthesis baseline. Current packed math emits 26,256 submissions per extraction versus 3,294 previously; total submissions are 36,492 versus 10,235. Its changed native lengths/register use miss the unchanged batching fingerprint. Robustness and compiler behavior also changed, so the timing difference is not assigned entirely to batching.
+
+The service completes in 155.643 seconds, peaks at 408 MiB with 52 KiB swap, and preserves both active services with no new GPU faults. Requested robustness, original output gates and register guards remain intact. This is correctness recovery with a measured performance regression, not optimization acceptance. Separate storage-Cube/multisample work remains independently scoped.
+
 ## 2026-11-02: exact buffer bounds repair the first convolution
 
 A valid small reproducer isolates the model regression: on the prior driver, 160,004- and 65,540-byte SSBO ranges pass, but an exact 65,536-byte range reports zero elements instead of 16,384. The failing convolution's weight range is also an exact multiple of 65,536 bytes. Radish now uploads the current descriptor byte range as a driver constant for buffer-size queries, preserving robustness, actual memory ranges and the unchanged register-residency guard.

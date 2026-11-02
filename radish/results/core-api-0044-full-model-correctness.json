@@ -1,0 +1,117 @@
+{
+  "status": "passed",
+  "session": 77566,
+  "driver": {
+    "bytes": 49015104,
+    "sha256": "32df6c0db213d0999a9cd386a50a800984f9b43a07e4f07574b9cb16cc88edb1"
+  },
+  "source_snapshot": "checkpoint-exact-buffer-size-source",
+  "replay": "Original accepted fixed T213 neural-core graph, weights, inputs, normal repeat2 settings and reference gates; wrapper reuses explicitly reviewed complete prefix pipeline-load admission.",
+  "original_runner_sha256": "3a8f1faf03606b048450ea69a1f34c6474c003322dd1cf64f98e5983b04ac8ab",
+  "actual_runner": {
+    "bytes": 19373,
+    "sha256": "67e18146a345097820cc255ffbfa12daea3ec86c829649c0cf1891e97ce37b92"
+  },
+  "model_sha256": "0b2f39fa6d7263026f1d12a4b03a10a0a531788451db9e774927acfffa03c664",
+  "native_admission": {
+    "bytes": 125214,
+    "sha256": "78c2824e234977a2c12326825c27dda023374520ba3a7c64059cd1bbd7615c79"
+  },
+  "independent_actual_review": {
+    "bytes": 5285,
+    "sha256": "c6fc1fd54acad0d7b38aeaa709c14d6a2cfb5314b0ff5ce8d76e97529dcb5fcc"
+  },
+  "capture": "/run/media/jethac/Shared/radish/full-model-exact-buffer-size-0044/evidence-core0044-exact-size-second/full",
+  "receipt": {
+    "status": "passed",
+    "mode": "full",
+    "contract": {
+      "pins": {
+        "bytes": 6620,
+        "sha256": "380e8e7381c3a88f82a9f8b04a12396a8cf686cbb3609d31e8c3d65922a9fbec"
+      },
+      "runner": {
+        "bytes": 19373,
+        "sha256": "67e18146a345097820cc255ffbfa12daea3ec86c829649c0cf1891e97ce37b92"
+      },
+      "packed_a": "1"
+    },
+    "packed_a": "1",
+    "compile_label": "core0044-exact-size-second",
+    "run_log": {
+      "bytes": 673443,
+      "sha256": "a386fefe84ba7670e2867798b88e0cafdd0cd664c35d74bed064f954b99e52f2"
+    },
+    "collection_errors": [],
+    "scope": "Execution/source/driver/inode/output checks only; root audits actual native resources and admission separately."
+  },
+  "outputs": {
+    "ncnn-vulkan-candidate.f32": {
+      "bytes": 2249368,
+      "sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287"
+    },
+    "ncnn-vulkan-output.f32": {
+      "bytes": 2249368,
+      "sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287"
+    }
+  },
+  "correctness": {
+    "repetitions": 2,
+    "values_each": 562342,
+    "mismatches_each": 0,
+    "max_abs_each": 0.000110626221,
+    "relative_rms_each": 7.47965004e-07,
+    "atol": 0.002,
+    "rtol": 0.002,
+    "accepted_gpu_bytes_exact": true,
+    "GPU_layers_each": 589,
+    "CPU_fallback_layers_each": 0
+  },
+  "timing_seconds": {
+    "cold_load": 20.212,
+    "first_extraction": 67.05897,
+    "resident_extraction": 67.913643,
+    "service": 155.643
+  },
+  "execution_each": {
+    "ordered_commands": 1520,
+    "dispatch_commands": 1424,
+    "transfer_commands": 96,
+    "total_chunks": 71750,
+    "total_submits": 36492,
+    "packed_math_commands": 58,
+    "packed_math_chunks": 26256,
+    "packed_math_submits": 26256,
+    "all_returns_zero": true
+  },
+  "conditions": {
+    "memory_limit_mib": 640,
+    "swap_limit_mib": 128,
+    "runtime_limit_seconds": 300,
+    "peak_mib": 408,
+    "peak_swap_kib": 52,
+    "new_gpu_faults": false,
+    "services_active": true,
+    "own_unit_drained": true
+  },
+  "same_workload_0042_comparison": {
+    "source": "/run/media/jethac/Shared/radish/packed-a-implementation-0042-a6naaxsx/model-native-audit/full-profile-comparison.json",
+    "source_identity": {
+      "bytes": 28689,
+      "sha256": "2e934112c607d61cd73fa912794cb121fa7b32906c09b00421c8629f35aab05b"
+    },
+    "model_fixture_inputs_environment_match": true,
+    "first_seconds": 34.514664,
+    "resident_seconds": 34.303633,
+    "packed_math_submits": 3294,
+    "total_submits": 10235,
+    "current_resident_increase_percent": 97.97798967823613,
+    "scope": "Uncontrolled comparison of the same fixed core, not the end-to-end waveform/request baseline. Driver robustness/compiler/native resource policy changed. Current packed kernels fail the unchanged batching fingerprint and submit each chunk; the timing difference is not causally apportioned."
+  },
+  "preserved_setup_failure": {
+    "session": 63062,
+    "GPU_executed": false,
+    "cause": "Missing original-weight manifest field before process launch; exact accepted path fallback retains the original hardlink check."
+  },
+  "limits": "Functional regression passes, but current fixed-core latency regresses. No tuning, batching expansion, short-request/waveform replay or full Vulkan conformance claim."
+}
