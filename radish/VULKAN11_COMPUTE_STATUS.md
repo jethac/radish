@@ -23,10 +23,11 @@ this is not authorization to change OS graphics or services. The separate f222 v
 The official pinned CTS is revision
 `5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e`, original binary
 `0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660`.
-The exact original binary now starts and completes all five information cases on
-the real public1.1 candidate: four Pass, one `device_properties` Fail. Its31
-messages match the retained property failures; no applicability waiver or fake
-values were introduced. [Exact QPA/status evidence](results/official11-cts-info-0045.json)
+The first retained run of the exact original binary completed all five
+information cases with four Pass and one `device_properties` Fail. Its31
+messages were preserved and subsequently corrected; the current five-case
+slice passes with zero messages. No applicability waiver or fake values were
+introduced. [Exact QPA/status evidence](results/official11-cts-info-0045.json)
 records the nonzero exit and clean postflight. These are official case results,
 not full conformance. The earlier crash and modified instance-alias harness
 remain preserved diagnostics; no modified executable was used for this result.
@@ -318,7 +319,7 @@ source and query evidence](results/required-blit-vertex-query-0045.json) contain
 no graphics commands. Full applicable conformance and the 42 strict sRGB
 mismatches remain open. The selected inference stack is unchanged.
 
-The retained result inventory now contains 368 unique original CTS cases with a Pass
+The retained result inventory now contains 393 unique original CTS cases with a Pass
 result, including the corrected single lifetime case. [The deduplicated inventory](results/official11-qualified-case-inventory-0045.json)
 spans separately pinned candidates and preserves the original oracle limitations.
 It is neither a single full conformance run nor a percentage of applicable
@@ -361,3 +362,18 @@ show register optimization with no private load/store operations. These bring
 the retained historical inventory to 368 distinct original passes; they do not
 qualify compiler spills. The separate ScratchSpace core adapter remains subject
 to native resource admission and is not an original DGC CTS pass.
+
+Twenty-five original indirect/base-dispatch cases passed with uploaded and
+shader-generated command records, offsets, repeated commands and zero-grid
+calls. Their original counters and NumWorkGroups predicates passed. The
+[exact scope](results/official11-indirect-dispatch-0045.json) brings the
+historical deduplicated inventory to 393 distinct original passes.
+
+The separate [core scratch adapter](results/core-scratch-spill-0045.json)
+passed the original four outputs and both complete buffer allocations while
+executing allocator-generated spill/reload instructions. Pre-IR3 NIR and the
+matched compiler source distinguish those spills from source scratch variables;
+all native accesses fit the actual private and code allocations. This closes
+one concrete spill-execution gap without compiler flags or driver changes. It
+is a custom core adapter, not an original DGC CTS pass or exhaustive spill
+qualification. The imported shader and upstream license are retained.

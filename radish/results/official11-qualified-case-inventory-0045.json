@@ -1,5 +1,5 @@
 {
-  "status": "Retained evidence contains368 unique original CTS Pass cases; not a conformance denominator",
+  "status": "Retained evidence contains393 unique original CTS Pass cases; not a conformance denominator",
   "partitions": {
     "information": 5,
     "SPIR-V versions": 4,
@@ -19,9 +19,10 @@
     "core format queries": 188,
     "Function/Private initialization": 8,
     "Function composites integer": 42,
-    "Function composites float": 30
+    "Function composites float": 30,
+    "Indirect/base dispatch": 25
   },
-  "unique_count": 368,
+  "unique_count": 393,
   "names": [
     "dEQP-VK.api.array.oversized_array.core.get_pipeline_cache_data",
     "dEQP-VK.api.descriptor_pool.out_of_pool_memory",
@@ -240,6 +241,7 @@
     "dEQP-VK.compute.pipeline.basic.copy_ssbo_multiple_groups",
     "dEQP-VK.compute.pipeline.basic.copy_ssbo_multiple_invocations",
     "dEQP-VK.compute.pipeline.basic.copy_ssbo_single_invocation",
+    "dEQP-VK.compute.pipeline.basic.indirect_after_base_dispatch",
     "dEQP-VK.compute.pipeline.basic.shared_atomic_op_multiple_groups",
     "dEQP-VK.compute.pipeline.basic.shared_atomic_op_multiple_invocations",
     "dEQP-VK.compute.pipeline.basic.shared_atomic_op_single_group",
@@ -265,6 +267,30 @@
     "dEQP-VK.compute.pipeline.basic.write_multiple_arr_single_invocation",
     "dEQP-VK.compute.pipeline.basic.write_multiple_unsized_arr_multiple_groups",
     "dEQP-VK.compute.pipeline.basic.write_multiple_unsized_arr_single_invocation",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.empty_command",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.empty_command_x",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.empty_command_y",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.empty_command_z",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.large_offset",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.large_offset_multiple_invocations",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.multi_dispatch",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.multi_dispatch_reuse_command",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.multiple_groups",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.multiple_groups_multiple_invocations",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.single_invocation",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.small_offset",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.empty_command",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.empty_command_x",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.empty_command_y",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.empty_command_z",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.large_offset",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.large_offset_multiple_invocations",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.multi_dispatch",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.multi_dispatch_reuse_command",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.multiple_groups",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.multiple_groups_multiple_invocations",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.single_invocation",
+    "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.small_offset",
     "dEQP-VK.info.device_features",
     "dEQP-VK.info.device_memory_properties",
     "dEQP-VK.info.device_properties",
@@ -468,12 +494,16 @@
     "Function composites float": {
       "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-function-composites-float/probe/runner-result.json",
       "sha256": "a0ce078f237c91be08c4f39bac6a7d28ab86bc3dcc96a12a6b36ff15094e345d"
+    },
+    "Indirect/base dispatch": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-indirect-dispatch/probe/runner-result.json",
+      "sha256": "3772000c8273b0f7e5fd01efc85694054f0fee4ff07739ff08f147556c5ff4e7"
     }
   },
   "limitations": "Separate historical revisions/candidates, not one full conformance run; original oracle limits preserved. Failed historical info/ETC cases were corrected and later passed; custom42 strict sRGB mismatches remain unresolved. Original mistyped cache case0/0 is not a case or pass.",
   "source_receipt_identity": {
-    "path": "/run/media/jethac/Shared/radish/compute11-verified-case-count-v3-0045.json",
-    "bytes": 31996,
-    "sha256": "6ea70832b8f0bc640d40ce135bd00664f53d999c4fa8ba22f7f1729abe57b04d"
+    "path": "/run/media/jethac/Shared/radish/compute11-verified-case-count-v4-0045.json",
+    "bytes": 34366,
+    "sha256": "56048dff2d56005b1385d525366ba53a3e01e1aae33d4770c97d1a5280409c53"
   }
 }

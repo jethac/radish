@@ -65,6 +65,7 @@ def main():
              ('vertex-query', 'core_vertex_query.c', None, None),
              ('extended-block', 'core_extended_block.c', 'core-extended-block.comp', 'vulkan1.0'),
              ('cache-merge', 'core_cache_merge.c', 'core-cache-merge.comp', 'vulkan1.0'),
+             ('scratch', 'core_scratch.c', 'core-scratch.comp.spvasm', 'vulkan1.0'),
              ('required-atomics', 'core_required_atomics.c', 'core-required-atomics.comp', 'vulkan1.0'),
              ('mixed-depth', 'core_mixed_depth.c', None, None),
              ('combined-ds', 'core_combined_ds.c', 'core-combined-ds.comp', 'vulkan1.0'),
@@ -103,7 +104,13 @@ def main():
             commands = [prefix + [str(source), '-o', str(output / name), '-ldl', '-pthread']]
         files = inputs + [output / name]
         if shader:
-            commands += [['glslangValidator', '-V', '--target-env', target, str(shader), '-o', str(output / (name + '.spv'))],
+            if shader.suffix == '.spvasm':
+                shader_build = ['spirv-as', '--target-env', target, '--preserve-numeric-ids',
+                                str(shader), '-o', str(output / (name + '.spv'))]
+            else:
+                shader_build = ['glslangValidator', '-V', '--target-env', target,
+                                str(shader), '-o', str(output / (name + '.spv'))]
+            commands += [shader_build,
                          ['spirv-val', '--target-env', target, str(output / (name + '.spv'))]]
             files += [shader, output / (name + '.spv')]
         for index, argv in enumerate(commands):

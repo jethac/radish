@@ -1,0 +1,2440 @@
+{
+  "status": "25 distinct original indirect/base-dispatch cases passed",
+  "bounds": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-indirect-dispatch-next-0045/source-bounds.json",
+      "bytes": 22833,
+      "sha256": "227082acd5489c9cd499c26468e84964fe7af2e67cb329f10bab5642741cfd81"
+    },
+    "result": {
+      "status": "Source-bound next distinct core indirect/base-dispatch and producer-consumer partition; no actual result yet",
+      "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+      "case_file": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-indirect-dispatch-next-0045/cases.txt",
+        "sha256": "abd77317fed88039cc954d5c590f393ac0a8bc05e6ee1b05765d1f88ebac61f9"
+      },
+      "count": 25,
+      "cases": [
+        "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.single_invocation",
+        "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.multiple_groups",
+        "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.multiple_groups_multiple_invocations",
+        "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.small_offset",
+        "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.large_offset",
+        "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.large_offset_multiple_invocations",
+        "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.empty_command",
+        "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.empty_command_x",
+        "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.empty_command_y",
+        "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.empty_command_z",
+        "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.multi_dispatch",
+        "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.multi_dispatch_reuse_command",
+        "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.single_invocation",
+        "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.multiple_groups",
+        "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.multiple_groups_multiple_invocations",
+        "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.small_offset",
+        "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.large_offset",
+        "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.large_offset_multiple_invocations",
+        "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.empty_command",
+        "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.empty_command_x",
+        "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.empty_command_y",
+        "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.empty_command_z",
+        "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.multi_dispatch",
+        "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.multi_dispatch_reuse_command",
+        "dEQP-VK.compute.pipeline.basic.indirect_after_base_dispatch"
+      ],
+      "source_pins": [
+        {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/compute/vktComputeIndirectComputeDispatchTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-indirect-dispatch-next-0045/source/vktComputeIndirectComputeDispatchTests.cpp",
+          "sha256": "a605faed4c3af028377d68ab81ee7270332a1c0f3e4168b94f563a486649b72c",
+          "bytes": 32976
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/compute/vktComputeBasicComputeShaderTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-indirect-dispatch-next-0045/source/vktComputeBasicComputeShaderTests.cpp",
+          "sha256": "4f0c98ac26949bac477a2286f26943a73b2bd1bba9aac32ddd5527baac3fd3e2",
+          "bytes": 274403
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/compute/vktComputeTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-indirect-dispatch-next-0045/source/vktComputeTests.cpp",
+          "sha256": "375552594127652868d2e8d14ebbf288b7406632530c8a5ea54928649f370c27",
+          "bytes": 3670
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/vktTestPackage.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-indirect-dispatch-next-0045/source/vktTestPackage.cpp",
+          "sha256": "272802a91a54f6aade1741c713563936fe01be295ea648bdf85e5cce0e4823d6",
+          "bytes": 67173
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/vktTestCase.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-indirect-dispatch-next-0045/source/vktTestCase.cpp",
+          "sha256": "093936313a9d8489c2ff08fd493445cc8e4e9235ed559597bcf95bd84c6a97fc",
+          "bytes": 83192
+        }
+      ],
+      "registration": [
+        "vktTestPackage.cpp compute root ->vktComputeTests.cpp createTests pipeline construction",
+        "vktComputeTests.cpp52 basic and58 indirect_dispatch",
+        "vktComputeIndirectComputeDispatchTests.cpp677-767 exact12 s_dispatchCases into upload_buffer andgen_in_compute; exclude all_device_address siblings",
+        "vktComputeBasicComputeShaderTests.cpp6011 basic.indirect_after_base_dispatch"
+      ],
+      "indirect_cases": [
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.single_invocation",
+          "indirect_buffer_bytes": 12,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "commands": [
+            {
+              "offset": 0,
+              "grid": [
+                1,
+                1,
+                1
+              ]
+            }
+          ],
+          "indirect_commands": 1,
+          "expected_counter_values": [
+            1
+          ],
+          "direct_generator_dispatches": 0,
+          "result_bytes_with_actual_alignment16": 16
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.multiple_groups",
+          "indirect_buffer_bytes": 12,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "commands": [
+            {
+              "offset": 0,
+              "grid": [
+                2,
+                3,
+                5
+              ]
+            }
+          ],
+          "indirect_commands": 1,
+          "expected_counter_values": [
+            30
+          ],
+          "direct_generator_dispatches": 0,
+          "result_bytes_with_actual_alignment16": 16
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.multiple_groups_multiple_invocations",
+          "indirect_buffer_bytes": 12,
+          "local": [
+            2,
+            3,
+            1
+          ],
+          "commands": [
+            {
+              "offset": 0,
+              "grid": [
+                1,
+                2,
+                3
+              ]
+            }
+          ],
+          "indirect_commands": 1,
+          "expected_counter_values": [
+            36
+          ],
+          "direct_generator_dispatches": 0,
+          "result_bytes_with_actual_alignment16": 16
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.small_offset",
+          "indirect_buffer_bytes": 28,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "commands": [
+            {
+              "offset": 16,
+              "grid": [
+                1,
+                1,
+                1
+              ]
+            }
+          ],
+          "indirect_commands": 1,
+          "expected_counter_values": [
+            1
+          ],
+          "direct_generator_dispatches": 0,
+          "result_bytes_with_actual_alignment16": 16
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.large_offset",
+          "indirect_buffer_bytes": 2097152,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "commands": [
+            {
+              "offset": 1048588,
+              "grid": [
+                1,
+                1,
+                1
+              ]
+            }
+          ],
+          "indirect_commands": 1,
+          "expected_counter_values": [
+            1
+          ],
+          "direct_generator_dispatches": 0,
+          "result_bytes_with_actual_alignment16": 16
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.large_offset_multiple_invocations",
+          "indirect_buffer_bytes": 2097152,
+          "local": [
+            2,
+            3,
+            1
+          ],
+          "commands": [
+            {
+              "offset": 1048588,
+              "grid": [
+                1,
+                2,
+                3
+              ]
+            }
+          ],
+          "indirect_commands": 1,
+          "expected_counter_values": [
+            36
+          ],
+          "direct_generator_dispatches": 0,
+          "result_bytes_with_actual_alignment16": 16
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.empty_command",
+          "indirect_buffer_bytes": 12,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "commands": [
+            {
+              "offset": 0,
+              "grid": [
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "indirect_commands": 1,
+          "expected_counter_values": [
+            0
+          ],
+          "direct_generator_dispatches": 0,
+          "result_bytes_with_actual_alignment16": 16
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.empty_command_x",
+          "indirect_buffer_bytes": 12,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "commands": [
+            {
+              "offset": 0,
+              "grid": [
+                0,
+                1,
+                1
+              ]
+            }
+          ],
+          "indirect_commands": 1,
+          "expected_counter_values": [
+            0
+          ],
+          "direct_generator_dispatches": 0,
+          "result_bytes_with_actual_alignment16": 16
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.empty_command_y",
+          "indirect_buffer_bytes": 12,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "commands": [
+            {
+              "offset": 0,
+              "grid": [
+                1,
+                0,
+                1
+              ]
+            }
+          ],
+          "indirect_commands": 1,
+          "expected_counter_values": [
+            0
+          ],
+          "direct_generator_dispatches": 0,
+          "result_bytes_with_actual_alignment16": 16
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.empty_command_z",
+          "indirect_buffer_bytes": 12,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "commands": [
+            {
+              "offset": 0,
+              "grid": [
+                1,
+                1,
+                0
+              ]
+            }
+          ],
+          "indirect_commands": 1,
+          "expected_counter_values": [
+            0
+          ],
+          "direct_generator_dispatches": 0,
+          "result_bytes_with_actual_alignment16": 16
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.multi_dispatch",
+          "indirect_buffer_bytes": 1024,
+          "local": [
+            3,
+            1,
+            2
+          ],
+          "commands": [
+            {
+              "offset": 0,
+              "grid": [
+                1,
+                1,
+                1
+              ]
+            },
+            {
+              "offset": 12,
+              "grid": [
+                2,
+                1,
+                1
+              ]
+            },
+            {
+              "offset": 104,
+              "grid": [
+                1,
+                3,
+                1
+              ]
+            },
+            {
+              "offset": 40,
+              "grid": [
+                1,
+                1,
+                7
+              ]
+            },
+            {
+              "offset": 52,
+              "grid": [
+                1,
+                1,
+                4
+              ]
+            }
+          ],
+          "indirect_commands": 5,
+          "expected_counter_values": [
+            6,
+            12,
+            18,
+            42,
+            24
+          ],
+          "direct_generator_dispatches": 0,
+          "result_bytes_with_actual_alignment16": 80
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.multi_dispatch_reuse_command",
+          "indirect_buffer_bytes": 1024,
+          "local": [
+            3,
+            1,
+            2
+          ],
+          "commands": [
+            {
+              "offset": 0,
+              "grid": [
+                1,
+                1,
+                1
+              ]
+            },
+            {
+              "offset": 0,
+              "grid": [
+                1,
+                1,
+                1
+              ]
+            },
+            {
+              "offset": 0,
+              "grid": [
+                1,
+                1,
+                1
+              ]
+            },
+            {
+              "offset": 104,
+              "grid": [
+                1,
+                3,
+                1
+              ]
+            },
+            {
+              "offset": 104,
+              "grid": [
+                1,
+                3,
+                1
+              ]
+            },
+            {
+              "offset": 52,
+              "grid": [
+                1,
+                1,
+                4
+              ]
+            },
+            {
+              "offset": 52,
+              "grid": [
+                1,
+                1,
+                4
+              ]
+            }
+          ],
+          "indirect_commands": 7,
+          "expected_counter_values": [
+            6,
+            6,
+            6,
+            18,
+            18,
+            24,
+            24
+          ],
+          "direct_generator_dispatches": 0,
+          "result_bytes_with_actual_alignment16": 112
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.single_invocation",
+          "indirect_buffer_bytes": 12,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "commands": [
+            {
+              "offset": 0,
+              "grid": [
+                1,
+                1,
+                1
+              ]
+            }
+          ],
+          "indirect_commands": 1,
+          "expected_counter_values": [
+            1
+          ],
+          "direct_generator_dispatches": 1,
+          "result_bytes_with_actual_alignment16": 16
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.multiple_groups",
+          "indirect_buffer_bytes": 12,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "commands": [
+            {
+              "offset": 0,
+              "grid": [
+                2,
+                3,
+                5
+              ]
+            }
+          ],
+          "indirect_commands": 1,
+          "expected_counter_values": [
+            30
+          ],
+          "direct_generator_dispatches": 1,
+          "result_bytes_with_actual_alignment16": 16
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.multiple_groups_multiple_invocations",
+          "indirect_buffer_bytes": 12,
+          "local": [
+            2,
+            3,
+            1
+          ],
+          "commands": [
+            {
+              "offset": 0,
+              "grid": [
+                1,
+                2,
+                3
+              ]
+            }
+          ],
+          "indirect_commands": 1,
+          "expected_counter_values": [
+            36
+          ],
+          "direct_generator_dispatches": 1,
+          "result_bytes_with_actual_alignment16": 16
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.small_offset",
+          "indirect_buffer_bytes": 28,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "commands": [
+            {
+              "offset": 16,
+              "grid": [
+                1,
+                1,
+                1
+              ]
+            }
+          ],
+          "indirect_commands": 1,
+          "expected_counter_values": [
+            1
+          ],
+          "direct_generator_dispatches": 1,
+          "result_bytes_with_actual_alignment16": 16
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.large_offset",
+          "indirect_buffer_bytes": 2097152,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "commands": [
+            {
+              "offset": 1048588,
+              "grid": [
+                1,
+                1,
+                1
+              ]
+            }
+          ],
+          "indirect_commands": 1,
+          "expected_counter_values": [
+            1
+          ],
+          "direct_generator_dispatches": 1,
+          "result_bytes_with_actual_alignment16": 16
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.large_offset_multiple_invocations",
+          "indirect_buffer_bytes": 2097152,
+          "local": [
+            2,
+            3,
+            1
+          ],
+          "commands": [
+            {
+              "offset": 1048588,
+              "grid": [
+                1,
+                2,
+                3
+              ]
+            }
+          ],
+          "indirect_commands": 1,
+          "expected_counter_values": [
+            36
+          ],
+          "direct_generator_dispatches": 1,
+          "result_bytes_with_actual_alignment16": 16
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.empty_command",
+          "indirect_buffer_bytes": 12,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "commands": [
+            {
+              "offset": 0,
+              "grid": [
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "indirect_commands": 1,
+          "expected_counter_values": [
+            0
+          ],
+          "direct_generator_dispatches": 1,
+          "result_bytes_with_actual_alignment16": 16
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.empty_command_x",
+          "indirect_buffer_bytes": 12,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "commands": [
+            {
+              "offset": 0,
+              "grid": [
+                0,
+                1,
+                1
+              ]
+            }
+          ],
+          "indirect_commands": 1,
+          "expected_counter_values": [
+            0
+          ],
+          "direct_generator_dispatches": 1,
+          "result_bytes_with_actual_alignment16": 16
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.empty_command_y",
+          "indirect_buffer_bytes": 12,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "commands": [
+            {
+              "offset": 0,
+              "grid": [
+                1,
+                0,
+                1
+              ]
+            }
+          ],
+          "indirect_commands": 1,
+          "expected_counter_values": [
+            0
+          ],
+          "direct_generator_dispatches": 1,
+          "result_bytes_with_actual_alignment16": 16
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.empty_command_z",
+          "indirect_buffer_bytes": 12,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "commands": [
+            {
+              "offset": 0,
+              "grid": [
+                1,
+                1,
+                0
+              ]
+            }
+          ],
+          "indirect_commands": 1,
+          "expected_counter_values": [
+            0
+          ],
+          "direct_generator_dispatches": 1,
+          "result_bytes_with_actual_alignment16": 16
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.multi_dispatch",
+          "indirect_buffer_bytes": 1024,
+          "local": [
+            3,
+            1,
+            2
+          ],
+          "commands": [
+            {
+              "offset": 0,
+              "grid": [
+                1,
+                1,
+                1
+              ]
+            },
+            {
+              "offset": 12,
+              "grid": [
+                2,
+                1,
+                1
+              ]
+            },
+            {
+              "offset": 104,
+              "grid": [
+                1,
+                3,
+                1
+              ]
+            },
+            {
+              "offset": 40,
+              "grid": [
+                1,
+                1,
+                7
+              ]
+            },
+            {
+              "offset": 52,
+              "grid": [
+                1,
+                1,
+                4
+              ]
+            }
+          ],
+          "indirect_commands": 5,
+          "expected_counter_values": [
+            6,
+            12,
+            18,
+            42,
+            24
+          ],
+          "direct_generator_dispatches": 1,
+          "result_bytes_with_actual_alignment16": 80
+        },
+        {
+          "case": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.multi_dispatch_reuse_command",
+          "indirect_buffer_bytes": 1024,
+          "local": [
+            3,
+            1,
+            2
+          ],
+          "commands": [
+            {
+              "offset": 0,
+              "grid": [
+                1,
+                1,
+                1
+              ]
+            },
+            {
+              "offset": 0,
+              "grid": [
+                1,
+                1,
+                1
+              ]
+            },
+            {
+              "offset": 0,
+              "grid": [
+                1,
+                1,
+                1
+              ]
+            },
+            {
+              "offset": 104,
+              "grid": [
+                1,
+                3,
+                1
+              ]
+            },
+            {
+              "offset": 104,
+              "grid": [
+                1,
+                3,
+                1
+              ]
+            },
+            {
+              "offset": 52,
+              "grid": [
+                1,
+                1,
+                4
+              ]
+            },
+            {
+              "offset": 52,
+              "grid": [
+                1,
+                1,
+                4
+              ]
+            }
+          ],
+          "indirect_commands": 7,
+          "expected_counter_values": [
+            6,
+            6,
+            6,
+            18,
+            18,
+            24,
+            24
+          ],
+          "direct_generator_dispatches": 1,
+          "result_bytes_with_actual_alignment16": 112
+        }
+      ],
+      "sequential_base_case": {
+        "buffers_bytes": [
+          12,
+          4
+        ],
+        "local": [
+          1,
+          1,
+          1
+        ],
+        "base": [
+          2,
+          3,
+          4
+        ],
+        "base_grid": [
+          1,
+          1,
+          1
+        ],
+        "indirect_grid": [
+          3,
+          3,
+          1
+        ],
+        "expected_atomic_counter": 10,
+        "pipelines": 1,
+        "requires": "VK_KHR_device_group functionality promoted tocore1.1; no optionalfeaturebit; pipeline DISPATCH_BASE flag set"
+      },
+      "bounds_per_single_exposed_compute_queue": {
+        "cases": 25,
+        "indirect_command_calls": 45,
+        "direct_generator_dispatches": 12,
+        "base_dispatch_calls": 1,
+        "total_dispatch_calls_including_zero_grid": 58,
+        "zero_grid_indirect_calls": 8,
+        "nonzero_dispatch_calls": 50,
+        "logical_invocations": 640,
+        "result_counter_oracles": 45,
+        "max_indirect_buffer_bytes": 2097152,
+        "max_result_buffer_bytes_on_current_alignment16": 112,
+        "max_local_invocations": 6,
+        "max_live_pipelines": 2,
+        "max_active_ssbo_per_shader": 1,
+        "max_descriptor_sets_per_case": 8
+      },
+      "source_semantics": "Upload branch flushes actual VkDispatchIndirectCommand words. Generate branch writes the same words via one local1 compute dispatch, then SHADER_WRITE->INDIRECT_COMMAND_READ with COMPUTE_SHADER->DRAW_INDIRECT dependency. Verify shaders compare gl_NumWorkGroups to per-command expected dimensions and atomicAdd numPassed; host waits/invalidate and checks exact counts. Zero-grid variants must leave zero; repeat-offset cases reuse identical command bytes with distinct descriptor result ranges. Base-then-indirect case checks total atomic invocations10, not exact built-in coordinate values.",
+      "limits_and_validity": "All indirect offsets4-byte aligned and12-byte records within actual buffers. Largest2MiB STORAGE+INDIRECT buffer fits128MiB range; oneSSBO per shader, local<=6/gridcomponents<=7. DRAW_INDIRECT includes compute indirect dispatch, so no graphicsqueue is required. Normal pipeline path has no shader-object/device-address/DGC feature or command. Selected base functionality is mandatory core1.1. MultiQueueRunner executes each eligible queue; current candidate exposes one compute queue, actual capture must confirm count.",
+      "oracle_scope": "Original counters/NumWorkGroups predicate and fixed base+indirect count only; not full data-buffer guards, elapsed timing, arbitrary producer races or all built-ins. Original unmodified cases/GLSL/oracles, no driver mutation justified before failure.",
+      "controls": "Original90s/384MiB/8MiB log+64MiB reserve/per-case faultstop. Distinct from all296 prior cases and72Functioncomposites. No repeated passed inventory or increased limit."
+    }
+  },
+  "runner_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-indirect-dispatch-runner-0045/independent-runner-review.json",
+      "bytes": 1469,
+      "sha256": "b92792fac902f65c678a12477d90a10da72d462461de1262bc2e59b74f354f57"
+    },
+    "result": {
+      "status": "PASS finite unchanged-engine inventory derivative",
+      "runner": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-indirect-dispatch-runner-0045/device-official-cts.py",
+        "sha256": "6a6782dd48fd8bab84a8462855c4c335aaca3c57ee5eadca634fbf9fecb2bd2a"
+      },
+      "baseline": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-format-query-v2-runner-0045/device-official-cts.py",
+        "sha256": "566ef7226cd6b9509239a4be23413deb8b338b6e47ba8e30066d6e44a8a090ab"
+      },
+      "source_bounds": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-indirect-dispatch-next-0045/source-bounds.json",
+        "sha256": "227082acd5489c9cd499c26468e84964fe7af2e67cb329f10bab5642741cfd81"
+      },
+      "case_file": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-indirect-dispatch-next-0045/cases.txt",
+        "sha256": "abd77317fed88039cc954d5c590f393ac0a8bc05e6ee1b05765d1f88ebac61f9",
+        "count": 25
+      },
+      "checks": [
+        "Exact two constant replacements only; all transport/control/fault/QPA logic byte-identical",
+        "Case file equals frozen source list and payload; 25 unique names",
+        "All five source snapshots and live pinned CTS source files match",
+        "Actual hostcheck assets match source pins; no device actions during review"
+      ],
+      "scope": "Original source-bounded indirect/base dispatch semantics; actual result and native/output accounting pending. No gate, feature, shader, oracle or timeout changes."
+    }
+  },
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-indirect-dispatch-next-0045/actual-review.json",
+      "bytes": 33697,
+      "sha256": "759976cda94dfe0731f094bc8a6cb29e1a225a1c11be22737c6dae56e0c7474a"
+    },
+    "result": {
+      "status": "PASS exact25 original indirect/base cases with original oracles",
+      "source_bounds_sha256": "227082acd5489c9cd499c26468e84964fe7af2e67cb329f10bab5642741cfd81",
+      "case_file_sha256": "abd77317fed88039cc954d5c590f393ac0a8bc05e6ee1b05765d1f88ebac61f9",
+      "cases": [
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.single_invocation",
+          "result": "Pass",
+          "qpa_sha256": "6c349dfa4813c6a035d90cb509a51cf8693b0dd17f0c91c7abd5880303ff29b3",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaaac87b53b0",
+              "grid": "1,1,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "4054018",
+              "submit_ns": "3793600",
+              "submit_max_ns": "3793600",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "1",
+              "3",
+              "12"
+            ]
+          ],
+          "counter_oracles": 1
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.multiple_groups",
+          "result": "Pass",
+          "qpa_sha256": "5ec27c8247b878f8230bf519c06ede31034f744554e0ee90e3958cc48447ef1d",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaab2a53c3b0",
+              "grid": "2,3,5",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "4070320",
+              "submit_ns": "3812872",
+              "submit_max_ns": "3812872",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "1",
+              "3",
+              "12"
+            ]
+          ],
+          "counter_oracles": 1
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.multiple_groups_multiple_invocations",
+          "result": "Pass",
+          "qpa_sha256": "a9814bcba85576f4538d198c4de79e3a8249b6a45147fefbf99a61c6519ba1cb",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaab026dc470",
+              "grid": "1,2,3",
+              "local": "2,3,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "3805632",
+              "submit_ns": "3568079",
+              "submit_max_ns": "3568079",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "1",
+              "3",
+              "12"
+            ]
+          ],
+          "counter_oracles": 1
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.small_offset",
+          "result": "Pass",
+          "qpa_sha256": "76415145df230bf88278412719f30dba76c2564de9d12dd36549dc9f4f55b0d4",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaab04fb4dc0",
+              "grid": "1,1,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "4069487",
+              "submit_ns": "3814226",
+              "submit_max_ns": "3814226",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "1",
+              "3",
+              "12"
+            ]
+          ],
+          "counter_oracles": 1
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.large_offset",
+          "result": "Pass",
+          "qpa_sha256": "6e820c110e0484b296946032d3f52327e0e3879bf677337db47abcb68dda767c",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaab1a18edc0",
+              "grid": "1,1,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "4036414",
+              "submit_ns": "3772350",
+              "submit_max_ns": "3772350",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "1",
+              "3",
+              "12"
+            ]
+          ],
+          "counter_oracles": 1
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.large_offset_multiple_invocations",
+          "result": "Pass",
+          "qpa_sha256": "93c4746d284181482f05246631766267a3b905b666dcab05694db2a64129d8ab",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaaaf83c6470",
+              "grid": "1,2,3",
+              "local": "2,3,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "4029122",
+              "submit_ns": "3723288",
+              "submit_max_ns": "3723288",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "1",
+              "3",
+              "12"
+            ]
+          ],
+          "counter_oracles": 1
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.empty_command",
+          "result": "Pass",
+          "qpa_sha256": "72981c2677587bbbbc0e70989d590665588ccb075c2c7712d16006650af85553",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaab0ade6610",
+              "grid": "0,0,0",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "1",
+              "chunks": "0",
+              "submits": "0",
+              "ns": "5729",
+              "submit_ns": "0",
+              "submit_max_ns": "0",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "0",
+              "2",
+              "8"
+            ]
+          ],
+          "counter_oracles": 1
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.empty_command_x",
+          "result": "Pass",
+          "qpa_sha256": "3ee138f4e8476848bb06759b91f8a5f33d5914d30d81c17c068a5921171a005b",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaab0f794680",
+              "grid": "0,1,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "1",
+              "chunks": "0",
+              "submits": "0",
+              "ns": "6770",
+              "submit_ns": "0",
+              "submit_max_ns": "0",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "0",
+              "2",
+              "8"
+            ]
+          ],
+          "counter_oracles": 1
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.empty_command_y",
+          "result": "Pass",
+          "qpa_sha256": "ca5dcb1191b25db4b296eb2eef462f16e9d3be741fd41b99197830773f72644d",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaaae1ecc680",
+              "grid": "1,0,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "1",
+              "chunks": "0",
+              "submits": "0",
+              "ns": "6250",
+              "submit_ns": "0",
+              "submit_max_ns": "0",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "0",
+              "2",
+              "8"
+            ]
+          ],
+          "counter_oracles": 1
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.empty_command_z",
+          "result": "Pass",
+          "qpa_sha256": "4dac43650eb24da1ea7f1eb507391308e33917fb31b25ef6c76a4f7067e8e22e",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaaae1c83660",
+              "grid": "1,1,0",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "1",
+              "chunks": "0",
+              "submits": "0",
+              "ns": "9323",
+              "submit_ns": "0",
+              "submit_max_ns": "0",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "0",
+              "2",
+              "8"
+            ]
+          ],
+          "counter_oracles": 1
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.multi_dispatch",
+          "result": "Pass",
+          "qpa_sha256": "d745be39cc60b50aac029f6c6ed9237c00208abf55f6be7e6e31db8334b2d7c8",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaaaf2d8f3a0",
+              "grid": "1,1,1",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "4223705",
+              "submit_ns": "3930528",
+              "submit_max_ns": "3930528",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaaaf2d8f3a0",
+              "grid": "2,1,1",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "439063",
+              "submit_ns": "372709",
+              "submit_max_ns": "372709",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaaaf2d8f3a0",
+              "grid": "1,3,1",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "437188",
+              "submit_ns": "388751",
+              "submit_max_ns": "388751",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaaaf2d8f3a0",
+              "grid": "1,1,7",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "505105",
+              "submit_ns": "456511",
+              "submit_max_ns": "456511",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaaaf2d8f3a0",
+              "grid": "1,1,4",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "267708",
+              "submit_ns": "226199",
+              "submit_max_ns": "226199",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "1",
+              "3",
+              "12"
+            ]
+          ],
+          "counter_oracles": 5
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.multi_dispatch_reuse_command",
+          "result": "Pass",
+          "qpa_sha256": "1a951c1524e3822cbf16669c0fe2001928dbc2701491a31db8a41227108333ac",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaab015acab0",
+              "grid": "1,1,1",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "3882246",
+              "submit_ns": "3643496",
+              "submit_max_ns": "3643496",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaab015acab0",
+              "grid": "1,1,1",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "285209",
+              "submit_ns": "234220",
+              "submit_max_ns": "234220",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaab015acab0",
+              "grid": "1,1,1",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "263646",
+              "submit_ns": "220677",
+              "submit_max_ns": "220677",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaab015acab0",
+              "grid": "1,3,1",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "179375",
+              "submit_ns": "138073",
+              "submit_max_ns": "138073",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaab015acab0",
+              "grid": "1,3,1",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "124949",
+              "submit_ns": "89479",
+              "submit_max_ns": "89479",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaab015acab0",
+              "grid": "1,1,4",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "377605",
+              "submit_ns": "349948",
+              "submit_max_ns": "349948",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaab015acab0",
+              "grid": "1,1,4",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "439271",
+              "submit_ns": "404220",
+              "submit_max_ns": "404220",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "1",
+              "3",
+              "12"
+            ]
+          ],
+          "counter_oracles": 7
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.single_invocation",
+          "result": "Pass",
+          "qpa_sha256": "58b8062e5c2eebba6cc3e54b9d371006b6511eb18831b64c8d02809a2a91d079",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaab1a9d9a30",
+              "grid": "1,1,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "1",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "4117403",
+              "submit_ns": "3839903",
+              "submit_max_ns": "3839903",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaab1b7d89a0",
+              "grid": "1,1,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "484740",
+              "submit_ns": "411407",
+              "submit_max_ns": "411407",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "1",
+              "3",
+              "12"
+            ],
+            [
+              "0",
+              "2",
+              "8"
+            ]
+          ],
+          "counter_oracles": 1
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.multiple_groups",
+          "result": "Pass",
+          "qpa_sha256": "6ea89fd8da7b5c1a24894c8532c1c4b8d1f3175b2aecc4433c1ed781bd75d0c8",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaaaea5c5b70",
+              "grid": "1,1,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "1",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "4064122",
+              "submit_ns": "3795267",
+              "submit_max_ns": "3795267",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaaaeb3c9db0",
+              "grid": "2,3,5",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "740678",
+              "submit_ns": "661720",
+              "submit_max_ns": "661720",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "1",
+              "3",
+              "12"
+            ],
+            [
+              "0",
+              "2",
+              "8"
+            ]
+          ],
+          "counter_oracles": 1
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.multiple_groups_multiple_invocations",
+          "result": "Pass",
+          "qpa_sha256": "efd3a6cc62a474c1a7e2e1d5e65fa92483b0fa035b19f5aea0f3b6b5e78173a3",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaab019a6450",
+              "grid": "1,1,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "1",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "3986361",
+              "submit_ns": "3716049",
+              "submit_max_ns": "3716049",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaab019a3a30",
+              "grid": "1,2,3",
+              "local": "2,3,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "316147",
+              "submit_ns": "246927",
+              "submit_max_ns": "246927",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "1",
+              "3",
+              "12"
+            ],
+            [
+              "0",
+              "2",
+              "8"
+            ]
+          ],
+          "counter_oracles": 1
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.small_offset",
+          "result": "Pass",
+          "qpa_sha256": "987b2b152162a64539f64d0f8100736601ea002fa75ba27eda3260a685de0186",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaaaf2948120",
+              "grid": "1,1,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "1",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "3935944",
+              "submit_ns": "3636413",
+              "submit_max_ns": "3636413",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaaaf2945380",
+              "grid": "1,1,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "610158",
+              "submit_ns": "535210",
+              "submit_max_ns": "535210",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "1",
+              "3",
+              "12"
+            ],
+            [
+              "0",
+              "2",
+              "8"
+            ]
+          ],
+          "counter_oracles": 1
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.large_offset",
+          "result": "Pass",
+          "qpa_sha256": "b14f9941e40f6be4b0312887680cf94345ca9c485ae9a121cbf6b29117d301dc",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaab0410b120",
+              "grid": "1,1,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "1",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "6454803",
+              "submit_ns": "6089074",
+              "submit_max_ns": "6089074",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaab04108380",
+              "grid": "1,1,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "588490",
+              "submit_ns": "518126",
+              "submit_max_ns": "518126",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "1",
+              "3",
+              "12"
+            ],
+            [
+              "0",
+              "2",
+              "8"
+            ]
+          ],
+          "counter_oracles": 1
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.large_offset_multiple_invocations",
+          "result": "Pass",
+          "qpa_sha256": "f12ded6103069cad5ceec625b1011a22089df64df6161e9a3f5f6980da6dae8b",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaab069f2800",
+              "grid": "1,1,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "1",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "6808346",
+              "submit_ns": "6505480",
+              "submit_max_ns": "6505480",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaab069e39d0",
+              "grid": "1,2,3",
+              "local": "2,3,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "500730",
+              "submit_ns": "423334",
+              "submit_max_ns": "423334",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "1",
+              "3",
+              "12"
+            ],
+            [
+              "0",
+              "2",
+              "8"
+            ]
+          ],
+          "counter_oracles": 1
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.empty_command",
+          "result": "Pass",
+          "qpa_sha256": "bd4be811728c36193dd2578efe547fc47be42fda5056b8ec24ce0c2003dd00fc",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaaaf52fc2e0",
+              "grid": "1,1,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "1",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "4291778",
+              "submit_ns": "3992143",
+              "submit_max_ns": "3992143",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaaaf52e9dc0",
+              "grid": "0,0,0",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "1",
+              "chunks": "0",
+              "submits": "0",
+              "ns": "19480",
+              "submit_ns": "0",
+              "submit_max_ns": "0",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "0",
+              "2",
+              "8"
+            ],
+            [
+              "0",
+              "2",
+              "8"
+            ]
+          ],
+          "counter_oracles": 1
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.empty_command_x",
+          "result": "Pass",
+          "qpa_sha256": "be145b8add033d72d8de8229f4964f78ebd6653fcfe7a50c00d3e13f91c9664a",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaab015c55c0",
+              "grid": "1,1,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "1",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "3980319",
+              "submit_ns": "3707298",
+              "submit_max_ns": "3707298",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaab023c6940",
+              "grid": "0,1,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "1",
+              "chunks": "0",
+              "submits": "0",
+              "ns": "18854",
+              "submit_ns": "0",
+              "submit_max_ns": "0",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "0",
+              "2",
+              "8"
+            ],
+            [
+              "0",
+              "2",
+              "8"
+            ]
+          ],
+          "counter_oracles": 1
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.empty_command_y",
+          "result": "Pass",
+          "qpa_sha256": "2eaf16002f0847db6aa9b4da81da1341fff77f027be5a9773e6a413e4999f12b",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaaaecfcc2c0",
+              "grid": "1,1,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "1",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "4055633",
+              "submit_ns": "3704069",
+              "submit_max_ns": "3704069",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaaaecfb9dc0",
+              "grid": "1,0,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "1",
+              "chunks": "0",
+              "submits": "0",
+              "ns": "19948",
+              "submit_ns": "0",
+              "submit_max_ns": "0",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "0",
+              "2",
+              "8"
+            ],
+            [
+              "0",
+              "2",
+              "8"
+            ]
+          ],
+          "counter_oracles": 1
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.empty_command_z",
+          "result": "Pass",
+          "qpa_sha256": "45b1d21d9f973e8c82d983604615edd405f30c0036d5d8d77f9479d1ca9bf44b",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaab281df5a0",
+              "grid": "1,1,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "1",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "3741726",
+              "submit_ns": "3456516",
+              "submit_max_ns": "3456516",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaab28fe0920",
+              "grid": "1,1,0",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "1",
+              "chunks": "0",
+              "submits": "0",
+              "ns": "16094",
+              "submit_ns": "0",
+              "submit_max_ns": "0",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "0",
+              "2",
+              "8"
+            ],
+            [
+              "0",
+              "2",
+              "8"
+            ]
+          ],
+          "counter_oracles": 1
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.multi_dispatch",
+          "result": "Pass",
+          "qpa_sha256": "ebeafc26ecbd62ebb249ad1e6f9caf245e9d683aa669e232050a2ab681a43e98",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaaac5bcbbc0",
+              "grid": "1,1,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "3",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "3734434",
+              "submit_ns": "3436360",
+              "submit_max_ns": "3436360",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaaac69bd010",
+              "grid": "1,1,1",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "400417",
+              "submit_ns": "326876",
+              "submit_max_ns": "326876",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaaac69bd010",
+              "grid": "2,1,1",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "563698",
+              "submit_ns": "518594",
+              "submit_max_ns": "518594",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaaac69bd010",
+              "grid": "1,3,1",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "462084",
+              "submit_ns": "418959",
+              "submit_max_ns": "418959",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaaac69bd010",
+              "grid": "1,1,7",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "302709",
+              "submit_ns": "256407",
+              "submit_max_ns": "256407",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaaac69bd010",
+              "grid": "1,1,4",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "212083",
+              "submit_ns": "172396",
+              "submit_max_ns": "172396",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "1",
+              "3",
+              "12"
+            ],
+            [
+              "0",
+              "7",
+              "8"
+            ]
+          ],
+          "counter_oracles": 5
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.multi_dispatch_reuse_command",
+          "result": "Pass",
+          "qpa_sha256": "9a91a7704b33e70eb56b5ec02be4bded6506c936f4d3c1116ef11718daedd19f",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaab095fc990",
+              "grid": "1,1,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "3896413",
+              "submit_ns": "3638287",
+              "submit_max_ns": "3638287",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaab095eaef0",
+              "grid": "1,1,1",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "450001",
+              "submit_ns": "377917",
+              "submit_max_ns": "377917",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaab095eaef0",
+              "grid": "1,1,1",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "354688",
+              "submit_ns": "305990",
+              "submit_max_ns": "305990",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaab095eaef0",
+              "grid": "1,1,1",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "274376",
+              "submit_ns": "223073",
+              "submit_max_ns": "223073",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaab095eaef0",
+              "grid": "1,3,1",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "159532",
+              "submit_ns": "118178",
+              "submit_max_ns": "118178",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaab095eaef0",
+              "grid": "1,3,1",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "252657",
+              "submit_ns": "210729",
+              "submit_max_ns": "210729",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaab095eaef0",
+              "grid": "1,1,4",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "328906",
+              "submit_ns": "289272",
+              "submit_max_ns": "289272",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaab095eaef0",
+              "grid": "1,1,4",
+              "local": "3,1,2",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "2",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "286928",
+              "submit_ns": "247136",
+              "submit_max_ns": "247136",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "1",
+              "3",
+              "12"
+            ],
+            [
+              "0",
+              "4",
+              "8"
+            ]
+          ],
+          "counter_oracles": 7
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.indirect_after_base_dispatch",
+          "result": "Pass",
+          "qpa_sha256": "ca4c58e563de91070d12dfa6565030cb05e49814d5150b108b5a66b0da057137",
+          "dispatch_profiles": [
+            {
+              "pipeline": "0xaaaafa1ab770",
+              "grid": "1,1,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "1",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "4193705",
+              "submit_ns": "3844954",
+              "submit_max_ns": "3844954",
+              "result": "0"
+            },
+            {
+              "pipeline": "0xaaaafa1ab770",
+              "grid": "3,3,1",
+              "local": "1,1,1",
+              "barrier": "0",
+              "loops": "0",
+              "instrlen": "1",
+              "chunks": "1",
+              "submits": "1",
+              "ns": "294116",
+              "submit_ns": "236303",
+              "submit_max_ns": "236303",
+              "result": "0"
+            }
+          ],
+          "native_register_summaries": [
+            [
+              "0",
+              "2",
+              "8"
+            ]
+          ],
+          "counter_oracles": 1
+        }
+      ],
+      "totals": {
+        "cases": 25,
+        "dispatch_calls": 58,
+        "nonzero_dispatches": 50,
+        "zero_grid_dispatches_with_zero_chunks_and_submits": 8,
+        "chunks": 50,
+        "submits": 50,
+        "logical_invocations": 640,
+        "counter_oracles": 45
+      },
+      "payload": [
+        {
+          "name": "libvulkan_radish.so",
+          "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+        },
+        {
+          "name": "deqp-vk",
+          "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+        },
+        {
+          "name": "libvulkan.so.1",
+          "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+        },
+        {
+          "name": "info-cases.txt",
+          "sha256": "abd77317fed88039cc954d5c590f393ac0a8bc05e6ee1b05765d1f88ebac61f9"
+        },
+        {
+          "name": "check-gpu-log.py",
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        }
+      ],
+      "safety": {
+        "runtime": "27.145s",
+        "memory": "95.2M (swap: 0B)",
+        "per_case_fault_checks": 25,
+        "collection": "PASS/errors[]",
+        "services": [
+          "active",
+          "active"
+        ],
+        "fault_check_sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+        "log_sha256": "8a683d60fc1150273df9c3659c61ae44953f4a8da2d8d1985feb558e6e642e73"
+      },
+      "scope": "Original CPU-uploaded and compute-produced indirect records, all expected NumWorkGroups/counter outputs, aligned nonzero offsets/reused command records, zero-grid no work, and DISPATCH_BASE followed by indirect count10. Original exact counter oracles; no custom full-allocation guards, general race/alias coverage or exact base-coordinate built-in oracle claim. All original cases unmodified, no repeated earlier passes."
+    }
+  },
+  "scope": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-indirect-dispatch/probe/runner-result.json",
+      "bytes": 5320,
+      "sha256": "3772000c8273b0f7e5fd01efc85694054f0fee4ff07739ff08f147556c5ff4e7"
+    },
+    "result": {
+      "status": "passed",
+      "mode": "probe",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 166,
+          "sha256": "7d6c8f5995f6a3fa5a7a26463faf27576290e905e3c155b62fc14e2f87e75c7e"
+        },
+        "deqp-vk": {
+          "bytes": 97536760,
+          "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+        },
+        "libvulkan.so.1": {
+          "bytes": 703696,
+          "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+        },
+        "info-cases.txt": {
+          "bytes": 1914,
+          "sha256": "abd77317fed88039cc954d5c590f393ac0a8bc05e6ee1b05765d1f88ebac61f9"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13622368,
+          "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+        },
+        "payload.json": {
+          "bytes": 969,
+          "sha256": "1835357301282ca953d8552146dddfe5c770097eb275fa3a6bde776deab36b94"
+        }
+      },
+      "run_log": {
+        "bytes": 488735,
+        "sha256": "8a683d60fc1150273df9c3659c61ae44953f4a8da2d8d1985feb558e6e642e73"
+      },
+      "qpa": {
+        "bytes": 61436,
+        "sha256": "cad51ad3470274a60733dbec24cd0f645b776f36513bd8e9ee231b0fcf18780c"
+      },
+      "cases": [
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.single_invocation",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.multiple_groups",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.multiple_groups_multiple_invocations",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.small_offset",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.large_offset",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.large_offset_multiple_invocations",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.empty_command",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.empty_command_x",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.empty_command_y",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.empty_command_z",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.multi_dispatch",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.multi_dispatch_reuse_command",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.single_invocation",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.multiple_groups",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.multiple_groups_multiple_invocations",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.small_offset",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.large_offset",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.large_offset_multiple_invocations",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.empty_command",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.empty_command_x",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.empty_command_y",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.empty_command_z",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.multi_dispatch",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.multi_dispatch_reuse_command",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.compute.pipeline.basic.indirect_after_base_dispatch",
+          "status": "Pass",
+          "detail": "Compute succeeded"
+        }
+      ],
+      "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+    }
+  },
+  "driver": {
+    "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/libvulkan_radish.so",
+    "bytes": 49079616,
+    "sha256": "f222ff480f6c9ef3785c446661f12ccacbc91f119b0e7d405347b949b4dc325d"
+  },
+  "limitations": "Original 45 counter/NumWorkGroups predicates and base-then-indirect count are retained. Not a full-allocation or every base-coordinate oracle. 58 calls include eight zero-grid calls with no chunks/submits; 50 nonzero dispatches/640 invocations. No device-address/DGC feature or full conformance claim."
+}

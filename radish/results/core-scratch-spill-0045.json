@@ -1,0 +1,688 @@
+{
+  "status": "Bounded core dispatch executes source-backed allocator spill code and passes original outputs/full allocation guards",
+  "release": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/release.json",
+      "bytes": 6585,
+      "sha256": "a1a44d0cbf62eb7ed382baee5219b809d91e9f78510a41c9e6c05d0dfa1d3f31"
+    },
+    "result": {
+      "status": "Private v2 diagnostic-link correction; initialhiddenfd_bo_size hostfailurepreserved, ownerrebuildpending",
+      "sources": {
+        "core_resources.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/probe/core_resources.c",
+          "bytes": 35622,
+          "sha256": "a5024c99a2bbc55983659dc2083a3b8d91e73c0c0760fc8509fdc2dc75405378"
+        },
+        "ScratchSpace.comp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/probe/ScratchSpace.comp",
+          "bytes": 96679,
+          "sha256": "32d390ba1afdbde738226b3b6a52c28d1135569c59fdab746df424048f439577"
+        },
+        "test_common.h": {
+          "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/probe/test_common.h",
+          "bytes": 684,
+          "sha256": "4b022481571560cd58577d1303955f8c96e72891a2647947daa607eb5fd93b2b"
+        },
+        "core_scratch.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/probe/core_scratch.c",
+          "bytes": 9601,
+          "sha256": "03fcb30ebeadcf661be5b1750aeec9453080ebb29289bc246ec254060fb54fe2"
+        },
+        "ScratchSpace.comp.spvasm": {
+          "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/probe/ScratchSpace.comp.spvasm",
+          "bytes": 574669,
+          "sha256": "5e954226d2532677ea956d878fdf8931a623635feccf619153901ae28f1d3797"
+        }
+      },
+      "original_wrapper": {
+        "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/provenance/vktDGCComputeMiscTests.cpp",
+        "bytes": 37728,
+        "sha256": "60867293a8942ab03e84593bd6596b209eac100e6ffe30aed80001cea5649376"
+      },
+      "original_oracle_lines": "494-590, inputs iota0..3 andoutputs[-256,-46,-327,-722]; unchangedexistingScratchSpaceassetandcorebufferoracles",
+      "module_build": "Assemble exactunmodifiedScratchSpace.comp.spvasm via pinnedspirv-as --target-env vulkan1.0 --preserve-numeric-ids; validate Vulkan1.0. No GLSLrecompile,optimizer,unroll/simplification ordebugspilllimit mutation. Hostgate exactShader-only/local4/bindings0,1. Binaryheader1.0 requiredbyhelper. Ownerfreezeactualmodulehash beforedevicepayload.",
+      "interface": {
+        "entry": "main",
+        "local": [
+          4,
+          1,
+          1
+        ],
+        "grid": [
+          1,
+          1,
+          1
+        ],
+        "bindings": {
+          "0": "SSBO int32input[4],range16B",
+          "1": "SSBO int32output[4],range16B"
+        },
+        "push_bytes": 0,
+        "specializations": [],
+        "capabilities": [
+          "Shader"
+        ],
+        "assembly_function_scalar_vars": 1027,
+        "assembly_loop_merges": 0
+      },
+      "host_adapter": "Exacta502/4b02storageutilityreuse; publicAPI1.1/coreCreateComputePipelines/coreCmdDispatch only. RobustBufferAccesstrue, noDGC/RT/subgroup/privateoptionalextension request. DescriptoroffsetGUARD64 satisfiesactualadvertisedalignment; exact16B ranges. Inputs0..3/outputinitial0/originalfourresults unchanged. Fulltwohostallocationsandguardscomparedafterbarriers/fence/invalidate.",
+      "native_diagnostics": "Compile-only createspipelinebeforedata/commands andprintsactualnativeunits/full-halfregs/constlen/pvtmem-perfiber/perSP/privateBO/shaderBO/shared/local. Helperdoesnotassertspillsorassumepvtmem>0. Sourcegate2descriptors/local4 only.",
+      "bounds": "Original90s/384MiB/log+reserve/faultstop capunchanged. Source~575KBassembly and1MBmodulereaderlimit, two<1MiBbufferrequirements/data16B each. Nativecompilecanallocatecompiler/privateBOmemorybeforediagnostic; originalcapcontainsit. Do notclaimfit untilactualstats/code/privateBOaddressboundsreview. Failure/timeoutpreserved, norepeat/guardincreaseauthorized.",
+      "functional_gate": "Hold allGPUdispatchuntilownercompileterminal andindependentnative/resource/code/BOguardreview. Actualshaderpvtmem/LDP-STP mustbetracedagainstpreRAIR3/NIR toclassifyzero-scratch, compilerloweredtempsorallocator-spills. Nativeprivate>0aloneisnotproof allocator-spillpath. No debugspillall/forcedlimits.",
+      "oracle_proof": {
+        "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/host-integer-oracle-proof.json",
+        "bytes": 1060,
+        "sha256": "29f65a4add13719b09ceecf2b3601d1e76869271378bd6fbc159dac0c6a0560c"
+      },
+      "baseline": "Currentf222 querydriver/new6c08headerABI; selectedinferencefcd/d332 unchanged. No driverimplementationmutation.",
+      "provenance_licenses": {
+        "VULKANCTS-LICENSE": {
+          "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/provenance/VULKANCTS-LICENSE",
+          "bytes": 11358,
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        },
+        "LICENSE": {
+          "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/provenance/LICENSE",
+          "bytes": 11358,
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        },
+        "vktDGCComputeMiscTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/provenance/vktDGCComputeMiscTests.cpp",
+          "bytes": 37728,
+          "sha256": "60867293a8942ab03e84593bd6596b209eac100e6ffe30aed80001cea5649376"
+        },
+        "NOTICE": {
+          "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/provenance/NOTICE",
+          "bytes": 11362,
+          "sha256": "ca382aa537f8923d6c0991fb976d184a2009eb76080313bf10dcecdc9311f0dd"
+        }
+      },
+      "limitations": "Adapterrunsoriginalshader/oraclethroughcore API, notanoriginalDGCCTSpass/DGCfeatureadmission. No guaranteedspilling/scratch/performance/fullconformance claim.",
+      "diagnostic_correction": {
+        "diff": {
+          "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/private-bo-diagnostic.diff",
+          "bytes": 3657,
+          "sha256": "d3969fa29bfd54274661b183db1d5207f2b90ca6a1be43921cc6f06ab5b86382"
+        },
+        "reason": "fd_bo_size nonexported. Matchingfreedreno_drmif.h exposesfd_bo.size; exactmatchedfreedreno_bo.c585 returnsbo->size. Readonlydirectfield yieldsidenticalactualBOsizediagnostics, no newexports/driver/compute/oracle/guardchange.",
+        "header": {
+          "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/provenance/freedreno_drmif.h",
+          "bytes": 10245,
+          "sha256": "2dda64a45d315c786b098eaa917ec6cb43ad438200ee12caa9b768aead1abdca"
+        },
+        "function": {
+          "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/provenance/freedreno_bo.c",
+          "bytes": 19163,
+          "sha256": "ec36764ef6d400f7279160956d24cc9d1f680c14370b431a63762e368146a464"
+        },
+        "required_pairing": "Ownerpinactualfreedreno_drmif.h dependencyagainstdriverheadersalongsideexisting4privateheaders."
+      }
+    }
+  },
+  "source_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/independent-source-v2-review.json",
+      "bytes": 753,
+      "sha256": "56eadc17180c8379f575a9ecc23683dd77bb85aec32c8f48c9d91ae1d0cc4da6"
+    },
+    "result": {
+      "status": "PASS exact diagnostic-only hidden-symbol link correction",
+      "candidate_sha256": "03fcb30ebeadcf661be5b1750aeec9453080ebb29289bc246ec254060fb54fe2",
+      "previous_sha256": "9a48c8769f4ea755b7eba3abd5d3a629d2823672b4fe51927876cd3e2f5e8871",
+      "previous_review_sha256": "147e7f977f33f60d932cee27e62f4745509a88ac881cd181c02f12cb469163d0",
+      "diff": "Two fd_bo_size calls replaced with actual matched struct fd_bo size fields. Matched original freedreno_bo.c585 getter returns bo->size exactly; no driver export or function behavior changed.",
+      "scope": "All shader/input/oracle/work/lifetime/public API and compilation gates unchanged. Private/code BO sizes remain diagnostics requiring native admission, not presumed spill qualification."
+    }
+  },
+  "host_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/independent-host-module-review.json",
+      "bytes": 1931,
+      "sha256": "f984fe7c588c8c1eb527163db6841c5209d73ce355b2bcde332dc4be62272d59"
+    },
+    "result": {
+      "status": "PASS finite v2 source/header/host/exact-originalmodule pairing; actualnativeadmissionheld",
+      "helper": {
+        "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-v2-build-0045/probe/core_scratch",
+        "bytes": 728216,
+        "sha256": "42f38469ae5e6ac71cec691de2cf12bf70d80b3dd09993f0d0ab42cfa086ea7d"
+      },
+      "module": {
+        "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-module-build-0045/core_scratch.spv",
+        "bytes": 348576,
+        "sha256": "36e68cb1f3c27de0fcb05a83d925162a485e41fa2dd0f5ef6a0ba04c8a6d3fd1"
+      },
+      "driver": {
+        "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/libvulkan_radish.so",
+        "bytes": 49079616,
+        "sha256": "f222ff480f6c9ef3785c446661f12ccacbc91f119b0e7d405347b949b4dc325d"
+      },
+      "release": {
+        "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/release.json",
+        "bytes": 6585,
+        "sha256": "a1a44d0cbf62eb7ed382baee5219b809d91e9f78510a41c9e6c05d0dfa1d3f31"
+      },
+      "module_checks": {
+        "SPIRV": "1.0",
+        "capabilities": [
+          "Shader"
+        ],
+        "bound": 16407,
+        "function_scalar_variables": 1027,
+        "function_pointer_types": [
+          [
+            7,
+            7,
+            6
+          ]
+        ],
+        "loop_merges": 0,
+        "bytes": 348576
+      },
+      "checks": [
+        "All5sourceassets exactunmodifiedoriginal5e95assembly/32d3GLSL +v2C03fc/a502/4b02",
+        "OwnerassembleVulkan1.0 preserve-numeric-ids/nooptimizer thenvalPASS; module36e6,helper42f3ELF183",
+        "Fiveprivateheadersincludingdrmif2dda matchf222/new6c08, actualdependencyconfirmed; directBOsizefieldidenticalmatchedgetter",
+        "v1undefinedhiddenfd_bo_size linkfailurepreserved; only2diagnosticsfixed,no driverexports/module/oracle/workguardmutation"
+      ],
+      "admission": "NoGPUfunction untilterminalnativeprivatefiber/SP/BO/code/registerboundsandpassprovenancereview. Original90s384MiB controls; no presumedfit,spills or repeatonfailure."
+    }
+  },
+  "runner_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-runner-0045/independent-compile-runner-review.json",
+      "bytes": 1969,
+      "sha256": "76d23cd78642e89dcd2856b0b79312242cfabed586be7bf30eed4847687eb921"
+    },
+    "result": {
+      "status": "PASS finite compile-only runner transport/result gate; not functional or native-spill admission",
+      "runner": {
+        "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-runner-0045/device-core-scratch.py",
+        "bytes": 18300,
+        "sha256": "277a1c6f70fea701399dc0081854c23479e73afaabebda9d052f2abaad67f237"
+      },
+      "baseline": {
+        "path": "/run/media/jethac/Shared/radish/compute11-cache-merge-runner-0045/device-cache-merge.py",
+        "bytes": 18548,
+        "sha256": "b9f282d377a4a1b27954664ceb2d0239d91d9065a3e692b75411c5bb77f3dc8c"
+      },
+      "compile_argv": {
+        "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-runner-0045/compile-argv.json",
+        "bytes": 571,
+        "sha256": "8e2ef8b91e588fb3bcc2ef58c0eafd58f6edd66354056d7c28d3bf2fe3a2133a"
+      },
+      "hostcheck": {
+        "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-runner-0045/compile-hostcheck.json",
+        "bytes": 1215,
+        "sha256": "85f239b1248e8ee1f7ebb40c50cf8583776bcbce6b37f0edf4fc7d635fa825be"
+      },
+      "checks": [
+        "Exactoriginalcommonlock/assetpin/snapshot/compactmanifest/staging/reserve/services/drain/fault/collection/errorpath transport unchanged vsreviewedcache24fc runner",
+        "Onlyworkloadmarker/assertions differ:2SSBO/local4/shared0 actualprivate/codeBO/regdiagnostics; noassumedprivatepositive/nativefit/spills",
+        "Actualcompileargvexplicitmodecompile, helper--compile-only appended; absenceofdispatch/transfersrequired, no auto-functional invocation",
+        "Original90s384MiB/128swap/64MiBdisk/192MiBavailablememoryreserve/limits/faultstop unchanged; helper42f3/module36e6/drivere699 exact",
+        "Functionalbranchrequiresmatchingpassedcompilepayload, but independentnativecode/privateBO/passprovenance admission isadditionalmandatorymanualgate beforeownerinvokesprobe"
+      ],
+      "limits": "No GPU function authorization. Failure/timeout preservescapture/drains, doesnotauthorizeidenticalrepeat/guardincrease. No deviceactionsbyreviewer."
+    }
+  },
+  "native_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/independent-native-spill-review.json",
+      "bytes": 4293,
+      "sha256": "fcb0ff161ec4717c60cd56d54d283e8b75f7edbacf3f9459baa0e7dc899a8339"
+    },
+    "result": {
+      "status": "PASS essential finite native/resource admission for original one-dispatch function; no functional result yet",
+      "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-core-scratch/compile",
+      "log": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-core-scratch/compile/run.log",
+        "bytes": 4186131,
+        "sha256": "64163ecc2742ff73c61982caec22f342953903405754ca82cf6ab4f988146aa7"
+      },
+      "host_module_review": {
+        "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/independent-host-module-review.json",
+        "bytes": 1931,
+        "sha256": "f984fe7c588c8c1eb527163db6841c5209d73ce355b2bcde332dc4be62272d59"
+      },
+      "native": {
+        "units": 495,
+        "dwords": 15840,
+        "code_bytes": 63360,
+        "code_bo_bytes": 65536,
+        "full": 48,
+        "half": 2,
+        "constlen": 12,
+        "loops": 0,
+        "local": [
+          4,
+          1,
+          1
+        ],
+        "shared": 0,
+        "private_bytes_per_fiber": 3584,
+        "private_per_sp_bytes": 3670016,
+        "actual_private_bo_bytes": 3670016,
+        "pvt_loads": 770,
+        "pvt_stores": 770,
+        "unique_slots": 770,
+        "offset_min": 0,
+        "offset_max": 3076,
+        "last_byte_exclusive": 3080,
+        "private_base_register": "r4.x initialized0, its soledefinition; allPVTaccessesconstant4Balignedoffsets"
+      },
+      "bounds": [
+        "770u32slots0..3076+4fit3584Bframe; align3080to512=3584",
+        "3584x1024fibers=3670016B/SP,4096aligned; actualBOexact3670016. Peritem/SP/totalnativeencodingfieldsfitunchangedA5xx widths",
+        "Code495x128=63360B<=65536BactualBO; existingCACHE/noBUFFER/noPRELOADmodefor>32units retained, notcachecapacity/performanceclaim",
+        "Wave32x(48fullx2+2half)=3136half-registervectors<=existing4096guard; one4-invocationgroup, nooccupancyincrease",
+        "Only2SSBO16Branges; nooptionalDGC/RT/image/shared/pushinterface, no data orcommandsincompile-only"
+      ],
+      "spill_classification": {
+        "classification": "Source-backed actualregister-allocator spill/reloadcode; notinferredsolelyfromprivate>0",
+        "evidence": [
+          "Originalassembly1027scalarFunctionvars,noFunctionarray/LoopMerge",
+          "All6NIRdumpsincludinglastpost-variant/preIR3have noscratchheader/load/store. Matchednir_print3182printsnonzeroscratch, so preIR3scratch_size0",
+          "ir3_compiler_nir5638seedspvtmemfromNIRscratch0. ir3_ra2892-2919callsir3_spill onregpressure,2976lower_spill. ir3_spill2382/2413appends spill_slot/pvtmem",
+          "ir3_lower_spill216-218mapsSPILL/RELOAD_MACROtoSTP/LDP.770unique4Bslots=3080, finalcompiler6323align512=3584matchesactual. No spillall/forcedlimit/compilerchange",
+          "Source+retainedintermediate/nativeclassification, notruntimepass-hooktelemetry orGPUresult."
+        ]
+      },
+      "spill_sources": {
+        "nir_print.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/spill-provenance/nir_print.c",
+          "bytes": 101604,
+          "sha256": "ed4767c007394127b7e6cd4aa1e4d20b9d41f17504441b185c642c12cae27df3"
+        },
+        "ir3_compiler_nir.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/spill-provenance/ir3_compiler_nir.c",
+          "bytes": 213209,
+          "sha256": "1de097ebc9fba616f3781bae58b927ac0f04796c679873a199c360631c53cf71"
+        },
+        "ir3_ra.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/spill-provenance/ir3_ra.c",
+          "bytes": 101111,
+          "sha256": "d2091239fdd4cd9e2446ac5185a1bd2749106e77004edb680bc267433f079371"
+        },
+        "ir3_spill.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/spill-provenance/ir3_spill.c",
+          "bytes": 78785,
+          "sha256": "685f6adcf39ee17e6a1dd0c8d867219aba3615a435e29ce59786066c7b183b97"
+        },
+        "ir3_lower_spill.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/spill-provenance/ir3_lower_spill.c",
+          "bytes": 6789,
+          "sha256": "d68c617f0c465922aee0e803afb97dde2c3faaea4824d8875bbd2d228328725f"
+        }
+      },
+      "postflight": "Compile4.954s/73.3MiB/0swap,exit0,cleanfault/services underoriginal90s384M. No repeats/guardincrease.",
+      "next": "Owner may run onlyoriginalonegroup/fourinputs/fouroutputs/full2allocationsafterthisgate, originaloracles/faultsmandatory. Adaptedcoretest, notoriginalDGCCTSpass/fullspillconformance."
+    }
+  },
+  "actual_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/independent-actual-review.json",
+      "bytes": 2066,
+      "sha256": "c925778e5f20cd44564ef89981487d46ab9cc2650faca4d4c674cc6528a301c4"
+    },
+    "result": {
+      "status": "PASS finite core-dispatch original ScratchSpace numerical/spill-code execution",
+      "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-core-scratch/probe",
+      "log": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-core-scratch/probe/run.log",
+        "bytes": 4186526,
+        "sha256": "bd9485867dd11cc51ef6aa0ee185a1e16e2f7a6659d6f275f32a2e493cba7072"
+      },
+      "runner_result": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-core-scratch/probe/runner-result.json",
+        "bytes": 1164,
+        "sha256": "192a65d6efc4d97d3b16938c20ac0b4535295f38145ef47043846385ee6aa87a"
+      },
+      "native_admission": {
+        "path": "/run/media/jethac/Shared/radish/compute11-core-scratch-adapter-0045/independent-native-spill-review.json",
+        "bytes": 4293,
+        "sha256": "fcb0ff161ec4717c60cd56d54d283e8b75f7edbacf3f9459baa0e7dc899a8339"
+      },
+      "checks": [
+        "Compile/functionpayloadidentical(42f3helper/36e6exactoriginalmodule/e699driver); entireactualnativebodyexactcompilefcb0admission",
+        "Originalinputs0,1,2,3/outputinitial0/fourexpectedint32[-256,-46,-327,-722] comparedbyunchangedadapteroracle",
+        "Bothcompleteinput/outputallocationsandguardsexact, inputunchanged; no rawBOhostdownloadclaimed",
+        "Exactlyonecoregrid1/local4/native495/chunks1/submits1dispatch result0,nographic/DGC/RT/transfercommands",
+        "ActualGPUexecutesnativeRAspill/reload-bearingprogram(private3584/fiber/770STP+770LDP), classificationsource/preIR3zero-scratchprovenance retained. No per-instructioncounter/everybranchcoverage claim",
+        "Exit0,clean fault/services, original90s384MiB/fence/resourceguardsunchanged"
+      ],
+      "profile": "RADISH_PROFILE dispatch pipeline=0xaaaaf1a13d70 grid=1,1,1 local=4,1,1 barrier=0 loops=0 instrlen=495 chunks=1 submits=1 ns=8848349 submit_ns=8619963 submit_max_ns=8619963 result=0",
+      "limitations": "Adaptedcoretestoforiginalshader/oracle, notoriginalDGCCTSpass/DGCsupport. Finiteallocatorspill execution evidence, notallprivateformats,spillpaths,controlflow/concurrencyorfullVulkanconformance."
+    }
+  },
+  "compile": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-core-scratch/compile/runner-result.json",
+      "bytes": 1166,
+      "sha256": "cb67dcf144a1f951c382f0a099c4958c98b5dbbf334c11a96556d57e5bae4160"
+    },
+    "result": {
+      "status": "passed",
+      "mode": "compile",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 150,
+          "sha256": "fb0c7a585a8e34a4cf26a6d7109596f502d0fc0801dc90cacdc476d8c23a60ba"
+        },
+        "resources": {
+          "bytes": 728216,
+          "sha256": "42f38469ae5e6ac71cec691de2cf12bf70d80b3dd09993f0d0ab42cfa086ea7d"
+        },
+        "resources.spv": {
+          "bytes": 348576,
+          "sha256": "36e68cb1f3c27de0fcb05a83d925162a485e41fa2dd0f5ef6a0ba04c8a6d3fd1"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13622368,
+          "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+        },
+        "payload.json": {
+          "bytes": 817,
+          "sha256": "a960d4b9135ae60de0b46d7a880897a267aad3ee6cc36d7107722e6efb1904d9"
+        }
+      },
+      "run_log": {
+        "bytes": 4186131,
+        "sha256": "64163ecc2742ff73c61982caec22f342953903405754ca82cf6ab4f988146aa7"
+      },
+      "scope": "Raw ICD assets/services/faults and consolidated assertions passed. This is experimental compute coverage, not Vulkan conformance."
+    }
+  },
+  "functional": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-core-scratch/probe/runner-result.json",
+      "bytes": 1164,
+      "sha256": "192a65d6efc4d97d3b16938c20ac0b4535295f38145ef47043846385ee6aa87a"
+    },
+    "result": {
+      "status": "passed",
+      "mode": "probe",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 150,
+          "sha256": "fb0c7a585a8e34a4cf26a6d7109596f502d0fc0801dc90cacdc476d8c23a60ba"
+        },
+        "resources": {
+          "bytes": 728216,
+          "sha256": "42f38469ae5e6ac71cec691de2cf12bf70d80b3dd09993f0d0ab42cfa086ea7d"
+        },
+        "resources.spv": {
+          "bytes": 348576,
+          "sha256": "36e68cb1f3c27de0fcb05a83d925162a485e41fa2dd0f5ef6a0ba04c8a6d3fd1"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13622368,
+          "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+        },
+        "payload.json": {
+          "bytes": 817,
+          "sha256": "a960d4b9135ae60de0b46d7a880897a267aad3ee6cc36d7107722e6efb1904d9"
+        }
+      },
+      "run_log": {
+        "bytes": 4186526,
+        "sha256": "bd9485867dd11cc51ef6aa0ee185a1e16e2f7a6659d6f275f32a2e493cba7072"
+      },
+      "scope": "Raw ICD assets/services/faults and consolidated assertions passed. This is experimental compute coverage, not Vulkan conformance."
+    }
+  },
+  "public_build": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-public-core-scratch-builder-check-0045/receipt.json",
+      "bytes": 8155,
+      "sha256": "a29b8735596c30cae26804531cdb1475fc49bd6f110aafad3d2b57488f105c63"
+    },
+    "result": {
+      "units": {
+        "scratch": {
+          "commands": [
+            [
+              "clang",
+              "--target=aarch64-linux-gnu",
+              "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+              "-mcpu=cortex-a53",
+              "-Isrc/freedreno/radish/libvulkan_radish.so.p",
+              "-Isrc/freedreno/radish",
+              "-I../mesa/src/freedreno/radish",
+              "-Isrc/freedreno",
+              "-I../mesa/src/freedreno",
+              "-Isrc/freedreno/registers",
+              "-I../mesa/src/freedreno/registers",
+              "-Isrc/freedreno/registers/adreno",
+              "-I../mesa/src/freedreno/registers/adreno",
+              "-Isrc/freedreno/common",
+              "-I../mesa/src/freedreno/common",
+              "-Iinclude",
+              "-I../mesa/include",
+              "-Isrc",
+              "-I../mesa/src",
+              "-Isrc/vulkan/util",
+              "-I../mesa/src/vulkan/util",
+              "-Isrc/vulkan/runtime",
+              "-I../mesa/src/vulkan/runtime",
+              "-I../mesa/src/vulkan/runtime/bvh",
+              "-Isrc/compiler/nir",
+              "-I../mesa/src/compiler/nir",
+              "-Isrc/compiler",
+              "-I../mesa/src/compiler",
+              "-Isrc/util",
+              "-Isrc/util/format",
+              "-Isrc/compiler/spirv",
+              "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include",
+              "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include/libdrm",
+              "-fvisibility=hidden",
+              "-fdiagnostics-color=always",
+              "-D_FILE_OFFSET_BITS=64",
+              "-Wall",
+              "-Winvalid-pch",
+              "-std=c11",
+              "-O2",
+              "-g",
+              "-D__STDC_CONSTANT_MACROS",
+              "-D__STDC_FORMAT_MACROS",
+              "-D__STDC_LIMIT_MACROS",
+              "-DPACKAGE_VERSION=\"27.0.0-devel\"",
+              "-DHAVE_OPENGL=0",
+              "-DHAVE_OPENGL_ES_1=0",
+              "-DHAVE_OPENGL_ES_2=0",
+              "-DMESA_SYSTEM_HAS_KMS_DRM=1",
+              "-DVIDEO_CODEC_VC1DEC=0",
+              "-DVIDEO_CODEC_H264DEC=0",
+              "-DVIDEO_CODEC_H264ENC=0",
+              "-DVIDEO_CODEC_H265DEC=0",
+              "-DVIDEO_CODEC_H265ENC=0",
+              "-DVIDEO_CODEC_AV1DEC=0",
+              "-DVIDEO_CODEC_AV1ENC=0",
+              "-DVIDEO_CODEC_VP9DEC=0",
+              "-DVIDEO_CODEC_MPEG12DEC=0",
+              "-DVIDEO_CODEC_JPEGDEC=0",
+              "-DUSE_LIBGLVND=0",
+              "-DHAVE_LIBDRM",
+              "-DHAVE_GFX_COMPUTE",
+              "-DGLAPI_EXPORT_PROTO_ENTRY_POINTS=1",
+              "-DALLOW_KCMP",
+              "-DMESA_DEBUG=0",
+              "-DENABLE_SHADER_CACHE",
+              "-DHAVE___BUILTIN_BSWAP32",
+              "-DHAVE___BUILTIN_BSWAP64",
+              "-DHAVE___BUILTIN_CLZ",
+              "-DHAVE___BUILTIN_CLZLL",
+              "-DHAVE___BUILTIN_CTZ",
+              "-DHAVE___BUILTIN_EXPECT",
+              "-DHAVE___BUILTIN_FFS",
+              "-DHAVE___BUILTIN_FFSLL",
+              "-DHAVE___BUILTIN_POPCOUNT",
+              "-DHAVE___BUILTIN_POPCOUNTLL",
+              "-DHAVE___BUILTIN_UNREACHABLE",
+              "-DHAVE___BUILTIN_TYPES_COMPATIBLE_P",
+              "-DHAVE___BUILTIN_ADD_OVERFLOW",
+              "-DHAVE_FUNC_ATTRIBUTE_CONST",
+              "-DHAVE_FUNC_ATTRIBUTE_FLATTEN",
+              "-DHAVE_FUNC_ATTRIBUTE_MALLOC",
+              "-DHAVE_FUNC_ATTRIBUTE_PURE",
+              "-DHAVE_FUNC_ATTRIBUTE_UNUSED",
+              "-DHAVE_FUNC_ATTRIBUTE_WARN_UNUSED_RESULT",
+              "-DHAVE_FUNC_ATTRIBUTE_WEAK",
+              "-DHAVE_FUNC_ATTRIBUTE_FORMAT",
+              "-DHAVE_FUNC_ATTRIBUTE_PACKED",
+              "-DHAVE_FUNC_ATTRIBUTE_RETURNS_NONNULL",
+              "-DHAVE_FUNC_ATTRIBUTE_ALIAS",
+              "-DHAVE_FUNC_ATTRIBUTE_NORETURN",
+              "-DHAVE_FUNC_ATTRIBUTE_COLD",
+              "-DHAVE_FUNC_ATTRIBUTE_VISIBILITY",
+              "-DHAVE_UINT128",
+              "-DHAVE_REALLOCARRAY",
+              "-DHAVE_FMEMOPEN",
+              "-DHAVE_MALLINFO2",
+              "-D_GNU_SOURCE",
+              "-DUSE_GCC_ATOMIC_BUILTINS",
+              "-DMAJOR_IN_SYSMACROS",
+              "-DHAS_SCHED_H",
+              "-DHAS_SCHED_GETAFFINITY",
+              "-DHAVE_LINUX_FUTEX_H",
+              "-DHAVE_ENDIAN_H",
+              "-DHAVE_DLFCN_H",
+              "-DHAVE_SYS_SHM_H",
+              "-DHAVE_CET_H",
+              "-DHAVE_POLL_H",
+              "-DHAVE_SYS_INOTIFY_H",
+              "-DHAVE_LINUX_UDMABUF_H",
+              "-DHAVE_STRTOF",
+              "-DHAVE_MKOSTEMP",
+              "-DHAVE_MEMFD_CREATE",
+              "-DHAVE_RANDOM_R",
+              "-DHAVE_FLOCK",
+              "-DHAVE_STRTOK_R",
+              "-DHAVE_GETRANDOM",
+              "-DHAVE_POSIX_FALLOCATE",
+              "-DHAVE_SECURE_GETENV",
+              "-DHAVE_SYSCONF",
+              "-DHAVE_SC_PHYS_PAGES",
+              "-DHAVE_GNU_QSORT_R",
+              "-DHAVE_STRUCT_TIMESPEC",
+              "-DHAVE_PROGRAM_INVOCATION_NAME",
+              "-DHAVE_ISSIGNALING",
+              "-DHAVE_POSIX_MEMALIGN",
+              "-DHAVE_DIRENT_D_TYPE",
+              "-DHAVE_STRTOD_L",
+              "-DHAVE_DLADDR",
+              "-DHAVE_DL_ITERATE_PHDR",
+              "-DHAVE_ZLIB",
+              "-DHAVE_COMPRESSION",
+              "-DHAVE_PTHREAD",
+              "-DHAVE_PTHREAD_SETAFFINITY",
+              "-DDRAW_LLVM_AVAILABLE=0",
+              "-DAMD_LLVM_AVAILABLE=0",
+              "-DGALLIVM_USE_ORCJIT=0",
+              "-DTHREAD_SANITIZER=0",
+              "-DHAVE_DRI2",
+              "-DHAVE_RENDERDOC_INTEGRATION=1",
+              "-Werror=implicit-function-declaration",
+              "-Werror=missing-prototypes",
+              "-Werror=return-type",
+              "-Werror=empty-body",
+              "-Werror=incompatible-pointer-types",
+              "-Werror=int-conversion",
+              "-Wimplicit-fallthrough",
+              "-Wmisleading-indentation",
+              "-Wno-missing-field-initializers",
+              "-Wno-format-truncation",
+              "-fno-math-errno",
+              "-fno-trapping-math",
+              "-Qunused-arguments",
+              "-fno-common",
+              "-Wno-unknown-pragmas",
+              "-Wno-microsoft-enum-value",
+              "-Wno-unused-function",
+              "-Werror=format",
+              "-Wformat-security",
+              "-Werror=thread-safety",
+              "-ffunction-sections",
+              "-fdata-sections",
+              "-Wno-unused-command-line-argument",
+              "-fPIC",
+              "-DVK_USE_PLATFORM_DISPLAY_KHR",
+              "-pthread",
+              "-DXXH_FORCE_ALIGN_CHECK=0",
+              "-DXXH_FORCE_MEMORY_ACCESS=0",
+              "-Wno-override-init",
+              "-Wno-initializer-overrides",
+              "-fuse-ld=lld",
+              "--gcc-install-dir=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+              "-I/home/jethac/Projects/radish/radish/tests",
+              "/home/jethac/Projects/radish/radish/tests/core_scratch.c",
+              "-o",
+              "/run/media/jethac/Shared/radish/compute11-public-core-scratch-builder-check-0045/scratch",
+              "-ldl",
+              "-pthread"
+            ],
+            [
+              "spirv-as",
+              "--target-env",
+              "vulkan1.0",
+              "--preserve-numeric-ids",
+              "/home/jethac/Projects/radish/radish/tests/shaders/core-scratch.comp.spvasm",
+              "-o",
+              "/run/media/jethac/Shared/radish/compute11-public-core-scratch-builder-check-0045/scratch.spv"
+            ],
+            [
+              "spirv-val",
+              "--target-env",
+              "vulkan1.0",
+              "/run/media/jethac/Shared/radish/compute11-public-core-scratch-builder-check-0045/scratch.spv"
+            ]
+          ],
+          "files": {
+            "/home/jethac/Projects/radish/radish/tests/core_scratch.c": {
+              "sha256": "03fcb30ebeadcf661be5b1750aeec9453080ebb29289bc246ec254060fb54fe2",
+              "bytes": 9601
+            },
+            "/run/media/jethac/Shared/radish/compute11-public-core-scratch-builder-check-0045/scratch": {
+              "sha256": "9373a6315a192d7a8d8ea7519105a04ac6ba6e502338d8b0b64e8dd300c1c113",
+              "bytes": 728040
+            },
+            "/home/jethac/Projects/radish/radish/tests/shaders/core-scratch.comp.spvasm": {
+              "sha256": "5e954226d2532677ea956d878fdf8931a623635feccf619153901ae28f1d3797",
+              "bytes": 574669
+            },
+            "/run/media/jethac/Shared/radish/compute11-public-core-scratch-builder-check-0045/scratch.spv": {
+              "sha256": "36e68cb1f3c27de0fcb05a83d925162a485e41fa2dd0f5ef6a0ba04c8a6d3fd1",
+              "bytes": 348576
+            }
+          }
+        }
+      },
+      "scope": "Host build only; probes require the matching internal driver ABI."
+    }
+  },
+  "sources": {
+    "tests/core_scratch.c": {
+      "path": "/home/jethac/Projects/radish/radish/tests/core_scratch.c",
+      "bytes": 9601,
+      "sha256": "03fcb30ebeadcf661be5b1750aeec9453080ebb29289bc246ec254060fb54fe2"
+    },
+    "tests/shaders/core-scratch.comp.spvasm": {
+      "path": "/home/jethac/Projects/radish/radish/tests/shaders/core-scratch.comp.spvasm",
+      "bytes": 574669,
+      "sha256": "5e954226d2532677ea956d878fdf8931a623635feccf619153901ae28f1d3797"
+    }
+  },
+  "scope": "Unmodified original ScratchSpace assembly, core API adapter and original four inputs/results; no DGC or ray-tracing extension. Pre-IR3 NIR has zero scratch; matched register allocator generates770 store/reload slot pairs, 3080 bytes aligned to3584 per fiber. Native bounds fit actual3,670,016-byte private BO and65,536-byte code BO. One local4/grid1 dispatch returns[-256,-46,-327,-722], all160 allocation words checked. Not an original DGC CTS pass, exhaustive spill opcode/geometry coverage, performance benchmark or full conformance claim. No forced spill threshold/compiler/driver change.",
+  "provenance": "Khronos Vulkan-CTS revision5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e; Apache2.0 license and notice retained under tests/scratch-provenance."
+}
