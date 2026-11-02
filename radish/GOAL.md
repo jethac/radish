@@ -253,6 +253,14 @@ model-wide defect rate.
 
 ## Immediate next step
 
+The user confirmed the campaign order: “finish the compute and shared infra,
+then make the models we want to run for straylight scream on the GPU.” Complete
+compute correctness and the shared infrastructure first, then validate the
+existing full inference path and pursue end-to-end Straylight GPU performance.
+Graphics remains outside this campaign. The original accuracy, memory, service
+coexistence and material-headroom requirements remain unchanged; a CPU crossover
+or an isolated kernel win is not the completion boundary.
+
 At the user's 2026-11-02 direction, pause performance experiments and complete
 compute behavior required by Vulkan 1.0 and 1.1 for the fleet. Graphics remains
 outside scope. The 40 missing, broken or blocked command paths in the audit
