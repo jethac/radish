@@ -58,6 +58,7 @@ def main():
              ('mixed-push', 'core_mixed_push.c', 'core-mixed-push.comp', 'vulkan1.0'),
              ('attachment', 'core_attachment.c', 'core-attachment.comp', 'vulkan1.0'),
              ('descriptor-host', 'core_descriptor_host.c', None, None),
+             ('core-lookup', 'core_lookup.c', None, None),
              ('mixed-depth', 'core_mixed_depth.c', None, None),
              ('combined-ds', 'core_combined_ds.c', 'core-combined-ds.comp', 'vulkan1.0'),
              ('etc2', 'core_etc2.c', 'core-etc2.comp', 'vulkan1.0'),

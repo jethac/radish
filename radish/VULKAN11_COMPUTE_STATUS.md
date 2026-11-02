@@ -188,3 +188,20 @@ for the fixture; it does not establish a normative precision allowance or justif
 changing the oracle. ETC2 remains false in this checkpoint. Reproduce this older
 d903 diagnostic with its frozen Radish headers through `--radish-headers`; the
 new D24S8 transfer structure has a different private ABI.
+
+## Public core function lookup
+
+The pinned public loader exposes all165 core1.0/1.1 names through GIPA. Its
+baseline device lookup missed five of137 required names; the corrected1cd9
+driver resolves all137. Four missing commands are graphics-only and now have
+typed entrypoints that record errors for invalid use on the compute queue. The
+remaining dense-memory commitment query is implemented, but the driver has no
+lazy memory type, so this probe does not claim a valid query execution.
+[The actual pair and source](results/core-lookup-public-0045.json) include zero
+commands, shaders or data allocations and clean fault/service checks.
+
+An earlier direct-ICD check also missed the loader-owned global layer
+enumeration name. That was a validation-route error, preserved separately;
+public-loader validation resolves it without adding a fake layer function.
+Pointer completeness does not establish every function's semantics or Vulkan
+conformance. The compression-feature candidate remains separate and unqualified.

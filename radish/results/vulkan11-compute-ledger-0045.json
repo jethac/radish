@@ -7,8 +7,8 @@
     "status": "frozen"
   },
   "candidate": {
-    "driver": "940703eeacac2c8ec27448cc1ad3a3964aa80f9ef284098b0759eb62b168d9f7",
-    "status": "Published9407 exact D24S8+BLIT query stack; representative single-sample D24S8 passes; ETC2 featurefalse; not conformance or selected inference"
+    "driver": "1cd9ca7780640f2c5d9a4ad5a7e01a45f135da28efdd810599cfac63ac9c18c7",
+    "status": "Published1cd9 requiredcorelookup over9407 D24 stack; representative resource passes,ETC2false; not fullconformance or selectedinference"
   },
   "official_cts": {
     "source_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
@@ -316,5 +316,6 @@
     "system_scope": "No globalgraphics/service/clock/kernelchanges"
   },
   "depth_layout_erratum": "Pinned Vulkan1.1 DEPTH_STENCIL_READ_ONLY_OPTIMAL requires DEPTH_STENCIL_ATTACHMENT usage. Earlier sampled-only depth consumers are implementation observations for that path until valid-usage requalification; no retroactive public qualification.",
-  "next_private_source": "Core required-entrypoint lookup candidate1cd9 source/host built over9407. Five real baseline GDPA absences measured; loader-global GIPA route correction pending. Experimental ETC2 enablement source52975 is separate, not this publishedfalse-feature checkpoint."
+  "next_private_source": "ExperimentalETC2 feature52975 host4c4618 built separately; allstrict42sRGBfailures remain, originalofficialcompressedcompute tests pending. Requiredimage/texelatomics consumer host/source gates ongoing; no newperformance.",
+  "required_core_lookup": "core-lookup-public-0045.json: public165GIPA/137GDPA complete afterfiveactualdevicepointer fixes. This is lookup only, not allcommandexecution. DirectICDloaderglobal limitation retained."
 }

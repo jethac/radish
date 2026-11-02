@@ -1,0 +1,256 @@
+{
+  "status": "Required public core lookup repaired; pointer coverage only",
+  "prior": "d24s8-public-0045.json",
+  "patch": {
+    "path": "/home/jethac/Projects/radish/radish/patches/0045-radish-core-lookup.patch",
+    "bytes": 1990,
+    "sha256": "70b318c126fae0152cf6eb05819dad438fc83d54a0c75938b7d16268c2a34ac8"
+  },
+  "reconstructed_source": {
+    "src/freedreno/radish/rd_nir_resources.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-driver-build-0045/source/src/freedreno/radish/rd_nir_resources.c",
+      "bytes": 14792,
+      "sha256": "49ba435efd7edaa8bee8563cf3121297bbf06091a79f0e3736cbd4b2111c21b9"
+    },
+    "src/freedreno/radish/rd_command.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-driver-build-0045/source/src/freedreno/radish/rd_command.c",
+      "bytes": 13873,
+      "sha256": "9d8186e6219d989daaad17aaeb04347219295f913301df38dd97a6d3680a2498"
+    },
+    "src/freedreno/radish/rd_transfer.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-driver-build-0045/source/src/freedreno/radish/rd_transfer.c",
+      "bytes": 2992,
+      "sha256": "a93968bf54724b1a068d7169940952286b73a0eb08f9fe78ee3ef4e608d5812b"
+    },
+    "src/freedreno/radish/rd_nir_robust.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-driver-build-0045/source/src/freedreno/radish/rd_nir_robust.c",
+      "bytes": 9502,
+      "sha256": "eb7b2f530891fd81fbb5e9d048f2d4c93ad22b10476b0202fb9bca4dda28111c"
+    },
+    "src/freedreno/radish/rd_image.h": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-driver-build-0045/source/src/freedreno/radish/rd_image.h",
+      "bytes": 1793,
+      "sha256": "6c0847bb62fd18eef4e4398a7efc89afde57fbed64d64ab152586078d9555747"
+    },
+    "src/freedreno/radish/rd_memory.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-driver-build-0045/source/src/freedreno/radish/rd_memory.c",
+      "bytes": 6238,
+      "sha256": "210d76aecc691fefb8765c60fa677f273a4c4d8f6aac4aa2239ed0f78b8cc9f8"
+    },
+    "src/freedreno/radish/rd_sampling.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-driver-build-0045/source/src/freedreno/radish/rd_sampling.c",
+      "bytes": 6391,
+      "sha256": "2e1832d37ce206d98d7d8c778c231e19565c0d810b133c56ed46af107b360599"
+    },
+    "src/freedreno/radish/rd_query.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-driver-build-0045/source/src/freedreno/radish/rd_query.c",
+      "bytes": 14017,
+      "sha256": "8f83148f39b51411963dd2b201979f0e7d94f496a3e34b81601278bcdf622978"
+    },
+    "src/freedreno/radish/rd_nir_resources.h": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-driver-build-0045/source/src/freedreno/radish/rd_nir_resources.h",
+      "bytes": 953,
+      "sha256": "0afa75cc3e1c856496b4b52b6c65eca90ac751cbefaf807e3af1421fbca93599"
+    },
+    "src/freedreno/radish/rd_event.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-driver-build-0045/source/src/freedreno/radish/rd_event.c",
+      "bytes": 4999,
+      "sha256": "324cd260d6cb805d6b8548f9f518df1fba8110dd6bef25ae7f072c7ac17ac49c"
+    },
+    "src/freedreno/radish/rd_sampling.h": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-driver-build-0045/source/src/freedreno/radish/rd_sampling.h",
+      "bytes": 1096,
+      "sha256": "541a70b8aca605c0719aa03d551241da16136d6a17ff801bb5d379d7e6d86932"
+    },
+    "src/freedreno/radish/rd_queue.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-driver-build-0045/source/src/freedreno/radish/rd_queue.c",
+      "bytes": 45229,
+      "sha256": "da170e7c4d4a1fc9db0da5ded100376fab80b57fb70af2427a4ff81fbbdc4890"
+    },
+    "src/freedreno/radish/meson.build": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-driver-build-0045/source/src/freedreno/radish/meson.build",
+      "bytes": 1777,
+      "sha256": "8b5d6cd1839eb92a2dd9a0038ea3f1c9840935694b7acdfc36a1dd46714d732d"
+    },
+    "src/freedreno/radish/rd_instance.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-driver-build-0045/source/src/freedreno/radish/rd_instance.c",
+      "bytes": 13077,
+      "sha256": "697e58afd7e1df74c4820ab6e18721246ebf6020e26ecc1e028d7ba909000814"
+    },
+    "src/freedreno/radish/rd_resources.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-driver-build-0045/source/src/freedreno/radish/rd_resources.c",
+      "bytes": 27624,
+      "sha256": "8c2c129bcc6129d910fd992a2563de1feae7e675619dc0fa571bd664fb380e3b"
+    },
+    "src/freedreno/radish/rd_nir_sampling.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-driver-build-0045/source/src/freedreno/radish/rd_nir_sampling.c",
+      "bytes": 23572,
+      "sha256": "64bed3318324ec74b2dde5bd2fb3d9b8dc996eb4077d2d09daf1dc2aec6c0b7a"
+    },
+    "src/freedreno/radish/rd_image.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-driver-build-0045/source/src/freedreno/radish/rd_image.c",
+      "bytes": 50355,
+      "sha256": "be031b4ffe443d085a66c1adf2fe800400eae403ec701ce09978b52dbebc8def"
+    },
+    "src/freedreno/radish/rd_device.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-driver-build-0045/source/src/freedreno/radish/rd_device.c",
+      "bytes": 6266,
+      "sha256": "b47a9e92dbdcca9ef58f62066c03d3b10a6ba4cb795a7a737ccfe1c4e67021df"
+    },
+    "src/freedreno/radish/rd_private.h": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-driver-build-0045/source/src/freedreno/radish/rd_private.h",
+      "bytes": 8794,
+      "sha256": "b4fd0b4017316865f92f740285bf900fb93fe59189f2bba658fb665d5bc91502"
+    },
+    "src/freedreno/radish/rd_pipeline.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-driver-build-0045/source/src/freedreno/radish/rd_pipeline.c",
+      "bytes": 25457,
+      "sha256": "db56340993aeffdf8e945058864f4f7737f350ed990f559f95be66d553bcd599"
+    },
+    "src/freedreno/radish/rd_descriptor.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-driver-build-0045/source/src/freedreno/radish/rd_descriptor.c",
+      "bytes": 17524,
+      "sha256": "b3cd22b2ace3540674a9cb98c55d4a9fcd62c1ffcb90fabe37fa478791ceb147"
+    }
+  },
+  "driver": {
+    "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-driver-build-0045/libvulkan_radish.so",
+    "bytes": 49078360,
+    "sha256": "1cd9ca7780640f2c5d9a4ad5a7e01a45f135da28efdd810599cfac63ac9c18c7"
+  },
+  "source_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-independent-0045/review.json",
+      "bytes": 2964,
+      "sha256": "871502dac4a5f0ec04f6420e2b526cd0c1429e95c8ac2af66d6f6ae9d5113686"
+    },
+    "result": {
+      "status": "PASS finite source/public-lookup consumer review; actual baseline/fixed lookup still required",
+      "patch": {
+        "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-0045/core-lookup.patch",
+        "sha256": "70b318c126fae0152cf6eb05819dad438fc83d54a0c75938b7d16268c2a34ac8",
+        "bytes": 1990
+      },
+      "source_release": {
+        "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-0045/source-release.json",
+        "sha256": "d66be1a07e7e7118f1cc489083182d51690af874a779c04b0076d8273880fc9f",
+        "bytes": 1421
+      },
+      "primary_registry": {
+        "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-independent-0045/vk-v1.1.126.xml",
+        "sha256": "3fee40627e5377892bd29540955ee65dfd712d8236514a763807175317224a99",
+        "bytes": 1057090
+      },
+      "core_names": {
+        "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-0045/probe/core_names.h",
+        "sha256": "189c45fb80e55e7220137466202030a0e686eabc983b322323e78329d7c6faa7",
+        "bytes": 5219
+      },
+      "consumer": {
+        "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-0045/probe/core_lookup.c",
+        "sha256": "89d89f6eb88110c8943593487d9990f7d470ae962fecce55eff3e27d58cd8ffe",
+        "bytes": 2811
+      },
+      "checks": [
+        "Independently parsed exact Khronos v1.1.126 core1.0+1.1 command sets, alias prototypes and dispatchable first parameters. Exact165-name ordered set and137device-name classification match helper.",
+        "All baseline/candidate hashes and exact two-file patch independently reconstructed. All four added command functions have primary queues=graphics. They record an error for invalid use; no successful graphics execution or changed valid compute behavior.",
+        "GetDeviceMemoryCommitment is a genuine dense object size query, no memory type or allocation behavior changed. VUID00690 allows execution only for lazily allocated memory. Current only type is nonlazy; helper counts and reports lazy types but never calls this query, so it tests required pointer lookup only. No invalid nonlazy query claimed public qualification.",
+        "Public API1.1 negotiated and physicalAPI checked. GIPA tested for every core name, GDPA only proper device commands. Only instance/device/physical query APIs executed; no buffers, command pools, graphics commands or dispatch. DestroyDevice precedes DestroyInstance and dlclose.",
+        "Mandatory lookup remains independent of empty GRAPHICS-only valid execution domain. Common Mesa implementations left intact; actual original inventory must establish five observed nulls before causal correction claims."
+      ],
+      "primary_links": [
+        "https://github.com/KhronosGroup/Vulkan-Docs/blob/v1.1.126/xml/vk.xml",
+        "https://github.com/KhronosGroup/Vulkan-Docs/blob/v1.1.126/chapters/initialization.txt",
+        "https://github.com/KhronosGroup/Vulkan-Docs/blob/v1.1.126/chapters/memory.txt"
+      ],
+      "limits": "Source/host implementation review is not actual pointer lookup or graphics execution qualification."
+    }
+  },
+  "public_route_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-independent-0045/public-loader-v2-review.json",
+      "bytes": 1204,
+      "sha256": "336bcbb4fc551461c1638c661ff7c0beac9b45f3ef41bd395ee8e5a12494e10c"
+    },
+    "result": {
+      "status": "PASS exact public-loader route correction",
+      "source_sha256": "14e073aac33491475944944d1805db63ba6b319b9c838de38d9e59795dc2f469",
+      "preserved_v1_sha256": "89d89f6eb88110c8943593487d9990f7d470ae962fecce55eff3e27d58cd8ffe",
+      "checks": [
+        "Only dlsym entrypoint changes from ICD negotiation to public vkGetInstanceProcAddr, plus route print. Exact165/137 name inventory, API1.1 request, physical/queue/lazy queries, no-command scope, lifecycle and missingpointer failure unchanged.",
+        "EnumerateInstanceLayerProperties is loader-owned. V1 directICD null is not evidence of a public-loader defect and must remain separately labeled. Five missing direct-driver GDPA names still identify separate driver/core lookup source issue; actual public loader baseline/fix inventory is required.",
+        "No invalid GetDeviceMemoryCommitment invocation on nonlazy memory; helper only pointer checks.",
+        "Caller must pin actual private loader argument, single private ICD manifest/environment and payload assets/maps through existing runner. Source string alone does not prove runtime route."
+      ],
+      "unchanged_driver_patch": "70b318c126fae0152cf6eb05819dad438fc83d54a0c75938b7d16268c2a34ac8"
+    }
+  },
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-public-fixed-runner-0045/independent-actual-review.json",
+      "bytes": 1535,
+      "sha256": "f766703068a63b8b179fc3de25c74eed4bbb8186a7356310748372f47ae5c65e"
+    },
+    "result": {
+      "shared_assets": {
+        "resources": "7ffe467fd4d33c68d5b5be3555bc2a86fc7fc8009e3a4f45bc429e777cee8a93",
+        "libvulkan.so.1": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+      },
+      "baseline": {
+        "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-core-lookup-public-baseline/probe",
+        "run_log_sha256": "918217a09e16c09514db75b2d0339d86ac74c58d52080bef4d69a9f30cb4ad83",
+        "gipa": 165,
+        "gdpa": 137,
+        "missing_gipa": 0,
+        "missing_gdpa": [
+          "vkGetDeviceMemoryCommitment",
+          "vkCmdDraw",
+          "vkCmdDrawIndexed",
+          "vkCmdClearDepthStencilImage",
+          "vkCmdClearAttachments"
+        ],
+        "result": "expected failure"
+      },
+      "fixed": {
+        "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-core-lookup-public-fixed/probe",
+        "run_log_sha256": "077cafbe2e4d9a93373a2eacc441d867e4ebaca5a02fc5620e45ea521d9b6587",
+        "gipa": 165,
+        "gdpa": 137,
+        "missing_gipa": 0,
+        "missing_gdpa": [],
+        "result": "passed"
+      },
+      "status": "passed finite baseline-to-fixed lookup comparison",
+      "scope": "Public pinned loader under API1.1, no commands or execution qualification",
+      "limitations": [
+        "No dense commitment call without advertised lazy memory.",
+        "No invalid graphics command execution.",
+        "Lookup completeness does not prove callable shared API semantics or Vulkan conformance.",
+        "Earlier direct ICD missing EnumerateInstanceLayerProperties is loader-owned mismatch, corrected by public route without fake driver function."
+      ]
+    }
+  },
+  "direct_icd_original": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-core-lookup-baseline/probe/failure.json",
+      "bytes": 272,
+      "sha256": "ac1c59a943787351281c7b1fe43e25e7d8aa17ea783318cc9fc5bd020a26f2be"
+    },
+    "result": {
+      "status": "failed",
+      "error": "probe/compile process returned 1",
+      "started": true,
+      "terminal": false,
+      "process_returncode": 1,
+      "remote": "/var/tmp/radish/core-compute-core0045-core-lookup-baseline",
+      "unit": "radish-core-compute-probe-1793619932881869514"
+    }
+  },
+  "limits": "Public loader baselineGIPA165 complete/device137 has5missing; fixed0missing. EarlierdirectICDglobalEnumerateInstanceLayerProperties null is not driverdefect. Four graphics-only entrypoints recorderror for invalid graphics use; no graphicsqueue/execution. Dense commitment query implemented, but no lazytype so no valid queryexecution claimed. No complete API/conformance.",
+  "reproduction": "Build core-lookup; stage as resources with exact pinned loaderlibvulkan.so.1 and private ICDmanifest; device-core-lookup.py probe. No shaders/commands/dataallocation.",
+  "public_builder": {
+    "path": "/run/media/jethac/Shared/radish/compute11-public-core-lookup-builder-check-0045/receipt.json",
+    "bytes": 7184,
+    "sha256": "d04476be60445c685940302bf3edd1897808720da2ab0c2829d32bb8ef00da8b"
+  }
+}
