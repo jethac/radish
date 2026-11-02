@@ -388,3 +388,14 @@ shader, memory, image, precision and CTS validation remains unfinished. Real
 pipeline-cache population is a later optimization opportunity, not evidence
 manufactured for conformance and not an assumed speedup. Conformance remains
 first; full model accuracy, deployment, memory and performance work follows.
+
+## Named compute milestone
+
+The user's next milestone, all 93 applicable cases in the pinned named
+`dEQP-VK.compute` catalog, now passes on the same f222/e699 candidate. Original
+case work, oracles, limits and failure stops were retained; earlier-driver
+evidence was confirmed where needed. This is one completed milestone within
+the full applicable Vulkan 1.1 compute/shared goal. It does not complete the
+other API, shader, memory, robustness, format, descriptor or synchronization
+requirements, resolve the strict sRGB findings, or authorize resumed tuning.
+Selected inference remains frozen until the broader conformance phase closes.

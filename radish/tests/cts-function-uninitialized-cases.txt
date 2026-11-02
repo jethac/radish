@@ -1,0 +1,3 @@
+dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.int.uninitialized
+dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.uint.uninitialized
+dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.float.uninitialized

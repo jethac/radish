@@ -1,0 +1,12 @@
+dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r8g8b8a8_unorm
+dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r8g8b8a8_snorm
+dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r8g8b8a8_uint
+dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r8g8b8a8_sint
+dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r8g8b8a8_srgb
+dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r16g16b16a16_sfloat
+dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r32g32b32a32_uint
+dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r5g6b5_unorm_pack16
+dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r8g8b8a8_unorm_clamp_input
+dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r5g6b5_unorm_pack16_clamp_input
+dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.multiple_layers.r8g8b8a8_unorm
+dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.remaining_array_layers_twostep.r8g8b8a8_unorm

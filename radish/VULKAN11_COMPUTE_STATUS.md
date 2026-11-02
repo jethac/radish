@@ -8,16 +8,20 @@ identify a real source reservation and preserve correctness/resource guards;
 this is not authorization to change OS graphics or services. The separate f222 validation candidate includes representative resource corrections and the source-backed subpixel query fix. It remains separate from selected inference and is not a qualified replacement. See the [machine-readable ledger](results/vulkan11-compute-ledger-0045.json).
 
 Current measured fractions are **219/219 individual core format-query cases**
-and **53/93 applicable cases (57.0%) in the named `dEQP-VK.compute` group**.
-The latter has 40 unrun and 0 unclassified names for the current API, features
-and single compute queue. It is one catalog group, not an overall conformance
-percentage: API, SPIR-V, GLSL, memory, images and other groups also contain
-applicable compute/shared requirements. The exact historical inventory now
-contains 427 distinct original passes across separately pinned scopes.
-[Format queries](results/official11-promoted-format-query-0045.json) and
-[compute-group applicability](results/official11-named-compute-applicability-0045.json)
-retain the definitions and exclusions. Optional YCbCr execution remains false;
-passing its promoted format-query cases does not advertise that feature.
+and **93/93 applicable cases (100%) in the pinned `dEQP-VK.compute` group**.
+All 93 compute cases passed on the same f222/e699 candidate, with the original
+CTS executable, work and oracles. The initial 53/93 snapshot is historical.
+The 28 cases previously run on an older driver were confirmed on this candidate;
+current-candidate results were reused. The retained historical inventory now
+contains 482 distinct original passes, including other groups.
+
+This 100% applies only to the named compute group. API, SPIR-V, GLSL, memory,
+robustness, images and synchronization contain further applicable requirements;
+full Vulkan 1.1 compute/shared conformance remains incomplete. Optional YCbCr
+execution remains false, and the 42 strict custom sRGB findings remain open.
+[Exact same-candidate93-case evidence](results/official11-compute-final-candidate-0045.json)
+and [format-query evidence](results/official11-promoted-format-query-0045.json)
+retain scope, source classification and original oracle limitations.
 
 | Area | Evidence | Remaining work |
 | --- | --- | --- |
@@ -51,8 +55,8 @@ banks18–21 with public robustness, no forced sampling mode,560 exact words,
 full21 small allocations and196 sparse large-image words per round. It does not
 close every resource combination or a full128MiB image scan.
 
-Requirements are traced to the [Vulkan1.1 version contract](https://docs.vulkan.org/refpages/latest/refpages/source/VK_VERSION_1_1.html)
-and pinned [Vulkan1.1.126 source](https://github.com/KhronosGroup/Vulkan-Docs/tree/v1.1.126).
+Requirements are traced to the [Vulkan 1.1 version contract](https://docs.vulkan.org/refpages/latest/refpages/source/VK_VERSION_1_1.html)
+and pinned [Vulkan 1.1.126 source](https://github.com/KhronosGroup/Vulkan-Docs/tree/v1.1.126).
 Promoted optional features are tracked conditionally; an API version alone does
 not require advertising every optional bit. The category inventory is being
 reconciled with the registry and original CTS case inventory. It is not a test
@@ -391,3 +395,11 @@ all native accesses fit the actual private and code allocations. This closes
 one concrete spill-execution gap without compiler flags or driver changes. It
 is a custom core adapter, not an original DGC CTS pass or exhaustive spill
 qualification. The imported shader and upstream license are retained.
+
+The compute milestone also checks the actual secondary-command result details:
+all three are `passed`, which follows the original value-equals-one branch.
+The CTS source's incorrect Pass status for the opposite branch remains recorded.
+[Three unspecified-value Function cases](results/official11-function-uninitialized-0045.json)
+provide completion evidence only. [Twelve LINEAR clear cases](results/official11-linear-clear-0045.json)
+retain their original conversion, mip, array-range and readback thresholds
+without calling graphics-only constructors.

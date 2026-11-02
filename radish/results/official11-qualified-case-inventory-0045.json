@@ -1,5 +1,5 @@
 {
-  "status": "Retained evidence contains427 unique original CTS Pass cases; not a conformance denominator",
+  "status": "Retained evidence contains482 distinct original CTS Pass cases; not a full conformance denominator",
   "partitions": {
     "information": 5,
     "SPIR-V versions": 4,
@@ -21,9 +21,17 @@
     "Function composites integer": 42,
     "Function composites float": 30,
     "Indirect/base dispatch": 25,
-    "Promoted core format queries": 34
+    "Promoted core format queries": 34,
+    "Function unspecified completion": 3,
+    "LINEAR clears": 12,
+    "Compute basic controls": 12,
+    "Compute images small": 6,
+    "Compute images large read": 1,
+    "Compute images large write": 1,
+    "Compute builtins and singleton groups": 13,
+    "Compute Amber": 7
   },
-  "unique_count": 427,
+  "unique_count": 482,
   "names": [
     "dEQP-VK.api.array.oversized_array.core.get_pipeline_cache_data",
     "dEQP-VK.api.descriptor_pool.out_of_pool_memory",
@@ -33,6 +41,18 @@
     "dEQP-VK.api.descriptor_set.descriptor_set_layout.empty_set.normal",
     "dEQP-VK.api.descriptor_set.descriptor_set_layout_binding.update_subsequent_binding",
     "dEQP-VK.api.descriptor_set.descriptor_set_layout_lifetime.compute",
+    "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.multiple_layers.r8g8b8a8_unorm",
+    "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.remaining_array_layers_twostep.r8g8b8a8_unorm",
+    "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r16g16b16a16_sfloat",
+    "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r32g32b32a32_uint",
+    "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r5g6b5_unorm_pack16",
+    "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r5g6b5_unorm_pack16_clamp_input",
+    "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r8g8b8a8_sint",
+    "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r8g8b8a8_snorm",
+    "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r8g8b8a8_srgb",
+    "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r8g8b8a8_uint",
+    "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r8g8b8a8_unorm",
+    "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r8g8b8a8_unorm_clamp_input",
     "dEQP-VK.api.info.format_properties.a1r5g5b5_unorm_pack16",
     "dEQP-VK.api.info.format_properties.a2b10g10r10_sint_pack32",
     "dEQP-VK.api.info.format_properties.a2b10g10r10_snorm_pack32",
@@ -273,10 +293,32 @@
     "dEQP-VK.api.object_management.multiple_unique_resources.pipeline_cache",
     "dEQP-VK.api.object_management.single.pipeline_cache",
     "dEQP-VK.api.pipeline.pipeline_layout.lifetime.destroy_after_end",
+    "dEQP-VK.compute.pipeline.basic.atomic_barrier_sum_small",
+    "dEQP-VK.compute.pipeline.basic.branch_past_barrier",
+    "dEQP-VK.compute.pipeline.basic.branching_uniform_array_access",
+    "dEQP-VK.compute.pipeline.basic.copy_image_to_ssbo_large",
+    "dEQP-VK.compute.pipeline.basic.copy_image_to_ssbo_small",
     "dEQP-VK.compute.pipeline.basic.copy_ssbo_multiple_groups",
     "dEQP-VK.compute.pipeline.basic.copy_ssbo_multiple_invocations",
     "dEQP-VK.compute.pipeline.basic.copy_ssbo_single_invocation",
+    "dEQP-VK.compute.pipeline.basic.copy_ssbo_to_image_large",
+    "dEQP-VK.compute.pipeline.basic.copy_ssbo_to_image_small",
+    "dEQP-VK.compute.pipeline.basic.empty_shader",
+    "dEQP-VK.compute.pipeline.basic.empty_workgroup_all",
+    "dEQP-VK.compute.pipeline.basic.empty_workgroup_x",
+    "dEQP-VK.compute.pipeline.basic.empty_workgroup_y",
+    "dEQP-VK.compute.pipeline.basic.empty_workgroup_z",
+    "dEQP-VK.compute.pipeline.basic.image_atomic_op_local_size_1",
+    "dEQP-VK.compute.pipeline.basic.image_atomic_op_local_size_8",
+    "dEQP-VK.compute.pipeline.basic.image_barrier_multiple",
+    "dEQP-VK.compute.pipeline.basic.image_barrier_single",
     "dEQP-VK.compute.pipeline.basic.indirect_after_base_dispatch",
+    "dEQP-VK.compute.pipeline.basic.max_local_size_x",
+    "dEQP-VK.compute.pipeline.basic.max_local_size_y",
+    "dEQP-VK.compute.pipeline.basic.max_local_size_z",
+    "dEQP-VK.compute.pipeline.basic.read_unbound_ssbo",
+    "dEQP-VK.compute.pipeline.basic.remove_global_load_pass",
+    "dEQP-VK.compute.pipeline.basic.secondary_compute_only_queue",
     "dEQP-VK.compute.pipeline.basic.shared_atomic_op_multiple_groups",
     "dEQP-VK.compute.pipeline.basic.shared_atomic_op_multiple_invocations",
     "dEQP-VK.compute.pipeline.basic.shared_atomic_op_single_group",
@@ -298,10 +340,26 @@
     "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_multiple_invocations",
     "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_single_group",
     "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_single_invocation",
+    "dEQP-VK.compute.pipeline.basic.vec2_nclamp_nan_component",
+    "dEQP-VK.compute.pipeline.basic.webgl_spirv_loop",
     "dEQP-VK.compute.pipeline.basic.write_multiple_arr_multiple_groups",
     "dEQP-VK.compute.pipeline.basic.write_multiple_arr_single_invocation",
     "dEQP-VK.compute.pipeline.basic.write_multiple_unsized_arr_multiple_groups",
     "dEQP-VK.compute.pipeline.basic.write_multiple_unsized_arr_single_invocation",
+    "dEQP-VK.compute.pipeline.basic.write_ssbo_array",
+    "dEQP-VK.compute.pipeline.builtin_var.global_invocation_id",
+    "dEQP-VK.compute.pipeline.builtin_var.global_invocation_id_component",
+    "dEQP-VK.compute.pipeline.builtin_var.local_invocation_id",
+    "dEQP-VK.compute.pipeline.builtin_var.local_invocation_id_component",
+    "dEQP-VK.compute.pipeline.builtin_var.local_invocation_index",
+    "dEQP-VK.compute.pipeline.builtin_var.num_work_groups",
+    "dEQP-VK.compute.pipeline.builtin_var.num_work_groups_component",
+    "dEQP-VK.compute.pipeline.builtin_var.work_group_id",
+    "dEQP-VK.compute.pipeline.builtin_var.work_group_id_component",
+    "dEQP-VK.compute.pipeline.builtin_var.work_group_size",
+    "dEQP-VK.compute.pipeline.builtin_var.work_group_size_component",
+    "dEQP-VK.compute.pipeline.device_group.device_index",
+    "dEQP-VK.compute.pipeline.device_group.dispatch_base",
     "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.empty_command",
     "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.empty_command_x",
     "dEQP-VK.compute.pipeline.indirect_dispatch.gen_in_compute.empty_command_y",
@@ -326,6 +384,8 @@
     "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.multiple_groups_multiple_invocations",
     "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.single_invocation",
     "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.small_offset",
+    "dEQP-VK.compute.shader_object_binary.basic.secondary_compute_only_queue",
+    "dEQP-VK.compute.shader_object_spirv.basic.secondary_compute_only_queue",
     "dEQP-VK.info.device_features",
     "dEQP-VK.info.device_memory_properties",
     "dEQP-VK.info.device_properties",
@@ -435,8 +495,11 @@
     "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.vec_3",
     "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.vec_4",
     "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.float.initialized",
+    "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.float.uninitialized",
     "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.int.initialized",
+    "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.int.uninitialized",
     "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.uint.initialized",
+    "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.uint.uninitialized",
     "dEQP-VK.spirv_assembly.instruction.compute.spirv_version.1_0_compute",
     "dEQP-VK.spirv_assembly.instruction.compute.spirv_version.1_1_compute",
     "dEQP-VK.spirv_assembly.instruction.compute.spirv_version.1_2_compute",
@@ -537,12 +600,44 @@
     "Promoted core format queries": {
       "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-promoted-formats/probe/runner-result.json",
       "sha256": "8f0c28a59df91c573a301542e6b874c473397cd889698db8c20316eb91480de7"
+    },
+    "Function unspecified completion": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-function-uninit/probe/runner-result.json",
+      "sha256": "12b011938b2a39cd3b499c98e6f9f5076938dc0cca7c7ebb24ecee1bf1f370f0"
+    },
+    "LINEAR clears": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-linear-clear/probe/runner-result.json",
+      "sha256": "0fed1b64fb8d807fff4c736245525577cd15d9ac916fc2acc4c9a36ef28057b1"
+    },
+    "Compute basic controls": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-basic-controls/probe/runner-result.json",
+      "sha256": "a426a1f4c8362293a9745accf139c4a07e0e0586f3ba6a1aef13106297be05e6"
+    },
+    "Compute images small": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-images-small/probe/runner-result.json",
+      "sha256": "2185938fd93a59ca295b57e183abe9d189f65b793fa113df120502885224527c"
+    },
+    "Compute images large read": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-images-large-read/probe/runner-result.json",
+      "sha256": "5538e87146b94dd52c8de6086a805b833b414fa09d880c1bd8efcf9d4706ce1f"
+    },
+    "Compute images large write": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-images-large-write/probe/runner-result.json",
+      "sha256": "da7bca10c17fdeed34a19d6b0b3bbbb769718d9d97151f529495d2bfeb7cd232"
+    },
+    "Compute builtins and singleton groups": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-builtins-groups/probe/runner-result.json",
+      "sha256": "9d6f5cf018ec8142db4be5811c47367b4c5db6f54dec80ac054568c15452b146"
+    },
+    "Compute Amber": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-basic-amber/probe/runner-result.json",
+      "sha256": "03da4262db5951ec9729f9ea9a7ddbff0b402abfe36b39aa801381b255c93956"
     }
   },
   "limitations": "Separate historical revisions/candidates, not one full conformance run; original oracle limits preserved. Failed historical info/ETC cases were corrected and later passed; custom42 strict sRGB mismatches remain unresolved. Original mistyped cache case0/0 is not a case or pass.",
   "source_receipt_identity": {
-    "path": "/run/media/jethac/Shared/radish/compute11-verified-case-count-v5-0045.json",
-    "bytes": 37181,
-    "sha256": "ff78e7276b4cb71693135cb72a9df1902b6d23406c0dd94a842e256cb637c856"
+    "path": "/run/media/jethac/Shared/radish/compute11-verified-case-count-v6-0045.json",
+    "bytes": 43406,
+    "sha256": "7b0e675a0c141a23bae0e0ca35e308986b382bedf64fc616df94f79a5c9b15d8"
   }
 }

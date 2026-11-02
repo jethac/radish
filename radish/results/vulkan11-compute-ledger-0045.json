@@ -13,7 +13,7 @@
   "official_cts": {
     "source_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
     "binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
-    "state": "427 distinct original cases passed across separately pinned bounded scopes. All five information cases pass and219/219 individual core enum query cases pass. The separately classified named dEQP-VK.compute group is53/93 passed,40 unrun,0 unclassified. None of these is a full Vulkan compute/shared conformance percentage; broader API/SPIRV/GLSL/memory/image/descriptor/synchronization groups remain.",
+    "state": "482 distinct original historical passes across scoped campaigns. The exact named dEQP-VK.compute catalog is now93/93 applicable cases passed on one immutable f222/e699 candidate.219/219 individual core enum queries also pass. This does not complete all Vulkan1.1 compute/shared conformance groups.",
     "modified_harness": "f85cb13b diagnostics only, never official passes",
     "remaining_property_failures": 0,
     "actual_record": "official11-native-scalars-info-0045.json",
@@ -34,13 +34,14 @@
     "promoted_query_record": "official11-promoted-query-0045.json",
     "cache_lifetime_record": "official11-cache-lifetime-0045.json",
     "qualified_unique_case_inventory": "official11-qualified-case-inventory-0045.json",
-    "qualified_unique_cases": 427,
+    "qualified_unique_cases": 482,
     "inventory_limitation": "Historical passes span separate pinned candidates and exact source-bounded runs. This is neither one complete conformance run nor a percentage of all applicable requirements.",
     "format_query_record": "official11-format-query-0045.json",
     "function_private_record": "official11-function-private-0045.json",
     "function_composites_record": "official11-function-composites-0045.json",
     "indirect_dispatch_record": "official11-indirect-dispatch-0045.json",
-    "promoted_format_query_record": "official11-promoted-format-query-0045.json"
+    "promoted_format_query_record": "official11-promoted-format-query-0045.json",
+    "named_compute_final_record": "official11-compute-final-candidate-0045.json"
   },
   "categories": [
     {
@@ -335,7 +336,7 @@
     "system_scope": "No globalgraphics/service/clock/kernelchanges"
   },
   "depth_layout_erratum": "Pinned Vulkan1.1 DEPTH_STENCIL_READ_ONLY_OPTIMAL requires DEPTH_STENCIL_ATTACHMENT usage. Earlier sampled-only depth consumers are implementation observations for that path until valid-usage requalification; no retroactive public qualification.",
-  "next_private_source": "Prioritize the40 source-classified unrun cases in the named compute group with bounded original CTS plans. Three original unspecified-value Function completion cases and12 valid LINEAR clear cases are in the execution queue. Broad conformance and strict42 custom sRGB findings remain open.",
+  "next_private_source": "Named compute93/93 milestone is complete. Continue the full applicable Vulkan1.1 compute/shared GOAL through remaining API, shader, memory, image/format, robustness, descriptor and synchronization requirements, implementation first. Strict42 custom sRGB findings remain open. No performance or full inference campaign resumes before broader conformance closure.",
   "required_core_lookup": "core-lookup-public-0045.json: public165GIPA/137GDPA complete afterfiveactualdevicepointer fixes. This is lookup only, not allcommandexecution. DirectICDloaderglobal limitation retained.",
   "deferred_performance_opportunities": {
     "pipeline_cache_population": "Pipeline creation currently does not populate common cache entries; header/object-count serialization is callable behavior only. Real cache population/reuse and measured benefit belong to the later performance phase; no speedup assumed."
@@ -349,13 +350,13 @@
       "scope": "Physical query validity/required and allowed traits, not format execution"
     },
     "named_compute_group": {
-      "passed": 53,
+      "passed": 93,
       "applicable": 93,
-      "unrun": 40,
+      "unrun": 0,
       "unclassified": 0,
-      "percent": 56.98924731182796,
-      "record": "official11-named-compute-applicability-0045.json",
-      "scope": "Only the exact pinned dEQP-VK.compute catalog for current API/features/one compute queue, not all applicable Vulkan compute/shared CTS"
+      "percent": 100,
+      "record": "official11-compute-final-candidate-0045.json",
+      "scope": "Exact pinned named dEQP-VK.compute catalog under current API/features/one queue; all93 on identical f222/e699. Not all Vulkan compute/shared CTS."
     }
   }
 }

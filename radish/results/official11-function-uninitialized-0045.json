@@ -1,0 +1,155 @@
+{
+  "status": "Three original unspecified-value Function cases completed successfully",
+  "actual_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-function-uninitialized-next-0045/actual-review.json",
+      "bytes": 2484,
+      "sha256": "eb3198a25930f82fcaee0d963d4c3ac40f1d4533b152b4e284c154942ea21f9d"
+    },
+    "result": {
+      "status": "PASS3 original uninitialized Function completion cases",
+      "source_bounds_sha256": "9fc64c13ae36863bf44af0ef0eff84f65f02fafa8a19dc444fb1605b1c11da34",
+      "case_file_sha256": "cbd73276cc13f78e43b17f5cde01d5d52325fd51d2fc0f558955e698dec437d0",
+      "cases": [
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.int.uninitialized",
+          "result": "Pass",
+          "qpa_sha256": "2278a6ca150b771899936d1ce41844a6ff154455a48c77d1bc183c96b810ec98"
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.uint.uninitialized",
+          "result": "Pass",
+          "qpa_sha256": "2be43c9c974b544e9d03c6ed92584dc7a581fae6f5b9a7e54eda321ffd6b3ca6"
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.float.uninitialized",
+          "result": "Pass",
+          "qpa_sha256": "546f50582dc9c46e573aabcf2782c7be5e1e8ff95ca569edd3490b359978bace"
+        }
+      ],
+      "profiles": [
+        {
+          "pipeline": "0xaaaad424bdb0",
+          "grid": "1,1,1",
+          "local": "1,1,1",
+          "barrier": "0",
+          "loops": "0",
+          "instrlen": "1",
+          "chunks": "1",
+          "submits": "1",
+          "ns": "4178966",
+          "submit_ns": "3872559",
+          "submit_max_ns": "3872559",
+          "result": "0"
+        },
+        {
+          "pipeline": "0xaaaae0116190",
+          "grid": "1,1,1",
+          "local": "1,1,1",
+          "barrier": "0",
+          "loops": "0",
+          "instrlen": "1",
+          "chunks": "1",
+          "submits": "1",
+          "ns": "4090893",
+          "submit_ns": "3738236",
+          "submit_max_ns": "3738236",
+          "result": "0"
+        },
+        {
+          "pipeline": "0xaaaaec93d860",
+          "grid": "1,1,1",
+          "local": "1,1,1",
+          "barrier": "0",
+          "loops": "0",
+          "instrlen": "1",
+          "chunks": "1",
+          "submits": "1",
+          "ns": "3903444",
+          "submit_ns": "3599433",
+          "submit_max_ns": "3599433",
+          "result": "0"
+        }
+      ],
+      "scope": "Uninitialized int/uint/float output values are unspecified and not compared to a fixed expected value. Three successful pipeline/dispatch/completion paths only; no numerical, private-memory or allocator-spill credit. Distinct initialized siblings previously passed are not repeated.",
+      "safety": {
+        "runtime": "4.232s",
+        "memory": "119M (swap: 0B)",
+        "per_case_fault_checks": 3,
+        "collection": "PASS/errors[]",
+        "services": [
+          "active",
+          "active"
+        ],
+        "log_sha256": "c7e13e382dce6e48b358b9f1d9efe3b75ba77992bec57691ba5bfab3272839f7"
+      }
+    }
+  },
+  "source": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-function-uninitialized-next-0045/source-bounds.json",
+      "bytes": 3870,
+      "sha256": "9fc64c13ae36863bf44af0ef0eff84f65f02fafa8a19dc444fb1605b1c11da34"
+    },
+    "result": {
+      "status": "Source-bounded original uninitialized Function behavior; no numerical value oracle claim",
+      "case_file": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-function-uninitialized-next-0045/cases.txt",
+        "sha256": "cbd73276cc13f78e43b17f5cde01d5d52325fd51d2fc0f558955e698dec437d0",
+        "count": 3
+      },
+      "cases": [
+        "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.int.uninitialized",
+        "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.uint.uninitialized",
+        "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.float.uninitialized"
+      ],
+      "base_source_review": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-function-private-next-0045/source-bounds.json",
+        "sha256": "1e9d1d086f89daf6f936710ad73bcf7ac87c644e805e54ca802a97337027e563"
+      },
+      "source_pins": [
+        {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/vktTestPackage.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-function-private-next-0045/source/vktTestPackage.cpp",
+          "bytes": 67173,
+          "sha256": "272802a91a54f6aade1741c713563936fe01be295ea648bdf85e5cce0e4823d6"
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-function-private-next-0045/source/vktSpvAsmTests.cpp",
+          "bytes": 1761,
+          "sha256": "97cd0a9fc6b7361bbe81c6e64a11d5d428fa439c98098638398969dddb66dd9d"
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmInstructionTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-function-private-next-0045/source/vktSpvAsmInstructionTests.cpp",
+          "bytes": 1042522,
+          "sha256": "d6800ae7655ee7bb2a535d450d01ae998f8439cb7b342ea9e22ec99095d518d8"
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmVariableInitTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-function-private-next-0045/source/vktSpvAsmVariableInitTests.cpp",
+          "bytes": 40744,
+          "sha256": "dd9e504f5303a48a56de8c93b16c1af190b5e2962cc9a208b91e93abf8ff1abf"
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmComputeShaderCase.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-function-private-next-0045/source/vktSpvAsmComputeShaderCase.cpp",
+          "bytes": 45490,
+          "sha256": "29492a513a821b5af613cbf77f03b7bdc954e20043fb7c7e05858324e9150c40"
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmComputeShaderTestUtil.hpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-function-private-next-0045/source/vktSpvAsmComputeShaderTestUtil.hpp",
+          "bytes": 22695,
+          "sha256": "dfd7c2e46d5f603a7bedde13bf9eb208465d64dd855fcdf34ea0ebdcd289ca86"
+        }
+      ],
+      "registration": "Same shader_default_output int/uint/float registration as passed initialized3; exact sibling uninitialized cases",
+      "bounds": "Each original local1/grid1, one 4-byte input and one 4-byte output SSBO; no shared/images/loop/optional features. Core Shader SPIRV1.0.",
+      "oracle_scope": "Original uninitialized value is unspecified. These are no-crash/valid execution cases; do not count as initialized-value, numerical, scratch or spilling proof. Original compiler/output verification behavior unchanged.",
+      "controls": "Original90s/384MiB and exact original case/QPA/fault gates; no feature or source change."
+    }
+  },
+  "scope": "Three single-invocation valid-completion/no-crash cases. No numerical-value, initialized-value, private-memory or spill proof."
+}

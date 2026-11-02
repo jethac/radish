@@ -1,0 +1,203 @@
+{
+  "status": "12 original LINEAR clear/copy/readback cases passed",
+  "actual_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-original-linear-clear-next-0045/independent-actual-review.json",
+      "bytes": 6448,
+      "sha256": "7984243a6b4115f49387d82cc5db61bfff9944c7592eccc2302eb886ac73b0d6"
+    },
+    "result": {
+      "status": "PASS12originalLINEARcolorclearcases independentlyfromdistinctQPA",
+      "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-linear-clear/probe",
+      "casefile": {
+        "path": "/run/media/jethac/Shared/radish/compute11-original-linear-clear-next-0045/cases.txt",
+        "bytes": 1116,
+        "sha256": "6fdc2ea133310260485c042fec4431c3eb17d8dc4f62d3b0d8b642f946d54416"
+      },
+      "log": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-linear-clear/probe/run.log",
+        "bytes": 50774,
+        "sha256": "65b9bf61779dff5154806f21c784ea856aba59815f468af6f16b3c55917a1ee7"
+      },
+      "runner_result": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-linear-clear/probe/runner-result.json",
+        "bytes": 3759,
+        "sha256": "0fed1b64fb8d807fff4c736245525577cd15d9ac916fc2acc4c9a36ef28057b1"
+      },
+      "count": 12,
+      "checks": [
+        "Exact12sourceinventorydistinctQPA/statusPass/orderedharnessnames,0skips/warnings/waived",
+        "8linearformats UNORM/SNORM/UINT/SINT/SRGB/FP16/uint128/packed565+2clamp+2partialarray/remainingtwostep,256x256/sample1/mips",
+        "Originalper-formatoracles/thresholdsretained(integers\u00b11,floatmantissa-basedetc), no newexact-allpixelsorcustomguardclaim",
+        "LINEARattachmentfeaturebits0\u2192TRANSFERonly/noRenderPass/Framebuffer/viewconstructionpath; no shader/pipeline/dispatch. Validcomputequeuecolorclears/copies/barriers/readbacks",
+        "Exit0,7.283s/37.7MiB/0swap/cleanfault/services underoriginal90s384MiB"
+      ],
+      "limitations": "Finitecallableclear/subresource/conversionqualificationonly; notall formats/dimensions/tilings/memory cases/fullVulkanconformance. No driverchange or strictsRGBthresholdrelaxation.",
+      "rows": [
+        {
+          "case": "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r8g8b8a8_unorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-linear-clear/probe/case-0.qpa",
+            "bytes": 1464,
+            "sha256": "156099f86de0ddb3895744b454a83cc7cb56c7cb8a2bcb1c19433782738c2a71"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r8g8b8a8_snorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-linear-clear/probe/case-1.qpa",
+            "bytes": 1464,
+            "sha256": "9168909abdfcce8e77477ab99f45a886a13ab26e3d0cbd5c775fe7f1dc8c5e8d"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r8g8b8a8_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-linear-clear/probe/case-2.qpa",
+            "bytes": 1461,
+            "sha256": "41cdb003966d2c506d1564f548f011330741e152457750d04f6dd2b8fd3621fb"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r8g8b8a8_sint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-linear-clear/probe/case-3.qpa",
+            "bytes": 1461,
+            "sha256": "a28243058fdd0d9cc632a5e9df62bf9294400623a7432fadc50c6e4ea2a20a79"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r8g8b8a8_srgb",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-linear-clear/probe/case-4.qpa",
+            "bytes": 1461,
+            "sha256": "a455c25b4573f60b0cc884e74c7a20d9cda33b992d376a3e207987926ae9d1ea"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r16g16b16a16_sfloat",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-linear-clear/probe/case-5.qpa",
+            "bytes": 1479,
+            "sha256": "d54a25402db6b719769a85ed26db877d3e302fd28fef45291114d7092c80191e"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r32g32b32a32_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-linear-clear/probe/case-6.qpa",
+            "bytes": 1473,
+            "sha256": "4a56707b9c3ed8a76666b95f260a8b9b2d48a978cdde4e55527f990402a576bf"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r5g6b5_unorm_pack16",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-linear-clear/probe/case-7.qpa",
+            "bytes": 1479,
+            "sha256": "bf97163980c0985340ca81fcc80960a770c40106da79c7594415402041de4c1a"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r8g8b8a8_unorm_clamp_input",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-linear-clear/probe/case-8.qpa",
+            "bytes": 1500,
+            "sha256": "4b7cd08a78a7f08cc1ceb873f5b8eebc5e2ad6f01a10c1eb17beecf59591041e"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.single_layer.r5g6b5_unorm_pack16_clamp_input",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-linear-clear/probe/case-9.qpa",
+            "bytes": 1515,
+            "sha256": "4157f9aa064b7fa89309a04219af0ca80ff15186d6fcfcc63d286bda2db074e7"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.multiple_layers.r8g8b8a8_unorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-linear-clear/probe/case-10.qpa",
+            "bytes": 1475,
+            "sha256": "8cd74b5b3c479a4b7f592d333d6cceab47ade699bf6f5b061861fee553cb7908"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.image_clearing.core.clear_color_image.2d.linear.remaining_array_layers_twostep.r8g8b8a8_unorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-linear-clear/probe/case-11.qpa",
+            "bytes": 1520,
+            "sha256": "dbadc3e7e1ee36d327cae4a7596c790ad688bd54478197530a7551fee89d9433"
+          }
+        }
+      ]
+    }
+  },
+  "source": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-original-linear-clear-next-0045/plan.json",
+      "bytes": 4305,
+      "sha256": "e33729cf40b515289da46c55436113ff773d492f474a09958e34319e2111020f"
+    },
+    "result": {
+      "status": "Source-only nextfiniteoriginalcallableclearsemantics partition; no deviceinvocation",
+      "cases": {
+        "path": "/run/media/jethac/Shared/radish/compute11-original-linear-clear-next-0045/cases.txt",
+        "bytes": 1116,
+        "sha256": "6fdc2ea133310260485c042fec4431c3eb17d8dc4f62d3b0d8b642f946d54416"
+      },
+      "count": 12,
+      "sources": {
+        "vktApiImageClearingTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-original-linear-clear-next-0045/source/vktApiImageClearingTests.cpp",
+          "bytes": 168274,
+          "sha256": "13559d4d4a6738ab6baca7063f24ac1286ca07bad3d48cdc4edd6d899437344d"
+        },
+        "vktApiTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-original-linear-clear-next-0045/source/vktApiTests.cpp",
+          "bytes": 6276,
+          "sha256": "f8448b09583d40bca5e1ea3d3c87a37f13aa665541a553ab2b45a3da39962902"
+        },
+        "vktTestPackage.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-original-linear-clear-next-0045/source/vktTestPackage.cpp",
+          "bytes": 67173,
+          "sha256": "272802a91a54f6aade1741c713563936fe01be295ea648bdf85e5cce0e4823d6"
+        }
+      },
+      "registry": {
+        "pin": {
+          "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-independent-0045/vk-v1.1.126.xml",
+          "bytes": 1057090,
+          "sha256": "3fee40627e5377892bd29540955ee65dfd712d8236514a763807175317224a99"
+        },
+        "CmdClearColorImage": {
+          "queues": "graphics,compute",
+          "renderpass": "outside",
+          "cmdbufferlevel": "primary,secondary",
+          "pipeline": "transfer"
+        }
+      },
+      "registration": "vktTestPackage api\u2192vktApiTests113 createImageClearingTests\u21923224 image_clearing\u21923229 core\u21922247 clear_color_image\u21922d\u2192linear\u2192single_layer/multiple_layers/remaining_array_layers_twostep\u2192exactformatname. Original256x256extent omitsdimensionssuffix; originaldefaultcolor suffixempty, conditionalUNORMclamp uses_clamp_input.",
+      "scope": "8required/native-supportedformatfamilies normalized/signed-normalized/UINT/SINT/SRGB/FP16/uint128/packed565,2UNORMclampcounterparts,2partialarray/remainingranges variants. Single sample,mipsfrommin(actualquerymax,log2(256)+1)=9,currentquery. No graphics/shader/compute-dispatch required; operationscorefillbuffer/buffer-imagecopies/colorimageclear/barriers/readback.",
+      "validity": "CrucialexistingCTStestconstructor invokesCreateRenderPass/Framebuffer forattachmentformats. AllchosenLINEARqueriesadvertisenoCOLOR/DSattachmentbit(currentd37a); getIsAttachmentFormat509false\u21d2usageTRANSFER_SRC|DST only\u21d2noimageview/renderpass/framebuffer constructorbranch andcheckSupport2112 create_renderpass2 requirementskipped. Optimalattachmentcolor siblings expresslynotselected. No blanketgraphicswaiver.",
+      "oracle": "Originalclearcolors[.1,.5,.3,.9] and[.3,.6,.2,.7], two mipranges, originalclampnegativeinputs\u2192zero, originalper-formatcomparethresholdsunchanged. Integerthreshold\u00b11 andfloatmantissa-basedthresholds areoriginalCTS, notcustomexactallpixels claim. Untouchedsubresources testedperoriginalisInInitialClearRange. No customallocationguardclaim.",
+      "bounds": "256x256,oneimage+onestagingbuffer+onecurrentlayerreadback+CPUtexturepyramid,8singlelayercases/2clamps plus2RGBA8 cases16layers. Largestimagebase16layersRGBA8=4MiB+allmips\u22485.34MiB,pitchalignmentoverheadboundedwellunder8MiB atsource;staging4MiB/readbackperlayer<.4MiB. SingleRGBA32UIimage<2MiB. Conservativeliveimage+bufferdata<32MiBexcludingCTSbaseline/allocator/RSS; original384MiB90s/fault/log/reserve remains.",
+      "implementation_check": "Currentrd_image.c1142 alreadycallsMesa util_format_pack_rgba andrecordsper-mip/layerclear, genericCPUtransferworker. No sourcegap demonstrated; thisqualifiesrealcallableconversion/subresource/visibility semantics and willdirectanyfailurefix. No speculative driver mutation.",
+      "exclusions": "NoDSclear/graphics-onlyclearattachments/renderpassconstruction,MSresolve,optimalattachmentformats,dedicated/extensioncasesor3Dcontexts. Otherdimensions/tilings remainfuturecoverage, notwaived. Exactsource-derivednamesmustmatchactualQPA/count; optionalNotSupportednotPASS.",
+      "baseline": "Currentf222/e699/querysource d37a, originalCTS0e715 unchanged; no shaderorfeaturechange. No official-conformancecertificate from12cases."
+    }
+  },
+  "scope": "Current LINEAR traits take transfer-only paths without graphics-only host objects. Eight formats, clamping, mips and partial/remaining array ranges retain original format-specific thresholds. No custom full-allocation or graphics-rendering claim."
+}
