@@ -1,0 +1,56 @@
+--- a/src/freedreno/radish/rd_image.c
++++ b/src/freedreno/radish/rd_image.c
+@@ -228,6 +228,7 @@
+       if (!image->native_layout.size || image->native_layout.size > limit)
+          return false;
+       if ((image->vk.usage & VK_IMAGE_USAGE_SAMPLED_BIT) &&
++          image->vk.samples != VK_SAMPLE_COUNT_1_BIT &&
+           image->vk.array_layers > 1 && image->native_layout.layer_size > (0x3fffull << 12))
+          return false;
+       image->size = image->native_layout.size;
+--- a/src/freedreno/radish/rd_private.h
++++ b/src/freedreno/radish/rd_private.h
+@@ -114,6 +114,7 @@
+    uint32_t logical_local_size[3];
+    bool linear_subgroups;
+    bool packed_1d_barrier;
++   bool linear_barriers;
+    VkPipelineCreateFlags compile_flags;
+    struct nir_shader *sampling_nir;
+    struct rd_sampling_entry *sampling_variants;
+--- a/src/freedreno/radish/rd_pipeline.c
++++ b/src/freedreno/radish/rd_pipeline.c
+@@ -279,9 +279,14 @@
+       return VK_ERROR_FEATURE_NOT_PRESENT;
+    }
+    pipeline->linear_subgroups = rd_uses_subgroups(nir);
++   bool workgroup_barrier = rd_uses_workgroup_barrier(nir);
+    pipeline->packed_1d_barrier = !pipeline->linear_subgroups &&
+       pipeline->logical_local_size[1] == 1 && pipeline->logical_local_size[2] == 1 &&
+-      local_count >= 32 && !(local_count & 1) && rd_uses_workgroup_barrier(nir);
++      local_count >= 32 && !(local_count & 1) && workgroup_barrier;
++   pipeline->linear_barriers = workgroup_barrier && !pipeline->linear_subgroups &&
++      !pipeline->packed_1d_barrier &&
++      ((pipeline->logical_local_size[0] & 1) || (pipeline->logical_local_size[1] & 1) ||
++       pipeline->logical_local_size[2] != 1);
+    if (device->vk.enabled_features.robustBufferAccess && !rd_nir_lower_robust_buffers(nir)) {
+       ralloc_free(nir);
+       return VK_ERROR_FEATURE_NOT_PRESENT;
+@@ -290,7 +295,7 @@
+       .has_base_workgroup_id = true,
+    };
+    NIR_PASS(_, nir, nir_lower_compute_system_values, &sysvals);
+-   if (pipeline->linear_subgroups) {
++   if (pipeline->linear_subgroups || pipeline->linear_barriers) {
+       if (pipeline->logical_local_size[1] != 1 || pipeline->logical_local_size[2] != 1)
+          nir_shader_intrinsics_pass(nir, rd_linearize_local_id,
+             nir_metadata_control_flow, pipeline->logical_local_size);
+@@ -339,7 +344,7 @@
+       .nir_options.disable_optimizations = flags & VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT,
+       .api_wavesize = IR3_SINGLE_ONLY,
+       .api_subgroup_size = 16,
+-      .workgroup_resident_threads = pipeline->linear_subgroups ?
++      .workgroup_resident_threads = (pipeline->linear_subgroups || pipeline->linear_barriers) ?
+          DIV_ROUND_UP(local_count, 16) * device->info.threadsize_base : 0,
+       .real_wavesize = IR3_SINGLE_ONLY,
+       .push_consts_type = IR3_PUSH_CONSTS_PER_STAGE,

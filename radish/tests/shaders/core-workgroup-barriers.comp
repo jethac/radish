@@ -1,0 +1,43 @@
+#version 450
+layout(local_size_x_id=0,local_size_y_id=1,local_size_z_id=2) in;
+layout(set=0,binding=0,std430) buffer Output { uint values[]; } output_data;
+layout(set=0,binding=1,std430) coherent buffer Exchange { uint values[]; } exchange_data;
+layout(push_constant) uniform Params { uint salt; } p;
+shared uint shared_data[128];
+void main()
+{
+   uint i=gl_LocalInvocationIndex, group=gl_WorkGroupID.x;
+   uint n=gl_WorkGroupSize.x*gl_WorkGroupSize.y*gl_WorkGroupSize.z;
+   shared_data[i]=p.salt+group*256u+i*17u;
+   barrier();
+   uint previous=shared_data[(i+n-1u)%n];
+   uint sum=0;
+   for (uint j=0;j<n;j++) sum+=shared_data[j];
+   barrier();
+   shared_data[i]=sum^i^0x5a000000u;
+   barrier();
+   uint next=shared_data[(i+1u)%n];
+   if (i==0u) {
+      exchange_data.values[16u+2u*group]=sum;
+      exchange_data.values[17u+2u*group]=n;
+   }
+   memoryBarrierBuffer();
+   barrier();
+   uint dst=16u+16u*(group*n+i);
+   output_data.values[dst+0u]=i;
+   output_data.values[dst+1u]=gl_WorkGroupSize.x;
+   output_data.values[dst+2u]=gl_WorkGroupSize.y;
+   output_data.values[dst+3u]=gl_WorkGroupSize.z;
+   output_data.values[dst+4u]=gl_LocalInvocationID.x;
+   output_data.values[dst+5u]=gl_LocalInvocationID.y;
+   output_data.values[dst+6u]=gl_LocalInvocationID.z;
+   output_data.values[dst+7u]=gl_GlobalInvocationID.x;
+   output_data.values[dst+8u]=gl_GlobalInvocationID.y;
+   output_data.values[dst+9u]=gl_GlobalInvocationID.z;
+   output_data.values[dst+10u]=gl_WorkGroupID.x;
+   output_data.values[dst+11u]=gl_WorkGroupID.y;
+   output_data.values[dst+12u]=gl_WorkGroupID.z;
+   output_data.values[dst+13u]=exchange_data.values[16u+2u*group];
+   output_data.values[dst+14u]=previous;
+   output_data.values[dst+15u]=next;
+}

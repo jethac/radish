@@ -1,5 +1,13 @@
 # Radish status
 
+## 2026-11-02: irregular barriers and a real large array image pass
+
+The ordinary workgroup-barrier consumer passes logical32×1×1,33×1×1 and3×5×3 shapes across two workgroups each, with3,520 exact record words and full output/exchange guards. The driver preserves logical IDs while using physical16×2×1,33×1×1 and45×1×1 respectively, including conservative residency accounting for the irregular shapes. This extends the reproduced barrier coverage without claiming every legal resource/workgroup combination.
+
+After that clean pass, the automatic sampling path executes a real128MiB two-layer RGBA32 image whose64MiB layer pitch exceeds the native field limit. No private force option is set. Both rounds pass176 exact TXF/filter/size output words, full output guards and196 tracked source/canary words, with changed contents in the same BO and the same cached child. The test does not scan the entire128MiB allocation or allocate large cubes/multisample images. [Exact source, allocation and result limits](results/core-api-0044-barrier-large-array.json).
+
+ICD `33ec9c03` completes the batch in1.710s,136.2MiB peak and zero swap, under the unchanged384MiB cap and64MiB disk reserve. No new GPU faults occur; both services remain active. The seventeenth increment, `0044-radish-barrier-large-array-wip.patch`, follows image-query-constants and adds the two existing-runner suites `barrier` and `oversized`. Full inference regression remains a separate functional check; performance experiments remain paused.
+
 ## 2026-11-02: required native resource capacity passes through descriptor constants
 
 Storage-image and texel-buffer size queries now read exact current view dimensions from driver constants. The unchanged capacity consumer retains sixteen live sampled textures and four storage resources, and passes all176 output words plus all21 allocation guards. Its compiled shader uses no internal texture aliases or GETSIZE/GETBUF instructions. This implements the required resource combination without reducing advertised limits; it does not establish high-index native S2EN support. The earlier failure remains below. [Exact paired source and results](results/core-api-0044-image-query-constants.json).

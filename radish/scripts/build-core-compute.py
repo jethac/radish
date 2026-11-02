@@ -39,7 +39,9 @@ def main():
              ('array', 'core_array_resources.c', 'core-array-resources.comp', 'vulkan1.0'),
              ('multisample', 'core_multisample.c', 'core-multisample.comp', 'vulkan1.0'),
              ('subword', 'core_subword_resources.c', 'core-subword-resources.comp', 'vulkan1.0'),
-             ('capacity', 'core_native_capacity.c', 'core-native-capacity.comp', 'vulkan1.0')]
+             ('capacity', 'core_native_capacity.c', 'core-native-capacity.comp', 'vulkan1.0'),
+             ('barrier', 'core_workgroup_barriers.c', 'core-workgroup-barriers.comp', 'vulkan1.0'),
+             ('oversized', 'core_oversized_image.c', 'core-oversized-image.comp', 'vulkan1.0')]
     records = {}
     for name, cfile, glsl, target in units:
         source = top / 'radish/tests' / cfile
