@@ -13,7 +13,7 @@ All 93 compute cases passed on the same f222/e699 candidate, with the original
 CTS executable, work and oracles. The initial 53/93 snapshot is historical.
 The 28 cases previously run on an older driver were confirmed on this candidate;
 current-candidate results were reused. The retained historical inventory now
-contains 626 distinct original passes, including other groups.
+contains 673 distinct original passes, including other groups.
 
 This 100% applies only to the named compute group. API, SPIR-V, GLSL, memory,
 robustness, images and synchronization contain further applicable requirements;
@@ -430,3 +430,21 @@ indirect dispatch, with unchanged byte and integer oracles. The separately
 modified robustness results still add zero original CTS passes. Next are the
 source-bounded control-flow cases, including compile admission for the wide
 Phi and deeply nested shaders; full conformance and strict sRGB closure remain open.
+
+[The 33 original control-flow cases](results/official11-control-flow-0045.json)
+now pass on unchanged f222/e699. This includes the 512-way Phi shader and
+171 nested selections at depth eight. Each difficult module first passed a
+separate bounded compile/resource check, then its original numerical CTS case.
+The wide shader executes allocator-generated 16-bit spill loads and stores;
+the original output comparison passes. Original epsilon/NaN oracle limits in
+two other cases remain explicit. No driver or test-oracle change was needed.
+
+[All 11 original legacy event/fence cases](results/official11-event-fence-0045.json)
+also pass. These qualify their bounded lifecycle/status/wait/reset behavior,
+without a shader workload or a general memory-visibility claim. The historical
+original inventory also includes [three Workgroup-memory cases](results/official11-workgroup-memory-0045.json),
+with 128 logical invocations, 512 bytes of shared storage and the original
+reversal oracle across a real barrier. The inventory is now 673 names.
+The separate 132 modified-fixture robustness
+outcomes still add zero original CTS passes. Full applicable conformance and
+the strict custom sRGB findings remain open; performance is still frozen.

@@ -1,5 +1,5 @@
 {
-  "status": "626 distinct original historical CTS Pass names; no full conformance denominator. All132 modified robustness outcomes remain excluded.",
+  "status": "673 distinct original historical CTS Pass names; no full conformance denominator. All132 modified robustness outcomes remain excluded.",
   "partitions": {
     "information": 5,
     "SPIR-V versions": 4,
@@ -38,9 +38,15 @@
     "Original buffer binding offset01": 16,
     "Original buffer binding offset02": 16,
     "Original buffer binding offset03": 16,
-    "Original buffer binding offset04": 16
+    "Original buffer binding offset04": 16,
+    "Original control-flow-00": 16,
+    "Original control-flow-01": 15,
+    "Original control-flow-02": 1,
+    "Original control-flow-03": 1,
+    "Original event-fence": 11,
+    "Original workgroup-memory": 3
   },
-  "unique_count": 626,
+  "unique_count": 673,
   "names": [
     "dEQP-VK.api.array.oversized_array.core.get_pipeline_cache_data",
     "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_0_0",
@@ -575,6 +581,23 @@
     "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.64bits_secondary_cq",
     "dEQP-VK.query_pool.statistics_query.reset_after_copy.compute_shader_invocations.64bits_dstoffset_cmdcopyquerypoolresults_primary_cq",
     "dEQP-VK.query_pool.statistics_query.reset_before_copy.compute_shader_invocations.64bits_dstoffset_cmdcopyquerypoolresults_primary_cq",
+    "dEQP-VK.spirv_assembly.instruction.compute.block_order.all",
+    "dEQP-VK.spirv_assembly.instruction.compute.conditional_branch.same_labels_false",
+    "dEQP-VK.spirv_assembly.instruction.compute.conditional_branch.same_labels_true",
+    "dEQP-VK.spirv_assembly.instruction.compute.function_control.const",
+    "dEQP-VK.spirv_assembly.instruction.compute.function_control.const_dont_inline",
+    "dEQP-VK.spirv_assembly.instruction.compute.function_control.dont_inline",
+    "dEQP-VK.spirv_assembly.instruction.compute.function_control.inline",
+    "dEQP-VK.spirv_assembly.instruction.compute.function_control.inline_dont_inline",
+    "dEQP-VK.spirv_assembly.instruction.compute.function_control.inline_pure",
+    "dEQP-VK.spirv_assembly.instruction.compute.function_control.none",
+    "dEQP-VK.spirv_assembly.instruction.compute.function_control.pure",
+    "dEQP-VK.spirv_assembly.instruction.compute.function_control.pure_inline_dont_inline",
+    "dEQP-VK.spirv_assembly.instruction.compute.loop_control.dependency_infinite",
+    "dEQP-VK.spirv_assembly.instruction.compute.loop_control.dependency_length",
+    "dEQP-VK.spirv_assembly.instruction.compute.loop_control.dont_unroll",
+    "dEQP-VK.spirv_assembly.instruction.compute.loop_control.none",
+    "dEQP-VK.spirv_assembly.instruction.compute.loop_control.unroll",
     "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_10",
     "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_2",
     "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_3",
@@ -647,6 +670,22 @@
     "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.vec_2",
     "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.vec_3",
     "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.vec_4",
+    "dEQP-VK.spirv_assembly.instruction.compute.opphi.block",
+    "dEQP-VK.spirv_assembly.instruction.compute.opphi.induction",
+    "dEQP-VK.spirv_assembly.instruction.compute.opphi.nested",
+    "dEQP-VK.spirv_assembly.instruction.compute.opphi.swap",
+    "dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_array",
+    "dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_float",
+    "dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_int",
+    "dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_mat4",
+    "dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_struct",
+    "dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_vec3",
+    "dEQP-VK.spirv_assembly.instruction.compute.opphi.wide",
+    "dEQP-VK.spirv_assembly.instruction.compute.opunreachable.all",
+    "dEQP-VK.spirv_assembly.instruction.compute.selection_control.dont_flatten",
+    "dEQP-VK.spirv_assembly.instruction.compute.selection_control.flatten",
+    "dEQP-VK.spirv_assembly.instruction.compute.selection_control.flatten_dont_flatten",
+    "dEQP-VK.spirv_assembly.instruction.compute.selection_control.none",
     "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.float.initialized",
     "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.float.uninitialized",
     "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.int.initialized",
@@ -662,12 +701,26 @@
     "dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.matrix",
     "dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.struct",
     "dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.vec4",
+    "dEQP-VK.spirv_assembly.instruction.compute.workgroup_memory.float32",
+    "dEQP-VK.spirv_assembly.instruction.compute.workgroup_memory.int32",
+    "dEQP-VK.spirv_assembly.instruction.compute.workgroup_memory.uint32",
     "dEQP-VK.subgroups.basic.compute.subgroupbarrier",
     "dEQP-VK.subgroups.basic.compute.subgroupelect",
     "dEQP-VK.subgroups.basic.compute.subgroupmemorybarrier",
     "dEQP-VK.subgroups.basic.compute.subgroupmemorybarrierbuffer",
     "dEQP-VK.subgroups.basic.compute.subgroupmemorybarrierimage",
-    "dEQP-VK.subgroups.basic.compute.subgroupmemorybarriershared"
+    "dEQP-VK.subgroups.basic.compute.subgroupmemorybarriershared",
+    "dEQP-VK.synchronization.basic.event.device_set_reset",
+    "dEQP-VK.synchronization.basic.event.host_set_reset",
+    "dEQP-VK.synchronization.basic.event.multi_secondary_command_buffer",
+    "dEQP-VK.synchronization.basic.event.multi_submit_multi_command_buffer",
+    "dEQP-VK.synchronization.basic.event.single_submit_multi_command_buffer",
+    "dEQP-VK.synchronization.basic.fence.empty_submit",
+    "dEQP-VK.synchronization.basic.fence.multi",
+    "dEQP-VK.synchronization.basic.fence.multi_waitall_false",
+    "dEQP-VK.synchronization.basic.fence.multiple_signaled",
+    "dEQP-VK.synchronization.basic.fence.one",
+    "dEQP-VK.synchronization.basic.fence.one_signaled"
   ],
   "source_receipts": {
     "information": {
@@ -821,12 +874,36 @@
     "Original buffer binding offset04": {
       "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-binding-offset-04/probe/runner-result.json",
       "sha256": "4aab83878a1c4bdc822d1801c039b0de091ba5d60e9eea26f8ed95785cda347d"
+    },
+    "Original control-flow-00": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-control-flow-00/probe/runner-result.json",
+      "sha256": "4537039e9d1638dd406cb4c5927534ed962d16d54f2e5aeb8eaf5cf62fd40cb8"
+    },
+    "Original control-flow-01": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-control-flow-01/probe/runner-result.json",
+      "sha256": "089549ea2f3d105abde6d3a29f45b30067f246d44e07ddbdd9c0ec94dc849e66"
+    },
+    "Original control-flow-02": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-control-flow-02/probe/runner-result.json",
+      "sha256": "cd903fa2cb532eb4c415d40a5123594c864c0526f005b3054570a8a30c7f26aa"
+    },
+    "Original control-flow-03": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-control-flow-03/probe/runner-result.json",
+      "sha256": "798662ae3e795692704359ef97215aa5d511e5048757be8f9afbe22752481e26"
+    },
+    "Original event-fence": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-event-fence/probe/runner-result.json",
+      "sha256": "13312cac055eaa922bdaa926f7780c4b2bb3f29913324763066f4da0f99f60a9"
+    },
+    "Original workgroup-memory": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-workgroup-memory/probe/runner-result.json",
+      "sha256": "f673138f697566dbee1b70a86186d2905ca4236ee1e0dac26f517b5d9950b1c0"
     }
   },
   "limitations": "Separate historical revisions/candidates, not one full conformance run; original oracle limits preserved. Failed historical info/ETC cases were corrected and later passed; custom42 strict sRGB mismatches remain unresolved. Original mistyped cache case0/0 is not a case or pass.",
   "source_receipt_identity": {
-    "path": "/run/media/jethac/Shared/radish/compute11-verified-case-count-v8-0045.json",
-    "bytes": 57011,
-    "sha256": "e40788ec9d9ebfffe4cff8034423ae7a16fa9e962e15be8a160d64f5bf9e7d5a"
+    "path": "/run/media/jethac/Shared/radish/compute11-verified-case-count-v9-0045.json",
+    "bytes": 62042,
+    "sha256": "eb71accfd21fef32ebf7588a4cb1f73c65d8c76775d304c30611f8d71d81a5e0"
   }
 }

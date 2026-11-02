@@ -13,7 +13,7 @@
   "official_cts": {
     "source_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
     "binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
-    "state": "626 distinct original historical CTS Pass names across scoped campaigns, including88 nonzero binding-offset cases. Named compute93/93 and individual core format queries219/219 remain separate scoped metrics. Modified robustness132 excluded.",
+    "state": "673 distinct original historical CTS Pass names across scoped campaigns, including33 control-flow,11 legacy event/fence and3 Workgroup-memory cases. Named compute93/93 and core format queries219/219 remain separate metrics. Modified robustness132 excluded.",
     "modified_harness": "f85cb13b diagnostics only, never official passes",
     "remaining_property_failures": 0,
     "actual_record": "official11-native-scalars-info-0045.json",
@@ -34,7 +34,7 @@
     "promoted_query_record": "official11-promoted-query-0045.json",
     "cache_lifetime_record": "official11-cache-lifetime-0045.json",
     "qualified_unique_case_inventory": "official11-qualified-case-inventory-0045.json",
-    "qualified_unique_cases": 626,
+    "qualified_unique_cases": 673,
     "inventory_limitation": "Historical passes span separate pinned candidates and exact source-bounded runs. This is neither one complete conformance run nor a percentage of all applicable requirements.",
     "format_query_record": "official11-format-query-0045.json",
     "function_private_record": "official11-function-private-0045.json",
@@ -52,7 +52,10 @@
       "qualified_selected": 132,
       "selected_legal": 132
     },
-    "binding_offset_record": "official11-binding-offset-0045.json"
+    "binding_offset_record": "official11-binding-offset-0045.json",
+    "control_flow_record": "official11-control-flow-0045.json",
+    "event_fence_record": "official11-event-fence-0045.json",
+    "workgroup_memory_record": "official11-workgroup-memory-0045.json"
   },
   "categories": [
     {
@@ -155,7 +158,7 @@
       "id": "execution-sync",
       "requirement": "Direct/indirect dispatch, shared/barrier, transfer\u2192shader\u2192host, events/queries/binary fence/semaphore and command order",
       "implementation": "Serialized worker/DRM sync, conservative waits/flushes, runtime sync support, real event/query transfer/compute paths",
-      "evidence": "core_api5/core_events_queries/core_workgroup_barriers/resource producers+consumers and actual guards; mixed COMPUTE|VERTEX push update and graphics-only poison preserve compute seed in full timeline consumer95866.; four original shared_var and two ssbo_cmd_barrier CTS cases pass exact numerical oracles.; official11-query-lifecycle-0045.json eight advertisedstatistics/ten coretimestamp casesPASS, reset/copy/offset/secondary and32/64consistency scope, original weakavailability/ordering limits explicit.; official11-indirect-dispatch-0045.json25 original upload/generated indirect and base\u2192indirect cases passed, including zero-grid commands.",
+      "evidence": "core_api5/core_events_queries/core_workgroup_barriers/resource producers+consumers and actual guards; mixed COMPUTE|VERTEX push update and graphics-only poison preserve compute seed in full timeline consumer95866.; four original shared_var and two ssbo_cmd_barrier CTS cases pass exact numerical oracles.; official11-query-lifecycle-0045.json eight advertisedstatistics/ten coretimestamp casesPASS, reset/copy/offset/secondary and32/64consistency scope, original weakavailability/ordering limits explicit.; official11-indirect-dispatch-0045.json25 original upload/generated indirect and base\u2192indirect cases passed, including zero-grid commands.; official11-event-fence-0045.json closes11 bounded original legacy event/fence cases; no shader memory-visibility scope.; official11-workgroup-memory-0045.json passes three original128-invocation/512B Workgroup reversal cases across actual barriers.",
       "remaining": "Original applicable pipeline/memory-model/synchronization/lifetime CTS, cross-submit visibility, alias dependencies and all legal workgroup forms; model output is not substitute.",
       "owner": "resource"
     },
@@ -187,7 +190,7 @@
       "id": "shader11",
       "requirement": "Public1.1 SPIR-V1.0\u20131.3 and COMPUTE+BASIC subgroup semantics",
       "implementation": "Private realpublic1.1 candidate and generic Mesa compiler",
-      "evidence": "public11-basic-0045.json and official11-cts-shaders-0045.json; historical invalid-environment probe remains erratum.; official11-function-private-0045.json8 initialization cases passed with original oracle limits; native register/constant implementation, no private spill operations.; official11-function-composites-0045.json72 exact scalar composite/access-chain cases passed; all native register/constant optimization, not private-memory or spill qualification.; core-scratch-spill-0045.json: original ScratchSpace assembly through core adapter executes source-backed register-allocator STP/LDP spilling; four exact outputs and two complete allocation checks. Custom adapter, not original CTS count or exhaustive spill coverage.",
+      "evidence": "public11-basic-0045.json and official11-cts-shaders-0045.json; historical invalid-environment probe remains erratum.; official11-function-private-0045.json8 initialization cases passed with original oracle limits; native register/constant implementation, no private spill operations.; official11-function-composites-0045.json72 exact scalar composite/access-chain cases passed; all native register/constant optimization, not private-memory or spill qualification.; core-scratch-spill-0045.json: original ScratchSpace assembly through core adapter executes source-backed register-allocator STP/LDP spilling; four exact outputs and two complete allocation checks. Custom adapter, not original CTS count or exhaustive spill coverage.; official11-control-flow-0045.json closes33 original cases, including actual wide-Phi U16 allocator-spill and depth8 nested numerical execution.",
       "remaining": "Full applicable shader/environment/GLSL/precision/memory/geometry semantics and CTS beyond ten initial cases.",
       "owner": "batch"
     }
@@ -232,7 +235,7 @@
       "id": "contract.promoted_semantics",
       "required": "Bind2/requirements2/dedicatedalloc, singleton devicegroups/base dispatch/mask, descriptor templates/layoutsupport, commandpooltrim/queue2; all legal lifetimes/errors.",
       "implementation": "Existing Radish/common handlers; sourceowner resource/sync lane",
-      "evidence": "Representative0044passes; exact historical split-region validity being checked, not automatically retained",
+      "evidence": "Representative valid singleton mask/bind2 paths and promoted-query cases pass. Historical fullsplit call is invalid under VUID01421 and is excluded from public qualification.",
       "cts": [
         "dEQP-VK.api.*",
         "dEQP-VK.binding_model.*",
@@ -256,7 +259,7 @@
       "id": "shader.generic_alu_types_control",
       "required": "32bit integer/float arithmetic, conversions, comparisons, extended GLSL math with requiredprecision, composites/matrices, controlflow/phi, calls, constants/specialization and private/workgroup representation.",
       "implementation": "Existing IR3/NIR generic paths; concrete failures mustdrive fixes",
-      "evidence": "Representativekernels only; complete applicableCTS open",
+      "evidence": "Original initialized/composite Function and33 control-flow cases now pass, including retained wide512-way Phi and nested-depth8 shaders. Full applicable arithmetic/type/precision and shader CTS remains open.",
       "cts": [
         "dEQP-VK.spirv_assembly.instruction.compute.*",
         "dEQP-VK.spirv_assembly.type.*",
@@ -347,7 +350,7 @@
     "system_scope": "No globalgraphics/service/clock/kernelchanges"
   },
   "depth_layout_erratum": "Pinned Vulkan1.1 DEPTH_STENCIL_READ_ONLY_OPTIMAL requires DEPTH_STENCIL_ATTACHMENT usage. Earlier sampled-only depth consumers are implementation observations for that path until valid-usage requalification; no retroactive public qualification.",
-  "next_private_source": "Source-bound33 applicable original SPIR-V control-flow cases, with isolated compile admission for wide512-wayPhi and nested branches before execution; then remaining applicable Vulkan1.1 compute/shared requirements. Preserve hard valid cases, all guards and original oracles. Strict42sRGB and full conformance still open; no tuning.",
+  "next_private_source": "Nineteen source-bounded original buffer-atomic cases, preserving1024/65535 workgroup counts and original contention/return-chain/CAS/load/store oracles; then remaining applicable Vulkan1.1 compute/shared requirements. Keep difficult valid cases and all resource guards. Strict42 custom sRGB findings and full conformance remain open; no performance tuning.",
   "required_core_lookup": "core-lookup-public-0045.json: public165GIPA/137GDPA complete afterfiveactualdevicepointer fixes. This is lookup only, not allcommandexecution. DirectICDloaderglobal limitation retained.",
   "deferred_performance_opportunities": {
     "pipeline_cache_population": "Pipeline creation currently does not populate common cache entries; header/object-count serialization is callable behavior only. Real cache population/reuse and measured benefit belong to the later performance phase; no speedup assumed."

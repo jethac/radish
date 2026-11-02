@@ -1,0 +1,15 @@
+dEQP-VK.spirv_assembly.instruction.compute.loop_control.unroll
+dEQP-VK.spirv_assembly.instruction.compute.opphi.block
+dEQP-VK.spirv_assembly.instruction.compute.opphi.induction
+dEQP-VK.spirv_assembly.instruction.compute.opphi.swap
+dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_array
+dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_float
+dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_int
+dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_mat4
+dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_struct
+dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_vec3
+dEQP-VK.spirv_assembly.instruction.compute.opunreachable.all
+dEQP-VK.spirv_assembly.instruction.compute.selection_control.dont_flatten
+dEQP-VK.spirv_assembly.instruction.compute.selection_control.flatten
+dEQP-VK.spirv_assembly.instruction.compute.selection_control.flatten_dont_flatten
+dEQP-VK.spirv_assembly.instruction.compute.selection_control.none

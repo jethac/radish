@@ -1,0 +1,459 @@
+{
+  "status": "PASS3 exact original Workgroup-memory cases on unchanged f222/e699",
+  "source": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-workgroup-memory-next-0045/source-bounds.json",
+      "bytes": 7673,
+      "sha256": "06e9f5e7959ac449a8bdefa16a603a1fe19b71723b0033bed66c1b31c863eae7"
+    },
+    "result": {
+      "status": "SOURCE READY original Workgroup-memory32-bit types; no execution inferred",
+      "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+      "cts_binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
+      "inventory": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-workgroup-memory-next-0045/cases.txt",
+        "sha256": "cd5f6e75200559e09e06d11c8ca696b1e709057d3282d25fdace2540ae3e7a7e",
+        "count": 3
+      },
+      "catalog": {
+        "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/mustpass/main/vk-default/spirv-assembly.txt",
+        "sha256": "611ba2707ff9c23c958615ff2730d9c0b39eb7b4db771ba1064fccdb61b5ef60",
+        "registered": 11,
+        "applicable": 3,
+        "excluded": 8,
+        "unclassified": 0,
+        "domain": "dEQP-VK.spirv_assembly.instruction.compute.workgroup_memory."
+      },
+      "excluded": [
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.workgroup_memory.float16",
+          "reason": "Original explicitly requires disabled shaderFloat16"
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.workgroup_memory.float64",
+          "reason": "Original explicitly requires disabled shaderFloat64"
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.workgroup_memory.int16",
+          "reason": "Original explicitly requires disabled shaderInt16"
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.workgroup_memory.int64",
+          "reason": "Original explicitly requires disabled shaderInt64"
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.workgroup_memory.int8",
+          "reason": "Original explicitly requires disabled uniformAndStorageBuffer8BitAccess (shaderInt8 and storageBuffer8BitAccess alone do not satisfy original requested feature/capability)"
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.workgroup_memory.uint16",
+          "reason": "Original explicitly requires disabled shaderInt16"
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.workgroup_memory.uint64",
+          "reason": "Original explicitly requires disabled shaderInt64"
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.workgroup_memory.uint8",
+          "reason": "Original explicitly requires disabled uniformAndStorageBuffer8BitAccess (shaderInt8 and storageBuffer8BitAccess alone do not satisfy original requested feature/capability)"
+        }
+      ],
+      "sources": [
+        {
+          "original": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmWorkgroupMemoryTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-workgroup-memory-next-0045/source/vktSpvAsmWorkgroupMemoryTests.cpp",
+          "sha256": "7011840f78345e561cf5ed55715c8e1fb766f9c0a9251d9434e1d78a86594b6d"
+        },
+        {
+          "original": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vktSpvAsmInstructionTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-workgroup-memory-next-0045/source/vktSpvAsmInstructionTests.cpp",
+          "sha256": "d6800ae7655ee7bb2a535d450d01ae998f8439cb7b342ea9e22ec99095d518d8"
+        },
+        {
+          "original": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vktSpvAsmComputeShaderCase.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-workgroup-memory-next-0045/source/vktSpvAsmComputeShaderCase.cpp",
+          "sha256": "29492a513a821b5af613cbf77f03b7bdc954e20043fb7c7e05858324e9150c40"
+        },
+        {
+          "original": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vktSpvAsmComputeShaderTestUtil.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-workgroup-memory-next-0045/source/vktSpvAsmComputeShaderTestUtil.cpp",
+          "sha256": "2080fbe1302048f52ce01f175d093054b737165ffc087c5d2a9744262d3e8218"
+        },
+        {
+          "original": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vktSpvAsmTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-workgroup-memory-next-0045/source/vktSpvAsmTests.cpp",
+          "sha256": "97cd0a9fc6b7361bbe81c6e64a11d5d428fa439c98098638398969dddb66dd9d"
+        },
+        {
+          "original": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vktTestPackage.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-workgroup-memory-next-0045/source/vktTestPackage.cpp",
+          "sha256": "272802a91a54f6aade1741c713563936fe01be295ea648bdf85e5cce0e4823d6"
+        },
+        {
+          "original": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vktTestCase.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-workgroup-memory-next-0045/source/vktTestCase.cpp",
+          "sha256": "093936313a9d8489c2ff08fd493445cc8e4e9235ed559597bcf95bd84c6a97fc"
+        },
+        {
+          "original": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/rd_instance.c",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-workgroup-memory-next-0045/source/rd_instance.c",
+          "sha256": "c5763ff7a03fed9a13aebf291eeae5c182cfb79eba83c1b839d74d67a0682bac"
+        }
+      ],
+      "registration": "InstructionTests compute child createWorkgroupMemoryComputeGroup; WorkgroupMemoryTests141\u2013625 builds all11 type registrations. Selected float32/int32/uint32 source299\u2013321,386\u2013410,511\u2013537.",
+      "environment": [
+        "Default SPIRV1.0/Shader only; standardGLSL.std.450 import, no optional capability/extension/specialization/pushconstants.",
+        "Original Context default robustBufferAccessfalse and MultiQueueRunner COMPUTE dedup universal0==compute0 are retained; no modified fixture.",
+        "Original local16\u00d74\u00d72=128 is exactly maxComputeWorkGroupInvocations128 and per-dimension{128,128,64}; no local-size lowering. Group count1\u00d71\u00d71.",
+        "Two SSBOs512B each; one Workgroup array128\u00d732bit=512B, below16384B shared limit. No image/sampler/privatearray or graphics object."
+      ],
+      "behavior": [
+        "Every invocation computes unique idx=z*64+y*16+x in0..127, writes input[idx] toshared[idx], then reads shared[127-idx] intooutput[idx].",
+        "OpMemoryBarrier Device/AcquireRelease|WorkgroupMemory then OpControlBarrier Workgroup/Workgroup/AcquireRelease|WorkgroupMemory; all128 invocations reach both uniformly. No races/undefined aliasing."
+      ],
+      "source_bounds": {
+        "cases": 3,
+        "dispatches": 3,
+        "invocations_per_dispatch": 128,
+        "total_invocations": 384,
+        "local": [
+          16,
+          4,
+          2
+        ],
+        "grid": [
+          1,
+          1,
+          1
+        ],
+        "shared_bytes_per_group": 512,
+        "input_and_output_request_bytes_each": 512,
+        "max_descriptors": 2,
+        "workgroup_barriers_per_invocation": 1,
+        "device_memory_barriers_per_invocation": 1
+      },
+      "oracles": {
+        "int32_uint32": "Each128 original outputs exact byte comparison;256 exact u32 total.",
+        "float32": "128 results compare rawbits, except any resultNaN accepted when corresponding expectedNaN. Generator includes finite/zero/subnormal/inf/NaN classes; no arithmetic/tolerance adjustment.",
+        "limits": "Original logical outputs only; no custom allocation canaries, interworkgroup ordering, multiple concurrent groups, all optionaltypes or universalmemory-model proof."
+      },
+      "admission": "One original3-case scope under original90s384MiB/8MiB log/64MiBreserve/per-case faultstop after source counterpart. Validate actual local/shared/barrier/resources in terminalnative; no codechange absent failure."
+    }
+  },
+  "source_counterpart": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-workgroup-memory-next-0045/independent-source-review.json",
+      "bytes": 2064,
+      "sha256": "4096022d307ced347264fa41b92595099f8c452bb903a4fc86906e6098741353"
+    },
+    "result": {
+      "status": "PASS original3 mandatory32-bit Workgroup-memory source/name/oracle/bounds",
+      "source_bounds_sha256": "06e9f5e7959ac449a8bdefa16a603a1fe19b71723b0033bed66c1b31c863eae7",
+      "input_provenance_sha256": "2209d7f252a9c120608774a2c2859bb7c1b538e5e3e24aaaf86f06f75c229d8d",
+      "inventory_sha256": "cd5f6e75200559e09e06d11c8ca696b1e709057d3282d25fdace2540ae3e7a7e",
+      "checks": [
+        "Exact complete11-type catalog partition reconciled: float32/int32/uint32 selected;8 optional types excluded by actual requested bits, notably uniformAndStorageBuffer8BitAccess false despite storage8/Int8true. All10 source/provenance snapshots match originals.",
+        "Original local16x4x2=128,grid1,2x512B SSBOs and512B shared array retained. Independently enumerated index=z64+y16+x bijective0..127;127-index reversal is full permutation.",
+        "Straight-line all-invocation memory/control barriers are uniform:Device AcquireRelease|WorkgroupMemory thenWorkgroup execution/memory scope AcquireRelease|WorkgroupMemory. No conditional/barrier divergence or data collision.",
+        "Integer256 outputs exactbits; float128 rawbits except anyNaN accepted when expectedNaN. Original generator includes NaN/inf/zero/subnormal/normal classes; no changed inputs or arithmetic tolerance.",
+        "Default Context/RBAfalse/dedupqueue,SPIRV1.0/Shader,no optional extensions/push/spec/graphics. Existing driver may legally relinearize physical local size to128x1x1 for barrier residency while reconstructing original logical IDs. Plan no-lowering wording means test source/required logical geometry unchanged, not a demand on physical backend shape.",
+        "Original90s384MiB/8MiB log/fault/reserve controls and original0e715/f222 remain; actual logical/shared/barrier/native resources and QPAs required."
+      ],
+      "limits": [
+        "One group per case, not intergroup memory ordering/concurrency or full memory-model coverage.",
+        "Original logical output regions only, no custom guards or alloptionaltype proof.",
+        "Source gate only; no driver changes absent actual valid failure."
+      ]
+    }
+  },
+  "runner_counterpart": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-workgroup-memory-next-0045/runner-review.json",
+      "bytes": 1659,
+      "sha256": "b958a5a774a79bab53955bca8b066f9ac790b010f0d11c0f02ae317cdf369865"
+    },
+    "result": {
+      "status": "PASS finite original runner inventory derivative; source counterpart remains separate",
+      "source_plan_sha256": "06e9f5e7959ac449a8bdefa16a603a1fe19b71723b0033bed66c1b31c863eae7",
+      "runner": "/run/media/jethac/Shared/radish/compute11-official-workgroup-memory-runner-0045/device-official-cts.py",
+      "runner_sha256": "4d7ce0af7eb88eccdd8cb9011c82d2cb531fa1260f9a626617f3d0c1c6eb912c",
+      "baseline_runner_sha256": "f3a41e53576fa08dc1e421bedb9c7f3a50be51d07d9fd7bd973b3955d53eccae",
+      "cases": [
+        "dEQP-VK.spirv_assembly.instruction.compute.workgroup_memory.float32",
+        "dEQP-VK.spirv_assembly.instruction.compute.workgroup_memory.int32",
+        "dEQP-VK.spirv_assembly.instruction.compute.workgroup_memory.uint32"
+      ],
+      "inventory_sha256": "cd5f6e75200559e09e06d11c8ca696b1e709057d3282d25fdace2540ae3e7a7e",
+      "hostcheck_sha256": "2bbc900f1c31b490b9eddac191ec8894e6ca1ca994126943573de39629fafc4a",
+      "argv_sha256": "9f93fd432e9932ac698907799e56bb345afd20eb5728df95ae994bf645856dc7",
+      "checks": [
+        "Exact passed final-common stdin engine except approved SHA/count constants. All host assets rehashed, original0e715/f222-e699/75699.",
+        "Approved source inventory exactly matches staged list and count; no second hardcoded list or silentzero-case acceptance.",
+        "Original90s384MiB/8MiBlog/64MiBreserve/per-case faultstop/QPA collection unchanged."
+      ],
+      "conditions": [
+        "Independent source applicability/bounds counterpart and ordinary owner preflight before execution; no actual result inferred.",
+        "Current hard control-flow cases retain priority; this ready derivative does not preempt their native/functional gates."
+      ]
+    }
+  },
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-workgroup-memory-next-0045/actual-review.json",
+      "bytes": 5902,
+      "sha256": "de74d23c87fd026a8ae211e949dc8d2c0e600b6b5d684ddb176d4657b77d4f35"
+    },
+    "result": {
+      "status": "PASS independent original Workgroup memory3 actual review",
+      "source_plan_sha256": "06e9f5e7959ac449a8bdefa16a603a1fe19b71723b0033bed66c1b31c863eae7",
+      "input_provenance_sha256": "2209d7f252a9c120608774a2c2859bb7c1b538e5e3e24aaaf86f06f75c229d8d",
+      "source_counterpart_sha256": "4096022d307ced347264fa41b92595099f8c452bb903a4fc86906e6098741353",
+      "runner_review_sha256": "b958a5a774a79bab53955bca8b066f9ac790b010f0d11c0f02ae317cdf369865",
+      "driver_pipeline_source": {
+        "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_pipeline.c",
+        "sha256": "20b6542536c5c34b3e36799f8caf4ee5f3bb52ce5557a0ee1fa260182b2d97e7",
+        "lines": "rd_linearize_local_id206\u2013219 and barrier shape rewrite288\u2013307"
+      },
+      "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-workgroup-memory/probe",
+      "run_log_sha256": "4deb25b5b4d5131384614cd855982824197734a5e0c34d7a8812e7ec48a0d21f",
+      "qpa_sha256": "f71c9bbf4daaca24b4c7374b69e5f9764eaf431d8f35c716aaafeca03d7a90af",
+      "runner_result_sha256": "f673138f697566dbee1b70a86186d2905ca4236ee1e0dac26f517b5d9950b1c0",
+      "fraction": {
+        "passed": 3,
+        "applicable_complete_branch": 3,
+        "excluded_disabled_features": 8,
+        "registered": 11,
+        "unclassified": 0,
+        "percentage_applicable": 100.0,
+        "scope": "Only this original workgroup_memory branch, not all shader or memory-model coverage."
+      },
+      "totals": {
+        "unique_original_pass": 3,
+        "dispatches": 3,
+        "invocations": 384,
+        "chunks": 3,
+        "submits": 3,
+        "exact_integer_words": 256,
+        "float_rawbit_or_nanclass_words": 128
+      },
+      "service_seconds": 4.246,
+      "peak_mib": 119.3,
+      "swap_bytes": 0,
+      "clean_collection_faults_services": true,
+      "cases": [
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.workgroup_memory.float32",
+          "qpa_sha256": "18761b2712299bb0366850f0fbaa1c8a9c35a4b5522b91c54382442ae319fad6",
+          "status": "Pass",
+          "detail": "Output match with expected",
+          "profile": {
+            "pipeline": "0xaaab0cc71b70",
+            "grid": "1,1,1",
+            "local": "128,1,1",
+            "barrier": "1",
+            "loops": "0",
+            "instrlen": "2",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4100580",
+            "submit_ns": "3718809",
+            "submit_max_ns": "3718809",
+            "result": "0"
+          },
+          "logical_local_source": [
+            16,
+            4,
+            2
+          ],
+          "native_local": [
+            128,
+            1,
+            1
+          ],
+          "shared_bytes_actual": 512,
+          "native": {
+            "instrlen": 2,
+            "instruction_slots": 36,
+            "dwords": 64,
+            "full": 3,
+            "half": 0,
+            "constlen": 8,
+            "shared_store": 1,
+            "shared_load": 1,
+            "bar_g_l": 1,
+            "private_instructions": 0
+          },
+          "output_words": 128,
+          "oracle": "raw32bit exact except NaN-class equality"
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.workgroup_memory.int32",
+          "qpa_sha256": "7dd029d60e4174571aa52db1e555a0bda7862d188646223ebbddc6e1daffb5cb",
+          "status": "Pass",
+          "detail": "Output match with expected",
+          "profile": {
+            "pipeline": "0xaaaaf36d65a0",
+            "grid": "1,1,1",
+            "local": "128,1,1",
+            "barrier": "1",
+            "loops": "0",
+            "instrlen": "2",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4208601",
+            "submit_ns": "3896987",
+            "submit_max_ns": "3896987",
+            "result": "0"
+          },
+          "logical_local_source": [
+            16,
+            4,
+            2
+          ],
+          "native_local": [
+            128,
+            1,
+            1
+          ],
+          "shared_bytes_actual": 512,
+          "native": {
+            "instrlen": 2,
+            "instruction_slots": 36,
+            "dwords": 64,
+            "full": 3,
+            "half": 0,
+            "constlen": 8,
+            "shared_store": 1,
+            "shared_load": 1,
+            "bar_g_l": 1,
+            "private_instructions": 0
+          },
+          "output_words": 128,
+          "oracle": "exact128uint32 bytes"
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.workgroup_memory.uint32",
+          "qpa_sha256": "60a0e751f09eb70f99273f2ccb0e44d30116f289060b20b6cb55e8c0952e4e82",
+          "status": "Pass",
+          "detail": "Output match with expected",
+          "profile": {
+            "pipeline": "0xaaab0710bbe0",
+            "grid": "1,1,1",
+            "local": "128,1,1",
+            "barrier": "1",
+            "loops": "0",
+            "instrlen": "2",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3803132",
+            "submit_ns": "3519851",
+            "submit_max_ns": "3519851",
+            "result": "0"
+          },
+          "logical_local_source": [
+            16,
+            4,
+            2
+          ],
+          "native_local": [
+            128,
+            1,
+            1
+          ],
+          "shared_bytes_actual": 512,
+          "native": {
+            "instrlen": 2,
+            "instruction_slots": 36,
+            "dwords": 64,
+            "full": 3,
+            "half": 0,
+            "constlen": 8,
+            "shared_store": 1,
+            "shared_load": 1,
+            "bar_g_l": 1,
+            "private_instructions": 0
+          },
+          "output_words": 128,
+          "oracle": "exact128uint32 bytes"
+        }
+      ],
+      "scope_limits": [
+        "Source workgroup16\u00d74\u00d72 unchanged. Existingdriver physicallylinearizes barrier localshape128\u00d71\u00d71 and reconstructs logicalIDs; exactreversed outputs corroborate behavior. No test geometry lowering or new sourcepatch.",
+        "Allthree nativeprograms show512B shared, oneSTL.U32, BAR.G.L andLDL.U32; no private instructions. This is actualinter-invocation shareddata/barrier evidence, not onlyhostcompletion.",
+        "Float inputsinclude signedzero/subnormal/inf/NaN; originalchecker permits NaN payload changes. No FP32 arithmeticprecision claim.",
+        "Onlyoneworkgroup perdispatch; no multiworkgroup concurrency, complete memorymodel, optional8/16/64bit or allocationcanary claim."
+      ]
+    }
+  },
+  "original_results": [
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-workgroup-memory/probe/runner-result.json",
+        "bytes": 1963,
+        "sha256": "f673138f697566dbee1b70a86186d2905ca4236ee1e0dac26f517b5d9950b1c0"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 165,
+            "sha256": "d450f4bf6067b1902b19469fdb7cf282cdbe704b241a8b08cc8e12ee14e89c9b"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 201,
+            "sha256": "cd5f6e75200559e09e06d11c8ca696b1e709057d3282d25fdace2540ae3e7a7e"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13622368,
+            "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+          },
+          "payload.json": {
+            "bytes": 967,
+            "sha256": "3569c92e49c46da95dc7504ac41c87efe5f62d833e1b881fc713ac52d70de29e"
+          }
+        },
+        "run_log": {
+          "bytes": 63562,
+          "sha256": "4deb25b5b4d5131384614cd855982824197734a5e0c34d7a8812e7ec48a0d21f"
+        },
+        "qpa": {
+          "bytes": 5133,
+          "sha256": "f71c9bbf4daaca24b4c7374b69e5f9764eaf431d8f35c716aaafeca03d7a90af"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.workgroup_memory.float32",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.workgroup_memory.int32",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.workgroup_memory.uint32",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    }
+  ],
+  "scope": "Original logical16x4x2/128 invocations and512B Workgroup storage; two512B SSBOs. Existing physical relinearization preserves logical IDs. Exact integer and original raw-float/NaN-class oracles retained, not all shared-memory shapes or ordering combinations."
+}

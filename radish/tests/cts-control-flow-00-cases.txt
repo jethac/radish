@@ -1,0 +1,16 @@
+dEQP-VK.spirv_assembly.instruction.compute.block_order.all
+dEQP-VK.spirv_assembly.instruction.compute.conditional_branch.same_labels_false
+dEQP-VK.spirv_assembly.instruction.compute.conditional_branch.same_labels_true
+dEQP-VK.spirv_assembly.instruction.compute.function_control.const
+dEQP-VK.spirv_assembly.instruction.compute.function_control.const_dont_inline
+dEQP-VK.spirv_assembly.instruction.compute.function_control.dont_inline
+dEQP-VK.spirv_assembly.instruction.compute.function_control.inline
+dEQP-VK.spirv_assembly.instruction.compute.function_control.inline_dont_inline
+dEQP-VK.spirv_assembly.instruction.compute.function_control.inline_pure
+dEQP-VK.spirv_assembly.instruction.compute.function_control.none
+dEQP-VK.spirv_assembly.instruction.compute.function_control.pure
+dEQP-VK.spirv_assembly.instruction.compute.function_control.pure_inline_dont_inline
+dEQP-VK.spirv_assembly.instruction.compute.loop_control.dependency_infinite
+dEQP-VK.spirv_assembly.instruction.compute.loop_control.dependency_length
+dEQP-VK.spirv_assembly.instruction.compute.loop_control.dont_unroll
+dEQP-VK.spirv_assembly.instruction.compute.loop_control.none

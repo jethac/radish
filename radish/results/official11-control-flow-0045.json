@@ -1,0 +1,2546 @@
+{
+  "status": "PASS33 exact original control-flow cases on unchanged f222/e699",
+  "source": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source-bounds.json",
+      "bytes": 14773,
+      "sha256": "8e34e2d31843aca135a4521a4ad977aac0991691da34b3c033872237e896323b"
+    },
+    "result": {
+      "status": "SOURCE_BOUNDED_READY_FOR_INDEPENDENT_REVIEW",
+      "scope": "Seven complete original compute-named control-flow branches,36catalog names/33applicable/3explicit exclusions/zero unclassified within this bounded selection. Not allSPIRV/controlflow/Vulkan. No source/oracle/driver changes.",
+      "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+      "cts_binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
+      "driver_sha256": "f222ff480f6c9ef3785c446661f12ccacbc91f119b0e7d405347b949b4dc325d",
+      "catalog": {
+        "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/mustpass/main/vk-default/spirv-assembly.txt",
+        "sha256": "611ba2707ff9c23c958615ff2730d9c0b39eb7b4db771ba1064fccdb61b5ef60",
+        "selection": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/catalog-branches36.txt",
+          "sha256": "ef12c595e1e0b4e7beaf28f6282fe93928ec34a1598deb5041894207104c7ecf",
+          "count": 36
+        }
+      },
+      "inventory": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/cases.txt",
+        "sha256": "6df23bdbf73f437cdeb607da9a00502cc09273b7b7647e55e91dbaef6942e58d",
+        "count": 33
+      },
+      "partitions": [
+        {
+          "id": "00",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/cases-00.txt",
+          "sha256": "a7d5dad300db5e0e84f709969b631b28ebe39c2af2148fff4d70f2e3edc3ccc6",
+          "count": 16,
+          "separate_native_compile_required": false
+        },
+        {
+          "id": "01",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/cases-01.txt",
+          "sha256": "322a100367f4b5f79b24877975ccee768205d95069c93341cff3a8943d4b3256",
+          "count": 15,
+          "separate_native_compile_required": false
+        },
+        {
+          "id": "02",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/cases-02.txt",
+          "sha256": "26d14e5f2c78d8124f399c2073b1c9eedca2bbcdc2a26a61b04005aa0e75eb8d",
+          "count": 1,
+          "separate_native_compile_required": true
+        },
+        {
+          "id": "03",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/cases-03.txt",
+          "sha256": "e352d4f7540c189438121fd0715afc7466c48c8de02910b0514c8940c13e3c1a",
+          "count": 1,
+          "separate_native_compile_required": true
+        }
+      ],
+      "exclusions": {
+        "dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_float16": "OpCapability Float16 and shaderFloat16 requested at InstructionTests4779; actualfeature false. Storage16 is not arithmeticFloat16.",
+        "dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_longvec": "LongVectorEXT/SPV_EXT_long_vector/OpTypeVectorIdEXT and usesLongVector=true at5034-5082; feature/extension unavailable.",
+        "dEQP-VK.spirv_assembly.instruction.compute.opunreachable.unreachable-switch-merge-in-loop": "Source asset under compute path actually declares vertex+fragment and PIPELINE graphics/CLEAR/DRAW_ARRAY; no legal graphics execution on solecompute queue. Original asset copied, no adapted replacement."
+      },
+      "source_pins": {
+        "vktSpvAsmInstructionTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vktSpvAsmInstructionTests.cpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmInstructionTests.cpp",
+          "sha256": "d6800ae7655ee7bb2a535d450d01ae998f8439cb7b342ea9e22ec99095d518d8"
+        },
+        "vktSpvAsmConditionalBranchTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vktSpvAsmConditionalBranchTests.cpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmConditionalBranchTests.cpp",
+          "sha256": "73607d4452889a429ec73096d2030d75395e10020de830a93f827ca06b821339"
+        },
+        "vktSpvAsmLoopDepInfTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vktSpvAsmLoopDepInfTests.cpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmLoopDepInfTests.cpp",
+          "sha256": "9f973986a0d339732028c45e86db3d3e42bf6262257fa86ee44a2b383dcc65ea"
+        },
+        "vktSpvAsmLoopDepLenTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vktSpvAsmLoopDepLenTests.cpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmLoopDepLenTests.cpp",
+          "sha256": "0e2ea706a626bc0300cb1e26088c12d7ff83eec97dd8ec680c48e561c7e55587"
+        },
+        "vktSpvAsmComputeShaderCase.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vktSpvAsmComputeShaderCase.cpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmComputeShaderCase.cpp",
+          "sha256": "29492a513a821b5af613cbf77f03b7bdc954e20043fb7c7e05858324e9150c40"
+        },
+        "vktSpvAsmComputeShaderTestUtil.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vktSpvAsmComputeShaderTestUtil.cpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmComputeShaderTestUtil.cpp",
+          "sha256": "2080fbe1302048f52ce01f175d093054b737165ffc087c5d2a9744262d3e8218"
+        },
+        "vktSpvAsmComputeShaderTestUtil.hpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vktSpvAsmComputeShaderTestUtil.hpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmComputeShaderTestUtil.hpp",
+          "sha256": "dfd7c2e46d5f603a7bedde13bf9eb208465d64dd855fcdf34ea0ebdcd289ca86"
+        },
+        "vktSpvAsmTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vktSpvAsmTests.cpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmTests.cpp",
+          "sha256": "97cd0a9fc6b7361bbe81c6e64a11d5d428fa439c98098638398969dddb66dd9d"
+        },
+        "vktTestCase.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vktTestCase.cpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/vktTestCase.cpp",
+          "sha256": "093936313a9d8489c2ff08fd493445cc8e4e9235ed559597bcf95bd84c6a97fc"
+        },
+        "vktTestPackage.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vktTestPackage.cpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/vktTestPackage.cpp",
+          "sha256": "272802a91a54f6aade1741c713563936fe01be295ea648bdf85e5cce0e4823d6"
+        },
+        "vkDeviceFeatures.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vkDeviceFeatures.cpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/framework/vulkan/vkDeviceFeatures.cpp",
+          "sha256": "459cda1fc45164c8b8332832fa1abe9c7afed40dbbc14d74d6c88b7dd656a0bb"
+        },
+        "vkDeviceFeatures.hpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vkDeviceFeatures.hpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/framework/vulkan/vkDeviceFeatures.hpp",
+          "sha256": "f97d669ba4902cf9a959fda5f62b62d1227867361a6551cea49b0bd40a8e72c9"
+        },
+        "rd_instance.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/rd_instance.c",
+          "source_path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_instance.c",
+          "sha256": "c5763ff7a03fed9a13aebf291eeae5c182cfb79eba83c1b839d74d67a0682bac"
+        },
+        "unreachable-switch-merge-in-loop.amber": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/unreachable-switch-merge-in-loop.amber",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/data/vulkan/amber/spirv_assembly/instruction/compute/unreachable/unreachable-switch-merge-in-loop.amber",
+          "sha256": "5d7df1fdde76ced35dc209ac70c1b9f5f74786df9def361308ad33ba65b6d449"
+        }
+      },
+      "registration": "vktTestPackage -> spirv_assembly -> vktSpvAsmTests/instruction -> InstructionTests21899-21912 compute children; ConditionalBranchTests compute registration. Original asset content controls queue applicability, not name alone.",
+      "environment": {
+        "version": "31 generic cases use ComputeShaderSpec.spirvVersion default1.0; two dependency_loop cases explicitly assembleSPIRV1.3 and requireVulkan1.1. No optional capability for33, Shader-only except standardGLSL.std.450 import.",
+        "features": "Original Context default DeviceFeatures disables robustBufferAccess at vkDeviceFeatures230; compiler-admission consumer matchesfalse. Float16/LongVector excluded. No push/specialization/graphics/multi-device/optionalqueue requirements.",
+        "queue": "SpvAsmComputeShaderInstance MultiQueueRunner COMPUTE_QUEUE de-duplicates universal0==compute0; exactly onequeuepass, unlike separately corrected robustnessfixture.",
+        "geometry": "Alllocal1x1x1;31cases grid100x1x1, two conditionalbranch grid128x1x1. Total33dispatches/3356invocations. One/twoSSBO, each<=512B; no sharedmemory/images/samplers. Functionarray dependency tests use12floats/48B perinvocation source; native register/scratch realization not inferred."
+      },
+      "oracles": {
+        "default": "31cases compare exact expectedoutputbytes through deMemCmp in ComputeShaderCase954-980:3156float32/u32 words total. Includes all512-way andnested outputs. No renamed wrong-value-Pass branch.",
+        "loop_dependency": "TwoSPV1.3 cases use original verifyOutput epsilon0.001 across100floats each. fabs(diff)>epsilon does not rejectNaN by itself; preserve weakness, no full finite/NaN or exactarithmetic claim. Originalexpected inputs finite1..100; dependencyInfinitefloored, dependencyLength fractional.",
+        "limits": "Originallogicaloutput regions only; no customallocationguards, untouchedpadding claim or universalcontrolflowmodel proof. All sourceinputs/oracles unchanged."
+      },
+      "families": {
+        "opphi": "11applicable. block switches3arms with nontextual predecessor order; induction3accumulations; parallel swaps; sixscalar/vector/matrix/array/nestedstruct types; wide512way; nested171selections/depth8. All100outputs sourceCPUreference, not just no-crash.",
+        "loop_control": "5: threefixed4-iteration loops with None/Unroll/DontUnroll; DependencyInfinite writes12elementarray then sums12; DependencyLength initializes6thenexecutes6dependent iterations using distances4/5/6, legalguarantee3. Two latterSPV1.3.",
+        "function_control": "9 masks invoke constant10function and add to100randomfloored inputs. Inline/DontInline are optimizationhints, includingcombinedmask; no actualinlining/nativecall requirement. Pure/Const functionhasnosideeffects/noglobalreads.",
+        "selection_control": "4 masks choose +/-1 around input>10;100flooredinputs. Flatten/DontFlatten hints not actualcontrolflow-shape requirement.",
+        "block_order": "1: scrambledtextual blocks preservedvaliddominance, index<=50 negation else3wayarithmetic;100outputs.",
+        "conditional_branch": "2: true/false conditionbothname same target; reachablebody storesindex, unreachablebody wouldstore0xaaaaaaaa;128exactuintoutputs each.",
+        "opunreachable": "1applicable: unreachablefunction/default/merge/else remain unexecuted, const5>modulo4(1000) proves negation branch;100exactfloatoutputs. GraphicsAmber siblingexcluded."
+      },
+      "stress_admission": {
+        "wide": "512constant switchtargets,512Phiincomingpairs;100invocations. Exactsource-generated assembly56409B/module25460B, hostvalVulkan1.1PASS. Modulecode/work mustnotbe reducedtofit.",
+        "nested": "Original9 expansionpasses with(7,24) produce513characters/171A-B-C triples/maxdepth8 and171Phi selections.100invocations. Exactsource-generated assembly41972B/module21708B, hostvalPASS.",
+        "host_capture": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/host-stress/result.json",
+          "sha256": "4d5f8986aaf7969ad57b67abf7cc3bcdc1793b562de7cad35c7c1ebd2f4b1e0d"
+        },
+        "compile_consumer": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/compile-consumer-release.json",
+          "sha256": "5f7db745a6e6187039e04cd7e5a77b60a432d6bad87ce780b1145828435e544b"
+        },
+        "controls": "Separatewide andnested compile-only scopes with unchanged90s384MiB/8MiBlog/64MiBreserve; no applicationdata/commands/dispatch. OriginalCTS singlecase follows onlyfinite nativeadmission. Anyfailurepreserved/diagnosed; no droppingwide/nested, unchangedretry, timeoutincrease, shaderoptimization/simplification orspilllimitmutation.",
+        "identity_limit": "Extractedassembly uses exactoriginalgeneratorfunctionbodies and expressions. Installedspirv-as/val hashmatchedexistingownerpins(v2026.4), nooptimizer. Do not assertbinaryidentity to originalCTS embeddedSPIRVTools withoutcomparison; source/targetenvironment/capability/interface exact, nativeidentity can be compared with originalcase actual."
+      },
+      "execution_bounds": {
+        "unit_case_counts": [
+          16,
+          15,
+          1,
+          1
+        ],
+        "original_controls": "Unchanged90s/384MiB/8MiBlogheadroom/64MiBdiskreserve/percasefaultstop. Allnormalcasesbounded<=128invocations andtwo<=512BdataBOrequests; compiler/nativepeak remainsguarded,separatelymeasured.",
+        "assets": "No executedAmberasset required; onlyexcludedgraphicsasset pinnedasapplicabilityevidence.",
+        "performance": "Hints may be ignored; no cache/performance/ALUbusy inference ordesirednative shape.",
+        "no_result_inferred": true
+      },
+      "primary_refs": [
+        {
+          "url": "https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html",
+          "sections": [
+            "3.2.21 Selection Control",
+            "3.2.22 Loop Control",
+            "3.2.23 Function Control"
+          ],
+          "basis": "Selection/function controls literalcombinable masks; Inline/DontInline andFlatten/DontFlatten are performancehints. LoopUnroll/DontUnroll aremutuallyexclusive andoriginalcasesuseone; dependencyguarantees matchsource."
+        }
+      ]
+    }
+  },
+  "normal_source_counterpart": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/independent-normal31-source-review.json",
+      "bytes": 2679,
+      "sha256": "bf94bd17ba126f159989a77d3344667243a297c9eaf9fa52d008746a27bcba22"
+    },
+    "result": {
+      "status": "PASS ready normal31 original control-flow source/applicability/bounds; separatewide/nested native gate remains",
+      "source_bounds_sha256": "8e34e2d31843aca135a4521a4ad977aac0991691da34b3c033872237e896323b",
+      "partitions": [
+        {
+          "id": "00",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/cases-00.txt",
+          "sha256": "a7d5dad300db5e0e84f709969b631b28ebe39c2af2148fff4d70f2e3edc3ccc6",
+          "count": 16,
+          "separate_native_compile_required": false
+        },
+        {
+          "id": "01",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/cases-01.txt",
+          "sha256": "322a100367f4b5f79b24877975ccee768205d95069c93341cff3a8943d4b3256",
+          "count": 15,
+          "separate_native_compile_required": false
+        }
+      ],
+      "checks": [
+        "Independently reconciled exact36 catalog names across7 complete branches,3 explicit source-backed exclusions and33 applicable; normal16+15 exact/disjoint subsets. All14 source snapshots match originals.",
+        "False optional Float16/LongVector correctly excluded. Compute-named Amber actually declares graphics pipeline/draw and is excluded by command domain, no adapted success.",
+        "Original normal31 runs3156 invocations/local1,one/two SSBOs <=512B; default Context MultiQueueRunner de-duplicates family0 and enables no required optional features. No robustness custom-device queue fixture.",
+        "Normal29 default comparison cases check2956 exact32-bit words; two dependency loops check200floats with original epsilon0.001 verifier, retaining NaN comparison limitation. No threshold or shader changes.",
+        "Two dependency loops use mandatory SPIRV1.3 on real API1.1, Function12-float arrays48B and finite12-step/6-step dependencies source-correct. Small loop-controlNone/Unroll/DontUnroll cases have4 iterations, original expected input+4. Function/selection hints may be ignored; no promised native shape.",
+        "Function-control combined Inline|DontInline and selection Flatten|DontFlatten are literal combinable hint masks per official unified SPIR-V3.2.21/3.2.23; no invented optional gate.",
+        "Unchanged original0e715/f222/e699 and90s384MiB/8MiB log/fault/reserve controls required. Native/resource/actual QPA outcomes not inferred."
+      ],
+      "scope_limits": [
+        "This closes only normal31 prelaunch source gate; wide512Phi andnested171/depth8 remain included but await separate native admission.",
+        "No driver change, source optimization, loop/work reduction, alternate oracle or full conformance claim."
+      ],
+      "primary_control_reference": "https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#Function_Control"
+    }
+  },
+  "original_runner_counterpart": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/original-runner-review.json",
+      "bytes": 3429,
+      "sha256": "2093e33472a8761ea79b764c53d856122119ea6e0b503029e7560a3d66530786"
+    },
+    "result": {
+      "status": "PASS finite original control-flow runner inventories",
+      "source_plan_sha256": "8e34e2d31843aca135a4521a4ad977aac0991691da34b3c033872237e896323b",
+      "baseline_runner": "/run/media/jethac/Shared/radish/compute11-official-final-common-runner-0045/device-official-cts.py",
+      "baseline_sha256": "f3a41e53576fa08dc1e421bedb9c7f3a50be51d07d9fd7bd973b3955d53eccae",
+      "runners": [
+        {
+          "runner": "/run/media/jethac/Shared/radish/compute11-official-control-flow-00-runner-0045/device-official-cts.py",
+          "sha256": "ffcad30426292daf6f8afcdbf68d4222ce54e8574bf5377de1eebc8c1285b672",
+          "inventory_sha256": "a7d5dad300db5e0e84f709969b631b28ebe39c2af2148fff4d70f2e3edc3ccc6",
+          "count": 16,
+          "native_compile_required": false,
+          "argv_sha256": "2349f8ed6a94b8a24115a97c54ee15e4ff4a3b96f205e248ab19ef81805aa5d4",
+          "hostcheck_sha256": "c20b54ac600eb9ee2107386be467a47a1cedb339b42c1ed44e756241fec9db48"
+        },
+        {
+          "runner": "/run/media/jethac/Shared/radish/compute11-official-control-flow-01-runner-0045/device-official-cts.py",
+          "sha256": "678f531b30f227570d8c95d70c402ca7bf7962347a18105adb4258b68a946db8",
+          "inventory_sha256": "322a100367f4b5f79b24877975ccee768205d95069c93341cff3a8943d4b3256",
+          "count": 15,
+          "native_compile_required": false,
+          "argv_sha256": "61d049bb30ae6789b49127aafa573cb6870fbfccb72ef0549abfcd544470096f",
+          "hostcheck_sha256": "677fbb3a2d15e640a51611e10488f1da8a8e2725ec9f5767a0925f0ea4a1cd9d"
+        },
+        {
+          "runner": "/run/media/jethac/Shared/radish/compute11-official-control-flow-02-runner-0045/device-official-cts.py",
+          "sha256": "1214462e32f00dd0189ffcdee9106f81966d63c0209db7887efdc34bb9cf9d25",
+          "inventory_sha256": "26d14e5f2c78d8124f399c2073b1c9eedca2bbcdc2a26a61b04005aa0e75eb8d",
+          "count": 1,
+          "native_compile_required": true,
+          "argv_sha256": "4624c73a22ec0161dbd33c1baf01b1baaeb24d99918ab781630733faa784c37f",
+          "hostcheck_sha256": "0572e29763c5255799ad4e05b9a70326730cae70c7be655487f12823c3d693ef"
+        },
+        {
+          "runner": "/run/media/jethac/Shared/radish/compute11-official-control-flow-03-runner-0045/device-official-cts.py",
+          "sha256": "cf294f4034374fbecbdfe25578771ab9803e3cc8851c0da204e83526031bed5a",
+          "inventory_sha256": "e352d4f7540c189438121fd0715afc7466c48c8de02910b0514c8940c13e3c1a",
+          "count": 1,
+          "native_compile_required": true,
+          "argv_sha256": "4c8c36d75c563d556cf6a80b0dad218da6b81adf0fde7e181a02096efc887273",
+          "hostcheck_sha256": "fe6285defc8f684557ca1887aab7a0f5fc1ec7a6e9d963bed24648c861c8b4c5"
+        }
+      ],
+      "checks": [
+        "Only approved inventory SHA/count constants differ from passed final-common engine. All host assets and argv pins rehashed.",
+        "Exact ordered disjoint 16+15+1+1 union equals all33 original cases; no optional or graphics-only exclusions reintroduced.",
+        "Original CTS0e715, loader75699, currentf222/e699; no fixture modifications. Same90s/384MiB/8MiB output/64MiB reserve/per-case fault stop."
+      ],
+      "conditions": [
+        "Normal31 source counterpart bf94 closes source gate; can run16+15 after ordinary owner admission.",
+        "Stress cases02/03 remain conditional on separate source-exact compile-only native admission and original scope controls; this runner receipt alone does not authorize stress execution.",
+        "Original exact/epsilon oracle limitations retained; no inferred actual result."
+      ]
+    }
+  },
+  "normal_actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/normal31-actual-review.json",
+      "bytes": 35931,
+      "sha256": "33a1c7c0caba7e5a2e80b0f8ced79050019a2b6d4f34a60d53f971b059d8dac8"
+    },
+    "result": {
+      "status": "PASS independent original normal31 control-flow actual review",
+      "source_plan_sha256": "8e34e2d31843aca135a4521a4ad977aac0991691da34b3c033872237e896323b",
+      "source_counterpart_sha256": "bf94bd17ba126f159989a77d3344667243a297c9eaf9fa52d008746a27bcba22",
+      "runner_counterpart_sha256": "2093e33472a8761ea79b764c53d856122119ea6e0b503029e7560a3d66530786",
+      "totals": {
+        "unique_original_qpa_pass": 31,
+        "programs": 31,
+        "dispatches": 31,
+        "invocations": 3156,
+        "exact_output_words": 2956,
+        "original_epsilon_output_words": 200,
+        "chunks": 62,
+        "submits": 62,
+        "native_instrlen_max": 5,
+        "native_full_max": 6,
+        "native_half_max": 1,
+        "native_constlen": 16,
+        "private_instructions": 0,
+        "programs_retaining_loops": 2,
+        "nonzero_profile_results": 0
+      },
+      "scopes": [
+        {
+          "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-control-flow-00/probe",
+          "run_log_sha256": "629f2f1486a6e2313b7dee94a59e53346cdb4a5edc9ae373139f04e1133864cd",
+          "runner_result_sha256": "4537039e9d1638dd406cb4c5927534ed962d16d54f2e5aeb8eaf5cf62fd40cb8",
+          "qpa_sha256": "fb896467becc738f9e4d0d0be93e690ae9c1b5cba698c3e4fbd13df4ec5156bf",
+          "count": 16,
+          "service_seconds": 22.285,
+          "peak_mib": 119.4,
+          "swap_bytes": 0,
+          "clean_collection_faults_services": true,
+          "cases": [
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.block_order.all",
+              "qpa_sha256": "8dc9ffaa32ff1fad97c55f047773fb79b80097d7a132f394463094566ca6ea94",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaab2b2e4680",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "5",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4579957",
+                "submit_ns": "4210112",
+                "submit_max_ns": "3818653",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 161,
+                "non_nops": 54,
+                "dwords": 164,
+                "instrlen": 5,
+                "full": 6,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.conditional_branch.same_labels_false",
+              "qpa_sha256": "57a2cf1ef98b539d936fc9087e04fcc5558dd5b70e3893db0c627930ae97364c",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaaaf2391860",
+                "grid": "128,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4208393",
+                "submit_ns": "3866726",
+                "submit_max_ns": "3391673",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 18,
+                "non_nops": 7,
+                "dwords": 32,
+                "instrlen": 1,
+                "full": 1,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 128,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.conditional_branch.same_labels_true",
+              "qpa_sha256": "8b7f0407c4bfc79c994136348453c9cbaabc434867226443550a8676cb7ba672",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaab1b758860",
+                "grid": "128,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4691780",
+                "submit_ns": "4368655",
+                "submit_max_ns": "3903706",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 18,
+                "non_nops": 7,
+                "dwords": 32,
+                "instrlen": 1,
+                "full": 1,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 128,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.function_control.const",
+              "qpa_sha256": "dab04990efb4cc2e3324e47dfaeb9cefa31627809d7f1159e2e2af7117a9bacc",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaaaed280050",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4886155",
+                "submit_ns": "4466518",
+                "submit_max_ns": "4146257",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 26,
+                "non_nops": 9,
+                "dwords": 34,
+                "instrlen": 1,
+                "full": 1,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.function_control.const_dont_inline",
+              "qpa_sha256": "8221be7430f4f8ca6a2bd67e5992d03ca37745c5454ea420c66e10c4a8504ef7",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaaad75f08c0",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "3835997",
+                "submit_ns": "3500319",
+                "submit_max_ns": "3186100",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 26,
+                "non_nops": 9,
+                "dwords": 34,
+                "instrlen": 1,
+                "full": 1,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.function_control.dont_inline",
+              "qpa_sha256": "058945ad44e5c6241cf3ca31f7bc30690f4cae3733bce61973afbd69703103d2",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaaafe779930",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4541467",
+                "submit_ns": "4140319",
+                "submit_max_ns": "3750944",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 26,
+                "non_nops": 9,
+                "dwords": 34,
+                "instrlen": 1,
+                "full": 1,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.function_control.inline",
+              "qpa_sha256": "49785ff21ac59c4abea2700ed56e8ddd366d623d4e18ac4981c879454f1d4857",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaaadf986930",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "3686726",
+                "submit_ns": "3323652",
+                "submit_max_ns": "3055422",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 26,
+                "non_nops": 9,
+                "dwords": 34,
+                "instrlen": 1,
+                "full": 1,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.function_control.inline_dont_inline",
+              "qpa_sha256": "e92ba2fecf03e0147dab0f02a76d5283de4342a8f1eee56440bcf39a94f3e44b",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaab26e68db0",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4520581",
+                "submit_ns": "4187351",
+                "submit_max_ns": "3816309",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 26,
+                "non_nops": 9,
+                "dwords": 34,
+                "instrlen": 1,
+                "full": 1,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.function_control.inline_pure",
+              "qpa_sha256": "d10671bd09f8f73663fe6313b334e7c3c954e90698bb62d93ed1c9a4a19a14fe",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaab1578b930",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4752718",
+                "submit_ns": "4280113",
+                "submit_max_ns": "3809799",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 26,
+                "non_nops": 9,
+                "dwords": 34,
+                "instrlen": 1,
+                "full": 1,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.function_control.none",
+              "qpa_sha256": "95880944cba1e8766cdf960366f2cd0784a9d44e6b8a5f5101bc1e105ef9b60d",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaaaf4dbb970",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4981937",
+                "submit_ns": "4617404",
+                "submit_max_ns": "4229435",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 26,
+                "non_nops": 9,
+                "dwords": 34,
+                "instrlen": 1,
+                "full": 1,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.function_control.pure",
+              "qpa_sha256": "c41396f9373fb9e95c86284798d583078b933d91dfa2b221dc2a3a238d86391a",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaab070dfa80",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4314488",
+                "submit_ns": "3988132",
+                "submit_max_ns": "3873653",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 26,
+                "non_nops": 9,
+                "dwords": 34,
+                "instrlen": 1,
+                "full": 1,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.function_control.pure_inline_dont_inline",
+              "qpa_sha256": "2aa8e3c13885f6e8a2d6b7bace7d034a6f74b184214cea096e8efd12d12502a7",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaaaf5d75860",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4708134",
+                "submit_ns": "4352872",
+                "submit_max_ns": "3967872",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 26,
+                "non_nops": 9,
+                "dwords": 34,
+                "instrlen": 1,
+                "full": 1,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.loop_control.dependency_infinite",
+              "qpa_sha256": "835053bdfbba2eedc457d38ac7f0b1ce3d9529bea526edb29f3353bbfe3d112c",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaaaefdc17b0",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "4",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4480060",
+                "submit_ns": "4115425",
+                "submit_max_ns": "3753549",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 120,
+                "non_nops": 44,
+                "dwords": 128,
+                "instrlen": 4,
+                "full": 5,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "epsilon0.001 with preserved NaN weakness"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.loop_control.dependency_length",
+              "qpa_sha256": "0c8c3042320d7eb65e418946146e5005a3dfd6596ae1203df0e3db8ef82a0faf",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaaabc36cc50",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "2",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4371518",
+                "submit_ns": "4044696",
+                "submit_max_ns": "3719591",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 34,
+                "non_nops": 13,
+                "dwords": 64,
+                "instrlen": 2,
+                "full": 2,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "epsilon0.001 with preserved NaN weakness"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.loop_control.dont_unroll",
+              "qpa_sha256": "e65ebef2a7e3a5e6dba29ddd5929e9afcc1472a8547465b0fe2451d111d5a73a",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaaae9b26520",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "1",
+                "instrlen": "2",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4439123",
+                "submit_ns": "3940424",
+                "submit_max_ns": "3750997",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 37,
+                "non_nops": 17,
+                "dwords": 64,
+                "instrlen": 2,
+                "full": 2,
+                "half": 0,
+                "constlen": 16,
+                "loops": 1,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.loop_control.none",
+              "qpa_sha256": "b66a390779d4f04b16effcd8f780ff0dcf2ae17ed9632fd5d31d6994b59d0047",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaab162784b0",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "2",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4692977",
+                "submit_ns": "4335842",
+                "submit_max_ns": "3910424",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 55,
+                "non_nops": 20,
+                "dwords": 64,
+                "instrlen": 2,
+                "full": 2,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            }
+          ]
+        },
+        {
+          "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-control-flow-01/probe",
+          "run_log_sha256": "a3afd47865f17e9b2ac637e0c258d9ff4a10a5a83d80b63999de02faa3879f87",
+          "runner_result_sha256": "089549ea2f3d105abde6d3a29f45b30067f246d44e07ddbdd9c0ec94dc849e66",
+          "qpa_sha256": "8530057506c1a97fff0723746ed369b05191c7078c9d20ab8f71a6908b0d86df",
+          "count": 15,
+          "service_seconds": 20.808,
+          "peak_mib": 119.5,
+          "swap_bytes": 0,
+          "clean_collection_faults_services": true,
+          "cases": [
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.loop_control.unroll",
+              "qpa_sha256": "1f415d8836c53012a4976f021093ca8f89e3d9ce95df11d6023b4c92a6d305fc",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaaafbd31d90",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "2",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4610009",
+                "submit_ns": "4291675",
+                "submit_max_ns": "3868601",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 55,
+                "non_nops": 20,
+                "dwords": 64,
+                "instrlen": 2,
+                "full": 2,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.opphi.block",
+              "qpa_sha256": "5c2cc8c9da647780f60c42fd068bb7da2c2a866684bc338ff5882ccddbf90770",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaaaec50e860",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "4",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4615947",
+                "submit_ns": "4268133",
+                "submit_max_ns": "3823705",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 86,
+                "non_nops": 33,
+                "dwords": 128,
+                "instrlen": 4,
+                "full": 4,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.opphi.induction",
+              "qpa_sha256": "19721f12cbf573ed1acc2adb1c082294183e120cfc91e487d417a7510c394456",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaaae9d70b80",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4519331",
+                "submit_ns": "4014173",
+                "submit_max_ns": "3792142",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 26,
+                "non_nops": 9,
+                "dwords": 34,
+                "instrlen": 1,
+                "full": 1,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.opphi.swap",
+              "qpa_sha256": "a37d54a9a33697c03dc98e2f0ffa93d93be2a1b2faefeafd23da23b9403ad774",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaab098ae800",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "1",
+                "instrlen": "2",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4618759",
+                "submit_ns": "4280945",
+                "submit_max_ns": "3860788",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 45,
+                "non_nops": 18,
+                "dwords": 64,
+                "instrlen": 2,
+                "full": 2,
+                "half": 1,
+                "constlen": 16,
+                "loops": 1,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_array",
+              "qpa_sha256": "6a3045b49e779f8f854686874d4d5545b48d42b74da1312d003e5791833a5ec9",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaab010c0ee0",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4700738",
+                "submit_ns": "4310842",
+                "submit_max_ns": "3956153",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 30,
+                "non_nops": 10,
+                "dwords": 38,
+                "instrlen": 1,
+                "full": 1,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_float",
+              "qpa_sha256": "2ba245f3ac443b615cb29a81a4e31747b240fe1d33cb0e2d95a7427a0cc6f981",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaab03009f00",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4878135",
+                "submit_ns": "4470061",
+                "submit_max_ns": "4001727",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 30,
+                "non_nops": 10,
+                "dwords": 38,
+                "instrlen": 1,
+                "full": 1,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_int",
+              "qpa_sha256": "4b89d599c3d36f41ed86ba6ba0464ee87604d9eb3df039c053440a2e45157108",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaaaee2bb020",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4906260",
+                "submit_ns": "4508967",
+                "submit_max_ns": "3911466",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 30,
+                "non_nops": 10,
+                "dwords": 38,
+                "instrlen": 1,
+                "full": 1,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_mat4",
+              "qpa_sha256": "9429961b48a647dc1107ff481d342e6a7f05e10c29f54603f0b3010854de8943",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaaafb1cc8d0",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4244175",
+                "submit_ns": "3906571",
+                "submit_max_ns": "3567299",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 30,
+                "non_nops": 10,
+                "dwords": 38,
+                "instrlen": 1,
+                "full": 1,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_struct",
+              "qpa_sha256": "1676f477df67664b7aebf6ca55ebfb0e432d2183293cf36a08970e1dfaaa7949",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaaadba3edb0",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4411519",
+                "submit_ns": "4073550",
+                "submit_max_ns": "3666518",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 30,
+                "non_nops": 10,
+                "dwords": 38,
+                "instrlen": 1,
+                "full": 1,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_vec3",
+              "qpa_sha256": "b61edfbfdf39802596eba4371234848120a089153e773b057cde7c95204fe2df",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaab008ddea0",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4652874",
+                "submit_ns": "4288706",
+                "submit_max_ns": "3820580",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 30,
+                "non_nops": 10,
+                "dwords": 38,
+                "instrlen": 1,
+                "full": 1,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.opunreachable.all",
+              "qpa_sha256": "ffbc1709b534cc0b9acb065142b4eccbfd4fe1316b1bb0ae871e07596a81d30b",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaaaf437ac90",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4353342",
+                "submit_ns": "4019280",
+                "submit_max_ns": "3633914",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 26,
+                "non_nops": 9,
+                "dwords": 34,
+                "instrlen": 1,
+                "full": 1,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.selection_control.dont_flatten",
+              "qpa_sha256": "c89b38d2f4e015162b73c1b98e2d5b3ee0aed8829e19c447b39a2278a6ca555e",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaaaec08a600",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "2",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "3954643",
+                "submit_ns": "3583028",
+                "submit_max_ns": "3481882",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 46,
+                "non_nops": 16,
+                "dwords": 64,
+                "instrlen": 2,
+                "full": 1,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.selection_control.flatten",
+              "qpa_sha256": "db39f977f7e2aae8af2790b59ee469aabeb3eb7e496e433788f061949cc3867c",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaaaf96df020",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "2",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4426675",
+                "submit_ns": "4067143",
+                "submit_max_ns": "3680007",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 46,
+                "non_nops": 16,
+                "dwords": 64,
+                "instrlen": 2,
+                "full": 1,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.selection_control.flatten_dont_flatten",
+              "qpa_sha256": "2144bf84930cbbd10ab59c997922269dd8d15666218915c6a9fd11421d9e552f",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaaaf30f1730",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "2",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4774592",
+                "submit_ns": "4374904",
+                "submit_max_ns": "4082716",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 46,
+                "non_nops": 16,
+                "dwords": 64,
+                "instrlen": 2,
+                "full": 1,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            },
+            {
+              "name": "dEQP-VK.spirv_assembly.instruction.compute.selection_control.none",
+              "qpa_sha256": "ad789d6add2c5f088bcb36992420e78f29e5d24a785cf59847d4583b5196bd4a",
+              "status": "Pass",
+              "detail": "Output match with expected",
+              "profile": {
+                "pipeline": "0xaaaac8e5c5f0",
+                "grid": "100,1,1",
+                "local": "1,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "2",
+                "chunks": "2",
+                "submits": "2",
+                "ns": "4672249",
+                "submit_ns": "4345165",
+                "submit_max_ns": "3897195",
+                "result": "0"
+              },
+              "native": {
+                "instruction_slots": 46,
+                "non_nops": 16,
+                "dwords": 64,
+                "instrlen": 2,
+                "full": 1,
+                "half": 0,
+                "constlen": 16,
+                "loops": 0,
+                "private_instructions": 0
+              },
+              "original_output_words": 100,
+              "oracle": "exact output byte comparison"
+            }
+          ]
+        }
+      ],
+      "scope_limits": [
+        "Exact original0e715/f222-e699/75699 in both captures. All31 detailed results are Output match with expected, not merely status/no-crash.",
+        "29 cases use original exact byte comparisons; DependencyInfinite/Length use original epsilon0.001 and retain NaN-not-rejected weakness. No full allocation canary/untouched padding claim.",
+        "Loop DontUnroll and OpPhi swap retain one native loop each; other original loops/control/function constructs may optimize to straightline code. Performance hint masks do not require a particular native shape.",
+        "No private load/store instructions in these31; no spill evidence inferred. No resource ceiling/driver/test change.",
+        "The512-way and depth8 nested original cases remain separate; this receipt closes31 only, not all33 or full shader/Vulkan conformance."
+      ]
+    }
+  },
+  "hard_source_host": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/independent-hard-source-host-review.json",
+      "bytes": 2509,
+      "sha256": "e352f8c042ab33905afce0c5d032fe498a67e2ddf0706d05bac3b1b3d571bdbf"
+    },
+    "result": {
+      "status": "PASS compile-only hardcontrol helper, exact source generators/modules and AArch64 host pairing; native admission remains",
+      "source_bounds_sha256": "8e34e2d31843aca135a4521a4ad977aac0991691da34b3c033872237e896323b",
+      "consumer_release_sha256": "5f7db745a6e6187039e04cd7e5a77b60a432d6bad87ce780b1145828435e544b",
+      "host_result_sha256": "17316044c75ec884f9bb4068093a03f84cef9b185f80be28438da05378b5f027",
+      "helper_sha256": "27b1440727196b3e3fce59feafc201f46eea1345118bf7d60f6c637c8f0bae20",
+      "modules": [
+        {
+          "name": "wide",
+          "sha256": "04660850cf2713d035260a454a1a5cc5723a4add6e5a74d16c4c7d35c5384a96",
+          "bytes": 25460,
+          "instructions": 1593,
+          "bound": 1061,
+          "phi_count": 1
+        },
+        {
+          "name": "nested",
+          "sha256": "9dc8cec75989fc7c49973b8c49cb4697b995f05d01e6d51774bc4f877aa96276",
+          "bytes": 21708,
+          "instructions": 1620,
+          "bound": 919,
+          "phi_count": 171
+        }
+      ],
+      "checks": [
+        "All7 generator bodies and3 buffer/type helper bodies exactly match original source; complete spec4/spec5 expressions compared within createOpPhiGroup, not similarly named other tests.",
+        "Original512switch targets/512Phi inputs and nine-pass(7,24) expansion preserved; independently reproduced513-character code171triples/maxdepth8.",
+        "Both modules independently parsedSPIRV1.0/Shader only/local1/main/twoSSBO bindings/no push/spec, wide1Phi and nested171Phi; exact hostcopies/hash/validation commands retained.",
+        "New main requires compile-only and has no application buffers/memory,descriptor pool,commands,queue submissions ordispatch. Core pipeline creation/destroy reverse lifetimes safe; code/private BOs are intentional native diagnostics.",
+        "RBAfalse explicitly matches original defaultCTS devicefeatures; supportedphysicalRBA stillqueriedtrue. No advertisedfeature or driverguard change.",
+        "Helper27b14407 machine183 and targetAArch64 verified; all5 ABIheaders/currentdependencies match f222 candidate, sourcecompanions exacta502/4b02."
+      ],
+      "limits": [
+        "Direct-ICD/private-ABI compile admission only, not original publicCTS execution or numerical qualification.",
+        "Installed assembler output source-identical, not assumedbyte-identical original embedded assembler; compare retained native with later originalcase.",
+        "Each hardmodule retains original90s384MiB/8MiBlogcaps; actualcode/register/privateBO bounds must pass before originalsinglecase. No shape or code-length ceiling invented."
+      ]
+    }
+  },
+  "hard_runner": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/hard-host-runner-review.json",
+      "bytes": 3402,
+      "sha256": "ad2750c2e5873471a61e119a394657b66a4b3da1d07cc7c7eb362c05f94638f5"
+    },
+    "result": {
+      "status": "PASS finite hard-control-flow host pairing and compile-only runner derivative",
+      "helper_sha256": "27b1440727196b3e3fce59feafc201f46eea1345118bf7d60f6c637c8f0bae20",
+      "source_sha256": "6d953fa50fa78e61cc6939035263fba31a977eca31cfac570cf1f0b80b397087",
+      "host_result_sha256": "17316044c75ec884f9bb4068093a03f84cef9b185f80be28438da05378b5f027",
+      "source_release_sha256": "5f7db745a6e6187039e04cd7e5a77b60a432d6bad87ce780b1145828435e544b",
+      "baseline_runner_sha256": "277a1c6f70fea701399dc0081854c23479e73afaabebda9d052f2abaad67f237",
+      "headers": {
+        "src/freedreno/radish/rd_private.h": {
+          "bytes": 8794,
+          "sha256": "b4fd0b4017316865f92f740285bf900fb93fe59189f2bba658fb665d5bc91502"
+        },
+        "src/freedreno/radish/rd_image.h": {
+          "bytes": 1793,
+          "sha256": "6c0847bb62fd18eef4e4398a7efc89afde57fbed64d64ab152586078d9555747"
+        },
+        "src/freedreno/radish/rd_sampling.h": {
+          "bytes": 1096,
+          "sha256": "541a70b8aca605c0719aa03d551241da16136d6a17ff801bb5d379d7e6d86932"
+        },
+        "src/freedreno/ir3/ir3_shader.h": {
+          "bytes": 47274,
+          "sha256": "f16d7430d499c9377e662b13d9cc1cbc58e695aaeda596a4c30e1ea42a7196a2"
+        },
+        "src/freedreno/drm/freedreno_drmif.h": {
+          "bytes": 10245,
+          "sha256": "2dda64a45d315c786b098eaa917ec6cb43ad438200ee12caa9b768aead1abdca"
+        }
+      },
+      "runners": [
+        {
+          "name": "wide",
+          "runner_sha256": "d215ccfc0b62b64c338d2ac2b252c999ce016a5176fcbaee404a5be077766315",
+          "hostcheck_sha256": "eb9278610c921997691ab8f367c7b3c3f8be460aeca1a0b9875c30865eca38d6",
+          "argv_sha256": "c6509ead7222e38f4ed87529c2c1ea015ab5dd976cb6d9cec08be2d68e2d71d0",
+          "module_sha256": "04660850cf2713d035260a454a1a5cc5723a4add6e5a74d16c4c7d35c5384a96"
+        },
+        {
+          "name": "nested",
+          "runner_sha256": "d215ccfc0b62b64c338d2ac2b252c999ce016a5176fcbaee404a5be077766315",
+          "hostcheck_sha256": "cd6ade43caba019aa352ec73251863ee888c1e7445f3c7bb504978c4d5477494",
+          "argv_sha256": "8c8f6b1b18740df901f24f1304dbda5b5017c68838991a37af649dab80ad4200",
+          "module_sha256": "9dc8cec75989fc7c49973b8c49cb4697b995f05d01e6d51774bc4f877aa96276"
+        }
+      ],
+      "checks": [
+        "Exact source/helper/module identities rehashed. AArch64 machine183, all five dependency ABI headers match current source pins; original full driverf222 deploymente699.",
+        "Compile-only CLI and helper cannot allocate application data, record command buffers or dispatch. RBAfalse matches original CTS default enabled device features; physical feature unchanged.",
+        "Only four reviewed runner change areas: compile-only CLI, 1MiB to8MiB output reserve, namespace markers, compile-only result checks. Original90s/384MiB/128MiBswap/64MiBreserve/fault/service/drain controls remain exact.",
+        "Both source-exact original stress assemblies validated; separate installed assembler output is not asserted byte-identical to original CTS assembler."
+      ],
+      "conditions": [
+        "Independent hard source/extraction counterpart and ordinary owner preflight remain prerequisites.",
+        "Inspect each terminal native compiler output/resource diagnostics before admitting its corresponding original one-case test. No resource fit or runtime correctness inferred from host build.",
+        "Failure remains a source/compiler diagnostic obligation; no larger cap, smaller stress shader, unchanged retry or omitted difficult case."
+      ]
+    }
+  },
+  "hard_native_admission": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/independent-hard-native-admission.json",
+      "bytes": 4769,
+      "sha256": "0a42374b5b356da156461ea35aaf466650ca22dc5f5612b127289f68a5484578"
+    },
+    "result": {
+      "status": "PASS native/resource/control-flow admission for exact wide/nested original-source modules; no tensor dispatch yet",
+      "source_host_review_sha256": "e352f8c042ab33905afce0c5d032fe498a67e2ddf0706d05bac3b1b3d571bdbf",
+      "modules": [
+        {
+          "module": "wide",
+          "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-control-flow-wide/compile",
+          "log": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-control-flow-wide/compile/run.log",
+            "bytes": 1514685,
+            "sha256": "5fafbd131e08f6550fd27d1ce002f62645f31784a9436066f5c3d2639ff4fedf"
+          },
+          "result": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-control-flow-wide/compile/runner-result.json",
+            "bytes": 1165,
+            "sha256": "97c333f53d8b196aafaeae16ed0c53860dd1f31e2bb23b64985832b24fcc17ae"
+          },
+          "compiled_marker": "CONTROL_FLOW_COMPILED active=2 buffers=2 images=0 native=247 full=8 half=48 constlen=144 private_per_fiber=1024 private_per_sp=1048576 private_bo_bytes=1048576 shader_bo_bytes=32768 shared=0 local=1,1,1 robust_buffer_access=0 before_data_allocations=1 no_spill_inference=1",
+          "native_instructions": 6981,
+          "native_dwords": 7904,
+          "code_bytes": 31616,
+          "private_bounds": "317 nativeU16 stores+317 loads access317 exact2B slots0..632; endpoint634<1024B frame; base r0.x singleconstant0. No originalFunction/Private variables and no nonzero preIR3 NIRscratch. Existing matched allocator spill/lower_spill path explains actual half-register spill code; not inference from private size alone.",
+          "explicit_branch_targets": 1,
+          "service_tail": " module/core pipeline; no data, commands or dispatch; native admission separate\nPASS: no new GPU fault/recovery messages\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 1.882s\n             CPU time consumed: 1.842s\n                   Memory peak: 12.4M (swap: 0B)\n"
+        },
+        {
+          "module": "nested",
+          "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-control-flow-nested/compile",
+          "log": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-control-flow-nested/compile/run.log",
+            "bytes": 347987,
+            "sha256": "0d89a7885da054b6061b584dc37c7a9d91a3bca5cf6ac51174b54fd4fd733968"
+          },
+          "result": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-control-flow-nested/compile/runner-result.json",
+            "bytes": 1164,
+            "sha256": "73e20927bf7eff94d6b840a44235ebf0a0f6c8d1372eb12dee2b2e00209fd75a"
+          },
+          "compiled_marker": "CONTROL_FLOW_COMPILED active=2 buffers=2 images=0 native=31 full=8 half=2 constlen=20 private_per_fiber=0 private_per_sp=0 private_bo_bytes=0 shader_bo_bytes=4096 shared=0 local=1,1,1 robust_buffer_access=0 before_data_allocations=1 no_spill_inference=1",
+          "native_instructions": 779,
+          "native_dwords": 992,
+          "code_bytes": 3968,
+          "private_bounds": "No private frame/BO or private instructions. Separate171-selection nestedmodule code fits4096B BO, local1 and shared0.",
+          "explicit_branch_targets": 14,
+          "service_tail": "low module/core pipeline; no data, commands or dispatch; native admission separate\nPASS: no new GPU fault/recovery messages\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 543ms\n             CPU time consumed: 521ms\n                   Memory peak: 8.1M (swap: 0B)\n"
+        }
+      ],
+      "admission": [
+        "Exact module/header/helper pins alreadye352; frozenf222 driver. Compile-only public core pipeline path/private diagnostics, RBAfalse matches originalCTS default.",
+        "Wide code31616B<=32768B BO, private frame1024B and1MiB SP/BO; register half-equivalent64 perthread*32=2048<=4096. Source/live NIR/native path supports genuine allocatorU16 spilling.",
+        "Nested native31/8F2H/const20/private0/code<=4096B BO. All explicit branch targets resolve, both have0loops/shared0/local1.",
+        "Two original singlecases may follow unchanged100invocations/exact100float outputs each; compare original native bodies/resources to admitted source modules after execution.",
+        "Both retain original90s384MiB/8MiB logs and clean collection/fault/services/assets. No fixedcode-length/zero-private gate, compileroption change, work reduction or retry."
+      ],
+      "limitations": [
+        "No functional correctness or all CFG/spill types inferred from compile success.",
+        "Installed module source identical to original expression, not assumed binary identity with original embedded assembler.",
+        "Performance/cache/ALU utilization not measured."
+      ]
+    }
+  },
+  "hard_actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/independent-hard-actual-review.json",
+      "bytes": 5986,
+      "sha256": "293bd2612c0ac48c71bf625e9b65ccc9daea1f503b9a139fcf5db6f12689bb64"
+    },
+    "result": {
+      "status": "PASS two original hardcontrol-flow cases; source-exact admitted native code/resources and unchanged original oracles",
+      "native_admission_sha256": "0a42374b5b356da156461ea35aaf466650ca22dc5f5612b127289f68a5484578",
+      "source_host_review_sha256": "e352f8c042ab33905afce0c5d032fe498a67e2ddf0706d05bac3b1b3d571bdbf",
+      "rows": [
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.opphi.wide",
+          "status": "Pass",
+          "detail": "Output match with expected",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-control-flow-02/probe/case-0.qpa",
+            "bytes": 1672,
+            "sha256": "f420f9c3f4be7678e956feaacc431d6c4f971608b21c54b3680d702c1c778d6d"
+          },
+          "log": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-control-flow-02/probe/run.log",
+            "bytes": 1515079,
+            "sha256": "4fc80cd7cb158f8f9aef33bb5b737f25f74bda6d14330848bec1236130d8b687"
+          },
+          "result": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-control-flow-02/probe/runner-result.json",
+            "bytes": 1619,
+            "sha256": "cd903fa2cb532eb4c415d40a5123594c864c0526f005b3054570a8a30c7f26aa"
+          },
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaafd0abab0 grid=100,1,1 local=1,1,1 barrier=0 loops=0 instrlen=247 chunks=2 submits=2 ns=14441382 submit_ns=14132058 submit_max_ns=10680697 result=0",
+          "admitted_compile_log": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-control-flow-wide/compile/run.log",
+            "bytes": 1514685,
+            "sha256": "5fafbd131e08f6550fd27d1ce002f62645f31784a9436066f5c3d2639ff4fedf"
+          },
+          "native_assembly_sha256": "0793c0684f81a9ee7218c3c2b05c22fcd3d04da4cf1755f80313082606881ada",
+          "native_stats": [
+            "; CL prog 1/1: 6981 instr, 4292 nops, 2689 non-nops, 4 mov, 510 cov, 7904 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 48 half, 8 full, 144 constlen",
+            "; CL prog 1/1: 4294 cat0, 514 cat1, 1026 cat2, 511 cat3, 0 cat4, 0 cat5, 636 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 317 (ss), 86 systall, 3 (sy), 0 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "original_output_float32_words": 100,
+          "service_tail": "sages\nCTS_INFO_PASS\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 3.096s\n             CPU time consumed: 2.998s\n                   Memory peak: 125.8M (swap: 0B)\n"
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.opphi.nested",
+          "status": "Pass",
+          "detail": "Output match with expected",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-control-flow-03/probe/case-0.qpa",
+            "bytes": 1677,
+            "sha256": "5084b83ef8d4bd4e6de2fcd1c80696d92b4e229979f1bcc62ef14a0a0a13cc4a"
+          },
+          "log": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-control-flow-03/probe/run.log",
+            "bytes": 348405,
+            "sha256": "72a50e4c0b362d2554df30b19a7ffbfc0b1321bb06314146bd5433f0f76416f8"
+          },
+          "result": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-control-flow-03/probe/runner-result.json",
+            "bytes": 1620,
+            "sha256": "798662ae3e795692704359ef97215aa5d511e5048757be8f9afbe22752481e26"
+          },
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaafc3d5ff0 grid=100,1,1 local=1,1,1 barrier=0 loops=0 instrlen=31 chunks=2 submits=2 ns=4500373 submit_ns=4164330 submit_max_ns=3767819 result=0",
+          "admitted_compile_log": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-control-flow-nested/compile/run.log",
+            "bytes": 347987,
+            "sha256": "0d89a7885da054b6061b584dc37c7a9d91a3bca5cf6ac51174b54fd4fd733968"
+          },
+          "native_assembly_sha256": "0a9b7be22739f2cfad7d43496ea3f023cb0ee662a3074bbbbb4cd764277af851",
+          "native_stats": [
+            "; CL prog 1/1: 779 instr, 450 nops, 329 non-nops, 4 mov, 47 cov, 992 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 2 half, 8 full, 20 constlen",
+            "; CL prog 1/1: 467 cat0, 51 cat1, 144 cat2, 115 cat3, 0 cat4, 0 cat5, 2 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 0 (ss), 86 systall, 1 (sy), 0 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "original_output_float32_words": 100,
+          "service_tail": "sages\nCTS_INFO_PASS\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 1.682s\n             CPU time consumed: 1.619s\n                   Memory peak: 120.7M (swap: 0B)\n"
+        }
+      ],
+      "totals": {
+        "original_cases": 2,
+        "dispatches": 2,
+        "logical_invocations": 200,
+        "chunks": 4,
+        "submits": 4,
+        "exact_output_float32_words": 200
+      },
+      "scope": [
+        "Exact original0e715, f222/e699; wide512 andnested171/depth8 expressions and100invocations preserved.",
+        "All native ISA lines/labels and5disassembly-stat lines match compile-only admitted counterpart byte-for-byte; native assembly extraction excludes NIR headers only. Original embedded assembler output not assumed identical, actualnative identity established.",
+        "Wide retained317U16 spill stores+317loads/247units/8F48H/const144; original native offsets identical to admitted1024B frame/1MiB privateBO code. BOsizes were measured by compile helper, not directly reprinted by original CTS. Exact100float output bytes now establish bounded execution of this admitted spill path.",
+        "Nested native31/8F2H/const20/private0 and exact100float output bytes pass. No full spill/control-flow/precision or performance inference.",
+        "Both actual scopes clean collection/assets/fault/services under original90s384MiB/8MiB logcaps; no source/guard change or retry."
+      ]
+    }
+  },
+  "extracted_modules": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/host-stress/result.json",
+      "bytes": 4647,
+      "sha256": "4d5f8986aaf7969ad57b67abf7cc3bcdc1793b562de7cad35c7c1ebd2f4b1e0d"
+    },
+    "result": {
+      "status": "PASS host original-generator expression extraction and Vulkan1.1 validation",
+      "method": "All seven generator functions and three buffer/type helper function bodies copied exactly from pinned CTS. spec4/spec5 complete string expressions copied exactly; default helper arguments match original header. main only invokes original512-wide and9-pass(7,24) expansion inputs and writes assembly. No driver/GPU/test invocation.",
+      "cts_sources": {
+        "vktSpvAsmInstructionTests.cpp": "d6800ae7655ee7bb2a535d450d01ae998f8439cb7b342ea9e22ec99095d518d8",
+        "vktSpvAsmComputeShaderTestUtil.cpp": "2080fbe1302048f52ce01f175d093054b737165ffc087c5d2a9744262d3e8218",
+        "vktSpvAsmComputeShaderTestUtil.hpp": "dfd7c2e46d5f603a7bedde13bf9eb208465d64dd855fcdf34ea0ebdcd289ca86"
+      },
+      "files": {
+        "wide.spv": {
+          "sha256": "04660850cf2713d035260a454a1a5cc5723a4add6e5a74d16c4c7d35c5384a96",
+          "bytes": 25460
+        },
+        "nested.spvasm": {
+          "sha256": "637abcac1dce406ed56cbe9dab3ff73ffc42803e481771a2f0d36863372de683",
+          "bytes": 41972
+        },
+        "nested.spv": {
+          "sha256": "9dc8cec75989fc7c49973b8c49cb4697b995f05d01e6d51774bc4f877aa96276",
+          "bytes": 21708
+        },
+        "nested-code.txt": {
+          "sha256": "871124059560083d07a65e8af7a43d63f0ae8e82c88f9bb3123899679ca2579d",
+          "bytes": 514
+        },
+        "extract.cpp": {
+          "sha256": "7bc99fc23f5ac240e12abbd024255501e4ea91e04d77a8b4682c384e3ec7f142",
+          "bytes": 12461
+        },
+        "wide.spvasm": {
+          "sha256": "b24f33dfc71542a9cbea9873a7100481b18138598c242266ce579dc2a61a41b4",
+          "bytes": 56409
+        },
+        "extract": {
+          "sha256": "19b5149e5eea8de6f6cbc93065759f87b9b2c99780554a885674cf73b9bc6be0",
+          "bytes": 93808
+        }
+      },
+      "commands": [
+        {
+          "argv": [
+            "c++",
+            "-std=c++17",
+            "-O0",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/host-stress/extract.cpp",
+            "-o",
+            "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/host-stress/extract"
+          ],
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/host-stress/extract",
+            "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/host-stress"
+          ],
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "spirv-as",
+            "--target-env",
+            "vulkan1.0",
+            "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/host-stress/wide.spvasm",
+            "-o",
+            "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/host-stress/wide.spv"
+          ],
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "spirv-val",
+            "--target-env",
+            "vulkan1.1",
+            "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/host-stress/wide.spv"
+          ],
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "spirv-as",
+            "--target-env",
+            "vulkan1.0",
+            "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/host-stress/nested.spvasm",
+            "-o",
+            "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/host-stress/nested.spv"
+          ],
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "spirv-val",
+            "--target-env",
+            "vulkan1.1",
+            "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/host-stress/nested.spv"
+          ],
+          "returncode": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "tool_versions": {
+        "spirv-as": "SPIRV-Tools v2026.4 v2026.4.rc2-0-gef96ed763\nTarget: SPIR-V 1.6\n",
+        "spirv-val": "SPIRV-Tools v2026.4 v2026.4.rc2-0-gef96ed763\nTargets:\n  SPIR-V 1.0\n  SPIR-V 1.1\n  SPIR-V 1.2\n  SPIR-V 1.3\n  SPIR-V 1.4\n  SPIR-V 1.5\n  SPIR-V 1.6\n  SPIR-V 1.2 (under OpenCL 2.2 Full Profile semantics)\n  SPIR-V 1.0 (under Vulkan 1.0 semantics)\n  SPIR-V 1.3 (under Vulkan 1.1 semantics)\n  SPIR-V 1.4 (under Vulkan 1.1 semantics)\n  SPIR-V 1.5 (under Vulkan 1.2 semantics)\n  SPIR-V 1.6 (under Vulkan 1.3 semantics) SPIR-V 1.6 (under Vulkan 1.4 semantics)\n"
+      },
+      "scope": "Source-exact generated assembly, independently assembled by installed host tool; no claim of byte identity with originalCTS embedded SPIRV-Tools until separately compared. Native compile admission remains required."
+    }
+  },
+  "helper_build": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-control-flow-compile-build-0045/result.json",
+      "bytes": 7061,
+      "sha256": "17316044c75ec884f9bb4068093a03f84cef9b185f80be28438da05378b5f027"
+    },
+    "result": {
+      "status": "PASS AArch64 compile-only host helper and exact source-generated wide/nested module pairing; no device admission",
+      "helper": {
+        "bytes": 714544,
+        "sha256": "27b1440727196b3e3fce59feafc201f46eea1345118bf7d60f6c637c8f0bae20"
+      },
+      "modules": {
+        "wide": {
+          "bytes": 25460,
+          "sha256": "04660850cf2713d035260a454a1a5cc5723a4add6e5a74d16c4c7d35c5384a96"
+        },
+        "nested": {
+          "bytes": 21708,
+          "sha256": "9dc8cec75989fc7c49973b8c49cb4697b995f05d01e6d51774bc4f877aa96276"
+        }
+      },
+      "module_generation": {
+        "status": "PASS host original-generator expression extraction and Vulkan1.1 validation",
+        "method": "All seven generator functions and three buffer/type helper function bodies copied exactly from pinned CTS. spec4/spec5 complete string expressions copied exactly; default helper arguments match original header. main only invokes original512-wide and9-pass(7,24) expansion inputs and writes assembly. No driver/GPU/test invocation.",
+        "cts_sources": {
+          "vktSpvAsmInstructionTests.cpp": "d6800ae7655ee7bb2a535d450d01ae998f8439cb7b342ea9e22ec99095d518d8",
+          "vktSpvAsmComputeShaderTestUtil.cpp": "2080fbe1302048f52ce01f175d093054b737165ffc087c5d2a9744262d3e8218",
+          "vktSpvAsmComputeShaderTestUtil.hpp": "dfd7c2e46d5f603a7bedde13bf9eb208465d64dd855fcdf34ea0ebdcd289ca86"
+        },
+        "files": {
+          "wide.spv": {
+            "sha256": "04660850cf2713d035260a454a1a5cc5723a4add6e5a74d16c4c7d35c5384a96",
+            "bytes": 25460
+          },
+          "nested.spvasm": {
+            "sha256": "637abcac1dce406ed56cbe9dab3ff73ffc42803e481771a2f0d36863372de683",
+            "bytes": 41972
+          },
+          "nested.spv": {
+            "sha256": "9dc8cec75989fc7c49973b8c49cb4697b995f05d01e6d51774bc4f877aa96276",
+            "bytes": 21708
+          },
+          "nested-code.txt": {
+            "sha256": "871124059560083d07a65e8af7a43d63f0ae8e82c88f9bb3123899679ca2579d",
+            "bytes": 514
+          },
+          "extract.cpp": {
+            "sha256": "7bc99fc23f5ac240e12abbd024255501e4ea91e04d77a8b4682c384e3ec7f142",
+            "bytes": 12461
+          },
+          "wide.spvasm": {
+            "sha256": "b24f33dfc71542a9cbea9873a7100481b18138598c242266ce579dc2a61a41b4",
+            "bytes": 56409
+          },
+          "extract": {
+            "sha256": "19b5149e5eea8de6f6cbc93065759f87b9b2c99780554a885674cf73b9bc6be0",
+            "bytes": 93808
+          }
+        },
+        "commands": [
+          {
+            "argv": [
+              "c++",
+              "-std=c++17",
+              "-O0",
+              "-Wall",
+              "-Wextra",
+              "-Werror",
+              "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/host-stress/extract.cpp",
+              "-o",
+              "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/host-stress/extract"
+            ],
+            "returncode": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "argv": [
+              "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/host-stress/extract",
+              "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/host-stress"
+            ],
+            "returncode": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "argv": [
+              "spirv-as",
+              "--target-env",
+              "vulkan1.0",
+              "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/host-stress/wide.spvasm",
+              "-o",
+              "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/host-stress/wide.spv"
+            ],
+            "returncode": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "argv": [
+              "spirv-val",
+              "--target-env",
+              "vulkan1.1",
+              "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/host-stress/wide.spv"
+            ],
+            "returncode": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "argv": [
+              "spirv-as",
+              "--target-env",
+              "vulkan1.0",
+              "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/host-stress/nested.spvasm",
+              "-o",
+              "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/host-stress/nested.spv"
+            ],
+            "returncode": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "argv": [
+              "spirv-val",
+              "--target-env",
+              "vulkan1.1",
+              "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/host-stress/nested.spv"
+            ],
+            "returncode": 0,
+            "stdout": "",
+            "stderr": ""
+          }
+        ],
+        "tool_versions": {
+          "spirv-as": "SPIRV-Tools v2026.4 v2026.4.rc2-0-gef96ed763\nTarget: SPIR-V 1.6\n",
+          "spirv-val": "SPIRV-Tools v2026.4 v2026.4.rc2-0-gef96ed763\nTargets:\n  SPIR-V 1.0\n  SPIR-V 1.1\n  SPIR-V 1.2\n  SPIR-V 1.3\n  SPIR-V 1.4\n  SPIR-V 1.5\n  SPIR-V 1.6\n  SPIR-V 1.2 (under OpenCL 2.2 Full Profile semantics)\n  SPIR-V 1.0 (under Vulkan 1.0 semantics)\n  SPIR-V 1.3 (under Vulkan 1.1 semantics)\n  SPIR-V 1.4 (under Vulkan 1.1 semantics)\n  SPIR-V 1.5 (under Vulkan 1.2 semantics)\n  SPIR-V 1.6 (under Vulkan 1.3 semantics) SPIR-V 1.6 (under Vulkan 1.4 semantics)\n"
+        },
+        "scope": "Source-exact generated assembly, independently assembled by installed host tool; no claim of byte identity with originalCTS embedded SPIRV-Tools until separately compared. Native compile admission remains required."
+      },
+      "sources": {
+        "control_flow_compile.c": {
+          "bytes": 4837,
+          "sha256": "6d953fa50fa78e61cc6939035263fba31a977eca31cfac570cf1f0b80b397087"
+        },
+        "core_resources.c": {
+          "bytes": 35622,
+          "sha256": "a5024c99a2bbc55983659dc2083a3b8d91e73c0c0760fc8509fdc2dc75405378"
+        },
+        "test_common.h": {
+          "bytes": 684,
+          "sha256": "4b022481571560cd58577d1303955f8c96e72891a2647947daa607eb5fd93b2b"
+        }
+      },
+      "headers": {
+        "src/freedreno/radish/rd_private.h": {
+          "bytes": 8794,
+          "sha256": "b4fd0b4017316865f92f740285bf900fb93fe59189f2bba658fb665d5bc91502"
+        },
+        "src/freedreno/radish/rd_image.h": {
+          "bytes": 1793,
+          "sha256": "6c0847bb62fd18eef4e4398a7efc89afde57fbed64d64ab152586078d9555747"
+        },
+        "src/freedreno/radish/rd_sampling.h": {
+          "bytes": 1096,
+          "sha256": "541a70b8aca605c0719aa03d551241da16136d6a17ff801bb5d379d7e6d86932"
+        },
+        "src/freedreno/ir3/ir3_shader.h": {
+          "bytes": 47274,
+          "sha256": "f16d7430d499c9377e662b13d9cc1cbc58e695aaeda596a4c30e1ea42a7196a2"
+        },
+        "src/freedreno/drm/freedreno_drmif.h": {
+          "bytes": 10245,
+          "sha256": "2dda64a45d315c786b098eaa917ec6cb43ad438200ee12caa9b768aead1abdca"
+        }
+      },
+      "driver": {
+        "bytes": 49079616,
+        "sha256": "f222ff480f6c9ef3785c446661f12ccacbc91f119b0e7d405347b949b4dc325d"
+      },
+      "scope": "Two source-exact original hard modules; installed assembler output not claimed byte-identical original embedded assembler. Original CTS RBA=false matching device feature setup; no data, commands or dispatch in helper. Separate bounded native admission remains required."
+    }
+  },
+  "helper_build_commands": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-control-flow-compile-build-0045/commands.json",
+      "bytes": 5792,
+      "sha256": "d96ca261e719a0f2f7a6c7adcf971f29bd4b6364f30a167e49af3f47c51a2f47"
+    },
+    "result": {
+      "argv": [
+        "clang",
+        "--target=aarch64-linux-gnu",
+        "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+        "-mcpu=cortex-a53",
+        "-Isrc/freedreno/radish/libvulkan_radish.so.p",
+        "-Isrc/freedreno/radish",
+        "-I../mesa/src/freedreno/radish",
+        "-Isrc/freedreno",
+        "-I../mesa/src/freedreno",
+        "-Isrc/freedreno/registers",
+        "-I../mesa/src/freedreno/registers",
+        "-Isrc/freedreno/registers/adreno",
+        "-I../mesa/src/freedreno/registers/adreno",
+        "-Isrc/freedreno/common",
+        "-I../mesa/src/freedreno/common",
+        "-Iinclude",
+        "-I../mesa/include",
+        "-Isrc",
+        "-I../mesa/src",
+        "-Isrc/vulkan/util",
+        "-I../mesa/src/vulkan/util",
+        "-Isrc/vulkan/runtime",
+        "-I../mesa/src/vulkan/runtime",
+        "-I../mesa/src/vulkan/runtime/bvh",
+        "-Isrc/compiler/nir",
+        "-I../mesa/src/compiler/nir",
+        "-Isrc/compiler",
+        "-I../mesa/src/compiler",
+        "-Isrc/util",
+        "-Isrc/util/format",
+        "-Isrc/compiler/spirv",
+        "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include",
+        "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include/libdrm",
+        "-fvisibility=hidden",
+        "-fdiagnostics-color=always",
+        "-D_FILE_OFFSET_BITS=64",
+        "-Wall",
+        "-Winvalid-pch",
+        "-std=c11",
+        "-O2",
+        "-g",
+        "-D__STDC_CONSTANT_MACROS",
+        "-D__STDC_FORMAT_MACROS",
+        "-D__STDC_LIMIT_MACROS",
+        "-DPACKAGE_VERSION=\"27.0.0-devel\"",
+        "-DHAVE_OPENGL=0",
+        "-DHAVE_OPENGL_ES_1=0",
+        "-DHAVE_OPENGL_ES_2=0",
+        "-DMESA_SYSTEM_HAS_KMS_DRM=1",
+        "-DVIDEO_CODEC_VC1DEC=0",
+        "-DVIDEO_CODEC_H264DEC=0",
+        "-DVIDEO_CODEC_H264ENC=0",
+        "-DVIDEO_CODEC_H265DEC=0",
+        "-DVIDEO_CODEC_H265ENC=0",
+        "-DVIDEO_CODEC_AV1DEC=0",
+        "-DVIDEO_CODEC_AV1ENC=0",
+        "-DVIDEO_CODEC_VP9DEC=0",
+        "-DVIDEO_CODEC_MPEG12DEC=0",
+        "-DVIDEO_CODEC_JPEGDEC=0",
+        "-DUSE_LIBGLVND=0",
+        "-DHAVE_LIBDRM",
+        "-DHAVE_GFX_COMPUTE",
+        "-DGLAPI_EXPORT_PROTO_ENTRY_POINTS=1",
+        "-DALLOW_KCMP",
+        "-DMESA_DEBUG=0",
+        "-DENABLE_SHADER_CACHE",
+        "-DHAVE___BUILTIN_BSWAP32",
+        "-DHAVE___BUILTIN_BSWAP64",
+        "-DHAVE___BUILTIN_CLZ",
+        "-DHAVE___BUILTIN_CLZLL",
+        "-DHAVE___BUILTIN_CTZ",
+        "-DHAVE___BUILTIN_EXPECT",
+        "-DHAVE___BUILTIN_FFS",
+        "-DHAVE___BUILTIN_FFSLL",
+        "-DHAVE___BUILTIN_POPCOUNT",
+        "-DHAVE___BUILTIN_POPCOUNTLL",
+        "-DHAVE___BUILTIN_UNREACHABLE",
+        "-DHAVE___BUILTIN_TYPES_COMPATIBLE_P",
+        "-DHAVE___BUILTIN_ADD_OVERFLOW",
+        "-DHAVE_FUNC_ATTRIBUTE_CONST",
+        "-DHAVE_FUNC_ATTRIBUTE_FLATTEN",
+        "-DHAVE_FUNC_ATTRIBUTE_MALLOC",
+        "-DHAVE_FUNC_ATTRIBUTE_PURE",
+        "-DHAVE_FUNC_ATTRIBUTE_UNUSED",
+        "-DHAVE_FUNC_ATTRIBUTE_WARN_UNUSED_RESULT",
+        "-DHAVE_FUNC_ATTRIBUTE_WEAK",
+        "-DHAVE_FUNC_ATTRIBUTE_FORMAT",
+        "-DHAVE_FUNC_ATTRIBUTE_PACKED",
+        "-DHAVE_FUNC_ATTRIBUTE_RETURNS_NONNULL",
+        "-DHAVE_FUNC_ATTRIBUTE_ALIAS",
+        "-DHAVE_FUNC_ATTRIBUTE_NORETURN",
+        "-DHAVE_FUNC_ATTRIBUTE_COLD",
+        "-DHAVE_FUNC_ATTRIBUTE_VISIBILITY",
+        "-DHAVE_UINT128",
+        "-DHAVE_REALLOCARRAY",
+        "-DHAVE_FMEMOPEN",
+        "-DHAVE_MALLINFO2",
+        "-D_GNU_SOURCE",
+        "-DUSE_GCC_ATOMIC_BUILTINS",
+        "-DMAJOR_IN_SYSMACROS",
+        "-DHAS_SCHED_H",
+        "-DHAS_SCHED_GETAFFINITY",
+        "-DHAVE_LINUX_FUTEX_H",
+        "-DHAVE_ENDIAN_H",
+        "-DHAVE_DLFCN_H",
+        "-DHAVE_SYS_SHM_H",
+        "-DHAVE_CET_H",
+        "-DHAVE_POLL_H",
+        "-DHAVE_SYS_INOTIFY_H",
+        "-DHAVE_LINUX_UDMABUF_H",
+        "-DHAVE_STRTOF",
+        "-DHAVE_MKOSTEMP",
+        "-DHAVE_MEMFD_CREATE",
+        "-DHAVE_RANDOM_R",
+        "-DHAVE_FLOCK",
+        "-DHAVE_STRTOK_R",
+        "-DHAVE_GETRANDOM",
+        "-DHAVE_POSIX_FALLOCATE",
+        "-DHAVE_SECURE_GETENV",
+        "-DHAVE_SYSCONF",
+        "-DHAVE_SC_PHYS_PAGES",
+        "-DHAVE_GNU_QSORT_R",
+        "-DHAVE_STRUCT_TIMESPEC",
+        "-DHAVE_PROGRAM_INVOCATION_NAME",
+        "-DHAVE_ISSIGNALING",
+        "-DHAVE_POSIX_MEMALIGN",
+        "-DHAVE_DIRENT_D_TYPE",
+        "-DHAVE_STRTOD_L",
+        "-DHAVE_DLADDR",
+        "-DHAVE_DL_ITERATE_PHDR",
+        "-DHAVE_ZLIB",
+        "-DHAVE_COMPRESSION",
+        "-DHAVE_PTHREAD",
+        "-DHAVE_PTHREAD_SETAFFINITY",
+        "-DDRAW_LLVM_AVAILABLE=0",
+        "-DAMD_LLVM_AVAILABLE=0",
+        "-DGALLIVM_USE_ORCJIT=0",
+        "-DTHREAD_SANITIZER=0",
+        "-DHAVE_DRI2",
+        "-DHAVE_RENDERDOC_INTEGRATION=1",
+        "-Werror=implicit-function-declaration",
+        "-Werror=missing-prototypes",
+        "-Werror=return-type",
+        "-Werror=empty-body",
+        "-Werror=incompatible-pointer-types",
+        "-Werror=int-conversion",
+        "-Wimplicit-fallthrough",
+        "-Wmisleading-indentation",
+        "-Wno-missing-field-initializers",
+        "-Wno-format-truncation",
+        "-fno-math-errno",
+        "-fno-trapping-math",
+        "-Qunused-arguments",
+        "-fno-common",
+        "-Wno-unknown-pragmas",
+        "-Wno-microsoft-enum-value",
+        "-Wno-unused-function",
+        "-Werror=format",
+        "-Wformat-security",
+        "-Werror=thread-safety",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-Wno-unused-command-line-argument",
+        "-fPIC",
+        "-DVK_USE_PLATFORM_DISPLAY_KHR",
+        "-pthread",
+        "-DXXH_FORCE_ALIGN_CHECK=0",
+        "-DXXH_FORCE_MEMORY_ACCESS=0",
+        "-Wno-override-init",
+        "-Wno-initializer-overrides",
+        "-fuse-ld=lld",
+        "--gcc-install-dir=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+        "-I/run/media/jethac/Shared/radish/compute11-control-flow-compile-build-0045/probe",
+        "/run/media/jethac/Shared/radish/compute11-control-flow-compile-build-0045/probe/control_flow_compile.c",
+        "-o",
+        "/run/media/jethac/Shared/radish/compute11-control-flow-compile-build-0045/probe/control_flow_compile",
+        "-ldl",
+        "-pthread",
+        "-MD",
+        "-MF",
+        "/run/media/jethac/Shared/radish/compute11-control-flow-compile-build-0045/helper.d"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build"
+    }
+  },
+  "original_results": [
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-control-flow-00/probe/runner-result.json",
+        "bytes": 4197,
+        "sha256": "4537039e9d1638dd406cb4c5927534ed962d16d54f2e5aeb8eaf5cf62fd40cb8"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 164,
+            "sha256": "f63ce5def689ee73d1c19a8b463f8a9597f01386bb590171d090cb0b285bbd85"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 1145,
+            "sha256": "a7d5dad300db5e0e84f709969b631b28ebe39c2af2148fff4d70f2e3edc3ccc6"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13622368,
+            "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+          },
+          "payload.json": {
+            "bytes": 967,
+            "sha256": "911bf2e7233c427b9d0a7b1a549836b7ee08f6b4fe441036fe73b191354ede46"
+          }
+        },
+        "run_log": {
+          "bytes": 309232,
+          "sha256": "629f2f1486a6e2313b7dee94a59e53346cdb4a5edc9ae373139f04e1133864cd"
+        },
+        "qpa": {
+          "bytes": 27553,
+          "sha256": "fb896467becc738f9e4d0d0be93e690ae9c1b5cba698c3e4fbd13df4ec5156bf"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.block_order.all",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.conditional_branch.same_labels_false",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.conditional_branch.same_labels_true",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.function_control.const",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.function_control.const_dont_inline",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.function_control.dont_inline",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.function_control.inline",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.function_control.inline_dont_inline",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.function_control.inline_pure",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.function_control.none",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.function_control.pure",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.function_control.pure_inline_dont_inline",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.loop_control.dependency_infinite",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.loop_control.dependency_length",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.loop_control.dont_unroll",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.loop_control.none",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    },
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-control-flow-01/probe/runner-result.json",
+        "bytes": 3910,
+        "sha256": "089549ea2f3d105abde6d3a29f45b30067f246d44e07ddbdd9c0ec94dc849e66"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 164,
+            "sha256": "f054546c12f51101b01645dd183172261b5ed3292be75f4cab871286642ec2ef"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 958,
+            "sha256": "322a100367f4b5f79b24877975ccee768205d95069c93341cff3a8943d4b3256"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13622368,
+            "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+          },
+          "payload.json": {
+            "bytes": 966,
+            "sha256": "f2e6c14450c17bf46e3e6f4f64830a8606aad0c9faf081e1af3a9b2f933c4825"
+          }
+        },
+        "run_log": {
+          "bytes": 292040,
+          "sha256": "a3afd47865f17e9b2ac637e0c258d9ff4a10a5a83d80b63999de02faa3879f87"
+        },
+        "qpa": {
+          "bytes": 25484,
+          "sha256": "8530057506c1a97fff0723746ed369b05191c7078c9d20ab8f71a6908b0d86df"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.loop_control.unroll",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opphi.block",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opphi.induction",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opphi.swap",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_array",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_float",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_int",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_mat4",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_struct",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_vec3",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opunreachable.all",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.selection_control.dont_flatten",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.selection_control.flatten",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.selection_control.flatten_dont_flatten",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.selection_control.none",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    },
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-control-flow-02/probe/runner-result.json",
+        "bytes": 1619,
+        "sha256": "cd903fa2cb532eb4c415d40a5123594c864c0526f005b3054570a8a30c7f26aa"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 164,
+            "sha256": "238d47dc065572efb5d19e4771fc5d9dfb11266f77c673d7d741c795845e5c3a"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 54,
+            "sha256": "26d14e5f2c78d8124f399c2073b1c9eedca2bbcdc2a26a61b04005aa0e75eb8d"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13622368,
+            "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+          },
+          "payload.json": {
+            "bytes": 965,
+            "sha256": "4c1586173e023a82fba16b599835e1dc179357ede919373f4f47cae9005e544e"
+          }
+        },
+        "run_log": {
+          "bytes": 1515079,
+          "sha256": "4fc80cd7cb158f8f9aef33bb5b737f25f74bda6d14330848bec1236130d8b687"
+        },
+        "qpa": {
+          "bytes": 1672,
+          "sha256": "f420f9c3f4be7678e956feaacc431d6c4f971608b21c54b3680d702c1c778d6d"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opphi.wide",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    },
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-control-flow-03/probe/runner-result.json",
+        "bytes": 1620,
+        "sha256": "798662ae3e795692704359ef97215aa5d511e5048757be8f9afbe22752481e26"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 164,
+            "sha256": "8c7c95fe4b119e6107d344ab275029d7eb58006c44c74b9afdf01edbb03b0f1c"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 56,
+            "sha256": "e352d4f7540c189438121fd0715afc7466c48c8de02910b0514c8940c13e3c1a"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13622368,
+            "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+          },
+          "payload.json": {
+            "bytes": 965,
+            "sha256": "98742925ffb483c796291df073812e441afdf20a03733bb0a3a2c729e2158bd8"
+          }
+        },
+        "run_log": {
+          "bytes": 348405,
+          "sha256": "72a50e4c0b362d2554df30b19a7ffbfc0b1321bb06314146bd5433f0f76416f8"
+        },
+        "qpa": {
+          "bytes": 1677,
+          "sha256": "5084b83ef8d4bd4e6de2fcd1c80696d92b4e229979f1bcc62ef14a0a0a13cc4a"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opphi.nested",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    }
+  ],
+  "scope": "Original0e715 shaders, inputs, work and oracles are unchanged. Wide512-way Phi and171 nested selections/depth8 were retained and admitted separately before original execution. Native compile alone was not counted. Original epsilon/NaN limitations remain; no complete shader or Vulkan conformance claim. No driver or guard change."
+}

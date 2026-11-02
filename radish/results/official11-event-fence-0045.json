@@ -1,0 +1,516 @@
+{
+  "status": "PASS11 exact original legacy event/fence cases on unchanged f222/e699",
+  "source": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-event-fence-next-0045/source-bounds.json",
+      "bytes": 9807,
+      "sha256": "e56c217b50b87e59c9f77d59f791e64ebffa276d57a57db5d8191d02c5077951"
+    },
+    "result": {
+      "status": "SOURCE READY original core event5 plus fence6; no execution inferred",
+      "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+      "cts_binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
+      "driver_sha256": "f222ff480f6c9ef3785c446661f12ccacbc91f119b0e7d405347b949b4dc325d",
+      "inventory": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-event-fence-next-0045/cases.txt",
+        "sha256": "860cc8f549db5be9391993050fcc936e24ed358f602ff1fcb6ca5bec5a4d64bc",
+        "count": 11
+      },
+      "catalog": {
+        "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/mustpass/main/vk-default/synchronization.txt",
+        "sha256": "a3a8e33a6372ff398b278ea8080726e1ae717f3bb1c9cc328b41e0a8713c38c9",
+        "domain": "Complete legacy synchronization.basic.event and fence registrations only",
+        "registered": 11,
+        "applicable": 11,
+        "excluded": 0,
+        "unclassified": 0
+      },
+      "sources": [
+        {
+          "original": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/synchronization/vktSynchronizationBasicEventTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-event-fence-next-0045/source/vktSynchronizationBasicEventTests.cpp",
+          "sha256": "0d8b991266fdc6fa47bc2532c665302b218e5bce1ed888f24a6792a01bfb5f4b"
+        },
+        {
+          "original": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/synchronization/vktSynchronizationBasicFenceTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-event-fence-next-0045/source/vktSynchronizationBasicFenceTests.cpp",
+          "sha256": "3b21270116865888799a9bc3ccfd100d63029cce55cb13256ddd5756a8bd4eab"
+        },
+        {
+          "original": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/synchronization/vktSynchronizationTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-event-fence-next-0045/source/vktSynchronizationTests.cpp",
+          "sha256": "aef29bb9f964e3f2d8919c245422b4631c12a9952ea8aa9824c2164d4a8854e5"
+        },
+        {
+          "original": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/synchronization/vktSynchronizationUtil.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-event-fence-next-0045/source/vktSynchronizationUtil.cpp",
+          "sha256": "27b0772fdaef6fed872c44c1a7641b03f37347dce840b7003287cb98079ef772"
+        },
+        {
+          "original": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/vktTestPackage.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-event-fence-next-0045/source/vktTestPackage.cpp",
+          "sha256": "272802a91a54f6aade1741c713563936fe01be295ea648bdf85e5cce0e4823d6"
+        },
+        {
+          "original": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/vktTestCase.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-event-fence-next-0045/source/vktTestCase.cpp",
+          "sha256": "093936313a9d8489c2ff08fd493445cc8e4e9235ed559597bcf95bd84c6a97fc"
+        },
+        {
+          "original": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/vulkan/runtime/vk_synchronization.c",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-event-fence-next-0045/source/vk_synchronization.c",
+          "sha256": "a696ba1723af89b8b86ecd90ad9b54b5873c52c2b57ec490b097843b0a1fee8c"
+        },
+        {
+          "original": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_event.c",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-event-fence-next-0045/source/rd_event.c",
+          "sha256": "324cd260d6cb805d6b8548f9f518df1fba8110dd6bef25ae7f072c7ac17ac49c"
+        },
+        {
+          "original": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_queue.c",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-event-fence-next-0045/source/rd_queue.c",
+          "sha256": "da170e7c4d4a1fc9db0da5ded100376fab80b57fb70af2427a4ff81fbbdc4890"
+        }
+      ],
+      "registration": [
+        "vktTestPackage1471 synchronization root; SynchronizationTests53\u201374 basic,147 attach,165\u2013185 LEGACY/video0.",
+        "BasicEventTests565\u2013595 exact5; BasicFenceTests344\u2013369 exact6."
+      ],
+      "applicability": [
+        "All core1.0 APIs on public1.1; selectedLEGACY wrapper calls CmdSetEvent/CmdResetEvent/CmdWaitEvents/QueueSubmit, not synchronization2 APIs. Struct2 values are only internal wrapper input.",
+        "Event flags0/video0; no portability_subset advertised, no optional feature requirement. Fence check only video0, SC-only simultaneous-use condition absent in Vulkan build.",
+        "Event multi-queue wrapper requests COMPUTE_QUEUE; default Context deduplicates universal0/compute0 so exactlyone queue run. Fence uses Context universal queue, which is compute-capable family0 in pinned Context. No custom duplicate-family VkDeviceCreateInfo.",
+        "All event stages TOP_OF_PIPE or ALL_COMMANDS are valid compute queue stages; no graphics stage, renderpass, shader, buffer/image allocation, semaphore, video or optional extension use.",
+        "Secondary inheritance has null renderpass/framebuffer with no RENDER_PASS_CONTINUE; secondary execution is valid on compute queue."
+      ],
+      "source_bounds": {
+        "selected_cases": 11,
+        "queue_submit_calls": 13,
+        "max_events_live_per_case": 1,
+        "max_fences_live_per_case": 10,
+        "max_command_buffers_live_per_case": 3,
+        "max_command_pools_live_per_case": 1,
+        "shader_modules": 0,
+        "pipelines": 0,
+        "application_buffer_image_allocations": 0,
+        "dispatches": 0,
+        "transfers": 0,
+        "event_waits": "3 cases use UINT64_MAX fence timeout, bounded externally by original90s service cap",
+        "fence_waits": "Each long wait1s, each short timeout1us; original outcomes/timeouts retained",
+        "source_command_counts": {
+          "cmd_set_event": 4,
+          "cmd_reset_event": 1,
+          "cmd_wait_events": 3
+        }
+      },
+      "cases": [
+        {
+          "name": "dEQP-VK.synchronization.basic.event.device_set_reset",
+          "queue_submit_calls_source": 2,
+          "oracle": "command set then idle/status SET; rerecord reset then idle/status RESET"
+        },
+        {
+          "name": "dEQP-VK.synchronization.basic.event.host_set_reset",
+          "queue_submit_calls_source": 0,
+          "oracle": "host VkEvent status RESET\u2192SET\u2192RESET with exact API returns"
+        },
+        {
+          "name": "dEQP-VK.synchronization.basic.event.multi_secondary_command_buffer",
+          "queue_submit_calls_source": 1,
+          "oracle": "two secondary buffers set/wait via primary ExecuteCommands; fence completion"
+        },
+        {
+          "name": "dEQP-VK.synchronization.basic.event.multi_submit_multi_command_buffer",
+          "queue_submit_calls_source": 2,
+          "oracle": "set and wait primaries in two submits, two-fence waitAll completion"
+        },
+        {
+          "name": "dEQP-VK.synchronization.basic.event.single_submit_multi_command_buffer",
+          "queue_submit_calls_source": 1,
+          "oracle": "set primary then wait primary in one submit; fence completion"
+        },
+        {
+          "name": "dEQP-VK.synchronization.basic.fence.empty_submit",
+          "queue_submit_calls_source": 1,
+          "oracle": "queueSubmit submitCount0 still signals supplied fence"
+        },
+        {
+          "name": "dEQP-VK.synchronization.basic.fence.multi",
+          "queue_submit_calls_source": 3,
+          "oracle": "first-fence submit/wait/reset/reuse, waitAll timeout until second submit, final waitAll SUCCESS"
+        },
+        {
+          "name": "dEQP-VK.synchronization.basic.fence.multi_waitall_false",
+          "queue_submit_calls_source": 2,
+          "oracle": "both initial waitAny/waitAll TIMEOUT; only second signaled\u2192waitAny SUCCESS and waitAll TIMEOUT; both signaled\u2192both SUCCESS"
+        },
+        {
+          "name": "dEQP-VK.synchronization.basic.fence.multiple_signaled",
+          "queue_submit_calls_source": 0,
+          "oracle": "ten initially signaled fences each status and waitAll SUCCESS"
+        },
+        {
+          "name": "dEQP-VK.synchronization.basic.fence.one",
+          "queue_submit_calls_source": 1,
+          "oracle": "initial NOT_READY/TIMEOUT, submit empty command buffer, SUCCESS/status, reset/NOT_READY"
+        },
+        {
+          "name": "dEQP-VK.synchronization.basic.fence.one_signaled",
+          "queue_submit_calls_source": 0,
+          "oracle": "one initially signaled fence status and waitAll SUCCESS"
+        }
+      ],
+      "implementation_trace": [
+        "Mesa vk_synchronization.c271\u2013367 maps legacy event APIs to internal Cmd*Event2 and barriers without requiring the synchronization2 feature in public API.",
+        "rd_event.c public host state uses mutex/condition; command records execute in rd_queue event branch. Existing serial dispatch/transfer execution precedes ordered event processing; no code change proposed absent a valid failure."
+      ],
+      "oracle_limits": [
+        "Events single/multi/secondary test completion and command-state ordering only, no producer/consumer bytes or GPU visibility oracle.",
+        "Fence tests use empty command buffers or empty submit; meaningful status/reset/waitAny/waitAll/timeout semantics, not memory visibility, GPU elapsed work or concurrent queue execution.",
+        "13 API submits are source-derived; no native GPU submission count implied.",
+        "No aggregate all-synchronization denominator; binary/timeline semaphores, memory dependencies, multiple queues and advertised optional synchronization remain separate."
+      ],
+      "admission": "One original11-case scope under unchanged90s/384MiB/8MiB output plus64MiB reserve/per-case fault-stop. Original0e715/f222-e699; no custom fixture or tests. Stop on first real failure and fix source semantics if needed."
+    }
+  },
+  "source_counterpart": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-event-fence-next-0045/independent-source-review-v2.json",
+      "bytes": 2369,
+      "sha256": "6fe77df54c807021b3a4e34d5b57ea8f8c3323caec022cfd4997486002178be1"
+    },
+    "result": {
+      "status": "PASS original core event5/fence6 source/name/validity/bounds",
+      "source_bounds_sha256": "e56c217b50b87e59c9f77d59f791e64ebffa276d57a57db5d8191d02c5077951",
+      "inventory_sha256": "860cc8f549db5be9391993050fcc936e24ed358f602ff1fcb6ca5bec5a4d64bc",
+      "cases": 11,
+      "checks": [
+        "Independently reconstructed exact complete legacy event5/fence6 catalog branch,all11 registry names and source registrations,9 source snapshots byte-matched.",
+        "Selected LEGACY/video0 path uses valid core CmdSetEvent/ResetEvent/WaitEvents andQueueSubmit; wrapper internal stage2 structs/common event2 dispatch do not require public synchronization2 feature.",
+        "Internal wrapper VkMemoryBarrier2 inputs include BOTTOM_OF_PIPE; selected LEGACY cmdSetEvent extracts only srcStageMask TOP_OF_PIPE. Selected legacy CmdWaitEvents defaultsTOP_OF_PIPE toALL_COMMANDS. Original public-stage scope is correct and compute-valid; no source-plan stage omission or change required.",
+        "Default Context/family0 dedup, event MultiQueueRunner COMPUTE selection, fence universalcompute queue; no custom duplicate-family fixture. Secondary has no graphics renderpass continuation.",
+        "Source13 QueueSubmit API calls/max1event/max10fences/max3command buffers; no application memory/shaders/dispatch/transfers. Original waitAny/waitAll/status/reset/timeout/empty-submit exact comparisons and queue/fence completion checks preserved.",
+        "Regular event cases wait for the event-setting queuecommands before exact state reads,ordered primary/secondary sets precede waits. Fence pending/reset/reuse ordering source-valid.",
+        "Original90s384MiB/8MiB logs/fault/reserve controls, unmodified0e715 andf222 required; no new source/feature/driver changes."
+      ],
+      "limits": [
+        "Completion/status/eventordering only, no producer/consumer byte visibility or concurrentqueue proof.",
+        "Source count13 API submits not physicalGPU submission count; no GPU work or timing inference.",
+        "Actual QPAs and full applicable synchronization/robustness/conformance remain separate."
+      ],
+      "metadata_correction": {
+        "preserved_v1_sha256": "f77695734423f90a0de6e5bf78062e271eba7389dff5e6ec64c52cb594355e33",
+        "basis": "Batch clarified the selected legacy wrapper extracts only source stage for SetEvent; original helper/runner/stages/work unchanged. PASS admission unchanged."
+      }
+    }
+  },
+  "runner_counterpart": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-event-fence-next-0045/runner-review.json",
+      "bytes": 2111,
+      "sha256": "154f0d15e4f5ee834c004905cf9f1a701a8632c9a6769614c5c3992d2c6fa542"
+    },
+    "result": {
+      "status": "PASS finite original runner inventory derivative; source counterpart remains separate",
+      "source_plan_sha256": "e56c217b50b87e59c9f77d59f791e64ebffa276d57a57db5d8191d02c5077951",
+      "runner": "/run/media/jethac/Shared/radish/compute11-official-event-fence-runner-0045/device-official-cts.py",
+      "runner_sha256": "71b641f117a7855283b08013495b0695a509e96ce836b4ce8082a4621494ff6b",
+      "baseline_runner_sha256": "f3a41e53576fa08dc1e421bedb9c7f3a50be51d07d9fd7bd973b3955d53eccae",
+      "cases": [
+        "dEQP-VK.synchronization.basic.event.device_set_reset",
+        "dEQP-VK.synchronization.basic.event.host_set_reset",
+        "dEQP-VK.synchronization.basic.event.multi_secondary_command_buffer",
+        "dEQP-VK.synchronization.basic.event.multi_submit_multi_command_buffer",
+        "dEQP-VK.synchronization.basic.event.single_submit_multi_command_buffer",
+        "dEQP-VK.synchronization.basic.fence.empty_submit",
+        "dEQP-VK.synchronization.basic.fence.multi",
+        "dEQP-VK.synchronization.basic.fence.multi_waitall_false",
+        "dEQP-VK.synchronization.basic.fence.multiple_signaled",
+        "dEQP-VK.synchronization.basic.fence.one",
+        "dEQP-VK.synchronization.basic.fence.one_signaled"
+      ],
+      "inventory_sha256": "860cc8f549db5be9391993050fcc936e24ed358f602ff1fcb6ca5bec5a4d64bc",
+      "hostcheck_sha256": "de1183e999d7bfac9a07c37c46222e188c003af290c5e000e1b8a0b711ded230",
+      "argv_sha256": "2c0d8f944b7579d0da92328d126f07fbcf0d0bf3364a414aa5b8c5ffc1afb454",
+      "checks": [
+        "Exact passed final-common stdin engine except approved SHA/count constants. All host assets rehashed, original0e715/f222-e699/75699.",
+        "Approved source inventory exactly matches staged list and count; no second hardcoded list or silentzero-case acceptance.",
+        "Original90s384MiB/8MiBlog/64MiBreserve/per-case faultstop/QPA collection unchanged."
+      ],
+      "conditions": [
+        "Independent source applicability/bounds counterpart and ordinary owner preflight before execution; no actual result inferred.",
+        "Current hard control-flow cases retain priority; this ready derivative does not preempt their native/functional gates."
+      ]
+    }
+  },
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-event-fence-next-0045/actual-review.json",
+      "bytes": 7073,
+      "sha256": "d0cf0a861035bdd54222a4880583203911f6250560dadd8d1efa0a73054d65ef"
+    },
+    "result": {
+      "status": "PASS independent original legacy event5/fence6 actual review",
+      "source_plan_sha256": "e56c217b50b87e59c9f77d59f791e64ebffa276d57a57db5d8191d02c5077951",
+      "source_counterpart_sha256": "6fe77df54c807021b3a4e34d5b57ea8f8c3323caec022cfd4997486002178be1",
+      "runner_review_sha256": "154f0d15e4f5ee834c004905cf9f1a701a8632c9a6769614c5c3992d2c6fa542",
+      "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-event-fence/probe",
+      "run_log_sha256": "b5a4841bafe02205549619db1b9867655bda996acc289ac9a7a716edebe04614",
+      "qpa_sha256": "232ea1eed84241160aa719f315bf1cab7031da5e7de6f942ca47ee4588378a57",
+      "runner_result_sha256": "13312cac055eaa922bdaa926f7780c4b2bb3f29913324763066f4da0f99f60a9",
+      "fraction": {
+        "passed": 11,
+        "applicable_selected_complete_event_fence_domain": 11,
+        "percentage": 100.0,
+        "scope": "Only complete legacy basic event/fence registrations, not all synchronization or Vulkan."
+      },
+      "totals": {
+        "unique_original_pass": 11,
+        "actual_event_records": 8,
+        "actual_event_sets": 4,
+        "actual_event_resets": 1,
+        "actual_event_waits": 3,
+        "source_api_queue_submit_calls": 13,
+        "native_programs": 0,
+        "dispatches": 0,
+        "transfers": 0,
+        "profile_gpu_submits": 0
+      },
+      "service_seconds": 4.103,
+      "peak_mib": 16.1,
+      "swap_bytes": 0,
+      "clean_collection_faults_services": true,
+      "cases": [
+        {
+          "name": "dEQP-VK.synchronization.basic.event.device_set_reset",
+          "qpa_sha256": "ba436e11e4cf67e002d81f380ba7c85b058c9c111f9ce54c027cb4a58adc475c",
+          "status": "Pass",
+          "detail": "Device set and reset event tests pass",
+          "source_oracle": "command set then idle/status SET; rerecord reset then idle/status RESET",
+          "queue_submit_calls_source": 2,
+          "actual_event_record_types": [
+            6,
+            7
+          ]
+        },
+        {
+          "name": "dEQP-VK.synchronization.basic.event.host_set_reset",
+          "qpa_sha256": "31ba006005a9188df7242f7fdc7c214f90f344267ddbd6ca3cc00f4ae8c32d46",
+          "status": "Pass",
+          "detail": "Tests set and reset event on host pass",
+          "source_oracle": "host VkEvent status RESET\u2192SET\u2192RESET with exact API returns",
+          "queue_submit_calls_source": 0,
+          "actual_event_record_types": []
+        },
+        {
+          "name": "dEQP-VK.synchronization.basic.event.multi_secondary_command_buffer",
+          "qpa_sha256": "50894169aaa3ab813a6ab1c526538d0dd342f592585730b6af1eed9aefb61fe0",
+          "status": "Pass",
+          "detail": "Wait and set even on device using secondary command buffers tests pass",
+          "source_oracle": "two secondary buffers set/wait via primary ExecuteCommands; fence completion",
+          "queue_submit_calls_source": 1,
+          "actual_event_record_types": [
+            6,
+            8
+          ]
+        },
+        {
+          "name": "dEQP-VK.synchronization.basic.event.multi_submit_multi_command_buffer",
+          "qpa_sha256": "1b148a73dcf02d365e25a6293718220a6114d1a19a86848a0a754746acec415e",
+          "status": "Pass",
+          "detail": "Wait and set even on device multi submission tests pass",
+          "source_oracle": "set and wait primaries in two submits, two-fence waitAll completion",
+          "queue_submit_calls_source": 2,
+          "actual_event_record_types": [
+            6,
+            8
+          ]
+        },
+        {
+          "name": "dEQP-VK.synchronization.basic.event.single_submit_multi_command_buffer",
+          "qpa_sha256": "0722d8d5052faefd56660fcb94988581a9a65588eee46eff8f1cf442767b1db8",
+          "status": "Pass",
+          "detail": "Wait and set even on device single submission tests pass",
+          "source_oracle": "set primary then wait primary in one submit; fence completion",
+          "queue_submit_calls_source": 1,
+          "actual_event_record_types": [
+            6,
+            8
+          ]
+        },
+        {
+          "name": "dEQP-VK.synchronization.basic.fence.empty_submit",
+          "qpa_sha256": "6c6061ad6aee6146efba591aeeba4f83fabf0fd26b8b8ed1fe02e73ded343667",
+          "status": "Pass",
+          "detail": "OK",
+          "source_oracle": "queueSubmit submitCount0 still signals supplied fence",
+          "queue_submit_calls_source": 1,
+          "actual_event_record_types": []
+        },
+        {
+          "name": "dEQP-VK.synchronization.basic.fence.multi",
+          "qpa_sha256": "d40f95196d015506b6fc68eda9c7906d0869458d4ab4dcc4b4cb9645c62a1263",
+          "status": "Pass",
+          "detail": "Basic multi fence tests passed",
+          "source_oracle": "first-fence submit/wait/reset/reuse, waitAll timeout until second submit, final waitAll SUCCESS",
+          "queue_submit_calls_source": 3,
+          "actual_event_record_types": []
+        },
+        {
+          "name": "dEQP-VK.synchronization.basic.fence.multi_waitall_false",
+          "qpa_sha256": "f3b8ad363ab5ac7ac4abbe308277ad3a1e35f676b82b146c9fb30e7ba0b29f39",
+          "status": "Pass",
+          "detail": "Basic multi fence test without waitAll passed",
+          "source_oracle": "both initial waitAny/waitAll TIMEOUT; only second signaled\u2192waitAny SUCCESS and waitAll TIMEOUT; both signaled\u2192both SUCCESS",
+          "queue_submit_calls_source": 2,
+          "actual_event_record_types": []
+        },
+        {
+          "name": "dEQP-VK.synchronization.basic.fence.multiple_signaled",
+          "qpa_sha256": "fb104cd38c8371cff8c9d91ab751c9e54d074251012e48ab51b0f33515b3c172",
+          "status": "Pass",
+          "detail": "Pass",
+          "source_oracle": "ten initially signaled fences each status and waitAll SUCCESS",
+          "queue_submit_calls_source": 0,
+          "actual_event_record_types": []
+        },
+        {
+          "name": "dEQP-VK.synchronization.basic.fence.one",
+          "qpa_sha256": "7e6a67b6178331dc45ad2398bd381b8f90e8de9edb9010cbf3870af5d7ab76be",
+          "status": "Pass",
+          "detail": "Basic one fence tests passed",
+          "source_oracle": "initial NOT_READY/TIMEOUT, submit empty command buffer, SUCCESS/status, reset/NOT_READY",
+          "queue_submit_calls_source": 1,
+          "actual_event_record_types": []
+        },
+        {
+          "name": "dEQP-VK.synchronization.basic.fence.one_signaled",
+          "qpa_sha256": "87d030e943626c1d540fca49b572f4865d1b3997c3dc31bd27b5fd3771725b71",
+          "status": "Pass",
+          "detail": "Pass",
+          "source_oracle": "one initially signaled fence status and waitAll SUCCESS",
+          "queue_submit_calls_source": 0,
+          "actual_event_record_types": []
+        }
+      ],
+      "scope_limits": [
+        "All exact original0e715/f222-e699/75699; no driver/harness/oracle change.",
+        "Actual event state uses existing ordered CPU command processing and records8 events with0 GPU submits. Empty fence submissions remain valid observable API behavior; no GPU workload/throughput proof.",
+        "Source status/reset/waitAny/waitAll/timeouts and event primary/secondary completion branches all returned their normal Pass detail.13 queueSubmit APIcalls source-derived, not printedGPU submissions.",
+        "Event VkMemoryBarrier2 wrapper input contains BOTTOM_OF_PIPE, but selectedLEGACY SetEvent takes only TOPsrc; actual selected WaitEvents usesTOP\u2192ALL_COMMANDS. All valid compute stages.",
+        "No data-buffer/image producer-consumer visibility or concurrent queue proof; these tests exercise object/state/completion semantics only."
+      ]
+    }
+  },
+  "original_results": [
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-event-fence/probe/runner-result.json",
+        "bytes": 3239,
+        "sha256": "13312cac055eaa922bdaa926f7780c4b2bb3f29913324763066f4da0f99f60a9"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 160,
+            "sha256": "cbc2a327c891832dde4f6178c21169e0e219a3b1e9336921da75a2a0e68d9fa9"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 602,
+            "sha256": "860cc8f549db5be9391993050fcc936e24ed358f602ff1fcb6ca5bec5a4d64bc"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13622368,
+            "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+          },
+          "payload.json": {
+            "bytes": 962,
+            "sha256": "f73b108e6bb85aa1d6a5aecd3e12ccf76b0877c9f7a399246cf560da41a02ae7"
+          }
+        },
+        "run_log": {
+          "bytes": 8263,
+          "sha256": "b5a4841bafe02205549619db1b9867655bda996acc289ac9a7a716edebe04614"
+        },
+        "qpa": {
+          "bytes": 15046,
+          "sha256": "232ea1eed84241160aa719f315bf1cab7031da5e7de6f942ca47ee4588378a57"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.synchronization.basic.event.device_set_reset",
+            "status": "Pass",
+            "detail": "Device set and reset event tests pass"
+          },
+          {
+            "name": "dEQP-VK.synchronization.basic.event.host_set_reset",
+            "status": "Pass",
+            "detail": "Tests set and reset event on host pass"
+          },
+          {
+            "name": "dEQP-VK.synchronization.basic.event.multi_secondary_command_buffer",
+            "status": "Pass",
+            "detail": "Wait and set even on device using secondary command buffers tests pass"
+          },
+          {
+            "name": "dEQP-VK.synchronization.basic.event.multi_submit_multi_command_buffer",
+            "status": "Pass",
+            "detail": "Wait and set even on device multi submission tests pass"
+          },
+          {
+            "name": "dEQP-VK.synchronization.basic.event.single_submit_multi_command_buffer",
+            "status": "Pass",
+            "detail": "Wait and set even on device single submission tests pass"
+          },
+          {
+            "name": "dEQP-VK.synchronization.basic.fence.empty_submit",
+            "status": "Pass",
+            "detail": "OK"
+          },
+          {
+            "name": "dEQP-VK.synchronization.basic.fence.multi",
+            "status": "Pass",
+            "detail": "Basic multi fence tests passed"
+          },
+          {
+            "name": "dEQP-VK.synchronization.basic.fence.multi_waitall_false",
+            "status": "Pass",
+            "detail": "Basic multi fence test without waitAll passed"
+          },
+          {
+            "name": "dEQP-VK.synchronization.basic.fence.multiple_signaled",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.synchronization.basic.fence.one",
+            "status": "Pass",
+            "detail": "Basic one fence tests passed"
+          },
+          {
+            "name": "dEQP-VK.synchronization.basic.fence.one_signaled",
+            "status": "Pass",
+            "detail": "Pass"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    }
+  ],
+  "scope": "Bounded event/fence lifecycle, status, reset, waitAny/waitAll, timeout and empty-command submissions. No shader/data workload or broad memory-visibility proof. No driver change."
+}
