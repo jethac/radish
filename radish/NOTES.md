@@ -1,5 +1,15 @@
 # Radish status
 
+## 2026-11-02: bounded B-quotient experiment is correct but unselected
+
+An exact bounded reciprocal replaces division by11 only for the packed-B preload of Ci128/Co128/Kw11. The proved input domain preserves every address; other shapes keep their original division. Three specialized native bodies shrink from432/436/436 to415/418/418 encoded instructions (native27/28/28→26/27/27). The other20 packed native bodies and156 nonpacked compiler records remain exact. Register use, shared memory, floating work, four loops and guards remain unchanged.
+
+Both full562,342-value comparisons and retained accepted output bytes pass, with all589 GPU layers. All1,520 ordered command owners/geometries/loops/chunks/submissions remain; only the12 intended command native lengths change. Nevertheless, first fixed-core time increases **34.700589→35.407480 seconds (2.04%)**, and resident time increases **33.952417→34.667620 seconds (2.11%)**. The12 target command walls also worsen in both iterations; resident9.203803→9.777246 seconds (6.23%). This is not a measured optimization win.
+
+Both sequential runs have zero swap; peaks are406.2 versus405.0MiB. Original resource/fault/service gates pass, and retained whole-window frequency accounting remains about99% at650MHz. Those counters do not measure GPU-active utilization, and this pair does not isolate the cause of the regression. There is no broad rerun to seek a better timing.
+
+The selected model remains **d332**, with the earlier nonnegative block shift. [Exact correct-but-unselected source, native and paired evidence](results/packed-b-reciprocal-unselected-0045.json) and the [optional experiment patch](patches/0045-ncnn-b-reciprocal-unselected.patch) preserve the result. Apply only to an isolated checkout after the selected shift stack; regenerate the packed shader header/archive. It is not added to the selected build or defaults, and it is not a Japanese/end-to-end comparison.
+
 ## 2026-11-02: public storage-only 16-bit buffers pass a bounded consumer
 
 A separate driver checkpoint advertises `VK_KHR_16bit_storage` with only `storageBuffer16BitAccess`. The public feature query and ordinary device-enable chain pass; API remains 1.0 and the other 16-bit storage/arithmetic features stay false. The executed Vulkan1.0 module validates with exactly `Shader` and `StorageBuffer16BitAccess` capabilities.

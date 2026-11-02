@@ -1,0 +1,595 @@
+{
+  "status": "correctness_passed_no_demonstrated_performance_win_unselected",
+  "selected_model_remains": "d33222d4d62e209f8b05807d78224862778d4a3afe540a4130ee70743b59aff7",
+  "candidate_model": {
+    "bytes": 11133256,
+    "sha256": "dd7b5035cc94920ced0b81da96b4e520c3fca50f2e008597fa9318bad8e948e3"
+  },
+  "source_release": {
+    "status": "Private source frozen; build-first handoff; no author build or device run.",
+    "patch_sha256": "e0d86cb82e787f91b97ef995de2b44d8829b9ab9a2e05ddad51583814c717a0f",
+    "baseline_selected_model_sha256": "d33222d4d62e209f8b05807d78224862778d4a3afe540a4130ee70743b59aff7",
+    "baseline_archive_sha256": "fa947ecb928ca0349b64ea20bc685abe70990d09c15325934c05f6aafcc60152",
+    "baseline_driver_sha256": "fcd47b1fdc6f0b1ab52bb71ea1d1331ec0c9b98dbe5da050c7e27b4f0f2b6389",
+    "candidate_scope": "Only Ci128/Co128/Kw11 uses the bounded reciprocal in the B preload quotient: twelve hotspot layers and three dilation tuples. Other widths/shapes retain original unsigned division. This changes address arithmetic, not shared-memory layout or the separate CPU staged32 transpose.",
+    "proof": [
+      "For the selected K=128*11=1408, k0 steps by32 through K-32 and r=i>>4 lies in0..31. Thus loaded k=k0+r lies in0..1407. The broader0..3583 domain was also checked independently; the16-bit mask preserves every admitted k.",
+      "5958*11=65536+2. Write k=11q+r, with0<=r<=10 and q<=325 for k<=3583. Then k*5958/65536=q+(2q+5958r)/65536, and the remainder term is at most60230/65536<1. The shifted product equals floor(k/11) exactly; no correction is needed within this bound. Maximum product21,347,514 fits32bits; both multiplicands fit16bits.",
+      "The specialization predicate confines the formula to K1408. All other width/shape specializations retain original unsigned division. The ncnn host and shader loop bounds remain unchanged; this does not promise arbitrary out-of-contract helper arguments.",
+      "Identical ci gives identical k-ci*11, tap/dilation, pitch and x addresses. Floating operands/order, shared tiles, vector loads/stores, accumulators, workgroups, barriers, bindings, queue policy and hardware guards remain unchanged."
+    ],
+    "host_checks_sha256": "1401a7a31b13d881b9a3068db3ed6fd76ee240429d1d4a0e4ce7f8d96ec01dcb",
+    "pins": [
+      {
+        "file": "radish/tests/ncnn/model.cpp",
+        "baseline_sha256": "4970f7c754a9d8bf21b2c8948e68340c3b1e207be6a124af305bf7ce1f0fe29f",
+        "candidate_sha256": "4970f7c754a9d8bf21b2c8948e68340c3b1e207be6a124af305bf7ce1f0fe29f",
+        "changed": false
+      },
+      {
+        "file": "ncnn/src/gpu.cpp",
+        "baseline_sha256": "a32dd2c2b99d2c383ad9adb8b936f0242c8498860c91ecef7658f58273518058",
+        "candidate_sha256": "a32dd2c2b99d2c383ad9adb8b936f0242c8498860c91ecef7658f58273518058",
+        "changed": false
+      },
+      {
+        "file": "ncnn/src/gpu.h",
+        "baseline_sha256": "05c69187920f67f8a5f58835226701d3b747d2fb8995e45064cf1db41f8a07b7",
+        "candidate_sha256": "05c69187920f67f8a5f58835226701d3b747d2fb8995e45064cf1db41f8a07b7",
+        "changed": false
+      },
+      {
+        "file": "ncnn/src/layer/vulkan/shader/convolution1d_radish_planar_packed_a.comp",
+        "baseline_sha256": "35378c62cd2b5dd9b6ec4d076b7e5660864ea1c582e2dbf4a1fa6a9fb011cb48",
+        "candidate_sha256": "059ad3b43b4d2c50d598e8cdc344507b587e2be18010179c67523b8e4f2c2d30",
+        "changed": true
+      },
+      {
+        "file": "ncnn/src/layer/vulkan/shader/convolution1d_packed.comp",
+        "baseline_sha256": "a0384727680d64d3101f958658dc31d89ce47b9694741a63a2f71efd31847e0f",
+        "candidate_sha256": "a0384727680d64d3101f958658dc31d89ce47b9694741a63a2f71efd31847e0f",
+        "changed": false
+      },
+      {
+        "file": "ncnn/src/layer/vulkan/shader/deconvolution_gemm_packed.comp",
+        "baseline_sha256": "b852baaf4ae8529dc5c63287da4980484838d2a54e86b1814965062de90fa2ac",
+        "candidate_sha256": "b852baaf4ae8529dc5c63287da4980484838d2a54e86b1814965062de90fa2ac",
+        "changed": false
+      },
+      {
+        "file": "ncnn/src/layer/vulkan/shader/convolution1d_packed_gemm.comp",
+        "baseline_sha256": "e451a6379069be25062ac6241bcdc13d7008fdf81ba95f3893d985ff8801de43",
+        "candidate_sha256": "e451a6379069be25062ac6241bcdc13d7008fdf81ba95f3893d985ff8801de43",
+        "changed": false
+      },
+      {
+        "file": "ncnn/src/layer/vulkan/shader/convolution1d_packed_1x1s1d1.comp",
+        "baseline_sha256": "cb296ed65e9e7a4022aa0eb0bfc8d390ac92c1359b1d1708b6773c70761a4d3a",
+        "candidate_sha256": "cb296ed65e9e7a4022aa0eb0bfc8d390ac92c1359b1d1708b6773c70761a4d3a",
+        "changed": false
+      }
+    ],
+    "build_instructions": [
+      "Use the supplied eight-source overlay over selected d332. Regenerate only the packed-A embedded shader header, recompile gpu.cpp with the same private API and fixed-tail headers, replace only gpu.cpp.o in a copy of archive fa947ecb, and link identical model/custom/glslang objects. No enum or selector changes. Integrator owns the build.",
+      "Native qualification must inspect the three target tuples and require unchanged floating/shared/global data operations, local16x8, shared16KiB, four loops, private memory zero, and16F/0H or lower. Other twenty packed native bodies and156 nonpacked records should remain exact apart from packed source-hash metadata. Candidate native length is unknown.",
+      "Device execution requires independent source review and root/integrator scope. Keep fcd, explicit robust=false, loader, inputs, options and scheduling fixed. Preserve full numerical/raw/fault/resource gates. Instruction savings alone are not a performance claim."
+    ],
+    "remaining": "Compiler lowering, register pressure, native admission and runtime effect remain unknown. Selected sources/binaries and paused CPU staged32 artifacts are unchanged."
+  },
+  "published_patch": {
+    "path": "/home/jethac/Projects/radish/radish/patches/0045-ncnn-b-reciprocal-unselected.patch",
+    "bytes": 653,
+    "sha256": "e4ceaa18eb2ad33a810c86ac96cc9aa9ad0807c6bd6c5551ce238d424cf07085"
+  },
+  "patch_transform": "Only removes ncnn/ prefix so patch applies from the ncnn checkout; exact candidate shader reconstructed.",
+  "build": {
+    "status": "private_host_build_passed",
+    "model": {
+      "bytes": 11133256,
+      "sha256": "dd7b5035cc94920ced0b81da96b4e520c3fca50f2e008597fa9318bad8e948e3"
+    },
+    "archive": {
+      "bytes": 11454162,
+      "sha256": "361ff2dbf654c6eea533ee8b5319fc4a5f05f903de10f4c875105ce78a206450"
+    },
+    "baseline_model": {
+      "bytes": 11133128,
+      "sha256": "d33222d4d62e209f8b05807d78224862778d4a3afe540a4130ee70743b59aff7"
+    },
+    "patch": {
+      "bytes": 663,
+      "sha256": "e0d86cb82e787f91b97ef995de2b44d8829b9ab9a2e05ddad51583814c717a0f"
+    },
+    "changed_generated_header": {
+      "layer/vulkan/shader/convolution1d_radish_planar_packed_a.comp.hex.h": {
+        "bytes": 13617,
+        "sha256": "ce5be1acf90c7fd2b2d6637d450424892050cb6a215e2e830a11073082bd8b9e"
+      }
+    },
+    "other_generated_headers_and_registry_exact": true,
+    "untouched_archive_members": 261,
+    "untouched_member_bytes_sha256": "108654ea88eb0922ea40d6ebbd72564a5600c7b24213ec0f1f141da98c7ce9cd",
+    "scope": "One bounded B quotient expression for Ci128/Co128/Kw11 on selected d332 shifted fixed-tail/private-device baseline. No device run; choose same explicit robustness mode for future paired admission/measurement."
+  },
+  "native_admission": {
+    "status": "passed",
+    "programs": 179,
+    "scope": "Compile/native admission only; full reference replay still required.",
+    "run_log": {
+      "path": "/run/media/jethac/Shared/radish/packed-b-reciprocal-replay-0045/evidence-core0045-b-reciprocal/compile/run.log",
+      "bytes": 24451484,
+      "sha256": "eb9084094a81c897436aef2611cf0a771c2c6ff344c6d76d24b7fd6ac298e796"
+    },
+    "unchanged_full_mesa_records": 156,
+    "source_changed_records": [
+      52,
+      69,
+      88,
+      103,
+      105,
+      109,
+      111,
+      120,
+      122,
+      124,
+      136,
+      149,
+      151,
+      152,
+      153,
+      154,
+      156,
+      169,
+      171,
+      172,
+      174,
+      175,
+      176
+    ],
+    "native_changed_records": [
+      105,
+      111,
+      124
+    ],
+    "native_unchanged_non_target_packed": 20,
+    "targets": [
+      {
+        "program": "105/1",
+        "spec": [
+          11,
+          128,
+          128,
+          1,
+          1
+        ],
+        "native_length": 26,
+        "encoded_through_end": 415,
+        "full": 16,
+        "half": 0,
+        "loops": 4,
+        "scalar_mad_equivalents": 32,
+        "private_native_operations": []
+      },
+      {
+        "program": "111/1",
+        "spec": [
+          11,
+          128,
+          128,
+          1,
+          3
+        ],
+        "native_length": 27,
+        "encoded_through_end": 418,
+        "full": 16,
+        "half": 0,
+        "loops": 4,
+        "scalar_mad_equivalents": 32,
+        "private_native_operations": []
+      },
+      {
+        "program": "124/1",
+        "spec": [
+          11,
+          128,
+          128,
+          1,
+          5
+        ],
+        "native_length": 27,
+        "encoded_through_end": 418,
+        "full": 16,
+        "half": 0,
+        "loops": 4,
+        "scalar_mad_equivalents": 32,
+        "private_native_operations": []
+      }
+    ],
+    "all23_resources": "local16x8/shared16384/4SSBO/16F0H/4loops/single/noLDP-STP;32scalarMAD/3vec4LDS/2vec4sharedstores and barriers intact; final resource guards traversed by complete successful load",
+    "controls": "samefcd driver and explicitrobustfalse loader path asd332; only model/shader build changed; no batch/geometry/resource relaxation",
+    "parser_scope": "Prior packed parser reused in-memory with actual new source hash to extract all23; old frozen parser untouched. Current fcd resource-based batch gate, not oldnativeallowlist, applies.",
+    "driver_sha256": "fcd47b1fdc6f0b1ab52bb71ea1d1331ec0c9b98dbe5da050c7e27b4f0f2b6389"
+  },
+  "paired_actual": {
+    "status": "passed",
+    "scope": "Same ICD/loader/inputs/settings and explicit robust=false; only reviewed B quotient reciprocal for Ci128/Co128/Kw11 source/model delta. Four tail fixes and per-device API exact. Sequential repeat2 observations, not randomized or GPU elapsed timing.",
+    "scopes": [
+      {
+        "requested_robustness": 0,
+        "run_log": {
+          "path": "/run/media/jethac/Shared/radish/packed-a-shift-replay-0045/evidence-core0045-packed-shift/full/run.log",
+          "bytes": 670731,
+          "sha256": "775f06e2d9cbd2df91073df5bf61a455378cb1a738623c9a0f5aa932d1169c14"
+        },
+        "result": {
+          "path": "/run/media/jethac/Shared/radish/packed-a-shift-replay-0045/evidence-core0045-packed-shift/full/result.json",
+          "bytes": 721,
+          "sha256": "95a9a7db148dc9d09b87ae8e31cf4bcd1e9a82fc8fc9a94c295e7e7b17113653"
+        },
+        "runner": {
+          "path": "/run/media/jethac/Shared/radish/packed-a-shift-replay-0045/run-model.py",
+          "bytes": 17564,
+          "sha256": "59309575ee38bd052c80d79a21cd37114abb7861d970da7bbbe51a2b7a0fc9c1"
+        },
+        "pins": {
+          "path": "/run/media/jethac/Shared/radish/packed-a-shift-replay-0045/pins.json",
+          "bytes": 5695,
+          "sha256": "aabe0359bf2366455083e1269e53054b095bc7cb056692f94e67f275697ce2d9"
+        },
+        "cold_seconds": 11.892,
+        "resource_lines": [
+          "Service runtime: 1min 20.990s",
+          "Memory peak: 406.2M (swap: 0B)"
+        ],
+        "outputs": [
+          {
+            "pin": {
+              "path": "/run/media/jethac/Shared/radish/packed-a-shift-replay-0045/evidence-core0045-packed-shift/full/ncnn-vulkan-candidate.f32",
+              "bytes": 2249368,
+              "sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287"
+            },
+            "values": 562342,
+            "mismatches": 0,
+            "max_abs": 0.000110626220703125
+          },
+          {
+            "pin": {
+              "path": "/run/media/jethac/Shared/radish/packed-a-shift-replay-0045/evidence-core0045-packed-shift/full/ncnn-vulkan-output.f32",
+              "bytes": 2249368,
+              "sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287"
+            },
+            "values": 562342,
+            "mismatches": 0,
+            "max_abs": 0.000110626220703125
+          }
+        ]
+      },
+      {
+        "requested_robustness": 0,
+        "run_log": {
+          "path": "/run/media/jethac/Shared/radish/packed-b-reciprocal-replay-0045/evidence-core0045-b-reciprocal/full/run.log",
+          "bytes": 670625,
+          "sha256": "8fcae03be2367d8cf847eef20e04da1f3aa493e782262999159dde60f50334a2"
+        },
+        "result": {
+          "path": "/run/media/jethac/Shared/radish/packed-b-reciprocal-replay-0045/evidence-core0045-b-reciprocal/full/result.json",
+          "bytes": 721,
+          "sha256": "1e9900483f685cb871c8723746bc925ae75d8cfa2ab8a40ef89d89745b290673"
+        },
+        "runner": {
+          "path": "/run/media/jethac/Shared/radish/packed-b-reciprocal-replay-0045/run-model.py",
+          "bytes": 17564,
+          "sha256": "59309575ee38bd052c80d79a21cd37114abb7861d970da7bbbe51a2b7a0fc9c1"
+        },
+        "pins": {
+          "path": "/run/media/jethac/Shared/radish/packed-b-reciprocal-replay-0045/pins.json",
+          "bytes": 5686,
+          "sha256": "cbb6b9f49454b327e53cf9563b25472a4576cd3fd2896a4cdabae0a8b13b39d8"
+        },
+        "cold_seconds": 11.866,
+        "resource_lines": [
+          "Service runtime: 1min 22.386s",
+          "Memory peak: 405M (swap: 0B)"
+        ],
+        "outputs": [
+          {
+            "pin": {
+              "path": "/run/media/jethac/Shared/radish/packed-b-reciprocal-replay-0045/evidence-core0045-b-reciprocal/full/ncnn-vulkan-candidate.f32",
+              "bytes": 2249368,
+              "sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287"
+            },
+            "values": 562342,
+            "mismatches": 0,
+            "max_abs": 0.000110626220703125
+          },
+          {
+            "pin": {
+              "path": "/run/media/jethac/Shared/radish/packed-b-reciprocal-replay-0045/evidence-core0045-b-reciprocal/full/ncnn-vulkan-output.f32",
+              "bytes": 2249368,
+              "sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287"
+            },
+            "values": 562342,
+            "mismatches": 0,
+            "max_abs": 0.000110626220703125
+          }
+        ]
+      }
+    ],
+    "environment_exact": true,
+    "all_final_outputs_exact_accepted_bytes": true,
+    "reference": {
+      "path": "/run/media/jethac/Shared/radish/kokoro-core-shapes-norm-affine-snake-deconv2d/reference.f32",
+      "bytes": 2249368,
+      "sha256": "4aabc5a98f714ac385561dbbc604b0d40f8a9027e645fcc38096c02c20ea395c"
+    },
+    "iterations": [
+      {
+        "iteration": "first",
+        "baseline_seconds": 34.700589,
+        "candidate_seconds": 35.40748,
+        "saved_seconds": -0.7068909999999988,
+        "reduction_percent": -2.037115277783898,
+        "speedup": 0.9800355461614326,
+        "math_seconds": [
+          22.890995551,
+          23.585694287
+        ],
+        "math_saved_seconds": -0.6946987359999994,
+        "other_profiled_saved_seconds": -0.008211030000005337,
+        "unprofiled_residual_change_seconds": -0.0039812339999940605,
+        "all1520_owners_geometry_chunks_submits_exact": true,
+        "commands": 1520,
+        "total_submits": 10809,
+        "chunks": 71750,
+        "math_submits": 3294,
+        "native_length_changed_commands": 12,
+        "loop_changes": [],
+        "max_submit_ns": [
+          77806577,
+          95141838
+        ]
+      },
+      {
+        "iteration": "warm",
+        "baseline_seconds": 33.952417,
+        "candidate_seconds": 34.66762,
+        "saved_seconds": -0.7152030000000025,
+        "reduction_percent": -2.1064862628189402,
+        "speedup": 0.9793697115637011,
+        "math_seconds": [
+          22.743955537,
+          23.332691783
+        ],
+        "math_saved_seconds": -0.5887362459999999,
+        "other_profiled_saved_seconds": -0.1306090369999957,
+        "unprofiled_residual_change_seconds": 0.0041422829999930855,
+        "all1520_owners_geometry_chunks_submits_exact": true,
+        "commands": 1520,
+        "total_submits": 10809,
+        "chunks": 71750,
+        "math_submits": 3294,
+        "native_length_changed_commands": 12,
+        "loop_changes": [],
+        "max_submit_ns": [
+          64413037,
+          64211975
+        ]
+      }
+    ],
+    "profile_attribution": [
+      {
+        "iteration": "first",
+        "by_owner_type": {
+          "IO": {
+            "baseline_seconds": 0.048767158,
+            "candidate_seconds": 0.060202535,
+            "saved_seconds": -0.011435377000000004
+          },
+          "Crop": {
+            "baseline_seconds": 0.000324325,
+            "candidate_seconds": 0.008163926,
+            "saved_seconds": -0.007839601
+          },
+          "InnerProduct": {
+            "baseline_seconds": 0.094778616,
+            "candidate_seconds": 0.124403415,
+            "saved_seconds": -0.029624799000000007
+          },
+          "Reshape": {
+            "baseline_seconds": 0.244536748,
+            "candidate_seconds": 0.244873597,
+            "saved_seconds": -0.0003368490000000002
+          },
+          "Slice": {
+            "baseline_seconds": 0.076248703,
+            "candidate_seconds": 0.08008259,
+            "saved_seconds": -0.003833886999999994
+          },
+          "BinaryOp": {
+            "baseline_seconds": 0.798231248,
+            "candidate_seconds": 0.764478203,
+            "saved_seconds": 0.03375304499999998
+          },
+          "Convolution1D": {
+            "baseline_seconds": 25.843588241,
+            "candidate_seconds": 26.54051986,
+            "saved_seconds": -0.6969316190000008
+          },
+          "Concat": {
+            "baseline_seconds": 0.019648469,
+            "candidate_seconds": 0.017910773,
+            "saved_seconds": 0.001737695999999997
+          },
+          "InstanceNorm": {
+            "baseline_seconds": 0.442802592,
+            "candidate_seconds": 0.494895172,
+            "saved_seconds": -0.05209258
+          },
+          "ReLU": {
+            "baseline_seconds": 0.16838407,
+            "candidate_seconds": 0.165383617,
+            "saved_seconds": 0.0030004529999999863
+          },
+          "DeconvolutionDepthWise": {
+            "baseline_seconds": 0.091343137,
+            "candidate_seconds": 0.067290886,
+            "saved_seconds": 0.02405225100000001
+          },
+          "Interp": {
+            "baseline_seconds": 0.012061021,
+            "candidate_seconds": 0.015262223,
+            "saved_seconds": -0.003201202
+          },
+          "Deconvolution": {
+            "baseline_seconds": 2.650679814,
+            "candidate_seconds": 2.713996873,
+            "saved_seconds": -0.06331705900000006
+          },
+          "RadishNormAffineSnake": {
+            "baseline_seconds": 3.574402249,
+            "candidate_seconds": 3.471998778,
+            "saved_seconds": 0.10240347099999969
+          },
+          "RadishAffineSnake": {
+            "baseline_seconds": 0.276350639,
+            "candidate_seconds": 0.275205752,
+            "saved_seconds": 0.0011448869999999833
+          },
+          "Padding": {
+            "baseline_seconds": 0.02283823,
+            "candidate_seconds": 0.027651472,
+            "saved_seconds": -0.004813241999999999
+          }
+        }
+      },
+      {
+        "iteration": "warm",
+        "by_owner_type": {
+          "IO": {
+            "baseline_seconds": 0.05023372,
+            "candidate_seconds": 0.032273984,
+            "saved_seconds": 0.017959736000000004
+          },
+          "Crop": {
+            "baseline_seconds": 0.000573286,
+            "candidate_seconds": 0.000381928,
+            "saved_seconds": 0.00019135799999999998
+          },
+          "InnerProduct": {
+            "baseline_seconds": 0.091008007,
+            "candidate_seconds": 0.08000582,
+            "saved_seconds": 0.011002186999999997
+          },
+          "Reshape": {
+            "baseline_seconds": 0.220564606,
+            "candidate_seconds": 0.190581285,
+            "saved_seconds": 0.029983321000000007
+          },
+          "Slice": {
+            "baseline_seconds": 0.067453419,
+            "candidate_seconds": 0.068601416,
+            "saved_seconds": -0.0011479969999999978
+          },
+          "BinaryOp": {
+            "baseline_seconds": 0.72528714,
+            "candidate_seconds": 0.759081289,
+            "saved_seconds": -0.033794148999999996
+          },
+          "Convolution1D": {
+            "baseline_seconds": 25.685861202,
+            "candidate_seconds": 26.287300129,
+            "saved_seconds": -0.6014389269999967
+          },
+          "Concat": {
+            "baseline_seconds": 0.020735817,
+            "candidate_seconds": 0.017783483,
+            "saved_seconds": 0.002952334000000001
+          },
+          "InstanceNorm": {
+            "baseline_seconds": 0.425583318,
+            "candidate_seconds": 0.414518802,
+            "saved_seconds": 0.011064515999999969
+          },
+          "ReLU": {
+            "baseline_seconds": 0.143445272,
+            "candidate_seconds": 0.167047013,
+            "saved_seconds": -0.02360174099999998
+          },
+          "DeconvolutionDepthWise": {
+            "baseline_seconds": 0.085562606,
+            "candidate_seconds": 0.071887149,
+            "saved_seconds": 0.013675457000000002
+          },
+          "Interp": {
+            "baseline_seconds": 0.016023337,
+            "candidate_seconds": 0.013663574,
+            "saved_seconds": 0.002359762999999999
+          },
+          "Deconvolution": {
+            "baseline_seconds": 2.458771754,
+            "candidate_seconds": 2.506788722,
+            "saved_seconds": -0.048016968000000215
+          },
+          "RadishNormAffineSnake": {
+            "baseline_seconds": 3.410629296,
+            "candidate_seconds": 3.500555961,
+            "saved_seconds": -0.08992666499999968
+          },
+          "RadishAffineSnake": {
+            "baseline_seconds": 0.270718557,
+            "candidate_seconds": 0.280482234,
+            "saved_seconds": -0.00976367699999997
+          },
+          "Padding": {
+            "baseline_seconds": 0.020993368,
+            "candidate_seconds": 0.021538072,
+            "saved_seconds": -0.000544704
+          }
+        }
+      }
+    ],
+    "native_admissions": [
+      {
+        "path": "/run/media/jethac/Shared/radish/ncnn-robust-device-private-f75wknqc/shift-native/admission.json",
+        "bytes": 2852,
+        "sha256": "8a3428248bfa4b29a56ecd70239782044ab84eafb3550a3c1e4f7b0a0b3e715f"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/packed-b-reciprocal-review-1m4b72qi/native-admission.json",
+        "bytes": 2351,
+        "sha256": "99a0688530aad3e87c9a3a4111739cac4684f847ed96129b4bee4f97f8eda20d"
+      }
+    ],
+    "comparison_source": {
+      "path": "/run/media/jethac/Shared/radish/packed-b-reciprocal-review-1m4b72qi/compare-b.py",
+      "bytes": 6861,
+      "sha256": "ca102e2a8a440e07970300efcac85fb94c46e83dd9817c30a0f7e43bb44b3c6a"
+    },
+    "first_output_limit": "Both complete first-iteration numerical comparisons are logged; retained final files contain iteration2, not separate first-output byte hashes.",
+    "limitations": [
+      "One bounded B quotient change for the pinned FP32 workload; no driver or robustness-policy change. Counter snapshots are not GPU elapsed measurements.",
+      "All1520 ordered commands retain owner/geometry/chunks/submits/loops;12 intended layer native lengths decrease by1. Three target pipeline bodies change; all176 other native bodies remain exact.",
+      "Runs are sequential; thermal/cache/resource effects are not randomized. Memory/swap records are explicit.",
+      "Japanese tablet boundary/end-to-end runtime remains a separate workload gate."
+    ]
+  },
+  "independent_reviews": [
+    {
+      "path": "/run/media/jethac/Shared/radish/core-api-resource-consumers-0044-ymiuefnt/stage70-b-reciprocal-build-review/review.json",
+      "bytes": 31920,
+      "sha256": "6acb65f7213a78d5ed293ee9be89ddc9024f4f019cf527181d33f22f0daa44f7"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/core-api-resource-consumers-0044-ymiuefnt/stage72-b-reciprocal-native-review/comparison.json",
+      "bytes": 76552,
+      "sha256": "46ca66ca69f6376e0d6baabf9eee9cc103439d5332b50b46bf4855aa455b4f86"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/core-api-resource-consumers-0044-ymiuefnt/stage72-b-reciprocal-native-review/FULL_ACTUAL_REVIEW.json",
+      "bytes": 11511,
+      "sha256": "f638de818c0cdbb0a09fc5d9473c78bd5e4959b9f07f489496209c73127a5840"
+    }
+  ],
+  "scope": "Same frozen fcd/explicitloader/robustfalse, full English fixed-core model, original repeat2 controls/complete reference and retained e128 byte checks. Not Japanese runtime/end-to-end measurement.",
+  "decision": "Keep selected d332. Source/native simplification is correct but this sequential pair is slower, including the twelve targeted command walls. No unchanged-payload retry or causal/utilization claim."
+}

@@ -1,0 +1,15 @@
+--- a/src/layer/vulkan/shader/convolution1d_radish_planar_packed_a.comp
++++ b/src/layer/vulkan/shader/convolution1d_radish_planar_packed_a.comp
+@@ -25,7 +25,11 @@
+ 
+ vec4 load_input(int k, int x)
+ {
+-    const int ci = int(uint(k) / uint(kernel_w));
++    const uint ku = uint(k);
++    const bool reciprocal_11 = kernel_w == 11 && num_input == 128 && num_output == 128;
++    const int ci = reciprocal_11
++        ? int(((ku & 0xffffu) * 5958u) >> 16)
++        : int(ku / uint(kernel_w));
+     const int tap = (k - ci * kernel_w) * dilation_w;
+     const int base = ci * p.w + x + tap;
+     return vec4(bottom_blob_data[base], bottom_blob_data[base + 1],
