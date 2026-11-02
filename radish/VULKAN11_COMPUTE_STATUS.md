@@ -331,3 +331,8 @@ following merge, serialization, recreation and layout destruction before submit.
 32-byte header plus a zero object count. This qualifies callable lifetime behavior,
 not populated-entry movement or cache hits. Ordinary private-array behavior has
 separate evidence; deliberate compiler-spill qualification remains open.
+
+The singleton full split-region binding observation is invalid public coverage
+under VUID01421. It is retained as an erratum, separate from valid singleton
+mask/bind2 paths. This does not establish a driver implementation gap; applicable
+valid device-group and external-capability CTS still remain.

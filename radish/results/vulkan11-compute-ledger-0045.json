@@ -153,9 +153,9 @@
     {
       "id": "groups-external",
       "requirement": "Core1.1 singleton groups and external capability contracts",
-      "implementation": "SingletonDeviceIndex0/mask1/fullsplit bind; external memory/fence/semaphore platform handles unsupported",
-      "evidence": "Group API5/resource fullsplit actual; source explicit external queries",
-      "remaining": "Public1.1+KHR alias/query validity via batch. No platform import/export promise inferred from DRM syncobj. Historical singleton fullsplit validity under VUID01421 is newly under independent review; do not use that part as public qualification until resolved.",
+      "implementation": "Singleton DeviceIndex0 and mask1/bind2 paths; external memory/fence/semaphore platform handles unsupported. Historical full split-region binding is not valid public coverage.",
+      "evidence": "Public1.1 query/alias consumer and valid singleton mask/bind2 paths retain their individual scopes. Historical singleton full split-region call is classified as invalid public coverage under VUID01421; preserve its capture as an observation only.",
+      "remaining": "Applicable valid singleton device-group and external-capability query CTS remain. No platform import/export inference from DRM callbacks, and no implementation gap inferred from an invalid fullsplit call.",
       "owner": "resource"
     },
     {
