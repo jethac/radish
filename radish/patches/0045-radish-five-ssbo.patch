@@ -1,0 +1,11 @@
+--- a/src/freedreno/radish/rd_instance.c
++++ b/src/freedreno/radish/rd_instance.c
+@@ -151,7 +151,7 @@
+       .maxBoundDescriptorSets = 4,
+       .maxPerStageDescriptorSamplers = 16,
+       .maxPerStageDescriptorUniformBuffers = 12,
+-      .maxPerStageDescriptorStorageBuffers = 4,
++      .maxPerStageDescriptorStorageBuffers = 5,
+       .maxPerStageDescriptorSampledImages = 16,
+       .maxPerStageDescriptorStorageImages = 4,
+       .maxPerStageResources = 128,

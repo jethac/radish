@@ -1,5 +1,13 @@
 # Radish status
 
+## 2026-11-02: real Q4 dequant and five-buffer fused matvec pass
+
+The real Vulkan 1.0 Q4 modules pass 512 exact half outputs, two fused FP32 outputs and all six allocation guards through public storage8/storage16/Int8 enablement with robustness enabled. All five matvec buffers are active, including both nonzero fusion inputs. This qualifies the five-SSBO source increment and these two kernels; complete backend and ASR model execution remain pending.
+
+The original dequant pipeline hit the unchanged 90-second compilation cap. A profile-only outer-loop hint correction changes exactly one SPIR-V word from forced unrolling to no unrolling; every other instruction word, interface, work count and oracle is exact. The corrected two-pipeline compile completes in **1.809 s**, followed by a clean numerical scope in **1.754 s**, 21.9 MiB and no swap. No cap, resource limit or numerical check was relaxed. A separate fresh-label attempt stopped before launch for disk headroom; its evidence is preserved.
+
+See the [paired failure/correction/native/actual receipts](results/asr-q4-five-buffer-0045.json), [capacity patch](patches/0045-radish-five-ssbo.patch), [profile loop patch](patches/0045-ggml-q4-profile-bounded-loop.patch), and existing-helper derivative in tests/core_q4.c. Selected **fcd/d332** inference stays unchanged; the broader graph module host build is separate evidence.
+
 ## 2026-11-02: two-step unroll retains preload but remains unselected
 
 The separate two-step inner-dot experiment passes exact native recurrence and full numerical checks. Its three target variants use native length 31, retaining the original BUFFER/preload path, 16F/0H, no spills, local 16×8 and 16 KiB shared memory. All other 176 native bodies remain exact, and all 1,520 command owners/geometries/chunks/submits retain the selected schedule.

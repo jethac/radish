@@ -674,3 +674,5 @@ Both feature modes pass the full fixed core; resident51.504783→34.333299 secon
 `0045-ncnn-packed-dot-unroll4-unselected.patch` is an isolated experiment after the selected mb shift and fixed-tail/private-device stack. Native dependency and full numerical checks pass, but all twelve targeted layers and whole resident time regress in the observed pair; swap differs. It is not part of the selected stack. See ../results/packed-dot-unroll4-unselected-0045.json.
 
 `0045-ncnn-packed-dot-unroll2-unselected.patch` retains native preload and passes exact numerical/recurrence checks, but targeted and whole resident time regress without swap. It remains outside the selected stack; see ../results/packed-dot-unroll2-unselected-0045.json.
+
+`0045-radish-five-ssbo.patch` follows Int8 and changes only per-stage SSBO4→5, now backed by the real five-buffer fused Q4 consumer. `0045-ggml-q4-profile-bounded-loop.patch` follows the private KHR profile overlay and changes only the profile outer-loop hint; default behavior remains unchanged. See ../results/asr-q4-five-buffer-0045.json.

@@ -1,0 +1,812 @@
+{
+  "status": "bounded_real_q4_and_five_ssbo_public_path_passed",
+  "driver": {
+    "path": "/run/media/jethac/Shared/radish/asr-ssbo-five-build-0045/libvulkan_radish.so",
+    "bytes": 49034176,
+    "sha256": "1559ed97317b081a82742c0f524c9427e992815c7f08f2e27f637c4ad7157220"
+  },
+  "driver_patch": {
+    "path": "/home/jethac/Projects/radish/radish/patches/0045-radish-five-ssbo.patch",
+    "bytes": 463,
+    "sha256": "1745a0d0cd314a9da5b640bfdcb3f435756163afd1a3fdc06316fef04594d6cd"
+  },
+  "profile_loop_patch": {
+    "path": "/home/jethac/Projects/radish/radish/patches/0045-ggml-q4-profile-bounded-loop.patch",
+    "bytes": 520,
+    "sha256": "a8d8735a5be840297b20c8553291ba6d494afea629cd1a805f180f88c1b9b757"
+  },
+  "source_reconstruction_exact": true,
+  "module_build": {
+    "status": "host module build/validation passed",
+    "source_sha256": "972e99a49f2b9add6f1d54ce7756ac226f2eace966d39d1b19b83270f4e00452",
+    "module": {
+      "bytes": 6016,
+      "sha256": "7505eefe3c508ecc4b2c692a58a6e82d9cca10f0819df12b6bc9fc5b94339586"
+    },
+    "baseline_module_sha256": "43cc6c1e47746c7b5f0d33c520be0114d6dab25b0ae4ac068cac5ed2534b154e",
+    "word_differences": [
+      {
+        "word": 432,
+        "old": 1,
+        "new": 2
+      }
+    ],
+    "changed_instruction": "OpLoopMerge outer Unroll1\u2192DontUnroll2; every other instruction word exact",
+    "capabilities": [
+      "OpCapability Shader",
+      "OpCapability Int8",
+      "OpCapability StorageBuffer16BitAccess",
+      "OpCapability StorageBuffer8BitAccess"
+    ],
+    "driver_unchanged": "1559ed97317b081a82742c0f524c9427e992815c7f08f2e27f637c4ad7157220",
+    "helper_and_matvec_unchanged": true
+  },
+  "source_consumer_release": {
+    "status": "Source independently reviewed and helper cross-built; device/native/numerical qualification pending.",
+    "source": {
+      "path": "/run/media/jethac/Shared/radish/asr-shader-int8-private-b1hzh1le/probe/q4_numeric.c",
+      "bytes": 17036,
+      "sha256": "0b098a5988ee73e0e5c23d10f6317323f8b83c40c82a135dcfe8877136d6fc96"
+    },
+    "build": {
+      "path": "/run/media/jethac/Shared/radish/asr-ssbo-five-build-0045/q4-numeric/result.json",
+      "bytes": 7020,
+      "sha256": "b0254fd5cb02fd7815b06d62220adc506385d35c758001e7c1a9f72543f64235"
+    },
+    "source_review": {
+      "path": "/run/media/jethac/Shared/radish/core-api-resource-consumers-0044-ymiuefnt/stage85-real-q4-numeric-source-review/review.json",
+      "bytes": 2755,
+      "sha256": "b905449b4bcabae713dd420fc92815c629f513c1ce1add7c2e1fb3da223c45dd"
+    },
+    "host_pairing": {
+      "path": "/run/media/jethac/Shared/radish/asr-shader-int8-private-b1hzh1le/backend-host-pairing-review.json",
+      "bytes": 8397,
+      "sha256": "1534aa4c8f3784727e751e7fc75cdb2b4f47a5738ff4c088ee83f3b8f0b93d86"
+    },
+    "modules": {
+      "dequant_q4_k.spv": {
+        "path": "/run/media/jethac/Shared/radish/asr-ssbo-five-build-0045/q4-numeric/dequant_q4_k.spv",
+        "bytes": 6016,
+        "sha256": "43cc6c1e47746c7b5f0d33c520be0114d6dab25b0ae4ac068cac5ed2534b154e"
+      },
+      "mul_mat_vec_q4_k_f32_f32.spv": {
+        "path": "/run/media/jethac/Shared/radish/asr-ssbo-five-build-0045/q4-numeric/mul_mat_vec_q4_k_f32_f32.spv",
+        "bytes": 18992,
+        "sha256": "2c4b4e98f4f4300710f0d5084e3ae9f6daf066e1e69954193b1b56dcc747bc43"
+      }
+    },
+    "driver_sha256": "1559ed97317b081a82742c0f524c9427e992815c7f08f2e27f637c4ad7157220",
+    "interface": [
+      "Public API1.0 with real KHR properties2, storage8/16 and Int8 query+enable. Float16/Int16 arithmetic remain false. Requires at least five compute SSBOs before layout creation.",
+      "Dequant: two descriptors/20B push/local32, output512 half words. Matvec: five descriptors/52B push/spec32,2,1, two outputs, active bias0+ bias1 (flags3).",
+      "Six tiny backing allocations; all descriptors offset64 with exact logical ranges. All allocations including unused source bytes/output margins compared after one dequant and one matvec dispatch."
+    ],
+    "oracle": [
+      "Two independently decoded144B Q4_K blocks with mixed six-bit scales/minima and nonuniform high/low nibbles. CPU scale/min decode follows pinned ggml-quants.c rather than the tested shader indexing.",
+      "Weight numerator=2*scale*q-min; row scales1/16 and1/32. Every result is exactly representable FP16 (magnitude numerator<2048).",
+      "Vector values ((i%11)-5)/16 and active quarter-valued biases produce exact FP32 integer units below2^24 throughout reduction; no tolerance hides indexing/fusion errors."
+    ],
+    "scope": [
+      "Only these two real pinned modules and this small fusion case; no full ASR execution or model accuracy claim.",
+      "Five-SSBO driver capacity has source-backed mixed namespace headroom; this consumer exercises five actual buffers, not simultaneous worst-case UBO/image/metadata coexistence.",
+      "Compile/native admission precedes functional allocation/dispatch; integrator owns all device operations."
+    ]
+  },
+  "source_capacity_review": {
+    "status": "bounded source review passed; actual capacity qualification pending",
+    "release": {
+      "path": "/run/media/jethac/Shared/radish/asr-ssbo-five-private-zwaqeozf/release.json",
+      "bytes": 4926,
+      "sha256": "a15ccf9b75dd10f794a5b17411cffb5c1bf7584499f51f2b0fe6978d80be9348"
+    },
+    "driver_patch": {
+      "path": "/run/media/jethac/Shared/radish/asr-ssbo-five-private-zwaqeozf/ssbo-five.patch",
+      "bytes": 463,
+      "sha256": "1745a0d0cd314a9da5b640bfdcb3f435756163afd1a3fdc06316fef04594d6cd"
+    },
+    "profile_patch": {
+      "path": "/run/media/jethac/Shared/radish/asr-ssbo-five-private-zwaqeozf/profile-actual-layout-capacity.patch",
+      "bytes": 2758,
+      "sha256": "0c07610b6b391bf1c3ddea7d3beac92355f16ac891b4ca10945c80bdc4daa3a2"
+    },
+    "checks": [
+      "Exactly one per-stage property increases4 to5. Aggregate storage-buffer24, dynamic4, UBO12, storage image4, sampled16, sampler16 and all execution/resource guards remain unchanged.",
+      "Existing descriptor resolver maps static UBO/SSBO uses to distinct buffer_slot entries. The same count feeds NIR num_ssbos and real SB4_CS_SSBO buffer emission. Image/typed-storage state appends at v.num_ssbos+i; no hidden five-buffer alias or index truncation was found.",
+      "Worst valid simultaneous compute storage namespace is12 UBO +5 SSBO +4 storage image/typed-buffer +1 lazy raw-sampling metadata =22 entries. Dynamic descriptors are included in their class limits, not extra descriptors. This fits the pinned FD5 shared24-entry precedent, current32-entry arrays/masks and unchanged compilation guard.",
+      "Uniform texel descriptors occupy sampled texture state. Compiler constant-data UBO and private backing use separate shader/program addressing and do not add user SSBO bank entries. Lazy metadata adds exactly one buffer to the child.",
+      "Profile DSL uses min(per-stage storage-buffer limit, aggregate storage-buffer limit,12), requires at least5, and rejects pipeline parameter_count above capacity before module creation. All5 matvec interfaces remain present; descriptor pool capacity12 may exceed an allocated set count without violating per-stage binding limits.",
+      "All-zero descriptor-indexing pNext is omitted on the KHR profile. Default-OFF backend keeps its existing12-binding and feature/query path unchanged. MAX_PARAMETER_COUNT is defined through included common types before the new helper."
+    ],
+    "limitations": [
+      "Source-backed capacity does not replace actual five-buffer and combined-namespace qualification.",
+      "No claim of12 advertised per-stage SSBOs or complete ASR readiness.",
+      "Selected inference fcd is unchanged; updated ASR driver/profile must be built and pinned separately."
+    ]
+  },
+  "independent_module_review": {
+    "verdict": "PASS bounded source/module identity",
+    "old": "43cc6c1e47746c7b5f0d33c520be0114d6dab25b0ae4ac068cac5ed2534b154e",
+    "new": "7505eefe3c508ecc4b2c692a58a6e82d9cca10f0819df12b6bc9fc5b94339586",
+    "word_differences": [
+      [
+        432,
+        1,
+        2
+      ]
+    ],
+    "instruction": "OpLoopMerge outer Unroll -> DontUnroll only; same body/capabilities/interfaces/work.",
+    "qualification": "Previous timeout occurred before first native in optimize phase; changed-source compile under unchanged90s remains discriminator, not established timed-pass causality."
+  },
+  "independent_native_actual": {
+    "status": "passed",
+    "scope": "Real unchanged backend Q4 dequant and five-buffer fused matvec, public enabled storage8/storage16/Int8 with robust access; finite representative qualification.",
+    "evidence": {
+      "compile": {
+        "receipt": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-q4-five-buffer-loop-v2-0045/compile/runner-result.json",
+          "bytes": 1296,
+          "sha256": "9caa4869197cba6b12b63ec40b95aba049f144dfab855503c4d270721beb41f9"
+        },
+        "log": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-q4-five-buffer-loop-v2-0045/compile/run.log",
+          "bytes": 1553958,
+          "sha256": "6def9c14c5428cb652d3426d2858480f1b77d93f7cfff9713a669edc8166ad31"
+        },
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 156,
+            "sha256": "fb643e45508cf6db2d4d5616e60e0065687f015524cbc2574f0c2f167aaed443"
+          },
+          "matvec.spv": {
+            "bytes": 18992,
+            "sha256": "2c4b4e98f4f4300710f0d5084e3ae9f6daf066e1e69954193b1b56dcc747bc43"
+          },
+          "resources": {
+            "bytes": 743096,
+            "sha256": "7f0a822d7b240a48638de3343321e0b89a0eaafa52a37a5116ff07212333be2a"
+          },
+          "resources.spv": {
+            "bytes": 6016,
+            "sha256": "7505eefe3c508ecc4b2c692a58a6e82d9cca10f0819df12b6bc9fc5b94339586"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 49034176,
+            "sha256": "1559ed97317b081a82742c0f524c9427e992815c7f08f2e27f637c4ad7157220"
+          },
+          "payload.json": {
+            "bytes": 953,
+            "sha256": "3300057f46fd6dab99c47cb258461b2e9da625a53515bef9c234b6cbdfb0fa18"
+          }
+        },
+        "postflight": [
+          {
+            "path": "/run/media/jethac/Shared/radish/core-compute-q4-five-buffer-loop-v2-0045/compile/fault-check.txt",
+            "bytes": 41,
+            "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+          },
+          {
+            "path": "/run/media/jethac/Shared/radish/core-compute-q4-five-buffer-loop-v2-0045/compile/services-after.txt",
+            "bytes": 14,
+            "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+          },
+          {
+            "path": "/run/media/jethac/Shared/radish/core-compute-q4-five-buffer-loop-v2-0045/compile/service.txt",
+            "bytes": 1682,
+            "sha256": "5acd05a2cb817db838d1631d54348af19f2ca4195040b5f9aa5ea813d69440d2"
+          },
+          {
+            "path": "/run/media/jethac/Shared/radish/core-compute-q4-five-buffer-loop-v2-0045/compile/collection.json",
+            "bytes": 37,
+            "sha256": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e"
+          }
+        ]
+      },
+      "probe": {
+        "receipt": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-q4-five-buffer-loop-v2-0045/probe/runner-result.json",
+          "bytes": 1294,
+          "sha256": "4cf63e0200c200c46a28693c85422e69985c5c307d1c4fab89b2dabdbab2ffff"
+        },
+        "log": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-q4-five-buffer-loop-v2-0045/probe/run.log",
+          "bytes": 1554611,
+          "sha256": "df8cad3f2dac65d2139fd6117d57e41d67aed57e484f02c70970d78f34cd515e"
+        },
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 156,
+            "sha256": "fb643e45508cf6db2d4d5616e60e0065687f015524cbc2574f0c2f167aaed443"
+          },
+          "matvec.spv": {
+            "bytes": 18992,
+            "sha256": "2c4b4e98f4f4300710f0d5084e3ae9f6daf066e1e69954193b1b56dcc747bc43"
+          },
+          "resources": {
+            "bytes": 743096,
+            "sha256": "7f0a822d7b240a48638de3343321e0b89a0eaafa52a37a5116ff07212333be2a"
+          },
+          "resources.spv": {
+            "bytes": 6016,
+            "sha256": "7505eefe3c508ecc4b2c692a58a6e82d9cca10f0819df12b6bc9fc5b94339586"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 49034176,
+            "sha256": "1559ed97317b081a82742c0f524c9427e992815c7f08f2e27f637c4ad7157220"
+          },
+          "payload.json": {
+            "bytes": 953,
+            "sha256": "3300057f46fd6dab99c47cb258461b2e9da625a53515bef9c234b6cbdfb0fa18"
+          }
+        },
+        "postflight": [
+          {
+            "path": "/run/media/jethac/Shared/radish/core-compute-q4-five-buffer-loop-v2-0045/probe/fault-check.txt",
+            "bytes": 41,
+            "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+          },
+          {
+            "path": "/run/media/jethac/Shared/radish/core-compute-q4-five-buffer-loop-v2-0045/probe/services-after.txt",
+            "bytes": 14,
+            "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+          },
+          {
+            "path": "/run/media/jethac/Shared/radish/core-compute-q4-five-buffer-loop-v2-0045/probe/service.txt",
+            "bytes": 1661,
+            "sha256": "d19fb45f94015ce0258a5c3a2a5e940bb5169775c2e118de04fd69fdcfffef10"
+          },
+          {
+            "path": "/run/media/jethac/Shared/radish/core-compute-q4-five-buffer-loop-v2-0045/probe/collection.json",
+            "bytes": 37,
+            "sha256": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e"
+          }
+        ]
+      }
+    },
+    "native_records_identical": true,
+    "native": [
+      [
+        "dequant",
+        "2",
+        "34",
+        "8",
+        "15",
+        "0",
+        "0",
+        "32,1,1"
+      ],
+      [
+        "matvec",
+        "5",
+        "168",
+        "21",
+        "48",
+        "0",
+        "256",
+        "16,2,1"
+      ]
+    ],
+    "resident_half_vector_footprints": {
+      "dequant": 992,
+      "matvec": 2880,
+      "unchanged_limit": 4096
+    },
+    "dispatch_profiles": [
+      "RADISH_PROFILE dispatch pipeline=0xaaaad16f6db0 grid=1,1,1 local=32,1,1 barrier=0 loops=1 instrlen=34 chunks=1 submits=1 ns=3976469 submit_ns=3701886 submit_max_ns=3701886 result=0",
+      "RADISH_PROFILE dispatch pipeline=0xaaaad1772510 grid=1,1,1 local=16,2,1 barrier=1 loops=6 instrlen=168 chunks=1 submits=1 ns=684637 submit_ns=615887 submit_max_ns=615887 result=0"
+    ],
+    "oracle": {
+      "half_outputs": 512,
+      "float_outputs": 2,
+      "fusion_flags": 3,
+      "complete_allocations": 6,
+      "status": "exact helper CPU oracle and full allocation guards passed"
+    },
+    "source_module_pairing": {
+      "path": "/run/media/jethac/Shared/radish/asr-q4-dequant-loop-private-767ldhjc/module-pairing-review.json",
+      "bytes": 1298,
+      "sha256": "f6d21fb4b2bfc649c6aa3a0ee38596ef1ba66b15ca5aa1c738df426349f15329"
+    },
+    "limitations": [
+      "No independent host raw allocation dump was produced; actual numerical evidence is the reviewed helper full-allocation oracle.",
+      "Five active SSBOs qualified; worst combined UBO/image/metadata namespace not executed.",
+      "No full ASR inference or Vulkan conformance claim.",
+      "The single-word loop-control correction fixes this bounded compile timeout; it does not establish a general compiler performance bound."
+    ]
+  },
+  "independent_actual": {
+    "verdict": "PASS bounded public real-Q4 numerical consumer",
+    "run_log_sha256": "df8cad3f2dac65d2139fd6117d57e41d67aed57e484f02c70970d78f34cd515e",
+    "runner_receipt_sha256": "4cf63e0200c200c46a28693c85422e69985c5c307d1c4fab89b2dabdbab2ffff",
+    "payload": {
+      "radish_icd.json": {
+        "bytes": 156,
+        "sha256": "fb643e45508cf6db2d4d5616e60e0065687f015524cbc2574f0c2f167aaed443"
+      },
+      "matvec.spv": {
+        "bytes": 18992,
+        "sha256": "2c4b4e98f4f4300710f0d5084e3ae9f6daf066e1e69954193b1b56dcc747bc43"
+      },
+      "resources": {
+        "bytes": 743096,
+        "sha256": "7f0a822d7b240a48638de3343321e0b89a0eaafa52a37a5116ff07212333be2a"
+      },
+      "resources.spv": {
+        "bytes": 6016,
+        "sha256": "7505eefe3c508ecc4b2c692a58a6e82d9cca10f0819df12b6bc9fc5b94339586"
+      },
+      "check-gpu-log.py": {
+        "bytes": 1004,
+        "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+      },
+      "libvulkan_radish.so": {
+        "bytes": 49034176,
+        "sha256": "1559ed97317b081a82742c0f524c9427e992815c7f08f2e27f637c4ad7157220"
+      },
+      "payload.json": {
+        "bytes": 953,
+        "sha256": "3300057f46fd6dab99c47cb258461b2e9da625a53515bef9c234b6cbdfb0fa18"
+      }
+    },
+    "scope": "512 FP16 dequant values and two FP32 dot results exact independent reviewed CPU decode/dot; both nonzero bias fusion operands active with flags3; all six complete allocations checked on tablet. Compile-before-allocation and valid descriptor-write-before-record order retained. Dequant34 and five-buffer matvec168 each one actual dispatch/chunk/submit, ret0. No downloaded raw tensor was independently re-read by this reviewer; original helper full allocation oracle executes in retained log.",
+    "outputs_bits": [
+      "c17c2000",
+      "c1a15800"
+    ],
+    "limits": "Tests actual five-SSBO use and realQ4 modules, not full simultaneous22-slot namespace, fullASR, all quant types, or model memory admission. Defaultfcd/d332 inference unchanged.",
+    "profiles": [
+      "RADISH_PROFILE dispatch pipeline=0xaaaad16f6db0 grid=1,1,1 local=32,1,1 barrier=0 loops=1 instrlen=34 chunks=1 submits=1 ns=3976469 submit_ns=3701886 submit_max_ns=3701886 result=0",
+      "RADISH_PROFILE dispatch pipeline=0xaaaad1772510 grid=1,1,1 local=16,2,1 barrier=1 loops=6 instrlen=168 chunks=1 submits=1 ns=684637 submit_ns=615887 submit_max_ns=615887 result=0"
+    ],
+    "postflight": "No new GPU faults/recovery; both services active,1.754s21.9MiB0swap."
+  },
+  "execution_receipts": {
+    "compile": {
+      "status": "passed",
+      "mode": "compile",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 156,
+          "sha256": "fb643e45508cf6db2d4d5616e60e0065687f015524cbc2574f0c2f167aaed443"
+        },
+        "matvec.spv": {
+          "bytes": 18992,
+          "sha256": "2c4b4e98f4f4300710f0d5084e3ae9f6daf066e1e69954193b1b56dcc747bc43"
+        },
+        "resources": {
+          "bytes": 743096,
+          "sha256": "7f0a822d7b240a48638de3343321e0b89a0eaafa52a37a5116ff07212333be2a"
+        },
+        "resources.spv": {
+          "bytes": 6016,
+          "sha256": "7505eefe3c508ecc4b2c692a58a6e82d9cca10f0819df12b6bc9fc5b94339586"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 49034176,
+          "sha256": "1559ed97317b081a82742c0f524c9427e992815c7f08f2e27f637c4ad7157220"
+        },
+        "payload.json": {
+          "bytes": 953,
+          "sha256": "3300057f46fd6dab99c47cb258461b2e9da625a53515bef9c234b6cbdfb0fa18"
+        }
+      },
+      "run_log": {
+        "bytes": 1553958,
+        "sha256": "6def9c14c5428cb652d3426d2858480f1b77d93f7cfff9713a669edc8166ad31"
+      },
+      "scope": "Raw ICD assets/services/faults and consolidated assertions passed. This is experimental compute coverage, not Vulkan conformance."
+    },
+    "probe": {
+      "status": "passed",
+      "mode": "probe",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 156,
+          "sha256": "fb643e45508cf6db2d4d5616e60e0065687f015524cbc2574f0c2f167aaed443"
+        },
+        "matvec.spv": {
+          "bytes": 18992,
+          "sha256": "2c4b4e98f4f4300710f0d5084e3ae9f6daf066e1e69954193b1b56dcc747bc43"
+        },
+        "resources": {
+          "bytes": 743096,
+          "sha256": "7f0a822d7b240a48638de3343321e0b89a0eaafa52a37a5116ff07212333be2a"
+        },
+        "resources.spv": {
+          "bytes": 6016,
+          "sha256": "7505eefe3c508ecc4b2c692a58a6e82d9cca10f0819df12b6bc9fc5b94339586"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 49034176,
+          "sha256": "1559ed97317b081a82742c0f524c9427e992815c7f08f2e27f637c4ad7157220"
+        },
+        "payload.json": {
+          "bytes": 953,
+          "sha256": "3300057f46fd6dab99c47cb258461b2e9da625a53515bef9c234b6cbdfb0fa18"
+        }
+      },
+      "run_log": {
+        "bytes": 1554611,
+        "sha256": "df8cad3f2dac65d2139fd6117d57e41d67aed57e484f02c70970d78f34cd515e"
+      },
+      "scope": "Raw ICD assets/services/faults and consolidated assertions passed. This is experimental compute coverage, not Vulkan conformance."
+    }
+  },
+  "prior_timeout": {
+    "status": "compile_timeout_before_native",
+    "limit_seconds": 90,
+    "service_seconds": 90.088,
+    "cpu_seconds": 89.247,
+    "peak_mib": 61.1,
+    "swap_bytes": 0,
+    "pipeline_order": [
+      "dequant_q4_k",
+      "mul_mat_vec_q4_k_f32_f32"
+    ],
+    "last_phase": "MESA shader NIR print; no completed dequant pipeline/native marker",
+    "gpu_dispatches": 0,
+    "drain": "LoadState=not-found\nActiveState=inactive\nSubState=dead\n",
+    "postflight": {
+      "passed": true,
+      "errors": []
+    },
+    "log_sha256": "aa338fc03897b702f0775a7e7a6a62fd24f06c1aa101719e08e576a8e597c526",
+    "scope": "Unchanged original bounded compile; functional phase unattempted. No cap extension or same-source retry."
+  },
+  "setup_only_failure": {
+    "status": "failed",
+    "error": "insufficient disk for payload, raw outputs and 64MiB reserve",
+    "started": false,
+    "terminal": false,
+    "process_returncode": 1,
+    "remote": "/var/tmp/radish/core-compute-q4-five-buffer-loop-0045",
+    "unit": "radish-core-compute-compile-1793596896223937444"
+  },
+  "fresh_staging_headroom": {
+    "free_kib": 125984,
+    "required_kib": 115198,
+    "headroom_kib": 10786,
+    "reserve_mib": 64,
+    "assets": {
+      "libvulkan_radish.so": {
+        "bytes": 49034176,
+        "sha256": "1559ed97317b081a82742c0f524c9427e992815c7f08f2e27f637c4ad7157220"
+      },
+      "resources": {
+        "bytes": 743096,
+        "sha256": "7f0a822d7b240a48638de3343321e0b89a0eaafa52a37a5116ff07212333be2a"
+      },
+      "resources.spv": {
+        "bytes": 6016,
+        "sha256": "7505eefe3c508ecc4b2c692a58a6e82d9cca10f0819df12b6bc9fc5b94339586"
+      },
+      "matvec.spv": {
+        "bytes": 18992,
+        "sha256": "2c4b4e98f4f4300710f0d5084e3ae9f6daf066e1e69954193b1b56dcc747bc43"
+      },
+      "check-gpu-log.py": {
+        "bytes": 1004,
+        "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+      },
+      "radish_icd.json": {
+        "bytes": 156,
+        "sha256": "fb643e45508cf6db2d4d5616e60e0065687f015524cbc2574f0c2f167aaed443"
+      },
+      "payload.json": {
+        "bytes": 953,
+        "sha256": "3300057f46fd6dab99c47cb258461b2e9da625a53515bef9c234b6cbdfb0fa18"
+      }
+    }
+  },
+  "limitations": [
+    "The public limit increase4\u21925 is backed by real five-buffer fused matvec and source namespace accounting; all22 theoretical mixedslots are not collectively executed here.",
+    "The profile-only outer loop hint changes one SPIR-V word; work/body/innerloop/oracle/driver/caps unchanged. Compile90s timeout becomes1.809s; timed individual compiler pass not directly observed.",
+    "512 exact half outputs, two exact fused float outputs and six complete allocations are checked by the reviewed tablet helper; raw buffers were not independently copied for a second host oracle.",
+    "This is two real Q4 kernels on1559, not complete backend link, full ASR graph/model, formal conformance or inference performance. Selectedfcd/d332 remains unchanged."
+  ],
+  "public_reproduction_host_only": {
+    "status": "host build only",
+    "commands": [
+      [
+        "clang",
+        "--target=aarch64-linux-gnu",
+        "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+        "-mcpu=cortex-a53",
+        "-Isrc/freedreno/radish/libvulkan_radish.so.p",
+        "-Isrc/freedreno/radish",
+        "-I../mesa/src/freedreno/radish",
+        "-Isrc/freedreno",
+        "-I../mesa/src/freedreno",
+        "-Isrc/freedreno/registers",
+        "-I../mesa/src/freedreno/registers",
+        "-Isrc/freedreno/registers/adreno",
+        "-I../mesa/src/freedreno/registers/adreno",
+        "-Isrc/freedreno/common",
+        "-I../mesa/src/freedreno/common",
+        "-Iinclude",
+        "-I../mesa/include",
+        "-Isrc",
+        "-I../mesa/src",
+        "-Isrc/vulkan/util",
+        "-I../mesa/src/vulkan/util",
+        "-Isrc/vulkan/runtime",
+        "-I../mesa/src/vulkan/runtime",
+        "-I../mesa/src/vulkan/runtime/bvh",
+        "-Isrc/compiler/nir",
+        "-I../mesa/src/compiler/nir",
+        "-Isrc/compiler",
+        "-I../mesa/src/compiler",
+        "-Isrc/util",
+        "-Isrc/util/format",
+        "-Isrc/compiler/spirv",
+        "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include",
+        "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include/libdrm",
+        "-fvisibility=hidden",
+        "-fdiagnostics-color=always",
+        "-D_FILE_OFFSET_BITS=64",
+        "-Wall",
+        "-Winvalid-pch",
+        "-std=c11",
+        "-O2",
+        "-g",
+        "-D__STDC_CONSTANT_MACROS",
+        "-D__STDC_FORMAT_MACROS",
+        "-D__STDC_LIMIT_MACROS",
+        "-DPACKAGE_VERSION=\"27.0.0-devel\"",
+        "-DHAVE_OPENGL=0",
+        "-DHAVE_OPENGL_ES_1=0",
+        "-DHAVE_OPENGL_ES_2=0",
+        "-DMESA_SYSTEM_HAS_KMS_DRM=1",
+        "-DVIDEO_CODEC_VC1DEC=0",
+        "-DVIDEO_CODEC_H264DEC=0",
+        "-DVIDEO_CODEC_H264ENC=0",
+        "-DVIDEO_CODEC_H265DEC=0",
+        "-DVIDEO_CODEC_H265ENC=0",
+        "-DVIDEO_CODEC_AV1DEC=0",
+        "-DVIDEO_CODEC_AV1ENC=0",
+        "-DVIDEO_CODEC_VP9DEC=0",
+        "-DVIDEO_CODEC_MPEG12DEC=0",
+        "-DVIDEO_CODEC_JPEGDEC=0",
+        "-DUSE_LIBGLVND=0",
+        "-DHAVE_LIBDRM",
+        "-DHAVE_GFX_COMPUTE",
+        "-DGLAPI_EXPORT_PROTO_ENTRY_POINTS=1",
+        "-DALLOW_KCMP",
+        "-DMESA_DEBUG=0",
+        "-DENABLE_SHADER_CACHE",
+        "-DHAVE___BUILTIN_BSWAP32",
+        "-DHAVE___BUILTIN_BSWAP64",
+        "-DHAVE___BUILTIN_CLZ",
+        "-DHAVE___BUILTIN_CLZLL",
+        "-DHAVE___BUILTIN_CTZ",
+        "-DHAVE___BUILTIN_EXPECT",
+        "-DHAVE___BUILTIN_FFS",
+        "-DHAVE___BUILTIN_FFSLL",
+        "-DHAVE___BUILTIN_POPCOUNT",
+        "-DHAVE___BUILTIN_POPCOUNTLL",
+        "-DHAVE___BUILTIN_UNREACHABLE",
+        "-DHAVE___BUILTIN_TYPES_COMPATIBLE_P",
+        "-DHAVE___BUILTIN_ADD_OVERFLOW",
+        "-DHAVE_FUNC_ATTRIBUTE_CONST",
+        "-DHAVE_FUNC_ATTRIBUTE_FLATTEN",
+        "-DHAVE_FUNC_ATTRIBUTE_MALLOC",
+        "-DHAVE_FUNC_ATTRIBUTE_PURE",
+        "-DHAVE_FUNC_ATTRIBUTE_UNUSED",
+        "-DHAVE_FUNC_ATTRIBUTE_WARN_UNUSED_RESULT",
+        "-DHAVE_FUNC_ATTRIBUTE_WEAK",
+        "-DHAVE_FUNC_ATTRIBUTE_FORMAT",
+        "-DHAVE_FUNC_ATTRIBUTE_PACKED",
+        "-DHAVE_FUNC_ATTRIBUTE_RETURNS_NONNULL",
+        "-DHAVE_FUNC_ATTRIBUTE_ALIAS",
+        "-DHAVE_FUNC_ATTRIBUTE_NORETURN",
+        "-DHAVE_FUNC_ATTRIBUTE_COLD",
+        "-DHAVE_FUNC_ATTRIBUTE_VISIBILITY",
+        "-DHAVE_UINT128",
+        "-DHAVE_REALLOCARRAY",
+        "-DHAVE_FMEMOPEN",
+        "-DHAVE_MALLINFO2",
+        "-D_GNU_SOURCE",
+        "-DUSE_GCC_ATOMIC_BUILTINS",
+        "-DMAJOR_IN_SYSMACROS",
+        "-DHAS_SCHED_H",
+        "-DHAS_SCHED_GETAFFINITY",
+        "-DHAVE_LINUX_FUTEX_H",
+        "-DHAVE_ENDIAN_H",
+        "-DHAVE_DLFCN_H",
+        "-DHAVE_SYS_SHM_H",
+        "-DHAVE_CET_H",
+        "-DHAVE_POLL_H",
+        "-DHAVE_SYS_INOTIFY_H",
+        "-DHAVE_LINUX_UDMABUF_H",
+        "-DHAVE_STRTOF",
+        "-DHAVE_MKOSTEMP",
+        "-DHAVE_MEMFD_CREATE",
+        "-DHAVE_RANDOM_R",
+        "-DHAVE_FLOCK",
+        "-DHAVE_STRTOK_R",
+        "-DHAVE_GETRANDOM",
+        "-DHAVE_POSIX_FALLOCATE",
+        "-DHAVE_SECURE_GETENV",
+        "-DHAVE_SYSCONF",
+        "-DHAVE_SC_PHYS_PAGES",
+        "-DHAVE_GNU_QSORT_R",
+        "-DHAVE_STRUCT_TIMESPEC",
+        "-DHAVE_PROGRAM_INVOCATION_NAME",
+        "-DHAVE_ISSIGNALING",
+        "-DHAVE_POSIX_MEMALIGN",
+        "-DHAVE_DIRENT_D_TYPE",
+        "-DHAVE_STRTOD_L",
+        "-DHAVE_DLADDR",
+        "-DHAVE_DL_ITERATE_PHDR",
+        "-DHAVE_ZLIB",
+        "-DHAVE_COMPRESSION",
+        "-DHAVE_PTHREAD",
+        "-DHAVE_PTHREAD_SETAFFINITY",
+        "-DDRAW_LLVM_AVAILABLE=0",
+        "-DAMD_LLVM_AVAILABLE=0",
+        "-DGALLIVM_USE_ORCJIT=0",
+        "-DTHREAD_SANITIZER=0",
+        "-DHAVE_DRI2",
+        "-DHAVE_RENDERDOC_INTEGRATION=1",
+        "-Werror=implicit-function-declaration",
+        "-Werror=missing-prototypes",
+        "-Werror=return-type",
+        "-Werror=empty-body",
+        "-Werror=incompatible-pointer-types",
+        "-Werror=int-conversion",
+        "-Wimplicit-fallthrough",
+        "-Wmisleading-indentation",
+        "-Wno-missing-field-initializers",
+        "-Wno-format-truncation",
+        "-fno-math-errno",
+        "-fno-trapping-math",
+        "-Qunused-arguments",
+        "-fno-common",
+        "-Wno-unknown-pragmas",
+        "-Wno-microsoft-enum-value",
+        "-Wno-unused-function",
+        "-Werror=format",
+        "-Wformat-security",
+        "-Werror=thread-safety",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-Wno-unused-command-line-argument",
+        "-fPIC",
+        "-DVK_USE_PLATFORM_DISPLAY_KHR",
+        "-pthread",
+        "-DXXH_FORCE_ALIGN_CHECK=0",
+        "-DXXH_FORCE_MEMORY_ACCESS=0",
+        "-Wno-override-init",
+        "-Wno-initializer-overrides",
+        "-fuse-ld=lld",
+        "--gcc-install-dir=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+        "-I/home/jethac/Projects/radish/radish/tests",
+        "/home/jethac/Projects/radish/radish/tests/core_q4.c",
+        "-o",
+        "/run/media/jethac/Shared/radish/asr-q4-dequant-loop-build-0045/public-reproduction/resources",
+        "-ldl",
+        "-pthread"
+      ],
+      [
+        "glslc",
+        "--target-env=vulkan1.0",
+        "-O",
+        "-DFLOAT_TYPE=float",
+        "-DFLOAT_TYPEV2=vec2",
+        "-DDATA_A_Q4_K=1",
+        "-DGGML_VULKAN_KHR_PROFILE=1",
+        "-DD_TYPE=float16_t",
+        "-MD",
+        "-MF",
+        "/run/media/jethac/Shared/radish/asr-q4-dequant-loop-build-0045/public-reproduction/resources.spv.d",
+        "/run/media/jethac/Shared/radish/asr-q4-dequant-loop-build-0045/source/ggml/src/ggml-vulkan/vulkan-shaders/dequant_q4_k.comp",
+        "-o",
+        "/run/media/jethac/Shared/radish/asr-q4-dequant-loop-build-0045/public-reproduction/resources.spv"
+      ],
+      [
+        "spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/asr-q4-dequant-loop-build-0045/public-reproduction/resources.spv"
+      ],
+      [
+        "spirv-dis",
+        "/run/media/jethac/Shared/radish/asr-q4-dequant-loop-build-0045/public-reproduction/resources.spv",
+        "-o",
+        "/run/media/jethac/Shared/radish/asr-q4-dequant-loop-build-0045/public-reproduction/resources.spv.spvasm"
+      ],
+      [
+        "glslc",
+        "--target-env=vulkan1.0",
+        "-O",
+        "-DFLOAT_TYPE=float",
+        "-DFLOAT_TYPEV2=vec2",
+        "-DDATA_A_Q4_K=1",
+        "-DGGML_VULKAN_KHR_PROFILE=1",
+        "-DB_TYPE=float",
+        "-DB_TYPEV2=vec2",
+        "-DB_TYPEV4=vec4",
+        "-DD_TYPE=float",
+        "-MD",
+        "-MF",
+        "/run/media/jethac/Shared/radish/asr-q4-dequant-loop-build-0045/public-reproduction/matvec.spv.d",
+        "/run/media/jethac/Shared/radish/asr-q4-dequant-loop-build-0045/source/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vec_q4_k.comp",
+        "-o",
+        "/run/media/jethac/Shared/radish/asr-q4-dequant-loop-build-0045/public-reproduction/matvec.spv"
+      ],
+      [
+        "spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/asr-q4-dequant-loop-build-0045/public-reproduction/matvec.spv"
+      ],
+      [
+        "spirv-dis",
+        "/run/media/jethac/Shared/radish/asr-q4-dequant-loop-build-0045/public-reproduction/matvec.spv",
+        "-o",
+        "/run/media/jethac/Shared/radish/asr-q4-dequant-loop-build-0045/public-reproduction/matvec.spv.spvasm"
+      ]
+    ],
+    "cwd": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build",
+    "helper_source": {
+      "bytes": 17036,
+      "sha256": "0b098a5988ee73e0e5c23d10f6317323f8b83c40c82a135dcfe8877136d6fc96"
+    },
+    "helper": {
+      "bytes": 742936,
+      "sha256": "c5f98daf2ab57ef165765e614bc99f639e10eb3d0a569fb8c9d428d75c3d565b"
+    },
+    "modules": {
+      "resources.spv": {
+        "source": {
+          "bytes": 2814,
+          "sha256": "972e99a49f2b9add6f1d54ce7756ac226f2eace966d39d1b19b83270f4e00452"
+        },
+        "module": {
+          "bytes": 6016,
+          "sha256": "7505eefe3c508ecc4b2c692a58a6e82d9cca10f0819df12b6bc9fc5b94339586"
+        },
+        "capabilities": [
+          "Shader",
+          "Int8",
+          "StorageBuffer16BitAccess",
+          "StorageBuffer8BitAccess"
+        ]
+      },
+      "matvec.spv": {
+        "source": {
+          "bytes": 6569,
+          "sha256": "74eb2cd3212aef18b8c165cb735627a1a4a8cad27cbcb1269d1b2b2bff12b78b"
+        },
+        "module": {
+          "bytes": 18992,
+          "sha256": "2c4b4e98f4f4300710f0d5084e3ae9f6daf066e1e69954193b1b56dcc747bc43"
+        },
+        "capabilities": [
+          "Shader",
+          "Int8",
+          "StorageBuffer16BitAccess",
+          "StorageBuffer8BitAccess"
+        ]
+      }
+    },
+    "scope": "Requires matching private headers and driver. Device compile/native admission precedes the numerical scope."
+  }
+}
