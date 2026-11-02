@@ -1,0 +1,89 @@
+--- a/src/freedreno/radish/rd_image.c
++++ b/src/freedreno/radish/rd_image.c
+@@ -92,13 +92,74 @@
+    }
+ }
+ 
++static bool
++rd_image_color_attachment_supported(VkFormat format)
++{
++   switch (format) {
++   case VK_FORMAT_R8_UNORM:
++   case VK_FORMAT_R8_SNORM:
++   case VK_FORMAT_R8_UINT:
++   case VK_FORMAT_R8_SINT:
++   case VK_FORMAT_R8G8_UNORM:
++   case VK_FORMAT_R8G8_SNORM:
++   case VK_FORMAT_R8G8_UINT:
++   case VK_FORMAT_R8G8_SINT:
++   case VK_FORMAT_R8G8B8A8_UNORM:
++   case VK_FORMAT_R8G8B8A8_SNORM:
++   case VK_FORMAT_R8G8B8A8_UINT:
++   case VK_FORMAT_R8G8B8A8_SINT:
++   case VK_FORMAT_R8G8B8A8_SRGB:
++   case VK_FORMAT_B8G8R8A8_UNORM:
++   case VK_FORMAT_B8G8R8A8_SRGB:
++   case VK_FORMAT_R16_UNORM:
++   case VK_FORMAT_R16_SNORM:
++   case VK_FORMAT_R16_UINT:
++   case VK_FORMAT_R16_SINT:
++   case VK_FORMAT_R16_SFLOAT:
++   case VK_FORMAT_R16G16_UNORM:
++   case VK_FORMAT_R16G16_SNORM:
++   case VK_FORMAT_R16G16_UINT:
++   case VK_FORMAT_R16G16_SINT:
++   case VK_FORMAT_R16G16_SFLOAT:
++   case VK_FORMAT_R16G16B16A16_UNORM:
++   case VK_FORMAT_R16G16B16A16_SNORM:
++   case VK_FORMAT_R16G16B16A16_UINT:
++   case VK_FORMAT_R16G16B16A16_SINT:
++   case VK_FORMAT_R16G16B16A16_SFLOAT:
++   case VK_FORMAT_R32_UINT:
++   case VK_FORMAT_R32_SINT:
++   case VK_FORMAT_R32_SFLOAT:
++   case VK_FORMAT_R32G32_UINT:
++   case VK_FORMAT_R32G32_SINT:
++   case VK_FORMAT_R32G32_SFLOAT:
++   case VK_FORMAT_R32G32B32A32_UINT:
++   case VK_FORMAT_R32G32B32A32_SINT:
++   case VK_FORMAT_R32G32B32A32_SFLOAT:
++   case VK_FORMAT_R5G6B5_UNORM_PACK16:
++   case VK_FORMAT_A1R5G5B5_UNORM_PACK16:
++   case VK_FORMAT_A8B8G8R8_UNORM_PACK32:
++   case VK_FORMAT_A8B8G8R8_SNORM_PACK32:
++   case VK_FORMAT_A8B8G8R8_UINT_PACK32:
++   case VK_FORMAT_A8B8G8R8_SINT_PACK32:
++   case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
++   case VK_FORMAT_A2R10G10B10_UNORM_PACK32:
++   case VK_FORMAT_A2R10G10B10_UINT_PACK32:
++   case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
++   case VK_FORMAT_A2B10G10R10_UINT_PACK32:
++   case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
++      return true;
++   default:
++      return false;
++   }
++}
++
+ static VkImageUsageFlags2KHR
+ rd_image_shader_usage(VkFormat format)
+ {
+    if (!rd_image_texel_size(format) || !rd_shader_format_supported(format))
+       return 0;
+    VkImageUsageFlags2KHR usage = VK_IMAGE_USAGE_SAMPLED_BIT;
+-   if (format == VK_FORMAT_R8G8B8A8_UNORM)
++   if (rd_image_color_attachment_supported(format))
+       usage |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT;
+    if (format == VK_FORMAT_D16_UNORM || format == VK_FORMAT_D32_SFLOAT ||
+        format == VK_FORMAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT)
+@@ -166,7 +227,9 @@
+                        VkImageUsageFlags2KHR usage, VkImageCreateFlags2KHR flags)
+ {
+    VkSampleCountFlags samples = VK_SAMPLE_COUNT_1_BIT;
+-   if (!vk_format_is_compressed(format) && type == VK_IMAGE_TYPE_2D && tiling == VK_IMAGE_TILING_OPTIMAL &&
++   if ((rd_image_shader_usage(format) & (VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT |
++                                          VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT)) &&
++       !vk_format_is_compressed(format) && type == VK_IMAGE_TYPE_2D && tiling == VK_IMAGE_TILING_OPTIMAL &&
+        !(usage & VK_IMAGE_USAGE_STORAGE_BIT) &&
+        !(flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT))
+       samples |= VK_SAMPLE_COUNT_4_BIT;

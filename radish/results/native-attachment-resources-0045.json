@@ -1,0 +1,410 @@
+{
+  "status": "Valid image/query/view/layout consumer PASS; no graphics-only host object or initialized sample claim",
+  "driver": {
+    "path": "/run/media/jethac/Shared/radish/compute11-native-transient-build-0045/libvulkan_radish.so",
+    "bytes": 49077912,
+    "sha256": "46a86d2e9fb8e9247efd74abf6a35982a7e45f243ee5167ab0db8680584db778"
+  },
+  "patches": [
+    {
+      "path": "/home/jethac/Projects/radish/radish/patches/0045-radish-native-attachment-formats.patch",
+      "bytes": 3330,
+      "sha256": "d161f544cafe35af3371e758057c12ba610aed51405efdb651daf1e9ad52cb4d"
+    },
+    {
+      "path": "/home/jethac/Projects/radish/radish/patches/0045-radish-transient-attachment.patch",
+      "bytes": 1384,
+      "sha256": "29915d5e1e95ccfa70875c1459967c412c610927c4ddcb1e4016970ac9287aca"
+    }
+  ],
+  "source_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-native-attachment-host-0045/independent-v3-source-review.json",
+      "bytes": 2188,
+      "sha256": "dda5a782b05ec439d9b59defc39ccbd26782f75713dea43a6d1e8b448202a21e"
+    },
+    "result": {
+      "status": "PASS current valid compute-only public image/query/layout consumer; supersedesv2validity claim",
+      "release": {
+        "path": "/run/media/jethac/Shared/radish/compute11-native-attachment-host-0045/release.json",
+        "bytes": 2380,
+        "sha256": "aa3dcbe249f67e155e2d8bb97bdb265bc4e2d05794072c1470e396ed3101f433"
+      },
+      "source": {
+        "path": "/run/media/jethac/Shared/radish/compute11-native-attachment-host-0045/probe/attachment_host.c",
+        "bytes": 13724,
+        "sha256": "35db543c24f4435429f3086570a610d0bb57abe11d9e404af214a77ef6d65e9b"
+      },
+      "checks": [
+        "ExactC35db releasepins rechecked. No RenderPass/Framebuffer/GraphicsPipeline creation, destruction, granularity or state remains.",
+        "V3 only removes graphics-only hostobject code and associated claims; all58formatqueries,80image-create/bind/view operations,192valid-stage barriers/16fences and exactusage/size/lifetime checks retain previoussource domain.",
+        "Independent51positive+7negative format sets still exactlymatch nativeFD5 predicate. Transient validattachment-only usage, denseactualmemorytype, max5MiB live bound retained.",
+        "No shaders/transfers/renderexecution/undefinedMSreads. Samepool/fence re-record lifecycle and per-case destruction remain after completion."
+      ],
+      "validity_erratum": {
+        "newer_unconditional_vuids": [
+          "VUID-vkCreateRenderPass-device-10000",
+          "VUID-vkCreateFramebuffer-device-10002",
+          "VUID-vkCreateGraphicsPipelines-device-09662"
+        ],
+        "basis": "Khronos1.3.288 commitbf457079 adds graphics-queue requirement for renderpass/framebuffer; unguarded current validusage applies to these calls independentlyofrequestedAPI. Older1.1.126 source omission is not a waiver.",
+        "prior_claim_scope": "Earlier b4a1 source review checked sample counts/format/usage but missed newer devicequeuevalidity. Earlier renderpass/framebuffer successes are historical implementation observations, not current validpublicqualification. Imagequery/create/view/layout operations remain separately scoped; v3 fixesfutureconsumer."
+      },
+      "limits": "No initializedMS,framebuffer/renderpass creation,graphicsrendering,BLEND/vertex or completeconformance claim."
+    }
+  },
+  "host_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-native-attachment-host-0045/independent-v3-host-build-review.json",
+      "bytes": 2059,
+      "sha256": "698f81b67b88b3fe25461a533f93823d6ea537c11751b9586a9ff36f70593681"
+    },
+    "result": {
+      "status": "PASS finite exact source/build/public-ABI pairing; v3 actual scope ready",
+      "driver_result": {
+        "path": "/run/media/jethac/Shared/radish/compute11-native-transient-build-0045/result.json",
+        "bytes": 4682,
+        "sha256": "4eb22981d796c9c170431ebbfa2ac93b455581f336ff6602ea2ba078f9f2f134"
+      },
+      "driver": {
+        "path": "/run/media/jethac/Shared/radish/compute11-native-transient-build-0045/libvulkan_radish.so",
+        "bytes": 49077912,
+        "sha256": "46a86d2e9fb8e9247efd74abf6a35982a7e45f243ee5167ab0db8680584db778"
+      },
+      "helper_result": {
+        "path": "/run/media/jethac/Shared/radish/compute11-native-attachment-host-v3-build-0045/result.json",
+        "bytes": 589,
+        "sha256": "2cdcbaef5a043d04c541cd176832662201b20023855f57d1910ebdd95003477e"
+      },
+      "helper": {
+        "path": "/run/media/jethac/Shared/radish/compute11-native-attachment-host-v3-build-0045/probe/attachment_host",
+        "bytes": 191504,
+        "sha256": "9ab2c9c984860b326e64be532527c95424b6ab8ada0bcdcae3f775146cbc397f"
+      },
+      "source": {
+        "path": "/run/media/jethac/Shared/radish/compute11-native-attachment-host-v3-build-0045/probe/attachment_host.c",
+        "bytes": 13724,
+        "sha256": "35db543c24f4435429f3086570a610d0bb57abe11d9e404af214a77ef6d65e9b"
+      },
+      "changed_driver_sources_over_a41b": [
+        "src/freedreno/radish/rd_image.c"
+      ],
+      "checks": [
+        "Allsaveddriver/helper sources independentlyrehashed; onlyrd_image d161+29915 changesovera41b, exactfinald5cf candidate. Otherproperties/compiler/shader/allocator/guards unchanged.",
+        "Source35db helper exactlymatches reviewedv3dda5, noillegalgraphics-onlyhostcalls. Helper usespublicheaders only; dependencyfile hasno rd_private/rd_image ABI coupling.",
+        "Both ELF64littleendian machine183 and recordeddriver46a86/helper9ab2 hashes exact. OwnerAArch64compile commandanddependencyretained."
+      ],
+      "scope": "58query/80image-bind-view/192compute-validbarrier/16fence boundedreuse. No rendering/initializedsample/shader/transfer orconformance claim. Historicalv1/v2graphics-hostvalidityerratum retained."
+    }
+  },
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-native-attachment-host-0045/independent-v3-actual-review.json",
+      "bytes": 1670,
+      "sha256": "26bb39d64c316c93f2840d8059feb692ac633305a1568dbae45e052261dcd4c7"
+    },
+    "result": {
+      "status": "PASS current valid public resource query/create/bind/view/layout scope",
+      "run_log": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-native-attachment-v3/probe/run.log",
+        "sha256": "431e0a1ea16fc35aa0e653c852d98a2c6b4c9055beb3645d85a592fbdbf4f8b6"
+      },
+      "actual_counts": {
+        "native_color_format_queries": 51,
+        "native_color_sample_masks": 5,
+        "sample_only_queries": 7,
+        "sample_only_masks": 1,
+        "cases": 16,
+        "created_bound_viewed_images": 80,
+        "compute_valid_layout_barriers": 192,
+        "fences": 16,
+        "shader_dispatches": 0,
+        "transfer_commands": 0,
+        "graphics_host_objects": 0
+      },
+      "checks": [
+        "Independently parsed all51positive/7negative actual formatnumbers against exactpinnedVkFormat enum and reviewednativepredicate rows. No missing/duplicate orunexpectedquery cases.",
+        "All16 sequentialformat/sample cases complete with1/4 counts; lasttwo actualTRANSIENT cases useonlyCOLOR/DS/INPUT. Queryreflection/FDLimage allocation/binding/views andvalidcompute-stage transitions execute withinoriginalsmallbounds.",
+        "Sourcev3dda5 andAArch64/sourcepair698f gatesretaincurrentAPIvalidity: noRenderPass/Framebuffer/GraphicsPipeline constructors. Earlierhistoricalhostobjects are separatelyerrata-labelled, not retroactivelyqualified bythisrun.",
+        "Ownerfullpreflight/postflight clean; runfaultcheckPASS,343msservice/6MiBpeak/0swap. No shader/dataoracle orrendering claim."
+      ],
+      "limitations": "No initializedMS,depth numericalsample,graphics/BLEND/vertex execution,fullformatfamily orVulkanconformance claim. Requiredscalarqueries andcallablecompute/image semantics remainseparate."
+    }
+  },
+  "runner": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-native-attachment-v3/probe/runner-result.json",
+      "bytes": 1025,
+      "sha256": "6a3b73de06a967c0066af8820fc94c681ac553a796293f9a5b32b41eeb3b593f"
+    },
+    "result": {
+      "status": "passed",
+      "mode": "probe",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 158,
+          "sha256": "67a0f84834463ebeffafc05da4233f0cc02f87f977f0abfef8ad754604f8d534"
+        },
+        "resources": {
+          "bytes": 191504,
+          "sha256": "9ab2c9c984860b326e64be532527c95424b6ab8ada0bcdcae3f775146cbc397f"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13621440,
+          "sha256": "a308e439a2510d46d931c610d74b85ccf53564cbeff5c18f2d93d4ce4ffa3726"
+        },
+        "payload.json": {
+          "bytes": 689,
+          "sha256": "429272b1541c489f54b25d81446456cfcaa5e0a44d1920cff7c64ec773e977a9"
+        }
+      },
+      "run_log": {
+        "bytes": 9064,
+        "sha256": "431e0a1ea16fc35aa0e653c852d98a2c6b4c9055beb3645d85a592fbdbf4f8b6"
+      },
+      "scope": "Raw ICD assets/services/faults and consolidated assertions passed. This is experimental compute coverage, not Vulkan conformance."
+    }
+  },
+  "validity_erratum": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-framebuffer-samples-0045/host-object-validity-erratum.json",
+      "bytes": 1598,
+      "sha256": "3fe6e55d1cb01a6284ca306b8ebf462436f3277b7983bc0382da89704c198ec2"
+    },
+    "result": {
+      "status": "mandatory validity erratum, preserve originals",
+      "scope": "Prior claims that renderpass/framebuffer creation is valid simply because it is a hostcommand oncompute-onlydevice are superseded. Samplecountportion of1.1.126 VUIDaudit was correct; current unconditionaldevicequeueVUIDs areadditional.",
+      "invalid_calls": [
+        "vkCreateRenderPass onnogfxdevice VUID10000",
+        "vkCreateFramebuffer onnogfxdevice VUID10002",
+        "vkCreateGraphicsPipelines onnogfxdevice VUID09662"
+      ],
+      "affected_resource_helpers": [
+        "compute11-depth-attachment-host-0045/probe/depth_host.c",
+        "compute11-mixed-depth-layouts-0045/probe/mixed_depth.c",
+        "compute11-native-attachment-host-0045/v1/probe/attachment_host.c",
+        "compute11-native-attachment-host-0045/v2/probe/attachment_host.c"
+      ],
+      "evidence_policy": "Keep rawresults/source/reviews; restrict oldgraphics-hostobjects toimplementationobservations, do notcountwholehelperascurrentvalidpublicqualification. Validindependentimage/query/compute/storageresultsnotretroactivelyinvalidated.",
+      "new_consumer": "35dbv3removesgraphics-onlyhostcalls, unchanged58queries/80images/192barriers/16fences.",
+      "mask_patch": "Four1|4properties remainmandatory/source-backedFD5hardwareandimageformatqueries; no need/claimof graphics-onlyhostobjectexecution tojustifythem.",
+      "primary_links": [
+        "https://github.com/KhronosGroup/Vulkan-Docs/commit/bf457079",
+        "https://docs.vulkan.org/refpages/latest/refpages/source/vkCreateRenderPass.html",
+        "https://docs.vulkan.org/refpages/latest/refpages/source/vkCreateFramebuffer.html"
+      ]
+    }
+  },
+  "scope": "51native-color/sample1|4 queries plus7negative sampled-only/sample1 queries.16sequential cases,80imagebindings/views,192valid-stage barriers,16fences including dense transientusage. No graphics-only renderpass/framebuffer/pipeline calls, shaders/dispatch/transfers/initializedMS/rendering. Historicaloldwholehelper successes are observations for out-of-domain calls; preserve raw evidence. Reproduce on exact46a86, later1f scalar query is separate.",
+  "public_builder": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-public-native-attachment-builder-check-0045/receipt.json",
+      "bytes": 7237,
+      "sha256": "8c45790bcbc4a2b29a00096d925fc8e5da49dc38c4320784a675bdd5551d13ae"
+    },
+    "result": {
+      "units": {
+        "native-attachment": {
+          "commands": [
+            [
+              "clang",
+              "--target=aarch64-linux-gnu",
+              "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+              "-mcpu=cortex-a53",
+              "-Isrc/freedreno/radish/libvulkan_radish.so.p",
+              "-Isrc/freedreno/radish",
+              "-I../mesa/src/freedreno/radish",
+              "-Isrc/freedreno",
+              "-I../mesa/src/freedreno",
+              "-Isrc/freedreno/registers",
+              "-I../mesa/src/freedreno/registers",
+              "-Isrc/freedreno/registers/adreno",
+              "-I../mesa/src/freedreno/registers/adreno",
+              "-Isrc/freedreno/common",
+              "-I../mesa/src/freedreno/common",
+              "-Iinclude",
+              "-I../mesa/include",
+              "-Isrc",
+              "-I../mesa/src",
+              "-Isrc/vulkan/util",
+              "-I../mesa/src/vulkan/util",
+              "-Isrc/vulkan/runtime",
+              "-I../mesa/src/vulkan/runtime",
+              "-I../mesa/src/vulkan/runtime/bvh",
+              "-Isrc/compiler/nir",
+              "-I../mesa/src/compiler/nir",
+              "-Isrc/compiler",
+              "-I../mesa/src/compiler",
+              "-Isrc/util",
+              "-Isrc/util/format",
+              "-Isrc/compiler/spirv",
+              "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include",
+              "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include/libdrm",
+              "-fvisibility=hidden",
+              "-fdiagnostics-color=always",
+              "-D_FILE_OFFSET_BITS=64",
+              "-Wall",
+              "-Winvalid-pch",
+              "-std=c11",
+              "-O2",
+              "-g",
+              "-D__STDC_CONSTANT_MACROS",
+              "-D__STDC_FORMAT_MACROS",
+              "-D__STDC_LIMIT_MACROS",
+              "-DPACKAGE_VERSION=\"27.0.0-devel\"",
+              "-DHAVE_OPENGL=0",
+              "-DHAVE_OPENGL_ES_1=0",
+              "-DHAVE_OPENGL_ES_2=0",
+              "-DMESA_SYSTEM_HAS_KMS_DRM=1",
+              "-DVIDEO_CODEC_VC1DEC=0",
+              "-DVIDEO_CODEC_H264DEC=0",
+              "-DVIDEO_CODEC_H264ENC=0",
+              "-DVIDEO_CODEC_H265DEC=0",
+              "-DVIDEO_CODEC_H265ENC=0",
+              "-DVIDEO_CODEC_AV1DEC=0",
+              "-DVIDEO_CODEC_AV1ENC=0",
+              "-DVIDEO_CODEC_VP9DEC=0",
+              "-DVIDEO_CODEC_MPEG12DEC=0",
+              "-DVIDEO_CODEC_JPEGDEC=0",
+              "-DUSE_LIBGLVND=0",
+              "-DHAVE_LIBDRM",
+              "-DHAVE_GFX_COMPUTE",
+              "-DGLAPI_EXPORT_PROTO_ENTRY_POINTS=1",
+              "-DALLOW_KCMP",
+              "-DMESA_DEBUG=0",
+              "-DENABLE_SHADER_CACHE",
+              "-DHAVE___BUILTIN_BSWAP32",
+              "-DHAVE___BUILTIN_BSWAP64",
+              "-DHAVE___BUILTIN_CLZ",
+              "-DHAVE___BUILTIN_CLZLL",
+              "-DHAVE___BUILTIN_CTZ",
+              "-DHAVE___BUILTIN_EXPECT",
+              "-DHAVE___BUILTIN_FFS",
+              "-DHAVE___BUILTIN_FFSLL",
+              "-DHAVE___BUILTIN_POPCOUNT",
+              "-DHAVE___BUILTIN_POPCOUNTLL",
+              "-DHAVE___BUILTIN_UNREACHABLE",
+              "-DHAVE___BUILTIN_TYPES_COMPATIBLE_P",
+              "-DHAVE___BUILTIN_ADD_OVERFLOW",
+              "-DHAVE_FUNC_ATTRIBUTE_CONST",
+              "-DHAVE_FUNC_ATTRIBUTE_FLATTEN",
+              "-DHAVE_FUNC_ATTRIBUTE_MALLOC",
+              "-DHAVE_FUNC_ATTRIBUTE_PURE",
+              "-DHAVE_FUNC_ATTRIBUTE_UNUSED",
+              "-DHAVE_FUNC_ATTRIBUTE_WARN_UNUSED_RESULT",
+              "-DHAVE_FUNC_ATTRIBUTE_WEAK",
+              "-DHAVE_FUNC_ATTRIBUTE_FORMAT",
+              "-DHAVE_FUNC_ATTRIBUTE_PACKED",
+              "-DHAVE_FUNC_ATTRIBUTE_RETURNS_NONNULL",
+              "-DHAVE_FUNC_ATTRIBUTE_ALIAS",
+              "-DHAVE_FUNC_ATTRIBUTE_NORETURN",
+              "-DHAVE_FUNC_ATTRIBUTE_COLD",
+              "-DHAVE_FUNC_ATTRIBUTE_VISIBILITY",
+              "-DHAVE_UINT128",
+              "-DHAVE_REALLOCARRAY",
+              "-DHAVE_FMEMOPEN",
+              "-DHAVE_MALLINFO2",
+              "-D_GNU_SOURCE",
+              "-DUSE_GCC_ATOMIC_BUILTINS",
+              "-DMAJOR_IN_SYSMACROS",
+              "-DHAS_SCHED_H",
+              "-DHAS_SCHED_GETAFFINITY",
+              "-DHAVE_LINUX_FUTEX_H",
+              "-DHAVE_ENDIAN_H",
+              "-DHAVE_DLFCN_H",
+              "-DHAVE_SYS_SHM_H",
+              "-DHAVE_CET_H",
+              "-DHAVE_POLL_H",
+              "-DHAVE_SYS_INOTIFY_H",
+              "-DHAVE_LINUX_UDMABUF_H",
+              "-DHAVE_STRTOF",
+              "-DHAVE_MKOSTEMP",
+              "-DHAVE_MEMFD_CREATE",
+              "-DHAVE_RANDOM_R",
+              "-DHAVE_FLOCK",
+              "-DHAVE_STRTOK_R",
+              "-DHAVE_GETRANDOM",
+              "-DHAVE_POSIX_FALLOCATE",
+              "-DHAVE_SECURE_GETENV",
+              "-DHAVE_SYSCONF",
+              "-DHAVE_SC_PHYS_PAGES",
+              "-DHAVE_GNU_QSORT_R",
+              "-DHAVE_STRUCT_TIMESPEC",
+              "-DHAVE_PROGRAM_INVOCATION_NAME",
+              "-DHAVE_ISSIGNALING",
+              "-DHAVE_POSIX_MEMALIGN",
+              "-DHAVE_DIRENT_D_TYPE",
+              "-DHAVE_STRTOD_L",
+              "-DHAVE_DLADDR",
+              "-DHAVE_DL_ITERATE_PHDR",
+              "-DHAVE_ZLIB",
+              "-DHAVE_COMPRESSION",
+              "-DHAVE_PTHREAD",
+              "-DHAVE_PTHREAD_SETAFFINITY",
+              "-DDRAW_LLVM_AVAILABLE=0",
+              "-DAMD_LLVM_AVAILABLE=0",
+              "-DGALLIVM_USE_ORCJIT=0",
+              "-DTHREAD_SANITIZER=0",
+              "-DHAVE_DRI2",
+              "-DHAVE_RENDERDOC_INTEGRATION=1",
+              "-Werror=implicit-function-declaration",
+              "-Werror=missing-prototypes",
+              "-Werror=return-type",
+              "-Werror=empty-body",
+              "-Werror=incompatible-pointer-types",
+              "-Werror=int-conversion",
+              "-Wimplicit-fallthrough",
+              "-Wmisleading-indentation",
+              "-Wno-missing-field-initializers",
+              "-Wno-format-truncation",
+              "-fno-math-errno",
+              "-fno-trapping-math",
+              "-Qunused-arguments",
+              "-fno-common",
+              "-Wno-unknown-pragmas",
+              "-Wno-microsoft-enum-value",
+              "-Wno-unused-function",
+              "-Werror=format",
+              "-Wformat-security",
+              "-Werror=thread-safety",
+              "-ffunction-sections",
+              "-fdata-sections",
+              "-Wno-unused-command-line-argument",
+              "-fPIC",
+              "-DVK_USE_PLATFORM_DISPLAY_KHR",
+              "-pthread",
+              "-DXXH_FORCE_ALIGN_CHECK=0",
+              "-DXXH_FORCE_MEMORY_ACCESS=0",
+              "-Wno-override-init",
+              "-Wno-initializer-overrides",
+              "-fuse-ld=lld",
+              "--gcc-install-dir=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+              "-I/home/jethac/Projects/radish/radish/tests",
+              "/home/jethac/Projects/radish/radish/tests/core_native_attachment.c",
+              "-o",
+              "/run/media/jethac/Shared/radish/compute11-public-native-attachment-builder-check-0045/native-attachment",
+              "-ldl",
+              "-pthread"
+            ]
+          ],
+          "files": {
+            "/home/jethac/Projects/radish/radish/tests/core_native_attachment.c": {
+              "sha256": "35db543c24f4435429f3086570a610d0bb57abe11d9e404af214a77ef6d65e9b",
+              "bytes": 13724
+            },
+            "/run/media/jethac/Shared/radish/compute11-public-native-attachment-builder-check-0045/native-attachment": {
+              "sha256": "b0e49a981d7c1fe312465e2e8d1f6ae8ad804ed786e2cb6f3073f105018ce7e8",
+              "bytes": 191312
+            }
+          }
+        }
+      },
+      "scope": "Host build only; probes require the matching internal driver ABI."
+    }
+  }
+}

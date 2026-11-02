@@ -59,6 +59,7 @@ def main():
              ('attachment', 'core_attachment.c', 'core-attachment.comp', 'vulkan1.0'),
              ('descriptor-host', 'core_descriptor_host.c', None, None),
              ('core-lookup', 'core_lookup.c', None, None),
+             ('native-attachment', 'core_native_attachment.c', None, None),
              ('required-atomics', 'core_required_atomics.c', 'core-required-atomics.comp', 'vulkan1.0'),
              ('mixed-depth', 'core_mixed_depth.c', None, None),
              ('combined-ds', 'core_combined_ds.c', 'core-combined-ds.comp', 'vulkan1.0'),

@@ -280,8 +280,9 @@ and evidence ledger. Implement real defects, then run bounded, applicable,
 unmodified CTS partitions and meaningful independent consumers. Preserve
 failures, legal shader environments, complete numerical/guard oracles and the
 original device, memory, time, disk and service controls. Modified CTS harness
-results remain diagnostics. The historical31 property failures are retained; the successive integrated checkpoints reduce 31 to 15 and then 9 messages,
-with the properties case still failed and normative/implementation closure required. None is waived
+results remain diagnostics. The historical31 property failures are retained; the successive integrated checkpoints reduce 31 to 15 to 9 to 0 messages,
+with all five original information cases now Pass. The broader normative matrix
+and applicable CTS remain incomplete. None is waived
 by a compute-only queue. The earlier 40-command
 worklist and bounded resource milestones do not define completion.
 
@@ -368,3 +369,9 @@ messages and 42 stricter custom sRGB mismatches remain; full applicable validati
 and standard obligations are still incomplete. Newer graphics-queue validity
 clarifications also require the next attachment consumer to exclude graphics-only
 host-object calls. These are requirement deltas, not campaign completion.
+
+The valid image/query/layout consumer now passes without graphics-only host
+objects. The original five information cases also pass after source-backed
+scalar corrections, closing their observed 31-message history. This is a bounded
+query milestone: strict sRGB precision and complete applicable compute/shared
+validation remain open, and the later inference campaign is unchanged.

@@ -5,20 +5,20 @@ come before further performance experiments. The selected fcd/d332 inference
 stack is frozen. The intended GPU budget is entirely compute; CPU handles
 graphics. No graphics headroom reservation should be added. Any removal must
 identify a real source reservation and preserve correctness/resource guards;
-this is not authorization to change OS graphics or services. The separate a41b validation candidate includes representative resource corrections and the source-backed subpixel query fix. It remains separate from selected inference and is not a qualified replacement. See the [machine-readable ledger](results/vulkan11-compute-ledger-0045.json).
+this is not authorization to change OS graphics or services. The separate 1f5c validation candidate includes representative resource corrections and the source-backed subpixel query fix. It remains separate from selected inference and is not a qualified replacement. See the [machine-readable ledger](results/vulkan11-compute-ledger-0045.json).
 
 | Area | Evidence | Remaining work |
 | --- | --- | --- |
 | Public 1.1 API, queries and promoted aliases | Real public1.1 negotiation,28core names/23KHR aliases and selected error/query semantics pass | Complete promoted command semantics and applicable API CTS |
 | SPIR-V1.0–1.3 and BASIC | Legal1.1 custom BASIC consumer plus all six original BASIC compute CTS cases and four SPIR-V version cases pass | Full generic shader semantics, legal geometry/precision/memory combinations and remaining applicable shader CTS |
-| Limits and resource combinations | Original guards; five-buffer Q4; combined12UBO+5SSBO+4image+hidden metadata actual PASS | All applicable limits/combinations;9 remaining property messages after source-backed corrections; no queue-based waiver |
+| Limits and resource combinations | Original guards; five-buffer Q4; combined12UBO+5SSBO+4image+hidden metadata actual PASS | All applicable limits/combinations;all 31 observed property messages closed; broader normative limits/CTS remain; no queue-based waiver |
 | Required formats | Static audit of47 rows; four packed storage formats and core SNORM endpoints/OOB now pass representative checks | ETC2/EAC sRGB numerical failure remains; complete required format/filter/transfer CTS |
 | Images and transfers | Representative cube, MS, oversized-array, storage and atomic consumers | Required formats/types/views/mips/alias/copy/filter combinations and CTS |
 | Buffers and robustness | Corrected legal exact-range and subword consumers; original invalid module erratum retained | Scalar/vector/array/alias/atomic and memory-model CTS |
 | Descriptors and lifetimes | Static compaction, dynamic offsets, templates, two-round valid recording consumers | Pools, copies, compatible layouts, destruction/re-record and allocation errors |
 | Memory and synchronization | Guarded allocations, coherent mapping, barriers/events/queries/binary and timeline consumers | Full applicable allocation/alias/cache/visibility/order/lifetime CTS |
 | Advertised optional features | Scoped storage8/16, Int8 and timeline actuals | Their complete conditional contracts and applicable extension CTS; other optional bits remain truthful |
-| Standard-version obligations beyond compute execution |9 current property messages, historical31 and required graphics-oriented format cells retained | Normative applicability or real implementation; no invented compute-only conformance profile |
+| Standard-version obligations beyond compute execution |All31 observed property messages closed; required graphics-oriented format cells and valid domains retained | Normative applicability or real implementation; no invented compute-only conformance profile |
 
 The official pinned CTS is revision
 `5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e`, original binary
@@ -247,3 +247,25 @@ rules for render-pass/framebuffer host construction. Earlier such host-object
 captures remain implementation observations; they do not by themselves qualify
 those calls on a device exposing only a compute queue. Image/query/view/layout
 coverage and graphics execution are separate obligations.
+
+## Valid image resources and the information-query checkpoint
+
+The corrected consumer passes 51 native-color and 7 sampled-only format queries,
+16 image/view cases,80 image bindings/views,192 layout barriers and16 fences.
+It includes dense transient images and calls no graphics-only render-pass,
+framebuffer or graphics-pipeline functions. [The actual source and result](results/native-attachment-resources-0045.json)
+qualify those public image/query/view/layout operations, not initialized samples
+or rendering. Earlier graphics-host-object successes remain preserved as
+implementation observations under the clarified graphics-queue validity rules.
+
+The coherent candidate now passes all five original information cases, including
+`device_properties`. The recorded message history is 31→15→9→0. The last nine
+values come from matched FD5/IR3 hardware representation and conservative native
+limits; they do not reserve compute resources for graphics or expose a graphics
+queue. [Exact fields, reconstruction and actual QPAs](results/official11-native-scalars-info-0045.json)
+retain every earlier failure and the current zero-message result.
+
+This closes the observed information-query failures. It does not close the
+complete normative matrix, shader/resource/memory/synchronization CTS or the 42
+strict custom sRGB mismatches. Selected inference and all original device limits
+remain unchanged; conformance still precedes performance work.

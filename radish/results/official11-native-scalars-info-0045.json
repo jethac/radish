@@ -1,0 +1,607 @@
+{
+  "status": "Original five information cases all PASS; retained property messages31 to15 to9 to0, not complete conformance",
+  "prior": "official11-etc2-subpixel-0045.json",
+  "reconstruction": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-public-stack-0045/reconstruction.json",
+      "bytes": 6921,
+      "sha256": "88845ddc90467723edf04582993f57671a1c906bbd06ccc5d581137d4cc40af9"
+    },
+    "result": {
+      "status": "Exact coherent source reconstruction PASS; actual info still pending",
+      "sources": {
+        "src/freedreno/radish/rd_nir_resources.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/source/src/freedreno/radish/rd_nir_resources.c",
+          "bytes": 14792,
+          "sha256": "49ba435efd7edaa8bee8563cf3121297bbf06091a79f0e3736cbd4b2111c21b9"
+        },
+        "src/freedreno/radish/rd_command.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/source/src/freedreno/radish/rd_command.c",
+          "bytes": 13873,
+          "sha256": "9d8186e6219d989daaad17aaeb04347219295f913301df38dd97a6d3680a2498"
+        },
+        "src/freedreno/radish/rd_transfer.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/source/src/freedreno/radish/rd_transfer.c",
+          "bytes": 2992,
+          "sha256": "a93968bf54724b1a068d7169940952286b73a0eb08f9fe78ee3ef4e608d5812b"
+        },
+        "src/freedreno/radish/rd_nir_robust.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/source/src/freedreno/radish/rd_nir_robust.c",
+          "bytes": 9502,
+          "sha256": "eb7b2f530891fd81fbb5e9d048f2d4c93ad22b10476b0202fb9bca4dda28111c"
+        },
+        "src/freedreno/radish/rd_image.h": {
+          "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/source/src/freedreno/radish/rd_image.h",
+          "bytes": 1793,
+          "sha256": "6c0847bb62fd18eef4e4398a7efc89afde57fbed64d64ab152586078d9555747"
+        },
+        "src/freedreno/radish/rd_memory.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/source/src/freedreno/radish/rd_memory.c",
+          "bytes": 6238,
+          "sha256": "210d76aecc691fefb8765c60fa677f273a4c4d8f6aac4aa2239ed0f78b8cc9f8"
+        },
+        "src/freedreno/radish/rd_sampling.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/source/src/freedreno/radish/rd_sampling.c",
+          "bytes": 6391,
+          "sha256": "2e1832d37ce206d98d7d8c778c231e19565c0d810b133c56ed46af107b360599"
+        },
+        "src/freedreno/radish/rd_query.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/source/src/freedreno/radish/rd_query.c",
+          "bytes": 14017,
+          "sha256": "8f83148f39b51411963dd2b201979f0e7d94f496a3e34b81601278bcdf622978"
+        },
+        "src/freedreno/radish/rd_nir_resources.h": {
+          "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/source/src/freedreno/radish/rd_nir_resources.h",
+          "bytes": 953,
+          "sha256": "0afa75cc3e1c856496b4b52b6c65eca90ac751cbefaf807e3af1421fbca93599"
+        },
+        "src/freedreno/radish/rd_event.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/source/src/freedreno/radish/rd_event.c",
+          "bytes": 4999,
+          "sha256": "324cd260d6cb805d6b8548f9f518df1fba8110dd6bef25ae7f072c7ac17ac49c"
+        },
+        "src/freedreno/radish/rd_sampling.h": {
+          "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/source/src/freedreno/radish/rd_sampling.h",
+          "bytes": 1096,
+          "sha256": "541a70b8aca605c0719aa03d551241da16136d6a17ff801bb5d379d7e6d86932"
+        },
+        "src/freedreno/radish/rd_queue.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/source/src/freedreno/radish/rd_queue.c",
+          "bytes": 45229,
+          "sha256": "da170e7c4d4a1fc9db0da5ded100376fab80b57fb70af2427a4ff81fbbdc4890"
+        },
+        "src/freedreno/radish/meson.build": {
+          "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/source/src/freedreno/radish/meson.build",
+          "bytes": 1777,
+          "sha256": "8b5d6cd1839eb92a2dd9a0038ea3f1c9840935694b7acdfc36a1dd46714d732d"
+        },
+        "src/freedreno/radish/rd_instance.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/source/src/freedreno/radish/rd_instance.c",
+          "bytes": 13859,
+          "sha256": "c5763ff7a03fed9a13aebf291eeae5c182cfb79eba83c1b839d74d67a0682bac"
+        },
+        "src/freedreno/radish/rd_resources.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/source/src/freedreno/radish/rd_resources.c",
+          "bytes": 27624,
+          "sha256": "8c2c129bcc6129d910fd992a2563de1feae7e675619dc0fa571bd664fb380e3b"
+        },
+        "src/freedreno/radish/rd_nir_sampling.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/source/src/freedreno/radish/rd_nir_sampling.c",
+          "bytes": 23572,
+          "sha256": "64bed3318324ec74b2dde5bd2fb3d9b8dc996eb4077d2d09daf1dc2aec6c0b7a"
+        },
+        "src/freedreno/radish/rd_image.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/source/src/freedreno/radish/rd_image.c",
+          "bytes": 52872,
+          "sha256": "d5cf72bedf83eb4ca1ee52ccfac25d093e1df0408ab46ee1412dc2c04d1ba58c"
+        },
+        "src/freedreno/radish/rd_device.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/source/src/freedreno/radish/rd_device.c",
+          "bytes": 6266,
+          "sha256": "b47a9e92dbdcca9ef58f62066c03d3b10a6ba4cb795a7a737ccfe1c4e67021df"
+        },
+        "src/freedreno/radish/rd_private.h": {
+          "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/source/src/freedreno/radish/rd_private.h",
+          "bytes": 8794,
+          "sha256": "b4fd0b4017316865f92f740285bf900fb93fe59189f2bba658fb665d5bc91502"
+        },
+        "src/freedreno/radish/rd_pipeline.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/source/src/freedreno/radish/rd_pipeline.c",
+          "bytes": 25832,
+          "sha256": "20b6542536c5c34b3e36799f8caf4ee5f3bb52ce5557a0ee1fa260182b2d97e7"
+        },
+        "src/freedreno/radish/rd_descriptor.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/source/src/freedreno/radish/rd_descriptor.c",
+          "bytes": 17524,
+          "sha256": "b3cd22b2ace3540674a9cb98c55d4a9fcd62c1ffcb90fabe37fa478791ceb147"
+        }
+      },
+      "patches": [
+        {
+          "path": "/home/jethac/Projects/radish/radish/patches/0045-radish-native-attachment-formats.patch",
+          "bytes": 3330,
+          "sha256": "d161f544cafe35af3371e758057c12ba610aed51405efdb651daf1e9ad52cb4d"
+        },
+        {
+          "path": "/home/jethac/Projects/radish/radish/patches/0045-radish-transient-attachment.patch",
+          "bytes": 1384,
+          "sha256": "29915d5e1e95ccfa70875c1459967c412c610927c4ddcb1e4016970ac9287aca"
+        },
+        {
+          "path": "/home/jethac/Projects/radish/radish/patches/0045-radish-sample-mask-property.patch",
+          "bytes": 498,
+          "sha256": "0f5c74ae5a5753a0fd72e1dec3a4769da59e56599cd43261148132ae59533ddb"
+        },
+        {
+          "path": "/home/jethac/Projects/radish/radish/patches/0045-radish-native-graphics-query.patch",
+          "bytes": 1338,
+          "sha256": "3d99f4dd979cdd6283c7da41c62ecd116ea6f5c7e9507fa1d4677cc630912412"
+        }
+      ]
+    }
+  },
+  "driver": {
+    "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/libvulkan_radish.so",
+    "bytes": 49078336,
+    "sha256": "1f5c27b8f67bc72f8198c00f7397b57eeeb7f2c5cc155d98549091b39dfc996d"
+  },
+  "sample_mask_source": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-sample-mask-property-0045/release.json",
+      "bytes": 3872,
+      "sha256": "2180122da784eb6e7473a1a5165ce23629fa57723a09d84c8b0a8fc2d2287278"
+    },
+    "result": {
+      "status": "private one-property source correction; independent review/build/query pending",
+      "patch": {
+        "path": "/run/media/jethac/Shared/radish/compute11-sample-mask-property-0045/sample-mask-property.patch",
+        "bytes": 498,
+        "sha256": "0f5c74ae5a5753a0fd72e1dec3a4769da59e56599cd43261148132ae59533ddb"
+      },
+      "baseline": {
+        "path": "/run/media/jethac/Shared/radish/compute11-sample-mask-property-0045/baseline/rd_instance.c",
+        "bytes": 13499,
+        "sha256": "90ee6981facc895b930e93b4071c9019aeafaa177d786a7de6bc3ee3137e60dc"
+      },
+      "candidate": {
+        "path": "/run/media/jethac/Shared/radish/compute11-sample-mask-property-0045/candidate/rd_instance.c",
+        "bytes": 13530,
+        "sha256": "27450734332a195549c7cfc595d49bd4071f8c8eefbe1dae7c16bd2378944469"
+      },
+      "primary_sources": {
+        "limits": {
+          "path": "/run/media/jethac/Shared/radish/compute11-resource-closure-0045/limits-v1.1.126.txt",
+          "bytes": 161857,
+          "sha256": "7ed84e6eccddf6717a2554ade18037367eedda6c0b835134da23a063973e0a01"
+        },
+        "ir3": {
+          "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/ir3/ir3_compiler_nir.c",
+          "bytes": 213209,
+          "sha256": "1de097ebc9fba616f3781bae58b927ac0f04796c679873a199c360631c53cf71"
+        },
+        "fd5_emit": {
+          "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/gallium/drivers/freedreno/a5xx/fd5_emit.c",
+          "bytes": 44105,
+          "sha256": "3e005c0b2d9408b6935ae990d57683d766c7a23295fd6bd7ef1289a82743f48e"
+        },
+        "a5xx_registers": {
+          "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/registers/adreno/a5xx.xml",
+          "bytes": 151033,
+          "sha256": "50f640870dab0b98c8d753f3ffd78794cedbc8238ba481c63e5152e798289537"
+        },
+        "interfaces": {
+          "path": "/run/media/jethac/Shared/radish/compute11-sample-mask-property-0045/provenance/v1.1.126-interfaces.txt",
+          "bytes": 130478,
+          "sha256": "1d85e993fc854d3e7258237723dae2c0c8f3bce574103787357ba438d83620e8"
+        }
+      },
+      "basis": [
+        "Pinned1.1 limits675-677 defines the property as SampleMask array element count; minimum1 at2755. It is not a framebuffer attachment count or a general compute resource budget.",
+        "Pinned1.1 interfaces2299-2368 maps sample32*M+B to bitB of 32-bit wordM and restricts SampleMask to fragment shaders. Existing admitted sample counts1/4 fit exactly one word.",
+        "Matched IR3 load_sample_mask_in3118-3125 creates one-component32-bit system input (mask0x1), writes resultdst0; FRAG_RESULT_SAMPLE_MASK5387 marks writes_smask. FD5 emit714-747 routes one SampleMask output register to SP_FS_OUTPUT_CNTL_SAMPLEMASK_REGID and enables FRAG_WRITES_SAMPMASK, ignoring it only for single-sample. Native input/output representation therefore supports one mask word.",
+        "Matched fd5_emit845-850 also writes fixed-function sample mask; a5xx.xml2079 supplies16-bit mask field. This corroborates atmost16 physical sample bits, but is not by itself used as proof of the shader32-bit array element contract."
+      ],
+      "execution_scope": "Hardware-backed mandatory scalar query correction. SampleMask is fragment-only and no exposed queue permits graphics draw execution. This is not a new graphics pipeline/compiler execution qualification; callable graphics-pipeline host behavior remains separately scoped, not converted into no-op success. No compute shader can legally test SampleMask builtin.",
+      "unchanged": [
+        "no sample count expansion beyond1/4",
+        "no shader/compiler/resource/guard change",
+        "no graphics queue or engine",
+        "no feature arithmetic/storage changes",
+        "frozen current official ETC evidence and all strict sRGB failures"
+      ],
+      "next": "Independent source review; integrate with coherent host attachment source checkpoint and check actual property query. No fake fragment execution probe."
+    }
+  },
+  "native_scalar_source": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-native-graphics-query-0045/release.json",
+      "bytes": 6476,
+      "sha256": "71c3f06071e021f2834e1e9dd68ed638c4e7d335e12c3a126c2573319200963b"
+    },
+    "result": {
+      "status": "private source implementation; independent review/build/actual query pending",
+      "patch": {
+        "path": "/run/media/jethac/Shared/radish/compute11-native-graphics-query-0045/native-graphics-query.patch",
+        "bytes": 1338,
+        "sha256": "3d99f4dd979cdd6283c7da41c62ecd116ea6f5c7e9507fa1d4677cc630912412"
+      },
+      "source_pairs": {
+        "rd_instance.c": {
+          "baseline": {
+            "path": "/run/media/jethac/Shared/radish/compute11-native-graphics-query-0045/baseline/rd_instance.c",
+            "bytes": 13530,
+            "sha256": "27450734332a195549c7cfc595d49bd4071f8c8eefbe1dae7c16bd2378944469"
+          },
+          "candidate": {
+            "path": "/run/media/jethac/Shared/radish/compute11-native-graphics-query-0045/candidate/rd_instance.c",
+            "bytes": 13859,
+            "sha256": "c5763ff7a03fed9a13aebf291eeae5c182cfb79eba83c1b839d74d67a0682bac"
+          }
+        },
+        "rd_pipeline.c": {
+          "baseline": {
+            "path": "/run/media/jethac/Shared/radish/compute11-native-graphics-query-0045/baseline/rd_pipeline.c",
+            "bytes": 25457,
+            "sha256": "db56340993aeffdf8e945058864f4f7737f350ed990f559f95be66d553bcd599"
+          },
+          "candidate": {
+            "path": "/run/media/jethac/Shared/radish/compute11-native-graphics-query-0045/candidate/rd_pipeline.c",
+            "bytes": 25832,
+            "sha256": "20b6542536c5c34b3e36799f8caf4ee5f3bb52ce5557a0ee1fa260182b2d97e7"
+          }
+        }
+      },
+      "fields": {
+        "maxVertexInputAttributes": 16,
+        "maxVertexInputBindings": 16,
+        "maxVertexInputAttributeOffset": 2047,
+        "maxVertexInputBindingStride": 2048,
+        "maxVertexOutputComponents": 64,
+        "maxFragmentInputComponents": 64,
+        "maxFragmentOutputAttachments": 4,
+        "maxFragmentCombinedOutputResources": 4
+      },
+      "primary_sources": {
+        "caps": {
+          "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/gallium/drivers/freedreno/freedreno_screen.c",
+          "bytes": 38684,
+          "sha256": "439fbba1f9e6dffc6a7992614c57931fc0478b2d4a7a5c890be437b37005ca3a"
+        },
+        "fd5_emit": {
+          "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/gallium/drivers/freedreno/a5xx/fd5_emit.c",
+          "bytes": 44105,
+          "sha256": "3e005c0b2d9408b6935ae990d57683d766c7a23295fd6bd7ef1289a82743f48e"
+        },
+        "fd5_screen": {
+          "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/gallium/drivers/freedreno/a5xx/fd5_screen.c",
+          "bytes": 3912,
+          "sha256": "1226af37af4cd073fd90fad6eed238c8e7bcc90b00ad9cd8c1120583bb5a0a2d"
+        },
+        "fd_limits": {
+          "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/gallium/drivers/freedreno/freedreno_util.h",
+          "bytes": 15638,
+          "sha256": "90ba27fd0030ac96fd277b3714d13102e901aba63c6bd276f77b4fe3379c14fd"
+        },
+        "a5xx_registers": {
+          "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/registers/adreno/a5xx.xml",
+          "bytes": 151033,
+          "sha256": "50f640870dab0b98c8d753f3ffd78794cedbc8238ba481c63e5152e798289537"
+        },
+        "gallium_caps": {
+          "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/docs/gallium/screen.rst",
+          "bytes": 67069,
+          "sha256": "00c0f05473c58ea3cc3b1470f34eb99128488f34456e022d2a2e53913a2d9699"
+        },
+        "vk_common_pipeline": {
+          "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/vulkan/runtime/vk_pipeline.c",
+          "bytes": 174082,
+          "sha256": "835f9f27c3e4c124d4fc2b77fe113de428bc9d18c24a504cb33a18debd1053ca"
+        },
+        "rd_device": {
+          "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_device.c",
+          "bytes": 6266,
+          "sha256": "b47a9e92dbdcca9ef58f62066c03d3b10a6ba4cb795a7a737ccfe1c4e67021df"
+        },
+        "limits": {
+          "path": "/run/media/jethac/Shared/radish/compute11-resource-closure-0045/limits-v1.1.126.txt",
+          "bytes": 161857,
+          "sha256": "7ed84e6eccddf6717a2554ade18037367eedda6c0b835134da23a063973e0a01"
+        }
+      },
+      "native_basis": {
+        "vertex_inputs_bindings": "Matched fd_init_shader_caps251-255 advertises16 inputs ongen5. FD5 VFD_FETCH/DECODE/DEST banks have32 slots; emitter selects element.vertex_buffer_index and emits one fetch/decode per attribute. Conservative16 independent bindings/attributes fit.",
+        "attribute_offset_stride": "fd5_emit465 folds uint32 src_offset into buffer address with OUT_RELOC; full32-bit STRIDE register emitted478. Native supports required offset2047/stride2048 without narrower truncation; no speculative maximum advertised.",
+        "vertex_outputs_fragment_inputs": "Matched gen5 max_outputs16/max_inputs16 registers, four-component masks in SP_VS_OUT and VFD_DEST. Conservative64 components; native32 paired VS output registers leave built-in representation room.",
+        "fragment_output_resources": "fd5_screen121 uses A5XX_MAX_RENDER_TARGETS8 (freedreno_util.h49). Matched caps FS supports24 shared image/SSBO entries, fd5 native separate render-target states. Conservative4 output attachments and4 combined total resources are below native namespaces; no increase to existing per-stage descriptors or compute budgets."
+      },
+      "valid_domain": "Current unconditional core VUID-vkCreateGraphicsPipelines-device-09662 requires a GRAPHICS-capable queue. Added in primary ed4ba024 (1.3.286, MR6672), outside APIversion/extension guards; applies to clarified1.1 core validusage. No valid graphics pipeline creation on this compute-only device. Physical mandatory scalar queries still initialized; no blanket property waiver.",
+      "typed_rejection": "Override common graphics constructor, which otherwise dereferences absent device.shader_ops, with explicit error and null output handles for invalid graphics-only requests. No success stub or shader work; no valid compute/shared call is rejected. No invalid-call device test is proposed. Existing core public pointer coverage remains relevant.",
+      "exclusions": [
+        "no graphics queue/pipeline engine/rasterization implementation",
+        "no graphics execution qualification",
+        "no invalid graphics-host call counted as public coverage",
+        "no optional geometry/tessellation/dual-source feature change",
+        "no compute compiler/geometry/guard/resource change"
+      ],
+      "composition": "Over exact90ee+samplemask0f5c candidate. Source image d161/transient29915 compose independently. Tested official info remains9 failures until actual query of later candidate; no predicted pass count reported as evidence."
+    }
+  },
+  "native_scalar_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-native-graphics-query-0045/independent-source-review.json",
+      "bytes": 2609,
+      "sha256": "c6e9b47b787511e6b5ac8db6bb558f8d33b2fbe96991b72ca6085d9ffba1ac19"
+    },
+    "result": {
+      "status": "PASS finite native scalar/query and invalid-domain constructor source review",
+      "patch": {
+        "path": "/run/media/jethac/Shared/radish/compute11-native-graphics-query-0045/native-graphics-query.patch",
+        "bytes": 1338,
+        "sha256": "3d99f4dd979cdd6283c7da41c62ecd116ea6f5c7e9507fa1d4677cc630912412"
+      },
+      "release": {
+        "path": "/run/media/jethac/Shared/radish/compute11-native-graphics-query-0045/release.json",
+        "bytes": 6476,
+        "sha256": "71c3f06071e021f2834e1e9dd68ed638c4e7d335e12c3a126c2573319200963b"
+      },
+      "fields": {
+        "maxVertexInputAttributes": 16,
+        "maxVertexInputBindings": 16,
+        "maxVertexInputAttributeOffset": 2047,
+        "maxVertexInputBindingStride": 2048,
+        "maxVertexOutputComponents": 64,
+        "maxFragmentInputComponents": 64,
+        "maxFragmentOutputAttachments": 4,
+        "maxFragmentCombinedOutputResources": 4
+      },
+      "checks": [
+        "All sourcepairs/primarypins rehashed and exact2filediff reconstructed. Onlyeightread-only physical fields+typedgraphicsconstructorrejection added. Existingcompute source/geometry/compiler/options/resource budgets unchanged.",
+        "MatchedFD5 32 VFD fetch/decode/destination banks andgen5 max_inputs16 support reported16 attributes/bindings. Required2047offset folded into full32bitrelocaddress; stride2048 emitted full32bitfetchword. Reportingconservative supportedvalues, notinvented upperhardwaremaximums.",
+        "Matchedgen5 max_inputs/max_outputs16vec4 andfourcomponentmask routing support64usercomponents; paired nativeVSoutputregisterbank leaves builtinrepresentation room.",
+        "FD5 native8MRT and24sharedFS image/SSBO namespace supportconservative4fragmentoutputs/4combinedtotal. No graphicsresource reservation or newcompute allocation is introduced byqueryscalars.",
+        "Eightvalues match pinnedmandatoryminima but minimaalone arenot implementationproof; matchedFD5/IR3 representationisindependentbasis.",
+        "TypedCreateGraphicsPipelines rejects invalid no-graphicsqueue requests withERROR_FEATURE_NOT_PRESENT/nullhandles instead ofcommonconstructor dereferencingabsent shader_ops. Primary09662unconditionalcurrentdomain hasno validcall onthisdevice; no successfulnoop, validcompute rejection or illegal-call devicequalification.",
+        "Current10000/10002/09662 validityerratum remains. Scalarqueries are mandatory independentlyofgraphicscall domain; no blanketgraphicswaiver."
+      ],
+      "remaining": "Ownerhostcomposition, actualphysicalquery and originalinfoCTS required. Thisdoesnotimplement/exercise graphics pipeline,rasterization,blend or vertexformatcoverage; no conformanceclaim fromfilledfields."
+    }
+  },
+  "host_strip": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/independent-host-strip-review.json",
+      "bytes": 1112,
+      "sha256": "80fbed8a3b60e7864574f3e2d25f9924dd33806fa4e7b04c339e02b8153a751f"
+    },
+    "result": {
+      "status": "PASS finite coherent scalar source/host/ELF pairing",
+      "source_changes": [
+        "src/freedreno/radish/rd_instance.c",
+        "src/freedreno/radish/rd_pipeline.c"
+      ],
+      "all_other_source_snapshot_files_exact": true,
+      "inverse_to_46a86_exact": true,
+      "source_candidates_match_reviewed_0f5c_plus_3d99": true,
+      "driver_sha256": "1f5c27b8f67bc72f8198c00f7397b57eeeb7f2c5cc155d98549091b39dfc996d",
+      "strip_sha256": "ce32d3f08a52b8f659f721f87c66a2c92bd76c8f34ea6dc9364ac903efb60f84",
+      "elf_program_headers_and_allocated_sections_exact": true,
+      "allocated_section_count": 26,
+      "runner_sha256": "fe5015f98a29a0338960c84dc60bac3a2c6ae1c2d11345ee7a157eba1107ba04",
+      "runner_byte_exact_to_original_five_info": true,
+      "case_sha256": "7dcfd0ea336b6c131b2b5fd33959950bfe8104d599a3693827bf2a2c50e008ea",
+      "scope": "Nine source-backed physical scalar corrections and invalid graphics-constructor typed rejection only. No shader/resource/queue/guard change. Current measured nine property failures remain until original actual info results. No invalid graphics call qualification.",
+      "device_actions": 0
+    }
+  },
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-required-properties-0045/native-scalars-official-info-review.json",
+      "bytes": 3225,
+      "sha256": "b97b002117033f86d385f4385b22853b32ab405f27e2d01be50c2ecbfb5ec54c"
+    },
+    "result": {
+      "status": "PASS finite actual original five-info partition; all five original cases Pass",
+      "history": [
+        {
+          "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-info/probe",
+          "failure_message_count": 31
+        },
+        {
+          "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-integrated-info/probe",
+          "failure_message_count": 15
+        },
+        {
+          "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-subpixel-info/probe",
+          "failure_message_count": 9
+        },
+        {
+          "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-native-scalars-info/probe",
+          "failure_message_count": 0
+        }
+      ],
+      "actual_nine_fields": {
+        "maxVertexInputAttributes": 16,
+        "maxVertexInputBindings": 16,
+        "maxVertexInputAttributeOffset": 2047,
+        "maxVertexInputBindingStride": 2048,
+        "maxVertexOutputComponents": 64,
+        "maxFragmentInputComponents": 64,
+        "maxFragmentOutputAttachments": 4,
+        "maxFragmentCombinedOutputResources": 4,
+        "maxSampleMaskWords": 1
+      },
+      "cases": [
+        {
+          "name": "dEQP-VK.info.physical_devices",
+          "status": "Pass"
+        },
+        {
+          "name": "dEQP-VK.info.device_features",
+          "status": "Pass"
+        },
+        {
+          "name": "dEQP-VK.info.device_queue_family_properties",
+          "status": "Pass"
+        },
+        {
+          "name": "dEQP-VK.info.device_memory_properties",
+          "status": "Pass"
+        },
+        {
+          "name": "dEQP-VK.info.device_properties",
+          "status": "Pass"
+        }
+      ],
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 168,
+          "sha256": "df4a89a21ed2385235a4b2b978c902591e534e7549d815b2693d7244e372f16b"
+        },
+        "deqp-vk": {
+          "bytes": 97536760,
+          "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+        },
+        "libvulkan.so.1": {
+          "bytes": 703696,
+          "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+        },
+        "info-cases.txt": {
+          "bytes": 172,
+          "sha256": "7dcfd0ea336b6c131b2b5fd33959950bfe8104d599a3693827bf2a2c50e008ea"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13621560,
+          "sha256": "ce32d3f08a52b8f659f721f87c66a2c92bd76c8f34ea6dc9364ac903efb60f84"
+        },
+        "payload.json": {
+          "bytes": 970,
+          "sha256": "92510374fbf89e4dbbe5cf79c85b412b1a00f20156f954c9654d74b4ebfb930d"
+        }
+      },
+      "qpa_sha256": "aa6aef9f99fae309ca51b31efbf82997cc7d25020626572ea2a1f2cd774ceed5",
+      "source_pairing_receipt": "80fbed8a3b60e7864574f3e2d25f9924dd33806fa4e7b04c339e02b8153a751f",
+      "postflight": "1.877s wall/16MiB peak/zero swap; no shaders or commands; clean collection, faults, services.",
+      "scope": "Closes these observed property-validation messages in the unchanged original info case. Not a conformance percentage or proof of all required shader, memory, query, format, precision or synchronization semantics. Graphics-only constructor rejection is not executed/qualified by this query run. Historical invalid-domain graphics host observations and strict42 sRGB mismatches remain scoped separately."
+    }
+  },
+  "runner": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-native-scalars-info/probe/runner-result.json",
+      "bytes": 2124,
+      "sha256": "1ae58c8f22190a4e1c49d5dde96ad61231d17de7f72d1de5c6c227de99e3b18c"
+    },
+    "result": {
+      "status": "passed",
+      "mode": "probe",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 168,
+          "sha256": "df4a89a21ed2385235a4b2b978c902591e534e7549d815b2693d7244e372f16b"
+        },
+        "deqp-vk": {
+          "bytes": 97536760,
+          "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+        },
+        "libvulkan.so.1": {
+          "bytes": 703696,
+          "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+        },
+        "info-cases.txt": {
+          "bytes": 172,
+          "sha256": "7dcfd0ea336b6c131b2b5fd33959950bfe8104d599a3693827bf2a2c50e008ea"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13621560,
+          "sha256": "ce32d3f08a52b8f659f721f87c66a2c92bd76c8f34ea6dc9364ac903efb60f84"
+        },
+        "payload.json": {
+          "bytes": 970,
+          "sha256": "92510374fbf89e4dbbe5cf79c85b412b1a00f20156f954c9654d74b4ebfb930d"
+        }
+      },
+      "run_log": {
+        "bytes": 3393,
+        "sha256": "4bc7d2f655c584cb8312fe54c7bd49baa5378b84d7835cb85ec4a75ec29e2b1d"
+      },
+      "qpa": {
+        "bytes": 17428,
+        "sha256": "aa6aef9f99fae309ca51b31efbf82997cc7d25020626572ea2a1f2cd774ceed5"
+      },
+      "cases": [
+        {
+          "name": "dEQP-VK.info.physical_devices",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.info.device_features",
+          "status": "Pass",
+          "detail": "Query succeeded"
+        },
+        {
+          "name": "dEQP-VK.info.device_queue_family_properties",
+          "status": "Pass",
+          "detail": "Querying queue properties succeeded"
+        },
+        {
+          "name": "dEQP-VK.info.device_memory_properties",
+          "status": "Pass",
+          "detail": "Querying memory properties succeeded"
+        },
+        {
+          "name": "dEQP-VK.info.device_properties",
+          "status": "Pass",
+          "detail": "DeviceProperites query succeeded"
+        }
+      ],
+      "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+    }
+  },
+  "valid_image_scope": "native-attachment-resources-0045.json",
+  "validity_erratum": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-framebuffer-samples-0045/host-object-validity-erratum.json",
+      "bytes": 1598,
+      "sha256": "3fe6e55d1cb01a6284ca306b8ebf462436f3277b7983bc0382da89704c198ec2"
+    },
+    "result": {
+      "status": "mandatory validity erratum, preserve originals",
+      "scope": "Prior claims that renderpass/framebuffer creation is valid simply because it is a hostcommand oncompute-onlydevice are superseded. Samplecountportion of1.1.126 VUIDaudit was correct; current unconditionaldevicequeueVUIDs areadditional.",
+      "invalid_calls": [
+        "vkCreateRenderPass onnogfxdevice VUID10000",
+        "vkCreateFramebuffer onnogfxdevice VUID10002",
+        "vkCreateGraphicsPipelines onnogfxdevice VUID09662"
+      ],
+      "affected_resource_helpers": [
+        "compute11-depth-attachment-host-0045/probe/depth_host.c",
+        "compute11-mixed-depth-layouts-0045/probe/mixed_depth.c",
+        "compute11-native-attachment-host-0045/v1/probe/attachment_host.c",
+        "compute11-native-attachment-host-0045/v2/probe/attachment_host.c"
+      ],
+      "evidence_policy": "Keep rawresults/source/reviews; restrict oldgraphics-hostobjects toimplementationobservations, do notcountwholehelperascurrentvalidpublicqualification. Validindependentimage/query/compute/storageresultsnotretroactivelyinvalidated.",
+      "new_consumer": "35dbv3removesgraphics-onlyhostcalls, unchanged58queries/80images/192barriers/16fences.",
+      "mask_patch": "Four1|4properties remainmandatory/source-backedFD5hardwareandimageformatqueries; no need/claimof graphics-onlyhostobjectexecution tojustifythem.",
+      "primary_links": [
+        "https://github.com/KhronosGroup/Vulkan-Docs/commit/bf457079",
+        "https://docs.vulkan.org/refpages/latest/refpages/source/vkCreateRenderPass.html",
+        "https://docs.vulkan.org/refpages/latest/refpages/source/vkCreateFramebuffer.html"
+      ]
+    }
+  },
+  "limitations": [
+    "The pinned five-case information slice is not the complete normative limits/feature/format matrix or conformance suite. Earlier maxFramebufferLayers gap was not flagged by that old CTS, illustrating the scope limit.",
+    "Nine source-backed native scalar values are queried, not graphics execution. Current graphics-pipeline creation requires a graphics queue; explicit error/null-handle handling avoids the invalid-domain common constructor path, without claiming success or issuing an invalid call.",
+    "Actual valid image/query/view/layout scope ran separately on46a86 before scalar-only1f changes. No initialized multisample/color-rendering or BLEND/vertex-format qualification.",
+    "All42 strict custom sRGB failures remain; the ten original ETC CTS passes use unchanged original thresholds and do not settle full precision obligations.",
+    "Selected inferencefcd/d332, original guards, services, kernel/globalICD/clocks and later full Straylight goals unchanged."
+  ],
+  "reconstruction_note": "Frozen source reconstruction receipt predates the actual info scope; independent actual PASS is retained separately below."
+}

@@ -705,3 +705,11 @@ reconstruction of the a41b validation checkpoint and ten original ETC2/EAC compu
 passes are recorded in `../results/official11-etc2-subpixel-0045.json`. The original
 failed query/reference environment and 42 stricter sRGB mismatches remain preserved.
 This candidate does not replace selected inference or establish full conformance.
+
+After a41b, apply `0045-radish-native-attachment-formats.patch`,
+`0045-radish-transient-attachment.patch`, `0045-radish-sample-mask-property.patch`
+and `0045-radish-native-graphics-query.patch` in order. Exact1f5c reconstruction
+and all five original information-query passes are in
+`../results/official11-native-scalars-info-0045.json`. The valid image consumer
+ran on the intermediate46a86 source and excludes graphics-only host objects.
+No graphics queue, initialized rendering or full-conformance claim is added.
