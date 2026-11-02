@@ -1,0 +1,105 @@
+--- a/src/freedreno/ir3/ir3_shader.h
++++ b/src/freedreno/ir3/ir3_shader.h
+@@ -308,6 +308,7 @@
+    struct ir3_const_allocations allocs;
+ 
+    struct ir3_const_image_dims image_dims;
++   uint32_t ssbo_size_mask, ssbo_size_offset[IR3_MAX_SHADER_BUFFERS];
+ 
+    /* State of ubo access lowered to push consts: */
+    struct ir3_ubo_analysis_state ubo_state;
+@@ -617,6 +618,7 @@
+    uint32_t a5xx_image_buffer_2d;
+    uint32_t a5xx_raw_global_loads;
+    uint32_t a5xx_image_size_consts;
++   uint32_t a5xx_ssbo_size_consts;
+ };
+ 
+ struct ir3_shader_options {
+--- a/src/freedreno/ir3/ir3_nir.c
++++ b/src/freedreno/ir3/ir3_nir.c
+@@ -2046,6 +2046,27 @@
+       const_state->image_dims.count *= 2;
+    }
+ 
++   if (compiler->gen == 5 && v->shader_options.nir_options.a5xx_ssbo_size_consts) {
++      nir_foreach_function_impl(impl, nir) {
++         nir_foreach_block(block, impl) {
++            nir_foreach_instr(instr, block) {
++               if (instr->type != nir_instr_type_intrinsic)
++                  continue;
++               const nir_intrinsic_instr *intr = nir_instr_as_intrinsic(instr);
++               if (intr->intrinsic != nir_intrinsic_get_ssbo_size)
++                  continue;
++               assert(nir_src_is_const(intr->src[0]));
++               unsigned index = nir_src_as_uint(intr->src[0]);
++               assert(index < IR3_MAX_SHADER_BUFFERS);
++               if (const_state->ssbo_size_mask & (1u << index))
++                  continue;
++               const_state->ssbo_size_mask |= 1u << index;
++               const_state->ssbo_size_offset[index] = const_state->image_dims.count++;
++            }
++         }
++      }
++   }
++
+    if ((compiler->gen < 5) && (v->stream_output.num_outputs > 0)) {
+       const_state->num_driver_params =
+          MAX2(const_state->num_driver_params, IR3_DP_VS(vtxcnt_max) + 1);
+--- a/src/freedreno/ir3/ir3_compiler_nir.c
++++ b/src/freedreno/ir3/ir3_compiler_nir.c
+@@ -1338,6 +1338,16 @@
+                          struct ir3_instruction **dst)
+ {
+    struct ir3_builder *b = &ctx->build;
++   if (ctx->compiler->gen == 5 && ctx->so->shader_options.nir_options.a5xx_ssbo_size_consts) {
++      const struct ir3_const_state *state = ir3_const_state(ctx->so);
++      assert(nir_src_is_const(intr->src[0]));
++      unsigned index = nir_src_as_uint(intr->src[0]);
++      assert(index < IR3_MAX_SHADER_BUFFERS && (state->ssbo_size_mask & (1u << index)));
++      unsigned offset = state->allocs.consts[IR3_CONST_ALLOC_IMAGE_DIMS].offset_vec4 * 4 +
++                        state->ssbo_size_offset[index];
++      *dst = create_uniform(b, offset);
++      return;
++   }
+    struct ir3_instruction *ibo = ir3_ssbo_to_ibo(ctx, intr->src[0]);
+    struct ir3_instruction *resinfo = ir3_RESINFO(b, ibo, 0);
+    resinfo->cat6.iim_val = 1;
+--- a/src/freedreno/radish/rd_pipeline.c
++++ b/src/freedreno/radish/rd_pipeline.c
+@@ -341,6 +341,7 @@
+       .nir_options.a5xx_image_buffer_2d = true,
+       .nir_options.a5xx_raw_global_loads = true,
+       .nir_options.a5xx_image_size_consts = true,
++      .nir_options.a5xx_ssbo_size_consts = true,
+       .nir_options.disable_optimizations = flags & VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT,
+       .api_wavesize = IR3_SINGLE_ONLY,
+       .api_subgroup_size = 16,
+--- a/src/freedreno/radish/rd_resources.c
++++ b/src/freedreno/radish/rd_resources.c
+@@ -527,7 +527,7 @@
+    if (!state->image_dims.count ||
+        !ir3_const_can_upload(&state->allocs, IR3_CONST_ALLOC_IMAGE_DIMS, v->constlen))
+       return;
+-   uint32_t values[96] = {0};
++   uint32_t values[128] = {0};
+    assert(state->image_dims.count <= ARRAY_SIZE(values));
+    for (uint32_t i = 0; i < 16; i++) {
+       if (!(state->image_dims.mask & (1u << i)))
+@@ -550,6 +550,16 @@
+          values[offset + 5] = resource.depth;
+       }
+    }
++   for (uint32_t i = 0; i < IR3_MAX_SHADER_BUFFERS; i++) {
++      if (!(state->ssbo_size_mask & (1u << i)))
++         continue;
++      assert(i < pipeline->buffer_count);
++      bool metadata = dispatch->sampling_addresses && i == pipeline->sampling_buffer;
++      const struct rd_descriptor *descriptor = metadata ? NULL :
++         &dispatch->descriptors[pipeline->buffer_descriptors[i]];
++      values[state->ssbo_size_offset[i]] = metadata ? 128 :
++         descriptor->buffer ? descriptor->range : 0;
++   }
+    uint32_t offset = state->allocs.consts[IR3_CONST_ALLOC_IMAGE_DIMS].offset_vec4;
+    uint32_t count = MIN2(align(state->image_dims.count, 4), (v->constlen - offset) * 4);
+    rd_resource_packet(ring, offset, SB4_CS_SHADER, ST4_CONSTANTS, count / 4, count);

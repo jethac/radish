@@ -1,0 +1,183 @@
+{
+  "status": "exact_buffer_size_and_original_RBA_cases_pass; first_convolution_prefix_pass; full_model_pending",
+  "driver": {
+    "bytes": 49015104,
+    "sha256": "32df6c0db213d0999a9cd386a50a800984f9b43a07e4f07574b9cb16cc88edb1"
+  },
+  "public_patch": {
+    "bytes": 4553,
+    "sha256": "2bb42fe21262a3c348630a82438687a356028a66beaff3985cce61c37ce02dc7"
+  },
+  "source_snapshot": "checkpoint-exact-buffer-size-source",
+  "source_build": {
+    "bytes": 6149,
+    "sha256": "b537ce72cab6f44595162c617abfd213a29cbdbf673c4d248eb3a1f737beab77"
+  },
+  "baseline_failure": {
+    "session": 76934,
+    "driver_sha256": "0315b6a6450764d00bee358fbe74633d383afdcfa4c04ad16cda41c8d2ffd0a7",
+    "run_log": {
+      "bytes": 1019220,
+      "sha256": "791294a53940e3ed583e11815235fd1678e4b33208cb279b942dfe7ce81de5f4"
+    },
+    "controls_bytes": [
+      160004,
+      65540
+    ],
+    "controls_pass": true,
+    "failed_range_bytes": 65536,
+    "reported_length_uints": 0,
+    "expected_length_uints": 16384,
+    "unattempted_range_bytes": 131072,
+    "new_gpu_faults": false
+  },
+  "boundary": {
+    "session": 69185,
+    "capture": "/run/media/jethac/Shared/radish/core-compute-0044-exact-buffer-size-first/probe",
+    "receipt": {
+      "status": "passed",
+      "mode": "probe",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 157,
+          "sha256": "4bdf401b8a8f47562b833aa3da52a133e74a4be1fd36e463fcb7a054ed2264e6"
+        },
+        "resources": {
+          "bytes": 736016,
+          "sha256": "da5fc5f072838afb338d70221ef85109eca25f96b7398e1734599d691d871079"
+        },
+        "resources.spv": {
+          "bytes": 7592,
+          "sha256": "de6a1b5fe629ebf2009a138e8501e6f7cdf1e274bd1534db823254a367949629"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 49015104,
+          "sha256": "32df6c0db213d0999a9cd386a50a800984f9b43a07e4f07574b9cb16cc88edb1"
+        },
+        "payload.json": {
+          "bytes": 822,
+          "sha256": "da161fa374029846d7f3138d704e9632f77396512ca86a17e8ab28747f769db3"
+        }
+      },
+      "run_log": {
+        "bytes": 1017511,
+        "sha256": "cabcffc4f0f38594a7d35fd4a3a6a6c676ad503b4aeaf341ad1afff404f0168c"
+      },
+      "scope": "Raw ICD assets/services/faults and consolidated assertions passed. This is experimental compute coverage, not Vulkan conformance."
+    },
+    "range_bytes": [
+      160004,
+      65540,
+      65536,
+      131072
+    ],
+    "short_range_bytes": [
+      1,
+      3,
+      12,
+      16
+    ],
+    "output_words_per_case": 46,
+    "full_guarded_allocations_per_case": 5,
+    "SPIRV_validation": "spirv-val --target-env vulkan1.0 PASS",
+    "descriptor_order": "Completed fence then reset pool, update descriptors, fresh record/bind, submit/wait.",
+    "normal_public_robust_feature": true,
+    "native": {
+      "units": 62,
+      "full": 8,
+      "half": 17,
+      "constlen": 20,
+      "RESINFO_instructions": 0
+    },
+    "conditions": {
+      "service_seconds": 1.319,
+      "peak_mib": 14.6,
+      "swap_mib": 0,
+      "new_gpu_faults": false,
+      "services_active": true
+    }
+  },
+  "prefix": {
+    "session": 27321,
+    "capture": "/run/media/jethac/Shared/radish/full-model-exact-buffer-size-0044/evidence-blob338-sizefix/probe",
+    "receipt": {
+      "status": "passed",
+      "mode": "probe",
+      "contract": {
+        "pins": {
+          "bytes": 6620,
+          "sha256": "380e8e7381c3a88f82a9f8b04a12396a8cf686cbb3609d31e8c3d65922a9fbec"
+        },
+        "runner": {
+          "bytes": 15533,
+          "sha256": "03043f0c6d0504727b6f9affda756e6f17a7f606cf3eed20595d7d5d7e65c0e8"
+        },
+        "packed_a": "1",
+        "blob": "338"
+      },
+      "packed_a": "1",
+      "compile_label": "blob338-sizefix",
+      "run_log": {
+        "bytes": 44732727,
+        "sha256": "54699dae83b4e424a3c5d1a7a5f1e70c15f9cc22fa6d65e9e6a38d45b3444ef3"
+      },
+      "collection_errors": [],
+      "scope": "Execution/source/driver/inode/output checks only; root audits actual native resources and admission separately."
+    },
+    "comparison": {
+      "blob": "338",
+      "values": 218112,
+      "mismatches": 0,
+      "max_abs": 9.059906005859375e-06,
+      "relative_rms": 6.270459388595789e-07,
+      "atol": 0.002,
+      "rtol": 0.002,
+      "first_mismatches": [],
+      "output": {
+        "bytes": 872448,
+        "sha256": "1e4a039402bfe2c86ddd207b9fa148029e00e6142e7f86f6adeaad4b55dc23cd"
+      },
+      "reference": {
+        "path": "/run/media/jethac/Shared/radish/model-prefix-reference-0044-f4vyagtr/fixture/ncnn-blob-338.f32",
+        "bytes": 872448,
+        "sha256": "673bceac55d69be942c3c574777ae42f1911494f9b75e011fc5069195ac429f3",
+        "shape_w_h": [
+          213,
+          1024
+        ],
+        "floats": 218112,
+        "finite": true
+      },
+      "gpu_layer_traces": 22
+    },
+    "conditions": {
+      "service_seconds": 31.349,
+      "peak_mib": 296.1,
+      "swap_mib": 0,
+      "new_gpu_faults": false,
+      "services_active": true
+    },
+    "timing_scope": "Diagnostic disassembly enabled; not a performance baseline."
+  },
+  "historical_RBA_erratum": {
+    "module_sha256": "080526d997f35eb5992519f281f21c52c2eafb8997f3708c58b83652fa2d8160",
+    "defect": "Constant negative OpAccessChain indices fail spirv-val --target-env vulkan1.0.",
+    "scope": "Only the robust-buffer sub-suite using this exact module loses valid-SPIR-V qualification. Its numerical results remain implementation observations. Resource/API/BASIC/private/model suites use other modules and are unaffected.",
+    "affected_passing_captures": [
+      "core-compute-0044-group-bounds",
+      "core-compute-0044-valid-descriptor-order",
+      "core-compute-0044-query-constants-regression"
+    ],
+    "replacement": "Corrected runtime-derived indices preserve the same OOB addresses and all original guards. Valid module de6a1b5f passes all original robustness cases plus exact aligned buffer-size checks in session69185.",
+    "independent_history": {
+      "bytes": 10196,
+      "sha256": "4dfaec48f29e956fd71f7af1e46cc6e292664170ab287c28f4b6bf2698fd33da"
+    }
+  },
+  "limits": "Exact current descriptor byte sizes replace native RESINFO for Radish. Requested robustness, allocation residency guard, arithmetic, geometry, batch policy and all numerical gates are unchanged. Prefix success does not establish full-model correctness. No RBA2/general image robustness/conformance claim."
+}

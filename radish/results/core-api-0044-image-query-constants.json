@@ -161,5 +161,20 @@
     "receipt_sha256": "5cc71b0598eb2b06cb3512f5ba7ccd9e913909020ab4273f6e8a74bd7a7df6b2",
     "SPIRV_exact_measured": true,
     "device_actions": 0
+  },
+  "robust_module_validity_erratum": {
+    "module_sha256": "080526d997f35eb5992519f281f21c52c2eafb8997f3708c58b83652fa2d8160",
+    "defect": "Constant negative OpAccessChain indices fail spirv-val --target-env vulkan1.0.",
+    "scope": "Only the robust-buffer sub-suite using this exact module loses valid-SPIR-V qualification. Its numerical results remain implementation observations. Resource/API/BASIC/private/model suites use other modules and are unaffected.",
+    "affected_passing_captures": [
+      "core-compute-0044-group-bounds",
+      "core-compute-0044-valid-descriptor-order",
+      "core-compute-0044-query-constants-regression"
+    ],
+    "replacement": "Corrected runtime-derived indices preserve the same OOB addresses and all original guards. Valid module de6a1b5f passes all original robustness cases plus exact aligned buffer-size checks in session69185.",
+    "independent_history": {
+      "bytes": 10196,
+      "sha256": "4dfaec48f29e956fd71f7af1e46cc6e292664170ab287c28f4b6bf2698fd33da"
+    }
   }
 }

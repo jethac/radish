@@ -1,5 +1,15 @@
 # Radish status
 
+## 2026-11-02: exact buffer bounds repair the first convolution
+
+A valid small reproducer isolates the model regression: on the prior driver, 160,004- and 65,540-byte SSBO ranges pass, but an exact 65,536-byte range reports zero elements instead of 16,384. The failing convolution's weight range is also an exact multiple of 65,536 bytes. Radish now uploads the current descriptor byte range as a driver constant for buffer-size queries, preserving robustness, actual memory ranges and the unchanged register-residency guard.
+
+ICD `32df6c0d` passes all four 46-word cases, including 65,536 and 131,072 bytes, all original short/dynamic RBA checks, atomics, 40,001-element texel buffers and all five allocation guards. The same first-convolution prefix then passes every one of its 218,112 CPU-reference values (maximum absolute error 9.06e-6), replacing the prior bias-only output. Both runs finish without new faults and preserve the live services. Full-model replay remains a separate pending gate. [Exact source, preserved failure and results](results/core-api-0044-exact-buffer-size.json).
+
+A separate probe validity error is corrected explicitly: the old RBA module `080526d9` contains invalid constant-negative SPIR-V access-chain indices. Its RBA-only results in group-bounds, valid-descriptor-order and query-constants-regression are retained as implementation observations, not valid-core proof. Other suites in those captures are unaffected. Runtime-derived indices preserve the original wrapped addresses and all oracles; the replacement module passes Vulkan1.0 SPIR-V validation and the actual run above. The published builder now validates every generated module. Historical captures and per-result errata remain.
+
+The nineteenth increment is `0044-radish-exact-buffer-size-wip.patch`, after register-budget. The existing `robust` helper now includes the aligned-size discriminator. Source and full inference remain experimental; no batching change, performance acceptance or conformance claim is made.
+
 ## 2026-11-02: model failure localized to the first packed convolution
 
 The unchanged style-projection fixture passes all 1,028 values against its independent reference, including the 530 KB weight-buffer path. This does not qualify every large buffer or the full model.

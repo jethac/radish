@@ -3,7 +3,8 @@ int resource_baseline_main(int argc,char **argv);
 #include "core_resources.c"
 #undef main
 
-enum { RBA_COUNT=40001, RBA_RESULTS=40, RBA_STORES=5 };
+enum { RBA_COUNT=40001, RBA_RESULTS=46, RBA_STORES=5 };
+static const unsigned large_spans[4]={160004,65540,65536,131072};
 enum { RBA_OUTPUT, RBA_UNIFORM, RBA_DATA, RBA_SOURCE_TEXEL, RBA_TARGET_TEXEL };
 static uint32_t rba_source(unsigned i) { return 0x32000000u+i*19u; }
 static uint32_t rba_target(unsigned i) { return 0x41000000u+i*23u; }
@@ -27,6 +28,9 @@ static int rba_verify(struct storage stores[RBA_STORES],unsigned test,unsigned r
    expected[33]=range>=16?0x20001008u+test*0x100u:0;
    expected[34]=rba_target(32752)+7; expected[35]=0x77700003u;
    expected[36]=range/4; expected[37]=0x507033ceu; expected[39]=0x0044abcdu;
+   expected[40]=large_spans[test]/4;
+   const unsigned indices[5]={0,16383,16384,32768,40000};
+   for (unsigned i=0;i<5;i++) expected[41+i]=indices[i]<large_spans[test]/4?rba_source(indices[i]):0;
    memcpy(stores[RBA_OUTPUT].saved+stores[RBA_OUTPUT].binding_words+GUARD,expected,sizeof(expected));
    uint32_t final_data[4]={0x70100001u,0x50200002u,0x50300003u,0x20001008u+test*0x100u};
    for (unsigned i=0;i<4;i++) if (range>=(i+1)*4)
@@ -75,13 +79,13 @@ int main(int argc,char **argv)
       !inside_physical->vk.supported_features.shaderFloat64 && !inside_physical->vk.supported_features.shaderFloat16 &&
       !inside_physical->vk.supported_features.storageBuffer8BitAccess && !inside_physical->vk.supported_features.storageBuffer16BitAccess);
    const struct vk_device_dispatch_table *d=&inside->vk.dispatch_table;
-   VkDescriptorType types[6]={VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC,
+   VkDescriptorType types[7]={VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC,
       VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC,VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC,
-      VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER,VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER};
-   VkDescriptorSetLayoutBinding bindings[6];
-   for (unsigned i=0;i<6;i++) bindings[i]=(VkDescriptorSetLayoutBinding){.binding=i,.descriptorType=types[i],
+      VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER,VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER,VK_DESCRIPTOR_TYPE_STORAGE_BUFFER};
+   VkDescriptorSetLayoutBinding bindings[7];
+   for (unsigned i=0;i<7;i++) bindings[i]=(VkDescriptorSetLayoutBinding){.binding=i,.descriptorType=types[i],
       .descriptorCount=1,.stageFlags=VK_SHADER_STAGE_COMPUTE_BIT};
-   VkDescriptorSetLayoutCreateInfo li={.sType=VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,.bindingCount=6,.pBindings=bindings};
+   VkDescriptorSetLayoutCreateInfo li={.sType=VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,.bindingCount=7,.pBindings=bindings};
    VkDescriptorSetLayout set_layout; SUCCESS(d->CreateDescriptorSetLayout(device,&li,NULL,&set_layout));
    VkPipelineLayoutCreateInfo pi={.sType=VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,.setLayoutCount=1,.pSetLayouts=&set_layout};
    VkPipelineLayout layout; SUCCESS(d->CreatePipelineLayout(device,&pi,NULL,&layout));
@@ -106,7 +110,7 @@ int main(int argc,char **argv)
    struct storage stores[RBA_STORES]={0};
    VkDeviceSize sizes[RBA_STORES]={GUARD*4+RBA_RESULTS*4+64,128,128,GUARD*4+RBA_COUNT*4+64,GUARD*4+RBA_COUNT*4+64};
    VkBufferUsageFlags usages[RBA_STORES]={VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-      VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT,VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT};
+      VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT|VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT};
    for (unsigned i=0;i<RBA_STORES;i++) REQUIRE(storage_create(d,device,&memory_properties,sizes[i],usages[i],&stores[i])==0);
    VkBufferView views[2];
    for (unsigned i=0;i<2;i++) {
@@ -115,7 +119,7 @@ int main(int argc,char **argv)
       SUCCESS(d->CreateBufferView(device,&vi,NULL,&views[i]));
       REQUIRE(rd_buffer_view_from_handle(views[i])->vk.elements==RBA_COUNT);
    }
-   VkDescriptorPoolSize pool_sizes[5]={{VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,1},{VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC,1},
+   VkDescriptorPoolSize pool_sizes[5]={{VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,2},{VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC,1},
       {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC,2},{VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER,1},{VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER,1}};
    VkDescriptorPoolCreateInfo pool_info={.sType=VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,.maxSets=1,
       .poolSizeCount=5,.pPoolSizes=pool_sizes};
@@ -125,11 +129,12 @@ int main(int argc,char **argv)
    VkDescriptorSet set; SUCCESS(d->AllocateDescriptorSets(device,&allocation,&set));
    VkDescriptorBufferInfo initial[4]={{stores[RBA_OUTPUT].buffer,GUARD*4,RBA_RESULTS*4},
       {stores[RBA_UNIFORM].buffer,16,16},{stores[RBA_DATA].buffer,16,16},{stores[RBA_DATA].buffer,16,16}};
-   VkWriteDescriptorSet writes[6];
-   for (unsigned i=0;i<6;i++) writes[i]=(VkWriteDescriptorSet){.sType=VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,.dstSet=set,
-      .dstBinding=i,.descriptorCount=1,.descriptorType=types[i],.pBufferInfo=i<4?&initial[i]:NULL,
-      .pTexelBufferView=i>=4?&views[i-4]:NULL};
-   d->UpdateDescriptorSets(device,6,writes,0,NULL);
+   VkDescriptorBufferInfo big={stores[RBA_SOURCE_TEXEL].buffer,GUARD*4,RBA_COUNT*4};
+   VkWriteDescriptorSet writes[7];
+   for (unsigned i=0;i<7;i++) writes[i]=(VkWriteDescriptorSet){.sType=VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,.dstSet=set,
+      .dstBinding=i,.descriptorCount=1,.descriptorType=types[i],.pBufferInfo=i<4?&initial[i]:i==6?&big:NULL,
+      .pTexelBufferView=i>=4&&i<6?&views[i-4]:NULL};
+   d->UpdateDescriptorSets(device,7,writes,0,NULL);
    VkCommandPoolCreateInfo ci={.sType=VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO}; VkCommandPool command_pool;
    SUCCESS(d->CreateCommandPool(device,&ci,NULL,&command_pool));
    VkCommandBufferAllocateInfo ca={.sType=VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,.commandPool=command_pool,
@@ -159,6 +164,7 @@ int main(int argc,char **argv)
       SUCCESS(d->ResetCommandPool(device,command_pool,0));
       for (unsigned i=1;i<4;i++) initial[i].range=spans[test];
       d->UpdateDescriptorSets(device,3,&writes[1],0,NULL);
+      big.range=large_spans[test]; d->UpdateDescriptorSets(device,1,&writes[6],0,NULL);
       SUCCESS(d->BeginCommandBuffer(command,&begin));
       d->CmdBindPipeline(command,VK_PIPELINE_BIND_POINT_COMPUTE,pipeline);
       uint32_t dynamic[3]={16,16,16};
@@ -170,7 +176,7 @@ int main(int argc,char **argv)
       SUCCESS(d->EndCommandBuffer(command));
       SUCCESS(d->ResetFences(device,1,&fence));
       VkSubmitInfo submit={.sType=VK_STRUCTURE_TYPE_SUBMIT_INFO,.commandBufferCount=1,.pCommandBuffers=&command};
-      printf("RBA_CASE_BEGIN case=%u descriptor_span=%u dynamic_base=32 texels=%u updates_before_bind=1 rerecord=1\n",test,spans[test],RBA_COUNT); fflush(stdout);
+      printf("RBA_CASE_BEGIN case=%u descriptor_span=%u dynamic_base=32 texels=%u large_SSBO_bytes=%u updates_before_bind=1 rerecord=1\n",test,spans[test],RBA_COUNT,large_spans[test]); fflush(stdout);
       SUCCESS(d->QueueSubmit(queue,1,&submit,fence));
       SUCCESS(d->WaitForFences(device,1,&fence,VK_TRUE,5000000000ull));
       SUCCESS(d->InvalidateMappedMemoryRanges(device,RBA_STORES,ranges));
@@ -188,6 +194,6 @@ int main(int argc,char **argv)
    d->DestroyPipeline(device,pipeline,NULL); d->DestroyPipelineLayout(device,layout,NULL);
    d->DestroyDescriptorSetLayout(device,set_layout,NULL); d->DestroyDevice(device,NULL);
    DestroyInstance(instance,NULL); dlclose(lib);
-   puts("PASS RBA: short/dynamic ranges, vector tails, stores, add/CAS, large texel ranges, exact guards; public feature enablement");
+   puts("PASS RBA: short/dynamic ranges, vector tails, stores, add/CAS, large texel and160004byte SSBO ranges/boundary loads, exact guards; public feature enablement");
    return 0;
 }

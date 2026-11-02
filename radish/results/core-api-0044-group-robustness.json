@@ -94,5 +94,20 @@
     "confirmed_affected": "Resource and robust-buffer helpers that update ordinary descriptor sets after binding/recording and before submission. No update-after-bind binding flags/features were enabled.",
     "qualification": "Numerical outputs/guards and execution observations remain recorded; affected command-buffer executions do not establish valid Vulkan-use qualification. Corrected update-before-record/re-record consumers are pending.",
     "unaffected_scope": "This erratum does not automatically invalidate independent API5, event/query, subgroup, private/constant or historical reduction consumers; their ordering is reviewed separately."
+  },
+  "robust_module_validity_erratum": {
+    "module_sha256": "080526d997f35eb5992519f281f21c52c2eafb8997f3708c58b83652fa2d8160",
+    "defect": "Constant negative OpAccessChain indices fail spirv-val --target-env vulkan1.0.",
+    "scope": "Only the robust-buffer sub-suite using this exact module loses valid-SPIR-V qualification. Its numerical results remain implementation observations. Resource/API/BASIC/private/model suites use other modules and are unaffected.",
+    "affected_passing_captures": [
+      "core-compute-0044-group-bounds",
+      "core-compute-0044-valid-descriptor-order",
+      "core-compute-0044-query-constants-regression"
+    ],
+    "replacement": "Corrected runtime-derived indices preserve the same OOB addresses and all original guards. Valid module de6a1b5f passes all original robustness cases plus exact aligned buffer-size checks in session69185.",
+    "independent_history": {
+      "bytes": 10196,
+      "sha256": "4dfaec48f29e956fd71f7af1e46cc6e292664170ab287c28f4b6bf2698fd33da"
+    }
   }
 }

@@ -6,8 +6,11 @@ layout(set=0,binding=2,std430) coherent volatile buffer Data { uvec4 value; };
 layout(set=0,binding=3,std430) coherent volatile buffer Words { uint words[]; };
 layout(set=0,binding=4) uniform usamplerBuffer input_texels;
 layout(set=0,binding=5,r32ui) coherent volatile uniform uimageBuffer target_texels;
+layout(set=0,binding=6,std430) readonly buffer Large { uint large_words[]; };
 void main()
 {
+   uint wrapped_one=gl_GlobalInvocationID.x-1u;
+   uint wrapped_two=gl_GlobalInvocationID.x-2u;
    r[0]=source.x; r[1]=source.y; r[2]=source.z; r[3]=source.w;
    r[4]=value.x; r[5]=value.y; r[6]=value.z; r[7]=value.w;
    value.xz=uvec2(0x50100001u,0x50300003u);
@@ -15,12 +18,12 @@ void main()
    memoryBarrierBuffer();
    r[8]=atomicAdd(value.w,5u);
    r[9]=atomicCompSwap(value.x,0x50100001u,0x70100001u);
-   r[10]=atomicAdd(words[0xffffffffu],1u);
-   r[11]=atomicCompSwap(words[0xfffffffeu],0u,0xbadc0deu);
-   words[0xffffffffu]=0xbadc0001u;
+   r[10]=atomicAdd(words[wrapped_one],1u);
+   r[11]=atomicCompSwap(words[wrapped_two],0u,0xbadc0deu);
+   words[wrapped_one]=0xbadc0001u;
    words[4]=0xbadc0002u;
    memoryBarrierBuffer();
-   r[12]=words[0xffffffffu];
+   r[12]=words[wrapped_one];
    r[13]=words[0x3fffffffu];
    r[14]=words[4];
    r[15]=uint(textureSize(input_texels));
@@ -48,4 +51,7 @@ void main()
    r[35]=imageLoad(target_texels,40000).r;
    r[36]=uint(words.length());
    r[37]=0x507033ceu; r[38]=gl_GlobalInvocationID.x; r[39]=0x0044abcdu;
+   r[40]=uint(large_words.length());
+   r[41]=large_words[0]; r[42]=large_words[16383]; r[43]=large_words[16384];
+   r[44]=large_words[32768]; r[45]=large_words[40000];
 }

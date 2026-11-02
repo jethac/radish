@@ -48,7 +48,8 @@ def main():
         shader = top / 'radish/tests/shaders' / glsl
         argv = command + ['-fuse-ld=lld', '--gcc-install-dir=' + str(gcc),
                   '-I' + str(top / 'radish/tests'), str(source), '-o', str(output / name), '-ldl', '-pthread']
-        commands = [argv, ['glslangValidator', '-V', '--target-env', target, str(shader), '-o', str(output / (name + '.spv'))]]
+        commands = [argv, ['glslangValidator', '-V', '--target-env', target, str(shader), '-o', str(output / (name + '.spv'))],
+                    ['spirv-val', '--target-env', target, str(output / (name + '.spv'))]]
         for index, argv in enumerate(commands):
             with (output / (name + '-%d.log' % index)).open('x') as log:
                 subprocess.run(argv, cwd=entry['directory'], stdout=log, stderr=subprocess.STDOUT, check=True)
