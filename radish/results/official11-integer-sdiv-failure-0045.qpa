@@ -1,0 +1,32 @@
+#sessionInfo releaseName 5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e
+#sessionInfo releaseId 0x5a9cb324
+#sessionInfo targetName "Vulkan Headless"
+#sessionInfo logFormatVersion "0.3.4"
+#sessionInfo vendorID 0x5143
+#sessionInfo deviceID 0x1fa
+#sessionInfo deviceName Radish Adreno 506 (experimental compute)
+#sessionInfo commandLineParameters "--deqp-vk-library-path=/var/tmp/radish/core-compute-core0045-official11-integer-arithmetic-00/libvulkan.so.1 --deqp-case=dEQP-VK.spirv_assembly.instruction.compute.integer_division.sdiv_32bit --deqp-log-filename=/var/tmp/radish/core-compute-core0045-official11-integer-arithmetic-00/case-0.qpa --deqp-log-images=disable --deqp-log-shader-sources=disable --deqp-shadercache=disable --deqp-watchdog=enable --deqp-terminate-on-fail=enable --deqp-terminate-on-device-lost=enable --deqp-archive-dir=/var/tmp/radish/core-compute-core0045-official11-integer-arithmetic-00"
+
+#beginSession
+
+#beginTestCaseResult dEQP-VK.spirv_assembly.instruction.compute.integer_division.sdiv_32bit
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseResult CasePath="dEQP-VK.spirv_assembly.instruction.compute.integer_division.sdiv_32bit" Version="0.3.4" CaseType="SelfValidate">
+ <Section Name="pipeline-compute_shader" Description="Program: pipeline-compute_shader">
+  <ShaderProgram LinkStatus="OK">
+   <InfoLog></InfoLog>
+   <SpirVAssemblySource></SpirVAssemblySource>
+</ShaderProgram>
+  <Number Name="SpirVAssemblyTime" Description="SpirV assembly time" Tag="Time" Unit="ms">1.246000</Number>
+</Section>
+ <Text>Buffers have different values. 12 values differed, first difference at byte 0 values 31 != 14
+</Text>
+ <Number Name="TestDuration" Description="Test case duration in microseconds" Tag="Time" Unit="us">37901</Number>
+ <Result StatusCode="Fail">Fail</Result>
+</TestCaseResult>
+
+#endTestCaseResult
+
+Run took 1.19 seconds
+
+#endSession

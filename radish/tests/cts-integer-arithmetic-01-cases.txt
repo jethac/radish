@@ -1,0 +1,4 @@
+dEQP-VK.spirv_assembly.instruction.compute.mul_extended.signed_32bit
+dEQP-VK.spirv_assembly.instruction.compute.mul_extended.signed_8bit
+dEQP-VK.spirv_assembly.instruction.compute.mul_extended.unsigned_32bit
+dEQP-VK.spirv_assembly.instruction.compute.mul_extended.unsigned_8bit

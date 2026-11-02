@@ -1,0 +1,2680 @@
+{
+  "status": "PASS40 exact original add/sub/mul/div/fma precision cases on unchanged f222/e699",
+  "source": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/source-bounds.json",
+      "bytes": 32084,
+      "sha256": "591441911307a41bb68603ddd0bad42f080dc8d76c857e170ad71f7b8de46e03"
+    },
+    "result": {
+      "status": "SOURCE READY original arithmetic precision40; first add8 immediately usable, no execution inferred",
+      "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+      "cts_binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
+      "inventory": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/cases.txt",
+        "sha256": "30f62498f3bc9ee4b1891c916742df159d02fe2ebcf8981eacc0db50adda8aba",
+        "count": 40
+      },
+      "partitions": [
+        {
+          "id": "00",
+          "operation": "add",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/cases-00-add.txt",
+          "sha256": "45a90c42bdb4ea3199fbba0b5036635d4dd3245d2d34ab79f34361535a832311",
+          "count": 8
+        },
+        {
+          "id": "01",
+          "operation": "sub",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/cases-01-sub.txt",
+          "sha256": "acd126f0f9d01e972057972be8043b5a024aa9f78f7f26c6f1ab5abed78cb7c5",
+          "count": 8
+        },
+        {
+          "id": "02",
+          "operation": "mul",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/cases-02-mul.txt",
+          "sha256": "9be130df61cf767cfe1238a9526b3d0b58b715a84ff1d94f8c62d3b38b25ac64",
+          "count": 8
+        },
+        {
+          "id": "03",
+          "operation": "div",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/cases-03-div.txt",
+          "sha256": "46633db19f79b938e95c86c0b3e5442c5603f2d6cb5dcd123120545b2265f03f",
+          "count": 8
+        },
+        {
+          "id": "04",
+          "operation": "fma",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/cases-04-fma.txt",
+          "sha256": "65e39bb0e50a7de6e32492512e566a84aa9b21e1d1cba452ddb2c1e0fb4412be",
+          "count": 8
+        }
+      ],
+      "catalog": {
+        "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/mustpass/main/vk-default/glsl.txt",
+        "sha256": "d9689e4458392cc3e2d3bdebc0660fb0d73beece6338f6b050056e34796f6cac",
+        "domain": "Complete precision.add/sub/mul/div/fma highp and mediump branches",
+        "registered": 50,
+        "applicable": 40,
+        "excluded": 10,
+        "unclassified": 0
+      },
+      "excluded": [
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.add.highp.vec5",
+          "reason": "Original checkSupport requires longVector for vec5; feature is not advertised. No credit or waiver for other precision groups."
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.add.mediump.vec5",
+          "reason": "Original checkSupport requires longVector for vec5; feature is not advertised. No credit or waiver for other precision groups."
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.div.highp.vec5",
+          "reason": "Original checkSupport requires longVector for vec5; feature is not advertised. No credit or waiver for other precision groups."
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.div.mediump.vec5",
+          "reason": "Original checkSupport requires longVector for vec5; feature is not advertised. No credit or waiver for other precision groups."
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.fma.highp.vec5",
+          "reason": "Original checkSupport requires longVector for vec5; feature is not advertised. No credit or waiver for other precision groups."
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.fma.mediump.vec5",
+          "reason": "Original checkSupport requires longVector for vec5; feature is not advertised. No credit or waiver for other precision groups."
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.mul.highp.vec5",
+          "reason": "Original checkSupport requires longVector for vec5; feature is not advertised. No credit or waiver for other precision groups."
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.mul.mediump.vec5",
+          "reason": "Original checkSupport requires longVector for vec5; feature is not advertised. No credit or waiver for other precision groups."
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.sub.highp.vec5",
+          "reason": "Original checkSupport requires longVector for vec5; feature is not advertised. No credit or waiver for other precision groups."
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.sub.mediump.vec5",
+          "reason": "Original checkSupport requires longVector for vec5; feature is not advertised. No credit or waiver for other precision groups."
+        }
+      ],
+      "source_pins": [
+        {
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/shaderexecutor/vktShaderBuiltinPrecisionTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/source/vktShaderBuiltinPrecisionTests.cpp",
+          "sha256": "b069da145d802fbc0c8f5d8e8011be202770e4ac6f1882f4e4b7b4ec6a7d04df"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/shaderexecutor/vktShaderBuiltinTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/source/vktShaderBuiltinTests.cpp",
+          "sha256": "7c604ab5c4c9e6a5a4fd15663cbff0b583418b5f1659aed5586b9a33f23660b5"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/shaderexecutor/vktShaderExecutor.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/source/vktShaderExecutor.cpp",
+          "sha256": "3f74e51513738145617a131b8e35f4884bad793f3a0ffbb6dd3c08e3774902da"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/shaderexecutor/vktShaderExecutor.hpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/source/vktShaderExecutor.hpp",
+          "sha256": "cb92b0b140cf7853eb59a323b480efee93b60c4a8a05e3a454a1fd3f7cf76ee0"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/vktTestPackage.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/source/vktTestPackage.cpp",
+          "sha256": "272802a91a54f6aade1741c713563936fe01be295ea648bdf85e5cce0e4823d6"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/vktTestCase.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/source/vktTestCase.cpp",
+          "sha256": "093936313a9d8489c2ff08fd493445cc8e4e9235ed559597bcf95bd84c6a97fc"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/framework/common/tcuFloatFormat.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/source/tcuFloatFormat.cpp",
+          "sha256": "af8561e33d965b44b8dc908824a1f669e3e06937d258d763a1bfe80faff4baf2"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/framework/common/tcuFloatFormat.hpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/source/tcuFloatFormat.hpp",
+          "sha256": "00c9b5e6e7ec0fdf7be268a8da2e1a5c77ed0f691c3f249af442ea61bdc09e92"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/framework/common/tcuInterval.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/source/tcuInterval.cpp",
+          "sha256": "4d2f00edd3c189744d1e415962ace1425605c65c5f523acb15b2bfd8c07c59c6"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/framework/common/tcuInterval.hpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/source/tcuInterval.hpp",
+          "sha256": "dbff0fe1b8cfb449c6129ed268047540f7ec1adfb5e73f946557a84b92c3e544"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_instance.c",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/source/rd_instance.c",
+          "sha256": "c5763ff7a03fed9a13aebf291eeae5c182cfb79eba83c1b839d74d67a0682bac"
+        }
+      ],
+      "registration": [
+        "TestPackage1374 glsl/builtin -> BuiltinTests53 precision -> PrecisionTests8782/8792 addBuiltinPrecisionTests",
+        "PrecisionTests8439-8442 and8521: exact five float factories; GenFuncCaseFactory8195-8208 scalar/vec2/vec3/vec4/vec5",
+        "createFuncGroup8693-8711: COMPUTE, mediump/highp FloatFormat; CaseContext7213 default feature mask NONE; no Float16/Float64 feature required",
+        "PrecisionCase7748 checkSupport excludes vec5; global GL_EXT_long_vector enable alone uses no long vector for selected cases. Native/module capability evidence remains actual gate."
+      ],
+      "input_generation": [
+        "DefaultSampling<float>6813-6846 at most16 fixed values: NaN,0,positive/negative min normal,next normal,0.5,1,2,max finite,infinity. Input-range filtering cannot enlarge set.",
+        "Vector genFixeds7161 broadcasts scalar fixeds; at most16 vectors. Void sampling singleton. generateInputs7932-7980 Cartesian fixed tuples plus16384 random attempts, duplicate random tuples skipped.",
+        "defRandoms8751=16384; no test-iteration override authorized. Seed0xdeadbeef+original base seed. Actual checked tuple count must come from original All N inputs passed log."
+      ],
+      "per_case_bounds": [
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.add.highp.scalar",
+          "input_arity": 2,
+          "components": 1,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 8,
+          "output_stride_bytes": 4,
+          "input_payload_upper_bound": 133120,
+          "output_payload_upper_bound": 66560,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.add.highp.vec2",
+          "input_arity": 2,
+          "components": 2,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 16,
+          "output_stride_bytes": 8,
+          "input_payload_upper_bound": 266240,
+          "output_payload_upper_bound": 133120,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.add.highp.vec3",
+          "input_arity": 2,
+          "components": 3,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 32,
+          "output_stride_bytes": 16,
+          "input_payload_upper_bound": 532480,
+          "output_payload_upper_bound": 266240,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.add.highp.vec4",
+          "input_arity": 2,
+          "components": 4,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 32,
+          "output_stride_bytes": 16,
+          "input_payload_upper_bound": 532480,
+          "output_payload_upper_bound": 266240,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.add.mediump.scalar",
+          "input_arity": 2,
+          "components": 1,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 8,
+          "output_stride_bytes": 4,
+          "input_payload_upper_bound": 133120,
+          "output_payload_upper_bound": 66560,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.add.mediump.vec2",
+          "input_arity": 2,
+          "components": 2,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 16,
+          "output_stride_bytes": 8,
+          "input_payload_upper_bound": 266240,
+          "output_payload_upper_bound": 133120,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.add.mediump.vec3",
+          "input_arity": 2,
+          "components": 3,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 32,
+          "output_stride_bytes": 16,
+          "input_payload_upper_bound": 532480,
+          "output_payload_upper_bound": 266240,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.add.mediump.vec4",
+          "input_arity": 2,
+          "components": 4,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 32,
+          "output_stride_bytes": 16,
+          "input_payload_upper_bound": 532480,
+          "output_payload_upper_bound": 266240,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.sub.highp.scalar",
+          "input_arity": 2,
+          "components": 1,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 8,
+          "output_stride_bytes": 4,
+          "input_payload_upper_bound": 133120,
+          "output_payload_upper_bound": 66560,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.sub.highp.vec2",
+          "input_arity": 2,
+          "components": 2,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 16,
+          "output_stride_bytes": 8,
+          "input_payload_upper_bound": 266240,
+          "output_payload_upper_bound": 133120,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.sub.highp.vec3",
+          "input_arity": 2,
+          "components": 3,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 32,
+          "output_stride_bytes": 16,
+          "input_payload_upper_bound": 532480,
+          "output_payload_upper_bound": 266240,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.sub.highp.vec4",
+          "input_arity": 2,
+          "components": 4,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 32,
+          "output_stride_bytes": 16,
+          "input_payload_upper_bound": 532480,
+          "output_payload_upper_bound": 266240,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.sub.mediump.scalar",
+          "input_arity": 2,
+          "components": 1,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 8,
+          "output_stride_bytes": 4,
+          "input_payload_upper_bound": 133120,
+          "output_payload_upper_bound": 66560,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.sub.mediump.vec2",
+          "input_arity": 2,
+          "components": 2,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 16,
+          "output_stride_bytes": 8,
+          "input_payload_upper_bound": 266240,
+          "output_payload_upper_bound": 133120,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.sub.mediump.vec3",
+          "input_arity": 2,
+          "components": 3,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 32,
+          "output_stride_bytes": 16,
+          "input_payload_upper_bound": 532480,
+          "output_payload_upper_bound": 266240,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.sub.mediump.vec4",
+          "input_arity": 2,
+          "components": 4,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 32,
+          "output_stride_bytes": 16,
+          "input_payload_upper_bound": 532480,
+          "output_payload_upper_bound": 266240,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.mul.highp.scalar",
+          "input_arity": 2,
+          "components": 1,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 8,
+          "output_stride_bytes": 4,
+          "input_payload_upper_bound": 133120,
+          "output_payload_upper_bound": 66560,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.mul.highp.vec2",
+          "input_arity": 2,
+          "components": 2,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 16,
+          "output_stride_bytes": 8,
+          "input_payload_upper_bound": 266240,
+          "output_payload_upper_bound": 133120,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.mul.highp.vec3",
+          "input_arity": 2,
+          "components": 3,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 32,
+          "output_stride_bytes": 16,
+          "input_payload_upper_bound": 532480,
+          "output_payload_upper_bound": 266240,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.mul.highp.vec4",
+          "input_arity": 2,
+          "components": 4,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 32,
+          "output_stride_bytes": 16,
+          "input_payload_upper_bound": 532480,
+          "output_payload_upper_bound": 266240,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.mul.mediump.scalar",
+          "input_arity": 2,
+          "components": 1,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 8,
+          "output_stride_bytes": 4,
+          "input_payload_upper_bound": 133120,
+          "output_payload_upper_bound": 66560,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.mul.mediump.vec2",
+          "input_arity": 2,
+          "components": 2,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 16,
+          "output_stride_bytes": 8,
+          "input_payload_upper_bound": 266240,
+          "output_payload_upper_bound": 133120,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.mul.mediump.vec3",
+          "input_arity": 2,
+          "components": 3,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 32,
+          "output_stride_bytes": 16,
+          "input_payload_upper_bound": 532480,
+          "output_payload_upper_bound": 266240,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.mul.mediump.vec4",
+          "input_arity": 2,
+          "components": 4,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 32,
+          "output_stride_bytes": 16,
+          "input_payload_upper_bound": 532480,
+          "output_payload_upper_bound": 266240,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.div.highp.scalar",
+          "input_arity": 2,
+          "components": 1,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 8,
+          "output_stride_bytes": 4,
+          "input_payload_upper_bound": 133120,
+          "output_payload_upper_bound": 66560,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.div.highp.vec2",
+          "input_arity": 2,
+          "components": 2,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 16,
+          "output_stride_bytes": 8,
+          "input_payload_upper_bound": 266240,
+          "output_payload_upper_bound": 133120,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.div.highp.vec3",
+          "input_arity": 2,
+          "components": 3,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 32,
+          "output_stride_bytes": 16,
+          "input_payload_upper_bound": 532480,
+          "output_payload_upper_bound": 266240,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.div.highp.vec4",
+          "input_arity": 2,
+          "components": 4,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 32,
+          "output_stride_bytes": 16,
+          "input_payload_upper_bound": 532480,
+          "output_payload_upper_bound": 266240,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.div.mediump.scalar",
+          "input_arity": 2,
+          "components": 1,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 8,
+          "output_stride_bytes": 4,
+          "input_payload_upper_bound": 133120,
+          "output_payload_upper_bound": 66560,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.div.mediump.vec2",
+          "input_arity": 2,
+          "components": 2,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 16,
+          "output_stride_bytes": 8,
+          "input_payload_upper_bound": 266240,
+          "output_payload_upper_bound": 133120,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.div.mediump.vec3",
+          "input_arity": 2,
+          "components": 3,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 32,
+          "output_stride_bytes": 16,
+          "input_payload_upper_bound": 532480,
+          "output_payload_upper_bound": 266240,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.div.mediump.vec4",
+          "input_arity": 2,
+          "components": 4,
+          "tuple_upper_bound": 16640,
+          "input_stride_bytes": 32,
+          "output_stride_bytes": 16,
+          "input_payload_upper_bound": 532480,
+          "output_payload_upper_bound": 266240,
+          "dispatch_upper_bound": 130,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.fma.highp.scalar",
+          "input_arity": 3,
+          "components": 1,
+          "tuple_upper_bound": 20480,
+          "input_stride_bytes": 12,
+          "output_stride_bytes": 4,
+          "input_payload_upper_bound": 245760,
+          "output_payload_upper_bound": 81920,
+          "dispatch_upper_bound": 160,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.fma.highp.vec2",
+          "input_arity": 3,
+          "components": 2,
+          "tuple_upper_bound": 20480,
+          "input_stride_bytes": 24,
+          "output_stride_bytes": 8,
+          "input_payload_upper_bound": 491520,
+          "output_payload_upper_bound": 163840,
+          "dispatch_upper_bound": 160,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.fma.highp.vec3",
+          "input_arity": 3,
+          "components": 3,
+          "tuple_upper_bound": 20480,
+          "input_stride_bytes": 48,
+          "output_stride_bytes": 16,
+          "input_payload_upper_bound": 983040,
+          "output_payload_upper_bound": 327680,
+          "dispatch_upper_bound": 160,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.fma.highp.vec4",
+          "input_arity": 3,
+          "components": 4,
+          "tuple_upper_bound": 20480,
+          "input_stride_bytes": 48,
+          "output_stride_bytes": 16,
+          "input_payload_upper_bound": 983040,
+          "output_payload_upper_bound": 327680,
+          "dispatch_upper_bound": 160,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.fma.mediump.scalar",
+          "input_arity": 3,
+          "components": 1,
+          "tuple_upper_bound": 20480,
+          "input_stride_bytes": 12,
+          "output_stride_bytes": 4,
+          "input_payload_upper_bound": 245760,
+          "output_payload_upper_bound": 81920,
+          "dispatch_upper_bound": 160,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.fma.mediump.vec2",
+          "input_arity": 3,
+          "components": 2,
+          "tuple_upper_bound": 20480,
+          "input_stride_bytes": 24,
+          "output_stride_bytes": 8,
+          "input_payload_upper_bound": 491520,
+          "output_payload_upper_bound": 163840,
+          "dispatch_upper_bound": 160,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.fma.mediump.vec3",
+          "input_arity": 3,
+          "components": 3,
+          "tuple_upper_bound": 20480,
+          "input_stride_bytes": 48,
+          "output_stride_bytes": 16,
+          "input_payload_upper_bound": 983040,
+          "output_payload_upper_bound": 327680,
+          "dispatch_upper_bound": 160,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.fma.mediump.vec4",
+          "input_arity": 3,
+          "components": 4,
+          "tuple_upper_bound": 20480,
+          "input_stride_bytes": 48,
+          "output_stride_bytes": 16,
+          "input_payload_upper_bound": 983040,
+          "output_payload_upper_bound": 327680,
+          "dispatch_upper_bound": 160,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid_each": [
+            128,
+            1,
+            1
+          ],
+          "last_grid_may_be_smaller": true
+        }
+      ],
+      "execution": [
+        "ShaderSpec.hpp default localSizeX=1; compute executor local y/z1. One pipeline/two SSBOs, no shared variables/images/graphics/optional feature chain.",
+        "Executor2350-2388 allocates input/output payload; selected maximum983040+327680=1310720B plus implementation alignment. CPU sample arrays/set/reference additionally count toward unchanged384MiB cap.",
+        "Executor3315-3400 chunks at physical maxWorkGroupSizeX128, dispatch grid numToExec x1x1, local1; update descriptor byte offsets each128 tuples; offset multiples512 or more satisfy advertised64B alignment.",
+        "Per chunk original COMPUTE_SHADER/SHADER_WRITE -> HOST/HOST_READ barrier and submit/wait; readback after all chunks. Source bounds130 dispatches binary or160 FMA per case. No aggregation or vector-width/work changes."
+      ],
+      "oracle": [
+        "Original interval engine only: format-specific roundOut/convert, interval containment of all output components. Up to100 failure messages but every tuple checked; nonzero errors fail. Original exceptional/subnormal/NaN allowance and fallback interval path retained.",
+        "Highp FloatFormat(-126,127,23,true,MAYBE subnormal,YES inf,MAYBE NaN); mediump(-14,13,10,false,MAYBE). This is original CTS scope, not an invented universal IEEE bit-exact oracle.",
+        "Add/Sub/Mul operators use interval arithmetic with format rounding; Div3317 uses original source error interval including its existing GLSL3.10 assumption/TODO. No tolerance changes.",
+        "Fma6166 reference expands a*b+c; passage qualifies this original interval oracle, not a stronger single-rounding or native fused-op requirement."
+      ],
+      "partition_controls": [
+        "Five disjoint eight-case scopes, add first for real timing/log evidence before following scopes. Original90s/384MiB/128MiBswap/8MiB output+64MiB reserve/per-case fault stop unchanged.",
+        "Source maxima are resource bounds, not runtime promises; if first scope reveals limit pressure split only still-unexecuted names, never shrink samples/oracles or raise controls.",
+        "Original compute precision cases include deterministic edge values plus random distribution, not exhaustive float space; no whole arithmetic or whole Vulkan conformance claim."
+      ]
+    }
+  },
+  "add_source_counterpart": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/independent-add8-source-review.json",
+      "bytes": 3083,
+      "sha256": "d4f8bedec618da71f30408af661bdb130d9ec4cd23e1664027ae0019aa544fe8"
+    },
+    "result": {
+      "status": "PASS first original precision.add8 source counterpart; remaining32 separate review",
+      "reviewed_utc": "2026-11-02T22:45:01.219478+00:00",
+      "source_bounds_sha256": "591441911307a41bb68603ddd0bad42f080dc8d76c857e170ad71f7b8de46e03",
+      "inventory_sha256": "45a90c42bdb4ea3199fbba0b5036635d4dd3245d2d34ab79f34361535a832311",
+      "cases": [
+        "dEQP-VK.glsl.builtin.precision.add.highp.scalar",
+        "dEQP-VK.glsl.builtin.precision.add.highp.vec2",
+        "dEQP-VK.glsl.builtin.precision.add.highp.vec3",
+        "dEQP-VK.glsl.builtin.precision.add.highp.vec4",
+        "dEQP-VK.glsl.builtin.precision.add.mediump.scalar",
+        "dEQP-VK.glsl.builtin.precision.add.mediump.vec2",
+        "dEQP-VK.glsl.builtin.precision.add.mediump.vec3",
+        "dEQP-VK.glsl.builtin.precision.add.mediump.vec4"
+      ],
+      "checks": [
+        "Rehashed all11 source/snapshot pairs and catalog. Traced TestPackage glsl\u2192Builtin precision\u2192add float factory\u2192highp/mediump\u2192scalar/vec2/3/4. Exact8 names; only2vec5 siblings require absent longVector.",
+        "Selected GLSL compute/default Context, no optional float16/64 arithmetic feature. Mediump precision is a float precision qualifier, not a claim to expose Float16 SPIR-V capability. GL_EXT_long_vector enable line introduces no selected5-component variable. Actual module/native evidence still required.",
+        "Default fixed sampling at most16 values/argument, full Cartesian256 plus unchanged16384 random attempts with duplicate skipping; at most16640 tuples/case. No iteration override, reduced fixed set, changed random seed or shortened vector workload.",
+        "Input/output std430 strides4/8/16 and vec3 padded16; max binary input532480B and output266240B/twoSSBO. Executor dispatches at most128 values each (advertised maxWorkGroupSize.x), local1, max130 dispatches/submissions per case; exact final shorter batch retained. Descriptor offsets progress by128*stride so preserve current64B alignment, ranges exact active batch spans.",
+        "Original highp(-126,127,23) and mediump(-14,13,10) FloatFormat interval oracle, rounded input intervals, Add::roundOut/convert, exceptional/denormal/NaN policy, fallback interval pass and all-component containment retained. All tuples checked, failure count causes Fail; no customepsilon/bit-exact or IEEE full-conformance claim.",
+        "Compute\u2192HOST buffer barrier, submit-and-wait per batch, final buffer invalidate/readback use existing executor; no graphics calls/shaders or allocation-canary proof."
+      ],
+      "admission": "Source gate clear for original add8 under unchanged90s/384MiB/8MiBlog/fault controls. Native geometry/actual tuple counts and numerical outcomes remain actual gates; no inference all8 fit from source alone.",
+      "bounds": {
+        "cases": 8,
+        "tuple_upper_bound_per_case": 16640,
+        "max_input_bytes": 532480,
+        "max_output_bytes": 266240,
+        "max_local": 1,
+        "max_grid": 128,
+        "max_dispatches_per_case": 130
+      },
+      "limits": [
+        "Does not qualify remaining sub/mul/div/fma32 yet.",
+        "No source/driver/oracle mutation or device execution by reviewer."
+      ]
+    }
+  },
+  "full_source_counterpart": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/independent-source-review.json",
+      "bytes": 3062,
+      "sha256": "bae7648389420b40a6b148250e5e3c1a7fb0da7a12440a477d6dc799a0533bc8"
+    },
+    "result": {
+      "status": "PASS complete original arithmetic precision40 source counterpart; add8 gate retained separately",
+      "reviewed_utc": "2026-11-02T22:45:27.672048+00:00",
+      "source_bounds_sha256": "591441911307a41bb68603ddd0bad42f080dc8d76c857e170ad71f7b8de46e03",
+      "first_add8_review_sha256": "d4f8bedec618da71f30408af661bdb130d9ec4cd23e1664027ae0019aa544fe8",
+      "case_inventory_sha256": "30f62498f3bc9ee4b1891c916742df159d02fe2ebcf8981eacc0db50adda8aba",
+      "inventory": {
+        "registered": 50,
+        "applicable": 40,
+        "excluded_long_vector": 10,
+        "partitions": [
+          8,
+          8,
+          8,
+          8,
+          8
+        ],
+        "exact_disjoint_union": true
+      },
+      "checks": [
+        "All11 source/catalog pins were verified in firstadd8 review; exact5factory\u00d72precision\u00d74shape registration and whole40/10vec5 exclusion set independently reconstructed. No other precision groups or optionalfloat16/64 cases admitted by this gate.",
+        "Binary Sub/Mul follow same sampling/layout/executor as reviewedAdd. Full Cartesian fixed256 plus16384 random attempts bounds16640tuples; Fma arity3 fixed4096+16384 bounds20480. Random duplicate elision and vector broadcast fixed sampling unchanged; no input truncation or testiteration override.",
+        "Sub::doApply outward difference intervals, Mul::doApply signed interval products+exceptional infinity\u00d7zero handling retained. Div uses original2.5ULP interval inside defined denominator range plus original bounds/zero/overflow exceptional policies and existing sourceTODO. No added tolerance or narrower original expectation.",
+        "Original Fma reference DerivedFunc expands x.a*x.b+x.c with original rounded interval operations; testing this oracle is not a stronger correctly-rounded single-fused operation requirement. All32 remaining cases use existing all-component interval containment and retry/fallback original comparison path; every generated tuple checked and nonzeroerrors Fail.",
+        "Executor local1/batches\u2264128, twoSSBO exact active descriptor ranges and completed submissions before descriptor reuse. Atmost130 binary or160 Fma dispatches/case. Input max983040B/output327680B,total1310720B; no shared memory, graphics objects or optional arithmetic features required.",
+        "Native/module requirements and real tuple counts stay actual gates; source allows compiler choices and mediump lowered/fullprecision implementation without manufacturing feature bits."
+      ],
+      "admission": "All five independent original8-case partitions source-ready under unchanged90s384MiB/8MiBlog/per-casefaultstop. Firstadd8 already released; subsequent groups can follow terminalfeedback without an omnibus actual gate. Any actual failure must be preserved and source/compiler diagnosed.",
+      "limits": [
+        "No actual pass inferred from source; finite original interval oracle only, no universal IEEE/arithmetic precision completion claim.",
+        "Original logical buffer output checking, no allocation-padding canaries or concurrency evidence.",
+        "Existing42 strict custom sRGB failures remain untouched."
+      ]
+    }
+  },
+  "alignment_clarification": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/alignment-metadata-clarification.json",
+      "bytes": 681,
+      "sha256": "3b7ab2f1788b85386fe265362f39d566b35f842685d1c03e7553aeefdccccbc2"
+    },
+    "result": {
+      "status": "Metadata clarification only; original source/inventory/gates unchanged",
+      "source_plan_sha256": "591441911307a41bb68603ddd0bad42f080dc8d76c857e170ad71f7b8de46e03",
+      "correction": "Source plan execution prose says advertised64B descriptor alignment. Current pinned rd_instance.c line220 actually advertises minStorageBufferOffsetAlignment16. The64B property is minMemoryMapAlignment/nonCoherentAtomSize. All selected descriptor offsets advance128 tuples times stride>=4B, hence multiples512B satisfy actual16B alignment. No validity, allocation, work, or runner change.",
+      "actual_minStorageBufferOffsetAlignment": 16,
+      "minimum_nonzero_offset_step_bytes": 512
+    }
+  },
+  "runner_counterpart": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/runner-review.json",
+      "bytes": 3926,
+      "sha256": "886f772ecad885a41857bd4939f7b7444bfbeb3c0b7b25b8b297eb53ecdd0cc0"
+    },
+    "result": {
+      "status": "PASS finite five original runner derivatives",
+      "source_plan_sha256": "591441911307a41bb68603ddd0bad42f080dc8d76c857e170ad71f7b8de46e03",
+      "baseline_runner": "/run/media/jethac/Shared/radish/compute11-official-final-common-runner-0045/device-official-cts.py",
+      "baseline_runner_sha256": "f3a41e53576fa08dc1e421bedb9c7f3a50be51d07d9fd7bd973b3955d53eccae",
+      "owner_list_sha256": "935126208ddc2bc64a83610bc6c6972f8efdf7fcb0e7868c4c1a0012aeb39cef",
+      "checks": [
+        "Allfive runner bodies byte-identical to passed final-common original engine after only approved SHA/count constants.",
+        "Five complete8-case inventories ordered/disjoint/exact original40; allhost assets and argv pins rehashed.",
+        "Original0e715 executable and75699loader/f222-e699 driver; no modified4295 fixture permitted.",
+        "Same90s/384MiB/8MiB output allowance/64MiB reserve/per-case fault stop and exactQPA accounting."
+      ],
+      "runners": [
+        {
+          "runner": "/run/media/jethac/Shared/radish/compute11-official-precision-00-add-runner-0045/device-official-cts.py",
+          "sha256": "3fad155f39fa24a4da9270811e699b663d7fbe23dfd3d0f3c0991b281599a082",
+          "inventory_sha256": "45a90c42bdb4ea3199fbba0b5036635d4dd3245d2d34ab79f34361535a832311",
+          "count": 8,
+          "argv_sha256": "fbed5ec61cd6e5ae6c5a5a902fe41ad90d3af580be0f937d06e9ce8d5457ad3e",
+          "hostcheck_sha256": "0c8e4373aeab29c87f1a4b4b3d6294c61237c7f81bad22197f45c2ac47b9a001"
+        },
+        {
+          "runner": "/run/media/jethac/Shared/radish/compute11-official-precision-01-sub-runner-0045/device-official-cts.py",
+          "sha256": "ab5b74a40ca04dfef74bbf30c999e5dee5458888b61fee8ab02093fee2bfc14e",
+          "inventory_sha256": "acd126f0f9d01e972057972be8043b5a024aa9f78f7f26c6f1ab5abed78cb7c5",
+          "count": 8,
+          "argv_sha256": "0560ba0f76098b93189554cbbfc22f099e14d98e729565c54f671d6b5bbf7388",
+          "hostcheck_sha256": "9e246b4574d75ccaa2ce6023305969acfc51827c72ffa1089ace0a2a73268e26"
+        },
+        {
+          "runner": "/run/media/jethac/Shared/radish/compute11-official-precision-02-mul-runner-0045/device-official-cts.py",
+          "sha256": "12e024c36ca71c1d9a54c79941852216838b86d0684877b6ba4a4de058db7f36",
+          "inventory_sha256": "9be130df61cf767cfe1238a9526b3d0b58b715a84ff1d94f8c62d3b38b25ac64",
+          "count": 8,
+          "argv_sha256": "c6963b99e71fcde44deb6e4abb5e3774222079c190d4c2f9f1b43d783aa3e458",
+          "hostcheck_sha256": "2e59805b29845368e2a9c1543c830a9a319d293cdd2abd2d3f58f41cd561c6b1"
+        },
+        {
+          "runner": "/run/media/jethac/Shared/radish/compute11-official-precision-03-div-runner-0045/device-official-cts.py",
+          "sha256": "483f0d487c560c4128d2fade17f488f127055ab685666d12ee45164e7aa3bca8",
+          "inventory_sha256": "46633db19f79b938e95c86c0b3e5442c5603f2d6cb5dcd123120545b2265f03f",
+          "count": 8,
+          "argv_sha256": "28703230d8a7735bcfac0afa8b0b8a99e9358bbb7f28ec190b96abd78c32cb09",
+          "hostcheck_sha256": "01e3b68b633379f4650428025c2090b75b6a3127b89798dd4874286361ba9d9f"
+        },
+        {
+          "runner": "/run/media/jethac/Shared/radish/compute11-official-precision-04-fma-runner-0045/device-official-cts.py",
+          "sha256": "40d767391103e39cbb4919ee97fd795fd18fcfe02e4a752fb86506bf88f3b1ac",
+          "inventory_sha256": "65e39bb0e50a7de6e32492512e566a84aa9b21e1d1cba452ddb2c1e0fb4412be",
+          "count": 8,
+          "argv_sha256": "573ec544a600c1b20f47c1013c11472abc3dde2872643f930988e295e5894360",
+          "hostcheck_sha256": "da4f0726f77553ddb8920089d34d3e96951a0267a7455ef9f8a50b11c72f91c2"
+        }
+      ],
+      "conditions": [
+        "Run add8 first; actual runtime/log size informs following scopes without changing sample count or original90s/384MiB/8MiB limits.",
+        "Independent first add8 source counterpart before launch; unchanged mandatory arithmetic original interval oracles, no test-iteration override.",
+        "Independent source counterpart and alloriginal admission gates still apply; no actualoutcome inferred."
+      ]
+    }
+  },
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/actual-review.json",
+      "bytes": 28023,
+      "sha256": "5258a8a8d90e0962641905a16c7bbd45de18a31319a165ce1f8d7cba68560719"
+    },
+    "result": {
+      "status": "PASS independent complete applicable original precision arithmetic40",
+      "source_plan_sha256": "591441911307a41bb68603ddd0bad42f080dc8d76c857e170ad71f7b8de46e03",
+      "source_counterpart_sha256": "bae7648389420b40a6b148250e5e3c1a7fb0da7a12440a477d6dc799a0533bc8",
+      "runner_review_sha256": "886f772ecad885a41857bd4939f7b7444bfbeb3c0b7b25b8b297eb53ecdd0cc0",
+      "alignment_clarification_sha256": "3b7ab2f1788b85386fe265362f39d566b35f842685d1c03e7553aeefdccccbc2",
+      "totals": {
+        "unique_original_pass": 40,
+        "actual_input_tuples": 694768,
+        "output_components": 1739248,
+        "dispatches": 5432,
+        "invocations": 694768,
+        "chunks": 10860,
+        "submits": 10860
+      },
+      "native_maxima": {
+        "slots": 59,
+        "non_nops": 39,
+        "dwords": 98,
+        "instrlen": 3,
+        "half": 0,
+        "full": 8,
+        "constlen": 16
+      },
+      "scopes": [
+        {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/actual-00-add-review.json",
+          "sha256": "8cb3ca3b10f210ec215769091eab21a808f42de3d6442df4a4e75cac26452f11",
+          "service_seconds": 10.229,
+          "peak_mib": 59.6,
+          "swap_bytes": 0,
+          "log_bytes": 349844
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/actual-01-sub-review.json",
+          "sha256": "3cb33996900b3db639c6250f87ae391d4fb6efa3b06380402a3d7473393efa1e",
+          "service_seconds": 10.224,
+          "peak_mib": 60.4,
+          "swap_bytes": 0,
+          "log_bytes": 352071
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/actual-02-mul-review.json",
+          "sha256": "cb827497a3433218eaeed6e4410354d1c912fae140a8fd48000d67cdb5b6a47c",
+          "service_seconds": 10.231,
+          "peak_mib": 60.3,
+          "swap_bytes": 0,
+          "log_bytes": 349690
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/actual-03-div-review.json",
+          "sha256": "20deb3454d96116e04255358a87d82fa74f758bdccbbfc5bd744b2416262fda8",
+          "service_seconds": 11.837,
+          "peak_mib": 61.0,
+          "swap_bytes": 0,
+          "log_bytes": 354953
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-precision-arithmetic-next-0045/actual-04-fma-review.json",
+          "sha256": "a2569da9813fac890d87ad874a26ba64351145796402bcdd1267ba0336ac0c48",
+          "service_seconds": 13.421,
+          "peak_mib": 60.9,
+          "swap_bytes": 0,
+          "log_bytes": 417173
+        }
+      ],
+      "checks": [
+        "All40 exact approved names disjoint and all detailed original QPAs Pass with one All N inputs passed record percase. Natively emitted dispatch sum equals each actualN and allprofile results0.",
+        "Exact current f222/e699, original0e715 CTS,75699loader, originaldefaultseed and16384random attempts. No data/oracle/timeout/resource changes.",
+        "Five complete branchesadd/sub/mul/div/fma \u00d7 highp/mediump \u00d7 scalar..vec4; tenvec5 exclusions remain explicitlongVectorfalse. No optional sibling or other arithmetic-family closure inferred.",
+        "All40native programs no private instructions/no loops/barriers, local1; originalper128-tuples descriptor batches and hostwaits. This is arithmetic/interval qualification, not a throughput benchmark.",
+        "Allfive postflightcollections/assets/faults/servicesclean,0swap. Nativecounts are actual; inputgeneration/descriptoroffset provenance from source."
+      ],
+      "limits": [
+        "Exact original0e715, f222/e699 and75699; original defaults/random attempts and full interval oracle. Actual input counts can be less than source maximum because original generator deduplicates random tuples.",
+        "Every actual input/output tuple is covered by original interval-containment checks, including original special-value/subnormal/NaN permissions. No bit-exact IEEE, exhaustive input space, or stronger exceptional-value behavior claimed.",
+        "Fma reference expands multiply+add, so its original pass is not a single-rounding proof. Div preserves original CTS error model/TODO.",
+        "Native compilation/resource stats are actual; no private-memory instructions. Descriptor byte offsets/source input-generation inferred from pinned source; no whole-allocation padding guards.",
+        "No resource/timeout/work/oracle/driver changes, no overall arithmetic/Vulkan conformance claim."
+      ],
+      "cases": [
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.add.highp.scalar",
+          "qpa_sha256": "dcfd0407bc23cbf61462461b3de37e87a18b6d89cf77096933a8494a94f63899",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16521,
+          "output_components": 16521,
+          "dispatches": 130,
+          "invocations": 16521,
+          "chunks": 259,
+          "submits": 259,
+          "native": {
+            "slots": 47,
+            "non_nops": 27,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 4,
+            "constlen": 16,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.add.highp.vec2",
+          "qpa_sha256": "0de9b27259fd500e5575142d338ef4b779c72663fb53f8062034641ea00b1439",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 33280,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 48,
+            "non_nops": 28,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 6,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.add.highp.vec3",
+          "qpa_sha256": "c4aa85a3aec7ca7c12700bb50b2a2ca8663e5f1520da1fb4cfd02d9c87c2332e",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 49920,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 54,
+            "non_nops": 33,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 7,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.add.highp.vec4",
+          "qpa_sha256": "4734654a80a148470cb8b41b891b79afbe7524b5c8127b2d14dfa6100838a29c",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 66560,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 55,
+            "non_nops": 34,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 8,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.add.mediump.scalar",
+          "qpa_sha256": "71473d658f9f8603a99d83a67184bbbe98c76255807bd8c9c4aef7e4d2e70dca",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16375,
+          "output_components": 16375,
+          "dispatches": 128,
+          "invocations": 16375,
+          "chunks": 256,
+          "submits": 256,
+          "native": {
+            "slots": 47,
+            "non_nops": 27,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 4,
+            "constlen": 16,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.add.mediump.vec2",
+          "qpa_sha256": "798b3bc3507a15074cd4ee557304d646fad0458abb144cfcc72b6bb29b91091b",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 33280,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 48,
+            "non_nops": 28,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 6,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.add.mediump.vec3",
+          "qpa_sha256": "d53445f10dc2e5b667f6c5891396fd67e6cdbcdbd906eb2dbc29ccacf36e0e64",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 49920,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 54,
+            "non_nops": 33,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 7,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.add.mediump.vec4",
+          "qpa_sha256": "f0e63b9c8a535edd8e0a27b27eb22e2962690b01e051160d25a77c0520658d2b",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 66560,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 55,
+            "non_nops": 34,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 8,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.sub.highp.scalar",
+          "qpa_sha256": "8867bc9c46a2c6754870e53efd7d88ff0b094b933fe4802a48d58b04d49a943c",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16521,
+          "output_components": 16521,
+          "dispatches": 130,
+          "invocations": 16521,
+          "chunks": 259,
+          "submits": 259,
+          "native": {
+            "slots": 47,
+            "non_nops": 27,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 4,
+            "constlen": 16,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.sub.highp.vec2",
+          "qpa_sha256": "6f6d3316f25a2fd7a69e5206dec1c50a60dd77fbffde82283c048e20ad39c17e",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 33280,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 48,
+            "non_nops": 28,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 6,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.sub.highp.vec3",
+          "qpa_sha256": "3c845bf3e9defbccb62e48a22eb13b6b6267a5b7952d5a5d5db2c519e544dea9",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 49920,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 54,
+            "non_nops": 33,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 7,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.sub.highp.vec4",
+          "qpa_sha256": "d7f656c7a2aed40373fdbaabe0aa7b6b9ea9b399c3e7bbf0a313f0ad9e48667a",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 66560,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 55,
+            "non_nops": 34,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 8,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.sub.mediump.scalar",
+          "qpa_sha256": "3f7f7ba5723314e9756fff7be9b5555c6c78593bc47f348a30d1466d8b6f40d6",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16375,
+          "output_components": 16375,
+          "dispatches": 128,
+          "invocations": 16375,
+          "chunks": 256,
+          "submits": 256,
+          "native": {
+            "slots": 47,
+            "non_nops": 27,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 4,
+            "constlen": 16,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.sub.mediump.vec2",
+          "qpa_sha256": "d5b05e5fe1b305a1a8c20ba399381491afb2c826afdb73fe99b10b8c13c08d84",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 33280,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 48,
+            "non_nops": 28,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 6,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.sub.mediump.vec3",
+          "qpa_sha256": "744d35c2d96a0f5340679c8b3136c16e52b66277fc1d64bf3b8925d80cd1ee24",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 49920,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 54,
+            "non_nops": 33,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 7,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.sub.mediump.vec4",
+          "qpa_sha256": "bee2a6717a29506e6918d9cdd96d0d4d31fad6627f723dab2444300e0516065f",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 66560,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 55,
+            "non_nops": 34,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 8,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.mul.highp.scalar",
+          "qpa_sha256": "05b890e09dffc3288ecbb2cfb8888aef7fada03fa9645c699cb490bf19f216db",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16521,
+          "output_components": 16521,
+          "dispatches": 130,
+          "invocations": 16521,
+          "chunks": 259,
+          "submits": 259,
+          "native": {
+            "slots": 47,
+            "non_nops": 27,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 4,
+            "constlen": 16,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.mul.highp.vec2",
+          "qpa_sha256": "c7ea50a90faa29cac4665f2262e312cf25b2fa6c5656445b8cf3c699f0a27135",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 33280,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 48,
+            "non_nops": 28,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 6,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.mul.highp.vec3",
+          "qpa_sha256": "c637e4c346cc8ca415be335ff16a910fac4f2d89c4110e0ec1e77ee5b28d71b3",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 49920,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 54,
+            "non_nops": 33,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 7,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.mul.highp.vec4",
+          "qpa_sha256": "3b3e819868fc936b80241ae72cff05a1e11125515a0b5cfca35ac60c58ecd106",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 66560,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 55,
+            "non_nops": 34,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 8,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.mul.mediump.scalar",
+          "qpa_sha256": "d5c44cebf57e1eb203443bdadcee8fb3fa97b654ebfde48773cc1a3012cf07ff",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16375,
+          "output_components": 16375,
+          "dispatches": 128,
+          "invocations": 16375,
+          "chunks": 256,
+          "submits": 256,
+          "native": {
+            "slots": 47,
+            "non_nops": 27,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 4,
+            "constlen": 16,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.mul.mediump.vec2",
+          "qpa_sha256": "42d39792b43ed253c6517528c6a6fd09dabb538c4091ee503fc8b11404360fbb",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 33280,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 48,
+            "non_nops": 28,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 6,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.mul.mediump.vec3",
+          "qpa_sha256": "016f10dd70e86dbd6bfaa8553fabc4c36b9650d743dd530c4d71c883d9d84b70",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 49920,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 54,
+            "non_nops": 33,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 7,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.mul.mediump.vec4",
+          "qpa_sha256": "103f1e3fa16df5ce554dedce8e5fcb2a2f1487cc3083ed42190566978f7a072d",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 66560,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 55,
+            "non_nops": 34,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 8,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.div.highp.scalar",
+          "qpa_sha256": "fb4de574aa65253a7d807bd8e4adeefdd566d7b9e07f345abe9819bea00f2645",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16521,
+          "output_components": 16521,
+          "dispatches": 130,
+          "invocations": 16521,
+          "chunks": 259,
+          "submits": 259,
+          "native": {
+            "slots": 48,
+            "non_nops": 28,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 4,
+            "constlen": 16,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.div.highp.vec2",
+          "qpa_sha256": "ab2b9d3682f4783f53e1f8bf36047a56bddc6811cf4cff892856dee9a558608d",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 33280,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 50,
+            "non_nops": 30,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 6,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.div.highp.vec3",
+          "qpa_sha256": "97d99448843f86e32d6e22555640b8c7f1fd5bbd77aea25f7be978ac6e433d42",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 49920,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 57,
+            "non_nops": 36,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 7,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.div.highp.vec4",
+          "qpa_sha256": "4af83774ed069ea72c46529e89750f8ededea6bac2830b3172c3416d86b091dd",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 66560,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 59,
+            "non_nops": 38,
+            "dwords": 98,
+            "instrlen": 3,
+            "half": 0,
+            "full": 8,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.div.mediump.scalar",
+          "qpa_sha256": "435bf46e822ad547dc4cbccfd2295e5e2e626d6b9f5152c34c5996c578c3396f",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16375,
+          "output_components": 16375,
+          "dispatches": 128,
+          "invocations": 16375,
+          "chunks": 256,
+          "submits": 256,
+          "native": {
+            "slots": 48,
+            "non_nops": 28,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 4,
+            "constlen": 16,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.div.mediump.vec2",
+          "qpa_sha256": "22ddad1e2c5e644a3c5c7d2a5ea9737998c3767d87fefc09ddc43c34a9dfcfd6",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 33280,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 50,
+            "non_nops": 30,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 6,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.div.mediump.vec3",
+          "qpa_sha256": "5342bb178ee41d175ea67146194a1088e27362415c49dc6ccbd99a0dd283e3dd",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 49920,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 57,
+            "non_nops": 36,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 7,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.div.mediump.vec4",
+          "qpa_sha256": "be3be9998b504dbbd5a910c0d3d60a7b7b27d37d35843982afe946e1c77251a9",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 16640,
+          "output_components": 66560,
+          "dispatches": 130,
+          "invocations": 16640,
+          "chunks": 260,
+          "submits": 260,
+          "native": {
+            "slots": 59,
+            "non_nops": 38,
+            "dwords": 98,
+            "instrlen": 3,
+            "half": 0,
+            "full": 8,
+            "constlen": 12,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.fma.highp.scalar",
+          "qpa_sha256": "22156a43e45311d1d51c4a39fad7fb73d19277abd22d0da2efa64fee69ed7529",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 20475,
+          "output_components": 20475,
+          "dispatches": 160,
+          "invocations": 20475,
+          "chunks": 320,
+          "submits": 320,
+          "native": {
+            "slots": 49,
+            "non_nops": 28,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 5,
+            "constlen": 16,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.fma.highp.vec2",
+          "qpa_sha256": "2ce779b3c7889f3133db016ac033f90b96372b2a5240a3c97f04f51e76260b18",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 20480,
+          "output_components": 40960,
+          "dispatches": 160,
+          "invocations": 20480,
+          "chunks": 320,
+          "submits": 320,
+          "native": {
+            "slots": 55,
+            "non_nops": 33,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 7,
+            "constlen": 16,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.fma.highp.vec3",
+          "qpa_sha256": "f2edbcec1877cddcb9f9dbd8dcd3d78234adca5795654f5bc8c457f6e8f210f9",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 20480,
+          "output_components": 61440,
+          "dispatches": 160,
+          "invocations": 20480,
+          "chunks": 320,
+          "submits": 320,
+          "native": {
+            "slots": 58,
+            "non_nops": 38,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 8,
+            "constlen": 16,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.fma.highp.vec4",
+          "qpa_sha256": "4a4fbd07c09a01c3bbf3543a8b7bf5c3d44b4c948b7a5a3bdc2ba9999ebd7159",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 20480,
+          "output_components": 81920,
+          "dispatches": 160,
+          "invocations": 20480,
+          "chunks": 320,
+          "submits": 320,
+          "native": {
+            "slots": 59,
+            "non_nops": 39,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 8,
+            "constlen": 16,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.fma.mediump.scalar",
+          "qpa_sha256": "903aed18b403251a13a214066cc5db6f1a683e56ea5e41893bd2b169d2b9cb48",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 20469,
+          "output_components": 20469,
+          "dispatches": 160,
+          "invocations": 20469,
+          "chunks": 320,
+          "submits": 320,
+          "native": {
+            "slots": 49,
+            "non_nops": 28,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 5,
+            "constlen": 16,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.fma.mediump.vec2",
+          "qpa_sha256": "a24a31133235fcd84985fd0a46b562c8633b3bb11c5c46741b4f529d8a239fc2",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 20480,
+          "output_components": 40960,
+          "dispatches": 160,
+          "invocations": 20480,
+          "chunks": 320,
+          "submits": 320,
+          "native": {
+            "slots": 55,
+            "non_nops": 33,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 7,
+            "constlen": 16,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.fma.mediump.vec3",
+          "qpa_sha256": "2e25c72715328eff653545dd7c66771067a99408265a092b93ff445e3cd14877",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 20480,
+          "output_components": 61440,
+          "dispatches": 160,
+          "invocations": 20480,
+          "chunks": 320,
+          "submits": 320,
+          "native": {
+            "slots": 58,
+            "non_nops": 38,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 8,
+            "constlen": 16,
+            "private_instructions": 0
+          }
+        },
+        {
+          "name": "dEQP-VK.glsl.builtin.precision.fma.mediump.vec4",
+          "qpa_sha256": "6e4247193f29f6400af2d4febc990d802ccf1c2b6854e798c474466a17406c93",
+          "status": "Pass",
+          "detail": "Pass",
+          "actual_input_tuples": 20480,
+          "output_components": 81920,
+          "dispatches": 160,
+          "invocations": 20480,
+          "chunks": 320,
+          "submits": 320,
+          "native": {
+            "slots": 59,
+            "non_nops": 39,
+            "dwords": 96,
+            "instrlen": 3,
+            "half": 0,
+            "full": 8,
+            "constlen": 16,
+            "private_instructions": 0
+          }
+        }
+      ]
+    }
+  },
+  "original_results": [
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-precision-00-add/probe/runner-result.json",
+        "bytes": 2463,
+        "sha256": "86b3dd5af99e4e70658cb626b50c1d49be14bb63274b7e1473f90d91a7038424"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 165,
+            "sha256": "4b845e18569bf2e1841da1d2586a8fed07c66fd8dbb34ec512c55124c7d4245f"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 380,
+            "sha256": "45a90c42bdb4ea3199fbba0b5036635d4dd3245d2d34ab79f34361535a832311"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13622368,
+            "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+          },
+          "payload.json": {
+            "bytes": 967,
+            "sha256": "9ba0e44fcabbd09344da3c4ab3614fde1c94d1b631071e7f2ef730aedb3149c3"
+          }
+        },
+        "run_log": {
+          "bytes": 349844,
+          "sha256": "bedda942dfd1ae597ce2df7b7813ebe47b427741a639c716b60d86c0ffa7ad71"
+        },
+        "qpa": {
+          "bytes": 15062,
+          "sha256": "5d926312f7f5d1d76e2286e2a45940fb3a543453f1d039838854eb2778f48f8b"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.add.highp.scalar",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.add.highp.vec2",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.add.highp.vec3",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.add.highp.vec4",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.add.mediump.scalar",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.add.mediump.vec2",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.add.mediump.vec3",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.add.mediump.vec4",
+            "status": "Pass",
+            "detail": "Pass"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    },
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-precision-01-sub/probe/runner-result.json",
+        "bytes": 2463,
+        "sha256": "80123e4c01eec5583a08fc361fd4497bb1cdd4f7a35ce4f5b924dcf34ede37c2"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 165,
+            "sha256": "b01e63fbd858f9f12414a3ce8e6d1da5e203292c86dee8f237e03440ff26cf52"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 380,
+            "sha256": "acd126f0f9d01e972057972be8043b5a024aa9f78f7f26c6f1ab5abed78cb7c5"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13622368,
+            "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+          },
+          "payload.json": {
+            "bytes": 967,
+            "sha256": "af38e99b043bb4ee55e3c23cca7a2fcd48af01ce94c89fea7386c96002de1e6b"
+          }
+        },
+        "run_log": {
+          "bytes": 352071,
+          "sha256": "8e2bbdd54ef92847bf15dd01e0e266e7f20c9601643387fa4108a394445347c9"
+        },
+        "qpa": {
+          "bytes": 15062,
+          "sha256": "a88334da8e236ecbab694f088c853766661b9e21798f711d2d195a6f34a4275d"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.sub.highp.scalar",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.sub.highp.vec2",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.sub.highp.vec3",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.sub.highp.vec4",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.sub.mediump.scalar",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.sub.mediump.vec2",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.sub.mediump.vec3",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.sub.mediump.vec4",
+            "status": "Pass",
+            "detail": "Pass"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    },
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-precision-02-mul/probe/runner-result.json",
+        "bytes": 2463,
+        "sha256": "b04aabf9b654b363d7c1650102f35003606d9c3c05a93dccad16e53982d41457"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 165,
+            "sha256": "96ae28f650fd5e5aa56e673cde6a89d103bd9ec73f46035b054b7605655ee55b"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 380,
+            "sha256": "9be130df61cf767cfe1238a9526b3d0b58b715a84ff1d94f8c62d3b38b25ac64"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13622368,
+            "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+          },
+          "payload.json": {
+            "bytes": 967,
+            "sha256": "9a622d699ea957ebe0441df6049db166a5424795184563c037eff725ad230179"
+          }
+        },
+        "run_log": {
+          "bytes": 349690,
+          "sha256": "bf401e86a19ab53df821b7546022b86416eadd345351bb5e5466a04d550a3eec"
+        },
+        "qpa": {
+          "bytes": 15061,
+          "sha256": "e8ae0e47e046662e47cd032af8e7a2f4dda54b1ffc0d56e15a59d3412a0b92a9"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.mul.highp.scalar",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.mul.highp.vec2",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.mul.highp.vec3",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.mul.highp.vec4",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.mul.mediump.scalar",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.mul.mediump.vec2",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.mul.mediump.vec3",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.mul.mediump.vec4",
+            "status": "Pass",
+            "detail": "Pass"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    },
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-precision-03-div/probe/runner-result.json",
+        "bytes": 2463,
+        "sha256": "4f77573e73eaefb1f1b35154b0c3362c4df223aac4fce033319d7dd5373eb72f"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 165,
+            "sha256": "f78ac1d8e5a0fb6afe2806ebb9576e2584268e9aa38961f4a46116f6283e1844"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 380,
+            "sha256": "46633db19f79b938e95c86c0b3e5442c5603f2d6cb5dcd123120545b2265f03f"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13622368,
+            "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+          },
+          "payload.json": {
+            "bytes": 967,
+            "sha256": "c9bb8ac636285d58a79e4af646f053db8e7a9cd444c91f40a076f9c592dbfb81"
+          }
+        },
+        "run_log": {
+          "bytes": 354953,
+          "sha256": "171c88a12da69e1fe90f70ead090c7027785fc0663921a1d78310349c0393cbb"
+        },
+        "qpa": {
+          "bytes": 15066,
+          "sha256": "749c4c73c2ae5bca8ac22044bd463c81e9ec44ac22a05255367916554f08c5ae"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.div.highp.scalar",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.div.highp.vec2",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.div.highp.vec3",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.div.highp.vec4",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.div.mediump.scalar",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.div.mediump.vec2",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.div.mediump.vec3",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.div.mediump.vec4",
+            "status": "Pass",
+            "detail": "Pass"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    },
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-precision-04-fma/probe/runner-result.json",
+        "bytes": 2463,
+        "sha256": "a1bd65d61ff987a5478e8b6f8a438bdb07949fac897b05204fb75dba117c2a51"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 165,
+            "sha256": "2a7173a624604144a709a179ad997d3ea401964f7ccd06634f4d3084f5e0d268"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 380,
+            "sha256": "65e39bb0e50a7de6e32492512e566a84aa9b21e1d1cba452ddb2c1e0fb4412be"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13622368,
+            "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+          },
+          "payload.json": {
+            "bytes": 967,
+            "sha256": "10fc2b5b2aa32e73f4f1fdb63fde259a76686edf1e931d1eda65f32c8bfd7831"
+          }
+        },
+        "run_log": {
+          "bytes": 417173,
+          "sha256": "f00567eae9e68b0670ef156999aecb7ea0b92e7696947dc227934e3be450e9a3"
+        },
+        "qpa": {
+          "bytes": 15931,
+          "sha256": "0be37f1fe98603075ef51b313f2a89714ad4404b061d747c200213a79733f7d6"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.fma.highp.scalar",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.fma.highp.vec2",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.fma.highp.vec3",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.fma.highp.vec4",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.fma.mediump.scalar",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.fma.mediump.vec2",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.fma.mediump.vec3",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.glsl.builtin.precision.fma.mediump.vec4",
+            "status": "Pass",
+            "detail": "Pass"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    }
+  ],
+  "scope": "Highp/mediump scalar and vec2/3/4 cases retain all16384 random attempts and fixed edge inputs, original interval/exceptional-value policies and fallback references. Actual accepted tuple counts and checks are recorded in the independent result. This finite domain is not exhaustive floating arithmetic or closure of the separate strict sRGB findings. Ten unsupported long-vector cases remain excluded. No source/work/oracle/guard change."
+}

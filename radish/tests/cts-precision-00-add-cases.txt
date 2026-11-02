@@ -1,0 +1,8 @@
+dEQP-VK.glsl.builtin.precision.add.highp.scalar
+dEQP-VK.glsl.builtin.precision.add.highp.vec2
+dEQP-VK.glsl.builtin.precision.add.highp.vec3
+dEQP-VK.glsl.builtin.precision.add.highp.vec4
+dEQP-VK.glsl.builtin.precision.add.mediump.scalar
+dEQP-VK.glsl.builtin.precision.add.mediump.vec2
+dEQP-VK.glsl.builtin.precision.add.mediump.vec3
+dEQP-VK.glsl.builtin.precision.add.mediump.vec4

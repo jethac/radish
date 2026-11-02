@@ -13,7 +13,7 @@ All 93 compute cases passed on the same f222/e699 candidate, with the original
 CTS executable, work and oracles. The initial 53/93 snapshot is historical.
 The 28 cases previously run on an older driver were confirmed on this candidate;
 current-candidate results were reused. The retained historical inventory now
-contains 692 distinct original passes, including other groups.
+contains 732 distinct original passes, including other groups.
 
 This 100% applies only to the named compute group. API, SPIR-V, GLSL, memory,
 robustness, images and synchronization contain further applicable requirements;
@@ -463,3 +463,19 @@ memory-model extension and are explicitly excluded from this applicable slice.
 The historical original inventory is now 692 names; this is not an overall
 conformance denominator. Modified robustness132 and strict custom sRGB findings
 remain separate. No driver change or performance experiment was needed.
+
+[The 40 original floating arithmetic cases](results/official11-precision-arithmetic-0045.json)
+pass for addition, subtraction, multiplication, division and FMA across highp
+and mediump scalar/vec2/vec3/vec4 forms. All original random attempts, edge
+inputs and interval-based oracles are retained. Their exceptional-value and
+fallback-reference permissions remain part of the result, not exact-bit claims.
+
+[The original signed-integer division test fails](results/official11-integer-division-failure-0045.json):
+703787787 /47721859 returned31 instead of14. The QPA reports12 mismatches;
+only the first mismatch and count were logged. Fail-stop left the other eight
+integer cases unattempted. The fault/service checks were clean. Shared NIR
+integer lowering is being corrected in isolation; no original oracle, input
+or guard is changed. The reciprocal-error mechanism is source-backed and
+reproduced on the host, while actual internal reciprocal bits remain unobserved.
+The historical original inventory is now732 passing names, plus this retained
+failure; full applicable conformance and42 strict custom sRGB findings remain open.

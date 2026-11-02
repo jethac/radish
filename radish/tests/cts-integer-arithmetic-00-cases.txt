@@ -1,0 +1,5 @@
+dEQP-VK.spirv_assembly.instruction.compute.integer_division.sdiv_32bit
+dEQP-VK.spirv_assembly.instruction.compute.integer_division.smod_32bit
+dEQP-VK.spirv_assembly.instruction.compute.integer_division.srem_32bit
+dEQP-VK.spirv_assembly.instruction.compute.integer_division.udiv_32bit
+dEQP-VK.spirv_assembly.instruction.compute.integer_division.umod_32bit

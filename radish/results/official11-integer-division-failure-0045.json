@@ -1,0 +1,722 @@
+{
+  "status": "FAIL first original signed32-bit integer division case; remaining8 integer cases unattempted",
+  "source": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/source-bounds.json",
+      "bytes": 19489,
+      "sha256": "9597f335c106e81e516f91c2062d455f66c4e167cf98a37d7aacd6378fa1ce04"
+    },
+    "result": {
+      "status": "SOURCE READY nine unchanged original Amber integer cases; no device execution inferred",
+      "created_utc": "2026-11-02T22:44:21.138687+00:00",
+      "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+      "cts_binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
+      "case_file": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/cases.txt",
+        "sha256": "2344e68a9014dfe9bae9ab4ab64562dafa76cac3b48f94e31f22a5954a9bf81e",
+        "count": 9
+      },
+      "partitions": [
+        {
+          "id": "00",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/cases-00.txt",
+          "sha256": "ebb4eb6e90bc271551397dadb5fa27ccf98364b977bf91a76935997cf2106669",
+          "count": 5,
+          "group": "integer_division"
+        },
+        {
+          "id": "01",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/cases-01.txt",
+          "sha256": "8b1c4c6e52c83fb31e7ffba07134118a1cb63dfc23c4ee75c55be36126a5f6cb",
+          "count": 4,
+          "group": "mul_extended"
+        }
+      ],
+      "catalog": {
+        "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/mustpass/main/vk-default/spirv-assembly.txt",
+        "sha256": "611ba2707ff9c23c958615ff2730d9c0b39eb7b4db771ba1064fccdb61b5ef60",
+        "registered": 13,
+        "applicable": 9,
+        "excluded": 4,
+        "unclassified": 0
+      },
+      "excluded": [
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.signed_16bit",
+          "reason": "shaderInt16=false (storage16 alone does not enable16-bit arithmetic)"
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.signed_64bit",
+          "reason": "shaderInt64=false"
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.unsigned_16bit",
+          "reason": "shaderInt16=false (storage16 alone does not enable16-bit arithmetic)"
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.unsigned_64bit",
+          "reason": "shaderInt64=false"
+        }
+      ],
+      "source_pins": [
+        {
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmInstructionTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/source/vktSpvAsmInstructionTests.cpp",
+          "sha256": "d6800ae7655ee7bb2a535d450d01ae998f8439cb7b342ea9e22ec99095d518d8"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/source/vktSpvAsmTests.cpp",
+          "sha256": "97cd0a9fc6b7361bbe81c6e64a11d5d428fa439c98098638398969dddb66dd9d"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/vktTestPackage.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/source/vktTestPackage.cpp",
+          "sha256": "272802a91a54f6aade1741c713563936fe01be295ea648bdf85e5cce0e4823d6"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/amber/vktAmberHelper.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/source/vktAmberHelper.cpp",
+          "sha256": "1a3e29001ea8cbb728751b1762873bbd43ecc9f0868b4aef3a9cf7cf6e57b326"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/amber/vktAmberTestCase.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/source/vktAmberTestCase.cpp",
+          "sha256": "587f5ff9de99d5de9f4be7cd3a145d6af1f270cd068918aba28fe1a5043cc2e0"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/compute11-official-buffer-atomics-next-0045/source/rd_instance.c",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/source/rd_instance.c",
+          "sha256": "c5763ff7a03fed9a13aebf291eeae5c182cfb79eba83c1b839d74d67a0682bac"
+        }
+      ],
+      "assets": [
+        {
+          "archive_relative_path": "vulkan/amber/spirv_assembly/instruction/compute/integer_division/sdiv_32bit.amber",
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/data/vulkan/amber/spirv_assembly/instruction/compute/integer_division/sdiv_32bit.amber",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/archive/vulkan/amber/spirv_assembly/instruction/compute/integer_division/sdiv_32bit.amber",
+          "sha256": "74fb6b34387aab9c79dd2524a528f289d123a0dca9208866a71c05c00ad86861",
+          "bytes": 7614
+        },
+        {
+          "archive_relative_path": "vulkan/amber/spirv_assembly/instruction/compute/integer_division/smod_32bit.amber",
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/data/vulkan/amber/spirv_assembly/instruction/compute/integer_division/smod_32bit.amber",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/archive/vulkan/amber/spirv_assembly/instruction/compute/integer_division/smod_32bit.amber",
+          "sha256": "09a69055df93830409464b4fd529d4092b7cc8e99e26f60c5c16a9b53c19f42b",
+          "bytes": 7942
+        },
+        {
+          "archive_relative_path": "vulkan/amber/spirv_assembly/instruction/compute/integer_division/srem_32bit.amber",
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/data/vulkan/amber/spirv_assembly/instruction/compute/integer_division/srem_32bit.amber",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/archive/vulkan/amber/spirv_assembly/instruction/compute/integer_division/srem_32bit.amber",
+          "sha256": "5a1290b8401726e672f5c85f6c840446facf99996b5d509a3d74e62c7ce69873",
+          "bytes": 7952
+        },
+        {
+          "archive_relative_path": "vulkan/amber/spirv_assembly/instruction/compute/integer_division/udiv_32bit.amber",
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/data/vulkan/amber/spirv_assembly/instruction/compute/integer_division/udiv_32bit.amber",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/archive/vulkan/amber/spirv_assembly/instruction/compute/integer_division/udiv_32bit.amber",
+          "sha256": "4bae14aadc0c234f8b04d16087f13a5af1d29a90f3e84d20ecca8c94157a9222",
+          "bytes": 7063
+        },
+        {
+          "archive_relative_path": "vulkan/amber/spirv_assembly/instruction/compute/integer_division/umod_32bit.amber",
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/data/vulkan/amber/spirv_assembly/instruction/compute/integer_division/umod_32bit.amber",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/archive/vulkan/amber/spirv_assembly/instruction/compute/integer_division/umod_32bit.amber",
+          "sha256": "d1aeecce4fb0e827094223ec5f914c6aafd1bfaf877fe4a0584d8b5895deb5bd",
+          "bytes": 7276
+        },
+        {
+          "archive_relative_path": "vulkan/amber/spirv_assembly/instruction/compute/mul_extended/signed_32bit.amber",
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/data/vulkan/amber/spirv_assembly/instruction/compute/mul_extended/signed_32bit.amber",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/archive/vulkan/amber/spirv_assembly/instruction/compute/mul_extended/signed_32bit.amber",
+          "sha256": "ff0708d283fa7f97f501c3b040813d86142dbfbdf2d4937e705ed11166c7c2d7",
+          "bytes": 9173
+        },
+        {
+          "archive_relative_path": "vulkan/amber/spirv_assembly/instruction/compute/mul_extended/signed_8bit.amber",
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/data/vulkan/amber/spirv_assembly/instruction/compute/mul_extended/signed_8bit.amber",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/archive/vulkan/amber/spirv_assembly/instruction/compute/mul_extended/signed_8bit.amber",
+          "sha256": "ec1d4443901596fe1bbb111537052a603ae36e671164bd9cb44f2e33d9b96313",
+          "bytes": 6458
+        },
+        {
+          "archive_relative_path": "vulkan/amber/spirv_assembly/instruction/compute/mul_extended/unsigned_32bit.amber",
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/data/vulkan/amber/spirv_assembly/instruction/compute/mul_extended/unsigned_32bit.amber",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/archive/vulkan/amber/spirv_assembly/instruction/compute/mul_extended/unsigned_32bit.amber",
+          "sha256": "75439171f2fe7f95d8b70ceaba9cbd59e2f2c121e08ee59bec4802548b078ad5",
+          "bytes": 9147
+        },
+        {
+          "archive_relative_path": "vulkan/amber/spirv_assembly/instruction/compute/mul_extended/unsigned_8bit.amber",
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/data/vulkan/amber/spirv_assembly/instruction/compute/mul_extended/unsigned_8bit.amber",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/archive/vulkan/amber/spirv_assembly/instruction/compute/mul_extended/unsigned_8bit.amber",
+          "sha256": "7658202da0bdfbccdb12c32895b4af6515065633d4ae8cdc388aca59d0b69b7b",
+          "bytes": 6446
+        }
+      ],
+      "cases": [
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.sdiv_32bit",
+          "asset": "vulkan/amber/spirv_assembly/instruction/compute/integer_division/sdiv_32bit.amber",
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "dispatches": 1,
+          "sequential_shader_iterations": 64,
+          "input_bytes": 512,
+          "output_bytes": 256,
+          "descriptors": 2,
+          "shared_bytes": 0,
+          "output_components": 64,
+          "width_bits": 32,
+          "features": [],
+          "capabilities": [
+            "Shader"
+          ],
+          "oracle": "Original exact EQ_BUFFER ref; all listed integer reference components independently recomputed with unbounded host integer arithmetic."
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.smod_32bit",
+          "asset": "vulkan/amber/spirv_assembly/instruction/compute/integer_division/smod_32bit.amber",
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "dispatches": 1,
+          "sequential_shader_iterations": 64,
+          "input_bytes": 512,
+          "output_bytes": 256,
+          "descriptors": 2,
+          "shared_bytes": 0,
+          "output_components": 64,
+          "width_bits": 32,
+          "features": [],
+          "capabilities": [
+            "Shader"
+          ],
+          "oracle": "Original exact EQ_BUFFER ref; all listed integer reference components independently recomputed with unbounded host integer arithmetic."
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.srem_32bit",
+          "asset": "vulkan/amber/spirv_assembly/instruction/compute/integer_division/srem_32bit.amber",
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "dispatches": 1,
+          "sequential_shader_iterations": 64,
+          "input_bytes": 512,
+          "output_bytes": 256,
+          "descriptors": 2,
+          "shared_bytes": 0,
+          "output_components": 64,
+          "width_bits": 32,
+          "features": [],
+          "capabilities": [
+            "Shader"
+          ],
+          "oracle": "Original exact EQ_BUFFER ref; all listed integer reference components independently recomputed with unbounded host integer arithmetic."
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.udiv_32bit",
+          "asset": "vulkan/amber/spirv_assembly/instruction/compute/integer_division/udiv_32bit.amber",
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "dispatches": 1,
+          "sequential_shader_iterations": 64,
+          "input_bytes": 512,
+          "output_bytes": 256,
+          "descriptors": 2,
+          "shared_bytes": 0,
+          "output_components": 64,
+          "width_bits": 32,
+          "features": [],
+          "capabilities": [
+            "Shader"
+          ],
+          "oracle": "Original exact EQ_BUFFER ref; all listed integer reference components independently recomputed with unbounded host integer arithmetic."
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.umod_32bit",
+          "asset": "vulkan/amber/spirv_assembly/instruction/compute/integer_division/umod_32bit.amber",
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "dispatches": 1,
+          "sequential_shader_iterations": 64,
+          "input_bytes": 512,
+          "output_bytes": 256,
+          "descriptors": 2,
+          "shared_bytes": 0,
+          "output_components": 64,
+          "width_bits": 32,
+          "features": [],
+          "capabilities": [
+            "Shader"
+          ],
+          "oracle": "Original exact EQ_BUFFER ref; all listed integer reference components independently recomputed with unbounded host integer arithmetic."
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.signed_32bit",
+          "asset": "vulkan/amber/spirv_assembly/instruction/compute/mul_extended/signed_32bit.amber",
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "dispatches": 1,
+          "sequential_shader_iterations": 100,
+          "input_bytes": 800,
+          "output_bytes": 800,
+          "descriptors": 2,
+          "shared_bytes": 0,
+          "output_components": 200,
+          "width_bits": 32,
+          "features": [],
+          "capabilities": [
+            "Shader"
+          ],
+          "oracle": "Original exact EQ_BUFFER ref; all listed integer reference components independently recomputed with unbounded host integer arithmetic."
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.signed_8bit",
+          "asset": "vulkan/amber/spirv_assembly/instruction/compute/mul_extended/signed_8bit.amber",
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "dispatches": 1,
+          "sequential_shader_iterations": 100,
+          "input_bytes": 200,
+          "output_bytes": 200,
+          "descriptors": 2,
+          "shared_bytes": 0,
+          "output_components": 200,
+          "width_bits": 8,
+          "features": [
+            "Float16Int8Features.shaderInt8",
+            "Storage8BitFeatures.storageBuffer8BitAccess"
+          ],
+          "capabilities": [
+            "Shader",
+            "Int8"
+          ],
+          "oracle": "Original exact EQ_BUFFER ref; all listed integer reference components independently recomputed with unbounded host integer arithmetic."
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.unsigned_32bit",
+          "asset": "vulkan/amber/spirv_assembly/instruction/compute/mul_extended/unsigned_32bit.amber",
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "dispatches": 1,
+          "sequential_shader_iterations": 100,
+          "input_bytes": 800,
+          "output_bytes": 800,
+          "descriptors": 2,
+          "shared_bytes": 0,
+          "output_components": 200,
+          "width_bits": 32,
+          "features": [],
+          "capabilities": [
+            "Shader"
+          ],
+          "oracle": "Original exact EQ_BUFFER ref; all listed integer reference components independently recomputed with unbounded host integer arithmetic."
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.unsigned_8bit",
+          "asset": "vulkan/amber/spirv_assembly/instruction/compute/mul_extended/unsigned_8bit.amber",
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "dispatches": 1,
+          "sequential_shader_iterations": 100,
+          "input_bytes": 200,
+          "output_bytes": 200,
+          "descriptors": 2,
+          "shared_bytes": 0,
+          "output_components": 200,
+          "width_bits": 8,
+          "features": [
+            "Float16Int8Features.shaderInt8",
+            "Storage8BitFeatures.storageBuffer8BitAccess"
+          ],
+          "capabilities": [
+            "Shader",
+            "Int8"
+          ],
+          "oracle": "Original exact EQ_BUFFER ref; all listed integer reference components independently recomputed with unbounded host integer arithmetic."
+        }
+      ],
+      "source_registration": [
+        "InstructionTests21794\u201321845 exact Amber registration and feature lists;21995\u201321996 compute parent. Existing SpirvAssembly/test package parent snapshots retained.",
+        "Amber data directory maps to archive-relative vulkan/amber/...; all nine unchanged assets must be staged recursively, not flattened."
+      ],
+      "behavior": [
+        "Division5 uses Shader-only SPIR-V1.0 and one invocation with sequential64 iterations through input pairs. Original inputs stress reciprocal-lowering corrections (divisor exponent16..29) and all signed sign combinations. No divisor0 or INT_MIN/-1 occurs; exact truncation-toward-zero division, numerator-sign remainder and denominator-sign modulo references independently verified.",
+        "MulExtended4 uses one invocation/sequential100 pairs. Original output vector order is high half first/low half second (SPIR-V result extracts are stored reversed); all800 exact components independently checked as full product shifted/masked. Signed low-half reference decimal literals may exceed signed range and are compared as width-limited bit patterns; original assets unchanged.",
+        "Mandatory32-bit modules Shader-only; advertised8-bit modules Shader+Int8 and explicitly request shaderInt8+storageBuffer8BitAccess.16/64 branches excluded by actual disabled arithmetic bits; no feature inflation or CPU fallback.",
+        "All modules use Uniform+BufferBlock buffers with two descriptors, dynamic OpArrayLength input bounds, original structured shader loop and no barriers/shared memory. Do not demand zero native loops or assume modules are compile-equivalent to prior probes."
+      ],
+      "source_bounds": {
+        "cases": 9,
+        "dispatches": 9,
+        "invocations": 9,
+        "sequential_integer_operations": 720,
+        "exact_output_components": 1120,
+        "exact_output_bytes": 3280,
+        "max_buffer_bytes": 800,
+        "max_logical_live_payload_per_case": 1600,
+        "max_shared_bytes": 0,
+        "max_descriptors": 2,
+        "asset_bytes": 69071
+      },
+      "admission": "Two independent original scopes5+4 under unchanged90s384MiB/8MiBlog/64MiB reserve/fault-stop. Native compiler/resource and actual original oracles remain actual gates; any valid failure is preserved and diagnosed, not relaxed. First division5 ready without waiting on precision40.",
+      "limits": [
+        "Finite deterministic original data, not all32/8-bit integer tuples; integer division does not imply general floating reciprocal precision.",
+        "Original EQ_BUFFER logical ranges only; no allocation-padding canary or concurrency proof.",
+        "8-bit optional implementation qualification is separate from mandatory32-bit arithmetic. No numerical result or native spilling inferred from source."
+      ]
+    }
+  },
+  "source_runner_counterpart": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/independent-source-runner-review.json",
+      "bytes": 5204,
+      "sha256": "7f0207bfe32182b3f5487c935612c9e6563a60f77899bc997e5c552b7a3ca544"
+    },
+    "result": {
+      "status": "PASS finite source/oracle/module and recursive runner counterpart",
+      "source_plan_sha256": "9597f335c106e81e516f91c2062d455f66c4e167cf98a37d7aacd6378fa1ce04",
+      "checks": [
+        "All six source snapshots and nine assets byte-identical to pinned sources; exact13=9+4 catalog partition. Original32-bit mandatory and requested8-bit advertised features coherent.",
+        "Independently parsed all720 input pairs, reproduced1120 exact width-limited reference components; no divisor0 or INT_MIN/-1. Signed division truncates toward0; remainder numerator sign, modulo divisor sign. Extended multiplication stores high then low halves.",
+        "Extracted all nine original assembly blocks unchanged: spirv-as spv1.0 and spirv-val Vulkan1.1 pass; no optimizer or capability edit.",
+        "One invocation/local1, bounded64 or100 sequential iterations, two SSBO/max800B each, original exact logical range oracle; no custom padding guards.",
+        "Runner ASTs identical to reviewed Amber7 engine apart from fixed inventories/assets and exact ancestor-directory tuple. All staged sources rehashed; original CTS/driver, unchanged90s384MiB/8MiB output/64MiB reserve/per-case fault stop."
+      ],
+      "cases": [
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.sdiv_32bit",
+          "input_pairs": 64,
+          "output_components": 64,
+          "asset_sha256": "74fb6b34387aab9c79dd2524a528f289d123a0dca9208866a71c05c00ad86861"
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.smod_32bit",
+          "input_pairs": 64,
+          "output_components": 64,
+          "asset_sha256": "09a69055df93830409464b4fd529d4092b7cc8e99e26f60c5c16a9b53c19f42b"
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.srem_32bit",
+          "input_pairs": 64,
+          "output_components": 64,
+          "asset_sha256": "5a1290b8401726e672f5c85f6c840446facf99996b5d509a3d74e62c7ce69873"
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.udiv_32bit",
+          "input_pairs": 64,
+          "output_components": 64,
+          "asset_sha256": "4bae14aadc0c234f8b04d16087f13a5af1d29a90f3e84d20ecca8c94157a9222"
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.umod_32bit",
+          "input_pairs": 64,
+          "output_components": 64,
+          "asset_sha256": "d1aeecce4fb0e827094223ec5f914c6aafd1bfaf877fe4a0584d8b5895deb5bd"
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.signed_32bit",
+          "input_pairs": 100,
+          "output_components": 200,
+          "asset_sha256": "ff0708d283fa7f97f501c3b040813d86142dbfbdf2d4937e705ed11166c7c2d7"
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.signed_8bit",
+          "input_pairs": 100,
+          "output_components": 200,
+          "asset_sha256": "ec1d4443901596fe1bbb111537052a603ae36e671164bd9cb44f2e33d9b96313"
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.unsigned_32bit",
+          "input_pairs": 100,
+          "output_components": 200,
+          "asset_sha256": "75439171f2fe7f95d8b70ceaba9cbd59e2f2c121e08ee59bec4802548b078ad5"
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.unsigned_8bit",
+          "input_pairs": 100,
+          "output_components": 200,
+          "asset_sha256": "7658202da0bdfbccdb12c32895b4af6515065633d4ae8cdc388aca59d0b69b7b"
+        }
+      ],
+      "runners": [
+        {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-00-runner-0045/device-official-cts.py",
+          "sha256": "b4ae8de24c2ffb228fa5205d92ca858e5ddb30c343f62366b1ec53a83c7d4be9",
+          "inventory": {
+            "id": "00",
+            "path": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/cases-00.txt",
+            "sha256": "ebb4eb6e90bc271551397dadb5fa27ccf98364b977bf91a76935997cf2106669",
+            "count": 5,
+            "group": "integer_division"
+          },
+          "hostcheck_sha256": "ff839f1d040033bdec666e55fa2a9af65bb86ea7f80a418611fcd8d0a51f2d4e"
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-01-runner-0045/device-official-cts.py",
+          "sha256": "58cbff46e9aa4d5e1a5b210d22cd5c2a997c267f1835fc6a12a19788ae983e7c",
+          "inventory": {
+            "id": "01",
+            "path": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/cases-01.txt",
+            "sha256": "8b1c4c6e52c83fb31e7ffba07134118a1cb63dfc23c4ee75c55be36126a5f6cb",
+            "count": 4,
+            "group": "mul_extended"
+          },
+          "hostcheck_sha256": "d3ec8a953499a13b6702d072ad6d22f7d79b3905e5cda9ae2d10cc763399b386"
+        }
+      ],
+      "module_result": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/independent-module-check/result.json",
+        "sha256": "b762c5bf9b425c837faf352c521885b09e219b6ef42a3f2b27e13f88aad081f6"
+      },
+      "limits": [
+        "Native compiler/resources and actual original results remain required; no output or performance claim from host source.",
+        "8-bit arithmetic advertised optional qualification is distinct from mandatory32; no all-integer-input or allocation-padding coverage claim."
+      ]
+    }
+  },
+  "independent_diagnosis": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/independent-sdiv-diagnosis/review.json",
+      "bytes": 5745,
+      "sha256": "8d32f166464dfd54777430d0a096f2d5f6341215c4b331606c0562c4eb7acb2d"
+    },
+    "result": {
+      "status": "Confirmed original defined OpSDiv numerical failure; reciprocal-overestimate mechanism corroborated, actual intermediate bits inferred",
+      "case": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.sdiv_32bit",
+      "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-integer-arithmetic-00/probe",
+      "qpa_sha256": "b9545b783d88fff67c554d7065c112a8cf5537517518893502b908557ee6e422",
+      "run_log_sha256": "8a95f46f97c81d85c2827e7b4e1a6a5176a416805e9345f5e65fe35d04a2bc83",
+      "prior_defined_input_oracle_module_review_sha256": "7f0207bfe32182b3f5487c935612c9e6563a60f77899bc997e5c552b7a3ca544",
+      "first_pair": {
+        "numerator": 703787787,
+        "denominator": 47721859,
+        "exact_quotient": 14,
+        "exact_remainder": 35681761,
+        "actual_quotient": 31
+      },
+      "actual_original_mismatch_count": 12,
+      "actual_observability": "QPA prints only first mismatch value/index and total12; do not claim other11 mismatching indices or actual rcp output bits.",
+      "definedness": [
+        "All64 original pairs nonzero divisors and exclude minimum-signed/-1; all64 references independently recomputed with exact sign/truncation.",
+        "Exact originalSPV1.0 validates Vulkan1.1; Shader-only/local1/twoSSBO. No optional capability or out-of-bounds fixture issue found."
+      ],
+      "primary_spec": {
+        "url": "https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#OpSDiv",
+        "basis": "Signed division; undefined zero divisor and minimum signed divided by minus1 do not apply to any selected pair.",
+        "access": "Primary Khronos specification accessed2026-11-03; no long quote reproduced."
+      },
+      "native_source": {
+        "native_excerpt_sha256": "d79cc7ff698a52b3bdb3d1c9a176ba37701012e1f387dea7c1026f97147f46d1",
+        "pins": [
+          {
+            "source": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/compiler/nir/nir_lower_idiv.c",
+            "snapshot": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/independent-sdiv-diagnosis/nir_lower_idiv.c",
+            "sha256": "4a796454988441e71136507147ab2cf087d2e48165511022b3e6cef25da41a22"
+          },
+          {
+            "source": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/ir3/ir3_nir.c",
+            "snapshot": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/independent-sdiv-diagnosis/ir3_nir.c",
+            "sha256": "69a8bf3837835eed2b21c99c4025ffd09291a238685ef7c36beddad551df047c"
+          }
+        ],
+        "trace": "Native u32->f32/rcp/mul constant0x4f7ffffe/f32->u32 exactly matches nir_lower_idiv emit_udiv32; following integer reciprocal refinement and two remainder refinements retained. No raw reciprocal value capture."
+      },
+      "host_model": [
+        {
+          "reciprocal_delta_float32_ULP_from_nearest": -2,
+          "denominator_as_float32": 47721860.0,
+          "reciprocal_bits": "0x32b3fffe",
+          "scaled_float32": 89.9999771118164,
+          "initial_fixed_reciprocal": 89,
+          "exact_floor_2pow32_over_denominator": 89,
+          "refined_fixed_reciprocal": 89,
+          "initial_quotient": 14,
+          "final_quotient": 14,
+          "final_modular_remainder": 35681761
+        },
+        {
+          "reciprocal_delta_float32_ULP_from_nearest": -1,
+          "denominator_as_float32": 47721860.0,
+          "reciprocal_bits": "0x32b3ffff",
+          "scaled_float32": 89.99998474121094,
+          "initial_fixed_reciprocal": 89,
+          "exact_floor_2pow32_over_denominator": 89,
+          "refined_fixed_reciprocal": 89,
+          "initial_quotient": 14,
+          "final_quotient": 14,
+          "final_modular_remainder": 35681761
+        },
+        {
+          "reciprocal_delta_float32_ULP_from_nearest": 0,
+          "denominator_as_float32": 47721860.0,
+          "reciprocal_bits": "0x32b40000",
+          "scaled_float32": 89.99999237060547,
+          "initial_fixed_reciprocal": 89,
+          "exact_floor_2pow32_over_denominator": 89,
+          "refined_fixed_reciprocal": 89,
+          "initial_quotient": 14,
+          "final_quotient": 14,
+          "final_modular_remainder": 35681761
+        },
+        {
+          "reciprocal_delta_float32_ULP_from_nearest": 1,
+          "denominator_as_float32": 47721860.0,
+          "reciprocal_bits": "0x32b40001",
+          "scaled_float32": 90.0,
+          "initial_fixed_reciprocal": 90,
+          "exact_floor_2pow32_over_denominator": 89,
+          "refined_fixed_reciprocal": 179,
+          "initial_quotient": 29,
+          "final_quotient": 31,
+          "final_modular_remainder": 3519377454
+        },
+        {
+          "reciprocal_delta_float32_ULP_from_nearest": 2,
+          "denominator_as_float32": 47721860.0,
+          "reciprocal_bits": "0x32b40002",
+          "scaled_float32": 90.00000762939453,
+          "initial_fixed_reciprocal": 90,
+          "exact_floor_2pow32_over_denominator": 89,
+          "refined_fixed_reciprocal": 179,
+          "initial_quotient": 29,
+          "final_quotient": 31,
+          "final_modular_remainder": 3519377454
+        }
+      ],
+      "targeted_validation_expectations": [
+        "Preserve original failed source/capture and all original5 division/remainder oracles/64pairs/sign combinations; no tolerance, shader workload, or capability change.",
+        "A correction must address reciprocal safety/correction semantics with explicit integer overflow bounds, not a fixture-specific divisor/quotient special case. Include independent boundary-denominator/remainder reasoning and host checks around rounding transitions.",
+        "Compile changed source first; inspect actual generated native correction/resource bounds, then original failed test and remaining complete4 original cases under existing scopes.",
+        "Keep 32-bit exact integer requirements distinct from passed floating Div interval allowance; floating40 pass does not excuse integer quotient error.",
+        "No device retry or source mutation by reviewer; author owns private compiler correction."
+      ]
+    }
+  },
+  "failure": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-integer-arithmetic-00/probe/failure.json",
+      "bytes": 287,
+      "sha256": "f3621cdb9486481bc0d917b814c26590b57a289afeb49a1a4e703e6534485378"
+    },
+    "result": {
+      "status": "failed",
+      "error": "CTS completed case inventory differs",
+      "started": true,
+      "terminal": true,
+      "process_returncode": 1,
+      "remote": "/var/tmp/radish/core-compute-core0045-official11-integer-arithmetic-00",
+      "unit": "radish-core-compute-probe-1793659651142153327"
+    }
+  },
+  "collection": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-integer-arithmetic-00/probe/collection.json",
+      "bytes": 37,
+      "sha256": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e"
+    },
+    "result": {
+      "passed": true,
+      "errors": []
+    }
+  },
+  "qpa": {
+    "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-integer-arithmetic-00/probe/case-0.qpa",
+    "bytes": 1857,
+    "sha256": "b9545b783d88fff67c554d7065c112a8cf5537517518893502b908557ee6e422"
+  },
+  "fault_check": {
+    "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-integer-arithmetic-00/probe/fault-check.txt",
+    "bytes": 41,
+    "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+  },
+  "run_log": {
+    "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-integer-arithmetic-00/probe/run.log",
+    "bytes": 40360,
+    "sha256": "8a95f46f97c81d85c2827e7b4e1a6a5176a416805e9345f5e65fe35d04a2bc83"
+  },
+  "failed_case": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.sdiv_32bit",
+  "unattempted": [
+    "dEQP-VK.spirv_assembly.instruction.compute.integer_division.smod_32bit",
+    "dEQP-VK.spirv_assembly.instruction.compute.integer_division.srem_32bit",
+    "dEQP-VK.spirv_assembly.instruction.compute.integer_division.udiv_32bit",
+    "dEQP-VK.spirv_assembly.instruction.compute.integer_division.umod_32bit",
+    "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.signed_32bit",
+    "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.signed_8bit",
+    "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.unsigned_32bit",
+    "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.unsigned_8bit"
+  ],
+  "scope": "Original input703787787 /47721859 returns31 instead of14; QPA reports12 mismatches but only first details. Source/native and host reciprocal-error reproduction implicate shared NIR integer lowering; actual internal reciprocal bits were not captured. No same-payload retry, threshold change or pass credit. Fix is in progress on an isolated candidate; immutable f222 remains the failed baseline."
+}

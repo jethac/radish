@@ -1,5 +1,5 @@
 {
-  "status": "692 distinct original historical CTS Pass names; no full conformance denominator. All132 modified robustness outcomes remain excluded.",
+  "status": "732 distinct original historical CTS Pass names; no full conformance denominator. All132 modified robustness outcomes remain excluded.",
   "partitions": {
     "information": 5,
     "SPIR-V versions": 4,
@@ -47,9 +47,14 @@
     "Original workgroup-memory": 3,
     "Original buffer-atomics-00": 5,
     "Original buffer-atomics-01": 7,
-    "Original buffer-atomics-02": 7
+    "Original buffer-atomics-02": 7,
+    "Original precision-00-add": 8,
+    "Original precision-01-sub": 8,
+    "Original precision-02-mul": 8,
+    "Original precision-03-div": 8,
+    "Original precision-04-fma": 8
   },
-  "unique_count": 692,
+  "unique_count": 732,
   "names": [
     "dEQP-VK.api.array.oversized_array.core.get_pipeline_cache_data",
     "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_0_0",
@@ -492,6 +497,46 @@
     "dEQP-VK.compute.pipeline.indirect_dispatch.upload_buffer.small_offset",
     "dEQP-VK.compute.shader_object_binary.basic.secondary_compute_only_queue",
     "dEQP-VK.compute.shader_object_spirv.basic.secondary_compute_only_queue",
+    "dEQP-VK.glsl.builtin.precision.add.highp.scalar",
+    "dEQP-VK.glsl.builtin.precision.add.highp.vec2",
+    "dEQP-VK.glsl.builtin.precision.add.highp.vec3",
+    "dEQP-VK.glsl.builtin.precision.add.highp.vec4",
+    "dEQP-VK.glsl.builtin.precision.add.mediump.scalar",
+    "dEQP-VK.glsl.builtin.precision.add.mediump.vec2",
+    "dEQP-VK.glsl.builtin.precision.add.mediump.vec3",
+    "dEQP-VK.glsl.builtin.precision.add.mediump.vec4",
+    "dEQP-VK.glsl.builtin.precision.div.highp.scalar",
+    "dEQP-VK.glsl.builtin.precision.div.highp.vec2",
+    "dEQP-VK.glsl.builtin.precision.div.highp.vec3",
+    "dEQP-VK.glsl.builtin.precision.div.highp.vec4",
+    "dEQP-VK.glsl.builtin.precision.div.mediump.scalar",
+    "dEQP-VK.glsl.builtin.precision.div.mediump.vec2",
+    "dEQP-VK.glsl.builtin.precision.div.mediump.vec3",
+    "dEQP-VK.glsl.builtin.precision.div.mediump.vec4",
+    "dEQP-VK.glsl.builtin.precision.fma.highp.scalar",
+    "dEQP-VK.glsl.builtin.precision.fma.highp.vec2",
+    "dEQP-VK.glsl.builtin.precision.fma.highp.vec3",
+    "dEQP-VK.glsl.builtin.precision.fma.highp.vec4",
+    "dEQP-VK.glsl.builtin.precision.fma.mediump.scalar",
+    "dEQP-VK.glsl.builtin.precision.fma.mediump.vec2",
+    "dEQP-VK.glsl.builtin.precision.fma.mediump.vec3",
+    "dEQP-VK.glsl.builtin.precision.fma.mediump.vec4",
+    "dEQP-VK.glsl.builtin.precision.mul.highp.scalar",
+    "dEQP-VK.glsl.builtin.precision.mul.highp.vec2",
+    "dEQP-VK.glsl.builtin.precision.mul.highp.vec3",
+    "dEQP-VK.glsl.builtin.precision.mul.highp.vec4",
+    "dEQP-VK.glsl.builtin.precision.mul.mediump.scalar",
+    "dEQP-VK.glsl.builtin.precision.mul.mediump.vec2",
+    "dEQP-VK.glsl.builtin.precision.mul.mediump.vec3",
+    "dEQP-VK.glsl.builtin.precision.mul.mediump.vec4",
+    "dEQP-VK.glsl.builtin.precision.sub.highp.scalar",
+    "dEQP-VK.glsl.builtin.precision.sub.highp.vec2",
+    "dEQP-VK.glsl.builtin.precision.sub.highp.vec3",
+    "dEQP-VK.glsl.builtin.precision.sub.highp.vec4",
+    "dEQP-VK.glsl.builtin.precision.sub.mediump.scalar",
+    "dEQP-VK.glsl.builtin.precision.sub.mediump.vec2",
+    "dEQP-VK.glsl.builtin.precision.sub.mediump.vec3",
+    "dEQP-VK.glsl.builtin.precision.sub.mediump.vec4",
     "dEQP-VK.info.device_features",
     "dEQP-VK.info.device_memory_properties",
     "dEQP-VK.info.device_properties",
@@ -932,12 +977,32 @@
     "Original buffer-atomics-02": {
       "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-buffer-atomics-02/probe/runner-result.json",
       "sha256": "63da2481c619260290bdd785040a97c770d8c5b09901554dac3bead6053066dd"
+    },
+    "Original precision-00-add": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-precision-00-add/probe/runner-result.json",
+      "sha256": "86b3dd5af99e4e70658cb626b50c1d49be14bb63274b7e1473f90d91a7038424"
+    },
+    "Original precision-01-sub": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-precision-01-sub/probe/runner-result.json",
+      "sha256": "80123e4c01eec5583a08fc361fd4497bb1cdd4f7a35ce4f5b924dcf34ede37c2"
+    },
+    "Original precision-02-mul": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-precision-02-mul/probe/runner-result.json",
+      "sha256": "b04aabf9b654b363d7c1650102f35003606d9c3c05a93dccad16e53982d41457"
+    },
+    "Original precision-03-div": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-precision-03-div/probe/runner-result.json",
+      "sha256": "4f77573e73eaefb1f1b35154b0c3362c4df223aac4fce033319d7dd5373eb72f"
+    },
+    "Original precision-04-fma": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-precision-04-fma/probe/runner-result.json",
+      "sha256": "a1bd65d61ff987a5478e8b6f8a438bdb07949fac897b05204fb75dba117c2a51"
     }
   },
   "limitations": "Separate historical revisions/candidates, not one full conformance run; original oracle limits preserved. Failed historical info/ETC cases were corrected and later passed; custom42 strict sRGB mismatches remain unresolved. Original mistyped cache case0/0 is not a case or pass.",
   "source_receipt_identity": {
-    "path": "/run/media/jethac/Shared/radish/compute11-verified-case-count-v10-0045.json",
-    "bytes": 64305,
-    "sha256": "2eee302bb72019b243849af2f6045de66abfdd95512a6d87f24405ec1a509048"
+    "path": "/run/media/jethac/Shared/radish/compute11-verified-case-count-v11-0045.json",
+    "bytes": 67910,
+    "sha256": "1e92e3e8a90aee0e9f006d46d0ce8e2077f912b642faa67f483105445410a63c"
   }
 }
