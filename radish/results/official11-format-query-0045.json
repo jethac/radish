@@ -1,0 +1,2840 @@
+{
+  "status": "188 distinct original physical-format query cases passed",
+  "driver": {
+    "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/libvulkan_radish.so",
+    "bytes": 49079616,
+    "sha256": "f222ff480f6c9ef3785c446661f12ccacbc91f119b0e7d405347b949b4dc325d"
+  },
+  "plan": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-original-format-query-plan-0045/plan.json",
+      "bytes": 3570,
+      "sha256": "04bf79be6d74ae45ab31ab9a3926bc2744fdc9287d17537afb79c2b2d33ad88e"
+    },
+    "result": {
+      "status": "Source-derived finite original CTS partition; owner frozeninventory/binary/runner gates andactualQPA names remain authoritative",
+      "cases": {
+        "path": "/run/media/jethac/Shared/radish/compute11-original-format-query-plan-0045/cases.txt",
+        "bytes": 9812,
+        "sha256": "87a8a9752b605c0b956da83437aa25227057d385fff26c7ff7b254dd304f8e9b"
+      },
+      "count": 188,
+      "source_pins": {
+        "vktApiFeatureInfo.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-original-format-query-plan-0045/source/vktApiFeatureInfo.cpp",
+          "bytes": 510556,
+          "sha256": "7ca9941b18a894895c1ee4c5ac31b3163426de7b55687e641d7643a8f60b854b"
+        },
+        "vktApiTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-original-format-query-plan-0045/source/vktApiTests.cpp",
+          "bytes": 6276,
+          "sha256": "f8448b09583d40bca5e1ea3d3c87a37f13aa665541a553ab2b45a3da39962902"
+        },
+        "vktTestPackage.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-original-format-query-plan-0045/source/vktTestPackage.cpp",
+          "bytes": 67173,
+          "sha256": "272802a91a54f6aade1741c713563936fe01be295ea648bdf85e5cce0e4823d6"
+        },
+        "vkDefs.hpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-original-format-query-plan-0045/source/vkDefs.hpp",
+          "bytes": 12428,
+          "sha256": "f2c3f64de3254014ee7b62bc1063d188ae43529f6dec2b56abcab2dbd601a37c"
+        },
+        "vkBasicTypes.inl": {
+          "path": "/run/media/jethac/Shared/radish/compute11-original-format-query-plan-0045/source/vkBasicTypes.inl",
+          "bytes": 456054,
+          "sha256": "cf5d4f9d3c60096c349235e36e05e4227efd194615eff207aa9d9472785eec25"
+        }
+      },
+      "parent_registration": [
+        "vktTestPackage.cpp1455:addRootChild(api,api::createTests)",
+        "vktApiTests.cpp99:createFeatureInfoTests",
+        "vktApiFeatureInfo.cpp9000:info;9002:format_properties/createFormatTests",
+        "vktApiFeatureInfo.cpp4858:coreformats[UNDEFINED,VK_CORE_FORMAT_LAST), lower-case(getFormatName.substr(10))",
+        "vkDefs.hpp176:VK_CORE_FORMAT_LAST=ASTC12x12SRGB184+1"
+      ],
+      "partition": "185coreformatenums0..184 +3originalaggregatequeriesdepth_stencil/compressed_formats/sampled_formats. DoesnotincludeadditionalYCbCr/extensionenumranges registeredbythe samefunction; those remain explicitfuturecoverage, not waiver.",
+      "behavior": "formatProperties4497 queriesrequired+allowedlinear/optimal/bufferfeaturemasks and conditionalfeaturesemantics; no shader/data/graphicscommands. depthStencil4642 testsrequiredalternatives;compressedformatstest requiresonecompleteadvertisedfamily;sampled4803 checksSAMPLED\u21d2TRANSFERsrc/dst. Physicalqueries only inselectedtestbodies, CTScontextmaycreatenormaldevice.",
+      "pairing": "Use composedf222(onlymandatoryBLEND14+BLIT47/38+VERTEX45 queries overqualifiedbase), officialunmodifiedCTS binary alreadypinnedbyowner andsamepublic1.1 loader/manifest route. Do not infer testexecution fromsource-onlyplan. Existingstrict42sRGBresults unchanged.",
+      "original_bounds": "Originalowner384MiB/90s/faultstop/services/reserve/controlconditions unchanged; no shaders or GPUdispatch intheseformatquerybodies. Owner may partition byobservedboundedpreflight/runtime ifneeded, neverraiseguards.",
+      "failure_policy": "Preserveoriginaltestoracles/QPA outcomes; exactcasecount/name reconciliation, no skips silentlytreatedPASS, no querypropertyinflation tofitCTS. A failure becomes concrete nextsource diagnosis.",
+      "publication": "Resourcequeryfamilies notconformancecertificate. Parentgoalwholeapplicable1.0+1.1compute/shared coverage remainsopen."
+    }
+  },
+  "scope_clarification": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-original-format-query-plan-0045/scope-clarification.json",
+      "bytes": 639,
+      "sha256": "eaada9f9248695a9e1952d05a1573253412878e9bb72d212345194f47a66472b"
+    },
+    "result": {
+      "status": "Finite scope clarification; originalfrozen188casefile andplan remainunchanged",
+      "casefile_sha256": "87a8a9752b605c0b956da83437aa25227057d385fff26c7ff7b254dd304f8e9b",
+      "clarification": "185individualcoreformatcases excludeindividualYCbCr/extensionenumcases. Originalsampled_formats aggregate nevertheless loopsformats::allFormats andconditionallyqueriesbroader supported extension formats; not a claimonly185 VkFormat valuesare queried duringentirepartition. No shaders/data/graphicscommands.",
+      "source_counterpart": "87edfb3a independentbatchsource/runnerPASS",
+      "actual": "Owner2677live; do notreaduntilterminal."
+    }
+  },
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-original-format-query-plan-0045/independent-actual-review.json",
+      "bytes": 68980,
+      "sha256": "3b013ca19a648100147746dbec9437960e99e9ee6209d307c8f7081a2929474a"
+    },
+    "result": {
+      "status": "PASS188originalformatquerycases independentlyfromdistinctQPA",
+      "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe",
+      "casefile": {
+        "path": "/run/media/jethac/Shared/radish/compute11-original-format-query-plan-0045/cases.txt",
+        "bytes": 9812,
+        "sha256": "87a8a9752b605c0b956da83437aa25227057d385fff26c7ff7b254dd304f8e9b"
+      },
+      "combined_qpa": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/info.qpa",
+        "bytes": 306236,
+        "sha256": "3da927d4ea7ac5c6804301c3884ca96fba3a0757b3063605dda950388d892b34"
+      },
+      "run_log": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/run.log",
+        "bytes": 120924,
+        "sha256": "9397fd5b29080c7b050bf8f794da433c33e403929178199d16dcdd535064bcf9"
+      },
+      "runner_result": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/runner-result.json",
+        "bytes": 25829,
+        "sha256": "58767048ebf8d2e0a8e463b6d7a6f90d2cab1225ef96f86dd589c4fc69d029a4"
+      },
+      "count": 188,
+      "all_status": "188Pass/0Fail/0NotSupported/0Warnings/0Waived, exactorderedsourceinventory",
+      "domain": "185coreformatenums0..184 plusoriginaldepth_stencil/compressed_formats/sampled_formats aggregatequerycases. sampled_formats itself conditionallyqueriesbroaderformats::allFormats; individualYCbCr/extensionenumcasesnotincluded. Requiredandallowedformatpropertytraits only, no data/shader/graphicscommands.",
+      "source_plan": "04bf79be withscopeclarificationeaada9f9/source-runner87ed, unchangedofficialCTS0e715/f222strip e699. InitialE2BIG2677 setupfailure preserved, no actualresultclaimedthere.",
+      "postflight": "Exit0,67.833sunit underoriginal90s,22.5MiB/0swap;188percasefaultchecks+finalfaultcheck/servicesclean per frozenrunner; no resourceguardincrease.",
+      "limitations": "Finite required/allowedpropertyqueryqualification, notsampler/imageexecution/precision/memoryfullconformance. All42strictsRGBlinearobservations remain, separateoriginal10ETCsamplingPASS.",
+      "rows": [
+        {
+          "case": "dEQP-VK.api.info.format_properties.undefined",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-0.qpa",
+            "bytes": 1430,
+            "sha256": "ae03d0a89db94be578b35f0fd4920a897a7bec637c08e5cfc5cfeb58638efaa9"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r4g4_unorm_pack8",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-1.qpa",
+            "bytes": 1451,
+            "sha256": "cd3fa35f531f00d23e1ea55c18e77853fa25092d00974bba5f3e833b146e8077"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r4g4b4a4_unorm_pack16",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-2.qpa",
+            "bytes": 1818,
+            "sha256": "6e8305176b6df5260df144a39992f32ee15d0877d6537e30220438584d1b4c72"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.b4g4r4a4_unorm_pack16",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-3.qpa",
+            "bytes": 1849,
+            "sha256": "08ab1ffc737ef2af8feb5fe38be15255b7760b078d13d9965ef27d4942187ade"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r5g6b5_unorm_pack16",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-4.qpa",
+            "bytes": 1958,
+            "sha256": "f7374f144ad643589ec2d85f652acceed1a5462c078ff5c3a1dc5fb0f35e8bda"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.b5g6r5_unorm_pack16",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-5.qpa",
+            "bytes": 1812,
+            "sha256": "255fb1ffd6c18c626e0f27f2a1b9bdbe4a77db01817b95dd3aabf62028336e7a"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r5g5b5a1_unorm_pack16",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-6.qpa",
+            "bytes": 1466,
+            "sha256": "408e8264254e6450232eeec26151d1a7bd9393530277dd42d0d0d38e1ac0e5d7"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.b5g5r5a1_unorm_pack16",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-7.qpa",
+            "bytes": 1466,
+            "sha256": "aa517300d52ccb4621c0618acc43b4769f0980b2c8a9be269777f03b54fe716c"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.a1r5g5b5_unorm_pack16",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-8.qpa",
+            "bytes": 1964,
+            "sha256": "612f7cada3e554f70937e8d9dcefa82767b8d67356e7d982266dfaa01a7084b8"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8_unorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-9.qpa",
+            "bytes": 2076,
+            "sha256": "e82fe3836964857d0a56dbd8f39bb7294f25a4743dd42c8f6658fcea17b8d911"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8_snorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-10.qpa",
+            "bytes": 2001,
+            "sha256": "3901bfb4ed78d4853be3821329cc9cc3cfd0a825e9470ebe3d3d28eb9c560a64"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8_uscaled",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-11.qpa",
+            "bytes": 1434,
+            "sha256": "7b3cd9beb17b4a6b5f78603260f1dfcec769cfd5d9b5434d3cd37df0ec9d9d21"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8_sscaled",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-12.qpa",
+            "bytes": 1434,
+            "sha256": "024a0025d432c2d264e80c6234b1dbd39d4684e772139c2fd12aec310f233924"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-13.qpa",
+            "bytes": 1929,
+            "sha256": "5568cf04cfb6816958cd05165554725fc52412b2f88e2b6244e4cae56dd59b1c"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8_sint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-14.qpa",
+            "bytes": 1929,
+            "sha256": "018f3987389201a94d73ae13dc662ed378ff319880cfbe1cd6ff2f9250805cec"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8_srgb",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-15.qpa",
+            "bytes": 1425,
+            "sha256": "9cd35fbc40c616c166811aedcf05271a379e023e7ecbf29c635c2241c0e6f274"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8g8_unorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-16.qpa",
+            "bytes": 2083,
+            "sha256": "b9110a79c18e635097a484e489cfd26c604029fd1df2c453e98407e590cf8676"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8g8_snorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-17.qpa",
+            "bytes": 2007,
+            "sha256": "87cf5b2771243bcb70701f44300e7a4929b32c2bef8b252b364352a02594b94e"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8g8_uscaled",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-18.qpa",
+            "bytes": 1440,
+            "sha256": "cdce112be104158351a4272940a7b961519d2af2e12aefc59b2444c0c6ac77fc"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8g8_sscaled",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-19.qpa",
+            "bytes": 1440,
+            "sha256": "d933ed03a805734a98d4612870c20a8292cc59991f484871e9552031c790a269"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8g8_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-20.qpa",
+            "bytes": 1935,
+            "sha256": "bea1e26ebb2d80b0bbf8af1e0470546ac753c7fc6c7fec27b0721a9d0154dcfe"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8g8_sint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-21.qpa",
+            "bytes": 1935,
+            "sha256": "4e06bee72bbe66a6fe86b4f1453a3afbb00c418b8f48ff800842e6b32817bf92"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8g8_srgb",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-22.qpa",
+            "bytes": 1431,
+            "sha256": "8e3fded5172a3adc815fd904f60bcb2d74e967e5ec0ea217ffa8b51bb6dc0543"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8g8b8_unorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-23.qpa",
+            "bytes": 1440,
+            "sha256": "54bcde90006f35eed8cf162abe6ecad82bf02e2569dd84256973ce1a7ab77b40"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8g8b8_snorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-24.qpa",
+            "bytes": 1440,
+            "sha256": "da36dd661cd1bd64d71bc5e43bf6304fe400dd8bd9d320002f37c70e5b3c8e96"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8g8b8_uscaled",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-25.qpa",
+            "bytes": 1446,
+            "sha256": "b9132844664ffbb2571d2817146664bb1b1e0d2cd51457322146fdfd74ffd37d"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8g8b8_sscaled",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-26.qpa",
+            "bytes": 1446,
+            "sha256": "0d9cde7080f113db9369156d2473ff8c30a01a27bbf7b2a6631b9f1b6e2e45b2"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8g8b8_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-27.qpa",
+            "bytes": 1437,
+            "sha256": "b963ec8fa523bed0f2f577d54e43fa260b3606353400fdd774321b360b66b4c0"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8g8b8_sint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-28.qpa",
+            "bytes": 1437,
+            "sha256": "24565d15b015bd24a94c536871fce4597edab408b54db0a4ccdf3b49b9abc7e4"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8g8b8_srgb",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-29.qpa",
+            "bytes": 1437,
+            "sha256": "a1f572575d93e6272d346e883cbd7f51f3ad09c571478d24467a5392ec5f6078"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.b8g8r8_unorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-30.qpa",
+            "bytes": 1440,
+            "sha256": "018903071f26356e8e90560a561dfaadac997be93ab108ec928cfeee071c82b0"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.b8g8r8_snorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-31.qpa",
+            "bytes": 1440,
+            "sha256": "e6e53c32473ad5c7ddfe8f52748160c1f4a0d9b484bdd28e9362aa76db900ce8"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.b8g8r8_uscaled",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-32.qpa",
+            "bytes": 1446,
+            "sha256": "17220b39d6129b35232347ee86999d627c800e9eb9e6b3b1a6bc607eeafb4cd7"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.b8g8r8_sscaled",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-33.qpa",
+            "bytes": 1446,
+            "sha256": "45f495d605afafe985e5e49dccb74bcaa7c4eae1fea0e99ac72e4ecc323098f5"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.b8g8r8_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-34.qpa",
+            "bytes": 1437,
+            "sha256": "598a10955edbcd882de489782354f51e202109bc792a9784ae89ea8c4c9ca64f"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.b8g8r8_sint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-35.qpa",
+            "bytes": 1437,
+            "sha256": "94882c631eed66e70250c647b4c26cc9f22f65924d8ed9a33db5ea2ea3d17d89"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.b8g8r8_srgb",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-36.qpa",
+            "bytes": 1437,
+            "sha256": "1e2a22514a333d4d6f8c538d1e0e6d8fd7ea78c2e4a3b668516c0f81ad122c59"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8g8b8a8_unorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-37.qpa",
+            "bytes": 2095,
+            "sha256": "515c46d0db89acfd9ba4bf0797195896269af8a865573609c629c515a57eda61"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8g8b8a8_snorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-38.qpa",
+            "bytes": 2019,
+            "sha256": "4e505cfdc60cdeed303edf8de83b8ea0797320fd823b6a5d233830f22ef66c2b"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8g8b8a8_uscaled",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-39.qpa",
+            "bytes": 1452,
+            "sha256": "fc83587b15f4e65e8847aaf794210b627eed35a771394be8f22b8c56e6b80b6e"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8g8b8a8_sscaled",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-40.qpa",
+            "bytes": 1452,
+            "sha256": "c05b19630326ad53e73e2bfae784807998215faaa943807878756584a05deffa"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8g8b8a8_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-41.qpa",
+            "bytes": 1947,
+            "sha256": "568016bd7f5fa36693dfd9bf1f6e14a8c2c98ac85615b43bbb885e046c1c1524"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8g8b8a8_sint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-42.qpa",
+            "bytes": 1947,
+            "sha256": "1ea372f6dc52e5b945afcd0e9f933facb49513fbb4660d827862e4aa593f1b0b"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r8g8b8a8_srgb",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-43.qpa",
+            "bytes": 1899,
+            "sha256": "2cc3b1c0970e3a86bda26ce8995ac9a243df78d2b9282daa501418c6db4509bb"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.b8g8r8a8_unorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-44.qpa",
+            "bytes": 1980,
+            "sha256": "2d9270ab04db996140c9193d2864c6c5d62b7c24053da893de5ac2596db8eca4"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.b8g8r8a8_snorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-45.qpa",
+            "bytes": 1798,
+            "sha256": "4697d01942fc87cc1b4480a350f70ec826e80f22da887bbc5d91f4a8c2a99982"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.b8g8r8a8_uscaled",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-46.qpa",
+            "bytes": 1452,
+            "sha256": "3e34fc043ea2ce24ddaeb9a76510cec36917213a7ac05ede1c8106fd079f72d5"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.b8g8r8a8_sscaled",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-47.qpa",
+            "bytes": 1452,
+            "sha256": "1207a8f92ef08844bdd85af916a43ada3c7c6e4b7d932cae1ec33f5f02e45e09"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.b8g8r8a8_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-48.qpa",
+            "bytes": 1695,
+            "sha256": "6aad8aad55a13ab896584afecbfdd336233df34d1961e882ad8374b3c64fb35c"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.b8g8r8a8_sint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-49.qpa",
+            "bytes": 1695,
+            "sha256": "8de4d7519193ec57c5c6488bb85d8a2224ac52decf77dbfdd341792912a053c7"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.b8g8r8a8_srgb",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-50.qpa",
+            "bytes": 1899,
+            "sha256": "147fba60361a221c15e9ddd3c6cb1d7f0b1c493ea8e0187719beffbb8e50bfa3"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.a8b8g8r8_unorm_pack32",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-51.qpa",
+            "bytes": 2116,
+            "sha256": "f930c2a6dc97c1aaa268991637312e51a693b53c9d00561065f64e9927367951"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.a8b8g8r8_snorm_pack32",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-52.qpa",
+            "bytes": 2040,
+            "sha256": "87a8453131b2791704db61ca9f7b29fab1738860ef8e57ce25df4801316de174"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.a8b8g8r8_uscaled_pack32",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-53.qpa",
+            "bytes": 1473,
+            "sha256": "b08bd633ddad1ba557e157d3e3e29f500f6a524c9e78a952f05ee475160fd8be"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.a8b8g8r8_sscaled_pack32",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-54.qpa",
+            "bytes": 1473,
+            "sha256": "f95232dfa6413f5660a23b6619f95b28ba7f051ea927c611399a6066eb9c25e6"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.a8b8g8r8_uint_pack32",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-55.qpa",
+            "bytes": 1968,
+            "sha256": "9760b1c2b81d49f6ad09f48f427bcceece4e581a0fcd604ed2f8293249b37bad"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.a8b8g8r8_sint_pack32",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-56.qpa",
+            "bytes": 1968,
+            "sha256": "64737699aa975fb1451fa01f36379df8ca21e094a91e49a4e96f027945eb29bf"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.a8b8g8r8_srgb_pack32",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-57.qpa",
+            "bytes": 1920,
+            "sha256": "61ac1a3e6a8d676f8449020595bf8cbeedc90eca659645ad54346389768105fb"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.a2r10g10b10_unorm_pack32",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-58.qpa",
+            "bytes": 1867,
+            "sha256": "53a3d1c2764730034b8d56bf7f25ccc54b9fabb560f20e0bf20865f695efa14d"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.a2r10g10b10_snorm_pack32",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-59.qpa",
+            "bytes": 1476,
+            "sha256": "1cb967e1e25b8af1732821f81987491c2e30871ff0a970a7251dff51790fe576"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.a2r10g10b10_uscaled_pack32",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-60.qpa",
+            "bytes": 1482,
+            "sha256": "006ee535b73a779df486b5325746b4184fd6c70284ecd07daf725be99d12e8b7"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.a2r10g10b10_sscaled_pack32",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-61.qpa",
+            "bytes": 1482,
+            "sha256": "72a0e43f15beaee081181a35fd37933fa13c8554635f422b33347f4293800e40"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.a2r10g10b10_uint_pack32",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-62.qpa",
+            "bytes": 1764,
+            "sha256": "1586ccf4fa0a559c1abe82e6a6df62f8c86eeb21f7acf9a781837baf676c642d"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.a2r10g10b10_sint_pack32",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-63.qpa",
+            "bytes": 1473,
+            "sha256": "1688a184c18607efc1d45c5155a17bedfc32693c75e0e4330673ef9f8824cb8f"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.a2b10g10r10_unorm_pack32",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-64.qpa",
+            "bytes": 2125,
+            "sha256": "b89a54485118f15c9cb248c9060c0e61805be903a33246e19b69097e368d65af"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.a2b10g10r10_snorm_pack32",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-65.qpa",
+            "bytes": 1476,
+            "sha256": "603ae6bb0ff49e1f2797e23f662a8c3fe504593196443e82aeeb59535ebe1a51"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.a2b10g10r10_uscaled_pack32",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-66.qpa",
+            "bytes": 1482,
+            "sha256": "e58d7390d9c02cfaa10b54f31ebb2df3d32ea784d32447b3587cb4c47766cfc2"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.a2b10g10r10_sscaled_pack32",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-67.qpa",
+            "bytes": 1482,
+            "sha256": "0a2425ece789062dd25f897278ff507c53fd0372dd7add13bf65428c55cc07b2"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.a2b10g10r10_uint_pack32",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-68.qpa",
+            "bytes": 1941,
+            "sha256": "9f1462f8a586dbb0a28f7b5be13253cad818fdf6185b4ab408a18e8890006935"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.a2b10g10r10_sint_pack32",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-69.qpa",
+            "bytes": 1473,
+            "sha256": "0956e6b55153a5d078972ca145991c85aa0e09705aca07a9bd54dd2f28e8300b"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16_unorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-70.qpa",
+            "bytes": 1973,
+            "sha256": "8182e5ab42c39e72823c6f9d386f4f9d358fe8133845f14c37a0262d9d72e99a"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16_snorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-71.qpa",
+            "bytes": 1973,
+            "sha256": "895686824bbb78e652bafa0c682935c8ed6dd2943a8c73670e5d7ae54016795e"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16_uscaled",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-72.qpa",
+            "bytes": 1437,
+            "sha256": "33f0e464b508c62be66f948e16fa7e9f181ae195d2826e73bc874dac09e27d87"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16_sscaled",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-73.qpa",
+            "bytes": 1437,
+            "sha256": "1ac3475f93b07e77d45f6eabb7dcf000a2894287e1d984baa951180fce332fd6"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-74.qpa",
+            "bytes": 1932,
+            "sha256": "2a2a4b6b6de11992329dface9e93661f9acb237c6f029a2c913bc979546fa3fa"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16_sint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-75.qpa",
+            "bytes": 1932,
+            "sha256": "49dacb53c8fdc39154b89c74bdc66de41b714e59a0f98a9231a2bfa3a5f5c517"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16_sfloat",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-76.qpa",
+            "bytes": 2083,
+            "sha256": "4cc76a287c10f360d4dfaf9c56159649fdb172086c4d872006e89242ede219cd"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16g16_unorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-77.qpa",
+            "bytes": 1982,
+            "sha256": "9322fa1ea45b90035eb93035ce490fde57c0b03e73668932a900f42fa05f017e"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16g16_snorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-78.qpa",
+            "bytes": 1982,
+            "sha256": "eaabd6441e87bc6eea60d9d55218b9c1e313d1bba107ee6d056928f074eb4877"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16g16_uscaled",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-79.qpa",
+            "bytes": 1446,
+            "sha256": "f48b214d5861b69dab4b24c674829155389d0790823cda818c6cd7338d9f0218"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16g16_sscaled",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-80.qpa",
+            "bytes": 1446,
+            "sha256": "a06c45041801ca98330ab0ad78a6b24d97ad3217e2ddf0db978fd369c1026330"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16g16_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-81.qpa",
+            "bytes": 1941,
+            "sha256": "330b8727cdf57f260c58a9a05854ae154eed18bd498c6e74b2e2dd7c83c42e95"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16g16_sint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-82.qpa",
+            "bytes": 1941,
+            "sha256": "d233f84a562c6e233cb438449e13df32019b02c2cfd7123670e0240178f22bbe"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16g16_sfloat",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-83.qpa",
+            "bytes": 2092,
+            "sha256": "1840f78515fba2643b97eed7ec69d4c3324d538a99546664d0ef0b0f62cc6674"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16g16b16_unorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-84.qpa",
+            "bytes": 1449,
+            "sha256": "b99685b2c0dfb79eda2dbd93e45ff0bfa8003386b7f31582dbaf5a882aa4f691"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16g16b16_snorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-85.qpa",
+            "bytes": 1449,
+            "sha256": "4b7e5adfae4d10766e5894a754ae3bc3d631cf2f0a368e1b446875a3c7f208fa"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16g16b16_uscaled",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-86.qpa",
+            "bytes": 1455,
+            "sha256": "368abdfbf26a3a6d71ff677409c0e91b6eee1ea1e3d10faaca1fc5aa9a3cb369"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16g16b16_sscaled",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-87.qpa",
+            "bytes": 1455,
+            "sha256": "f0e1a6a096d6acd8fdfd1980dd437938c64a949e4abd453a99186ad14fc5031a"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16g16b16_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-88.qpa",
+            "bytes": 1446,
+            "sha256": "857b362ba0077ddad30b1a6a5f2d7e33bc465f58bdd39ff0beeccf1551cdd252"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16g16b16_sint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-89.qpa",
+            "bytes": 1446,
+            "sha256": "2d9e9d4c39d6b6fb107e814255886fc62cb217e86849cc10437313aa32b2e82a"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16g16b16_sfloat",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-90.qpa",
+            "bytes": 1452,
+            "sha256": "151554f0a2da7a1daa685446c1005e2171dc4140efbedbde6cc4bcd7633eeb98"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16g16b16a16_unorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-91.qpa",
+            "bytes": 2000,
+            "sha256": "a0200d48aa0dae2b8a8d652a007bdaf606cd03b8c529489e023b61ab80cdcfd8"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16g16b16a16_snorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-92.qpa",
+            "bytes": 2000,
+            "sha256": "70cb1581529e09117714f6628cebd7be8da341878d62eaaad5f2e4963d65dc4a"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16g16b16a16_uscaled",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-93.qpa",
+            "bytes": 1464,
+            "sha256": "dddba3fb4eb8ce182cf1c7b7420dab3b9faca4346609ab9a7df2c90784b12dcf"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16g16b16a16_sscaled",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-94.qpa",
+            "bytes": 1464,
+            "sha256": "e2b2ea83c729e9134d913846eb898036d6f08da227cb94592b58d47a653378e0"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16g16b16a16_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-95.qpa",
+            "bytes": 1959,
+            "sha256": "74acbd50a55a43d48c0cc311809a89ed771290622db1a8671ada860782529a83"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16g16b16a16_sint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-96.qpa",
+            "bytes": 1959,
+            "sha256": "39ced4f391db1e332d0d4745fd75faec6e4162da1defd99abf75c7404062da6c"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r16g16b16a16_sfloat",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-97.qpa",
+            "bytes": 2110,
+            "sha256": "b6cbb85b17932ee32231d0ed8a7a402b2cd47365c78646ffee378741ce462bc0"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r32_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-98.qpa",
+            "bytes": 2068,
+            "sha256": "dcb960f5bc8eadea443734efb22354a1c9ad46cc0ddec35ec207cb3d0bf17126"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r32_sint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-99.qpa",
+            "bytes": 2068,
+            "sha256": "4e67f5428673970331a405aaac0e71175449c1b6788e6ebd39ef012771ccc51b"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r32_sfloat",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-100.qpa",
+            "bytes": 2039,
+            "sha256": "fdec3af859b36429dc3fb66a3087871ecb5d21f8c93d07df2083cfc171930a82"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r32g32_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-101.qpa",
+            "bytes": 1942,
+            "sha256": "d61a5eb4a1ac4afdb2cc7f5a5317175002a03ac5199f956f794db59b9dadc7de"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r32g32_sint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-102.qpa",
+            "bytes": 1942,
+            "sha256": "ba1676da29a458a3f5f9e29ae5059e78f28c23cf416ca2bc27128a1bf0000de2"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r32g32_sfloat",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-103.qpa",
+            "bytes": 2048,
+            "sha256": "dd282c6d200728e79e948c328ee78a0dcaa37661fe66128aec798adf9d6cf87c"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r32g32b32_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-104.qpa",
+            "bytes": 1525,
+            "sha256": "e066b905e98f24b4335e4c61e902c09762bc3265b428083b861128bf75ee8a61"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r32g32b32_sint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-105.qpa",
+            "bytes": 1525,
+            "sha256": "cc32a1bbbb230fb519a25221666dcb351f1a1e551da847db7285467c2af6f37f"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r32g32b32_sfloat",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-106.qpa",
+            "bytes": 1531,
+            "sha256": "4a6eb5b85da2d7d0e0439fac9f33824573d1147296757e887a502a2d05021c75"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r32g32b32a32_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-107.qpa",
+            "bytes": 1960,
+            "sha256": "3247853124959c6908d2b1bcbba32d7ee7fc3427f7d02e1985b8bf977cc1019e"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r32g32b32a32_sint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-108.qpa",
+            "bytes": 1960,
+            "sha256": "63f9eef6b974e70e241f7037fa72ade663b172deb149b7196a34d88162529f4d"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r32g32b32a32_sfloat",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-109.qpa",
+            "bytes": 2066,
+            "sha256": "e214650f0189a242610018a32092cdf30a11022695ed1f8a0f2dfc82bd01a4ad"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r64_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-110.qpa",
+            "bytes": 1429,
+            "sha256": "37cbf4f7a6b538fe3f0df0af4f5ebe328f81cce1cef6e7af2dcf810fffc765db"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r64_sint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-111.qpa",
+            "bytes": 1429,
+            "sha256": "c225ed116d8b0cac61f6e3765546b1e02f105ead151cf92510345d5ee79a45fb"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r64_sfloat",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-112.qpa",
+            "bytes": 1435,
+            "sha256": "7232f3d79538cc1642d7148e16f8d9369f500654ce1a75bed2b6a9c84c0d4d0f"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r64g64_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-113.qpa",
+            "bytes": 1438,
+            "sha256": "44c8d0fef714315044b142de095b35c40e63a856bdc320ae5fa7064887051086"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r64g64_sint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-114.qpa",
+            "bytes": 1438,
+            "sha256": "cb3c9afb79f9428b2edfbd51134c0b773883e123049ddc7a95d6ab945d145466"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r64g64_sfloat",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-115.qpa",
+            "bytes": 1444,
+            "sha256": "5e7b2a9c70b87bd178e203236ea526ef88a4e38a8bddb9f75e5b9137612e1c35"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r64g64b64_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-116.qpa",
+            "bytes": 1447,
+            "sha256": "dab3b3bdfe2571de248857c32103dc034db11a2b9d9b594353c8eab9e2a1f70c"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r64g64b64_sint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-117.qpa",
+            "bytes": 1447,
+            "sha256": "e152c8a7ddd8c94d2de3c19a49878c5e0b4c377df5287b7ea992e16587d08f75"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r64g64b64_sfloat",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-118.qpa",
+            "bytes": 1453,
+            "sha256": "6376cfc5e6a50e3bbddfb2869341a60678136976ed7ddb8b59147d6f46a8164c"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r64g64b64a64_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-119.qpa",
+            "bytes": 1456,
+            "sha256": "77303ab4b4c7603dec2518ef58a419ee1982081fc63dfc3f48448d380a947cf2"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r64g64b64a64_sint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-120.qpa",
+            "bytes": 1456,
+            "sha256": "3aad5e953156080728dca8f57151d4b1c69d978aa71e3f35ab01a25bb67923fa"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.r64g64b64a64_sfloat",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-121.qpa",
+            "bytes": 1462,
+            "sha256": "33e7d9989530cd4644d00ca883a3fac3b577d3287b03a3c64e53039f417f2d46"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.b10g11r11_ufloat_pack32",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-122.qpa",
+            "bytes": 2011,
+            "sha256": "ebe991fe6c8b8b8e344155f5a47852b524b24a8c018e8d3806b8f986071101d9"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.e5b9g9r9_ufloat_pack32",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-123.qpa",
+            "bytes": 1854,
+            "sha256": "fc9678c93415e3654cac687d7abaf27fe6c1725878c5086987fbaa9f9fb6743a"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.d16_unorm",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-124.qpa",
+            "bytes": 1820,
+            "sha256": "4bdd4cf0560974d2156db362d0be4b9a515955a8e32cba17b0ccd8b60f320c9c"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.x8_d24_unorm_pack32",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-125.qpa",
+            "bytes": 1462,
+            "sha256": "2bbfeac05fe2cf54045c9f3197d47fd99521a0ff18d74fa1b144ffc8953768d8"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.d32_sfloat",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-126.qpa",
+            "bytes": 1823,
+            "sha256": "3ac24a495181d865f4c695a01a838beb7063a2467367d2b5d9bf70a752d4ecad"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.s8_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-127.qpa",
+            "bytes": 1683,
+            "sha256": "572dfc3194175ca3a6e498004043a1fc5f5d341f80f1d4c50171ed2cdf48c223"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.d16_unorm_s8_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-128.qpa",
+            "bytes": 1456,
+            "sha256": "4c3bb60c1f5ea44b441fe802c8f2664020e6a99ce6ba5d90b6c11ba8ee16153a"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.d24_unorm_s8_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-129.qpa",
+            "bytes": 1713,
+            "sha256": "7ae01092bb0506e22adbdcf8c87f27e92433aacd3a5e228422879b4a6357fe63"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.d32_sfloat_s8_uint",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-130.qpa",
+            "bytes": 1459,
+            "sha256": "7ade5fbdbd3a08667a274f04a60cf707d4d78d06cadb6bfc80291db1c4854a4f"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.bc1_rgb_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-131.qpa",
+            "bytes": 1462,
+            "sha256": "567d75c5640c87da0b1adc40f2f0b185e78dde8375c07e9769805190673c890b"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.bc1_rgb_srgb_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-132.qpa",
+            "bytes": 1459,
+            "sha256": "ef3e15ca1a9557ae8c0af5c2fc55c97fa36323038c907389e0a8668166495bad"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.bc1_rgba_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-133.qpa",
+            "bytes": 1465,
+            "sha256": "bf1ea572b3a08d7091e3e60d333328299859ffe47fed34fe627399902ce67b86"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.bc1_rgba_srgb_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-134.qpa",
+            "bytes": 1462,
+            "sha256": "cbc207783c89b37d2bdaa687168bfb09dfbd16371eee7f277e65a3db5c109c9a"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.bc2_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-135.qpa",
+            "bytes": 1450,
+            "sha256": "7abb83db21d9a99c0dfccb28fbb36517f6b6216e7d07853291219bce5cfea2b3"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.bc2_srgb_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-136.qpa",
+            "bytes": 1447,
+            "sha256": "344a45f9bb7ef0b6d7643bf9c521538b1b51e56c18754594d0aafc1ea4355e54"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.bc3_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-137.qpa",
+            "bytes": 1450,
+            "sha256": "8210049dc565ee6a0f2d75d04348306cf99ab9037727eaaee6cc22aafb1c82aa"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.bc3_srgb_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-138.qpa",
+            "bytes": 1447,
+            "sha256": "fc1f38582a09e80858bbd4f8477b165e7987f8a5eb170e0379291b640582661c"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.bc4_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-139.qpa",
+            "bytes": 1450,
+            "sha256": "3225602359617a012e4e7c6a08f66337705a61d53b70a1f037d64ebbb0d468aa"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.bc4_snorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-140.qpa",
+            "bytes": 1450,
+            "sha256": "59d838be98949dc41c46f6fc45ae3d5ff446539bd24dbd4b7fc1f083ac7fc2b8"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.bc5_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-141.qpa",
+            "bytes": 1450,
+            "sha256": "428293ebb14e0253f84a7636b1187f9bfcd1bb362ad6270aa5b4ec125f63f21a"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.bc5_snorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-142.qpa",
+            "bytes": 1450,
+            "sha256": "bf02b926e3f39900f1fe928dd2f4b11bf0982c4623072d29bc1891e9d6ca583a"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.bc6h_ufloat_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-143.qpa",
+            "bytes": 1456,
+            "sha256": "d28c125939cee1d0bc0ff201763ad5d6a07fa1eb982dc4471e962b7959f694bb"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.bc6h_sfloat_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-144.qpa",
+            "bytes": 1456,
+            "sha256": "b9956621b0acc3a68d61b972fbbb2b4ad31fe180c6144856f854bc52917a5771"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.bc7_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-145.qpa",
+            "bytes": 1450,
+            "sha256": "a5929d1a3e5bd0773fb73ba0f574a531f4feb943fb27c34bcd2d59e12fad0e8a"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.bc7_srgb_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-146.qpa",
+            "bytes": 1447,
+            "sha256": "4da3e751e5a7cd00d2473d60429745c355855cccc3c575202f44facd17cb34b3"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.etc2_r8g8b8_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-147.qpa",
+            "bytes": 1660,
+            "sha256": "589e685a48102d65f956516c0dbae45f7001943398f0ac87ceac1612c7cde8fe"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.etc2_r8g8b8_srgb_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-148.qpa",
+            "bytes": 1657,
+            "sha256": "190a15de963955005a4296cee0c65c18b4f07341f1f96acda9910bf64cf80a7d"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.etc2_r8g8b8a1_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-149.qpa",
+            "bytes": 1666,
+            "sha256": "ff6ec78cd53eb66fef4edb3f411e2951db5724b41dd550c2f8479518c8a06682"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.etc2_r8g8b8a1_srgb_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-150.qpa",
+            "bytes": 1663,
+            "sha256": "23c4f64ac25bcf8285b38a36bb205cffe79b855da6ade599b1669502b35236e4"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.etc2_r8g8b8a8_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-151.qpa",
+            "bytes": 1666,
+            "sha256": "8230f733327c912aab78d2f48360863b392edab9d53f0c5f1aa42dac2b3d1bcb"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.etc2_r8g8b8a8_srgb_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-152.qpa",
+            "bytes": 1663,
+            "sha256": "93af272bcc4ca653853c2b4cc316101a39ba68ba0e09ad7f18dfb86d51220ff2"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.eac_r11_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-153.qpa",
+            "bytes": 1648,
+            "sha256": "e93f110406a9701ca1c9752c2a20409452b9445cb34284c83c33c9e6d441c714"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.eac_r11_snorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-154.qpa",
+            "bytes": 1648,
+            "sha256": "1a3f2aff67e7889587c2348415c94a27f4a8e68fcfe4b9d4d28f9c52d56848a2"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.eac_r11g11_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-155.qpa",
+            "bytes": 1657,
+            "sha256": "6c2c5e77d937f0f7fb0f1db748aa7986220df7eef0287fc50e73204545ecc4d8"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.eac_r11g11_snorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-156.qpa",
+            "bytes": 1657,
+            "sha256": "1e332a07727fe33c9dd7af08f9c88be71c1d8d05132017ea8088d093dac918ea"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_4x4_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-157.qpa",
+            "bytes": 1465,
+            "sha256": "30e5603046caf423236109b86a6c0ae2ba0ded0f571ab397debb988d06c697a5"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_4x4_srgb_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-158.qpa",
+            "bytes": 1462,
+            "sha256": "c06bf4ee986a9f43a3cf24f64c3f6b2be81e252ce6465e5e1a855e0be7805f30"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_5x4_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-159.qpa",
+            "bytes": 1465,
+            "sha256": "be27fce88845f5a1359e4b27b7f2c73e321234eed1f09880aa83e9e3eafd7607"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_5x4_srgb_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-160.qpa",
+            "bytes": 1462,
+            "sha256": "56a45b09add8b2cdb0f2e691a34fa2a639e08757562e759efa30f169b0f9d703"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_5x5_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-161.qpa",
+            "bytes": 1465,
+            "sha256": "32031824e86f541c62a4e2fde12d86d51b83c7bb6c87fadc07522028e447a33e"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_5x5_srgb_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-162.qpa",
+            "bytes": 1462,
+            "sha256": "10b8dbcdb3688731a70bc4a6e3c9cb68351f4776aa73c0521eef2af8192de297"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_6x5_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-163.qpa",
+            "bytes": 1465,
+            "sha256": "2adcae692d34d4bafe90ac0bffe6df37d97d25024044f341bef5dd6351f42643"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_6x5_srgb_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-164.qpa",
+            "bytes": 1462,
+            "sha256": "80809d459ee7ecf17fedb38c5f60844f80a77b7ba4697bb894bd140e4d5f4390"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_6x6_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-165.qpa",
+            "bytes": 1465,
+            "sha256": "b46147398d36730518d30bb6be908c60f9cae4376e3702afb995fc3caa8bbb0e"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_6x6_srgb_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-166.qpa",
+            "bytes": 1462,
+            "sha256": "a366cfc7a6de39526c49979f59679abb530135a05ffb313667796a092c2c91fe"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_8x5_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-167.qpa",
+            "bytes": 1465,
+            "sha256": "ee726f06678639db786feee8724b7b0b85f13c15a40a3412d5626ea6c9495fc1"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_8x5_srgb_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-168.qpa",
+            "bytes": 1462,
+            "sha256": "a73648943388c225999b0838554ec236965b6adb84a2736b13767a9fd5c4e000"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_8x6_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-169.qpa",
+            "bytes": 1465,
+            "sha256": "84addd8d51efd281423d2f322816701120b47f6f3b4146791e94f398da9c9871"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_8x6_srgb_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-170.qpa",
+            "bytes": 1462,
+            "sha256": "b99f2c5401fc858208df163ad6dcd6cfa6dfc6d5325a76263c3c7e47f13cc525"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_8x8_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-171.qpa",
+            "bytes": 1465,
+            "sha256": "3df9492e44de322ba6b0a9e213d9f7c65d79dd81edc58ae6483f4a46d5a18179"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_8x8_srgb_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-172.qpa",
+            "bytes": 1462,
+            "sha256": "5954bf50e5e24da2afe1726db733f0fdba50104dd1fc6f43a716963f85c936a8"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_10x5_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-173.qpa",
+            "bytes": 1468,
+            "sha256": "e869403f378bc7a942ab2f925de96d5c3c5c42d71f3be0108bcb456ee7df1652"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_10x5_srgb_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-174.qpa",
+            "bytes": 1465,
+            "sha256": "60dc37b5d34c70c65f8249ee646d55d916c5d9d307319e98b3a4c8caadb066bf"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_10x6_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-175.qpa",
+            "bytes": 1468,
+            "sha256": "a7a54d5fe16f483830830ce8cad7492ed0c6d69bb04bacdd3919ae2c2eed36c2"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_10x6_srgb_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-176.qpa",
+            "bytes": 1465,
+            "sha256": "d4766f8f205a84668e3b9de068ba92e25e1a3f1f9ccb0e2bdfa5e1260e77f05d"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_10x8_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-177.qpa",
+            "bytes": 1468,
+            "sha256": "99ee288487fb1160990652a190b652024e26cdaff116c5ac03d6813c8ae9783a"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_10x8_srgb_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-178.qpa",
+            "bytes": 1465,
+            "sha256": "bcdb420bbc91721059ee92f947414618ca9011938dab8673be575ddd3fbed722"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_10x10_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-179.qpa",
+            "bytes": 1471,
+            "sha256": "5db10412db8e2e72d9b7232a1af8a73ed71d318ee895f758023cae0f24d75cee"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_10x10_srgb_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-180.qpa",
+            "bytes": 1468,
+            "sha256": "7366ed17af45335f38284dba1fa70153eae8d2f4044d3cc5781860d85aad0b1e"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_12x10_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-181.qpa",
+            "bytes": 1471,
+            "sha256": "1bb987ca8a21475f48b0a7615198fa7718ae407e59e79032072f2e7605d6bc0a"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_12x10_srgb_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-182.qpa",
+            "bytes": 1468,
+            "sha256": "5479fe7a04f53f21b215488fcdf2b17c46dbb8fe2f17751aac6a33bcd70195e3"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_12x12_unorm_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-183.qpa",
+            "bytes": 1471,
+            "sha256": "562de140ba3d98fcd3e7dbd00c53246f014e9f37c7efe760e58860380aab8ead"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.astc_12x12_srgb_block",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-184.qpa",
+            "bytes": 1468,
+            "sha256": "e0be46b8f3702952c079f543fb95167be431d7bbd5bd8f97b0dafb203d156e4d"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.depth_stencil",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-185.qpa",
+            "bytes": 1370,
+            "sha256": "e582b4982f40e6a89c434520ce685a4cdef66593dfd0199721d129b36e825ce2"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.compressed_formats",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-186.qpa",
+            "bytes": 1525,
+            "sha256": "e1e556827e4a2a55a11137363b7e45e6628ad41db016cc739504bed87fa3dd19"
+          }
+        },
+        {
+          "case": "dEQP-VK.api.info.format_properties.sampled_formats",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/case-187.qpa",
+            "bytes": 1337,
+            "sha256": "390af0a75faf21e03fea15c1ab3ad41d9ce861191b3b2c857bdfbc700e4c893a"
+          }
+        }
+      ]
+    }
+  },
+  "transport_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-format-query-v2-runner-0045/independent-transport-review.json",
+      "bytes": 1389,
+      "sha256": "62d816d6e128e09963c4157e580286a369d4b2d9d3433a41cfda71d8c1b4aba4"
+    },
+    "result": {
+      "status": "PASS finite stdin/heredoc transport correction; no device execution by reviewer",
+      "candidate_sha256": "566ef7226cd6b9509239a4be23413deb8b338b6e47ba8e30066d6e44a8a090ab",
+      "baseline_sha256": "15d15b9a0e9536e3b20364de689c7f6f4d0ef7fabd3aff9bfd3dda2607c7dad5",
+      "diff": "Exact launcher replacement reconstructed: same generated command body and inventory; outer adb shell sh -s receives script by subprocess input_text; systemd-run --pipe invokes /bin/sh -s with quoted unique heredoc. Neither host nor device exec argv contains the large body. Delimiter collision fails before launch.",
+      "controls": "All original caps, overall timeout, per-case fault stop, service checks, case hashes/counts, QPA collection and numerical outcomes byte-identical outside launch transport. Prior E2BIG setup failure preserved; no CTS result inferred.",
+      "stdin": "systemd-run --pipe documents direct STDIN/OUT/ERR forwarding. Quoted heredoc supplies child shell and prevents outer expansion; fixed CTS is noninteractive. No device filesystem script or separate systemd scope added.",
+      "host_check": {
+        "body_bytes": 416027,
+        "nested_sh_literal_roundtrip": "PASS with >128KiB body and dollar/backtick/quotes/backslash literals",
+        "systemd_service_not_launched": true
+      },
+      "actual_gate": "Next actual original188 QPA inventory and runtime/cap/fault outcome remain required."
+    }
+  },
+  "runner": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query-v2/probe/runner-result.json",
+      "bytes": 25829,
+      "sha256": "58767048ebf8d2e0a8e463b6d7a6f90d2cab1225ef96f86dd589c4fc69d029a4"
+    },
+    "result": {
+      "status": "passed",
+      "mode": "probe",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 164,
+          "sha256": "0abef818178bd91be70d989fc0cdf2be561fe01ab937a384f7b8111ed110fe52"
+        },
+        "deqp-vk": {
+          "bytes": 97536760,
+          "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+        },
+        "libvulkan.so.1": {
+          "bytes": 703696,
+          "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+        },
+        "info-cases.txt": {
+          "bytes": 9812,
+          "sha256": "87a8a9752b605c0b956da83437aa25227057d385fff26c7ff7b254dd304f8e9b"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13622368,
+          "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+        },
+        "payload.json": {
+          "bytes": 967,
+          "sha256": "a27cd6ca74cdba1a1bd6c5e4b884ec11a420ab3cfa1777a56c0c1c51f510ed8b"
+        }
+      },
+      "run_log": {
+        "bytes": 120924,
+        "sha256": "9397fd5b29080c7b050bf8f794da433c33e403929178199d16dcdd535064bcf9"
+      },
+      "qpa": {
+        "bytes": 306236,
+        "sha256": "3da927d4ea7ac5c6804301c3884ca96fba3a0757b3063605dda950388d892b34"
+      },
+      "cases": [
+        {
+          "name": "dEQP-VK.api.info.format_properties.undefined",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r4g4_unorm_pack8",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r4g4b4a4_unorm_pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b4g4r4a4_unorm_pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r5g6b5_unorm_pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b5g6r5_unorm_pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r5g5b5a1_unorm_pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b5g5r5a1_unorm_pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.a1r5g5b5_unorm_pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8_snorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8_uscaled",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8_sscaled",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8_uint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8_sint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8_srgb",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8g8_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8g8_snorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8g8_uscaled",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8g8_sscaled",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8g8_uint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8g8_sint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8g8_srgb",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8g8b8_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8g8b8_snorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8g8b8_uscaled",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8g8b8_sscaled",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8g8b8_uint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8g8b8_sint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8g8b8_srgb",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b8g8r8_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b8g8r8_snorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b8g8r8_uscaled",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b8g8r8_sscaled",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b8g8r8_uint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b8g8r8_sint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b8g8r8_srgb",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8g8b8a8_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8g8b8a8_snorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8g8b8a8_uscaled",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8g8b8a8_sscaled",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8g8b8a8_uint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8g8b8a8_sint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r8g8b8a8_srgb",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b8g8r8a8_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b8g8r8a8_snorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b8g8r8a8_uscaled",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b8g8r8a8_sscaled",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b8g8r8a8_uint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b8g8r8a8_sint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b8g8r8a8_srgb",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.a8b8g8r8_unorm_pack32",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.a8b8g8r8_snorm_pack32",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.a8b8g8r8_uscaled_pack32",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.a8b8g8r8_sscaled_pack32",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.a8b8g8r8_uint_pack32",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.a8b8g8r8_sint_pack32",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.a8b8g8r8_srgb_pack32",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.a2r10g10b10_unorm_pack32",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.a2r10g10b10_snorm_pack32",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.a2r10g10b10_uscaled_pack32",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.a2r10g10b10_sscaled_pack32",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.a2r10g10b10_uint_pack32",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.a2r10g10b10_sint_pack32",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.a2b10g10r10_unorm_pack32",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.a2b10g10r10_snorm_pack32",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.a2b10g10r10_uscaled_pack32",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.a2b10g10r10_sscaled_pack32",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.a2b10g10r10_uint_pack32",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.a2b10g10r10_sint_pack32",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16_snorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16_uscaled",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16_sscaled",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16_uint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16_sint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16_sfloat",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16g16_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16g16_snorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16g16_uscaled",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16g16_sscaled",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16g16_uint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16g16_sint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16g16_sfloat",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16g16b16_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16g16b16_snorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16g16b16_uscaled",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16g16b16_sscaled",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16g16b16_uint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16g16b16_sint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16g16b16_sfloat",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16g16b16a16_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16g16b16a16_snorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16g16b16a16_uscaled",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16g16b16a16_sscaled",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16g16b16a16_uint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16g16b16a16_sint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r16g16b16a16_sfloat",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r32_uint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r32_sint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r32_sfloat",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r32g32_uint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r32g32_sint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r32g32_sfloat",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r32g32b32_uint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r32g32b32_sint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r32g32b32_sfloat",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r32g32b32a32_uint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r32g32b32a32_sint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r32g32b32a32_sfloat",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r64_uint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r64_sint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r64_sfloat",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r64g64_uint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r64g64_sint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r64g64_sfloat",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r64g64b64_uint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r64g64b64_sint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r64g64b64_sfloat",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r64g64b64a64_uint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r64g64b64a64_sint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r64g64b64a64_sfloat",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b10g11r11_ufloat_pack32",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.e5b9g9r9_ufloat_pack32",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.d16_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.x8_d24_unorm_pack32",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.d32_sfloat",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.s8_uint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.d16_unorm_s8_uint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.d24_unorm_s8_uint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.d32_sfloat_s8_uint",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.bc1_rgb_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.bc1_rgb_srgb_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.bc1_rgba_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.bc1_rgba_srgb_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.bc2_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.bc2_srgb_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.bc3_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.bc3_srgb_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.bc4_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.bc4_snorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.bc5_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.bc5_snorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.bc6h_ufloat_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.bc6h_sfloat_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.bc7_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.bc7_srgb_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.etc2_r8g8b8_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.etc2_r8g8b8_srgb_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.etc2_r8g8b8a1_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.etc2_r8g8b8a1_srgb_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.etc2_r8g8b8a8_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.etc2_r8g8b8a8_srgb_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.eac_r11_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.eac_r11_snorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.eac_r11g11_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.eac_r11g11_snorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_4x4_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_4x4_srgb_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_5x4_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_5x4_srgb_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_5x5_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_5x5_srgb_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_6x5_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_6x5_srgb_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_6x6_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_6x6_srgb_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_8x5_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_8x5_srgb_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_8x6_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_8x6_srgb_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_8x8_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_8x8_srgb_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_10x5_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_10x5_srgb_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_10x6_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_10x6_srgb_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_10x8_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_10x8_srgb_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_10x10_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_10x10_srgb_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_12x10_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_12x10_srgb_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_12x12_unorm_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.astc_12x12_srgb_block",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.depth_stencil",
+          "status": "Pass",
+          "detail": "Required depth/stencil formats supported"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.compressed_formats",
+          "status": "Pass",
+          "detail": "Compressed texture format support is valid"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.sampled_formats",
+          "status": "Pass",
+          "detail": null
+        }
+      ],
+      "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+    }
+  },
+  "original_setup_failure": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-format-query/probe/failure.json",
+      "bytes": 282,
+      "sha256": "a40e744acde72cb1a4afaa29357150efb52def7241e7dc1093d8882258f16a3d"
+    },
+    "result": {
+      "status": "failed",
+      "error": "[Errno 7] Argument list too long: 'adb'",
+      "started": true,
+      "terminal": false,
+      "process_returncode": 1,
+      "remote": "/var/tmp/radish/core-compute-core0045-official11-format-query",
+      "unit": "radish-core-compute-probe-1793654779877155395"
+    }
+  },
+  "scope": "185 core enum cases plus three aggregate queries. Exact original required/allowed and feature-conditioned query oracles; sampled-format aggregate conditionally examines broader allFormats. No shader/image execution or blanket feature claim. Original setup failed E2BIG before adb/CTS launch; transport-only v2 passes the identical bounded command body through stdin under the original90s/384MiB/fault-stop controls. Actual67.833s/22.5MiB/zero swap. Strict42 custom sRGB findings remain unresolved."
+}

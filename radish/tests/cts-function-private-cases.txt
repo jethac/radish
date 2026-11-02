@@ -1,0 +1,8 @@
+dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.float
+dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.vec4
+dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.matrix
+dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.floatarray
+dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.struct
+dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.int.initialized
+dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.uint.initialized
+dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.float.initialized

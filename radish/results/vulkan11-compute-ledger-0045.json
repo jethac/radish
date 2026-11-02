@@ -13,7 +13,7 @@
   "official_cts": {
     "source_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
     "binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
-    "state": "Pinned original binary: allfive info cases nowPASS, observed property messages31 to15 to9 to0. Teninitialshader,fourshared,twocommandbarrier,22buffer,seven descriptor andtenETCcompute casesPASS. This remains partial applicable coverage. Eight advertised-statistics andten coretimestamp casesPASS with documented originaloracle limits. Thirteen individual1.1/core2/maintenance3 query cases passed. Cache/lifetime eight original passes plus corrected single registered case passed; original0/0 inventory failure retained.",
+    "state": "Pinned original binary: allfive info cases nowPASS, observed property messages31 to15 to9 to0. Teninitialshader,fourshared,twocommandbarrier,22buffer,seven descriptor andtenETCcompute casesPASS. This remains partial applicable coverage. Eight advertised-statistics andten coretimestamp casesPASS with documented originaloracle limits. Thirteen individual1.1/core2/maintenance3 query cases passed. Cache/lifetime eight original passes plus corrected single registered case passed; original0/0 inventory failure retained. Another188 original core-format query cases and8 Function/Private initialization cases passed on f222. The deduplicated historical inventory is296, not one full-suite qualification.",
     "modified_harness": "f85cb13b diagnostics only, never official passes",
     "remaining_property_failures": 0,
     "actual_record": "official11-native-scalars-info-0045.json",
@@ -34,8 +34,10 @@
     "promoted_query_record": "official11-promoted-query-0045.json",
     "cache_lifetime_record": "official11-cache-lifetime-0045.json",
     "qualified_unique_case_inventory": "official11-qualified-case-inventory-0045.json",
-    "qualified_unique_cases": 100,
-    "inventory_limitation": "Historical passes span separate pinned candidates and exact source-bounded runs. This is neither one complete conformance run nor a percentage of all applicable requirements."
+    "qualified_unique_cases": 296,
+    "inventory_limitation": "Historical passes span separate pinned candidates and exact source-bounded runs. This is neither one complete conformance run nor a percentage of all applicable requirements.",
+    "format_query_record": "official11-format-query-0045.json",
+    "function_private_record": "official11-function-private-0045.json"
   },
   "categories": [
     {
@@ -58,7 +60,7 @@
       "id": "format-unconditional",
       "requirement": "47 unconditional required compute-relevant format rows",
       "implementation": "Four packed admissions plus paired SINT/Mesa NIR SNORM conversion",
-      "evidence": "snorm-storage-fixed-0045.json: unchanged original packed oracle passes; legal coreRGBA8 endpoints/OOB supplement passes.",
+      "evidence": "snorm-storage-fixed-0045.json: unchanged original packed oracle passes; legal coreRGBA8 endpoints/OOB supplement passes.; official11-format-query-0045.json185 core enum plus3 aggregate required/allowed query cases passed, including conditional broader allFormats queries; no image execution claim.",
       "remaining": "Complete required format, precision, alias, transfer and filtering CTS; representative four-format checks are not the full matrix.",
       "owner": "resource"
     },
@@ -170,7 +172,7 @@
       "id": "shader11",
       "requirement": "Public1.1 SPIR-V1.0\u20131.3 and COMPUTE+BASIC subgroup semantics",
       "implementation": "Private realpublic1.1 candidate and generic Mesa compiler",
-      "evidence": "public11-basic-0045.json and official11-cts-shaders-0045.json; historical invalid-environment probe remains erratum.",
+      "evidence": "public11-basic-0045.json and official11-cts-shaders-0045.json; historical invalid-environment probe remains erratum.; official11-function-private-0045.json8 initialization cases passed with original oracle limits; native register/constant implementation, no private spill operations.",
       "remaining": "Full applicable shader/environment/GLSL/precision/memory/geometry semantics and CTS beyond ten initial cases.",
       "owner": "batch"
     }
@@ -330,7 +332,7 @@
     "system_scope": "No globalgraphics/service/clock/kernelchanges"
   },
   "depth_layout_erratum": "Pinned Vulkan1.1 DEPTH_STENCIL_READ_ONLY_OPTIMAL requires DEPTH_STENCIL_ATTACHMENT usage. Earlier sampled-only depth consumers are implementation observations for that path until valid-usage requalification; no retroactive public qualification.",
-  "next_private_source": "Original188 core-format physical-query cases are source-bounded for the next unchanged-budget scope. Private arrays have ordinary functional evidence; deliberate compiler-spill qualification remains open. Broader shader, memory, resource and precision coverage remains; no performance tuning.",
+  "next_private_source": "Next distinct original Function composite/access-chain cases are source-bounded; schedule within observed original runtime, without cap growth. Deliberate compiler-spill qualification and broader applicable shader/memory/image/synchronization CTS remain open. No performance tuning.",
   "required_core_lookup": "core-lookup-public-0045.json: public165GIPA/137GDPA complete afterfiveactualdevicepointer fixes. This is lookup only, not allcommandexecution. DirectICDloaderglobal limitation retained.",
   "deferred_performance_opportunities": {
     "pipeline_cache_population": "Pipeline creation currently does not populate common cache entries; header/object-count serialization is callable behavior only. Real cache population/reuse and measured benefit belong to the later performance phase; no speedup assumed."

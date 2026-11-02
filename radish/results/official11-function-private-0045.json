@@ -1,0 +1,575 @@
+{
+  "status": "Eight distinct original Function/Private initialization cases passed",
+  "driver": {
+    "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/libvulkan_radish.so",
+    "bytes": 49079616,
+    "sha256": "f222ff480f6c9ef3785c446661f12ccacbc91f119b0e7d405347b949b4dc325d"
+  },
+  "bounds": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-function-private-next-0045/source-bounds.json",
+      "bytes": 9942,
+      "sha256": "1e9d1d086f89daf6f936710ad73bcf7ac87c644e805e54ca802a97337027e563"
+    },
+    "result": {
+      "status": "Source-bound original Function/Private initialization partition; no actual result yet",
+      "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+      "case_file": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-function-private-next-0045/cases.txt",
+        "bytes": 607,
+        "sha256": "35d845cfb2260b4a8d6598a26adec8dfa38f4a7679db87007bf4668e0a872a90"
+      },
+      "count": 8,
+      "cases": [
+        "dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.float",
+        "dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.vec4",
+        "dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.matrix",
+        "dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.floatarray",
+        "dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.struct",
+        "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.int.initialized",
+        "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.uint.initialized",
+        "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.float.initialized"
+      ],
+      "source_pins": [
+        {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/vktTestPackage.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-function-private-next-0045/source/vktTestPackage.cpp",
+          "bytes": 67173,
+          "sha256": "272802a91a54f6aade1741c713563936fe01be295ea648bdf85e5cce0e4823d6"
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-function-private-next-0045/source/vktSpvAsmTests.cpp",
+          "bytes": 1761,
+          "sha256": "97cd0a9fc6b7361bbe81c6e64a11d5d428fa439c98098638398969dddb66dd9d"
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmInstructionTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-function-private-next-0045/source/vktSpvAsmInstructionTests.cpp",
+          "bytes": 1042522,
+          "sha256": "d6800ae7655ee7bb2a535d450d01ae998f8439cb7b342ea9e22ec99095d518d8"
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmVariableInitTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-function-private-next-0045/source/vktSpvAsmVariableInitTests.cpp",
+          "bytes": 40744,
+          "sha256": "dd9e504f5303a48a56de8c93b16c1af190b5e2962cc9a208b91e93abf8ff1abf"
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmComputeShaderCase.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-function-private-next-0045/source/vktSpvAsmComputeShaderCase.cpp",
+          "bytes": 45490,
+          "sha256": "29492a513a821b5af613cbf77f03b7bdc954e20043fb7c7e05858324e9150c40"
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmComputeShaderTestUtil.hpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-function-private-next-0045/source/vktSpvAsmComputeShaderTestUtil.hpp",
+          "bytes": 22695,
+          "sha256": "dfd7c2e46d5f603a7bedde13bf9eb208465d64dd855fcdf34ea0ebdcd289ca86"
+        }
+      ],
+      "registration": [
+        "vktTestPackage.cpp1459 spirv_assembly root",
+        "vktSpvAsmTests.cpp43 createInstructionTests",
+        "vktSpvAsmInstructionTests.cpp22102 instruction + compute child;21939 createShaderDefaultOutputGroup and21961 createVariableInitComputeGroup",
+        "vktSpvAsmVariableInitTests.cpp689 variable_init,117 private,64-78 exact firstfive names",
+        "vktSpvAsmInstructionTests.cpp20813 shader_default_output,20136 type names int/uint/float,20873 initialized"
+      ],
+      "cases_bounds": [
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.float",
+          "dispatches": 1,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            128,
+            1,
+            1
+          ],
+          "storage_descriptors": 1,
+          "input_bytes": 0,
+          "output_bytes": 512,
+          "private_type_bytes": 4,
+          "oracle": "Exact byte comparison of 128 float32 ones after output poison, fenced submit and host invalidate. No custom allocation-guard coverage inferred."
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.vec4",
+          "dispatches": 1,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            32,
+            1,
+            1
+          ],
+          "storage_descriptors": 1,
+          "input_bytes": 0,
+          "output_bytes": 512,
+          "private_type_bytes": 16,
+          "oracle": "Exact byte comparison of 128 float32 ones after output poison, fenced submit and host invalidate. No custom allocation-guard coverage inferred."
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.matrix",
+          "dispatches": 1,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            16,
+            1,
+            1
+          ],
+          "storage_descriptors": 1,
+          "input_bytes": 0,
+          "output_bytes": 512,
+          "private_type_bytes": 32,
+          "oracle": "Exact byte comparison of 128 float32 ones after output poison, fenced submit and host invalidate. No custom allocation-guard coverage inferred."
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.floatarray",
+          "dispatches": 1,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            16,
+            1,
+            1
+          ],
+          "storage_descriptors": 1,
+          "input_bytes": 0,
+          "output_bytes": 512,
+          "private_type_bytes": 32,
+          "oracle": "Exact byte comparison of 128 float32 ones after output poison, fenced submit and host invalidate. No custom allocation-guard coverage inferred."
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.struct",
+          "dispatches": 1,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            8,
+            1,
+            1
+          ],
+          "storage_descriptors": 1,
+          "input_bytes": 0,
+          "output_bytes": 512,
+          "private_type_bytes": 64,
+          "oracle": "Exact byte comparison of 128 float32 ones after output poison, fenced submit and host invalidate. No custom allocation-guard coverage inferred."
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.int.initialized",
+          "dispatches": 1,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "storage_descriptors": 2,
+          "input_bytes": 4,
+          "output_bytes": 4,
+          "function_type_bytes": 4,
+          "oracle": "Exact byte comparison of one original seeded int32/uint32 initializer result."
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.uint.initialized",
+          "dispatches": 1,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "storage_descriptors": 2,
+          "input_bytes": 4,
+          "output_bytes": 4,
+          "function_type_bytes": 4,
+          "oracle": "Exact byte comparison of one original seeded int32/uint32 initializer result."
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.float.initialized",
+          "dispatches": 1,
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "storage_descriptors": 2,
+          "input_bytes": 4,
+          "output_bytes": 4,
+          "function_type_bytes": 4,
+          "oracle": "Original abs(expected-actual)>1e-5 comparison due source float-to-string conversion; NaN is not separately rejected, so preserve that oracle limitation."
+        }
+      ],
+      "totals": {
+        "dispatches": 8,
+        "logical_invocations": 203,
+        "exact_output_words": 642,
+        "float_epsilon_output_words": 1,
+        "max_shader_resource_bytes": 512,
+        "max_descriptors": 2,
+        "max_invocation_private_type_bytes": 64,
+        "shader_loops": 0,
+        "workgroup_shared_bytes": 0
+      },
+      "valid_environment": "Shader-only SPIR-V1.0 (ComputeShaderSpec default); private cases use SPV_KHR_storage_buffer_storage_class and request its Vulkan functionality, core in1.1. No optional variable pointers, workgroup explicit layout, float16/int16/int64 arithmetic or graphics. Original checkSupport still applies and NotSupported is not an implemented-behavior pass.",
+      "excluded": "Uninitialized Function siblings intentionally excluded: their passthru oracle only checks no crash. Workgroup-derived Private siblings require optional VariablePointers or SPIRV1.4/workgroup explicit layout and are excluded, not waived.",
+      "execution": "Original common SpvAsmComputeShaderCase creates output buffers at exact logical sizes, initializes0xff, performs one compute dispatch, shader-write to host-read dependency, waits, invalidates and compares. No images, transfers, push constants, loops or synchronization stress in selected shaders.",
+      "interpretation": "Tests required Function/Private initializer and aggregate-value semantics. Compiler may fold constants or optimize variables into registers. A pass must not be called scratch allocation, actual spilling, live high-register pressure or general private-memory coverage. Existing Int8 private512/LDP-STP evidence covers ordinary dynamic scratch arrays separately, not allocator-induced spilling.",
+      "controls": "Use unchanged single-inventory original CTS runner under90s/384MiB/8MiB log+64MiB reserve/per-case fault stop; no driver, shader, CTS executable or threshold modifications. Actual QPA name/count/pass and observed shader resources required."
+    }
+  },
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-function-private-next-0045/actual-review.json",
+      "bytes": 7577,
+      "sha256": "96ed967f424a1a37f8fec94da1a906495822e892a5491598a3c506b54375a9e5"
+    },
+    "result": {
+      "status": "PASS finite eight original Function/Private initialization cases",
+      "source_bounds_sha256": "1e9d1d086f89daf6f936710ad73bcf7ac87c644e805e54ca802a97337027e563",
+      "cases": [
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.float",
+          "qpa_sha256": "e6d91883c910cfbf8016ce9e40b4e10710d0c06c77db0e9254bace0fc21b1ab1",
+          "status": "Pass",
+          "dispatch": {
+            "pipeline": "0xaaaaf90c7c60",
+            "grid": "128,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "2",
+            "submits": "2",
+            "ns": "3703756",
+            "submit_ns": "3377245",
+            "submit_max_ns": "3113078",
+            "result": "0"
+          },
+          "full_registers": 1,
+          "half_registers": 0,
+          "private_load_store_instructions": 0
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.vec4",
+          "qpa_sha256": "d8028be0a25055505d4c850c01777d066cf31fe58f713105e2da7644581b2308",
+          "status": "Pass",
+          "dispatch": {
+            "pipeline": "0xaaab1c6d3c70",
+            "grid": "32,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3914382",
+            "submit_ns": "3634851",
+            "submit_max_ns": "3634851",
+            "result": "0"
+          },
+          "full_registers": 2,
+          "half_registers": 0,
+          "private_load_store_instructions": 0
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.matrix",
+          "qpa_sha256": "d469856c83d1d3da763f28ee9db869bfe804f2de81c0537f7186a3aea811e093",
+          "status": "Pass",
+          "dispatch": {
+            "pipeline": "0xaaab1200abf0",
+            "grid": "16,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "2",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4249018",
+            "submit_ns": "3950216",
+            "submit_max_ns": "3950216",
+            "result": "0"
+          },
+          "full_registers": 3,
+          "half_registers": 0,
+          "private_load_store_instructions": 0
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.floatarray",
+          "qpa_sha256": "c284a76aea2d7de08596a22303de0e85a23d9e73fb7507d5e6fd887e93166ba8",
+          "status": "Pass",
+          "dispatch": {
+            "pipeline": "0xaaaafa1bb8b0",
+            "grid": "16,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "2",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3823132",
+            "submit_ns": "3453496",
+            "submit_max_ns": "3453496",
+            "result": "0"
+          },
+          "full_registers": 3,
+          "half_registers": 0,
+          "private_load_store_instructions": 0
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.struct",
+          "qpa_sha256": "67d1df13f6969731d28e6558248473e46982cbc529eba9ac21cc8415ad0db33b",
+          "status": "Pass",
+          "dispatch": {
+            "pipeline": "0xaaaafabb7b60",
+            "grid": "8,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "2",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4048601",
+            "submit_ns": "3762247",
+            "submit_max_ns": "3762247",
+            "result": "0"
+          },
+          "full_registers": 5,
+          "half_registers": 0,
+          "private_load_store_instructions": 0
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.int.initialized",
+          "qpa_sha256": "612a89b017a6663e643c3575a93391f191f01078d680f03973285a890cea5e7e",
+          "status": "Pass",
+          "dispatch": {
+            "pipeline": "0xaaaaea429dc0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4157404",
+            "submit_ns": "3822194",
+            "submit_max_ns": "3822194",
+            "result": "0"
+          },
+          "full_registers": 1,
+          "half_registers": 0,
+          "private_load_store_instructions": 0
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.uint.initialized",
+          "qpa_sha256": "45e00125e7feef9d97990b521b80938d9ac538c1e722c8e88a12a02dde6984fe",
+          "status": "Pass",
+          "dispatch": {
+            "pipeline": "0xaaab16561870",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4422925",
+            "submit_ns": "4034487",
+            "submit_max_ns": "4034487",
+            "result": "0"
+          },
+          "full_registers": 1,
+          "half_registers": 0,
+          "private_load_store_instructions": 0
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.float.initialized",
+          "qpa_sha256": "a2d0e6935037f76edc494a87be23f8f329ba603c451501b3a8cfcf8e435748db",
+          "status": "Pass",
+          "dispatch": {
+            "pipeline": "0xaaaad04c9170",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4065580",
+            "submit_ns": "3735579",
+            "submit_max_ns": "3735579",
+            "result": "0"
+          },
+          "full_registers": 1,
+          "half_registers": 0,
+          "private_load_store_instructions": 0
+        }
+      ],
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 165,
+          "sha256": "4d7e56fcd7d3c2ac739d1d336c0ebb891883165a108f71e66e6965da8d39d4bd"
+        },
+        "deqp-vk": {
+          "bytes": 97536760,
+          "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+        },
+        "libvulkan.so.1": {
+          "bytes": 703696,
+          "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+        },
+        "info-cases.txt": {
+          "bytes": 607,
+          "sha256": "35d845cfb2260b4a8d6598a26adec8dfa38f4a7679db87007bf4668e0a872a90"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13622368,
+          "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+        },
+        "payload.json": {
+          "bytes": 967,
+          "sha256": "8a4b5658ecb6fcdab04f5b735d25cc4e08c124d03e9f34a9b09d76a12034948d"
+        }
+      },
+      "run_log_sha256": "baf32c6adf01b1433c7919014c1c6c68fe0b914476181b865812b3d44fe3b706",
+      "actual_work": {
+        "dispatches": 8,
+        "logical_invocations": 203,
+        "chunks": 9,
+        "submits": 9,
+        "exact_words_from_original_oracles": 642,
+        "original_float_epsilon_words": 1
+      },
+      "native_scope": "All native bodies have zero LDP/STP, no loops/barriers,1..5 full registers/0half and instrlen1..2. Initializers fold into constants/register writes. These are required initialization semantics results, not scratch/spill or high-register pressure execution. Private allocation size is not separately printed; absence of memory instructions is the directly observed fact.",
+      "oracle_limits": "Five Private cases compare512B each exactly; Function int/uint compare4B exactly. Original Function float comparator uses epsilon1e-5 and does not separately reject NaN. No independent raw-output dump or allocation guards claimed beyond original CTS.",
+      "safety": "11.116s service/121.1MiB peak/0swap, clean fault/services/collection; original unit caps and per-case stop unchanged."
+    }
+  },
+  "runner": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-function-private/probe/runner-result.json",
+      "bytes": 2866,
+      "sha256": "933d814698ccbc5a4986c3e42ccf441d2e53c58b5e6d2d154c9255b87de7dddb"
+    },
+    "result": {
+      "status": "passed",
+      "mode": "probe",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 165,
+          "sha256": "4d7e56fcd7d3c2ac739d1d336c0ebb891883165a108f71e66e6965da8d39d4bd"
+        },
+        "deqp-vk": {
+          "bytes": 97536760,
+          "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+        },
+        "libvulkan.so.1": {
+          "bytes": 703696,
+          "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+        },
+        "info-cases.txt": {
+          "bytes": 607,
+          "sha256": "35d845cfb2260b4a8d6598a26adec8dfa38f4a7679db87007bf4668e0a872a90"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13622368,
+          "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+        },
+        "payload.json": {
+          "bytes": 967,
+          "sha256": "8a4b5658ecb6fcdab04f5b735d25cc4e08c124d03e9f34a9b09d76a12034948d"
+        }
+      },
+      "run_log": {
+        "bytes": 127933,
+        "sha256": "baf32c6adf01b1433c7919014c1c6c68fe0b914476181b865812b3d44fe3b706"
+      },
+      "qpa": {
+        "bytes": 13901,
+        "sha256": "fa0550f544949e205dca48e391e9c788a509cacfc2d68ce9d053965afb0514ea"
+      },
+      "cases": [
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.float",
+          "status": "Pass",
+          "detail": "Output match with expected"
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.vec4",
+          "status": "Pass",
+          "detail": "Output match with expected"
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.matrix",
+          "status": "Pass",
+          "detail": "Output match with expected"
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.floatarray",
+          "status": "Pass",
+          "detail": "Output match with expected"
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.variable_init.private.struct",
+          "status": "Pass",
+          "detail": "Output match with expected"
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.int.initialized",
+          "status": "Pass",
+          "detail": "Output match with expected"
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.uint.initialized",
+          "status": "Pass",
+          "detail": "Output match with expected"
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.shader_default_output.float.initialized",
+          "status": "Pass",
+          "detail": "Output match with expected"
+        }
+      ],
+      "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+    }
+  },
+  "scope": "Five Private constant aggregates and three initialized Function scalars;203 logical invocations,642 exact words plus one original epsilon-tested float. Original float/NaN oracle limitation retained. Native code uses1..5 full registers, zero half registers, no LDP/STP, loops or barriers; these establish constant/register initialization, not scratch allocation or compiler spills. Actual11.116s/121.1MiB/zero swap, clean postflight."
+}

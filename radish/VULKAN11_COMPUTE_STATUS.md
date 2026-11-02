@@ -318,7 +318,7 @@ source and query evidence](results/required-blit-vertex-query-0045.json) contain
 no graphics commands. Full applicable conformance and the 42 strict sRGB
 mismatches remain open. The selected inference stack is unchanged.
 
-The retained result inventory contains 100 unique original CTS cases with a Pass
+The retained result inventory now contains 296 unique original CTS cases with a Pass
 result, including the corrected single lifetime case. [The deduplicated inventory](results/official11-qualified-case-inventory-0045.json)
 spans separately pinned candidates and preserves the original oracle limitations.
 It is neither a single full conformance run nor a percentage of applicable
@@ -336,3 +336,20 @@ The singleton full split-region binding observation is invalid public coverage
 under VUID01421. It is retained as an erratum, separate from valid singleton
 mask/bind2 paths. This does not establish a driver implementation gap; applicable
 valid device-group and external-capability CTS still remain.
+
+## Core format queries and initialization semantics
+
+Another 188 original physical-format query cases passed:185 core enum cases and
+three aggregate checks of required, allowed and conditional traits. The sampled
+aggregate also examines conditional broader formats. A host argv-size setup
+failure ran no CTS case; the transport derivative sent the unchanged command body
+through stdin and completed in 67.833 seconds under the original 90-second cap.
+[The exact inventory and original failure](results/official11-format-query-0045.json)
+remain separate from image execution or filtering precision claims.
+
+Eight original Function/Private initialization cases also passed: 203 invocations,
+642 exact words and one original epsilon-tested float. [Their native and oracle
+scope](results/official11-function-private-0045.json) shows register/constant
+initialization, with no scratch load/store instructions. Deliberate compiler-spill
+qualification remains open. The aggregate 296-case historical inventory is not a
+single full conformance run or a percentage of applicable requirements.
