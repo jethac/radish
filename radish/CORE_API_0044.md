@@ -1,5 +1,13 @@
 # Core compute implementation: checkpoint 0044
 
+## 2026-11-02: filtered array consumer passes
+
+The bounded software array path now passes two 85-record rounds with 29 exact output words per record: 4,930 words total, plus all ten image and nine buffer allocation guards. The R32_SFLOAT array checks cover repeat/edge/mirror/border addressing, mag/min selection, spatial and mip linear filtering, explicit and gradient LOD with bias, layer rounding, and all four gather components. The second round changes image buffers and reuses the same cached shader after legal descriptor updates and fresh command recording. The prior 22 fields remain checked. [Paired source and result](results/core-api-0044-filtered-array.json).
+
+ICD521f48bb completed in 930ms with 13.5MiB peak memory, no swap, no new GPU faults, and both services active. The helper uses `RADISH_SW_TEXEL_FETCH=1`; the actual specialized child has 88 native instruction units. Its lazy compilation occurs before first dispatch and is separate from the base pipeline's compile-only check. Emitted Vulkan1.0 SPIR-V validates and uses explicit LOD/gradients and ordinary base-mip gather, with no implicit derivatives or optional gather extensions.
+
+Apply the thirteenth increment `0044-radish-filtered-array-wip.patch` after compute-properties and use the existing `--suite array` route. This qualifies the selected small array cases, not cubes, oversized array allocation, every format or full sampling conformance. Multisample source is being built separately; no multisample execution result is included here. Performance experiments remain paused.
+
 ## 2026-11-02: three property-limit failures corrected
 
 The same locally modified CTS harness reran only its failed device-properties case on ICD3bc37c79. Exactly three failures disappear: minimum/maximum texture offsets and discrete queue priorities;37 failure messages become34 with no additions. The full test still fails and its report is retained unchanged. Service451ms,14.7MiB,zero swap; no new GPU faults and both services active. [Comparison and full failed report](results/core-api-0044-compute-properties.json).
@@ -115,7 +123,7 @@ budget. It does not solve the earlier legal-workgroup/shared-memory failures.
 
 ## Consolidated reproduction
 
-Apply the twelve0044 incremental patches in order to the documented0042 Mesa
+Apply the thirteen0044 incremental patches in order to the documented0042 Mesa
 stack and build the isolated driver. Build probes against its matching internal
 ABI:
 

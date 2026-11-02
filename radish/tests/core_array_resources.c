@@ -2,7 +2,7 @@
 #include "rd_private.h"
 #include <inttypes.h>
 
-enum { NX=17, NY=5, N=NX*NY, GUARD=16, FIELDS=22, BUFFER_COUNT=9 };
+enum { NX=17, NY=5, N=NX*NY, GUARD=16, FIELDS=29, BUFFER_COUNT=9 };
 enum { OUTPUT, UNIFORMS, SEEDS, SOURCE_TEXELS, TARGET_TEXELS, IMAGE_UPLOAD,
        SAMPLE_UPLOAD, IMAGE_READBACK, COPY_READBACK };
 struct storage {
@@ -18,6 +18,29 @@ struct image {
 struct array_image { struct image image; VkSubresourceLayout layout[2][2]; uint32_t *saved; };
 static uint32_t array_value(unsigned source,unsigned layer,unsigned lod,unsigned x,unsigned y)
 { return 0x61000000u+source*0x01000000u+layer*0x10000u+lod*0x1000u+y*16u+x; }
+static float filtered_value(unsigned source,unsigned layer,unsigned lod,int x,int y)
+{ return source*16.0f+layer*4.0f+lod*2.0f+x*0.25f+y*0.5f; }
+static int floor_int(float x) { int i=(int)x; return i>x?i-1:i; }
+static int wrap_index(int i,int n,unsigned wrap)
+{
+   if (wrap==1) return i<0?0:i>=n?n-1:i;
+   int period=wrap==2?n*2:n; i%=period; if (i<0) i+=period;
+   return wrap==2 && i>=n?period-1-i:i;
+}
+static float filtered_pixel(unsigned source,unsigned layer,unsigned lod,int x,int y,unsigned wrap)
+{
+   int n=4>>lod;
+   if (wrap==3 && (x<0 || y<0 || x>=n || y>=n)) return 1.0f;
+   return filtered_value(source,layer,lod,wrap_index(x,n,wrap),wrap_index(y,n,wrap));
+}
+static float filtered_linear(unsigned source,unsigned layer,unsigned lod,float s,float t,unsigned wrap)
+{
+   int n=4>>lod; float u=s*n-0.5f,v=t*n-0.5f;
+   int x=floor_int(u),y=floor_int(v); float a=u-x,b=v-y;
+   float lo=filtered_pixel(source,layer,lod,x,y,wrap)*(1-a)+filtered_pixel(source,layer,lod,x+1,y,wrap)*a;
+   float hi=filtered_pixel(source,layer,lod,x,y+1,wrap)*(1-a)+filtered_pixel(source,layer,lod,x+1,y+1,wrap)*a;
+   return lo*(1-b)+hi*b;
+}
 static uint32_t poison(size_t i,unsigned id,unsigned round)
 { return 0x9a000000u ^ (uint32_t)(i*103u) ^ (id*0x00110000u) ^ (round*0x20000000u); }
 static uint32_t float_word(float f) { uint32_t u; memcpy(&u,&f,4); return u; }
@@ -102,11 +125,11 @@ static int image_create(const struct vk_device_dispatch_table *d,VkDevice device
    return 0;
 }
 static int array_image_create(const struct vk_device_dispatch_table *d,VkDevice device,
-   const VkPhysicalDeviceMemoryProperties *properties,struct array_image *array,unsigned source)
+   const VkPhysicalDeviceMemoryProperties *properties,struct array_image *array,unsigned source,VkFormat format)
 {
    struct image *image=&array->image;
    VkImageCreateInfo ci={.sType=VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,.imageType=VK_IMAGE_TYPE_2D,
-      .format=VK_FORMAT_R32_UINT,.extent={4,4,1},.mipLevels=2,.arrayLayers=2,
+      .format=format,.extent={4,4,1},.mipLevels=2,.arrayLayers=2,
       .samples=VK_SAMPLE_COUNT_1_BIT,.tiling=VK_IMAGE_TILING_LINEAR,
       .usage=VK_IMAGE_USAGE_SAMPLED_BIT,.initialLayout=VK_IMAGE_LAYOUT_PREINITIALIZED};
    SUCCESS(d->CreateImage(device,&ci,NULL,&image->image));
@@ -130,13 +153,14 @@ static int array_image_create(const struct vk_device_dispatch_table *d,VkDevice 
       for (unsigned y=0;y<(4u>>lod);y++) for (unsigned x=0;x<(4u>>lod);x++) {
          size_t word=image->binding_words+layout->offset/4+y*(layout->rowPitch/4)+x;
          REQUIRE(word<image->words);
-         image->map[word]=array_value(source,layer,lod,x,y);
+         image->map[word]=format==VK_FORMAT_R32_UINT?array_value(source,layer,lod,x,y):
+            float_word(filtered_value(source,layer,lod,x,y));
       }
    }
    array->saved=malloc(ai.allocationSize); REQUIRE(array->saved);
    memcpy(array->saved,image->map,ai.allocationSize);
    VkImageViewCreateInfo vi={.sType=VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,.image=image->image,
-      .viewType=VK_IMAGE_VIEW_TYPE_2D_ARRAY,.format=VK_FORMAT_R32_UINT,
+      .viewType=VK_IMAGE_VIEW_TYPE_2D_ARRAY,.format=format,
       .subresourceRange={VK_IMAGE_ASPECT_COLOR_BIT,0,2,0,2}};
    SUCCESS(d->CreateImageView(device,&vi,NULL,&image->view));
    return 0;
@@ -190,7 +214,7 @@ static void descriptor_buffers(const struct vk_device_dispatch_table *d,VkDevice
       .dstSet=set,.dstBinding=bindings[i],.descriptorCount=1,.descriptorType=types[i],.pBufferInfo=&bi[i]};
    d->UpdateDescriptorSets(device,4,writes,0,NULL);
 }
-static int verify(struct storage stores[BUFFER_COUNT],struct image images[6],struct array_image arrays[2],unsigned round)
+static int verify(struct storage stores[BUFFER_COUNT],struct image images[6],struct array_image arrays[2],struct array_image filtered[2],unsigned round)
 {
    uint32_t a=0x10000000u+(round?3:2)*0x100u;
    uint32_t b=0x10000000u+(round?1:3)*0x100u;
@@ -205,6 +229,16 @@ static int verify(struct storage stores[BUFFER_COUNT],struct image images[6],str
          float_word((float)((x%4+y%4)&1)),float_word((float)((x%4+y%4)&1)),
          float_word(((x%4+y%4)%4+1)*0.25f),float_word((x%4+y%4)%4?1.0f:0.0f),
          array_value(round,(x>>1)&1,x&1,x%(4u>>(x&1)),y%(4u>>(x&1))),1};
+      int fx=(int)(x%8)-2,fy=(int)(y%5)-1; unsigned layer=(x>>2)&1;
+      float fs=(fx+1.0f)*0.25f,ft=(fy+1.0f)*0.25f;
+      record[22]=float_word(filtered_pixel(round,layer,0,fx,fy,0));
+      record[23]=float_word((x&1)?(filtered_linear(round,layer,0,fs,ft,1)+
+         filtered_linear(round,layer,1,fs,ft,1))*0.5f:filtered_pixel(round,layer,0,fx+1,fy+1,1));
+      record[24]=float_word(filtered_linear(round,layer,1,fs,ft,2));
+      record[25]=float_word(filtered_pixel(round,layer,0,fx,fy+1,3));
+      record[26]=float_word(filtered_pixel(round,layer,0,fx+1,fy+1,3));
+      record[27]=float_word(filtered_pixel(round,layer,0,fx+1,fy,3));
+      record[28]=float_word(filtered_pixel(round,layer,0,fx,fy,3));
       memcpy(stores[OUTPUT].saved+stores[OUTPUT].binding_words+GUARD+i*FIELDS,record,sizeof(record));
       stores[TARGET_TEXELS].saved[stores[TARGET_TEXELS].binding_words+GUARD+i]=target_texel(i)+a+b+source_texel(i);
       stores[IMAGE_READBACK].saved[stores[IMAGE_READBACK].binding_words+GUARD+i]=value;
@@ -268,6 +302,12 @@ static int verify(struct storage stores[BUFFER_COUNT],struct image images[6],str
             source,i,arrays[source].image.map[i],arrays[source].saved[i]); return 1;
       }
    }
+   for (unsigned source=0;source<2;source++) for (size_t i=0;i<filtered[source].image.words;i++) {
+      if (filtered[source].image.map[i]!=filtered[source].saved[i]) {
+         fprintf(stderr,"FAIL filtered source=%u word=%zu actual=%08x expected=%08x\n",
+            source,i,filtered[source].image.map[i],filtered[source].saved[i]); return 1;
+      }
+   }
    return 0;
 }
 int main(int argc,char **argv)
@@ -322,7 +362,7 @@ int main(int argc,char **argv)
    aliases.GetImageSparseMemoryRequirements2=(PFN_vkGetImageSparseMemoryRequirements2)gdpa(device,"vkGetImageSparseMemoryRequirements2KHR");
    REQUIRE(aliases.BindImageMemory2 && aliases.GetImageMemoryRequirements2 && aliases.GetImageSparseMemoryRequirements2);
    const struct vk_device_dispatch_table *d=&aliases;
-   VkSampler samplers[3];
+   VkSampler samplers[7];
    for (unsigned i=0;i<3;i++) {
       VkSamplerCreateInfo si={.sType=VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
          .magFilter=i==1?VK_FILTER_LINEAR:VK_FILTER_NEAREST,.minFilter=i==1?VK_FILTER_LINEAR:VK_FILTER_NEAREST,
@@ -331,19 +371,33 @@ int main(int argc,char **argv)
       if (i==2) { si.compareEnable=VK_TRUE; si.compareOp=VK_COMPARE_OP_LESS_OR_EQUAL; }
       SUCCESS(d->CreateSampler(device,&si,NULL,&samplers[i]));
    }
-   uint32_t numbers[14]={19,7,0,13,2,17,9,5,11,23,29,31,37,41};
-   VkDescriptorType types[14]={VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC,
+   for (unsigned i=3;i<7;i++) {
+      VkSamplerCreateInfo si={.sType=VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
+         .magFilter=i==5?VK_FILTER_LINEAR:VK_FILTER_NEAREST,
+         .minFilter=(i==4 || i==5)?VK_FILTER_LINEAR:VK_FILTER_NEAREST,
+         .mipmapMode=i==4?VK_SAMPLER_MIPMAP_MODE_LINEAR:VK_SAMPLER_MIPMAP_MODE_NEAREST,
+         .addressModeU=i==3?VK_SAMPLER_ADDRESS_MODE_REPEAT:i==5?VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT:
+            i==6?VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER:VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
+         .mipLodBias=i==5?0.75f:0.0f,.maxLod=i==6?0.0f:1.0f,
+         .borderColor=VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE};
+      si.addressModeV=si.addressModeW=si.addressModeU;
+      SUCCESS(d->CreateSampler(device,&si,NULL,&samplers[i]));
+   }
+   uint32_t numbers[18]={19,7,0,13,2,17,9,5,11,23,29,31,37,41,43,47,53,59};
+   VkDescriptorType types[18]={VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC,
       VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
       VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER,
       VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC,VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER,
       VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
       VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+      VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+      VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
       VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER};
-   VkDescriptorSetLayoutBinding bindings[14];
-   for (unsigned i=0;i<14;i++) bindings[i]=(VkDescriptorSetLayoutBinding){.binding=numbers[i],.descriptorType=types[i],
+   VkDescriptorSetLayoutBinding bindings[18];
+   for (unsigned i=0;i<18;i++) bindings[i]=(VkDescriptorSetLayoutBinding){.binding=numbers[i],.descriptorType=types[i],
       .descriptorCount=1,.stageFlags=VK_SHADER_STAGE_COMPUTE_BIT,.pImmutableSamplers=numbers[i]==17?&samplers[0]:NULL};
    VkDescriptorSetLayout sl[3]; VkDescriptorSetLayoutCreateInfo sci={.sType=VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO};
-   SUCCESS(d->CreateDescriptorSetLayout(device,&sci,NULL,&sl[0])); sci.bindingCount=14; sci.pBindings=bindings;
+   SUCCESS(d->CreateDescriptorSetLayout(device,&sci,NULL,&sl[0])); sci.bindingCount=18; sci.pBindings=bindings;
    SUCCESS(d->CreateDescriptorSetLayout(device,&sci,NULL,&sl[1]));
    SUCCESS(d->CreateDescriptorSetLayout(device,&sci,NULL,&sl[2]));
    VkPipelineLayout layouts[2];
@@ -368,7 +422,7 @@ int main(int argc,char **argv)
       d->DestroyPipeline(device,pipeline,NULL);
       for (unsigned i=0;i<2;i++) d->DestroyPipelineLayout(device,layouts[i],NULL);
       for (unsigned i=0;i<3;i++) d->DestroyDescriptorSetLayout(device,sl[i],NULL);
-      for (unsigned i=0;i<3;i++) d->DestroySampler(device,samplers[i],NULL);
+      for (unsigned i=0;i<7;i++) d->DestroySampler(device,samplers[i],NULL);
       d->DestroyDevice(device,NULL); DestroyInstance(instance,NULL); dlclose(lib);
       puts("PASS RESOURCE compile-only: all pipelines created before buffers/images/commands/dispatch"); return 0;
    }
@@ -387,13 +441,15 @@ int main(int argc,char **argv)
    REQUIRE(image_create(d,device,&memory_properties,VK_FORMAT_D32_SFLOAT,4,4,VK_IMAGE_USAGE_SAMPLED_BIT,&images[4],false)==0);
    REQUIRE(image_create(d,device,&memory_properties,VK_FORMAT_D32_SFLOAT,4,4,VK_IMAGE_USAGE_SAMPLED_BIT,&images[5],false)==0);
    struct array_image arrays[2]={0};
-   for (unsigned i=0;i<2;i++) REQUIRE(array_image_create(d,device,&memory_properties,&arrays[i],i)==0);
+   for (unsigned i=0;i<2;i++) REQUIRE(array_image_create(d,device,&memory_properties,&arrays[i],i,VK_FORMAT_R32_UINT)==0);
+   struct array_image filtered[2]={0};
+   for (unsigned i=0;i<2;i++) REQUIRE(array_image_create(d,device,&memory_properties,&filtered[i],i,VK_FORMAT_R32_SFLOAT)==0);
    VkBufferView views[2]; REQUIRE(buffer_view(d,device,stores[SOURCE_TEXELS].buffer,&views[0])==0);
    REQUIRE(buffer_view(d,device,stores[TARGET_TEXELS].buffer,&views[1])==0);
    VkDescriptorPoolSize pools[8]={{VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,1},{VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,1},
       {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC,1},{VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC,1},
       {VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER,1},{VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER,1},
-      {VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,1},{VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,7}};
+      {VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,1},{VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,11}};
    VkDescriptorPoolCreateInfo dpi={.sType=VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,.maxSets=1,.poolSizeCount=8,.pPoolSizes=pools};
    VkDescriptorPool pool; SUCCESS(d->CreateDescriptorPool(device,&dpi,NULL,&pool));
    VkDescriptorSetAllocateInfo ai={.sType=VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,.descriptorPool=pool,.descriptorSetCount=1,.pSetLayouts=&sl[1]};
@@ -442,15 +498,17 @@ int main(int argc,char **argv)
          else images[s].map[word+x]=float_word(((x+y)%4+1)*0.25f);
       }
    }
-   VkMappedMemoryRange depth_ranges[5];
+   VkMappedMemoryRange depth_ranges[7];
    for (unsigned i=0;i<3;i++) depth_ranges[i]=(VkMappedMemoryRange){
       .sType=VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,.memory=images[i+3].memory,.size=VK_WHOLE_SIZE};
    for (unsigned i=0;i<2;i++) depth_ranges[3+i]=(VkMappedMemoryRange){
       .sType=VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,.memory=arrays[i].image.memory,.size=VK_WHOLE_SIZE};
-   SUCCESS(d->FlushMappedMemoryRanges(device,5,depth_ranges));
+   for (unsigned i=0;i<2;i++) depth_ranges[5+i]=(VkMappedMemoryRange){
+      .sType=VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,.memory=filtered[i].image.memory,.size=VK_WHOLE_SIZE};
+   SUCCESS(d->FlushMappedMemoryRanges(device,7,depth_ranges));
    VkCommandBuffer depth_init; SUCCESS(d->AllocateCommandBuffers(device,&ca,&depth_init));
    SUCCESS(d->BeginCommandBuffer(depth_init,&begin));
-   VkImageMemoryBarrier depth_initial[5];
+   VkImageMemoryBarrier depth_initial[7];
    for (unsigned i=0;i<3;i++) depth_initial[i]=(VkImageMemoryBarrier){
       .sType=VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,.srcAccessMask=VK_ACCESS_HOST_WRITE_BIT,
       .dstAccessMask=VK_ACCESS_TRANSFER_READ_BIT|VK_ACCESS_TRANSFER_WRITE_BIT|VK_ACCESS_SHADER_READ_BIT,
@@ -463,8 +521,9 @@ int main(int argc,char **argv)
       depth_initial[3+i].dstAccessMask=VK_ACCESS_SHADER_READ_BIT;
       depth_initial[3+i].subresourceRange=(VkImageSubresourceRange){VK_IMAGE_ASPECT_COLOR_BIT,0,2,0,2};
    }
+   for (unsigned i=0;i<2;i++) { depth_initial[5+i]=depth_initial[3+i]; depth_initial[5+i].image=filtered[i].image.image; }
    d->CmdPipelineBarrier(depth_init,VK_PIPELINE_STAGE_HOST_BIT,
-      VK_PIPELINE_STAGE_TRANSFER_BIT|VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,0,0,NULL,0,NULL,5,depth_initial);
+      VK_PIPELINE_STAGE_TRANSFER_BIT|VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,0,0,NULL,0,NULL,7,depth_initial);
    VkImageCopy depth_copy={.srcSubresource={VK_IMAGE_ASPECT_DEPTH_BIT,0,0,1},
       .dstSubresource={VK_IMAGE_ASPECT_DEPTH_BIT,0,0,1},.extent={4,4,1}};
    d->CmdCopyImage(depth_init,images[4].image,VK_IMAGE_LAYOUT_GENERAL,
@@ -478,7 +537,7 @@ int main(int argc,char **argv)
    VkSubmitInfo depth_submit={.sType=VK_STRUCTURE_TYPE_SUBMIT_INFO,.commandBufferCount=1,.pCommandBuffers=&depth_init};
    SUCCESS(d->QueueSubmit(queue,1,&depth_submit,fence));
    SUCCESS(d->WaitForFences(device,1,&fence,VK_TRUE,5000000000ull));
-   SUCCESS(d->InvalidateMappedMemoryRanges(device,5,depth_ranges));
+   SUCCESS(d->InvalidateMappedMemoryRanges(device,7,depth_ranges));
    struct rd_pipeline *array_variant=NULL;
    for (unsigned round=0;round<2;round++) {
       for (unsigned s=0;s<BUFFER_COUNT;s++) for (size_t i=0;i<stores[s].words;i++) stores[s].map[i]=poison(i,s,round);
@@ -501,6 +560,16 @@ int main(int argc,char **argv)
          .dstBinding=41,.descriptorCount=1,.descriptorType=VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
          .pImageInfo=&array_info};
       d->UpdateDescriptorSets(device,1,&array_write,0,NULL);
+      VkDescriptorImageInfo filtered_info[4]; VkWriteDescriptorSet filtered_writes[4];
+      uint32_t filtered_bindings[4]={43,47,53,59};
+      for (unsigned i=0;i<4;i++) {
+         filtered_info[i]=(VkDescriptorImageInfo){.sampler=samplers[3+i],
+            .imageView=filtered[round].image.view,.imageLayout=VK_IMAGE_LAYOUT_GENERAL};
+         filtered_writes[i]=(VkWriteDescriptorSet){.sType=VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+            .dstSet=set,.dstBinding=filtered_bindings[i],.descriptorCount=1,
+            .descriptorType=VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,.pImageInfo=&filtered_info[i]};
+      }
+      d->UpdateDescriptorSets(device,4,filtered_writes,0,NULL);
       if (!layouts[1]) {
          VkDescriptorSetLayout compatible_sets[2]={sl[0],sl[1]};
          VkPipelineLayoutCreateInfo compatible_layout={.sType=VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
@@ -554,7 +623,7 @@ int main(int argc,char **argv)
       SUCCESS(d->QueueSubmit(queue,1,&submit,fence));
       SUCCESS(d->WaitForFences(device,1,&fence,VK_TRUE,5000000000ull));
       SUCCESS(d->InvalidateMappedMemoryRanges(device,BUFFER_COUNT+3,ranges));
-      REQUIRE(verify(stores,images,arrays,round)==0);
+      REQUIRE(verify(stores,images,arrays,filtered,round)==0);
       REQUIRE(p->sampling_variants && p->sampling_variants->pipeline->sampling_mask);
       struct rd_pipeline *selected=p->sampling_variants->pipeline;
       REQUIRE(selected->buffer_count==p->buffer_count+1);
@@ -577,14 +646,20 @@ int main(int argc,char **argv)
       d->DestroyImageView(device,arrays[i].image.view,NULL); d->UnmapMemory(device,arrays[i].image.memory);
       d->DestroyImage(device,arrays[i].image.image,NULL); d->FreeMemory(device,arrays[i].image.memory,NULL);
    }
+   for (unsigned i=0;i<2;i++) {
+      free(filtered[i].saved);
+      d->DestroyImageView(device,filtered[i].image.view,NULL); d->UnmapMemory(device,filtered[i].image.memory);
+      d->DestroyImage(device,filtered[i].image.image,NULL); d->FreeMemory(device,filtered[i].image.memory,NULL);
+   }
    for (unsigned i=0;i<BUFFER_COUNT;i++) {
       free(stores[i].saved); d->UnmapMemory(device,stores[i].memory);
       d->DestroyBuffer(device,stores[i].buffer,NULL); d->FreeMemory(device,stores[i].memory,NULL);
    }
    d->DestroyPipeline(device,pipeline,NULL); d->DestroyPipelineLayout(device,layouts[0],NULL);
    for (unsigned i=0;i<2;i++) d->DestroyDescriptorSetLayout(device,sl[i],NULL);
-   for (unsigned i=0;i<3;i++) d->DestroySampler(device,samplers[i],NULL);
+   for (unsigned i=0;i<7;i++) d->DestroySampler(device,samplers[i],NULL);
    d->DestroyDevice(device,NULL); DestroyInstance(instance,NULL); dlclose(lib);
+   puts("PASS FILTER_ARRAY: repeat/edge/mirror/border, mag/min, spatial+mip linear, explicit+gradient LOD/bias, RNE layers and gather exact/guards");
    puts("PASS ARRAY_FETCH: two mips/layers, BO swap between recordings with same specialization key, exact raw format/default alpha and full guards");
    puts("PASS DEPTH: D16/D32 sampling/comparison, host PREINITIALIZED sources and D32 depth-image copy, all allocation guards");
    puts("PASS IMAGE_GROUP: full singleton split copy/clear/readback and mutable R32_SFLOAT-to-UINT storage view");

@@ -1,0 +1,88 @@
+{
+  "status": "passed",
+  "driver": {
+    "bytes": 48955224,
+    "sha256": "521f48bb4ccbf55264b56a963a50671974df22ec7821afd24b597ad5bee9e1b2"
+  },
+  "source_snapshot": "checkpoint-filtered-array-source",
+  "public_patch": {
+    "bytes": 18458,
+    "sha256": "7f67c0a3f684e61db72441f222f2f4df17706689ae769a5e9709af590008dadc"
+  },
+  "capture": "WORK/core-compute-0044-filtered-array/probe",
+  "run_log": {
+    "bytes": 3237,
+    "sha256": "bc5e47dbce5156653bfc26534fbfc41cb76e74563c0504e0e0034be4d064e42b"
+  },
+  "payload": {
+    "radish_icd.json": {
+      "bytes": 148,
+      "sha256": "cc6901f08e0835756c802ac0eda2f5644910943ca0270ada00ca65bd8bc5ff64"
+    },
+    "resources": {
+      "bytes": 725208,
+      "sha256": "a3f049332a4fd6d4b8cc170402c0e61387628ffb8ce265826de5226040817650"
+    },
+    "resources.spv": {
+      "bytes": 11500,
+      "sha256": "debda9b6ed468dd4e09f441f6507309dc1ca080a00344b98f9dbf886df8442db"
+    },
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 48955224,
+      "sha256": "521f48bb4ccbf55264b56a963a50671974df22ec7821afd24b597ad5bee9e1b2"
+    },
+    "payload.json": {
+      "bytes": 814,
+      "sha256": "d00d98e289ba3e205be0ba10e426252877bdb7b8c26a0c74d3b1154e7a853d16"
+    }
+  },
+  "descriptor_order": "Completed fence, pool reset, descriptor writes, fresh recording/binding, submit/wait. No update-after-bind features.",
+  "outputs": {
+    "rounds": 2,
+    "records_per_round": 85,
+    "fields_per_record": 29,
+    "exact_words": 4930,
+    "image_allocations_guarded": 10,
+    "buffer_allocations_guarded": 9
+  },
+  "qualified_filtered_scope": [
+    "R32_SFLOAT 2D array, two mips/two layers",
+    "Repeat nearest, edge mag/min and spatial/mip linear, mirrored explicit gradients+bias, white-border gather",
+    "Preferred RNE layer selection and all four ordered gather components",
+    "Same cached child with changed current image BOs between legal recordings"
+  ],
+  "retained_scope": "All prior22 output fields and allocation guards, including integer array TXF, UBO/dynamic, mutable/fullsplit, color clear/copy and D16/D32 sample/compare/depth copy.",
+  "software_path": {
+    "private_force": "RADISH_SW_TEXEL_FETCH=1",
+    "raw_mask": "f80",
+    "specialized_native_units": 88,
+    "second_round_cache_hit": true,
+    "native_compile_only_units": 19,
+    "lazy_compilation": "Descriptor-specialized child compiles before its first dispatch; native compile-only does not precompile every specialization."
+  },
+  "spirv": {
+    "target": "vulkan1.0",
+    "validation": "passed",
+    "capabilities": [
+      "Shader",
+      "SampledBuffer",
+      "ImageBuffer",
+      "ImageQuery"
+    ],
+    "implicit_lod": false,
+    "extensions": [],
+    "gather": "Ordinary base-mip OpImageGather; no optional gather operands or compute derivatives."
+  },
+  "conditions": {
+    "service_seconds": 0.93,
+    "peak_mib": 13.5,
+    "swap_mib": 0,
+    "new_gpu_faults": false,
+    "services_active": true
+  },
+  "limits": "Bounded forced software implementation qualification. Cubes, large-array allocation, full format/offset/precision coverage and conformance remain incomplete. Performance work remains paused."
+}

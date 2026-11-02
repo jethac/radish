@@ -242,7 +242,7 @@ def main():
         log = (evidence / 'run.log').read_text()
         require(not re.search(r'vkCreateComputePipelines failed|new_pipeline failed|\bFAIL\b', log), 'failure in process log')
         pass_markers = {'api5': 'PASS API5: two real base-grid executions', 'event-query': 'PASS EVENT_QUERY: two rounds',
-                        'resources': 'PASS RESOURCE: UBO/dynamic offsets', 'subgroup': 'PASS BASIC: partial/multiple subgroup IDs', 'storage': 'PASS STORAGE: pipeline-owned private', 'robust': 'PASS RBA: short/dynamic ranges', 'array': 'PASS ARRAY_FETCH:'}
+                        'resources': 'PASS RESOURCE: UBO/dynamic offsets', 'subgroup': 'PASS BASIC: partial/multiple subgroup IDs', 'storage': 'PASS STORAGE: pipeline-owned private', 'robust': 'PASS RBA: short/dynamic ranges', 'array': 'PASS FILTER_ARRAY:'}
         for marker in (pass_markers[name] for name in suites):
             require(marker in log, 'missing functional pass: ' + marker)
         write_json(evidence / 'runner-result.json', dict(status='passed', mode=args.mode, exit_code=0,

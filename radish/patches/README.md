@@ -624,3 +624,5 @@ d468a7b2dcadda77b4e06a286eba806aac28c6222f0f3ec9e8330cddf8dba657  0035-ncnn-inst
 | `0044-radish-array-fetch-wip.patch` | After image-maintenance0044 | Bounded private LDG array texel fetch and descriptor-specialized ownership. Corrected valid-order resource/depth/array and publicRBA checks pass; filtered/cube/large-allocation fallback incomplete. |
 
 | `0044-radish-compute-properties-wip.patch` | After array-fetch0044 | Existing−8/+7 texel offsets and two sole-queue application hint levels with unchanged kernel priority. Three CTS property failures removed; full failed report and remaining gaps retained. |
+
+| `0044-radish-filtered-array-wip.patch` | After compute-properties0044 | Software array TXL/TXD/gather filtering; bounded valid-order consumer passes4,930 exact words and full guards. Cube/large-array/full sampler coverage remains open. |
