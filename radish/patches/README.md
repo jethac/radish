@@ -666,3 +666,5 @@ Both feature modes pass the full fixed core; resident51.504783→34.333299 secon
 `0045-radish-storage8-timeline.patch` follows 0045 storage16. It adds logical byte-storage lowering and conditional real-kernel timeline exposure, qualified by separate public 8-bit storage and KHR timeline consumers. API remains 1.0; current inference stays frozen fcd and ASR is not yet qualified. See ../results/storage8-timeline-public-0045.json.
 
 `0045-current-mad-private-device.patch` is the exact measured private three-file overlay for the current arithmetic diagnostic: explicit loader/device policy, pinned helper, canonical payload metadata and elapsed-rate reporting. It preserves both GLSL programs and all original controls. See ../GPU_MAD_UNROLL.md; this changes no selected model shader or driver policy.
+
+`0045-radish-shader-int8.patch` follows storage8/timeline and adds only public KHR Int8 arithmetic exposure over the existing generic byte implementation. The validated U32-interface consumer checks 1,280 arithmetic/conversion/private/shared results and full guards. Float16 arithmetic and API1.0 are unchanged; ASR inference remains unqualified.

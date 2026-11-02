@@ -1,5 +1,15 @@
 # Core compute implementation: checkpoint 0044
 
+## 2026-11-02: public Int8 arithmetic passes generic shared/private checks
+
+An isolated checkpoint now enables `shaderInt8` through `VK_KHR_shader_float16_int8`; Float16 arithmetic remains false and API stays 1.0. The public consumer queries and enables Int8 while leaving Float16, Int16, storage8 and storage16 disabled. Its validated Vulkan 1.0 module has exactly `Shader` and `Int8` capabilities and uses ordinary U32 buffer interfaces.
+
+All **1,280 independently computed integer/float-bit outputs and both complete allocation snapshots** pass. Coverage includes signed/unsigned arithmetic, bounded division/remainder, shifts/comparisons, conversions, byte-vector packing and dynamic private/shared byte arrays. Actual compilation retains 512 bytes of private memory, 64 bytes shared, native byte private/shared load/store instructions, and the workgroup fence/barrier. Native 41 uses 8F/23H, physical 16×2 and a 1,248-unit footprint under the unchanged 4,096 guard. The single dispatch and fresh fault/service checks pass.
+
+[Exact source, legal-module, native and output evidence](results/shader-int8-public-0045.json) accompanies the [one-file exposure increment](patches/0045-radish-shader-int8.patch), applied after storage8/timeline. The original draft's illegal byte-width bit-count operation was rejected on the host; the validated replacement uses legal 32-bit built-ins without disabling validation. Existing generic byte lowering supplies the tested implementation. The helper/builder/runner adds `--suite int8`.
+
+This is bounded generic Int8 qualification, not formal conformance or a claim that the complete ASR backend is runnable. Selected inference stays on frozen fcd/d332 with explicit FP32 options; no production default or service changes.
+
 ## 2026-11-02: public byte storage and timeline semaphores pass separate consumers
 
 The next isolated checkpoint enables only `storageBuffer8BitAccess` under `VK_KHR_8bit_storage`; other 8-bit storage/arithmetic features remain false. A Vulkan 1.0 module with exactly `Shader` and `StorageBuffer8BitAccess` passes five ranges of 1/2/3/5/64 bytes, dynamic bases 32–96, all 500 output words and complete four-allocation checks per case. Four writers targeting separate bytes of one word preserve their neighbors. Actual native 17 uses 8F/7H, aligned U32 loads/atomic mask stores and the existing workgroup barrier. The scope takes 818 ms, 10.3 MiB, zero swap.

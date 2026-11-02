@@ -1,0 +1,770 @@
+{
+  "status": "bounded_public_generic_shaderInt8_qualification_passed",
+  "source": {
+    "status": "source reviewed; actual Int8 native/output qualification pending",
+    "candidate": {
+      "path": "/run/media/jethac/Shared/radish/asr-shader-int8-private-b1hzh1le/shader-int8.patch",
+      "bytes": 973,
+      "sha256": "9386b30cb5cecc2f41c9d76749aac26cebe2f565766018cc7d28c87c59c5ddf6"
+    },
+    "source_paths": [
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/ir3/ir3_context.c",
+        "bytes": 20167,
+        "sha256": "fcbaf545716bcf13e26946d8785959774f8ab0556d62a0dc8183540ec34d789a"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/ir3/ir3_nir.c",
+        "bytes": 80647,
+        "sha256": "69a8bf3837835eed2b21c99c4025ffd09291a238685ef7c36beddad551df047c"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/ir3/ir3_compiler_nir.c",
+        "bytes": 213209,
+        "sha256": "1de097ebc9fba616f3781bae58b927ac0f04796c679873a199c360631c53cf71"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/ir3/ir3_compiler.c",
+        "bytes": 16848,
+        "sha256": "59fef262f56926265c935bfc47f84c8734b099a5adc84fdc72a7e5c4976cba63"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/compiler/nir/nir_lower_idiv.c",
+        "bytes": 6676,
+        "sha256": "4a796454988441e71136507147ab2cf087d2e48165511022b3e6cef25da41a22"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/compiler/nir/nir_lower_packing.c",
+        "bytes": 6761,
+        "sha256": "d00cba28403a900de6437c0d5b4d6d83ab54e5e3fa3cae6491d4621f1d5ba9c1"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/compiler/spirv/vtn_alu.c",
+        "bytes": 54058,
+        "sha256": "5192bea95cbc6dece064ac26567cb9a4ad13055bdc0266f135196b8d0d0b26ab"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_pipeline.c",
+        "bytes": 25457,
+        "sha256": "db56340993aeffdf8e945058864f4f7737f350ed990f559f95be66d553bcd599"
+      }
+    ],
+    "findings": [
+      "IR3 represents byte values in half registers; conversions mask unsigned sources or sign extend signed sources. Low-eight-bit add/sub/multiply/bitwise operations preserve the required byte result.",
+      "ir3_lower_bit_size widens byte signedness-sensitive min/max, abs/negate, shifts, comparisons and supporting operations; the common lower_bit_size pass is part of mandatory lowering.",
+      "Byte division/remainder passes through existing nir_lower_idiv small-width legalization; private/internal float16 operations do not enable application Float16 capability.",
+      "Packing/bitcast lowering handles uint32 to byte vectors; byte float conversions pass through supported half/full representations.",
+      "Private and shared byte arrays retain natural one-byte type layout and use existing typed LDL/STL/LDP/STP support. Native and output verification must confirm these paths for this consumer.",
+      "V1 byte OpBitCount was invalid for Vulkan1.0 and was not executed. V2 explicitly widens built-ins whose core SPIR-V width is32; ordinary byte arithmetic remains byte-typed. Signed remainder and abs inputs are bounded to avoid undefined language domains."
+    ],
+    "probe": [
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-shader-int8-private-b1hzh1le/probe/int8.c",
+        "bytes": 14663,
+        "sha256": "9c4a5a1f777560c45050065d25ee753400daace54b5474da1438a35073ab2367"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-shader-int8-private-b1hzh1le/probe/int8.comp",
+        "bytes": 3075,
+        "sha256": "78eccddb255d901f07483980b243e337f8b4f64b4dbce2b90dfaab3e95739356"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-shader-int8-private-b1hzh1le/probe/core_resources.c",
+        "bytes": 35622,
+        "sha256": "a5024c99a2bbc55983659dc2083a3b8d91e73c0c0760fc8509fdc2dc75405378"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-shader-int8-private-b1hzh1le/probe/test_common.h",
+        "bytes": 684,
+        "sha256": "4b022481571560cd58577d1303955f8c96e72891a2647947daa607eb5fd93b2b"
+      }
+    ],
+    "host_shader_validation": {
+      "path": "/run/media/jethac/Shared/radish/asr-shader-int8-private-b1hzh1le/shader-host-v2/result.json",
+      "bytes": 826,
+      "sha256": "e25732f0398ac66de194115c536c9ea8c644d66bfb02e2ceceac8a91b65a3882"
+    },
+    "independent_review": {
+      "path": "/run/media/jethac/Shared/radish/core-api-resource-consumers-0044-ymiuefnt/stage80-generic-int8-source-consumer-review/review.json",
+      "bytes": 5135,
+      "sha256": "1394f30b36803e6c459f30af1c8621508ca13b4c2afdc5a9af5098250ec67406"
+    },
+    "scope": "Public queried/enabled shaderInt8 with only Shader+Int8 module; Float16, Int16, storage8 and storage16 disabled in this device. No inference payload or API version change. Existing Q4 modules remain separate compatibility-profile gates."
+  },
+  "qualified_release": {
+    "status": "qualified representative public shaderInt8 path",
+    "source_patch": {
+      "path": "/run/media/jethac/Shared/radish/asr-shader-int8-private-b1hzh1le/shader-int8.patch",
+      "bytes": 973,
+      "sha256": "9386b30cb5cecc2f41c9d76749aac26cebe2f565766018cc7d28c87c59c5ddf6"
+    },
+    "source_and_consumer_release": {
+      "path": "/run/media/jethac/Shared/radish/asr-shader-int8-private-b1hzh1le/source-consumer-release.json",
+      "bytes": 4989,
+      "sha256": "7e9d95216584a3ef3e8f99d3c63b0e8f2d4db9001c0000280a59410e48cce95d"
+    },
+    "host_pairing": {
+      "path": "/run/media/jethac/Shared/radish/asr-shader-int8-private-b1hzh1le/host-pairing-review.json",
+      "bytes": 1196,
+      "sha256": "537efdb20fef90b5981c29f0c8ddcb96b51378445f9bff5483b1c6bc30b733a7"
+    },
+    "actual": {
+      "path": "/run/media/jethac/Shared/radish/asr-shader-int8-private-b1hzh1le/actual-review.json",
+      "bytes": 4905,
+      "sha256": "672c15f703068193ff56fb2940ba6f9225cae7b9e25f504be693f53785081bd2"
+    },
+    "feature_scope": "VK_KHR_shader_float16_int8 shaderInt8=true; shaderFloat16=false; API1.0 unchanged. Existing generic IR3/NIR lowering verified by source review and bounded native/output test.",
+    "limits": "No conformance or ASR compatibility claim; selected inference fcd remains frozen. Q4 five-buffer/12-layout capacity is separate."
+  },
+  "source_patch": {
+    "path": "/home/jethac/Projects/radish/radish/patches/0045-radish-shader-int8.patch",
+    "bytes": 973,
+    "sha256": "9386b30cb5cecc2f41c9d76749aac26cebe2f565766018cc7d28c87c59c5ddf6"
+  },
+  "exact_patch_reconstruction": true,
+  "host_build": {
+    "status": "host build and validated module passed; no device execution",
+    "commands": [
+      [
+        "clang",
+        "--target=aarch64-linux-gnu",
+        "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+        "-mcpu=cortex-a53",
+        "-Isrc/freedreno/radish/libvulkan_radish.so.p",
+        "-Isrc/freedreno/radish",
+        "-I../mesa/src/freedreno/radish",
+        "-Isrc/freedreno",
+        "-I../mesa/src/freedreno",
+        "-Isrc/freedreno/registers",
+        "-I../mesa/src/freedreno/registers",
+        "-Isrc/freedreno/registers/adreno",
+        "-I../mesa/src/freedreno/registers/adreno",
+        "-Isrc/freedreno/common",
+        "-I../mesa/src/freedreno/common",
+        "-Iinclude",
+        "-I../mesa/include",
+        "-Isrc",
+        "-I../mesa/src",
+        "-Isrc/vulkan/util",
+        "-I../mesa/src/vulkan/util",
+        "-Isrc/vulkan/runtime",
+        "-I../mesa/src/vulkan/runtime",
+        "-I../mesa/src/vulkan/runtime/bvh",
+        "-Isrc/compiler/nir",
+        "-I../mesa/src/compiler/nir",
+        "-Isrc/compiler",
+        "-I../mesa/src/compiler",
+        "-Isrc/util",
+        "-Isrc/util/format",
+        "-Isrc/compiler/spirv",
+        "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include",
+        "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include/libdrm",
+        "-fvisibility=hidden",
+        "-fdiagnostics-color=always",
+        "-D_FILE_OFFSET_BITS=64",
+        "-Wall",
+        "-Winvalid-pch",
+        "-std=c11",
+        "-O2",
+        "-g",
+        "-D__STDC_CONSTANT_MACROS",
+        "-D__STDC_FORMAT_MACROS",
+        "-D__STDC_LIMIT_MACROS",
+        "-DPACKAGE_VERSION=\"27.0.0-devel\"",
+        "-DHAVE_OPENGL=0",
+        "-DHAVE_OPENGL_ES_1=0",
+        "-DHAVE_OPENGL_ES_2=0",
+        "-DMESA_SYSTEM_HAS_KMS_DRM=1",
+        "-DVIDEO_CODEC_VC1DEC=0",
+        "-DVIDEO_CODEC_H264DEC=0",
+        "-DVIDEO_CODEC_H264ENC=0",
+        "-DVIDEO_CODEC_H265DEC=0",
+        "-DVIDEO_CODEC_H265ENC=0",
+        "-DVIDEO_CODEC_AV1DEC=0",
+        "-DVIDEO_CODEC_AV1ENC=0",
+        "-DVIDEO_CODEC_VP9DEC=0",
+        "-DVIDEO_CODEC_MPEG12DEC=0",
+        "-DVIDEO_CODEC_JPEGDEC=0",
+        "-DUSE_LIBGLVND=0",
+        "-DHAVE_LIBDRM",
+        "-DHAVE_GFX_COMPUTE",
+        "-DGLAPI_EXPORT_PROTO_ENTRY_POINTS=1",
+        "-DALLOW_KCMP",
+        "-DMESA_DEBUG=0",
+        "-DENABLE_SHADER_CACHE",
+        "-DHAVE___BUILTIN_BSWAP32",
+        "-DHAVE___BUILTIN_BSWAP64",
+        "-DHAVE___BUILTIN_CLZ",
+        "-DHAVE___BUILTIN_CLZLL",
+        "-DHAVE___BUILTIN_CTZ",
+        "-DHAVE___BUILTIN_EXPECT",
+        "-DHAVE___BUILTIN_FFS",
+        "-DHAVE___BUILTIN_FFSLL",
+        "-DHAVE___BUILTIN_POPCOUNT",
+        "-DHAVE___BUILTIN_POPCOUNTLL",
+        "-DHAVE___BUILTIN_UNREACHABLE",
+        "-DHAVE___BUILTIN_TYPES_COMPATIBLE_P",
+        "-DHAVE___BUILTIN_ADD_OVERFLOW",
+        "-DHAVE_FUNC_ATTRIBUTE_CONST",
+        "-DHAVE_FUNC_ATTRIBUTE_FLATTEN",
+        "-DHAVE_FUNC_ATTRIBUTE_MALLOC",
+        "-DHAVE_FUNC_ATTRIBUTE_PURE",
+        "-DHAVE_FUNC_ATTRIBUTE_UNUSED",
+        "-DHAVE_FUNC_ATTRIBUTE_WARN_UNUSED_RESULT",
+        "-DHAVE_FUNC_ATTRIBUTE_WEAK",
+        "-DHAVE_FUNC_ATTRIBUTE_FORMAT",
+        "-DHAVE_FUNC_ATTRIBUTE_PACKED",
+        "-DHAVE_FUNC_ATTRIBUTE_RETURNS_NONNULL",
+        "-DHAVE_FUNC_ATTRIBUTE_ALIAS",
+        "-DHAVE_FUNC_ATTRIBUTE_NORETURN",
+        "-DHAVE_FUNC_ATTRIBUTE_COLD",
+        "-DHAVE_FUNC_ATTRIBUTE_VISIBILITY",
+        "-DHAVE_UINT128",
+        "-DHAVE_REALLOCARRAY",
+        "-DHAVE_FMEMOPEN",
+        "-DHAVE_MALLINFO2",
+        "-D_GNU_SOURCE",
+        "-DUSE_GCC_ATOMIC_BUILTINS",
+        "-DMAJOR_IN_SYSMACROS",
+        "-DHAS_SCHED_H",
+        "-DHAS_SCHED_GETAFFINITY",
+        "-DHAVE_LINUX_FUTEX_H",
+        "-DHAVE_ENDIAN_H",
+        "-DHAVE_DLFCN_H",
+        "-DHAVE_SYS_SHM_H",
+        "-DHAVE_CET_H",
+        "-DHAVE_POLL_H",
+        "-DHAVE_SYS_INOTIFY_H",
+        "-DHAVE_LINUX_UDMABUF_H",
+        "-DHAVE_STRTOF",
+        "-DHAVE_MKOSTEMP",
+        "-DHAVE_MEMFD_CREATE",
+        "-DHAVE_RANDOM_R",
+        "-DHAVE_FLOCK",
+        "-DHAVE_STRTOK_R",
+        "-DHAVE_GETRANDOM",
+        "-DHAVE_POSIX_FALLOCATE",
+        "-DHAVE_SECURE_GETENV",
+        "-DHAVE_SYSCONF",
+        "-DHAVE_SC_PHYS_PAGES",
+        "-DHAVE_GNU_QSORT_R",
+        "-DHAVE_STRUCT_TIMESPEC",
+        "-DHAVE_PROGRAM_INVOCATION_NAME",
+        "-DHAVE_ISSIGNALING",
+        "-DHAVE_POSIX_MEMALIGN",
+        "-DHAVE_DIRENT_D_TYPE",
+        "-DHAVE_STRTOD_L",
+        "-DHAVE_DLADDR",
+        "-DHAVE_DL_ITERATE_PHDR",
+        "-DHAVE_ZLIB",
+        "-DHAVE_COMPRESSION",
+        "-DHAVE_PTHREAD",
+        "-DHAVE_PTHREAD_SETAFFINITY",
+        "-DDRAW_LLVM_AVAILABLE=0",
+        "-DAMD_LLVM_AVAILABLE=0",
+        "-DGALLIVM_USE_ORCJIT=0",
+        "-DTHREAD_SANITIZER=0",
+        "-DHAVE_DRI2",
+        "-DHAVE_RENDERDOC_INTEGRATION=1",
+        "-Werror=implicit-function-declaration",
+        "-Werror=missing-prototypes",
+        "-Werror=return-type",
+        "-Werror=empty-body",
+        "-Werror=incompatible-pointer-types",
+        "-Werror=int-conversion",
+        "-Wimplicit-fallthrough",
+        "-Wmisleading-indentation",
+        "-Wno-missing-field-initializers",
+        "-Wno-format-truncation",
+        "-fno-math-errno",
+        "-fno-trapping-math",
+        "-Qunused-arguments",
+        "-fno-common",
+        "-Wno-unknown-pragmas",
+        "-Wno-microsoft-enum-value",
+        "-Wno-unused-function",
+        "-Werror=format",
+        "-Wformat-security",
+        "-Werror=thread-safety",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-Wno-unused-command-line-argument",
+        "-fPIC",
+        "-DVK_USE_PLATFORM_DISPLAY_KHR",
+        "-pthread",
+        "-DXXH_FORCE_ALIGN_CHECK=0",
+        "-DXXH_FORCE_MEMORY_ACCESS=0",
+        "-Wno-override-init",
+        "-Wno-initializer-overrides",
+        "-fuse-ld=lld",
+        "--gcc-install-dir=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+        "-I/run/media/jethac/Shared/radish/asr-shader-int8-build-0045/probe",
+        "/run/media/jethac/Shared/radish/asr-shader-int8-build-0045/probe/int8.c",
+        "-o",
+        "/run/media/jethac/Shared/radish/asr-shader-int8-build-0045/probe/int8",
+        "-ldl",
+        "-pthread"
+      ],
+      [
+        "glslangValidator",
+        "-V",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/asr-shader-int8-build-0045/probe/int8.comp",
+        "-o",
+        "/run/media/jethac/Shared/radish/asr-shader-int8-build-0045/probe/int8.spv"
+      ],
+      [
+        "spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/asr-shader-int8-build-0045/probe/int8.spv"
+      ],
+      [
+        "spirv-dis",
+        "/run/media/jethac/Shared/radish/asr-shader-int8-build-0045/probe/int8.spv",
+        "-o",
+        "/run/media/jethac/Shared/radish/asr-shader-int8-build-0045/probe/int8.spvasm"
+      ]
+    ],
+    "cwd": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build",
+    "capabilities": [
+      "Shader",
+      "Int8"
+    ],
+    "files": {
+      "/run/media/jethac/Shared/radish/asr-shader-int8-build-0045/libvulkan_radish.so": {
+        "bytes": 49034176,
+        "sha256": "94a630489e0e61e42b4236f690817ebf4b127b6ca7f76b09ee6414c6d849e17c"
+      },
+      "/run/media/jethac/Shared/radish/asr-shader-int8-build-0045/probe/int8": {
+        "bytes": 736872,
+        "sha256": "3ee4aaf6a3ed65974ee80934ccd4ad5dc1c1ebf3185c3287d34919458f1815e8"
+      },
+      "/run/media/jethac/Shared/radish/asr-shader-int8-build-0045/probe/int8.spv": {
+        "bytes": 10288,
+        "sha256": "3f1aa3aa20515ee3cdb2cb57a6319e80c7ee7da40a13cabdc98d77b182703415"
+      },
+      "/run/media/jethac/Shared/radish/asr-shader-int8-build-0045/probe/int8.c": {
+        "bytes": 14663,
+        "sha256": "9c4a5a1f777560c45050065d25ee753400daace54b5474da1438a35073ab2367"
+      },
+      "/run/media/jethac/Shared/radish/asr-shader-int8-build-0045/probe/int8.comp": {
+        "bytes": 3075,
+        "sha256": "78eccddb255d901f07483980b243e337f8b4f64b4dbce2b90dfaab3e95739356"
+      },
+      "/run/media/jethac/Shared/radish/asr-shader-int8-build-0045/probe/core_resources.c": {
+        "bytes": 35622,
+        "sha256": "a5024c99a2bbc55983659dc2083a3b8d91e73c0c0760fc8509fdc2dc75405378"
+      },
+      "/run/media/jethac/Shared/radish/asr-shader-int8-build-0045/probe/test_common.h": {
+        "bytes": 684,
+        "sha256": "4b022481571560cd58577d1303955f8c96e72891a2647947daa607eb5fd93b2b"
+      }
+    }
+  },
+  "actual_review": {
+    "status": "passed",
+    "scope": "Representative valid-public shaderInt8 arithmetic/conversion/shared/private qualification, not conformance or complete ASR readiness.",
+    "evidence": "/run/media/jethac/Shared/radish/core-compute-shader-int8-public-0045/probe",
+    "runner_result": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-shader-int8-public-0045/probe/runner-result.json",
+      "bytes": 1162,
+      "sha256": "29f6721f3904ee4938731e086af70d40b9119625e8eb2b7c9a222a9416c2c371"
+    },
+    "run_log": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-shader-int8-public-0045/probe/run.log",
+      "bytes": 647010,
+      "sha256": "013d1a998f7c30d687f6cb0e69c3547da20414acec622ebba81a77025f8e12a7"
+    },
+    "payload": {
+      "radish_icd.json": {
+        "bytes": 152,
+        "sha256": "315d9b95d879f5657d1e57aed49efaf22f0a667d0861bbf66f9e7f9a0cc81e7c"
+      },
+      "resources": {
+        "bytes": 736872,
+        "sha256": "3ee4aaf6a3ed65974ee80934ccd4ad5dc1c1ebf3185c3287d34919458f1815e8"
+      },
+      "resources.spv": {
+        "bytes": 10288,
+        "sha256": "3f1aa3aa20515ee3cdb2cb57a6319e80c7ee7da40a13cabdc98d77b182703415"
+      },
+      "check-gpu-log.py": {
+        "bytes": 1004,
+        "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+      },
+      "libvulkan_radish.so": {
+        "bytes": 49034176,
+        "sha256": "94a630489e0e61e42b4236f690817ebf4b127b6ca7f76b09ee6414c6d849e17c"
+      },
+      "payload.json": {
+        "bytes": 818,
+        "sha256": "61f2e8dcc82f042ff5801fd9619d60cdf4ffa39496db5460f83a88c1262fd9d0"
+      }
+    },
+    "source_release": {
+      "path": "/run/media/jethac/Shared/radish/asr-shader-int8-private-b1hzh1le/source-consumer-release.json",
+      "bytes": 4989,
+      "sha256": "7e9d95216584a3ef3e8f99d3c63b0e8f2d4db9001c0000280a59410e48cce95d"
+    },
+    "host_pairing": {
+      "path": "/run/media/jethac/Shared/radish/asr-shader-int8-private-b1hzh1le/host-pairing-review.json",
+      "bytes": 1196,
+      "sha256": "537efdb20fef90b5981c29f0c8ddcb96b51378445f9bff5483b1c6bc30b733a7"
+    },
+    "public_feature": "INT8_PUBLIC_FEATURE extension=1 supported=1 enabled=1 robust=1 float16=0 int16=0 storage8=0 storage16=0",
+    "numerical": {
+      "lanes": 32,
+      "fields_per_lane": 40,
+      "exact_output_words": 1280,
+      "full_allocation_comparisons": 2,
+      "independent_C_integer_float_bit_oracle": true,
+      "raw_host_bo_download": false
+    },
+    "native": {
+      "compile_and_execute_identical": true,
+      "extract": {
+        "path": "/run/media/jethac/Shared/radish/asr-shader-int8-private-b1hzh1le/actual-native.txt",
+        "bytes": 24288,
+        "sha256": "88552b67f4668ce00bec6b9c7c178ce271f15ec5dd0b030a6276c0990a49e72e"
+      },
+      "operations": {
+        "stp.u8": 1,
+        "ldp.u8": 1,
+        "stl.u8": 2,
+        "ldl.u8": 2,
+        "bar.g.l": 1,
+        "fence.l.r.w": 1
+      },
+      "instrlen": 41,
+      "dwords": 1320,
+      "full_registers": 8,
+      "half_registers": 23,
+      "private_bytes_per_fiber": 512,
+      "shared_bytes": 64,
+      "logical_local": [
+        32,
+        1,
+        1
+      ],
+      "physical_local": [
+        16,
+        2,
+        1
+      ],
+      "combined_half_vector_residency": 1248,
+      "unchanged_limit": 4096
+    },
+    "profile": "RADISH_PROFILE dispatch pipeline=0xaaaabd81edb0 grid=1,1,1 local=16,2,1 barrier=1 loops=1 instrlen=41 chunks=1 submits=1 ns=4174388 submit_ns=3943085 submit_max_ns=3943085 result=0",
+    "conditions": {
+      "fault_check": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-shader-int8-public-0045/probe/fault-check.txt",
+        "bytes": 41,
+        "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+      },
+      "services_before": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-shader-int8-public-0045/probe/services-before.txt",
+        "bytes": 14,
+        "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+      },
+      "services_after": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-shader-int8-public-0045/probe/services-after.txt",
+        "bytes": 14,
+        "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+      },
+      "service": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-shader-int8-public-0045/probe/service.txt",
+        "bytes": 2747,
+        "sha256": "f1e55740d42d45d1d7c527074f81245fc17b5413f9928a7014dc35141904b663"
+      }
+    },
+    "limitations": [
+      "The retained helper checks all output and unchanged buffer/guard words; no separate raw-BO host traversal is claimed.",
+      "No Float16 or Int16 arithmetic and no storage8/16 feature were enabled for this arithmetic consumer. Prior storage-feature qualification remains separate.",
+      "Original invalid byte OpBitCount module was host-rejected and never executed; v2 validation and exact Shader+Int8 capabilities are pinned.",
+      "Selected inference fcd remains unchanged; Q4 lower-target modules and descriptor-capacity obligations remain separate."
+    ]
+  },
+  "execution": {
+    "status": "passed",
+    "mode": "probe",
+    "exit_code": 0,
+    "payload": {
+      "radish_icd.json": {
+        "bytes": 152,
+        "sha256": "315d9b95d879f5657d1e57aed49efaf22f0a667d0861bbf66f9e7f9a0cc81e7c"
+      },
+      "resources": {
+        "bytes": 736872,
+        "sha256": "3ee4aaf6a3ed65974ee80934ccd4ad5dc1c1ebf3185c3287d34919458f1815e8"
+      },
+      "resources.spv": {
+        "bytes": 10288,
+        "sha256": "3f1aa3aa20515ee3cdb2cb57a6319e80c7ee7da40a13cabdc98d77b182703415"
+      },
+      "check-gpu-log.py": {
+        "bytes": 1004,
+        "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+      },
+      "libvulkan_radish.so": {
+        "bytes": 49034176,
+        "sha256": "94a630489e0e61e42b4236f690817ebf4b127b6ca7f76b09ee6414c6d849e17c"
+      },
+      "payload.json": {
+        "bytes": 818,
+        "sha256": "61f2e8dcc82f042ff5801fd9619d60cdf4ffa39496db5460f83a88c1262fd9d0"
+      }
+    },
+    "run_log": {
+      "bytes": 647010,
+      "sha256": "013d1a998f7c30d687f6cb0e69c3547da20414acec622ebba81a77025f8e12a7"
+    },
+    "scope": "Raw ICD assets/services/faults and consolidated assertions passed. This is experimental compute coverage, not Vulkan conformance."
+  },
+  "preflight": {
+    "required_disk_kib": 115177,
+    "payload_bytes_to_upload": 49783310,
+    "existing_payload": false
+  },
+  "limits": [
+    "Only shaderInt8 under KHR_shader_float16_int8 is added; Float16 arithmetic and API1.0 unchanged.",
+    "Consumer enables Int8 arithmetic while Float16/Int16/storage8/storage16 remain disabled, using U32 public buffers.",
+    "Generic bounded arithmetic/conversion/shared/private evidence is representative, not formal conformance or ASR inference qualification.",
+    "Selected fcd/d332 inference and FP32 options remain unchanged."
+  ],
+  "public_helper_host_reproduction": {
+    "commands": [
+      [
+        "clang",
+        "--target=aarch64-linux-gnu",
+        "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+        "-mcpu=cortex-a53",
+        "-Isrc/freedreno/radish/libvulkan_radish.so.p",
+        "-Isrc/freedreno/radish",
+        "-I../mesa/src/freedreno/radish",
+        "-Isrc/freedreno",
+        "-I../mesa/src/freedreno",
+        "-Isrc/freedreno/registers",
+        "-I../mesa/src/freedreno/registers",
+        "-Isrc/freedreno/registers/adreno",
+        "-I../mesa/src/freedreno/registers/adreno",
+        "-Isrc/freedreno/common",
+        "-I../mesa/src/freedreno/common",
+        "-Iinclude",
+        "-I../mesa/include",
+        "-Isrc",
+        "-I../mesa/src",
+        "-Isrc/vulkan/util",
+        "-I../mesa/src/vulkan/util",
+        "-Isrc/vulkan/runtime",
+        "-I../mesa/src/vulkan/runtime",
+        "-I../mesa/src/vulkan/runtime/bvh",
+        "-Isrc/compiler/nir",
+        "-I../mesa/src/compiler/nir",
+        "-Isrc/compiler",
+        "-I../mesa/src/compiler",
+        "-Isrc/util",
+        "-Isrc/util/format",
+        "-Isrc/compiler/spirv",
+        "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include",
+        "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include/libdrm",
+        "-fvisibility=hidden",
+        "-fdiagnostics-color=always",
+        "-D_FILE_OFFSET_BITS=64",
+        "-Wall",
+        "-Winvalid-pch",
+        "-std=c11",
+        "-O2",
+        "-g",
+        "-D__STDC_CONSTANT_MACROS",
+        "-D__STDC_FORMAT_MACROS",
+        "-D__STDC_LIMIT_MACROS",
+        "-DPACKAGE_VERSION=\"27.0.0-devel\"",
+        "-DHAVE_OPENGL=0",
+        "-DHAVE_OPENGL_ES_1=0",
+        "-DHAVE_OPENGL_ES_2=0",
+        "-DMESA_SYSTEM_HAS_KMS_DRM=1",
+        "-DVIDEO_CODEC_VC1DEC=0",
+        "-DVIDEO_CODEC_H264DEC=0",
+        "-DVIDEO_CODEC_H264ENC=0",
+        "-DVIDEO_CODEC_H265DEC=0",
+        "-DVIDEO_CODEC_H265ENC=0",
+        "-DVIDEO_CODEC_AV1DEC=0",
+        "-DVIDEO_CODEC_AV1ENC=0",
+        "-DVIDEO_CODEC_VP9DEC=0",
+        "-DVIDEO_CODEC_MPEG12DEC=0",
+        "-DVIDEO_CODEC_JPEGDEC=0",
+        "-DUSE_LIBGLVND=0",
+        "-DHAVE_LIBDRM",
+        "-DHAVE_GFX_COMPUTE",
+        "-DGLAPI_EXPORT_PROTO_ENTRY_POINTS=1",
+        "-DALLOW_KCMP",
+        "-DMESA_DEBUG=0",
+        "-DENABLE_SHADER_CACHE",
+        "-DHAVE___BUILTIN_BSWAP32",
+        "-DHAVE___BUILTIN_BSWAP64",
+        "-DHAVE___BUILTIN_CLZ",
+        "-DHAVE___BUILTIN_CLZLL",
+        "-DHAVE___BUILTIN_CTZ",
+        "-DHAVE___BUILTIN_EXPECT",
+        "-DHAVE___BUILTIN_FFS",
+        "-DHAVE___BUILTIN_FFSLL",
+        "-DHAVE___BUILTIN_POPCOUNT",
+        "-DHAVE___BUILTIN_POPCOUNTLL",
+        "-DHAVE___BUILTIN_UNREACHABLE",
+        "-DHAVE___BUILTIN_TYPES_COMPATIBLE_P",
+        "-DHAVE___BUILTIN_ADD_OVERFLOW",
+        "-DHAVE_FUNC_ATTRIBUTE_CONST",
+        "-DHAVE_FUNC_ATTRIBUTE_FLATTEN",
+        "-DHAVE_FUNC_ATTRIBUTE_MALLOC",
+        "-DHAVE_FUNC_ATTRIBUTE_PURE",
+        "-DHAVE_FUNC_ATTRIBUTE_UNUSED",
+        "-DHAVE_FUNC_ATTRIBUTE_WARN_UNUSED_RESULT",
+        "-DHAVE_FUNC_ATTRIBUTE_WEAK",
+        "-DHAVE_FUNC_ATTRIBUTE_FORMAT",
+        "-DHAVE_FUNC_ATTRIBUTE_PACKED",
+        "-DHAVE_FUNC_ATTRIBUTE_RETURNS_NONNULL",
+        "-DHAVE_FUNC_ATTRIBUTE_ALIAS",
+        "-DHAVE_FUNC_ATTRIBUTE_NORETURN",
+        "-DHAVE_FUNC_ATTRIBUTE_COLD",
+        "-DHAVE_FUNC_ATTRIBUTE_VISIBILITY",
+        "-DHAVE_UINT128",
+        "-DHAVE_REALLOCARRAY",
+        "-DHAVE_FMEMOPEN",
+        "-DHAVE_MALLINFO2",
+        "-D_GNU_SOURCE",
+        "-DUSE_GCC_ATOMIC_BUILTINS",
+        "-DMAJOR_IN_SYSMACROS",
+        "-DHAS_SCHED_H",
+        "-DHAS_SCHED_GETAFFINITY",
+        "-DHAVE_LINUX_FUTEX_H",
+        "-DHAVE_ENDIAN_H",
+        "-DHAVE_DLFCN_H",
+        "-DHAVE_SYS_SHM_H",
+        "-DHAVE_CET_H",
+        "-DHAVE_POLL_H",
+        "-DHAVE_SYS_INOTIFY_H",
+        "-DHAVE_LINUX_UDMABUF_H",
+        "-DHAVE_STRTOF",
+        "-DHAVE_MKOSTEMP",
+        "-DHAVE_MEMFD_CREATE",
+        "-DHAVE_RANDOM_R",
+        "-DHAVE_FLOCK",
+        "-DHAVE_STRTOK_R",
+        "-DHAVE_GETRANDOM",
+        "-DHAVE_POSIX_FALLOCATE",
+        "-DHAVE_SECURE_GETENV",
+        "-DHAVE_SYSCONF",
+        "-DHAVE_SC_PHYS_PAGES",
+        "-DHAVE_GNU_QSORT_R",
+        "-DHAVE_STRUCT_TIMESPEC",
+        "-DHAVE_PROGRAM_INVOCATION_NAME",
+        "-DHAVE_ISSIGNALING",
+        "-DHAVE_POSIX_MEMALIGN",
+        "-DHAVE_DIRENT_D_TYPE",
+        "-DHAVE_STRTOD_L",
+        "-DHAVE_DLADDR",
+        "-DHAVE_DL_ITERATE_PHDR",
+        "-DHAVE_ZLIB",
+        "-DHAVE_COMPRESSION",
+        "-DHAVE_PTHREAD",
+        "-DHAVE_PTHREAD_SETAFFINITY",
+        "-DDRAW_LLVM_AVAILABLE=0",
+        "-DAMD_LLVM_AVAILABLE=0",
+        "-DGALLIVM_USE_ORCJIT=0",
+        "-DTHREAD_SANITIZER=0",
+        "-DHAVE_DRI2",
+        "-DHAVE_RENDERDOC_INTEGRATION=1",
+        "-Werror=implicit-function-declaration",
+        "-Werror=missing-prototypes",
+        "-Werror=return-type",
+        "-Werror=empty-body",
+        "-Werror=incompatible-pointer-types",
+        "-Werror=int-conversion",
+        "-Wimplicit-fallthrough",
+        "-Wmisleading-indentation",
+        "-Wno-missing-field-initializers",
+        "-Wno-format-truncation",
+        "-fno-math-errno",
+        "-fno-trapping-math",
+        "-Qunused-arguments",
+        "-fno-common",
+        "-Wno-unknown-pragmas",
+        "-Wno-microsoft-enum-value",
+        "-Wno-unused-function",
+        "-Werror=format",
+        "-Wformat-security",
+        "-Werror=thread-safety",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-Wno-unused-command-line-argument",
+        "-fPIC",
+        "-DVK_USE_PLATFORM_DISPLAY_KHR",
+        "-pthread",
+        "-DXXH_FORCE_ALIGN_CHECK=0",
+        "-DXXH_FORCE_MEMORY_ACCESS=0",
+        "-Wno-override-init",
+        "-Wno-initializer-overrides",
+        "-fuse-ld=lld",
+        "--gcc-install-dir=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+        "-I/home/jethac/Projects/radish/radish/tests",
+        "/home/jethac/Projects/radish/radish/tests/core_int8.c",
+        "-o",
+        "/run/media/jethac/Shared/radish/asr-shader-int8-build-0045/public-helper-reproduction/int8",
+        "-ldl",
+        "-pthread"
+      ],
+      [
+        "glslangValidator",
+        "-V",
+        "--target-env",
+        "vulkan1.0",
+        "/home/jethac/Projects/radish/radish/tests/shaders/core-int8.comp",
+        "-o",
+        "/run/media/jethac/Shared/radish/asr-shader-int8-build-0045/public-helper-reproduction/int8.spv"
+      ],
+      [
+        "spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/asr-shader-int8-build-0045/public-helper-reproduction/int8.spv"
+      ],
+      [
+        "python3",
+        "/home/jethac/Projects/radish/radish/scripts/device-core-compute.py",
+        "probe",
+        "public-host-int8",
+        "--driver",
+        "/run/media/jethac/Shared/radish/asr-shader-int8-build-0045/libvulkan_radish.so",
+        "--driver-sha256",
+        "94a630489e0e61e42b4236f690817ebf4b127b6ca7f76b09ee6414c6d849e17c",
+        "--probe-dir",
+        "/run/media/jethac/Shared/radish/asr-shader-int8-build-0045/public-helper-reproduction",
+        "--suite",
+        "int8",
+        "--check-only"
+      ]
+    ],
+    "cwd": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build",
+    "exact_measured_module": true,
+    "files": {
+      "/home/jethac/Projects/radish/radish/tests/core_int8.c": {
+        "sha256": "9c4a5a1f777560c45050065d25ee753400daace54b5474da1438a35073ab2367",
+        "bytes": 14663
+      },
+      "/home/jethac/Projects/radish/radish/tests/shaders/core-int8.comp": {
+        "sha256": "78eccddb255d901f07483980b243e337f8b4f64b4dbce2b90dfaab3e95739356",
+        "bytes": 3075
+      },
+      "/run/media/jethac/Shared/radish/asr-shader-int8-build-0045/public-helper-reproduction/int8": {
+        "sha256": "f152b969af9aab1985f3221ba1a92b22abfd89aed06584a7a9bf6313ef3143a9",
+        "bytes": 736760
+      },
+      "/run/media/jethac/Shared/radish/asr-shader-int8-build-0045/public-helper-reproduction/int8.spv": {
+        "sha256": "3f1aa3aa20515ee3cdb2cb57a6319e80c7ee7da40a13cabdc98d77b182703415",
+        "bytes": 10288
+      }
+    }
+  }
+}

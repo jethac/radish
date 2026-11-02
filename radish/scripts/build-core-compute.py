@@ -47,7 +47,8 @@ def main():
              ('oversized-ms', 'core_oversized_ms.c', 'core-oversized-ms.comp', 'vulkan1.0'),
              ('storage16', 'core_storage16.c', 'core-storage16.comp', 'vulkan1.0'),
              ('storage8', 'core_storage8.c', 'core-storage8.comp', 'vulkan1.0'),
-             ('timeline', 'core_timeline.c', 'core-timeline.comp', 'vulkan1.0')]
+             ('timeline', 'core_timeline.c', 'core-timeline.comp', 'vulkan1.0'),
+             ('int8', 'core_int8.c', 'core-int8.comp', 'vulkan1.0')]
     records = {}
     for name, cfile, glsl, target in units:
         source = top / 'radish/tests' / cfile

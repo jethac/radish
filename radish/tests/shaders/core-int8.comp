@@ -1,0 +1,62 @@
+#version 450
+#extension GL_EXT_shader_explicit_arithmetic_types_int8 : require
+layout(local_size_x=32,local_size_y=1,local_size_z=1) in;
+layout(set=0,binding=0,std430) writeonly buffer Results { uint words[]; } output_data;
+layout(set=0,binding=1,std430) readonly buffer Input { uint words[]; } input_data;
+shared uint8_t shared_u[32];
+shared int8_t shared_s[32];
+void main()
+{
+    uint i=gl_LocalInvocationID.x;
+    uint raw_a=input_data.words[2u*i],raw_b=input_data.words[2u*i+1u];
+    uint8_t a=uint8_t(raw_a),b=uint8_t(raw_b);
+    int8_t sa=int8_t(a),sb=int8_t(b);
+    uint shift=i&7u,base=i*40u;
+    uint8_t temp[512];
+    for(uint j=0u;j<512u;j++) temp[j]=uint8_t(raw_a+j*17u);
+    uint index=(raw_a*3u+i*7u)&511u;
+    shared_u[i]=a;shared_s[i]=sa;
+    barrier();
+    output_data.words[base+0u]=uint(a+b);
+    output_data.words[base+1u]=uint(a-b);
+    output_data.words[base+2u]=uint(a*b);
+    output_data.words[base+3u]=uint(a/b);
+    output_data.words[base+4u]=uint(a%b);
+    output_data.words[base+5u]=uint(int(sa+sb));
+    output_data.words[base+6u]=uint(int(sa-sb));
+    output_data.words[base+7u]=uint(int(sa*sb));
+    output_data.words[base+8u]=uint(int(sa/sb));
+    output_data.words[base+9u]=uint(int(int8_t(uint(a)&127u)%sb));
+    output_data.words[base+10u]=uint(int(-sa));
+    output_data.words[base+11u]=uint(int(abs(sa==int8_t(-128)?int8_t(-127):sa)));
+    output_data.words[base+12u]=uint(min(a,b));
+    output_data.words[base+13u]=uint(max(a,b));
+    output_data.words[base+14u]=uint(int(min(sa,sb)));
+    output_data.words[base+15u]=uint(int(max(sa,sb)));
+    output_data.words[base+16u]=uint(a&b);
+    output_data.words[base+17u]=uint(a|b);
+    output_data.words[base+18u]=uint(a^b);
+    output_data.words[base+19u]=uint(~a);
+    output_data.words[base+20u]=uint(a<<shift);
+    output_data.words[base+21u]=uint(a>>shift);
+    output_data.words[base+22u]=uint(int(sa>>shift));
+    output_data.words[base+23u]=uint(a==b)|(uint(a!=b)<<1u)|(uint(a<b)<<2u)|(uint(a>=b)<<3u)|(uint(sa<sb)<<4u)|(uint(sa>=sb)<<5u);
+    output_data.words[base+24u]=uint((i&1u)!=0u?a:b);
+    output_data.words[base+25u]=floatBitsToUint(float(a));
+    output_data.words[base+26u]=floatBitsToUint(float(sa));
+    output_data.words[base+27u]=uint(uint8_t(float(b)+0.75));
+    output_data.words[base+28u]=uint(int(int8_t(float(sa))));
+    output_data.words[base+29u]=uint(temp[index]);
+    uint peer=(i*7u+3u)&31u;
+    output_data.words[base+30u]=uint(shared_u[peer]);
+    output_data.words[base+31u]=uint(int(shared_s[peer]));
+    u8vec4 unpacked=unpack8(raw_a^(raw_b<<8u));
+    output_data.words[base+32u]=floatBitsToUint(float(unpacked.x));
+    output_data.words[base+33u]=floatBitsToUint(float(unpacked.y));
+    output_data.words[base+34u]=floatBitsToUint(float(unpacked.z));
+    output_data.words[base+35u]=floatBitsToUint(float(unpacked.w));
+    output_data.words[base+36u]=uint(bitCount(uint(a)));
+    output_data.words[base+37u]=bitfieldReverse(uint(a))>>24u;
+    output_data.words[base+38u]=uint(findLSB(uint(a)));
+    output_data.words[base+39u]=uint(findMSB(int(sa)));
+}
