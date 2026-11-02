@@ -1,0 +1,37 @@
+{
+  "status": "33 selected public pipeline cases compiled; no tensor execution",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-asr-selected-native/compile",
+  "driver": {
+    "bytes": 13607440,
+    "sha256": "85e5c6f54a534094a4d1da41529a07c942a5cae013aaf1b7d0a229afb569047b"
+  },
+  "source_plan": {
+    "bytes": 1516,
+    "sha256": "22d8870f64abea2a64530e2eb2de779016ea73142f921a60255a2140e18af4f8"
+  },
+  "module_manifest": {
+    "bytes": 3989,
+    "sha256": "0c34540c968569db5d771ca43c25237fcf669605f9038cc3016c915e1f52e1f7"
+  },
+  "helper": {
+    "bytes": 727840,
+    "sha256": "55807523ec3a3e24fdd07c314cb9f175110d5fda8b50967be9f60b79de4e0aec"
+  },
+  "reviews": {
+    "/run/media/jethac/Shared/radish/asr-selected-native-runner-0045/independent-native-actual-review.json": {
+      "bytes": 14503,
+      "sha256": "b397f152f75b706c3d5b0d849e724a92d93f4759b4c6d516170d8ca97e82281f"
+    },
+    "/run/media/jethac/Shared/radish/asr-fixture-selected-native-0045/actual-review.json": {
+      "bytes": 10682,
+      "sha256": "27f8ecf35e957b8d34fd1359bc103154ca693482257be2bfa57de57e9b64afc0"
+    }
+  },
+  "runtime_seconds": 59.72,
+  "peak_memory_mib": 115.2,
+  "swap_mib": 0,
+  "case_count": 33,
+  "unique_modules": 31,
+  "limits": "Original384MiB/128MiBswap/90s, reserve/lock/services/fault/drain controls retained",
+  "scope": "No tensors, descriptor pools, command buffers or QueueSubmit. All actual cases compile with public features and original resource guards. Full-model numerical, placement, memory and performance admission remain open. fcd/d332 inference remains selected."
+}

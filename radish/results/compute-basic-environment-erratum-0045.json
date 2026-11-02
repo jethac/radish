@@ -1,0 +1,126 @@
+{
+  "status": "finite primary-spec and retained-evidence review; no implementation or conformance percentage",
+  "normative_sources": {
+    "promotion_optional_features": "https://docs.vulkan.org/refpages/latest/refpages/source/VK_VERSION_1_1.html",
+    "compute_subgroup_required": "https://docs.vulkan.org/refpages/latest/refpages/source/VkPhysicalDeviceSubgroupProperties.html",
+    "historical_spirv_environment": "https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/v1.1.126/appendices/spirvenv.txt",
+    "historical_limits": "https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/v1.1.126/chapters/limits.txt",
+    "sample_mask_execution_model": "https://docs.vulkan.org/refpages/latest/refpages/source/SampleMask.html"
+  },
+  "requirements": {
+    "optional_promoted_features": "storageBuffer16BitAccess, samplerYcbcrConversion and variablePointersStorageBuffer are optional when their respective extensions are unsupported. Advertising an extension imposes its own subset requirements. Promotion alone does not mandate every feature true.",
+    "subgroups": "Compute queues require COMPUTE supported stage and BASIC operation set, with a nonzero power-of-two subgroup size. Arithmetic/vote/ballot/shuffle/quad are additional optional sets.",
+    "spirv": "Vulkan1.1 must support SPIR-V1.0/1.1/1.2/1.3 plus GLSL.std.450 1.0. Capability support remains conditional on the Vulkan feature/extension table. Existing parser availability and a few accepted modules do not establish complete legal environment coverage.",
+    "compute_only": "No blanket claim that graphics queue absence itself prohibits Vulkan1.1. Also no blanket exemption of graphics-looking property minima from the normal required-limits table."
+  },
+  "current_source": {
+    "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_instance.c",
+    "bytes": 11803,
+    "sha256": "aada1afea35362c0ab0a296e60324898326c8bd594aafd57ddd55e93c1712010"
+  },
+  "current_api_subgroups": {
+    "api": "1.0",
+    "subgroup_size": 16,
+    "stages": "COMPUTE",
+    "operations": "BASIC"
+  },
+  "basic_evidence": {
+    "module": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-0044-robust-storage-capabilities/probe/payload/subgroup.spv",
+      "bytes": 5380,
+      "sha256": "19226d99d5986c0e92258ddeccf7809112d8e77e16f83a03320e186ce382459d"
+    },
+    "version": "SPIR-V1.3",
+    "capabilities": [
+      "Shader",
+      "GroupNonUniform"
+    ],
+    "helper_source": {
+      "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/next-probes/subgroup.c",
+      "bytes": 15054,
+      "sha256": "d7acf94f7cafd222079dbad26eedebe7dac2436016da79b614c156a312f6c7f1"
+    },
+    "helper_api": "Creates instance1.0, directly enables internal subgroup properties, no enabling extension; line108ff",
+    "capture": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-0044-robust-storage-capabilities/probe/run.log",
+      "bytes": 8941,
+      "sha256": "9b9f86752789042e5100f04d68f772ab4952e0b8b68795add4b4df06bd089319"
+    },
+    "cases": [
+      "32x1x1",
+      "33x1x1",
+      "8x8x1",
+      "128x1x1",
+      "3x5x3"
+    ],
+    "interpretation": "Passing bounded internal1.1 subgroup semantic evidence, not valid-public1.0 shader-environment qualification and not full1.1 conformance. Later public BASIC property advertisement does not alter captured helper/module API environment."
+  },
+  "cts": {
+    "comparison": {
+      "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/cts-ms-property-comparison.json",
+      "bytes": 3372,
+      "sha256": "0d8c22b7a04460b556187abd2c51705fcf49970a09580b9a415efb350d4747df"
+    },
+    "qpa": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-0044-cts-ms-properties/probe/info.qpa",
+      "bytes": 12560,
+      "sha256": "acaeab28eeaa8b93bd09c0925bdb73d9124cc9dbb988445b67ff3f37ceb2dfda"
+    },
+    "modified_harness_query_campaign": "Five cases ran: four passed and device_properties failed. Later property-only reruns retain31 messages. No official unmodified compute CTS campaign.",
+    "remaining_messages": [
+      "limit Validation failed maxPerStageDescriptorInputAttachments not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxDescriptorSetInputAttachments not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxVertexInputAttributes not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxVertexInputBindings not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxVertexInputAttributeOffset not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxVertexInputBindingStride not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxVertexOutputComponents not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxFragmentInputComponents not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxFragmentOutputAttachments not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxFragmentCombinedOutputResources not valid-limit type MIN - actual is 0",
+      "limit Validation failed subPixelPrecisionBits not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxDrawIndexedIndexValue not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxDrawIndirectCount not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxViewports not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxViewportDimensions[0] not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxViewportDimensions[1] not valid-limit type MIN - actual is 0",
+      "limit validation failed, viewportBoundsRange[0] not valid-limit type MAX actual is 0",
+      "limit validation failed, viewportBoundsRange[1] not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxFramebufferWidth not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxFramebufferHeight not valid-limit type MIN - actual is 0",
+      "limit validation failed, framebufferColorSampleCounts not valid-limit type bitmask actual is 0",
+      "limit validation failed, framebufferDepthSampleCounts not valid-limit type bitmask actual is 0",
+      "limit validation failed, framebufferStencilSampleCounts not valid-limit type bitmask actual is 0",
+      "limit validation failed, framebufferNoAttachmentsSampleCounts not valid-limit type bitmask actual is 0",
+      "limit Validation failed maxColorAttachments not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxSampleMaskWords not valid-limit type MIN - actual is 0",
+      "limit validation failed, pointSizeRange[0] not valid-limit type MIN - actual is 0",
+      "limit validation failed, pointSizeRange[1] not valid-limit type MIN - actual is 0",
+      "limit validation failed, lineWidthRange[0] not valid-limit type MIN - actual is 0",
+      "limit validation failed, lineWidthRange[1] not valid-limit type MIN - actual is 0",
+      "limit validation failed, viewportBoundsRange[1] of 0is less than 2*maxViewportDimension[1] of 0"
+    ],
+    "categories_message_counts": {
+      "input_attachments": 2,
+      "vertex_and_fragment_interfaces": 8,
+      "raster_precision_and_draw_limits": 3,
+      "viewport_values_and_dependent_relation": 6,
+      "framebuffer_and_color_attachment_limits": 7,
+      "fragment_sample_mask": 1,
+      "point_line_ranges": 4
+    },
+    "interpretation": "31 messages are not31 independent mandatory compute defects. All retained fields describe graphics execution/property classes; SampleMask is Fragment-only. Historical required-limit table has no general compute-only waiver, so retain these as unresolved normal-property/conformance obligations instead of silently discarding them."
+  },
+  "remaining_finite_categories": [
+    "Public1.1 version/lookup/promoted-semantic qualification (source author exact inventory)",
+    "Legal SPIR-V1.0\u20131.3 compute environment and required BASIC public qualification beyond bounded internal tests",
+    "Applicable mandatory limits/formats and full simultaneous resource-capacity qualification, including unresolved31 property messages",
+    "Broader legal execution/lifetime/synchronization coverage: representative passes and retained resource guards do not prove universal valid-workgroup/shader behavior",
+    "Unmodified applicability-focused compute CTS and provenance; no clean conformance result"
+  ],
+  "not_a_completion_denominator": [
+    "Original40 command worklist is not full functionality count",
+    "Old VULKAN_AUDIT.md/CTS.md are pre0044 snapshots and cannot be used as current missing-feature counts",
+    "Storage8/Int8/timeline optional post1.1 additions are useful ASR prerequisites, not mandatory1.1 blockers"
+  ]
+}

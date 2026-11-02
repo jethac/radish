@@ -406,3 +406,19 @@ descriptor update/lifetime behavior, legal shared-memory/workgroup execution,
 subgroup BASIC, limits/features and applicable CTS remain active work. Neither
 closing the 40 symbols nor this small passing probe establishes Vulkan 1.0/1.1
 conformance. The system device ICD and canonical inference sources are unchanged.
+
+
+### Retained BASIC shader-environment erratum (2026-11-02)
+
+The retained BASIC module `19226d99` is SPIR-V1.3 with `GroupNonUniform`.
+Its helper created an API1.0 instance and enabled internal subgroup behavior
+without an enabling Vulkan extension. Those successful shape/election/barrier
+checks remain internal semantic observations; they do not qualify a legal public
+API1.0 shader environment. Later public BASIC property advertisement does not
+change the captured environment. Public legal Vulkan1.1 BASIC and required
+SPIR-V-environment qualification remain open, along with applicable CTS.
+
+This corrects the scope of the earlier BASIC passages above. Other independently
+valid resource/API/KHR results are unchanged. The exact module, helper, captures
+and primary-spec review are retained in
+[the evidence receipt](results/compute-basic-environment-erratum-0045.json).

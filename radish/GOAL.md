@@ -326,3 +326,11 @@ The first actual-hotspot timestamp diagnostic is numerically correct but unmeasu
 The corrected logical-binding timestamp diagnostic now passes all 2,400 raw records and unchanged full numerical/scheduling gates. The twelve resident hotspots spend 8.085s inside measured GPU command intervals out of 9.359s command wall, attaining 13.6954 issued-dot GFLOP/s over intervals that include CP/setup/flush/wait work. This is not ALU utilization or a performance optimization. Continue concrete data-movement/kernel-organization work and remaining ASR admission; fcd/d332 stays selected.
 
 The separate ASR memory-policy checkpoint now cross-links a real Cortex-A53 AArch64 backend and listener, with bounded metadata construction and exact cache-operation modules. This closes target ABI build evidence only; actual native-family, full-model memory, numerical execution and deployment gates remain open. The known600.026MiB subtotal excludes material runtime overhead, so the unchanged640MiB full-model scope is not admitted. Selected fcd/d332 inference remains unchanged.
+
+The selected ASR native-only gate now passes33 actual pipeline cases/31 modules
+under the original public feature and resource checks, with zero tensor dispatch.
+Full-model numerical, placement, peak-memory and performance gates remain open.
+A retained BASIC probe used SPIR-V1.3 in an API1.0 helper with an internal override;
+its successes are internal semantics, not legal public1.0 qualification. Public
+legal1.1 BASIC/environment coverage remains an explicit compute requirement; see
+the scoped erratum in CORE_API_0044.md. Selected fcd/d332 remains unchanged.

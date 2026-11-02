@@ -1,0 +1,126 @@
+{
+  "im2col_f32_f16": {
+    "bytes": 5276,
+    "sha256": "4ba4b1c6e4b35cc5e39305a16289249189141d5437ce13230b549f30c39afa59"
+  },
+  "matmul_f16_f32_fp32": {
+    "bytes": 14152,
+    "sha256": "2e58a7f8ee00179fc38c674cdcf101c50e470642e7160c8bfd711ba15028a63d"
+  },
+  "cpy_f32_f32": {
+    "bytes": 4724,
+    "sha256": "d16b90705ce66386f9b1ab24d14ace9424f08e4625c4f0e1c2664631246cc364"
+  },
+  "add_f32_f32_f32": {
+    "bytes": 5960,
+    "sha256": "68b98fdbaf36855a47f587db8da035d00b12c8ee0d1919f129cff82e6df8d166"
+  },
+  "gelu_erf_f32": {
+    "bytes": 5356,
+    "sha256": "91de7dabc086b540a011929f46ba25371a8705b3923bdc4b050e5d7a527316cf"
+  },
+  "im2col_f32": {
+    "bytes": 5196,
+    "sha256": "02c22f4d16b1d9854b1165aa3c9dcb548a4db2ad3b26deb27af04e32bdc6d582"
+  },
+  "dequant_q8_0": {
+    "bytes": 4892,
+    "sha256": "682bc8c1601e8968c002a3b76578e1dc10499728c9e02ed72384d96aa5cb05de"
+  },
+  "cpy_transpose_32": {
+    "bytes": 17796,
+    "sha256": "adf59e2d94aba1c34203f4d95dab63db6972072396fe31288141295b53c53c85"
+  },
+  "cpy_transpose_02_32": {
+    "bytes": 17796,
+    "sha256": "bcf9fb981a1fb1831c9f682dbbb980d4c4038adb40c718f996f11c9968258be2"
+  },
+  "dequant_q4_k": {
+    "bytes": 6016,
+    "sha256": "7505eefe3c508ecc4b2c692a58a6e82d9cca10f0819df12b6bc9fc5b94339586"
+  },
+  "get_rows_q6_k_f32": {
+    "bytes": 5876,
+    "sha256": "3d5c8deb1f5afbdc9cbbb23bb1be2384c829c0cbeeee7e585e0c1e231eb380cb"
+  },
+  "contig_cpy_f32_f32": {
+    "bytes": 3148,
+    "sha256": "362b0672e51cdab103f08b34bec88512dad039eebf2cae9d86af4b4e523bb5bf"
+  },
+  "rms_norm_f32": {
+    "bytes": 67876,
+    "sha256": "36925402fb906d86c41ccfe80e9e828ef33121a4122faa9770ce42fe4db68250"
+  },
+  "mul_f32_f32_f32": {
+    "bytes": 5960,
+    "sha256": "e52b032a7cb770fad5f5eb3609798b426bcdae76abe1a3c081210db309333d23"
+  },
+  "rope_neox_f32": {
+    "bytes": 14480,
+    "sha256": "0f9a4f2263814a72232ffe2028c9f0ba4cfbed9b051f01d8e2bbd730276a07a5"
+  },
+  "set_rows_f32_f16_i64": {
+    "bytes": 5872,
+    "sha256": "db1ae7a0643c55d5939b61436380e7a7e551624793a71370bc1c9e03918ff72c"
+  },
+  "cpy_f16_f16": {
+    "bytes": 4772,
+    "sha256": "7a7731fb1f0973623f6511b4b58487f408e07955e882493ef575b2ce51b3c187"
+  },
+  "repeat_i16": {
+    "bytes": 4480,
+    "sha256": "d4741e07244ec2082f1ec43196c35eba8f70b27ab919d9756f878ea2fe9cfff8"
+  },
+  "cpy_transpose_16": {
+    "bytes": 18104,
+    "sha256": "331b1047ee7a3584c3a968dfc61ab7e61a438edeb2be35d03bb58165aeaa1346"
+  },
+  "soft_max_f32_f16": {
+    "bytes": 79988,
+    "sha256": "916d906b36fe043de96729413ea3f4a6a8dde17ceece10fa222fa57de1388311"
+  },
+  "swiglu_f32": {
+    "bytes": 5320,
+    "sha256": "e5c7ab9779837940f050dbfde49dd5c651bc9e990d07b58c2acfafd6a490e6d4"
+  },
+  "norm_f32": {
+    "bytes": 6188,
+    "sha256": "8827a4391c8200111df80dc0aabfacc72ed7cfddfa8ec8fceda5e01cde47b189"
+  },
+  "matmul_f32_f32_fp32": {
+    "bytes": 13992,
+    "sha256": "01f15614d7af04052ee5b39667abf4108ce784b7b0ee387f61a6a24cfab6ff36"
+  },
+  "soft_max_f32": {
+    "bytes": 78724,
+    "sha256": "73040815d0133b09049cf6f57c0f87d1703dfd10e9147880d45bcca08a1b3a09"
+  },
+  "concat_i32": {
+    "bytes": 5496,
+    "sha256": "30ce3db9c8119054bf03938e30d61ebe65bbc8028084ed8fd34a9692f78e32ae"
+  },
+  "contig_cpy_f32_f16": {
+    "bytes": 3292,
+    "sha256": "b5dc759b930546c17eea1b298f00ea218a0e0df30e46d32593b33d408db3adac"
+  },
+  "mul_mat_vec_q4_k_f32_f32": {
+    "bytes": 18992,
+    "sha256": "2c4b4e98f4f4300710f0d5084e3ae9f6daf066e1e69954193b1b56dcc747bc43"
+  },
+  "mul_mat_vec_q6_k_f32_f32": {
+    "bytes": 26920,
+    "sha256": "d8414ada961e40c2c38993ff37697208953734749feedaf0bbe3eb09c5a00b2b"
+  },
+  "mul_mat_vec_f16_f32_f32": {
+    "bytes": 34080,
+    "sha256": "a56a29e3eecbf410d1811d08229fc1cb0de4ab9c9a0ba3789c608ca7b50823bd"
+  },
+  "mul_mat_vec_q8_0_f32_f32": {
+    "bytes": 22896,
+    "sha256": "7b96675ca956851bc315a08858d448c49bde48bdca5c9c24c91222818695b91a"
+  },
+  "argmax_f32": {
+    "bytes": 3192,
+    "sha256": "bf2205fb317938ab16bfe93b4458477a458d6edc1e69e7609111d2a24eb6c1fe"
+  }
+}

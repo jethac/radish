@@ -1,0 +1,34 @@
+# Frozen metadata-selected compile-only cases; no tensors or dispatch.
+case00 im2col_f32_f16 2 80 32 1 1 1 32
+case01 matmul_f16_f32_fp32 3 68 32 1 1 12 32 32 32 16 32 32 2 2 2 1 32 0
+case02 cpy_f32_f32 2 120 128 1 1 0
+case03 add_f32_f32_f32 3 116 128 1 1 0
+case04 gelu_erf_f32 2 120 128 1 1 0
+case05 im2col_f32 2 80 32 1 1 1 32
+case06 dequant_q8_0 2 20 128 1 1 0
+case07 matmul_f16_f32_fp32 3 68 32 1 1 12 32 32 32 16 32 32 2 2 2 1 32 1
+case08 cpy_transpose_32 2 120 32 4 1 0
+case09 cpy_transpose_02_32 2 120 32 4 1 0
+case10 dequant_q4_k 2 20 32 1 1 0
+case11 get_rows_q6_k_f32 3 116 128 1 1 0
+case12 contig_cpy_f32_f32 2 120 128 1 1 0
+case13 rms_norm_f32 4 116 128 1 1 2 0 0
+case14 mul_f32_f32_f32 3 116 128 1 1 0
+case15 rope_neox_f32 5 120 1 128 1 0
+case16 set_rows_f32_f16_i64 3 116 128 1 1 1 1
+case17 cpy_f16_f16 2 120 128 1 1 0
+case18 repeat_i16 2 120 128 1 1 0
+case19 cpy_transpose_16 2 120 32 4 1 0
+case20 soft_max_f32_f16 4 68 32 1 1 1 32
+case21 swiglu_f32 3 108 128 1 1 0
+case22 norm_f32 2 120 128 1 1 0
+case23 matmul_f32_f32_fp32 3 68 32 1 1 12 32 32 32 16 32 32 2 2 2 1 32 1
+case24 soft_max_f32 4 68 32 1 1 1 32
+case25 matmul_f32_f32_fp32 3 68 32 1 1 12 32 32 32 16 32 32 2 2 2 1 32 0
+case26 concat_i32 3 116 128 1 1 0
+case27 contig_cpy_f32_f16 2 120 128 1 1 0
+case28 mul_mat_vec_q4_k_f32_f32 5 52 32 1 1 3 32 2 1
+case29 mul_mat_vec_q6_k_f32_f32 5 52 32 1 1 3 32 2 1
+case30 mul_mat_vec_f16_f32_f32 5 52 32 1 1 3 32 2 1
+case31 mul_mat_vec_q8_0_f32_f32 5 52 32 1 1 3 32 1 1
+case32 argmax_f32 2 24 32 1 1 1 32

@@ -113,3 +113,23 @@ known600.026MiB subtotal leaves39.974MiB before unknown workspace, library,
 compiler and process overhead under the unchanged640MiB bound. Full-model
 memory admission remains closed. Native-family admission, tablet numerical
 work and deployment are still pending; fcd/d332 remains selected.
+
+2026-11-02 selected ASR native compilation
+
+The AArch64 existing-helper derivative compiled all33 cases selected from the
+actual metadata geometry, using31 exact modules from the cross-linked catalog.
+Public API1.0 + KHR storage8/storage16/Int8/timeline and core robustness were
+queried/enabled; Float16/Int16 arithmetic stayed false. Maximum resources were
+128 logical invocations, five storage bindings,120-byte pushes,8704-byte shared
+memory and no private storage. All shared-kernel register budgets passed the
+unchanged guard. The largest softmax native length950 is a code-size observation,
+not demonstrated efficient execution.
+
+The bounded compile-only capture took59.720s,115.2MiB and no swap, with clean
+fault/service checks. It created no tensor buffers, command buffers or dispatches.
+This closes selected pipeline compilation only. Full-graph numerical correctness,
+placement, KV/history behavior, memory peak and performance remain unqualified.
+See results/asr-selected-native-summary-0045.json and both independent reviews.
+The helper/plan/derivation and exact module manifest are in
+tests/asr-selected-native-0045; use the previously published profile generator
+and existing core-resource utilities to reproduce the pinned payload.
