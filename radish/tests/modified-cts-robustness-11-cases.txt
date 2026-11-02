@@ -1,0 +1,6 @@
+dEQP-VK.robustness.buffer_access.compute.texel_copy.r32g32b32a32_sfloat.oob_storage_read.range_1_texel
+dEQP-VK.robustness.buffer_access.compute.texel_copy.r32g32b32a32_sfloat.oob_storage_read.range_3_texels
+dEQP-VK.robustness.buffer_access.compute.texel_copy.r32g32b32a32_sfloat.oob_storage_write.range_1_texel
+dEQP-VK.robustness.buffer_access.compute.texel_copy.r32g32b32a32_sfloat.oob_storage_write.range_3_texels
+dEQP-VK.robustness.buffer_access.compute.texel_copy.r32g32b32a32_sfloat.oob_uniform_read.range_1_texel
+dEQP-VK.robustness.buffer_access.compute.texel_copy.r32g32b32a32_sfloat.oob_uniform_read.range_3_texels

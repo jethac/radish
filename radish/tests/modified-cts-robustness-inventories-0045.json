@@ -1,0 +1,105 @@
+{
+  "scope": "Modifiedhostfixture only, no originalCTS count",
+  "modified_binary_sha256": "4295d5062027bcf6b1d39376e9cd2ac9b685dbe74da3f359d30ee3816d352eb9",
+  "driver_deployment_sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc",
+  "partitions": [
+    {
+      "tag": "00",
+      "runner": "scripts/device-modified-cts-robustness-00.py",
+      "cases": "tests/modified-cts-robustness-00-cases.txt",
+      "count": 12,
+      "sha256": "5d0dcd56ec83fb9d62424c0ffae0fbee847486b1283cdbe493f0966db2696b30"
+    },
+    {
+      "tag": "01",
+      "runner": "scripts/device-modified-cts-robustness-01.py",
+      "cases": "tests/modified-cts-robustness-01-cases.txt",
+      "count": 12,
+      "sha256": "6c3283a9f4522ea0421ecf25ebef2f5eab32d1adb13257bba8a6b5dcf1358a10"
+    },
+    {
+      "tag": "02",
+      "runner": "scripts/device-modified-cts-robustness-02.py",
+      "cases": "tests/modified-cts-robustness-02-cases.txt",
+      "count": 12,
+      "sha256": "4a46d42ddcabd0c5703c51a27a0a596efc38a8f84242f52dd182f29871e83659"
+    },
+    {
+      "tag": "03a",
+      "runner": "scripts/device-modified-cts-robustness-03a.py",
+      "cases": "tests/modified-cts-robustness-03a-cases.txt",
+      "count": 6,
+      "sha256": "17903991344fa8d0aaec4cfdbd29ed40af4d31bea49f4cfbb60f716529f8be6b"
+    },
+    {
+      "tag": "03b",
+      "runner": "scripts/device-modified-cts-robustness-03b.py",
+      "cases": "tests/modified-cts-robustness-03b-cases.txt",
+      "count": 6,
+      "sha256": "547b709069aa440c7cba3ad1b8e728d7361d79f535dbe13641794060fce0a9a1"
+    },
+    {
+      "tag": "04",
+      "runner": "scripts/device-modified-cts-robustness-04.py",
+      "cases": "tests/modified-cts-robustness-04-cases.txt",
+      "count": 12,
+      "sha256": "62e3ea789e307438c5ddbfd1357e39cb700080ad33f20c6234647786a2090542"
+    },
+    {
+      "tag": "05",
+      "runner": "scripts/device-modified-cts-robustness-05.py",
+      "cases": "tests/modified-cts-robustness-05-cases.txt",
+      "count": 12,
+      "sha256": "e9a7b02e7d5c270d4ff881d8d925318a56e6824ad5796884c72ecdd8e5d194eb"
+    },
+    {
+      "tag": "06",
+      "runner": "scripts/device-modified-cts-robustness-06.py",
+      "cases": "tests/modified-cts-robustness-06-cases.txt",
+      "count": 9,
+      "sha256": "ced15e07a4c0639fd9a0376fbae83df97885f4f813a2a9eff9717c00d281e726"
+    },
+    {
+      "tag": "07",
+      "runner": "scripts/device-modified-cts-robustness-07.py",
+      "cases": "tests/modified-cts-robustness-07-cases.txt",
+      "count": 9,
+      "sha256": "e27a1c348a533b1cf2f9eed65cb5d73e304d3e15561532d76b2ce75029e0ed65"
+    },
+    {
+      "tag": "08",
+      "runner": "scripts/device-modified-cts-robustness-08.py",
+      "cases": "tests/modified-cts-robustness-08-cases.txt",
+      "count": 9,
+      "sha256": "688b272657d8c884f4673fb5e64335c465958e65786caba1197c2acc1d08ed42"
+    },
+    {
+      "tag": "09",
+      "runner": "scripts/device-modified-cts-robustness-09.py",
+      "cases": "tests/modified-cts-robustness-09-cases.txt",
+      "count": 6,
+      "sha256": "cb9acfb1ea8ce52e5b38c9e64f9d3c14a53323186e1c6868d22dab2fc5bd7127"
+    },
+    {
+      "tag": "10",
+      "runner": "scripts/device-modified-cts-robustness-10.py",
+      "cases": "tests/modified-cts-robustness-10-cases.txt",
+      "count": 6,
+      "sha256": "142f9ecb4469b8fd29abc828851f38edb21202985b246990c9b418b8ad07b082"
+    },
+    {
+      "tag": "11",
+      "runner": "scripts/device-modified-cts-robustness-11.py",
+      "cases": "tests/modified-cts-robustness-11-cases.txt",
+      "count": 6,
+      "sha256": "828e822c17bdd9a600775a6bed04ddcbfb02f21a0201bd425c5ebbc4ff83daf0"
+    },
+    {
+      "tag": "12",
+      "runner": "scripts/device-modified-cts-robustness-12.py",
+      "cases": "tests/modified-cts-robustness-12-cases.txt",
+      "count": 15,
+      "sha256": "3d37540400f2c14b1a76d3e8a8642ba5df40ccb8197e61361e600fe916cee817"
+    }
+  ]
+}

@@ -415,6 +415,10 @@ corrects one duplicate queue-family setup condition. It preserves the original
 shader/data/oracles and original binary, and all its results are excluded from
 unmodified CTS counts and official conformance. The driver is unchanged.
 
-The first [12 modified-harness robustness cases](results/modified-cts-robust-buffer-0045.json)
-pass native/resource and original allowed-value checks. The remaining 120
-selected cases continue separately; these 12 add zero original CTS passes.
+All [132 selected modified-harness robustness cases](results/modified-cts-robust-buffer-0045.json)
+now pass independent native/resource and original allowed-value checks on the
+unchanged f222/e699 driver. This covers scalar, vector, member, texel and
+out-of-allocation access cases under the current legal capability set. The
+original broad robustBufferAccess1 choices and float comparison remain; this
+is neither robust2 nor exhaustive robustness qualification. These 132 outcomes
+add zero original CTS passes. The broader conformance goal remains active.

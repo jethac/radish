@@ -1,0 +1,6 @@
+dEQP-VK.robustness.buffer_access.compute.vec4_copy.r32_uint.oob_storage_write.range_3_bytes
+dEQP-VK.robustness.buffer_access.compute.vec4_copy.r32_uint.oob_storage_write.range_4_bytes
+dEQP-VK.robustness.buffer_access.compute.vec4_copy.r32_uint.oob_uniform_read.range_1_byte
+dEQP-VK.robustness.buffer_access.compute.vec4_copy.r32_uint.oob_uniform_read.range_32_bytes
+dEQP-VK.robustness.buffer_access.compute.vec4_copy.r32_uint.oob_uniform_read.range_3_bytes
+dEQP-VK.robustness.buffer_access.compute.vec4_copy.r32_uint.oob_uniform_read.range_4_bytes

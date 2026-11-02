@@ -49,7 +49,7 @@
       "original_count_credit": 0,
       "scope": "One-condition duplicate queue family host fix, source/build independently reviewed; every outcome remains modified harness.",
       "actual_record": "modified-cts-robust-buffer-0045.json",
-      "qualified_selected": 12,
+      "qualified_selected": 132,
       "selected_legal": 132
     }
   },
@@ -106,7 +106,7 @@
       "id": "buffers-robust",
       "requirement": "Exact UBO/SSBO/texel ranges, dynamic offsets,32bit load/store/atomics and robust access",
       "implementation": "Exact current descriptor size constants; logical RBA before memory widening; no inflated ranges",
-      "evidence": "Valid v4 large-SSBO consumer spans160004/65540/65536/131072 plus original40 outputs/full5BOs; large40001 texel add/CAS actuals; official11-buffer-group-0045.json22originalcases pass14422integer values across UBO/SSBOcopy,inplace/multipleoutputs,localbarriers/sharedatomicAdd.; required-image-atomics-0045.json nine32bitoperatorsonfourtypedresources pass1152old/finalwords/full5allocs, distinctaddressesonly.",
+      "evidence": "Valid v4 large-SSBO consumer spans160004/65540/65536/131072 plus original40 outputs/full5BOs; large40001 texel add/CAS actuals; official11-buffer-group-0045.json22originalcases pass14422integer values across UBO/SSBOcopy,inplace/multipleoutputs,localbarriers/sharedatomicAdd.; required-image-atomics-0045.json nine32bitoperatorsonfourtypedresources pass1152old/finalwords/full5allocs, distinctaddressesonly.; modified-cts-robust-buffer-0045.json132 selected legal buffer-access cases pass original robust1 allowed-value checks through one-condition host queue fixture correction. No driver change and zero originalCTS credit.",
       "remaining": "Original invalid constant-negative-index module evidence remains erratum; only corrected legal-SPV actuals count. Broader scalar/vector/array/alias/atomic CTS still required.",
       "owner": "resource"
     },
@@ -346,7 +346,7 @@
     "system_scope": "No globalgraphics/service/clock/kernelchanges"
   },
   "depth_layout_erratum": "Pinned Vulkan1.1 DEPTH_STENCIL_READ_ONLY_OPTIMAL requires DEPTH_STENCIL_ATTACHMENT usage. Earlier sampled-only depth consumers are implementation observations for that path until valid-usage requalification; no retroactive public qualification.",
-  "next_private_source": "Continue modified-host-fixture robust buffer qualification and fix any concrete driver defects, then other applicable Vulkan1.1 compute/shared requirements. Do not count modified outcomes as original CTS. Strict42 custom sRGB findings and broader conformance remain open; no performance tuning.",
+  "next_private_source": "Next source-bound original0e715 nonzero binding-offset cases, then further applicable Vulkan1.1 compute/shared requirements and concrete fixes as needed. Selected132 modified-harness robustness cases now pass but count as zero original CTS passes. Strict42 sRGB findings remain open, no tuning.",
   "required_core_lookup": "core-lookup-public-0045.json: public165GIPA/137GDPA complete afterfiveactualdevicepointer fixes. This is lookup only, not allcommandexecution. DirectICDloaderglobal limitation retained.",
   "deferred_performance_opportunities": {
     "pipeline_cache_population": "Pipeline creation currently does not populate common cache entries; header/object-count serialization is callable behavior only. Real cache population/reuse and measured benefit belong to the later performance phase; no speedup assumed."
