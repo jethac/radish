@@ -13,7 +13,7 @@
   "official_cts": {
     "source_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
     "binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
-    "state": "538 distinct original historical passes across scoped campaigns, including56/56 exact default memory.binding cases. Named compute remains93/93 on f222/e699 and core enum query219/219. Other applicable requirements remain incomplete.",
+    "state": "626 distinct original historical CTS Pass names across scoped campaigns, including88 nonzero binding-offset cases. Named compute93/93 and individual core format queries219/219 remain separate scoped metrics. Modified robustness132 excluded.",
     "modified_harness": "f85cb13b diagnostics only, never official passes",
     "remaining_property_failures": 0,
     "actual_record": "official11-native-scalars-info-0045.json",
@@ -34,7 +34,7 @@
     "promoted_query_record": "official11-promoted-query-0045.json",
     "cache_lifetime_record": "official11-cache-lifetime-0045.json",
     "qualified_unique_case_inventory": "official11-qualified-case-inventory-0045.json",
-    "qualified_unique_cases": 538,
+    "qualified_unique_cases": 626,
     "inventory_limitation": "Historical passes span separate pinned candidates and exact source-bounded runs. This is neither one complete conformance run nor a percentage of all applicable requirements.",
     "format_query_record": "official11-format-query-0045.json",
     "function_private_record": "official11-function-private-0045.json",
@@ -51,7 +51,8 @@
       "actual_record": "modified-cts-robust-buffer-0045.json",
       "qualified_selected": 132,
       "selected_legal": 132
-    }
+    },
+    "binding_offset_record": "official11-binding-offset-0045.json"
   },
   "categories": [
     {
@@ -146,7 +147,7 @@
       "id": "memory",
       "requirement": "Allocation, mapping, suballocation, non-overlap/alias, dedicated requirements and host visibility",
       "implementation": "Single coherent host-visible memory type;64byte requirements/granularity; checked addresses/binding/size; no required dedicated allocation",
-      "evidence": "Buffer/resource full guards, suballoc/view base offsets, huge public image sparse guards; official11-memory-binding-0045.json56 original default cases pass56,650,600 logical byte comparisons through existing CPU copy paths. No nonzero offset or allocation-padding claim.",
+      "evidence": "Buffer/resource full guards, suballoc/view base offsets, huge public image sparse guards; official11-memory-binding-0045.json56 original default cases pass56,650,600 logical byte comparisons through existing CPU copy paths. No nonzero offset or allocation-padding claim.; official11-binding-offset-0045.json88 original cases establish selected nonzero buffer bind offsets through fill/update and secondary indirect dispatch.",
       "remaining": "Full applicable allocation/map/alias/copy/OOH/OOM CTS and actual coherent cache semantics. Shared source sum is not full memory conformance.",
       "owner": "resource"
     },
@@ -346,7 +347,7 @@
     "system_scope": "No globalgraphics/service/clock/kernelchanges"
   },
   "depth_layout_erratum": "Pinned Vulkan1.1 DEPTH_STENCIL_READ_ONLY_OPTIMAL requires DEPTH_STENCIL_ATTACHMENT usage. Earlier sampled-only depth consumers are implementation observations for that path until valid-usage requalification; no retroactive public qualification.",
-  "next_private_source": "Next source-bound original0e715 nonzero binding-offset cases, then further applicable Vulkan1.1 compute/shared requirements and concrete fixes as needed. Selected132 modified-harness robustness cases now pass but count as zero original CTS passes. Strict42 sRGB findings remain open, no tuning.",
+  "next_private_source": "Source-bound33 applicable original SPIR-V control-flow cases, with isolated compile admission for wide512-wayPhi and nested branches before execution; then remaining applicable Vulkan1.1 compute/shared requirements. Preserve hard valid cases, all guards and original oracles. Strict42sRGB and full conformance still open; no tuning.",
   "required_core_lookup": "core-lookup-public-0045.json: public165GIPA/137GDPA complete afterfiveactualdevicepointer fixes. This is lookup only, not allcommandexecution. DirectICDloaderglobal limitation retained.",
   "deferred_performance_opportunities": {
     "pipeline_cache_population": "Pipeline creation currently does not populate common cache entries; header/object-count serialization is callable behavior only. Real cache population/reuse and measured benefit belong to the later performance phase; no speedup assumed."

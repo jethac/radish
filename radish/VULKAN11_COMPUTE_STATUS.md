@@ -13,7 +13,7 @@ All 93 compute cases passed on the same f222/e699 candidate, with the original
 CTS executable, work and oracles. The initial 53/93 snapshot is historical.
 The 28 cases previously run on an older driver were confirmed on this candidate;
 current-candidate results were reused. The retained historical inventory now
-contains 538 distinct original passes, including other groups.
+contains 626 distinct original passes, including other groups.
 
 This 100% applies only to the named compute group. API, SPIR-V, GLSL, memory,
 robustness, images and synchronization contain further applicable requirements;
@@ -422,3 +422,11 @@ out-of-allocation access cases under the current legal capability set. The
 original broad robustBufferAccess1 choices and float comparison remain; this
 is neither robust2 nor exhaustive robustness qualification. These 132 outcomes
 add zero original CTS passes. The broader conformance goal remains active.
+
+[The 88 original binding-offset cases](results/official11-binding-offset-0045.json)
+now pass on unchanged f222/e699 using the restored original CTS executable.
+They add nonzero buffer-bind-offset coverage through fill/update and secondary
+indirect dispatch, with unchanged byte and integer oracles. The separately
+modified robustness results still add zero original CTS passes. Next are the
+source-bounded control-flow cases, including compile admission for the wide
+Phi and deeply nested shaders; full conformance and strict sRGB closure remain open.

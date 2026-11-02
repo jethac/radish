@@ -1,0 +1,3665 @@
+{
+  "status": "PASS88 exact original nonzero binding-offset cases on unchanged f222/e699",
+  "source": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/source-bounds.json",
+      "bytes": 15400,
+      "sha256": "afbc204a13cf2d6afc826cef9a29c627285039c8c3757ebe7e25b646e07f0334"
+    },
+    "result": {
+      "status": "SOURCE_BOUNDED_READY_FOR_INDEPENDENT_REVIEW",
+      "scope": "Original nonzero buffer binding offsets through fill/update and secondary indirect dispatch; no shader, CTS, driver, oracle or control changes.",
+      "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+      "cts_binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
+      "candidate_driver_sha256": "f222ff480f6c9ef3785c446661f12ccacbc91f119b0e7d405347b949b4dc325d",
+      "catalog": {
+        "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/mustpass/main/vk-default/api.txt",
+        "sha256": "79fd922bc74875b73db5e9b6ee7d02422181aa0c9afb4c6ccd1c5b1f9d9e9fdd"
+      },
+      "prior_inventory": {
+        "path": "/home/jethac/Projects/lenovo-8/radish/results/official11-qualified-case-inventory-0045.json",
+        "sha256": "ac3a0e76257a8899009afc8823de1e1a909c5ced31a257dac87ed3cd787a9ded",
+        "overlap": []
+      },
+      "inventory": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/cases.txt",
+        "sha256": "7053963bb078d65a44bc81ef6cf4e366dbdf1b059510e7bf5f38974fc13c1e57",
+        "count": 88
+      },
+      "partitions": [
+        {
+          "id": "fill-update",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/cases-00-fill-update.txt",
+          "sha256": "5deec2bac8487c9dfd0ba3f9eca8903e6dc1bbd6d6f0cfed4696b9fa704d69b1",
+          "count": 24,
+          "dispatches": 0,
+          "transfer_commands": 24,
+          "queue_submissions": 24,
+          "logical_bytes_compared": 6168
+        },
+        {
+          "id": "indirect-0",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/cases-01-indirect.txt",
+          "sha256": "c1d8f8d5eacea858ed43827b78cd7dbcd5729e470a937bfdc0c2b7e5b1caac65",
+          "count": 16,
+          "dispatches": 16,
+          "invocations": 1024,
+          "exact_u32_comparisons": 1024,
+          "queue_submissions": 16,
+          "requested_memory_offsets": [
+            0,
+            4
+          ]
+        },
+        {
+          "id": "indirect-1",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/cases-02-indirect.txt",
+          "sha256": "3e6b2cea053478ba42f12a3581bd3735278a6120968621beec21da501cddcf89",
+          "count": 16,
+          "dispatches": 16,
+          "invocations": 1024,
+          "exact_u32_comparisons": 1024,
+          "queue_submissions": 16,
+          "requested_memory_offsets": [
+            8,
+            12
+          ]
+        },
+        {
+          "id": "indirect-2",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/cases-03-indirect.txt",
+          "sha256": "74b19c03a468cb3e318ee312e8f525d2b6611c987afabe5a544057051cc46c42",
+          "count": 16,
+          "dispatches": 16,
+          "invocations": 1024,
+          "exact_u32_comparisons": 1024,
+          "queue_submissions": 16,
+          "requested_memory_offsets": [
+            16,
+            20
+          ]
+        },
+        {
+          "id": "indirect-3",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/cases-04-indirect.txt",
+          "sha256": "8246dc9a28a523d7e95ee22fa1180527265a6032f9e558229b64aebc91b3e99e",
+          "count": 16,
+          "dispatches": 16,
+          "invocations": 1024,
+          "exact_u32_comparisons": 1024,
+          "queue_submissions": 16,
+          "requested_memory_offsets": [
+            24,
+            28
+          ]
+        }
+      ],
+      "source_pins": {
+        "vktApiFillBufferTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/source/vktApiFillBufferTests.cpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/api/vktApiFillBufferTests.cpp",
+          "sha256": "20518472f94b1f792710c48a5c1dcd136b49885c61bcf01f6f5f9b44e4a1a8da"
+        },
+        "vktApiCommandBuffersTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/source/vktApiCommandBuffersTests.cpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/api/vktApiCommandBuffersTests.cpp",
+          "sha256": "25868c33d80392e401b3a73a7b44363c70fcd629a6e2ddadef9171e23f56b369"
+        },
+        "vktApiBufferAndImageAllocationUtil.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/source/vktApiBufferAndImageAllocationUtil.cpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/api/vktApiBufferAndImageAllocationUtil.cpp",
+          "sha256": "00ce8ba062a6ac78f6607c18b7db3bc6c13b96aa140473f75928a3ff9d7d18cb"
+        },
+        "vktApiTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/source/vktApiTests.cpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/api/vktApiTests.cpp",
+          "sha256": "f8448b09583d40bca5e1ea3d3c87a37f13aa665541a553ab2b45a3da39962902"
+        },
+        "vktTestCase.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/source/vktTestCase.cpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/vktTestCase.cpp",
+          "sha256": "093936313a9d8489c2ff08fd493445cc8e4e9235ed559597bcf95bd84c6a97fc"
+        },
+        "vktTestPackage.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/source/vktTestPackage.cpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/vktTestPackage.cpp",
+          "sha256": "272802a91a54f6aade1741c713563936fe01be295ea648bdf85e5cce0e4823d6"
+        },
+        "vkMemUtil.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/source/vkMemUtil.cpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/framework/vulkan/vkMemUtil.cpp",
+          "sha256": "e2b7c96b87da89fd5e0de4605d7b1f7ec388bcb8bd3babdb92ec61657a506c0b"
+        },
+        "vkMemUtil.hpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/source/vkMemUtil.hpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/framework/vulkan/vkMemUtil.hpp",
+          "sha256": "0a0cabafb58fcfeae24d82191fa0b4cae1038e75cd16ec35d789168efd20025f"
+        },
+        "vkDeviceUtil.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/source/vkDeviceUtil.cpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/framework/vulkan/vkDeviceUtil.cpp",
+          "sha256": "1a65e9e0982f97f4d3564217351d5d587422c484efa683c61333e7fbfd75538f"
+        },
+        "vkCmdUtil.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/source/vkCmdUtil.cpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/framework/vulkan/vkCmdUtil.cpp",
+          "sha256": "844c7edc778cf02277face1f155f63b3dda7025b63a2df6c97f3972067b8fac0"
+        },
+        "rd_memory.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/source/rd_memory.c",
+          "source_path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_memory.c",
+          "sha256": "210d76aecc691fefb8765c60fa677f273a4c4d8f6aac4aa2239ed0f78b8cc9f8"
+        },
+        "rd_transfer.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/source/rd_transfer.c",
+          "source_path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_transfer.c",
+          "sha256": "a93968bf54724b1a068d7169940952286b73a0eb08f9fe78ee3ef4e608d5812b"
+        },
+        "rd_queue.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/source/rd_queue.c",
+          "source_path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_queue.c",
+          "sha256": "da170e7c4d4a1fc9db0da5ded100376fab80b57fb70af2427a4ff81fbbdc4890"
+        },
+        "rd_command.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/source/rd_command.c",
+          "source_path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_command.c",
+          "sha256": "9d8186e6219d989daaad17aaeb04347219295f913301df38dd97a6d3680a2498"
+        },
+        "rd_instance.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/source/rd_instance.c",
+          "source_path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_instance.c",
+          "sha256": "c5763ff7a03fed9a13aebf291eeae5c182cfb79eba83c1b839d74d67a0682bac"
+        },
+        "vk-v1.1.126.xml": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/source/vk-v1.1.126.xml",
+          "source_path": "/run/media/jethac/Shared/radish/compute11-core-lookup-independent-0045/vk-v1.1.126.xml",
+          "sha256": "3fee40627e5377892bd29540955ee65dfd712d8236514a763807175317224a99"
+        }
+      },
+      "selection": {
+        "root": "vktTestPackage.cpp1455 api::createTests -> vktApiTests.cpp110/114 -> exact registration functions",
+        "fill_registration": "vktApiFillBufferTests.cpp670-810: suballocation_bind_offset selects BufferSuballocation/nonzeroBindOffset=true/UNIVERSAL; exclude exactly3 device_address_commands siblings requiring unadvertised extension. All24 remaining cases are core.",
+        "indirect_registration": "vktApiCommandBuffersTests.cpp6508-6520: complete8x8 offsetsToTest={0,4,8,12,16,20,24,28}. All64 are core. No optional feature.",
+        "queue": "Context universal=findComputeCapableQueueFamily and compute=find compute without graphics => same sole0. These tests reuse Context device, never robustness custom duplicate queue fixture.",
+        "registry_command_properties": {
+          "vkCmdDispatchIndirect": {
+            "queues": "compute",
+            "renderpass": "outside",
+            "cmdbufferlevel": "primary,secondary",
+            "pipeline": "compute"
+          },
+          "vkCmdUpdateBuffer": {
+            "queues": "transfer,graphics,compute",
+            "renderpass": "outside",
+            "cmdbufferlevel": "primary,secondary",
+            "pipeline": "transfer"
+          },
+          "vkCmdFillBuffer": {
+            "queues": "transfer,graphics,compute",
+            "renderpass": "outside",
+            "cmdbufferlevel": "primary,secondary",
+            "pipeline": "transfer",
+            "comment": "transfer support is only available when VK_KHR_maintenance1 is enabled, as documented in valid usage language in the specification"
+          }
+        }
+      },
+      "fill_update": {
+        "source": "Fill source112-136/352-382; vkMemUtil.cpp302-340; BufferSuballocation35-60.",
+        "binding_offset": "SimpleAllocator rounds dstSize to lcm(nonCoherentAtomSize64, requirements.alignment64); actual offsets256 for size256 and320 for size257..259. BindMemory receives nonzero offset; HostPtr maps the corresponding offset; flush/invalidate use offset and VK_WHOLE_SIZE.",
+        "memory": "One TRANSFER_DST buffer per case, size256..259; current rounded requirements256/320; allocation512/640 bytes, current BO rounds4096 separately. No descriptor, shader, image or graphics object.",
+        "work": "4 regular fills+4 updates: offsets0,0,4,128; lengths256,4,4,128. 16 WHOLE_SIZE fills cover sizes256..259 and offsets0/4/8/12; nearest smaller multiple4 is256-offset, trailing1..3 bytes remain0xff. Total20 fills+4 updates,24 submits/fences,4784 bytes written.",
+        "oracle": "8 ordinary cases compare every256 logical byte with threshold0;16 whole cases compare each256..259 logical byte including untouched leading/trailing bytes. Total6168 exact byte comparisons. Allocation prefix and padding outside logical buffer are not checked.",
+        "ordering": "Host upload/flush -> recorded transfer -> TRANSFER_WRITE to HOST_READ barrier -> submit/fence -> invalidate -> original full logical buffer oracle. Sync2 and device-address paths stay inactive.",
+        "native_path": "rd_transfer.c36-82 records range, rounds WHOLE_SIZE down and deep-copies update data. rd_queue.c875-908 emits CP_MEM_WRITE using dst.buffer.offset+command.offset; each <=256B transfer fits1 existing chunk. Actual profiles remain required; no shader proof claimed."
+      },
+      "indirect": {
+        "source": "vktApiCommandBuffersTests.cpp5651-5840, exact unchanged GLSL local64x1x1, output[localIndex]+=localIndex+1000000.",
+        "binding_offset": "requested0 remains0; all seven nonzero requests4..28 round to current requirements.alignment64. Thus8 zero-bound controls and56 genuinely nonzero-bound cases, but only actual binding offsets0/64 on this candidate; command offsets0..28 remain independently varied.",
+        "memory": "SSBO256B and indirect buffer12..40B (12-byte command at dispatchOffset). Current indirect requirements64B plus bound offset0/64=>64/128B; combined requested allocations<=384B/current two BOs round separately. One descriptor SSBO, no push/shared/image/sampler.",
+        "work": "One secondary command buffer recorded bind pipeline/descriptor+CmdDispatchIndirect, executed by one primary, grid1x1x1/local64x1x1. One submit/fence/case.64 total dispatches,4096 invocations,4096 exact u32 comparisons. Each group16 gives1024 comparisons.",
+        "oracle": "Entire64-word output initialized0, flush; original exact reference i+1000000. Primary COMPUTE_SHADER_WRITE->HOST_READ barrier, wait/invalidate. No NaN/tolerance/weak Pass branch. Indirect buffer prefix/padding is not poisoned or checked.",
+        "native_path": "rd_queue.c912-930 resolves indirect command at buffer.offset+dispatchOffset through CPU-prepped mapping, then dispatches real compute. This qualifies public execution/address semantics, not native GPU-side indirect argument fetch. Secondary and executing objects stay alive through fence.",
+        "admission": "local64 <= current max128; uint32 Shader core only, no optional capabilities or new assets. Native statistics/resource gates and original error/fault stop retained."
+      },
+      "bounds_and_controls": {
+        "unit_partitions": [
+          24,
+          16,
+          16,
+          16,
+          16
+        ],
+        "caps": "Each uses unchanged90s/384MiB/8MiB log allowance/64MiB disk reserve and per-case fault stop. No deadline, memory, or feature relaxation. No all88 monolithic scope.",
+        "maximum_test_owned_data": "<16KiB including rounded BO pages and small host arrays; compiler/CTS baseline RSS is separate and guarded.",
+        "original_binary": "Restore original0e715 through owner archive procedure after modified robustness campaign. Do not label any4295 execution originalCTS.",
+        "qualification": "No result or conformance completion inferred. No image binding offsets, multiple-resource suballocation sharing, prefix guard or arbitrary memory-model coverage."
+      },
+      "primary_refs": [
+        {
+          "url": "https://docs.vulkan.org/refpages/latest/refpages/source/vkCmdFillBuffer.html",
+          "basis": "Core1.0; compute queue permitted; WHOLE_SIZE rounds remaining tail down to multiple4."
+        },
+        {
+          "url": "https://docs.vulkan.org/refpages/latest/refpages/source/vkCmdDispatchIndirect.html",
+          "basis": "Core1.0 compute dispatch reads command from buffer-relative byte offset; original local64 is within advertised limits."
+        }
+      ]
+    }
+  },
+  "source_counterpart": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/independent-source-review.json",
+      "bytes": 3028,
+      "sha256": "5292cb67c308356c00cefcbb7dea0d94e1d3b2b56cff926765ee3bd7afdbf0a2"
+    },
+    "result": {
+      "status": "PASS finite original binding-offset88 source/name/validity/bounds counterpart",
+      "source_bounds_sha256": "afbc204a13cf2d6afc826cef9a29c627285039c8c3757ebe7e25b646e07f0334",
+      "inventory_sha256": "7053963bb078d65a44bc81ef6cf4e366dbdf1b059510e7bf5f38974fc13c1e57",
+      "partitions": [
+        {
+          "id": "fill-update",
+          "count": 24,
+          "sha256": "5deec2bac8487c9dfd0ba3f9eca8903e6dc1bbd6d6f0cfed4696b9fa704d69b1"
+        },
+        {
+          "id": "indirect-0",
+          "count": 16,
+          "sha256": "c1d8f8d5eacea858ed43827b78cd7dbcd5729e470a937bfdc0c2b7e5b1caac65"
+        },
+        {
+          "id": "indirect-1",
+          "count": 16,
+          "sha256": "3e6b2cea053478ba42f12a3581bd3735278a6120968621beec21da501cddcf89"
+        },
+        {
+          "id": "indirect-2",
+          "count": 16,
+          "sha256": "74b19c03a468cb3e318ee312e8f525d2b6611c987afabe5a544057051cc46c42"
+        },
+        {
+          "id": "indirect-3",
+          "count": 16,
+          "sha256": "8246dc9a28a523d7e95ee22fa1180527265a6032f9e558229b64aebc91b3e99e"
+        }
+      ],
+      "checks": [
+        "Independently rebuilt8 ordinary fill/update+16 WHOLE_SIZE names and complete8x8 indirect names; exact ordered union88 matches five manifests/catalog. All16 source/registry snapshots match frozen preimages.",
+        "Default Context device used; no robustness custom-device duplicate-queue list. Original binary0e715 required, no modified4295 count contamination.",
+        "Exact original core commands permit COMPUTE; secondary indirect outside renderpass valid. No GRAPHICS-only objects, optional address/sync2 flags or shader capabilities selected.",
+        "SimpleAllocator lcm(64,64) rounds requested bind256..259 to256/320; host mapping offset follows binding offset. WHOLE_SIZE truncates only trailing1..3 bytes, fills preserve leading/trailing data. Recomputed6168 exact logical bytes compared and4784 bytes transferred.",
+        "Indirect requested binding0/4/8/12/16/20/24/28 becomes actual0/64; actual dispatch byte offsets independently0..28 remain distinct/aligned.8 zero-bound controls/56 nonzero bindings, full64-word exact i+1000000 reference each.",
+        "Local64/grid1,one SSBO256B,one indirect buffer12..40B,actual indirect allocation64/128B;2 BO pages + small arrays below16KiB.64 secondary dispatches/4096 invocations and exact u32 comparisons, one primary submit/fence each.",
+        "Driver uses actual buffer memory binding offset plus transfer/indirect command offset; source bounds checks and deep-copy semantics already implemented, no demonstrated driver gap. Real GPU compute follows host-side indirect argument resolve."
+      ],
+      "limits": [
+        "Source/native execution admission only; actual QPA PASS remains owner/independent gate.",
+        "Original logical buffer checks do not prove unchanged allocation-prefix/padding canaries or shared multi-resource suballocation.",
+        "Original90s384MiB/8MiB logs/fault/reserve controls unchanged; no aggregate88 monolithic scope.",
+        "No GLSL/SPIRV/CTS/driver/oracle mutation; source fixes take priority if an actual valid behavior fails."
+      ]
+    }
+  },
+  "runner_counterpart": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/runner-review.json",
+      "bytes": 3944,
+      "sha256": "ae2d1a820295eccaee1709e388e658365bbfbd02c95f40a00560b05151f4a03b"
+    },
+    "result": {
+      "status": "PASS finite five original runner derivatives",
+      "source_plan_sha256": "afbc204a13cf2d6afc826cef9a29c627285039c8c3757ebe7e25b646e07f0334",
+      "baseline_runner": "/run/media/jethac/Shared/radish/compute11-official-final-common-runner-0045/device-official-cts.py",
+      "baseline_runner_sha256": "f3a41e53576fa08dc1e421bedb9c7f3a50be51d07d9fd7bd973b3955d53eccae",
+      "owner_list_sha256": "d2f455f5965b5104080696551c961aa1ce1e18a605ee7d162cd8d79d34457e53",
+      "checks": [
+        "Allfive runner bodies byte-identical to passed final-common original engine after only approved SHA/count constants.",
+        "24+16+16+16+16 inventories ordered/disjoint/exact original88; allhost assets and argv pins rehashed.",
+        "Original0e715 executable and75699loader/f222-e699 driver; no modified4295 fixture permitted.",
+        "Same90s/384MiB/8MiB output allowance/64MiB reserve/per-case fault stop and exactQPA accounting."
+      ],
+      "runners": [
+        {
+          "runner": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-00-runner-0045/device-official-cts.py",
+          "sha256": "3d57897835a01e26db5e64e628db8f1b2ed18afe1d65f6415750390b5493151a",
+          "inventory_sha256": "5deec2bac8487c9dfd0ba3f9eca8903e6dc1bbd6d6f0cfed4696b9fa704d69b1",
+          "count": 24,
+          "argv_sha256": "7f08554f17cec65902df1bf072fe2c4de887ca72c4ac52e89ffc5cb29ff47667",
+          "hostcheck_sha256": "d2fcfaafda302b14804c135bda567ec13be25d28cbcd00f117abc9e9ce07988c"
+        },
+        {
+          "runner": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-01-runner-0045/device-official-cts.py",
+          "sha256": "4ecc7dcdefdc0497a1fa23a7cfa8b0dc90abedcbbc7f18ae6a9a596fd2861f6c",
+          "inventory_sha256": "c1d8f8d5eacea858ed43827b78cd7dbcd5729e470a937bfdc0c2b7e5b1caac65",
+          "count": 16,
+          "argv_sha256": "1b95853859a8fada526562145ffed9cd6d68497f23dcf0a42178690ae5d37693",
+          "hostcheck_sha256": "d5a5e8e5f3a0113a1b04444a0c733cac0e874748ef07d08e6875278924d8083b"
+        },
+        {
+          "runner": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-02-runner-0045/device-official-cts.py",
+          "sha256": "10eb35dbeac973de55a2bead791e948e7a72e17266b8d902d5e78bda2067cb50",
+          "inventory_sha256": "3e6b2cea053478ba42f12a3581bd3735278a6120968621beec21da501cddcf89",
+          "count": 16,
+          "argv_sha256": "fc08ecdafd63c40e342345e8b20c6cd0de01b31e587e9e6bc7e2758c7c3228d9",
+          "hostcheck_sha256": "5b2cd821252d981fd922d4519dd8c8cd9eb4e4ddb610a0a68824b31cda4444f2"
+        },
+        {
+          "runner": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-03-runner-0045/device-official-cts.py",
+          "sha256": "8c29c80e9452497cbbd9bfe334e18a7931c7f8ac008eb615496f6a41f7e251e5",
+          "inventory_sha256": "74b19c03a468cb3e318ee312e8f525d2b6611c987afabe5a544057051cc46c42",
+          "count": 16,
+          "argv_sha256": "a26797ec2bcc9f99456e8dbab68404944936a69ccabf10b666952bfcd01519a3",
+          "hostcheck_sha256": "bbbbaf272aa489f63d581468fb9a1278e465d78945e69b1de2f9b86ab925a119"
+        },
+        {
+          "runner": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-04-runner-0045/device-official-cts.py",
+          "sha256": "a21c8b64e537c59923ea4faa6de32e3a718c24408c822bb9d9de0dbdede55a9c",
+          "inventory_sha256": "8246dc9a28a523d7e95ee22fa1180527265a6032f9e558229b64aebc91b3e99e",
+          "count": 16,
+          "argv_sha256": "7dea0e5a9d42f6f70df92d34bfe7a0a40fd6f6a0ee598c64849f8f112e1b57e9",
+          "hostcheck_sha256": "3c8978b39fbf337f9b0b3910b969b87bf77d0b327175349de80cee120f8a748d"
+        }
+      ],
+      "conditions": [
+        "Owner completes current modified robustness scope/campaign and clean drain before restoring original0e715 per verified archive manifest.",
+        "Existing reuse path fororiginalCTS must be restored/verified by original strictsource/inode/headroom preflight beforelaunch; no missing-path bypass.",
+        "Independent source counterpart and alloriginal admission gates still apply; no actualoutcome inferred."
+      ]
+    }
+  },
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-binding-offset-next-0045/actual-review.json",
+      "bytes": 86107,
+      "sha256": "55ff6189a532c80ba386c8d6c5ca096ffbfaa6a3f60ce4efce47b14ca72a2d91"
+    },
+    "result": {
+      "status": "PASS independent original binding-offset88 actual review",
+      "source_plan_sha256": "afbc204a13cf2d6afc826cef9a29c627285039c8c3757ebe7e25b646e07f0334",
+      "source_counterpart_sha256": "5292cb67c308356c00cefcbb7dea0d94e1d3b2b56cff926765ee3bd7afdbf0a2",
+      "runner_counterpart_sha256": "ae2d1a820295eccaee1709e388e658365bbfbd02c95f40a00560b05151f4a03b",
+      "fraction": {
+        "passed": 88,
+        "selected_applicable_cases": 88,
+        "percentage": 100.0,
+        "scope": "These complete24core nonzero-bind fill/update and64indirect-offset registrations only; not allbinding/memory/Vulkan conformance."
+      },
+      "totals": {
+        "unique_original_qpa_pass": 88,
+        "transfer_profiles": 24,
+        "transfer_written_bytes": 4784,
+        "exact_logical_byte_comparisons": 6168,
+        "compute_dispatches": 64,
+        "compute_invocations": 4096,
+        "exact_u32_comparisons": 4096,
+        "actual_indirect_nonzero_binding_cases": 56,
+        "indirect_zero_binding_controls": 8,
+        "physical_chunks": 88,
+        "physical_submits": 88,
+        "nonzero_profile_results": 0
+      },
+      "scopes": [
+        {
+          "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-binding-offset-00/probe",
+          "run_log_sha256": "9793e717ee4d1e12277dcfd58b49fd09cb7edb4bef4729a5fa844c65d0ef40ff",
+          "runner_result_sha256": "540d3442ff09af47fb3757ee61f563e156fcb6ef50ba745ec0dd3dd2a524b095",
+          "qpa_sha256": "efb428ffc14b1779fa0d5738e23e43ac92b0a2b2a5cc8c3776a4a918deac9e25",
+          "count": 24,
+          "service_seconds": 8.745,
+          "peak_mib": 19.7,
+          "swap_bytes": 0,
+          "clean_collection_faults_services": true,
+          "cases": [
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_whole",
+              "qpa_sha256": "60422fb0446b635303a7460d48d718e430aeea677b09d7e7610c6820d4a312ea",
+              "status": "Pass",
+              "detail": "Fill and Update Buffer test",
+              "profile": {
+                "type": "2",
+                "bytes": "256",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3728913",
+                "submit_ns": "3511205",
+                "submit_max_ns": "3511205",
+                "result": "0"
+              },
+              "logical_bytes_compared": 256,
+              "binding_offset_source_inferred": 256
+            },
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.update_buffer_whole",
+              "qpa_sha256": "2f5984c64f5ad9d0ba06dc5499dca408a8751280816833e8383b2cef35dc013a",
+              "status": "Pass",
+              "detail": "Fill and Update Buffer test",
+              "profile": {
+                "type": "3",
+                "bytes": "256",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4015424",
+                "submit_ns": "3783497",
+                "submit_max_ns": "3783497",
+                "result": "0"
+              },
+              "logical_bytes_compared": 256,
+              "binding_offset_source_inferred": 256
+            },
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_first_one",
+              "qpa_sha256": "88ce478e2e365aa47012699e3d435d0665bcebdbdea31fdb8652c048948df71e",
+              "status": "Pass",
+              "detail": "Fill and Update Buffer test",
+              "profile": {
+                "type": "2",
+                "bytes": "4",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3988602",
+                "submit_ns": "3755581",
+                "submit_max_ns": "3755581",
+                "result": "0"
+              },
+              "logical_bytes_compared": 256,
+              "binding_offset_source_inferred": 256
+            },
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.update_buffer_first_one",
+              "qpa_sha256": "dccb1c14872cda7a7ba0806908ec98fc17c401d6ae6b319cf4e23582ad5ec122",
+              "status": "Pass",
+              "detail": "Fill and Update Buffer test",
+              "profile": {
+                "type": "3",
+                "bytes": "4",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3921465",
+                "submit_ns": "3571049",
+                "submit_max_ns": "3571049",
+                "result": "0"
+              },
+              "logical_bytes_compared": 256,
+              "binding_offset_source_inferred": 256
+            },
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_second_one",
+              "qpa_sha256": "72bb301663c3872a582cc6bea23e2112b30d3e0307b1464c303156fec0dee953",
+              "status": "Pass",
+              "detail": "Fill and Update Buffer test",
+              "profile": {
+                "type": "2",
+                "bytes": "4",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4043185",
+                "submit_ns": "3818549",
+                "submit_max_ns": "3818549",
+                "result": "0"
+              },
+              "logical_bytes_compared": 256,
+              "binding_offset_source_inferred": 256
+            },
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.update_buffer_second_one",
+              "qpa_sha256": "d9549d9b5b287daf24e34c546aa2c6881faac7c026a9d8e80a769e2ef20e0c02",
+              "status": "Pass",
+              "detail": "Fill and Update Buffer test",
+              "profile": {
+                "type": "3",
+                "bytes": "4",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3577559",
+                "submit_ns": "3378131",
+                "submit_max_ns": "3378131",
+                "result": "0"
+              },
+              "logical_bytes_compared": 256,
+              "binding_offset_source_inferred": 256
+            },
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_second_part",
+              "qpa_sha256": "3087da732f3e63ee1cf3ce5403ad0fa516a9bf2c4902f15a02cfa2f498ffb348",
+              "status": "Pass",
+              "detail": "Fill and Update Buffer test",
+              "profile": {
+                "type": "2",
+                "bytes": "128",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3857611",
+                "submit_ns": "3649330",
+                "submit_max_ns": "3649330",
+                "result": "0"
+              },
+              "logical_bytes_compared": 256,
+              "binding_offset_source_inferred": 256
+            },
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.update_buffer_second_part",
+              "qpa_sha256": "13b703d73609a9316265d535b96011f35f16b046a6fb4828cc913638f7bf357f",
+              "status": "Pass",
+              "detail": "Fill and Update Buffer test",
+              "profile": {
+                "type": "3",
+                "bytes": "128",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3996935",
+                "submit_ns": "3783496",
+                "submit_max_ns": "3783496",
+                "result": "0"
+              },
+              "logical_bytes_compared": 256,
+              "binding_offset_source_inferred": 256
+            },
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_0_extra_bytes_offset_0",
+              "qpa_sha256": "add1143f07fa6c3f63fc8ca5496b0e8ddf090555e80a008f958b95bee940ff4d",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "type": "2",
+                "bytes": "256",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3825528",
+                "submit_ns": "3613496",
+                "submit_max_ns": "3613496",
+                "result": "0"
+              },
+              "logical_bytes_compared": 256,
+              "binding_offset_source_inferred": 256
+            },
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_0_extra_bytes_offset_4",
+              "qpa_sha256": "c65a7191c1350fba0bbb9846fd6d77c20a8487f04030f19b08abdabdea64dcfb",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "type": "2",
+                "bytes": "252",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4041831",
+                "submit_ns": "3844591",
+                "submit_max_ns": "3844591",
+                "result": "0"
+              },
+              "logical_bytes_compared": 256,
+              "binding_offset_source_inferred": 256
+            },
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_0_extra_bytes_offset_8",
+              "qpa_sha256": "35acdbcdca179760f23834a378c0be6cbe476de3ba671f37ffcddd17f856f6eb",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "type": "2",
+                "bytes": "248",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3493548",
+                "submit_ns": "3286464",
+                "submit_max_ns": "3286464",
+                "result": "0"
+              },
+              "logical_bytes_compared": 256,
+              "binding_offset_source_inferred": 256
+            },
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_0_extra_bytes_offset_12",
+              "qpa_sha256": "d4a0d2668da57027f615a372c8c6f250873cbf21525558703dcb515571d55c82",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "type": "2",
+                "bytes": "244",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4213654",
+                "submit_ns": "3939852",
+                "submit_max_ns": "3939852",
+                "result": "0"
+              },
+              "logical_bytes_compared": 256,
+              "binding_offset_source_inferred": 256
+            },
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_1_extra_bytes_offset_0",
+              "qpa_sha256": "84ced2b46217828be141c7748cfad5b817b12b4fce24c3c9c1ff6478604a191e",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "type": "2",
+                "bytes": "256",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3954018",
+                "submit_ns": "3725789",
+                "submit_max_ns": "3725789",
+                "result": "0"
+              },
+              "logical_bytes_compared": 257,
+              "binding_offset_source_inferred": 320
+            },
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_1_extra_bytes_offset_4",
+              "qpa_sha256": "6773c4d624f2237ec297875fe71cd06126e5daaf97a4784ecc4d11ae8fa8036c",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "type": "2",
+                "bytes": "252",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3376985",
+                "submit_ns": "3144850",
+                "submit_max_ns": "3144850",
+                "result": "0"
+              },
+              "logical_bytes_compared": 257,
+              "binding_offset_source_inferred": 320
+            },
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_1_extra_bytes_offset_8",
+              "qpa_sha256": "9ed197aa8bde49d6c62290c8e1aac2bd5129931891be7d7a3b233b8805845a13",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "type": "2",
+                "bytes": "248",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4111258",
+                "submit_ns": "3877612",
+                "submit_max_ns": "3877612",
+                "result": "0"
+              },
+              "logical_bytes_compared": 257,
+              "binding_offset_source_inferred": 320
+            },
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_1_extra_bytes_offset_12",
+              "qpa_sha256": "baa48a2b4fc565759b83f31c454e8b08c78e585d95ace41fcc45ac556df21754",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "type": "2",
+                "bytes": "244",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3667142",
+                "submit_ns": "3433913",
+                "submit_max_ns": "3433913",
+                "result": "0"
+              },
+              "logical_bytes_compared": 257,
+              "binding_offset_source_inferred": 320
+            },
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_2_extra_bytes_offset_0",
+              "qpa_sha256": "563a00943a3f11bd586072bde5abe281a7b08d67b893477bac565f9a3f549633",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "type": "2",
+                "bytes": "256",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4240164",
+                "submit_ns": "3663705",
+                "submit_max_ns": "3663705",
+                "result": "0"
+              },
+              "logical_bytes_compared": 258,
+              "binding_offset_source_inferred": 320
+            },
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_2_extra_bytes_offset_4",
+              "qpa_sha256": "2a65a2f2072e250889b89222e3bfc8587c5d716c86b33dd069a65ea134e893de",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "type": "2",
+                "bytes": "252",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4117039",
+                "submit_ns": "3897507",
+                "submit_max_ns": "3897507",
+                "result": "0"
+              },
+              "logical_bytes_compared": 258,
+              "binding_offset_source_inferred": 320
+            },
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_2_extra_bytes_offset_8",
+              "qpa_sha256": "24d3a4cd29d0b49f4247f52b92b7ba5ddfdfc8c7b1b8175346694944436f1ff5",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "type": "2",
+                "bytes": "248",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3466985",
+                "submit_ns": "3232975",
+                "submit_max_ns": "3232975",
+                "result": "0"
+              },
+              "logical_bytes_compared": 258,
+              "binding_offset_source_inferred": 320
+            },
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_2_extra_bytes_offset_12",
+              "qpa_sha256": "fc721c62aeea1c7b4a06c6a9be02925f6b5bdbdcaea0ae836e5fe21d97b7bee1",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "type": "2",
+                "bytes": "244",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4034487",
+                "submit_ns": "3785268",
+                "submit_max_ns": "3785268",
+                "result": "0"
+              },
+              "logical_bytes_compared": 258,
+              "binding_offset_source_inferred": 320
+            },
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_3_extra_bytes_offset_0",
+              "qpa_sha256": "8d94b91d503fef270b7e4b8d48408d7edc232b99c7d1f5550d367053099ddc86",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "type": "2",
+                "bytes": "256",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4036310",
+                "submit_ns": "3829435",
+                "submit_max_ns": "3829435",
+                "result": "0"
+              },
+              "logical_bytes_compared": 259,
+              "binding_offset_source_inferred": 320
+            },
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_3_extra_bytes_offset_4",
+              "qpa_sha256": "e1c045a7294ba39f3a01e00797bab7e1ec0c305bc6ecb35acbfd613a41595e42",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "type": "2",
+                "bytes": "252",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4146987",
+                "submit_ns": "3929904",
+                "submit_max_ns": "3929904",
+                "result": "0"
+              },
+              "logical_bytes_compared": 259,
+              "binding_offset_source_inferred": 320
+            },
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_3_extra_bytes_offset_8",
+              "qpa_sha256": "c9e6911663e860ac5256f2cd48a77bcb423d6044aab1282217fca0f5deb6cb73",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "type": "2",
+                "bytes": "248",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3930320",
+                "submit_ns": "3691465",
+                "submit_max_ns": "3691465",
+                "result": "0"
+              },
+              "logical_bytes_compared": 259,
+              "binding_offset_source_inferred": 320
+            },
+            {
+              "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_3_extra_bytes_offset_12",
+              "qpa_sha256": "d6ff465f627346d83b25403d9a74565c6cb78426349cec48f2c6074c66556197",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "type": "2",
+                "bytes": "244",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4047664",
+                "submit_ns": "3806414",
+                "submit_max_ns": "3806414",
+                "result": "0"
+              },
+              "logical_bytes_compared": 259,
+              "binding_offset_source_inferred": 320
+            }
+          ]
+        },
+        {
+          "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-binding-offset-01/probe",
+          "run_log_sha256": "4c016ac6a008302272baadc72e99a4dc6836d7a8660e9cd9c019ab112586b43e",
+          "runner_result_sha256": "8a4eca5c80634a5d3631a636fd8d7aa8dc3ecfddb358fb08b40117510c36c8f3",
+          "qpa_sha256": "27bacb1cc2245f65c94581e27323e78ebae0a51b44edfe4dedfb9eb04078caaf",
+          "count": 16,
+          "service_seconds": 15.522,
+          "peak_mib": 63.3,
+          "swap_bytes": 0,
+          "clean_collection_faults_services": true,
+          "cases": [
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_0_0",
+              "qpa_sha256": "25a4de4a6931e84951e76d3e216a365fd631638ca1145026c4f348ed15cb3718",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaab245d0920",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3938705",
+                "submit_ns": "3592559",
+                "submit_max_ns": "3592559",
+                "result": "0"
+              },
+              "requested_binding_offset": 0,
+              "actual_binding_offset": 0,
+              "indirect_command_offset": 0,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_0_4",
+              "qpa_sha256": "79d733dc9510a0139e3eeea7766c3eb9c58f4263a7db32fb765563ee17b562ba",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaac7ea0900",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3620579",
+                "submit_ns": "3321048",
+                "submit_max_ns": "3321048",
+                "result": "0"
+              },
+              "requested_binding_offset": 0,
+              "actual_binding_offset": 0,
+              "indirect_command_offset": 4,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_0_8",
+              "qpa_sha256": "210c4b56bfeaf32c864b45cf2cf66d0b23b5c8af7fe915de18d67de54883b514",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaad3c0d920",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4042352",
+                "submit_ns": "3557872",
+                "submit_max_ns": "3557872",
+                "result": "0"
+              },
+              "requested_binding_offset": 0,
+              "actual_binding_offset": 0,
+              "indirect_command_offset": 8,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_0_12",
+              "qpa_sha256": "0627917d611fcf758bad65839bb97a6f0ab41d14f50723e0d4cbd757e96a1936",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaab02fc46f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3943705",
+                "submit_ns": "3655996",
+                "submit_max_ns": "3655996",
+                "result": "0"
+              },
+              "requested_binding_offset": 0,
+              "actual_binding_offset": 0,
+              "indirect_command_offset": 12,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_0_16",
+              "qpa_sha256": "ee011bdd09bf368941c9ef92b48c5a64c904fe2acd5fb2338d7dc351535bbeb5",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaae45f96d0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4127820",
+                "submit_ns": "3854851",
+                "submit_max_ns": "3854851",
+                "result": "0"
+              },
+              "requested_binding_offset": 0,
+              "actual_binding_offset": 0,
+              "indirect_command_offset": 16,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_0_20",
+              "qpa_sha256": "e807f8eb32211d8540c95eed6aec2f26a15fb2250808081631252376dfdbbede",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaab179e46b0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3800736",
+                "submit_ns": "3521725",
+                "submit_max_ns": "3521725",
+                "result": "0"
+              },
+              "requested_binding_offset": 0,
+              "actual_binding_offset": 0,
+              "indirect_command_offset": 20,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_0_24",
+              "qpa_sha256": "1e07215ee7a143a46ed37bf1ef9cdad663b2c5a0e2a9b9dbe71830d84c72da7e",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaacda446f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3571309",
+                "submit_ns": "3273860",
+                "submit_max_ns": "3273860",
+                "result": "0"
+              },
+              "requested_binding_offset": 0,
+              "actual_binding_offset": 0,
+              "indirect_command_offset": 24,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_0_28",
+              "qpa_sha256": "011e878ece9307584f56fef3c3791b4c2619243f716af2834575dc781d6ef0e6",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaab2004c6f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3574486",
+                "submit_ns": "3285475",
+                "submit_max_ns": "3285475",
+                "result": "0"
+              },
+              "requested_binding_offset": 0,
+              "actual_binding_offset": 0,
+              "indirect_command_offset": 28,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_4_0",
+              "qpa_sha256": "4b2cd4718511ac8bde3b5f3c7b2a95780633d051d82a38557ceeae08146fc45b",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaae7e4e900",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4030008",
+                "submit_ns": "3729695",
+                "submit_max_ns": "3729695",
+                "result": "0"
+              },
+              "requested_binding_offset": 4,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 0,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_4_4",
+              "qpa_sha256": "dee037dfc168cebd88ffc3c8845ccf39dab6cfe22cf299b4e03e0552701270ba",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaac287a900",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4116258",
+                "submit_ns": "3813288",
+                "submit_max_ns": "3813288",
+                "result": "0"
+              },
+              "requested_binding_offset": 4,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 4,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_4_8",
+              "qpa_sha256": "6bf74beab1f2fc3160d5f92a9508ddff4a0b6d1549779a65e987205ab850c907",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaaeae216d0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4249435",
+                "submit_ns": "3955111",
+                "submit_max_ns": "3955111",
+                "result": "0"
+              },
+              "requested_binding_offset": 4,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 8,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_4_12",
+              "qpa_sha256": "337fc100b0ef82efddc6672dafb6a7df4aba3069bc6bcaf9c12ba31286d60333",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaaf0c176f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3463079",
+                "submit_ns": "3147974",
+                "submit_max_ns": "3147974",
+                "result": "0"
+              },
+              "requested_binding_offset": 4,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 12,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_4_16",
+              "qpa_sha256": "900526cee2ef24938a210078c4319e1297d8b2e60ab53e7fcbc64123ff99fbab",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaab093a26f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3987612",
+                "submit_ns": "3713496",
+                "submit_max_ns": "3713496",
+                "result": "0"
+              },
+              "requested_binding_offset": 4,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 16,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_4_20",
+              "qpa_sha256": "1eca327209f630635ecbd805056ae090e225f71164863fcad371f0265fc2c24a",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaab24a346f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3645528",
+                "submit_ns": "3375162",
+                "submit_max_ns": "3375162",
+                "result": "0"
+              },
+              "requested_binding_offset": 4,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 20,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_4_24",
+              "qpa_sha256": "97d8a8a0dfcbb784c2d7cd250f9eaf53bca8488557cc5e7187d48aab1e1c650e",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaad60026f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4138081",
+                "submit_ns": "3838237",
+                "submit_max_ns": "3838237",
+                "result": "0"
+              },
+              "requested_binding_offset": 4,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 24,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_4_28",
+              "qpa_sha256": "9492845321fa54d9bbede107c3293fb7ae7dae21e8061dedead635a876a72d54",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaaf12256f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3869435",
+                "submit_ns": "3463548",
+                "submit_max_ns": "3463548",
+                "result": "0"
+              },
+              "requested_binding_offset": 4,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 28,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            }
+          ]
+        },
+        {
+          "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-binding-offset-02/probe",
+          "run_log_sha256": "95cb1d44fa0bb8625f77d23122c224d26cb950add1dccaf5ca38354c65619530",
+          "runner_result_sha256": "f7a86da2289a0195de2ab15fda5f1d6ecc3331b62994d1ffd8c563393a18626e",
+          "qpa_sha256": "3bd6492b97e7ea9f3fd9b9b7b38a7cc5a896847e016786f485e5f59dacaf87ff",
+          "count": 16,
+          "service_seconds": 15.495,
+          "peak_mib": 62.9,
+          "swap_bytes": 0,
+          "clean_collection_faults_services": true,
+          "cases": [
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_8_0",
+              "qpa_sha256": "54d5b6e5e73fb98d12e994b5e8094bda5f237a3a2ef418a16464d7ec526628f5",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaab18434920",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3687298",
+                "submit_ns": "3369694",
+                "submit_max_ns": "3369694",
+                "result": "0"
+              },
+              "requested_binding_offset": 8,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 0,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_8_4",
+              "qpa_sha256": "91b512fa0a044b3c57c06c4454feeed39d3f7fb6609dd595d7adbef5e0470525",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaab00445900",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4131049",
+                "submit_ns": "3831830",
+                "submit_max_ns": "3831830",
+                "result": "0"
+              },
+              "requested_binding_offset": 8,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 4,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_8_8",
+              "qpa_sha256": "c3ae9ceecdca9310532f704a358bda10d3f654168f81738af8589cbf1f84467f",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaae9c44900",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3930685",
+                "submit_ns": "3645267",
+                "submit_max_ns": "3645267",
+                "result": "0"
+              },
+              "requested_binding_offset": 8,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 8,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_8_12",
+              "qpa_sha256": "d4a1f69774bb69ba7d5ab2923acf6eb89dfa7a7491bb7162e3970b172a5f5877",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaad7c556d0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3976726",
+                "submit_ns": "3707768",
+                "submit_max_ns": "3707768",
+                "result": "0"
+              },
+              "requested_binding_offset": 8,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 12,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_8_16",
+              "qpa_sha256": "ad9eaf404c55878bcf9d96ac60537c681bfadc2ea9d65a727d7085f4ae76a4c4",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaacf999550",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4089435",
+                "submit_ns": "3804226",
+                "submit_max_ns": "3804226",
+                "result": "0"
+              },
+              "requested_binding_offset": 8,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 16,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_8_20",
+              "qpa_sha256": "393fdf86d934ab07d201e4142715de0aef3fbb7038815840a9e04f74f8461f86",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaafc5a26f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3570006",
+                "submit_ns": "3293132",
+                "submit_max_ns": "3293132",
+                "result": "0"
+              },
+              "requested_binding_offset": 8,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 20,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_8_24",
+              "qpa_sha256": "b636449cbc0369d88b5128ba606f5d89a79da88fff7b226e98660a47dee276bd",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaaf47db6f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4229071",
+                "submit_ns": "3880164",
+                "submit_max_ns": "3880164",
+                "result": "0"
+              },
+              "requested_binding_offset": 8,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 24,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_8_28",
+              "qpa_sha256": "efa1d34ffdcf35f788226ee6ee63be03d6249f778e59ec010a229da722a8898b",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaad2e5a6f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4179071",
+                "submit_ns": "3887976",
+                "submit_max_ns": "3887976",
+                "result": "0"
+              },
+              "requested_binding_offset": 8,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 28,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_12_0",
+              "qpa_sha256": "a32f690a4322dc04b5fb21ded23737fce2551957a5bf112d43eff6d226452f7a",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaad70416d0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4241049",
+                "submit_ns": "3971934",
+                "submit_max_ns": "3971934",
+                "result": "0"
+              },
+              "requested_binding_offset": 12,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 0,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_12_4",
+              "qpa_sha256": "e8b4815efe2a805fe27793227f38081d274af17a8a9956a230664e54f6f27989",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaab0f9c16f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4352561",
+                "submit_ns": "3973758",
+                "submit_max_ns": "3973758",
+                "result": "0"
+              },
+              "requested_binding_offset": 12,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 4,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_12_8",
+              "qpa_sha256": "4d398507ca830906fc2622c6b98267a2eaea752ef0de8e06db89be0d12c07f82",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaab00e2f6d0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3985373",
+                "submit_ns": "3666622",
+                "submit_max_ns": "3666622",
+                "result": "0"
+              },
+              "requested_binding_offset": 12,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 8,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_12_12",
+              "qpa_sha256": "6e89fb2bb08006a1cd1cb4c229033a4d8e1aea0d149ca3246aaba500a5564b2b",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaafe1cf550",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3785163",
+                "submit_ns": "3502768",
+                "submit_max_ns": "3502768",
+                "result": "0"
+              },
+              "requested_binding_offset": 12,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 12,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_12_16",
+              "qpa_sha256": "1c74ee5c25bc0720981ae01b7143fb0f793fc902741be697c6f0c57be3747d47",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaaee03c6d0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4159226",
+                "submit_ns": "3879331",
+                "submit_max_ns": "3879331",
+                "result": "0"
+              },
+              "requested_binding_offset": 12,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 16,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_12_20",
+              "qpa_sha256": "18181ef5e76262321755510e3159e6bdf90ee98a8f3ab506ad3a0ce5a35ea505",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaade8166d0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3843288",
+                "submit_ns": "3532507",
+                "submit_max_ns": "3532507",
+                "result": "0"
+              },
+              "requested_binding_offset": 12,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 20,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_12_24",
+              "qpa_sha256": "8cd9dc63d6705af67fc9d50aebf37112836355a53d6f1856da84b28de8c249e3",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaae97bc550",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3630840",
+                "submit_ns": "3286933",
+                "submit_max_ns": "3286933",
+                "result": "0"
+              },
+              "requested_binding_offset": 12,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 24,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_12_28",
+              "qpa_sha256": "d542e53cb45db777f67aeded1c4bb850a0e03e40f3d2e707668efa3ade29879b",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaac71c26f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4298394",
+                "submit_ns": "3987768",
+                "submit_max_ns": "3987768",
+                "result": "0"
+              },
+              "requested_binding_offset": 12,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 28,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            }
+          ]
+        },
+        {
+          "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-binding-offset-03/probe",
+          "run_log_sha256": "716e673459adad54ee8539b51e8c397584219a8fc2c44bff8b75b2f9ed258acd",
+          "runner_result_sha256": "cb9dd1b81e2255be274f96b743df11aa45bc1c9815a4e60366dab79291dcb3e7",
+          "qpa_sha256": "a84d2a174b8a4dfc78159cca30ee9707b9b1e6f8071e60893fa8a7b032e644be",
+          "count": 16,
+          "service_seconds": 15.532,
+          "peak_mib": 63.1,
+          "swap_bytes": 0,
+          "clean_collection_faults_services": true,
+          "cases": [
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_16_0",
+              "qpa_sha256": "09bc3c27c45a64464699efa9c92d34f91e09093ea6490c7c50de0daedbded9c2",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaaecc486d0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4121310",
+                "submit_ns": "3808914",
+                "submit_max_ns": "3808914",
+                "result": "0"
+              },
+              "requested_binding_offset": 16,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 0,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_16_4",
+              "qpa_sha256": "20417f24730833158be997cfcbc432e4f730a060473a9a3812d8437a8353db6b",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaac2a786d0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4301779",
+                "submit_ns": "3796674",
+                "submit_max_ns": "3796674",
+                "result": "0"
+              },
+              "requested_binding_offset": 16,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 4,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_16_8",
+              "qpa_sha256": "e48e1289335d84896b003a9f96672924d1b2095bb42601c335e233ee5b9ab1bc",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaad44626d0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4154435",
+                "submit_ns": "3882299",
+                "submit_max_ns": "3882299",
+                "result": "0"
+              },
+              "requested_binding_offset": 16,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 8,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_16_12",
+              "qpa_sha256": "505414a983e47054c38e750fb2ec8c760e8b4f95f482821e7170c37eeddf5fbf",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaad46146d0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4330946",
+                "submit_ns": "3930268",
+                "submit_max_ns": "3930268",
+                "result": "0"
+              },
+              "requested_binding_offset": 16,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 12,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_16_16",
+              "qpa_sha256": "9f0f9ef7ca748ef7efa8290613bc8faffe08d59482453f48df7eb719842dddd6",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaad5c366d0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4167821",
+                "submit_ns": "3849695",
+                "submit_max_ns": "3849695",
+                "result": "0"
+              },
+              "requested_binding_offset": 16,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 16,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_16_20",
+              "qpa_sha256": "6905f10f688579fb24c8c9e6da25824e02ba0c5c176a91aab75a66e750d75595",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaade9c56f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3901049",
+                "submit_ns": "3563079",
+                "submit_max_ns": "3563079",
+                "result": "0"
+              },
+              "requested_binding_offset": 16,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 20,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_16_24",
+              "qpa_sha256": "4d3e5443f219f44b2c67b157738a547e056b676c9fe39f4e885554670bee0ee2",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaab0384a6d0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4283185",
+                "submit_ns": "3946517",
+                "submit_max_ns": "3946517",
+                "result": "0"
+              },
+              "requested_binding_offset": 16,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 24,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_16_28",
+              "qpa_sha256": "1545c42532690f7bf30e8f0e535f95b78d05a200ad7908bb0080b607cd71fca5",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaab0b7be6f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4464905",
+                "submit_ns": "3955737",
+                "submit_max_ns": "3955737",
+                "result": "0"
+              },
+              "requested_binding_offset": 16,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 28,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_20_0",
+              "qpa_sha256": "31de118679594a8706689edcc6cdade5b9f2f15874f06def6814934fe538258e",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaab0b2096f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "7492567",
+                "submit_ns": "7189805",
+                "submit_max_ns": "7189805",
+                "result": "0"
+              },
+              "requested_binding_offset": 20,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 0,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_20_4",
+              "qpa_sha256": "88d9618a61549c9fd1a824144683a1123f8ecdb8bb4a2691b4a73d9012ad6504",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaacc22e6f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3587038",
+                "submit_ns": "3157038",
+                "submit_max_ns": "3157038",
+                "result": "0"
+              },
+              "requested_binding_offset": 20,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 4,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_20_8",
+              "qpa_sha256": "bc6dbe66c7b401256c5b5a750dfd1dd7a47d132c4bef1133751ad655f3c53f21",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaadb7d66f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4064852",
+                "submit_ns": "3741934",
+                "submit_max_ns": "3741934",
+                "result": "0"
+              },
+              "requested_binding_offset": 20,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 8,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_20_12",
+              "qpa_sha256": "378ce9f0d1e85bd10715d326595f36b50e6708245b315e6d7140200a799b284a",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaab03dc76f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4088341",
+                "submit_ns": "3799851",
+                "submit_max_ns": "3799851",
+                "result": "0"
+              },
+              "requested_binding_offset": 20,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 12,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_20_16",
+              "qpa_sha256": "910dddd13b7db5c82b7d98af862c3e73af37c851cc9c336721264831a1fd205d",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaab0d7cc550",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4128341",
+                "submit_ns": "3824226",
+                "submit_max_ns": "3824226",
+                "result": "0"
+              },
+              "requested_binding_offset": 20,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 16,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_20_20",
+              "qpa_sha256": "c971a8dbb468905d912cdaaa29337d7c9202b9cef26e7f300234b463d98d51f7",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaab0ec0c6d0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4128810",
+                "submit_ns": "3815633",
+                "submit_max_ns": "3815633",
+                "result": "0"
+              },
+              "requested_binding_offset": 20,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 20,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_20_24",
+              "qpa_sha256": "09c5d2d7908fac5f0f79b435a0c5c5a29ee8ee311cc6ee8bdf923b5f62a50b17",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaae14496d0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3708809",
+                "submit_ns": "3402610",
+                "submit_max_ns": "3402610",
+                "result": "0"
+              },
+              "requested_binding_offset": 20,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 24,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_20_28",
+              "qpa_sha256": "fa58ccaed4a51d48a32ab511aca25bae6ebc10ea7ad4fbeaba2147cb326fcc0b",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaaccdef6f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3591101",
+                "submit_ns": "3326516",
+                "submit_max_ns": "3326516",
+                "result": "0"
+              },
+              "requested_binding_offset": 20,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 28,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            }
+          ]
+        },
+        {
+          "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-binding-offset-04/probe",
+          "run_log_sha256": "f8b29b9daef081e23d839a058b1d2a99e869055509570c80525bcafb267a78fe",
+          "runner_result_sha256": "4aab83878a1c4bdc822d1801c039b0de091ba5d60e9eea26f8ed95785cda347d",
+          "qpa_sha256": "cc93378374529094b19ec6d188c0b150ee4700fb430216d02e53b497d236154c",
+          "count": 16,
+          "service_seconds": 15.516,
+          "peak_mib": 62.6,
+          "swap_bytes": 0,
+          "clean_collection_faults_services": true,
+          "cases": [
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_24_0",
+              "qpa_sha256": "c07bcb8b78428866b42f59dd7641af2da33000d569c4d0cecefa7645e71f8db9",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaad66276d0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4142352",
+                "submit_ns": "3823497",
+                "submit_max_ns": "3823497",
+                "result": "0"
+              },
+              "requested_binding_offset": 24,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 0,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_24_4",
+              "qpa_sha256": "825dc286473b1fdfc5b37432bd67f8a5da98005e4a55733ea963be22494bfff5",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaaf023c6f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3767716",
+                "submit_ns": "3432038",
+                "submit_max_ns": "3432038",
+                "result": "0"
+              },
+              "requested_binding_offset": 24,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 4,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_24_8",
+              "qpa_sha256": "ce5454d0653cab24969b6a16378ada4bdb432bf72f4a3f643dc733967f74bf3b",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaab015a86f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4029591",
+                "submit_ns": "3692663",
+                "submit_max_ns": "3692663",
+                "result": "0"
+              },
+              "requested_binding_offset": 24,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 8,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_24_12",
+              "qpa_sha256": "15a890601ef2103e6c5a3cfe8b38e6533883649d060d2e389e879dce20a613ad",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaaf1fcf550",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4118653",
+                "submit_ns": "3613705",
+                "submit_max_ns": "3613705",
+                "result": "0"
+              },
+              "requested_binding_offset": 24,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 12,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_24_16",
+              "qpa_sha256": "c28297ef068b68b027dadf318e7141274758c649c89475ccbb303a6a9e26b629",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaaf5598550",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3667768",
+                "submit_ns": "3365996",
+                "submit_max_ns": "3365996",
+                "result": "0"
+              },
+              "requested_binding_offset": 24,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 16,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_24_20",
+              "qpa_sha256": "3b6240104d4b4899ce36676a91823a057ebcf22bc2d600b33613b3af32c267aa",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaab0e9c36f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4145060",
+                "submit_ns": "3872039",
+                "submit_max_ns": "3872039",
+                "result": "0"
+              },
+              "requested_binding_offset": 24,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 20,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_24_24",
+              "qpa_sha256": "62281ebb6062c0582a338acc093b62810805eb61f988f8ff7f3e8cc6e291231e",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaaffe566d0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3665684",
+                "submit_ns": "3393965",
+                "submit_max_ns": "3393965",
+                "result": "0"
+              },
+              "requested_binding_offset": 24,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 24,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_24_28",
+              "qpa_sha256": "f49b79b901d5883eac7b5f170e1bfa903c7f99a6e12d40a15d7cba725cdf6788",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaab132ad6d0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3875372",
+                "submit_ns": "3579486",
+                "submit_max_ns": "3579486",
+                "result": "0"
+              },
+              "requested_binding_offset": 24,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 28,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_28_0",
+              "qpa_sha256": "2d55d7a41f940f6aff761163be93c0bdeee01ffa8501df34b99fed82dc82bcda",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaac9db0550",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4467248",
+                "submit_ns": "4163497",
+                "submit_max_ns": "4163497",
+                "result": "0"
+              },
+              "requested_binding_offset": 28,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 0,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_28_4",
+              "qpa_sha256": "4a7ab1bcc648f1be4291bb13086c995847c56bbe6041362b64ca4de61daa3f4e",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaab011bb6f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4096310",
+                "submit_ns": "3812716",
+                "submit_max_ns": "3812716",
+                "result": "0"
+              },
+              "requested_binding_offset": 28,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 4,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_28_8",
+              "qpa_sha256": "93ecc690f18ae50b5ed27f38a839b08b1079ac0cbf073b5510359b538e49155a",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaadb4136f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4318237",
+                "submit_ns": "3956049",
+                "submit_max_ns": "3956049",
+                "result": "0"
+              },
+              "requested_binding_offset": 28,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 8,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_28_12",
+              "qpa_sha256": "c7006c8f74049c8140aa6695a45b6352d5f82fb222f9eb4a95c44c4a2a6b884d",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaab03e966d0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "3985163",
+                "submit_ns": "3698132",
+                "submit_max_ns": "3698132",
+                "result": "0"
+              },
+              "requested_binding_offset": 28,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 12,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_28_16",
+              "qpa_sha256": "db8f6b262a7f32faf39b74a88a6825b5164358bc86e640d6d125bea1200f9e05",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaad23c4550",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4115790",
+                "submit_ns": "3720944",
+                "submit_max_ns": "3720944",
+                "result": "0"
+              },
+              "requested_binding_offset": 28,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 16,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_28_20",
+              "qpa_sha256": "3d669ace79ed642fcdef06ff4d252b5d4cbbc1a7afa76d4c419213a7e5c8dbd2",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaacf87d6d0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4174644",
+                "submit_ns": "3761830",
+                "submit_max_ns": "3761830",
+                "result": "0"
+              },
+              "requested_binding_offset": 28,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 20,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_28_24",
+              "qpa_sha256": "3de46789a23577bdd3710b5cfc8e1461ca39a632d1be1d3f5196e2d47b381506",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaae27b56f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4119799",
+                "submit_ns": "3856362",
+                "submit_max_ns": "3856362",
+                "result": "0"
+              },
+              "requested_binding_offset": 28,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 24,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            },
+            {
+              "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_28_28",
+              "qpa_sha256": "df06ea4dcd588883099465616c6a75e3e86bdb490fa59898345b40d00153c55f",
+              "status": "Pass",
+              "detail": "Pass",
+              "profile": {
+                "pipeline": "0xaaaae3c406f0",
+                "grid": "1,1,1",
+                "local": "64,1,1",
+                "barrier": "0",
+                "loops": "0",
+                "instrlen": "1",
+                "chunks": "1",
+                "submits": "1",
+                "ns": "4218497",
+                "submit_ns": "3909018",
+                "submit_max_ns": "3909018",
+                "result": "0"
+              },
+              "requested_binding_offset": 28,
+              "actual_binding_offset": 64,
+              "indirect_command_offset": 28,
+              "exact_u32_compared": 64,
+              "native": {
+                "instrlen": 1,
+                "dwords": 32,
+                "full": 2,
+                "half": 0,
+                "constlen": 12,
+                "private_instructions": 0
+              }
+            }
+          ]
+        }
+      ],
+      "scope_limits": [
+        "Allpayloads exactoriginal0e715/f222-e699/75699; no modified4295 fixture credit.",
+        "Fill/updateactual24 CP_MEM_WRITE transfers match source; logical buffer untouched leading/trailing bytes checked. Nonzero bind256/320 follows pinned SimpleAllocator+currentalignment source; those offsets are not directly printed. Prefix/padding outside logicalbuffer unchecked.",
+        "Indirect QPA directly prints64Balignment andactual bind0/64; independent command offsets0..28. Existing CPU reads argument at buffer.offset+dispatchOffset; real64-thread compute dispatch then passes full64word oracle. No GPU-native indirect-argument fetch claim.",
+        "64native programs match instrlen1/32dwords/2F0H/const12/no loops/privateinstructions. No new driver or test change; alloriginal guards/caps retained.",
+        "No image binding offsets, shared-memory suballocation across multiple resources, allocation-prefix canaries or complete memory-model proof."
+      ]
+    }
+  },
+  "scope_results": [
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-binding-offset-00/probe/runner-result.json",
+        "bytes": 5933,
+        "sha256": "540d3442ff09af47fb3757ee61f563e156fcb6ef50ba745ec0dd3dd2a524b095"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 166,
+            "sha256": "b597928f2bed79ba56446b0073ad0853798696fa1d317b89211d93ff04d29d21"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 2434,
+            "sha256": "5deec2bac8487c9dfd0ba3f9eca8903e6dc1bbd6d6f0cfed4696b9fa704d69b1"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13622368,
+            "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+          },
+          "payload.json": {
+            "bytes": 969,
+            "sha256": "b65ac3744587106b53e437ab9ccf4ce124c6343f5210da2f82542972271d96d7"
+          }
+        },
+        "run_log": {
+          "bytes": 22354,
+          "sha256": "9793e717ee4d1e12277dcfd58b49fd09cb7edb4bef4729a5fa844c65d0ef40ff"
+        },
+        "qpa": {
+          "bytes": 36620,
+          "sha256": "efb428ffc14b1779fa0d5738e23e43ac92b0a2b2a5cc8c3776a4a918deac9e25"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_whole",
+            "status": "Pass",
+            "detail": "Fill and Update Buffer test"
+          },
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.update_buffer_whole",
+            "status": "Pass",
+            "detail": "Fill and Update Buffer test"
+          },
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_first_one",
+            "status": "Pass",
+            "detail": "Fill and Update Buffer test"
+          },
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.update_buffer_first_one",
+            "status": "Pass",
+            "detail": "Fill and Update Buffer test"
+          },
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_second_one",
+            "status": "Pass",
+            "detail": "Fill and Update Buffer test"
+          },
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.update_buffer_second_one",
+            "status": "Pass",
+            "detail": "Fill and Update Buffer test"
+          },
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_second_part",
+            "status": "Pass",
+            "detail": "Fill and Update Buffer test"
+          },
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.update_buffer_second_part",
+            "status": "Pass",
+            "detail": "Fill and Update Buffer test"
+          },
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_0_extra_bytes_offset_0",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_0_extra_bytes_offset_4",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_0_extra_bytes_offset_8",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_0_extra_bytes_offset_12",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_1_extra_bytes_offset_0",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_1_extra_bytes_offset_4",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_1_extra_bytes_offset_8",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_1_extra_bytes_offset_12",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_2_extra_bytes_offset_0",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_2_extra_bytes_offset_4",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_2_extra_bytes_offset_8",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_2_extra_bytes_offset_12",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_3_extra_bytes_offset_0",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_3_extra_bytes_offset_4",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_3_extra_bytes_offset_8",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.fill_and_update_buffer.suballocation_bind_offset.fill_buffer_vk_whole_size_3_extra_bytes_offset_12",
+            "status": "Pass",
+            "detail": "Pass"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    },
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-binding-offset-01/probe/runner-result.json",
+        "bytes": 3766,
+        "sha256": "8a4eca5c80634a5d3631a636fd8d7aa8dc3ecfddb358fb08b40117510c36c8f3"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 166,
+            "sha256": "a855407ee22a436c72263559010463ea578c23577cc9c0885ea32f018047dcc6"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 1066,
+            "sha256": "c1d8f8d5eacea858ed43827b78cd7dbcd5729e470a937bfdc0c2b7e5b1caac65"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13622368,
+            "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+          },
+          "payload.json": {
+            "bytes": 969,
+            "sha256": "3a9314a100508717bc921aca6e904e4569c916ffbc6e97e69aeb9a5017e08a10"
+          }
+        },
+        "run_log": {
+          "bytes": 209804,
+          "sha256": "4c016ac6a008302272baadc72e99a4dc6836d7a8660e9cd9c019ab112586b43e"
+        },
+        "qpa": {
+          "bytes": 32246,
+          "sha256": "27bacb1cc2245f65c94581e27323e78ebae0a51b44edfe4dedfb9eb04078caaf"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_0_0",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_0_4",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_0_8",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_0_12",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_0_16",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_0_20",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_0_24",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_0_28",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_4_0",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_4_4",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_4_8",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_4_12",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_4_16",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_4_20",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_4_24",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_4_28",
+            "status": "Pass",
+            "detail": "Pass"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    },
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-binding-offset-02/probe/runner-result.json",
+        "bytes": 3774,
+        "sha256": "f7a86da2289a0195de2ab15fda5f1d6ecc3331b62994d1ffd8c563393a18626e"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 166,
+            "sha256": "fec8c1b272538cf1f0fab39feed778e362611dc74502c91b3aff864d7e8eb43d"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 1074,
+            "sha256": "3e6b2cea053478ba42f12a3581bd3735278a6120968621beec21da501cddcf89"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13622368,
+            "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+          },
+          "payload.json": {
+            "bytes": 969,
+            "sha256": "3e00f874eb70ca041338c5d7e36fb30023d2ca2a0400c81964c4f2fcaba3da20"
+          }
+        },
+        "run_log": {
+          "bytes": 209828,
+          "sha256": "95cb1d44fa0bb8625f77d23122c224d26cb950add1dccaf5ca38354c65619530"
+        },
+        "qpa": {
+          "bytes": 32286,
+          "sha256": "3bd6492b97e7ea9f3fd9b9b7b38a7cc5a896847e016786f485e5f59dacaf87ff"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_8_0",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_8_4",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_8_8",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_8_12",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_8_16",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_8_20",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_8_24",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_8_28",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_12_0",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_12_4",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_12_8",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_12_12",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_12_16",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_12_20",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_12_24",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_12_28",
+            "status": "Pass",
+            "detail": "Pass"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    },
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-binding-offset-03/probe/runner-result.json",
+        "bytes": 3782,
+        "sha256": "cb9dd1b81e2255be274f96b743df11aa45bc1c9815a4e60366dab79291dcb3e7"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 166,
+            "sha256": "aedb71f4ad7f86099318fe9468dc31b135ac702a38d67a35fc1b9c29f1b3ee55"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 1082,
+            "sha256": "74b19c03a468cb3e318ee312e8f525d2b6611c987afabe5a544057051cc46c42"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13622368,
+            "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+          },
+          "payload.json": {
+            "bytes": 969,
+            "sha256": "e388880fb1d8147db14f10bb3b92fcac8f5cfa0a73ae33a2f0d427ab2245dce2"
+          }
+        },
+        "run_log": {
+          "bytes": 209852,
+          "sha256": "716e673459adad54ee8539b51e8c397584219a8fc2c44bff8b75b2f9ed258acd"
+        },
+        "qpa": {
+          "bytes": 32318,
+          "sha256": "a84d2a174b8a4dfc78159cca30ee9707b9b1e6f8071e60893fa8a7b032e644be"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_16_0",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_16_4",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_16_8",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_16_12",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_16_16",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_16_20",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_16_24",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_16_28",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_20_0",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_20_4",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_20_8",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_20_12",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_20_16",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_20_20",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_20_24",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_20_28",
+            "status": "Pass",
+            "detail": "Pass"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    },
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-binding-offset-04/probe/runner-result.json",
+        "bytes": 3782,
+        "sha256": "4aab83878a1c4bdc822d1801c039b0de091ba5d60e9eea26f8ed95785cda347d"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 166,
+            "sha256": "872f46f3c85563959122d1f2d1ccc03b2836043cbe05aea49bf6aa7ce527f181"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 1082,
+            "sha256": "8246dc9a28a523d7e95ee22fa1180527265a6032f9e558229b64aebc91b3e99e"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13622368,
+            "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+          },
+          "payload.json": {
+            "bytes": 969,
+            "sha256": "539803fb262b90a9fb19c96636a48f076917f84319d0505d5af57927e62d3540"
+          }
+        },
+        "run_log": {
+          "bytes": 209852,
+          "sha256": "f8b29b9daef081e23d839a058b1d2a99e869055509570c80525bcafb267a78fe"
+        },
+        "qpa": {
+          "bytes": 32318,
+          "sha256": "cc93378374529094b19ec6d188c0b150ee4700fb430216d02e53b497d236154c"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_24_0",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_24_4",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_24_8",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_24_12",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_24_16",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_24_20",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_24_24",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_24_28",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_28_0",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_28_4",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_28_8",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_28_12",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_28_16",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_28_20",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_28_24",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_28_28",
+            "status": "Pass",
+            "detail": "Pass"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    }
+  ],
+  "scope": "24 fill/update and64 secondary indirect cases use original0e715 executable, data, work and oracles. Scope is these exact nonzero-offset semantics, not all allocation/aliasing/command cases. No driver change, modified4295 excluded."
+}
