@@ -1,0 +1,20 @@
+Private ASR Vulkan selection is implemented and host-built. CPU remains the default. Build with Cargo feature asr-vulkan, then select --asr-backend vulkan explicitly; the VAD stays on CPU. Existing quantized-conv, streaming-conv and prompt-cache patches and model bytes are unchanged.
+
+Source: asr-vulkan.patch SHA272f29e3741dee99ad7ea2403ad94142f72ea059a2cf5882c5082325df3d447f. Apply to the allowed Straylight source snapshot identified by release.json, then rebuild both C++ and Rust (C/Rust config ABI2). This is a private integration patch, not a deployment or service default change.
+
+Normal integrated build commands:
+  listen/asr/build.sh native vulkan -DVulkan_INCLUDE_DIR=/path/to/Vulkan-Headers/include -DVulkan_LIBRARY=/path/to/libvulkan.so -DVulkan_GLSLC_EXECUTABLE=/path/to/glslc -DCMAKE_PREFIX_PATH=/path/to/installed/SPIRV-Headers
+  STRAYLIGHT_ASR_LIB=$PWD/out/listen/asr-native-vulkan cargo build --locked --manifest-path listen/Cargo.toml --features asr-vulkan
+For AArch64, substitute aarch64 and the existing target sysroot/toolchain plus target loader development library; retain a host glslc. That cross-build is not qualified here.
+
+Actual isolated host build (D is this directory):
+  cmake -S "$D/candidate/listen/asr" -B "$D/build-native-vulkan" -G Ninja -DTRANSCRIBE_SRC="$D/deps/transcribe.cpp" -DSTRAYLIGHT_ASR_VULKAN=ON -DCMAKE_BUILD_TYPE=Release -DGGML_NATIVE=ON -DGGML_OPENMP=OFF -DTRANSCRIBE_USE_SYSTEM_BLAS=OFF -DVulkan_INCLUDE_DIR=/run/media/jethac/Shared/radish/vulkan-headers/include -DVulkan_LIBRARY=/usr/lib/libvulkan.so -DVulkan_GLSLC_EXECUTABLE=/usr/bin/glslc -DCMAKE_PREFIX_PATH="$D/deps/spirv-headers-install"
+  ninja -C "$D/build-native-vulkan" -j2 straylight_asr transcribe
+The six built static archives were copied to D/libs-native-vulkan and given the exact accepted backend commit/patch stamp plus backend=vulkan config-abi=2.
+  STRAYLIGHT_ASR_LIB="$D/libs-native-vulkan" CARGO_TARGET_DIR="$D/cargo-target" cargo build --offline --locked --features asr-vulkan -j2 --manifest-path "$D/rust-app/listen/Cargo.toml"
+
+All C++ libraries and full Rust listener link passed. C++ uses Release; Rust qualification is a native dev-profile link, not a performance build. CPU bridge syntax and build.sh syntax also pass. The initial build's missing SPIR-V header failure is preserved; private app CMake now attaches the discovered header-only imported target to ggml-vulkan. No transcribe source is changed.
+
+Independent review: /run/media/jethac/Shared/radish/core-api-resource-consumers-0044-ymiuefnt/stage57-asr-optin-source-review/review.json SHA3f97fad3fc2ebfa82d565903ca0ab5ae96be9866fc6144670636207cd7696feb.
+
+Run-readiness limits: no model/GPU inference, no A53 cross-build, no device staging or service changes. The pinned backend retains its hard 16-bit buffer-storage and Vulkan1.2 shader/device-environment admission requirements. Current qualified Radish does not satisfy that interface. Host linking does not establish backend operation, operator coverage or performance. CPU-default builds require the paired ABI2 archive rebuild; stale archives fail the build stamp check.

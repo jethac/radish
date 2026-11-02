@@ -1,0 +1,261 @@
+{
+  "status": "host C++ Vulkan libraries and complete Rust listener build/link passed; no inference or device execution",
+  "patch": {
+    "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/asr-vulkan.patch",
+    "bytes": 10461,
+    "sha256": "272f29e3741dee99ad7ea2403ad94142f72ea059a2cf5882c5082325df3d447f"
+  },
+  "source_pairs": [
+    {
+      "relative": "listen/asr/build.sh",
+      "baseline": {
+        "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/baseline/listen/asr/build.sh",
+        "bytes": 2772,
+        "sha256": "7b17d37be07dcc3824e4950fdadf716bb7a1a5fc9df97e60f350c0f9409b6736"
+      },
+      "candidate": {
+        "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/candidate/listen/asr/build.sh",
+        "bytes": 3294,
+        "sha256": "a711f06d8a557f5c5a34f550f4bbf0b3d8fb83a5c9c1b212a406333a86dd1370"
+      },
+      "changed": true
+    },
+    {
+      "relative": "listen/asr/CMakeLists.txt",
+      "baseline": {
+        "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/baseline/listen/asr/CMakeLists.txt",
+        "bytes": 1110,
+        "sha256": "01ab56345706049e652d16f2f730e6afd19c3a3f44017d6c7f568f55b9c25c61"
+      },
+      "candidate": {
+        "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/candidate/listen/asr/CMakeLists.txt",
+        "bytes": 1657,
+        "sha256": "008f7812d82b5b3b03ac5e67036e95b523b64a241b29fae647242d6a86e66771"
+      },
+      "changed": true
+    },
+    {
+      "relative": "listen/asr/straylight_asr.cpp",
+      "baseline": {
+        "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/baseline/listen/asr/straylight_asr.cpp",
+        "bytes": 26256,
+        "sha256": "c42406361c28bb9cca92a16a5dd04221607bd1c1d126e5a67247849b61343ac1"
+      },
+      "candidate": {
+        "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/candidate/listen/asr/straylight_asr.cpp",
+        "bytes": 27013,
+        "sha256": "f4bcde29f2339cf067372ea38f29c26ddcc39c8cbaa62667da043431408e8565"
+      },
+      "changed": true
+    },
+    {
+      "relative": "listen/asr/straylight_asr.h",
+      "baseline": {
+        "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/baseline/listen/asr/straylight_asr.h",
+        "bytes": 5252,
+        "sha256": "80928cc7a97c71a09749c07b5e829e547a8d4993deb3a9aa97766dab1c49ecb0"
+      },
+      "candidate": {
+        "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/candidate/listen/asr/straylight_asr.h",
+        "bytes": 5389,
+        "sha256": "75ddae7bf5c38d047c480a1f3a56fdcdd032dc676e6f8e3c7c7e7edbe135df21"
+      },
+      "changed": true
+    },
+    {
+      "relative": "listen/asr/aarch64.cmake",
+      "baseline": {
+        "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/baseline/listen/asr/aarch64.cmake",
+        "bytes": 1034,
+        "sha256": "f49ed34e15c0efc23021fbc2e844cd94efd3d1fb6c6d9e7a33ee161f432532a4"
+      },
+      "candidate": {
+        "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/candidate/listen/asr/aarch64.cmake",
+        "bytes": 1034,
+        "sha256": "f49ed34e15c0efc23021fbc2e844cd94efd3d1fb6c6d9e7a33ee161f432532a4"
+      },
+      "changed": false
+    },
+    {
+      "relative": "listen/build.rs",
+      "baseline": {
+        "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/baseline/listen/build.rs",
+        "bytes": 4752,
+        "sha256": "b28d77167d0f2d53ab06c5c6bf3b770e3323f5aea8968b190fdddf11a5e2b356"
+      },
+      "candidate": {
+        "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/candidate/listen/build.rs",
+        "bytes": 5861,
+        "sha256": "6fcbd28a797d35931c7b2ebeff1803ab9b8e42b52089ef08dc863644eff03fff"
+      },
+      "changed": true
+    },
+    {
+      "relative": "listen/Cargo.toml",
+      "baseline": {
+        "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/baseline/listen/Cargo.toml",
+        "bytes": 1315,
+        "sha256": "2bb1df954f4879c2ce388d21b359f035075cad02d6db9771f24c3a63689340db"
+      },
+      "candidate": {
+        "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/candidate/listen/Cargo.toml",
+        "bytes": 1336,
+        "sha256": "dda31c5140afb2532aa11dd6d77c97550353d1bceeb2665053327bca91c50b0b"
+      },
+      "changed": true
+    },
+    {
+      "relative": "listen/src/asr.rs",
+      "baseline": {
+        "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/baseline/listen/src/asr.rs",
+        "bytes": 6053,
+        "sha256": "bc0f743851a8fd8b93e4b2f18a0d519f7d3fe6c715ea7fc0fbb6ad25a0c9f184"
+      },
+      "candidate": {
+        "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/candidate/listen/src/asr.rs",
+        "bytes": 6075,
+        "sha256": "1ba33f0a36205b582c888bbb39cbd60749fc7df2a73a19373b1bfabd9160539e"
+      },
+      "changed": true
+    },
+    {
+      "relative": "listen/src/main.rs",
+      "baseline": {
+        "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/baseline/listen/src/main.rs",
+        "bytes": 70864,
+        "sha256": "9982d16a1cd2edd302360560559a706c1e21dc847e862cd983d84ef5211b3e8b"
+      },
+      "candidate": {
+        "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/candidate/listen/src/main.rs",
+        "bytes": 71408,
+        "sha256": "3eb2e75f3e9e1b5a8b29828bd29a17f27c40359d7ad82ad1c3bec6939f2fabae"
+      },
+      "changed": true
+    }
+  ],
+  "backend_commit": "5700f127e38dd53c4735ea23ef743b4b538eacd4",
+  "accepted_patch_stamp": "5c8974acefce3dec",
+  "accepted_patches": [
+    {
+      "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/candidate/listen/asr/patches/0001-qwen3_asr-quantized-conv-stem.patch",
+      "bytes": 4643,
+      "sha256": "d00083e83a08f8784271d1f28d5ba1621f9ca7af11c55ab758d7dcc32443f3f0"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/candidate/listen/asr/patches/0002-qwen3_asr-incremental-conv-stem.patch",
+      "bytes": 38851,
+      "sha256": "6df14834854110dbf0ac9efd4ae3d7fc00f74355d6fd98c15915a108ff8bd5f4"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/candidate/listen/asr/patches/0003-qwen3_asr-prompt-prefix-cache.patch",
+      "bytes": 48442,
+      "sha256": "e46ba73b90e405c9e68a494158bc71d242aba72e2eb78884a035e41aa32d43d1"
+    }
+  ],
+  "checks": {
+    "shell_syntax": "passed",
+    "cpu_bridge_syntax": {
+      "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/cpu-bridge-syntax.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "vulkan_cpp_build": {
+      "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/build-native-vulkan-v2.log",
+      "bytes": 113987,
+      "sha256": "133b05f4811e60341791abdc84a273c4a44b31e5612c79af3c768c7929b1f6f9"
+    },
+    "rust_link": {
+      "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/build-rust-native-vulkan.log",
+      "bytes": 2470,
+      "sha256": "595c3a04583128ddaa72bc8c016c01af623293f737a10b0d741f5d33e1d1d544"
+    },
+    "initial_failed_build": {
+      "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/build-native-vulkan.log",
+      "bytes": 15464,
+      "sha256": "42ecb076872b8e66428ae3929e00fd6959f3ab6711471fcefd227af3e2177327"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/libs-native-vulkan/STAMP",
+      "bytes": 86,
+      "sha256": "07ec1365d3d01a98b9bf4f0ff7bfe8d363fe938941357aa2e426435c701f926e"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/libs-native-vulkan/libggml-base.a",
+      "bytes": 1416712,
+      "sha256": "ae5fba2452d60696f94c0218e06d562e900042bea5198113f32a0ee45973ed81"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/libs-native-vulkan/libggml-cpu.a",
+      "bytes": 1882586,
+      "sha256": "6c921618cc7be8af02775dddf9bd74b570ab9b3e86e241fc3095ddadb9d2137d"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/libs-native-vulkan/libggml-vulkan.a",
+      "bytes": 48247226,
+      "sha256": "b0c5f5230a9f1ef89007492010a068d9ee24a3b44f103dfd6b3d65b2889fa546"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/libs-native-vulkan/libggml.a",
+      "bytes": 62764,
+      "sha256": "f90f99d7f4a0b8d38fbac5a90fd0d2c7233b2965f8413dab1486e140ac145b3c"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/libs-native-vulkan/libstraylight_asr.a",
+      "bytes": 60372,
+      "sha256": "90a0d64005902f365a65c7f9381dbb2594606b710532d2b66e4197233f29cc7d"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/libs-native-vulkan/libtranscribe.a",
+      "bytes": 5347438,
+      "sha256": "e48bddf9f38d95f58a3f012f83c754b9bcb15103da141c8128bd98e2205b21fe"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/cargo-target/debug/straylight-listen",
+      "bytes": 116723312,
+      "sha256": "1d5ed264bfc2dd72fd2705914b483793a610b6005f96e6bbda8ca5b474ae66d6"
+    }
+  ],
+  "semantics": [
+    "Default backend is CPU, including a Vulkan-enabled build. Vulkan requires Cargo asr-vulkan plus explicit --asr-backend vulkan; unsupported build choices fail before model loading.",
+    "ASR uses selected backend; Silero VAD remains CPU. Existing model, phrase worker, incremental conv stem and prompt-prefix cache paths remain unchanged.",
+    "C/Rust config appends one int32 backend; library STAMP requires backend and config-abi=2 to reject a stale pre-change native archive. Both halves must rebuild together.",
+    "Separate native/aarch64 CPU and Vulkan output directories. Static backend and dependency link order explicit; Vulkan loader is a linked runtime dependency.",
+    "Pinned transcribe source unchanged. Private app CMake attaches existing SPIRV-Headers imported include target after initial missing-header failure."
+  ],
+  "limits": [
+    "Host x86_64 build/link only, not A53 cross-build or runtime performance.",
+    "No GPU/ASR inference, model conversion, tablet deployment or service changes.",
+    "Current qualified Radish cannot yet satisfy pinned ggml hard storageBuffer16BitAccess/VK_KHR_16bit_storage and Vulkan1.2 SPIR-V/device environment; no check bypass or feature inflation.",
+    "Source/config intent is not evidence of current deployed process backend."
+  ],
+  "dependency_report": {
+    "path": "/run/media/jethac/Shared/radish/straylight-asr-dependency-0045-u2_14q3e/dependency.json",
+    "bytes": 8751,
+    "sha256": "338fc55fac2ade9610f4991cc87a184375bd64f62439b7300d1feb837e52b798"
+  },
+  "independent_review": {
+    "verdict": "PASS narrow source/build-pair review; host-only evidence",
+    "patch_sha256": "272f29e3741dee99ad7ea2403ad94142f72ea059a2cf5882c5082325df3d447f",
+    "author_release_sha256": "8570c63d4ed91903be1c9a7394b5925866f343456a775793ea5da876579316a6",
+    "source_pair_count": 9,
+    "changed_files": 8,
+    "unchanged_toolchain": true,
+    "semantics": [
+      "CPU remains initialized default even inVulkan build. CLI Vulkan requires asr-vulkan\u2192asr Cargofeature; unsupported bridge build/unknownbackend rejects before load. Explicit ASR request uses TRANSCRIBE_BACKEND_VULKAN (pinned API says require, not AUTO); VAD explicitlyCPU. Actual backend strings logged.",
+      "C sla_config and Rust repr(C) Config fields15*4=60bytes align4 have identical order/types. Rust default invokes C initializer. Appended fieldrequires coherent rebuild; backend/config-abi2 stamp check rejects stale native bridge archives.",
+      "Separatecpu/vulkan build/output directories preserve normal CPU artifacts. CMake opt-in defaultsOFF, staticbackends forced, appropriate SPIRV-Headers target provided, no transcribe capability or minimum-version source changed.",
+      "Rust staticlinkorderstraylight_asr/transcribe/ggml/VulkanthenCPU/base plusdynamicvulkan/dl is coherent; inspected fullhostRust link completed. All author artifact/source hashes independently recomputed.",
+      "Existing modelworker/incrementalconv/promptcache sources unchanged by this patch; no deployedprocess/backend/performance inference from build success."
+    ],
+    "checks": "Read-only source/config/artifact verification only; no reviewer build or executable/device run. Author initialmissingheader failure retained; subsequent C++ and complete Rust hostlink receipts passed.",
+    "limits": [
+      "Native x86_64 only; not A53 cross-build or GPU ASR inference.",
+      "Pinned backend still requires Vulkan1.2/storageBuffer16BitAccess that current Radish cannot honestly satisfy; no gating bypass/feature inflation.",
+      "ConfigABI2 requires allC/Rust consumers rebuilt; private existinglistenerpair is checked, arbitrary oldexternalCcallers are not claimedcompatible."
+    ]
+  },
+  "independent_review_sha256": "3f97fad3fc2ebfa82d565903ca0ab5ae96be9866fc6144670636207cd7696feb",
+  "handoff_sha256": "2239298ab7a3fc563f418f87c196ad2299b4f41bcd045dd6088d451987ce3a7c"
+}

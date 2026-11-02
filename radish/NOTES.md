@@ -1,5 +1,12 @@
 # Radish status
 
+## 2026-11-02: ASR Vulkan opt-in builds on the host
+
+The private Straylight ASR integration builds and links the C++ Vulkan libraries and complete native Rust listener. CPU remains the default; Vulkan requires the build feature and explicit backend selection, while VAD stays on CPU. The paired C/Rust config ABI and build stamp prevent reuse of stale bridge archives.
+
+This is host-only evidence: no A53 cross-build, model inference, tablet deployment or service change. The pinned ggml backend still requires 16-bit buffer storage and a Vulkan1.2 environment that current Radish does not satisfy. Those checks remain intact. [Reproducible source/build handoff](ASR_VULKAN_HANDOFF.txt) and [exact artifacts/review](results/asr-vulkan-host-only-0045.json) preserve these blockers separately from the passing ncnn work.
+
+
 ## 2026-11-02: explicit application robustness pair passes
 
 After correcting discarded-tail reads in four ncnn shader families, the same binary/ICD/explicit loader passes the full model with robustness enabled and disabled. Resident fixed-core time falls **51.504783→34.333299 seconds (33.3396%)**; both complete references and retained accepted output bytes pass. All 589 GPU layers and all 1,520 ordered command geometries/chunks/submissions remain; total submissions stay 10,809. Driver support and the application default remain unchanged.

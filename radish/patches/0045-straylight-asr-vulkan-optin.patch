@@ -1,0 +1,240 @@
+--- a/listen/asr/build.sh
++++ b/listen/asr/build.sh
+@@ -16,6 +16,14 @@
+ HERE=$(cd "$(dirname "$0")" && pwd)
+ TOP=$(cd "$HERE/../.." && pwd)
+ TARGET=${1:-aarch64}
++BACKEND=${2:-cpu}
++case $BACKEND in
++cpu) SUFFIX=; VULKAN=OFF ;;
++vulkan) SUFFIX=-vulkan; VULKAN=ON ;;
++*) echo "backend must be cpu or vulkan" >&2; exit 2 ;;
++esac
++CMAKE_ARGS=()
++if (( $# > 2 )); then CMAKE_ARGS=("${@:3}"); fi
+ COMMIT=5700f127e38dd53c4735ea23ef743b4b538eacd4
+ GIT=${TRANSCRIBE_GIT:-$TOP/downloads/transcribe.cpp}
+ WORK=$TOP/out/listen/asr-src
+@@ -31,8 +39,8 @@
+     for p in "$HERE"/patches/*.patch; do patch -d "$SRC" -p1 -s --no-backup-if-mismatch < "$p"; done
+     echo "$WANT" > "$WORK/STAMP"
+ fi
+-B=$TOP/out/listen/build-asr-$TARGET
+-OUT=$TOP/out/listen/asr-$TARGET
++B=$TOP/out/listen/build-asr-$TARGET$SUFFIX
++OUT=$TOP/out/listen/asr-$TARGET$SUFFIX
+ case $TARGET in
+ aarch64)
+     SR=${STRAYLIGHT_SYSROOT:-$TOP/sysroot}
+@@ -41,11 +49,12 @@
+         -DCMAKE_TOOLCHAIN_FILE="$HERE/aarch64.cmake" -DSTRAYLIGHT_SYSROOT="$SR" \
+         -DCMAKE_BUILD_TYPE=Release \
+         -DGGML_NATIVE=OFF -DGGML_CPU_ARM_ARCH=armv8-a -DGGML_OPENMP=OFF \
+-        -DTRANSCRIBE_USE_SYSTEM_BLAS=OFF ;;
++        -DTRANSCRIBE_USE_SYSTEM_BLAS=OFF -DSTRAYLIGHT_ASR_VULKAN="$VULKAN" "${CMAKE_ARGS[@]}" ;;
+ native)
+     cmake -S "$HERE" -B "$B" -G Ninja -DTRANSCRIBE_SRC="$SRC" -DCMAKE_BUILD_TYPE=Release \
+-        -DGGML_NATIVE=ON -DGGML_OPENMP=OFF -DTRANSCRIBE_USE_SYSTEM_BLAS=OFF ;;
+-*) echo "usage: $0 [aarch64|native]" >&2; exit 2 ;;
++        -DGGML_NATIVE=ON -DGGML_OPENMP=OFF -DTRANSCRIBE_USE_SYSTEM_BLAS=OFF \
++        -DSTRAYLIGHT_ASR_VULKAN="$VULKAN" "${CMAKE_ARGS[@]}" ;;
++*) echo "usage: $0 [aarch64|native] [cpu|vulkan] [CMake arguments...]" >&2; exit 2 ;;
+ esac
+ ninja -C "$B" straylight_asr transcribe
+ rm -rf "$OUT"; mkdir -p "$OUT"
+@@ -54,5 +63,8 @@
+          transcribe/ggml/src/libggml-cpu.a transcribe/ggml/src/libggml-base.a; do
+     cp "$B/$a" "$OUT/"
+ done
+-echo "$WANT" > "$OUT/STAMP"
++if [[ $BACKEND == vulkan ]]; then
++    cp "$B/transcribe/ggml/src/ggml-vulkan/libggml-vulkan.a" "$OUT/"
++fi
++echo "$WANT backend=$BACKEND config-abi=2" > "$OUT/STAMP"
+ ls -la "$OUT"
+--- a/listen/asr/CMakeLists.txt
++++ b/listen/asr/CMakeLists.txt
+@@ -11,13 +11,24 @@
+ if(NOT TRANSCRIBE_SRC)
+     message(FATAL_ERROR "set -DTRANSCRIBE_SRC=<transcribe.cpp source tree>")
+ endif()
++option(STRAYLIGHT_ASR_VULKAN "Build the opt-in Vulkan ASR backend" OFF)
++set(TRANSCRIBE_VULKAN ${STRAYLIGHT_ASR_VULKAN} CACHE BOOL "" FORCE)
++set(TRANSCRIBE_BUILD_SHARED OFF CACHE BOOL "" FORCE)
++set(TRANSCRIBE_GGML_BACKEND_DL OFF CACHE BOOL "" FORCE)
+ set(TRANSCRIBE_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+ set(TRANSCRIBE_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+ set(TRANSCRIBE_BUILD_TOOLS OFF CACHE BOOL "" FORCE)
++if(STRAYLIGHT_ASR_VULKAN)
++    find_package(SPIRV-Headers CONFIG REQUIRED)
++endif()
+ add_subdirectory(${TRANSCRIBE_SRC} transcribe EXCLUDE_FROM_ALL)
++if(STRAYLIGHT_ASR_VULKAN)
++    target_link_libraries(ggml-vulkan PRIVATE SPIRV-Headers::SPIRV-Headers)
++endif()
+ # transcribe's public include path is spelled relative to the top-level
+ # source dir, which is this project when it is built as a subdirectory.
+ target_include_directories(transcribe PUBLIC ${TRANSCRIBE_SRC}/include)
+ 
+ add_library(straylight_asr STATIC straylight_asr.cpp)
+ target_link_libraries(straylight_asr PRIVATE transcribe)
++target_compile_definitions(straylight_asr PRIVATE STRAYLIGHT_ASR_VULKAN=$<BOOL:${STRAYLIGHT_ASR_VULKAN}>)
+--- a/listen/asr/straylight_asr.cpp
++++ b/listen/asr/straylight_asr.cpp
+@@ -468,6 +468,7 @@
+     c->streaming     = 1;
+     c->gain_db       = 0.0f;
+     c->wake_tail_ms  = 400;
++    c->backend       = SLA_BACKEND_CPU;
+ }
+ 
+ sla_engine * sla_open(const char * asr_path, const char * vad_path, const sla_config * cfg, char * err, int err_len) {
+@@ -475,15 +476,25 @@
+         if (err && err_len > 0) std::snprintf(err, err_len, "%s %s: %s", what, path, transcribe_status_string(st));
+         return nullptr;
+     };
++    if (cfg->backend != SLA_BACKEND_CPU && cfg->backend != SLA_BACKEND_VULKAN)
++        return fail("backend", asr_path, TRANSCRIBE_ERR_INVALID_ARG);
++#if !STRAYLIGHT_ASR_VULKAN
++    if (cfg->backend == SLA_BACKEND_VULKAN)
++        return fail("Vulkan backend not built for", asr_path, TRANSCRIBE_ERR_BACKEND);
++#endif
+     static std::once_flag log_once;
+     std::call_once(log_once, [] { transcribe_log_set(log_cb, nullptr); });
+ 
+     auto * e = new sla_engine;
+     e->cfg  = *cfg;
+     e->gain = std::pow(10.0f, cfg->gain_db / 20.0f);
+-    int st = transcribe_model_load_file(asr_path, nullptr, &e->asr_model);
++    transcribe_model_load_params load;
++    transcribe_model_load_params_init(&load);
++    load.backend = cfg->backend == SLA_BACKEND_VULKAN ? TRANSCRIBE_BACKEND_VULKAN : TRANSCRIBE_BACKEND_CPU;
++    int st = transcribe_model_load_file(asr_path, &load, &e->asr_model);
+     if (st != TRANSCRIBE_OK) { delete e; return fail("load", asr_path, st); }
+-    st = transcribe_model_load_file(vad_path, nullptr, &e->vad_model);
++    load.backend = TRANSCRIBE_BACKEND_CPU;
++    st = transcribe_model_load_file(vad_path, &load, &e->vad_model);
+     if (st != TRANSCRIBE_OK) { transcribe_model_free(e->asr_model); delete e; return fail("load", vad_path, st); }
+ 
+     transcribe_session_params sp;
+@@ -500,6 +511,8 @@
+         sla_close(e);
+         return fail("session", asr_path, st);
+     }
++    std::fprintf(stderr, "straylight-listen: asr: backend=%s, vad=%s\n",
++                 transcribe_model_backend(e->asr_model), transcribe_model_backend(e->vad_model));
+     transcribe_vad_info vi;
+     transcribe_vad_info_init(&vi);
+     transcribe_vad_get_info(e->vad_model, &vi);
+--- a/listen/asr/straylight_asr.h
++++ b/listen/asr/straylight_asr.h
+@@ -24,6 +24,8 @@
+ 
+ typedef struct sla_engine sla_engine;
+ 
++enum { SLA_BACKEND_CPU = 0, SLA_BACKEND_VULKAN = 1 };
++
+ typedef struct sla_config {
+     int32_t threads;        /* ASR compute threads (6) */
+     int32_t worker_nice;    /* nice value of the ASR worker and its compute threads (5) */
+@@ -40,6 +42,7 @@
+     float   gain_db;        /* gain before the VAD and the recogniser, with a soft limiter (0) */
+     int32_t wake_tail_ms;   /* speech going on at sla_begin is skipped to its first pause, unless
+                                it lasts this long (400; 0: off) */
++    int32_t backend;        /* SLA_BACKEND_CPU (default) or SLA_BACKEND_VULKAN */
+ } sla_config;
+ 
+ void sla_config_init(sla_config * cfg);
+--- a/listen/build.rs
++++ b/listen/build.rs
+@@ -63,18 +63,40 @@
+         link_cxx(&top, aarch64);
+         return;
+     }
++    let vulkan = std::env::var_os("CARGO_FEATURE_ASR_VULKAN").is_some();
+     let dir = std::env::var_os("STRAYLIGHT_ASR_LIB")
+         .map(PathBuf::from)
+-        .unwrap_or_else(|| top.join("out/listen").join(if aarch64 { "asr-aarch64" } else { "asr-native" }));
++        .unwrap_or_else(|| {
++            let target = if aarch64 { "asr-aarch64" } else { "asr-native" };
++            top.join("out/listen").join(format!("{target}{}", if vulkan { "-vulkan" } else { "" }))
++        });
+     let lib = dir.join("libstraylight_asr.a");
+     if !lib.exists() {
+         panic!("{} is missing: run listen/asr/build.sh {}", lib.display(), if aarch64 { "aarch64" } else { "native" });
+     }
++    let stamp = std::fs::read_to_string(dir.join("STAMP")).unwrap_or_default();
++    let backend = if vulkan { "vulkan" } else { "cpu" };
++    if !stamp.split_whitespace().any(|s| s == format!("backend={backend}"))
++        || !stamp.split_whitespace().any(|s| s == "config-abi=2") {
++        panic!("{} needs rebuilding with listen/asr/build.sh {} {}", dir.display(), if aarch64 { "aarch64" } else { "native" }, backend);
++    }
+     println!("cargo:rerun-if-changed={}", dir.join("STAMP").display());
+     println!("cargo:rustc-link-search=native={}", dir.display());
+-    for l in ["straylight_asr", "transcribe", "ggml", "ggml-cpu", "ggml-base"] {
++    for l in ["straylight_asr", "transcribe", "ggml"] {
+         println!("cargo:rustc-link-lib=static={l}");
+     }
++    if vulkan {
++        let vk = dir.join("libggml-vulkan.a");
++        if !vk.exists() {
++            panic!("{} is missing; rebuild the Vulkan ASR libraries", vk.display());
++        }
++        println!("cargo:rerun-if-changed={}", vk.display());
++        println!("cargo:rustc-link-lib=static=ggml-vulkan");
++        println!("cargo:rustc-link-lib=dylib=vulkan");
++        println!("cargo:rustc-link-lib=dylib=dl");
++    }
++    println!("cargo:rustc-link-lib=static=ggml-cpu");
++    println!("cargo:rustc-link-lib=static=ggml-base");
+     link_cxx(&top, aarch64);
+ }
+ 
+--- a/listen/Cargo.toml
++++ b/listen/Cargo.toml
+@@ -10,6 +10,7 @@
+ [features]
+ # The Qwen3-ASR recogniser: links the static libraries from listen/asr/build.sh.
+ asr = []
++asr-vulkan = ["asr"]
+ # Speech output (Kokoro): links MeCab for Japanese from listen/tts/build.sh.
+ tts = []
+ # Kokoro's decoder on the GPU (--tts-backend kokoro-gpu): links
+--- a/listen/src/asr.rs
++++ b/listen/src/asr.rs
+@@ -22,6 +22,7 @@
+     pub streaming: i32,
+     pub gain_db: f32,
+     pub wake_tail_ms: i32,
++    pub backend: i32,
+ }
+ 
+ #[repr(C)]
+--- a/listen/src/main.rs
++++ b/listen/src/main.rs
+@@ -148,6 +148,7 @@
+   --asr-model PATH    ({SHARE}/Qwen3-ASR-0.6B-Q4_K_M-convq8.gguf)
+   --vad-model PATH    ({SHARE}/silero-vad-v6.2-F32.gguf)
+   --no-asr            no recognition: Listening, then Idle
++  --asr-backend NAME  cpu (default), or vulkan with the asr-vulkan build
+   --asr-threads N     compute threads (6)
+   --asr-nice N        nice value of the recognition threads (5)
+   --asr-gain DB       gain before the VAD and the recogniser, soft-limited (0)
+@@ -361,6 +362,17 @@
+             "--asr-model" => a.asr_model = v(),
+             "--vad-model" => a.vad_model = v(),
+             #[cfg(feature = "asr")]
++            "--asr-backend" => {
++                a.asr_cfg.backend = match v().as_str() {
++                    "cpu" => 0,
++                    "vulkan" if cfg!(feature = "asr-vulkan") => 1,
++                    _ => {
++                        eprintln!("straylight-listen: --asr-backend must be cpu, or vulkan in an asr-vulkan build");
++                        std::process::exit(2);
++                    }
++                };
++            }
++            #[cfg(feature = "asr")]
+             "--asr-threads" => a.asr_cfg.threads = num!(),
+             #[cfg(feature = "asr")]
+             "--asr-nice" => a.asr_cfg.worker_nice = num!(),

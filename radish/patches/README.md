@@ -652,3 +652,7 @@ d468a7b2dcadda77b4e06a286eba806aac28c6222f0f3ec9e8330cddf8dba657  0035-ncnn-inst
 - `0045-model-explicit-device-loader.patch`: separate private model-runner delta, applied at the Radish root. Uses an owned device and verified absolute loader path; the accepted builder remains unchanged.
 
 Both feature modes pass the full fixed core; resident51.504783→34.333299 seconds with exact outputs and unchanged submission schedule. This is audited-workload qualification, not a default flip or arbitrary model safety. See `../EXPLICIT_ROBUSTNESS.md`.
+
+## Host-only ASR integration (0045)
+
+`0045-straylight-asr-vulkan-optin.patch` applies to the exact Straylight source snapshot pinned in `../results/asr-vulkan-host-only-0045.json`. CPU remains default. Rebuild both C++ and Rust for config ABI2; the host Vulkan build/link passes, but current16-bit-storage/Vulkan1.2 backend requirements still block Radish device qualification. No service deployment or inference result is claimed. Commands are in `../ASR_VULKAN_HANDOFF.txt`.
