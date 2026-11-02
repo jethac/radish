@@ -1,0 +1,9 @@
+dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8_srgb_block.count_1.size.13x13_compute
+dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8a1_unorm_block.count_1.size.13x13_compute
+dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8a1_srgb_block.count_1.size.13x13_compute
+dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8a8_unorm_block.count_1.size.13x13_compute
+dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8a8_srgb_block.count_1.size.13x13_compute
+dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.eac_r11_unorm_block.count_1.size.13x13_compute
+dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.eac_r11_snorm_block.count_1.size.13x13_compute
+dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.eac_r11g11_unorm_block.count_1.size.13x13_compute
+dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.eac_r11g11_snorm_block.count_1.size.13x13_compute

@@ -1,0 +1,10 @@
+--- a/src/freedreno/radish/rd_instance.c
++++ b/src/freedreno/radish/rd_instance.c
+@@ -231,6 +231,7 @@
+    extensions.KHR_timeline_semaphore = timeline;
+    properties.maxTimelineSemaphoreValueDifference = timeline ? UINT64_MAX : 0;
+    const struct vk_features features = { .pipelineStatisticsQuery = true, .robustBufferAccess = true,
++      .textureCompressionETC2 = true,
+       .storageBuffer16BitAccess = true, .storageBuffer8BitAccess = true, .shaderInt8 = true, .timelineSemaphore = timeline };
+    VkResult result = vk_physical_device_init(&physical->vk, instance, &extensions,
+                                              &features, &properties, &dispatch);

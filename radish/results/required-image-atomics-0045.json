@@ -1,0 +1,368 @@
+{
+  "status": "Representative required32bit typed atomic operators PASS; no competing-address memory-model claim",
+  "driver": {
+    "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-driver-build-0045/libvulkan_radish.so",
+    "bytes": 49078360,
+    "sha256": "1cd9ca7780640f2c5d9a4ad5a7e01a45f135da28efdd810599cfac63ac9c18c7"
+  },
+  "source_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-required-image-atomics-0045/independent-source-oracle-review.json",
+      "bytes": 2993,
+      "sha256": "11f9b1ff5e90f6e3ade5bcf35b771b6df41575f75fc35a220eb8357a0be38a79"
+    },
+    "result": {
+      "status": "passed finite source/oracle review",
+      "sources": {
+        "core_resources.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-image-atomics-0045/probe/core_resources.c",
+          "bytes": 35622,
+          "sha256": "a5024c99a2bbc55983659dc2083a3b8d91e73c0c0760fc8509fdc2dc75405378"
+        },
+        "test_common.h": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-image-atomics-0045/probe/test_common.h",
+          "bytes": 684,
+          "sha256": "4b022481571560cd58577d1303955f8c96e72891a2647947daa607eb5fd93b2b"
+        },
+        "required_atomics.comp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-image-atomics-0045/probe/required_atomics.comp",
+          "bytes": 6585,
+          "sha256": "cf00749b02a57e465ff805bb4c7b8c53a50efde7e10f2003db53781e33a1d3ca"
+        },
+        "required_atomics.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-image-atomics-0045/probe/required_atomics.c",
+          "bytes": 14977,
+          "sha256": "6e1e0383f9b5fa9f44d9453c3074baa7d6fb0e988c21034ee5ede94ca90cc179"
+        }
+      },
+      "checks": [
+        "C all bitwise/add operations are uint32_t; modular add is defined.",
+        "Signed min/max decode uint32 bits by int64 subtraction2^32, entirely within int64 range; no out-of-range signed narrowing or signed overflow.",
+        "Extracted unchanged C oracle compiled with undefined-behavior sanitizer; all576 resource/op/lane/round states exactly match independent Python signed-byte decode and integer operation model.",
+        "Each36 shader selected atomic statements followed by atomicAdd0 on same resource/coordinate; four resources map U32,S32,U32,S32.",
+        "576 result indices per round are dense/disjoint;8 invocations own disjoint72-element input coordinates,9operators with successful and deliberately failed CAS.",
+        "Queried linear layouts and full5 allocation comparisons include input final states, output old/final, padding and guards.",
+        "Update-before-record, HOST->COMPUTE dependencies, fenced completion/invalidate and reset-before-reuse retained.",
+        "Compile-only branch before application allocations/commands; exact source utility and private header pairing needed."
+      ],
+      "arithmetic_check": {
+        "cases": 576,
+        "command": [
+          "cc",
+          "-std=c11",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fsanitize=undefined",
+          "-fno-sanitize-recover=undefined",
+          "/run/media/jethac/Shared/radish/compute11-required-image-atomics-0045/independent-review/oracle-arithmetic.c",
+          "-o",
+          "/run/media/jethac/Shared/radish/compute11-required-image-atomics-0045/independent-review/oracle-arithmetic"
+        ],
+        "undefined_behavior_diagnostics": 0
+      },
+      "limitations": [
+        "Host/SPIR-V validation/native and actual output gates still required.",
+        "No cross-invocation atomic ordering/concurrency or general memory-model claim.",
+        "Private pipeline metadata reads are diagnostics, public feature/query and shader semantics remain actual gates."
+      ]
+    }
+  },
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-required-image-atomics-0045/independent-actual-review.json",
+      "bytes": 1258,
+      "sha256": "ed6d7e173d58d8266abc73202864b7dc98fa5d9bbd0d7ec9212e025c01d84ee8"
+    },
+    "result": {
+      "status": "PASS finite required operator semantics; no cross-invocation memory-model claim",
+      "capture": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-required-image-atomics/probe/run.log",
+        "bytes": 809257,
+        "sha256": "ea2dcb83f32615ab29189e0a506f2c3f1c87e41581a2284c058fef24cdc3634f"
+      },
+      "checks": [
+        "Both rounds576 exact old/final words=1152, complete5 allocations including all288 active resource texels/round and all guards passed.",
+        "Four active R32UINT/SINT storage image/texelbuffer resources,9 required operations per lane;36 native selected-operator/atomicAdd0 pairs retained by9353native review.",
+        "Every invocation owns distinct addresses. This qualifies deterministic own-invocation operators, not competing atomics or cross-invocation visibility/synchronization.",
+        "Existing host->compute->host dependencies, fenced same-object two-round reuse and actualRBA feature enablement retained. No transfer engine or private force used.",
+        "Sourcecf007,C6e1e,helper65f6,module14dd,driver1cd9 exacthost2e6a; original reserved-name compile2252 preserved."
+      ],
+      "runtime_summary": "1.005s service,17.9MiB peak,0swap; faultcheck/services clean per original runner. No guard or throughput claim."
+    }
+  },
+  "runner": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-required-image-atomics/probe/runner-result.json",
+      "bytes": 1162,
+      "sha256": "bf29f4b293e3291c384e32c32d267bb1b725eed56c095f1470533b016adeb782"
+    },
+    "result": {
+      "status": "passed",
+      "mode": "probe",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 160,
+          "sha256": "df2a27ff1022d84a0221a5907fb6eb25813874d2065f4ef224385fc98297eadc"
+        },
+        "resources": {
+          "bytes": 744816,
+          "sha256": "65f6a23ff03e41e6ab19920c165178e01e842ac8c81d2a2c29ef3b9b48a9525e"
+        },
+        "resources.spv": {
+          "bytes": 21060,
+          "sha256": "14ddbe0fc608176bc07675277d2c6e84f94b5604965181cfc8d90c81e882b857"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13621512,
+          "sha256": "0ab7c08728bc6e176e5a14b6c2d4f49a31dd16738dbb07ecf44b4dd55416d75e"
+        },
+        "payload.json": {
+          "bytes": 826,
+          "sha256": "6fba9f748848b73ded0f0378dcb4f0552539c738e8b84d8e2003748d64a99a0d"
+        }
+      },
+      "run_log": {
+        "bytes": 809257,
+        "sha256": "ea2dcb83f32615ab29189e0a506f2c3f1c87e41581a2284c058fef24cdc3634f"
+      },
+      "scope": "Raw ICD assets/services/faults and consolidated assertions passed. This is experimental compute coverage, not Vulkan conformance."
+    }
+  },
+  "scope": "R32UINT/SINT imageBuffer/image2D, nineoperators includingCASsuccess/failure.72typednativeatomics; two576wordold/finalrounds/full5allocations. Same-invocation atomicAdd0 observes finalvalue, distinctaddresses acrossinvocations. No extendedformat/Int64 or concurrencyclaim.",
+  "reproduction": "Build --only required-atomics, stage resources/resources.spv with matching privateABI; splitcompile thenprobe samepayload originalcontrols.",
+  "public_builder": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-public-required-atomic-builder-check-0045/receipt.json",
+      "bytes": 8232,
+      "sha256": "0070212aa9e6971c2f8eab5c5b166d5f8bbcaffe6c23a24a0128a80e4d139cef"
+    },
+    "result": {
+      "units": {
+        "required-atomics": {
+          "commands": [
+            [
+              "clang",
+              "--target=aarch64-linux-gnu",
+              "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+              "-mcpu=cortex-a53",
+              "-Isrc/freedreno/radish/libvulkan_radish.so.p",
+              "-Isrc/freedreno/radish",
+              "-I../mesa/src/freedreno/radish",
+              "-Isrc/freedreno",
+              "-I../mesa/src/freedreno",
+              "-Isrc/freedreno/registers",
+              "-I../mesa/src/freedreno/registers",
+              "-Isrc/freedreno/registers/adreno",
+              "-I../mesa/src/freedreno/registers/adreno",
+              "-Isrc/freedreno/common",
+              "-I../mesa/src/freedreno/common",
+              "-Iinclude",
+              "-I../mesa/include",
+              "-Isrc",
+              "-I../mesa/src",
+              "-Isrc/vulkan/util",
+              "-I../mesa/src/vulkan/util",
+              "-Isrc/vulkan/runtime",
+              "-I../mesa/src/vulkan/runtime",
+              "-I../mesa/src/vulkan/runtime/bvh",
+              "-Isrc/compiler/nir",
+              "-I../mesa/src/compiler/nir",
+              "-Isrc/compiler",
+              "-I../mesa/src/compiler",
+              "-Isrc/util",
+              "-Isrc/util/format",
+              "-Isrc/compiler/spirv",
+              "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include",
+              "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include/libdrm",
+              "-fvisibility=hidden",
+              "-fdiagnostics-color=always",
+              "-D_FILE_OFFSET_BITS=64",
+              "-Wall",
+              "-Winvalid-pch",
+              "-std=c11",
+              "-O2",
+              "-g",
+              "-D__STDC_CONSTANT_MACROS",
+              "-D__STDC_FORMAT_MACROS",
+              "-D__STDC_LIMIT_MACROS",
+              "-DPACKAGE_VERSION=\"27.0.0-devel\"",
+              "-DHAVE_OPENGL=0",
+              "-DHAVE_OPENGL_ES_1=0",
+              "-DHAVE_OPENGL_ES_2=0",
+              "-DMESA_SYSTEM_HAS_KMS_DRM=1",
+              "-DVIDEO_CODEC_VC1DEC=0",
+              "-DVIDEO_CODEC_H264DEC=0",
+              "-DVIDEO_CODEC_H264ENC=0",
+              "-DVIDEO_CODEC_H265DEC=0",
+              "-DVIDEO_CODEC_H265ENC=0",
+              "-DVIDEO_CODEC_AV1DEC=0",
+              "-DVIDEO_CODEC_AV1ENC=0",
+              "-DVIDEO_CODEC_VP9DEC=0",
+              "-DVIDEO_CODEC_MPEG12DEC=0",
+              "-DVIDEO_CODEC_JPEGDEC=0",
+              "-DUSE_LIBGLVND=0",
+              "-DHAVE_LIBDRM",
+              "-DHAVE_GFX_COMPUTE",
+              "-DGLAPI_EXPORT_PROTO_ENTRY_POINTS=1",
+              "-DALLOW_KCMP",
+              "-DMESA_DEBUG=0",
+              "-DENABLE_SHADER_CACHE",
+              "-DHAVE___BUILTIN_BSWAP32",
+              "-DHAVE___BUILTIN_BSWAP64",
+              "-DHAVE___BUILTIN_CLZ",
+              "-DHAVE___BUILTIN_CLZLL",
+              "-DHAVE___BUILTIN_CTZ",
+              "-DHAVE___BUILTIN_EXPECT",
+              "-DHAVE___BUILTIN_FFS",
+              "-DHAVE___BUILTIN_FFSLL",
+              "-DHAVE___BUILTIN_POPCOUNT",
+              "-DHAVE___BUILTIN_POPCOUNTLL",
+              "-DHAVE___BUILTIN_UNREACHABLE",
+              "-DHAVE___BUILTIN_TYPES_COMPATIBLE_P",
+              "-DHAVE___BUILTIN_ADD_OVERFLOW",
+              "-DHAVE_FUNC_ATTRIBUTE_CONST",
+              "-DHAVE_FUNC_ATTRIBUTE_FLATTEN",
+              "-DHAVE_FUNC_ATTRIBUTE_MALLOC",
+              "-DHAVE_FUNC_ATTRIBUTE_PURE",
+              "-DHAVE_FUNC_ATTRIBUTE_UNUSED",
+              "-DHAVE_FUNC_ATTRIBUTE_WARN_UNUSED_RESULT",
+              "-DHAVE_FUNC_ATTRIBUTE_WEAK",
+              "-DHAVE_FUNC_ATTRIBUTE_FORMAT",
+              "-DHAVE_FUNC_ATTRIBUTE_PACKED",
+              "-DHAVE_FUNC_ATTRIBUTE_RETURNS_NONNULL",
+              "-DHAVE_FUNC_ATTRIBUTE_ALIAS",
+              "-DHAVE_FUNC_ATTRIBUTE_NORETURN",
+              "-DHAVE_FUNC_ATTRIBUTE_COLD",
+              "-DHAVE_FUNC_ATTRIBUTE_VISIBILITY",
+              "-DHAVE_UINT128",
+              "-DHAVE_REALLOCARRAY",
+              "-DHAVE_FMEMOPEN",
+              "-DHAVE_MALLINFO2",
+              "-D_GNU_SOURCE",
+              "-DUSE_GCC_ATOMIC_BUILTINS",
+              "-DMAJOR_IN_SYSMACROS",
+              "-DHAS_SCHED_H",
+              "-DHAS_SCHED_GETAFFINITY",
+              "-DHAVE_LINUX_FUTEX_H",
+              "-DHAVE_ENDIAN_H",
+              "-DHAVE_DLFCN_H",
+              "-DHAVE_SYS_SHM_H",
+              "-DHAVE_CET_H",
+              "-DHAVE_POLL_H",
+              "-DHAVE_SYS_INOTIFY_H",
+              "-DHAVE_LINUX_UDMABUF_H",
+              "-DHAVE_STRTOF",
+              "-DHAVE_MKOSTEMP",
+              "-DHAVE_MEMFD_CREATE",
+              "-DHAVE_RANDOM_R",
+              "-DHAVE_FLOCK",
+              "-DHAVE_STRTOK_R",
+              "-DHAVE_GETRANDOM",
+              "-DHAVE_POSIX_FALLOCATE",
+              "-DHAVE_SECURE_GETENV",
+              "-DHAVE_SYSCONF",
+              "-DHAVE_SC_PHYS_PAGES",
+              "-DHAVE_GNU_QSORT_R",
+              "-DHAVE_STRUCT_TIMESPEC",
+              "-DHAVE_PROGRAM_INVOCATION_NAME",
+              "-DHAVE_ISSIGNALING",
+              "-DHAVE_POSIX_MEMALIGN",
+              "-DHAVE_DIRENT_D_TYPE",
+              "-DHAVE_STRTOD_L",
+              "-DHAVE_DLADDR",
+              "-DHAVE_DL_ITERATE_PHDR",
+              "-DHAVE_ZLIB",
+              "-DHAVE_COMPRESSION",
+              "-DHAVE_PTHREAD",
+              "-DHAVE_PTHREAD_SETAFFINITY",
+              "-DDRAW_LLVM_AVAILABLE=0",
+              "-DAMD_LLVM_AVAILABLE=0",
+              "-DGALLIVM_USE_ORCJIT=0",
+              "-DTHREAD_SANITIZER=0",
+              "-DHAVE_DRI2",
+              "-DHAVE_RENDERDOC_INTEGRATION=1",
+              "-Werror=implicit-function-declaration",
+              "-Werror=missing-prototypes",
+              "-Werror=return-type",
+              "-Werror=empty-body",
+              "-Werror=incompatible-pointer-types",
+              "-Werror=int-conversion",
+              "-Wimplicit-fallthrough",
+              "-Wmisleading-indentation",
+              "-Wno-missing-field-initializers",
+              "-Wno-format-truncation",
+              "-fno-math-errno",
+              "-fno-trapping-math",
+              "-Qunused-arguments",
+              "-fno-common",
+              "-Wno-unknown-pragmas",
+              "-Wno-microsoft-enum-value",
+              "-Wno-unused-function",
+              "-Werror=format",
+              "-Wformat-security",
+              "-Werror=thread-safety",
+              "-ffunction-sections",
+              "-fdata-sections",
+              "-Wno-unused-command-line-argument",
+              "-fPIC",
+              "-DVK_USE_PLATFORM_DISPLAY_KHR",
+              "-pthread",
+              "-DXXH_FORCE_ALIGN_CHECK=0",
+              "-DXXH_FORCE_MEMORY_ACCESS=0",
+              "-Wno-override-init",
+              "-Wno-initializer-overrides",
+              "-fuse-ld=lld",
+              "--gcc-install-dir=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+              "-I/home/jethac/Projects/radish/radish/tests",
+              "/home/jethac/Projects/radish/radish/tests/core_required_atomics.c",
+              "-o",
+              "/run/media/jethac/Shared/radish/compute11-public-required-atomic-builder-check-0045/required-atomics",
+              "-ldl",
+              "-pthread"
+            ],
+            [
+              "glslangValidator",
+              "-V",
+              "--target-env",
+              "vulkan1.0",
+              "/home/jethac/Projects/radish/radish/tests/shaders/core-required-atomics.comp",
+              "-o",
+              "/run/media/jethac/Shared/radish/compute11-public-required-atomic-builder-check-0045/required-atomics.spv"
+            ],
+            [
+              "spirv-val",
+              "--target-env",
+              "vulkan1.0",
+              "/run/media/jethac/Shared/radish/compute11-public-required-atomic-builder-check-0045/required-atomics.spv"
+            ]
+          ],
+          "files": {
+            "/home/jethac/Projects/radish/radish/tests/core_required_atomics.c": {
+              "sha256": "6e1e0383f9b5fa9f44d9453c3074baa7d6fb0e988c21034ee5ede94ca90cc179",
+              "bytes": 14977
+            },
+            "/run/media/jethac/Shared/radish/compute11-public-required-atomic-builder-check-0045/required-atomics": {
+              "sha256": "578548d5c6061983e4b1c6853f6686b9aacc7515cc2cd04262fad464391197a0",
+              "bytes": 744608
+            },
+            "/home/jethac/Projects/radish/radish/tests/shaders/core-required-atomics.comp": {
+              "sha256": "cf00749b02a57e465ff805bb4c7b8c53a50efde7e10f2003db53781e33a1d3ca",
+              "bytes": 6585
+            },
+            "/run/media/jethac/Shared/radish/compute11-public-required-atomic-builder-check-0045/required-atomics.spv": {
+              "sha256": "14ddbe0fc608176bc07675277d2c6e84f94b5604965181cfc8d90c81e882b857",
+              "bytes": 21060
+            }
+          }
+        }
+      },
+      "scope": "Host build only; probes require the matching internal driver ABI."
+    }
+  }
+}

@@ -280,8 +280,8 @@ and evidence ledger. Implement real defects, then run bounded, applicable,
 unmodified CTS partitions and meaningful independent consumers. Preserve
 failures, legal shader environments, complete numerical/guard oracles and the
 original device, memory, time, disk and service controls. Modified CTS harness
-results remain diagnostics. The historical31 property failures are retained; the integrated source removes16
-messages and leaves15 requiring normative/implementation closure. None is waived
+results remain diagnostics. The historical31 property failures are retained; the successive integrated checkpoints reduce 31 to 15 and then 9 messages,
+with the properties case still failed and normative/implementation closure required. None is waived
 by a compute-only queue. The earlier 40-command
 worklist and bounded resource milestones do not define completion.
 
@@ -353,9 +353,18 @@ Current conformance-first delta: legal public1.1 BASIC, bounded shared/command
 semantics and22 further original buffer/atomic CTS cases pass; initialized
 single-sample D24S8 aspect copies now have meaningful changing-input evidence.
 The official properties case still fails, compressed sRGB strict observations
-remain unresolved, core lookup repair is pending public-loader validation, and
+remain unresolved, required core pointer lookup now passes public-loader validation, and
 full applicable shader, format, memory, descriptor and synchronization CTS is
 still missing. No small test inventory establishes conformance. The full later
 model correctness, placement, memory, speed, thermal and deployment goal remains
 unchanged. GPU resources are for compute; CPU graphics does not waive normative
 requirements or justify reserving GPU capacity for unimplemented graphics.
+
+The current coherent validation checkpoint adds required typed atomic operator
+evidence, seven original descriptor cases and ten original ETC2/EAC compute
+sampling cases. A source-backed subpixel property correction repairs the original
+CTS reference precondition without changing shaders or thresholds. Nine property
+messages and 42 stricter custom sRGB mismatches remain; full applicable validation
+and standard obligations are still incomplete. Newer graphics-queue validity
+clarifications also require the next attachment consumer to exclude graphics-only
+host-object calls. These are requirement deltas, not campaign completion.

@@ -1,0 +1,50 @@
+#version 450
+layout(local_size_x=1) in;
+layout(set=0,binding=0,r32ui) coherent uniform uimageBuffer ub;
+layout(set=0,binding=1,r32i) coherent uniform iimageBuffer sb;
+layout(set=0,binding=2,r32ui) coherent uniform uimage2D ui;
+layout(set=0,binding=3,r32i) coherent uniform iimage2D si;
+layout(set=0,binding=4,std430) writeonly buffer Results {uint words[];};
+layout(push_constant) uniform Push {uint round;} pc;
+uint initial(uint resource_id,uint op,uint lane) {
+ const uint seeds[9]=uint[9](0xfffffffdu,0x80000020u,0x80000020u,0xf0f00ff0u,0x30000300u,0x55aa00ffu,0x7f000010u,0x11001100u,0x22002200u);
+ return seeds[op]^(resource_id*0x00000100u)^(pc.round*0x00010000u)^(lane*0x11u);
+}
+void main(){uint lane=gl_GlobalInvocationID.x;
+ {uint q=lane*72u+0u;words[q]=uint(imageAtomicAdd(ub,int(0u*8u+lane),uint(7u)));words[q+1u]=uint(imageAtomicAdd(ub,int(0u*8u+lane),uint(0)));}
+ {uint q=lane*72u+2u;words[q]=uint(imageAtomicMin(ub,int(1u*8u+lane),uint(0x7ffffff0u)));words[q+1u]=uint(imageAtomicAdd(ub,int(1u*8u+lane),uint(0)));}
+ {uint q=lane*72u+4u;words[q]=uint(imageAtomicMax(ub,int(2u*8u+lane),uint(0x7ffffff0u)));words[q+1u]=uint(imageAtomicAdd(ub,int(2u*8u+lane),uint(0)));}
+ {uint q=lane*72u+6u;words[q]=uint(imageAtomicAnd(ub,int(3u*8u+lane),uint(0x0ff0f00fu)));words[q+1u]=uint(imageAtomicAdd(ub,int(3u*8u+lane),uint(0)));}
+ {uint q=lane*72u+8u;words[q]=uint(imageAtomicOr(ub,int(4u*8u+lane),uint(0x0040c005u)));words[q+1u]=uint(imageAtomicAdd(ub,int(4u*8u+lane),uint(0)));}
+ {uint q=lane*72u+10u;words[q]=uint(imageAtomicXor(ub,int(5u*8u+lane),uint(0xa5055a00u)));words[q+1u]=uint(imageAtomicAdd(ub,int(5u*8u+lane),uint(0)));}
+ {uint q=lane*72u+12u;words[q]=uint(imageAtomicExchange(ub,int(6u*8u+lane),uint(0x80000080u+lane)));words[q+1u]=uint(imageAtomicAdd(ub,int(6u*8u+lane),uint(0)));}
+ {uint q=lane*72u+14u;words[q]=uint(imageAtomicCompSwap(ub,int(7u*8u+lane),uint(initial(0u,7u,lane)),uint(0x80000100u+lane)));words[q+1u]=uint(imageAtomicAdd(ub,int(7u*8u+lane),uint(0)));}
+ {uint q=lane*72u+16u;words[q]=uint(imageAtomicCompSwap(ub,int(8u*8u+lane),uint(initial(0u,8u,lane)^1u),uint(0x12345678u)));words[q+1u]=uint(imageAtomicAdd(ub,int(8u*8u+lane),uint(0)));}
+ {uint q=lane*72u+18u;words[q]=uint(imageAtomicAdd(sb,int(0u*8u+lane),int(7u)));words[q+1u]=uint(imageAtomicAdd(sb,int(0u*8u+lane),int(0)));}
+ {uint q=lane*72u+20u;words[q]=uint(imageAtomicMin(sb,int(1u*8u+lane),int(0x7ffffff0u)));words[q+1u]=uint(imageAtomicAdd(sb,int(1u*8u+lane),int(0)));}
+ {uint q=lane*72u+22u;words[q]=uint(imageAtomicMax(sb,int(2u*8u+lane),int(0x7ffffff0u)));words[q+1u]=uint(imageAtomicAdd(sb,int(2u*8u+lane),int(0)));}
+ {uint q=lane*72u+24u;words[q]=uint(imageAtomicAnd(sb,int(3u*8u+lane),int(0x0ff0f00fu)));words[q+1u]=uint(imageAtomicAdd(sb,int(3u*8u+lane),int(0)));}
+ {uint q=lane*72u+26u;words[q]=uint(imageAtomicOr(sb,int(4u*8u+lane),int(0x0040c005u)));words[q+1u]=uint(imageAtomicAdd(sb,int(4u*8u+lane),int(0)));}
+ {uint q=lane*72u+28u;words[q]=uint(imageAtomicXor(sb,int(5u*8u+lane),int(0xa5055a00u)));words[q+1u]=uint(imageAtomicAdd(sb,int(5u*8u+lane),int(0)));}
+ {uint q=lane*72u+30u;words[q]=uint(imageAtomicExchange(sb,int(6u*8u+lane),int(0x80000080u+lane)));words[q+1u]=uint(imageAtomicAdd(sb,int(6u*8u+lane),int(0)));}
+ {uint q=lane*72u+32u;words[q]=uint(imageAtomicCompSwap(sb,int(7u*8u+lane),int(initial(1u,7u,lane)),int(0x80000100u+lane)));words[q+1u]=uint(imageAtomicAdd(sb,int(7u*8u+lane),int(0)));}
+ {uint q=lane*72u+34u;words[q]=uint(imageAtomicCompSwap(sb,int(8u*8u+lane),int(initial(1u,8u,lane)^1u),int(0x12345678u)));words[q+1u]=uint(imageAtomicAdd(sb,int(8u*8u+lane),int(0)));}
+ {uint q=lane*72u+36u;words[q]=uint(imageAtomicAdd(ui,ivec2(int(lane),0),uint(7u)));words[q+1u]=uint(imageAtomicAdd(ui,ivec2(int(lane),0),uint(0)));}
+ {uint q=lane*72u+38u;words[q]=uint(imageAtomicMin(ui,ivec2(int(lane),1),uint(0x7ffffff0u)));words[q+1u]=uint(imageAtomicAdd(ui,ivec2(int(lane),1),uint(0)));}
+ {uint q=lane*72u+40u;words[q]=uint(imageAtomicMax(ui,ivec2(int(lane),2),uint(0x7ffffff0u)));words[q+1u]=uint(imageAtomicAdd(ui,ivec2(int(lane),2),uint(0)));}
+ {uint q=lane*72u+42u;words[q]=uint(imageAtomicAnd(ui,ivec2(int(lane),3),uint(0x0ff0f00fu)));words[q+1u]=uint(imageAtomicAdd(ui,ivec2(int(lane),3),uint(0)));}
+ {uint q=lane*72u+44u;words[q]=uint(imageAtomicOr(ui,ivec2(int(lane),4),uint(0x0040c005u)));words[q+1u]=uint(imageAtomicAdd(ui,ivec2(int(lane),4),uint(0)));}
+ {uint q=lane*72u+46u;words[q]=uint(imageAtomicXor(ui,ivec2(int(lane),5),uint(0xa5055a00u)));words[q+1u]=uint(imageAtomicAdd(ui,ivec2(int(lane),5),uint(0)));}
+ {uint q=lane*72u+48u;words[q]=uint(imageAtomicExchange(ui,ivec2(int(lane),6),uint(0x80000080u+lane)));words[q+1u]=uint(imageAtomicAdd(ui,ivec2(int(lane),6),uint(0)));}
+ {uint q=lane*72u+50u;words[q]=uint(imageAtomicCompSwap(ui,ivec2(int(lane),7),uint(initial(2u,7u,lane)),uint(0x80000100u+lane)));words[q+1u]=uint(imageAtomicAdd(ui,ivec2(int(lane),7),uint(0)));}
+ {uint q=lane*72u+52u;words[q]=uint(imageAtomicCompSwap(ui,ivec2(int(lane),8),uint(initial(2u,8u,lane)^1u),uint(0x12345678u)));words[q+1u]=uint(imageAtomicAdd(ui,ivec2(int(lane),8),uint(0)));}
+ {uint q=lane*72u+54u;words[q]=uint(imageAtomicAdd(si,ivec2(int(lane),0),int(7u)));words[q+1u]=uint(imageAtomicAdd(si,ivec2(int(lane),0),int(0)));}
+ {uint q=lane*72u+56u;words[q]=uint(imageAtomicMin(si,ivec2(int(lane),1),int(0x7ffffff0u)));words[q+1u]=uint(imageAtomicAdd(si,ivec2(int(lane),1),int(0)));}
+ {uint q=lane*72u+58u;words[q]=uint(imageAtomicMax(si,ivec2(int(lane),2),int(0x7ffffff0u)));words[q+1u]=uint(imageAtomicAdd(si,ivec2(int(lane),2),int(0)));}
+ {uint q=lane*72u+60u;words[q]=uint(imageAtomicAnd(si,ivec2(int(lane),3),int(0x0ff0f00fu)));words[q+1u]=uint(imageAtomicAdd(si,ivec2(int(lane),3),int(0)));}
+ {uint q=lane*72u+62u;words[q]=uint(imageAtomicOr(si,ivec2(int(lane),4),int(0x0040c005u)));words[q+1u]=uint(imageAtomicAdd(si,ivec2(int(lane),4),int(0)));}
+ {uint q=lane*72u+64u;words[q]=uint(imageAtomicXor(si,ivec2(int(lane),5),int(0xa5055a00u)));words[q+1u]=uint(imageAtomicAdd(si,ivec2(int(lane),5),int(0)));}
+ {uint q=lane*72u+66u;words[q]=uint(imageAtomicExchange(si,ivec2(int(lane),6),int(0x80000080u+lane)));words[q+1u]=uint(imageAtomicAdd(si,ivec2(int(lane),6),int(0)));}
+ {uint q=lane*72u+68u;words[q]=uint(imageAtomicCompSwap(si,ivec2(int(lane),7),int(initial(3u,7u,lane)),int(0x80000100u+lane)));words[q+1u]=uint(imageAtomicAdd(si,ivec2(int(lane),7),int(0)));}
+ {uint q=lane*72u+70u;words[q]=uint(imageAtomicCompSwap(si,ivec2(int(lane),8),int(initial(3u,8u,lane)^1u),int(0x12345678u)));words[q+1u]=uint(imageAtomicAdd(si,ivec2(int(lane),8),int(0)));}
+}

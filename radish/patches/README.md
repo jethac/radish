@@ -698,3 +698,10 @@ The exact reconstruction pins are in `../results/compute11-private-source-stack-
 Apply `0045-radish-combined-d24s8.patch`, then `0045-radish-compressed-blit-src-query.patch` after the c2aa depth/layout stack. Exact9407 reconstruction and initialized single-sample evidence are in `../results/d24s8-public-0045.json`. The private image-transfer header changes; olderd903 diagnostic consumers require their frozen headers. No compression feature/sample-mask/rendering promotion.
 
 `0045-radish-core-lookup.patch` follows9407 D24S8/BLITquery stack. The publicloader165/137-name actual pair repairs five device pointers without adding graphics queues. Exact1cd9 reconstruction and empty valid graphics/lazy-memory execution scope are in `../results/core-lookup-public-0045.json`.
+
+`0045-radish-etc2-feature-experimental.patch`, `0045-radish-framebuffer-samples.patch`
+and `0045-radish-subpixel-property.patch` apply in that order over1cd9. Exact
+reconstruction of the a41b validation checkpoint and ten original ETC2/EAC compute
+passes are recorded in `../results/official11-etc2-subpixel-0045.json`. The original
+failed query/reference environment and 42 stricter sRGB mismatches remain preserved.
+This candidate does not replace selected inference or establish full conformance.

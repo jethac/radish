@@ -1,0 +1,156 @@
+{
+  "status": "Original information cases4Pass/1propertiesFail; remaining messages15 to9",
+  "driver": {
+    "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/libvulkan_radish.so",
+    "bytes": 49078376,
+    "sha256": "a41b28271dc836173a41269c6ff68c983a6e20ced73e5aa557ee30f5ca9b4cbc"
+  },
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-required-properties-0045/subpixel-official-info-review.json",
+      "bytes": 3316,
+      "sha256": "24eb78b6d849ee99e92641be1ae4860389bfee1474ef995f99044d1a0c3c5465"
+    },
+    "result": {
+      "status": "finite actual review; official info 4Pass/1propertiesFail truthfully retained",
+      "tested_driver": {
+        "bytes": 13621512,
+        "sha256": "1982bcdd2c26a2f858e08df3fde94af1cf0b3d4e3df7ccfb8f8f811edf2e5512"
+      },
+      "before": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-integrated-info/probe",
+      "after": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-subpixel-info/probe",
+      "message_counts": {
+        "previous": 15,
+        "current": 9,
+        "removed": 6,
+        "new": 0,
+        "original_first_checkpoint": 31
+      },
+      "removed_messages": [
+        "limit Validation failed subPixelPrecisionBits not valid-limit type MIN - actual is 0",
+        "limit validation failed, framebufferColorSampleCounts not valid-limit type bitmask actual is 0",
+        "limit validation failed, framebufferDepthSampleCounts not valid-limit type bitmask actual is 0",
+        "limit validation failed, framebufferStencilSampleCounts not valid-limit type bitmask actual is 0",
+        "limit validation failed, framebufferNoAttachmentsSampleCounts not valid-limit type bitmask actual is 0",
+        "limit Validation failed maxColorAttachments not valid-limit type MIN - actual is 0"
+      ],
+      "remaining_messages": [
+        "limit Validation failed maxVertexInputAttributes not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxVertexInputBindings not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxVertexInputAttributeOffset not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxVertexInputBindingStride not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxVertexOutputComponents not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxFragmentInputComponents not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxFragmentOutputAttachments not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxFragmentCombinedOutputResources not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxSampleMaskWords not valid-limit type MIN - actual is 0"
+      ],
+      "cases": [
+        {
+          "name": "dEQP-VK.info.physical_devices",
+          "status": "Pass"
+        },
+        {
+          "name": "dEQP-VK.info.device_features",
+          "status": "Pass"
+        },
+        {
+          "name": "dEQP-VK.info.device_queue_family_properties",
+          "status": "Pass"
+        },
+        {
+          "name": "dEQP-VK.info.device_memory_properties",
+          "status": "Pass"
+        },
+        {
+          "name": "dEQP-VK.info.device_properties",
+          "status": "Fail"
+        }
+      ],
+      "accounting": "Actual correction includes maxColorAttachments4 from prior depth host slice plus four framebuffer sample masks1|4 and subPixelPrecisionBits4. Not all six are newly changed in a41b versus preceding4c46; comparison is previous official ac2a92567 query.",
+      "unexecuted_delta": "maxSampleMaskWords1 private0f5c source reviewed separately, not present in this tested candidate and not counted as passed. Eight vertex/fragment limits remain0; hardware query trace and callable pipeline host dependency remain open.",
+      "scope": "Message reduction is not a conformance fraction or closure of format/rendering/pipeline/shader/memory semantics.",
+      "postflight": "collection/errors[]; no new GPU faults; both services active;1.899s15.7MiB0swap;no GPU workload."
+    }
+  },
+  "runner": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-subpixel-info/probe/runner-result.json",
+      "bytes": 2143,
+      "sha256": "12a2bb88186c39d4abc2cfeb32a68b8ebcf1eefa9f4ecb373f15c8dbe7715a81"
+    },
+    "result": {
+      "status": "cts_case_failures",
+      "mode": "probe",
+      "exit_code": 1,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 162,
+          "sha256": "f1cc85718dac7d7117586c742e6972114048b75bf6f8f692ec461cd3c05c0b12"
+        },
+        "deqp-vk": {
+          "bytes": 97536760,
+          "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+        },
+        "libvulkan.so.1": {
+          "bytes": 703696,
+          "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+        },
+        "info-cases.txt": {
+          "bytes": 172,
+          "sha256": "7dcfd0ea336b6c131b2b5fd33959950bfe8104d599a3693827bf2a2c50e008ea"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13621512,
+          "sha256": "1982bcdd2c26a2f858e08df3fde94af1cf0b3d4e3df7ccfb8f8f811edf2e5512"
+        },
+        "payload.json": {
+          "bytes": 964,
+          "sha256": "2d32fe8b52868483b3c660e42919f25fb5a7d0866aa5fa2c358dc2401a5814a8"
+        }
+      },
+      "run_log": {
+        "bytes": 3401,
+        "sha256": "70eed8fab63c42a944cbda9a3116766f195fc04dd16098ee83cffb592c20bc02"
+      },
+      "qpa": {
+        "bytes": 18264,
+        "sha256": "77e7f156e37286d3b58d8523d16a1c57fe15225c49789779312c8ee60752324e"
+      },
+      "cases": [
+        {
+          "name": "dEQP-VK.info.physical_devices",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.info.device_features",
+          "status": "Pass",
+          "detail": "Query succeeded"
+        },
+        {
+          "name": "dEQP-VK.info.device_queue_family_properties",
+          "status": "Pass",
+          "detail": "Querying queue properties succeeded"
+        },
+        {
+          "name": "dEQP-VK.info.device_memory_properties",
+          "status": "Pass",
+          "detail": "Querying memory properties succeeded"
+        },
+        {
+          "name": "dEQP-VK.info.device_properties",
+          "status": "Fail",
+          "detail": "deviceProperties - feature limits failed"
+        }
+      ],
+      "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+    }
+  },
+  "source": "official11-etc2-subpixel-0045.json",
+  "limits": "Eight vertex/fragment properties and maxSampleMaskWords remain. Initial31/prior15/current9 are recorded failure counts, not an exhaustive normative denominator or a waiver based on compute queues. New native-format/transient source and pending sample-mask patch are absent from this actual."
+}

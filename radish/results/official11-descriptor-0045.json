@@ -1,0 +1,357 @@
+{
+  "status": "Seven original bounded descriptor/pool/lifetime cases PASS; not full descriptor conformance",
+  "source_bounds": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-descriptor-next-0045/source-bounds.json",
+      "bytes": 7107,
+      "sha256": "2212081dfc1aa805a6285cdfdc36161b478d729756ed5b3f4234e1df1909d1bb"
+    },
+    "result": {
+      "status": "source-bounded original descriptor pool/layout/lifetime/update partition, no device action",
+      "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+      "sources": {
+        "vktApiTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/api/vktApiTests.cpp",
+          "bytes": 6276,
+          "sha256": "f8448b09583d40bca5e1ea3d3c87a37f13aa665541a553ab2b45a3da39962902"
+        },
+        "vktApiDescriptorPoolTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/api/vktApiDescriptorPoolTests.cpp",
+          "bytes": 25636,
+          "sha256": "82231c1d66bee2cb38cda0dbf758a4bac12c9af48bd763bf78739e7c53175f93"
+        },
+        "vktApiDescriptorSetTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/api/vktApiDescriptorSetTests.cpp",
+          "bytes": 37291,
+          "sha256": "02acc4c99aef5ed23864e490b6ebf113271ead60bfd8abbf0e9871a1060a68aa"
+        },
+        "vktApiBufferComputeInstance.cpp": {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/api/vktApiBufferComputeInstance.cpp",
+          "bytes": 8729,
+          "sha256": "892057b73d79a3e24f8e0fbfe290c3a51c73f4b0aeec221efd31415fe8ca11e5"
+        },
+        "vktApiComputeInstanceResultBuffer.cpp": {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/api/vktApiComputeInstanceResultBuffer.cpp",
+          "bytes": 4061,
+          "sha256": "8133f0617207bc1d82e289f461d74526619e97493f86038259f184913bd6ef16"
+        },
+        "vktApiComputeInstanceResultBuffer.hpp": {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/api/vktApiComputeInstanceResultBuffer.hpp",
+          "bytes": 2552,
+          "sha256": "316787ab3f016874cc32b9d7e2ba3d76993c7a83e7d3e073f55e176200816553"
+        }
+      },
+      "case_file": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-descriptor-next-0045/cases.txt",
+        "bytes": 414,
+        "sha256": "3512fa6b873ef0da67ef39486efea27368b857c73d493dc1bc3b7db0effda97f"
+      },
+      "cases": [
+        {
+          "case": "dEQP-VK.api.descriptor_pool.repeated_reset_short",
+          "source": "DescriptorPoolTests84-171,512-514",
+          "objects_peak": {
+            "pools": 1,
+            "set_layouts": 2048,
+            "sets": 2048,
+            "descriptors_per_set": 1
+          },
+          "iterations": 2,
+          "action": "Allocate2048 sampler-only sets then resetpool eachiteration. No actualsampler/image/buffer/shader/command.",
+          "oracle": "Original Vulkan result checks, lifetime completion; not broad leak proof."
+        },
+        {
+          "case": "dEQP-VK.api.descriptor_pool.repeated_free_reset_short",
+          "source": "DescriptorPoolTests84-171,518-520",
+          "objects_peak": {
+            "pools": 1,
+            "set_layouts": 2048,
+            "sets": 2048,
+            "descriptors_per_set": 1
+          },
+          "iterations": 2,
+          "action": "Same bounded reset, free one set before each reset; allstage layout valid host object.",
+          "oracle": "Original Vulkan result checks."
+        },
+        {
+          "case": "dEQP-VK.api.descriptor_pool.out_of_pool_memory",
+          "source": "DescriptorPoolTests174-328,524; line48 confines type loop to11 core types",
+          "subcases": 55,
+          "objects_peak": {
+            "pools": 1,
+            "set_layouts": 1,
+            "sets_requested": 4,
+            "bindings": 3,
+            "descriptors_per_layout": 6
+          },
+          "action": "Five finite insufficient capacity shapes \u00d711coredescriptor types including INPUT_ATTACHMENT; zero GPU resources.",
+          "oracle": "Under1.1/maintenance1, every returned allocation error must be OUT_OF_POOL_MEMORY. Original test permits successful overallocation and returns Pass(Not validated) if no errors; retain message, do not turn that into exhaustion semantics proof."
+        },
+        {
+          "case": "dEQP-VK.api.descriptor_pool.zero_pool_size_count",
+          "source": "DescriptorPoolTests331-381,526",
+          "objects_peak": {
+            "pools": 1,
+            "set_layouts": 1,
+            "sets": 1,
+            "descriptors": 0
+          },
+          "action": "Createzero-pool-sizecount/free-setpool and emptylayout; allocate/freeemptyset; noGPU."
+        },
+        {
+          "case": "dEQP-VK.api.descriptor_set.descriptor_set_layout.empty_set.normal",
+          "source": "DescriptorSetTests308-332,620-635",
+          "action": "Create/destroyordinaryemptylayout. No push-descriptor extension, buffers orGPU."
+        },
+        {
+          "case": "dEQP-VK.api.descriptor_set.descriptor_set_layout_lifetime.compute",
+          "source": "DescriptorSetTests49-66,228-305,582-590,603-617; BufferComputeInstance36-75,121-166; ResultBuffer56-86",
+          "buffer_logical_bytes": [
+            256,
+            64
+          ],
+          "descriptors": {
+            "storage_buffer": 1,
+            "uniform_buffer": 1
+          },
+          "action": "Destroy initial DSL afterpipeline-layout creation, recreate compatible DSL/set, createcompute pipeline usingretained layout, bindanddispatch emptyshader.",
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "dispatches": 1,
+          "loops": 0,
+          "oracle": "OriginalAPI/fencedlifetime completion, no tensor/numericalclaim."
+        },
+        {
+          "case": "dEQP-VK.api.descriptor_set.descriptor_set_layout_binding.update_subsequent_binding",
+          "source": "DescriptorSetTests334-555,592-601,637-652",
+          "buffer_logical_bytes": [
+            4,
+            12
+          ],
+          "descriptors": {
+            "uniform_buffer": 3,
+            "storage_buffer": 1
+          },
+          "action": "One write descriptorCount3 rolls over binding0array2 into binding1array1; binding2 output, onecompute invocationreads all3 values.",
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "dispatches": 1,
+          "loops": 0,
+          "oracle": "Three exact uint32 resultwords [5,5,5], original host flush/fence/invalidate."
+        }
+      ],
+      "aggregate": {
+        "cases": 7,
+        "compute_dispatches": 2,
+        "compute_invocations": 2,
+        "image_resources": 0,
+        "transfers": 0,
+        "peak_logical_buffer_bytes": 320,
+        "largest_host_inventory": "2048 singletonlayouts+2048 singletonsets; fixed short2iterations (not4096long variant). Sequentialprocesses avoidcombinedpeak."
+      },
+      "controls": "Original pinned0e715CTS/75699loader, actuallegal1.1 candidate, unchanged90s384MiB/64MiBreserve/groupedper-casefaultstop. Existing8MiBlogallowance amplewithoutreduction. Originalcase results/skip/error messages preserved.",
+      "requirements": [
+        "Descriptorlayout normal empty and destroyedhandle lifetime retainedby pipeline layout.",
+        "Descriptorpool free/reset/emptyallocation and maintenance1 allocationerror semantics.",
+        "WriteDescriptorSet consecutivebinding rollover with same type/stage flags."
+      ],
+      "exclusions": [
+        "Graphics lifetime case",
+        "Pushdescriptor extension",
+        "Amber externaldata layoutordering case",
+        "Long4096iterationpoolstress",
+        "VulkanSC-onlyno-reset variants",
+        "No new harness/shader/oracle changes"
+      ]
+    }
+  },
+  "cases": [
+    "dEQP-VK.api.descriptor_pool.repeated_reset_short",
+    "dEQP-VK.api.descriptor_pool.repeated_free_reset_short",
+    "dEQP-VK.api.descriptor_pool.out_of_pool_memory",
+    "dEQP-VK.api.descriptor_pool.zero_pool_size_count",
+    "dEQP-VK.api.descriptor_set.descriptor_set_layout.empty_set.normal",
+    "dEQP-VK.api.descriptor_set.descriptor_set_layout_lifetime.compute",
+    "dEQP-VK.api.descriptor_set.descriptor_set_layout_binding.update_subsequent_binding"
+  ],
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-descriptor-v2-runner-0045/independent-actual-review.json",
+      "bytes": 2125,
+      "sha256": "fc0cce84eeff328bbf28b5be02cd3a4c7eebc53bcdd40bf758d7d878a32ad3b2"
+    },
+    "result": {
+      "status": "passed finite originalCTS actualaccounting",
+      "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-descriptor/probe",
+      "run_log_sha256": "dd6e640992f7331a34de8a753dcb2a25feef891b0ef3fbcf54b4b264bac29d01",
+      "qpa_results": [
+        {
+          "case": "dEQP-VK.api.descriptor_pool.repeated_reset_short",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "case": "dEQP-VK.api.descriptor_pool.repeated_free_reset_short",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "case": "dEQP-VK.api.descriptor_pool.out_of_pool_memory",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "case": "dEQP-VK.api.descriptor_pool.zero_pool_size_count",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "case": "dEQP-VK.api.descriptor_set.descriptor_set_layout.empty_set.normal",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "case": "dEQP-VK.api.descriptor_set.descriptor_set_layout_lifetime.compute",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "case": "dEQP-VK.api.descriptor_set.descriptor_set_layout_binding.update_subsequent_binding",
+          "status": "Pass",
+          "detail": "Pass"
+        }
+      ],
+      "unattempted_cases": [],
+      "dispatches": [
+        "RADISH_PROFILE dispatch pipeline=0xaaaaf9b08690 grid=1,1,1 local=1,1,1 barrier=0 loops=0 instrlen=1 chunks=1 submits=1 ns=3613913 submit_ns=3339225 submit_max_ns=3339225 result=0",
+        "RADISH_PROFILE dispatch pipeline=0xaaaaceb108c0 grid=1,1,1 local=1,1,1 barrier=0 loops=0 instrlen=1 chunks=1 submits=1 ns=3382090 submit_ns=3122558 submit_max_ns=3122558 result=0"
+      ],
+      "image_transfers": [],
+      "faults_services_collection": "clean",
+      "scope": "Descriptorhost error/lifetime and cross-binding threeword numerical evidence; no full conformance.",
+      "original_binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
+      "exhaustion": "Original55 subcases across11coretypes; QPA has no successful-overallocation messages and finalPass(not Notvalidated). Original checker accepts onlyOUT_OF_POOL_MEMORY on returned errors."
+    }
+  },
+  "runner": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-descriptor/probe/runner-result.json",
+      "bytes": 2419,
+      "sha256": "f185a00c3acf1f20e75a247974de2a7728f1afd1f83250ada2d501257a7d01fc"
+    },
+    "result": {
+      "status": "passed",
+      "mode": "probe",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 159,
+          "sha256": "0bddfbbbf8e0c7e940b66ec042984e94b6bb757f78ea2fc50afaf5a7d83a8965"
+        },
+        "deqp-vk": {
+          "bytes": 97536760,
+          "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+        },
+        "libvulkan.so.1": {
+          "bytes": 703696,
+          "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+        },
+        "info-cases.txt": {
+          "bytes": 414,
+          "sha256": "3512fa6b873ef0da67ef39486efea27368b857c73d493dc1bc3b7db0effda97f"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13621512,
+          "sha256": "0ab7c08728bc6e176e5a14b6c2d4f49a31dd16738dbb07ecf44b4dd55416d75e"
+        },
+        "payload.json": {
+          "bytes": 961,
+          "sha256": "1f5a5fd653ac231c149d04d4778feba58d6bbbd990ee39dee259c251114b7612"
+        }
+      },
+      "run_log": {
+        "bytes": 25002,
+        "sha256": "dd6e640992f7331a34de8a753dcb2a25feef891b0ef3fbcf54b4b264bac29d01"
+      },
+      "qpa": {
+        "bytes": 13739,
+        "sha256": "2336c039837541b2d2d845d6ca4fad507401a9a978d74082a9744769d180eb0d"
+      },
+      "cases": [
+        {
+          "name": "dEQP-VK.api.descriptor_pool.repeated_reset_short",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.descriptor_pool.repeated_free_reset_short",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.descriptor_pool.out_of_pool_memory",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.descriptor_pool.zero_pool_size_count",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.descriptor_set.descriptor_set_layout.empty_set.normal",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.descriptor_set.descriptor_set_layout_lifetime.compute",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.descriptor_set.descriptor_set_layout_binding.update_subsequent_binding",
+          "status": "Pass",
+          "detail": "Pass"
+        }
+      ],
+      "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+    }
+  },
+  "inventory": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-descriptor-v2-runner-0045/inventory-check.json",
+      "bytes": 563,
+      "sha256": "8c8c90bac3a4d72975d5fa2db2629890233d62446bdc2f380ce79a8c9b97383c"
+    },
+    "result": {
+      "status": "passed",
+      "approved_hash": "3512fa6b873ef0da67ef39486efea27368b857c73d493dc1bc3b7db0effda97f",
+      "approved_count": 7,
+      "case_source": "/run/media/jethac/Shared/radish/compute11-official-descriptor-next-0045/cases.txt",
+      "single_inventory": true,
+      "execution": "Order derives only from hash-pinned frozen file; same count drives QPA collection; host check-only fails mismatches before staging.",
+      "preserved": "Old literal runner unexecuted; currentETCv2 live unchanged. No budget, faultstop, QPA outcome, CTS binary, driver or case change."
+    }
+  },
+  "scope": "Five hostcases plus2single-invocation compute cases, poolreset/free/reset/exhaustion/zero/empty, layoutlifetime andcrossbindingUBOupdate. Exhaustion actualPass, no successfuloverallocationmessage; not universalOOMproof. Original90s384MiB/percasefaultstop. Singleapprovedcasefile hash/count validatedbeforestaging andfrozenexecution; order/collection derive sameinventory."
+}

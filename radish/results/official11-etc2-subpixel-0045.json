@@ -1,0 +1,688 @@
+{
+  "status": "Ten exact original ETC2/EAC compute sampling cases PASS; full precision/conformance remains incomplete",
+  "prior": "core-lookup-public-0045.json",
+  "patches": [
+    {
+      "path": "/home/jethac/Projects/radish/radish/patches/0045-radish-etc2-feature-experimental.patch",
+      "bytes": 667,
+      "sha256": "52975f4f3f973d1ec8d5fefe4be9be811d4e47db1b3ae9c8885b86ad5544b4da"
+    },
+    {
+      "path": "/home/jethac/Projects/radish/radish/patches/0045-radish-framebuffer-samples.patch",
+      "bytes": 684,
+      "sha256": "a47b27b90ea30a6b484aa1b13bd7c668b1de4587d290ce599441e9f5ae9d5652"
+    },
+    {
+      "path": "/home/jethac/Projects/radish/radish/patches/0045-radish-subpixel-property.patch",
+      "bytes": 400,
+      "sha256": "e3e2df20a216cc683e26d4d1556eb39084b9c3073d85d44441cc4f5c0c2a5d54"
+    }
+  ],
+  "reconstructed_source": {
+    "src/freedreno/radish/rd_nir_resources.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/source/src/freedreno/radish/rd_nir_resources.c",
+      "bytes": 14792,
+      "sha256": "49ba435efd7edaa8bee8563cf3121297bbf06091a79f0e3736cbd4b2111c21b9"
+    },
+    "src/freedreno/radish/rd_command.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/source/src/freedreno/radish/rd_command.c",
+      "bytes": 13873,
+      "sha256": "9d8186e6219d989daaad17aaeb04347219295f913301df38dd97a6d3680a2498"
+    },
+    "src/freedreno/radish/rd_transfer.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/source/src/freedreno/radish/rd_transfer.c",
+      "bytes": 2992,
+      "sha256": "a93968bf54724b1a068d7169940952286b73a0eb08f9fe78ee3ef4e608d5812b"
+    },
+    "src/freedreno/radish/rd_nir_robust.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/source/src/freedreno/radish/rd_nir_robust.c",
+      "bytes": 9502,
+      "sha256": "eb7b2f530891fd81fbb5e9d048f2d4c93ad22b10476b0202fb9bca4dda28111c"
+    },
+    "src/freedreno/radish/rd_image.h": {
+      "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/source/src/freedreno/radish/rd_image.h",
+      "bytes": 1793,
+      "sha256": "6c0847bb62fd18eef4e4398a7efc89afde57fbed64d64ab152586078d9555747"
+    },
+    "src/freedreno/radish/rd_memory.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/source/src/freedreno/radish/rd_memory.c",
+      "bytes": 6238,
+      "sha256": "210d76aecc691fefb8765c60fa677f273a4c4d8f6aac4aa2239ed0f78b8cc9f8"
+    },
+    "src/freedreno/radish/rd_sampling.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/source/src/freedreno/radish/rd_sampling.c",
+      "bytes": 6391,
+      "sha256": "2e1832d37ce206d98d7d8c778c231e19565c0d810b133c56ed46af107b360599"
+    },
+    "src/freedreno/radish/rd_query.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/source/src/freedreno/radish/rd_query.c",
+      "bytes": 14017,
+      "sha256": "8f83148f39b51411963dd2b201979f0e7d94f496a3e34b81601278bcdf622978"
+    },
+    "src/freedreno/radish/rd_nir_resources.h": {
+      "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/source/src/freedreno/radish/rd_nir_resources.h",
+      "bytes": 953,
+      "sha256": "0afa75cc3e1c856496b4b52b6c65eca90ac751cbefaf807e3af1421fbca93599"
+    },
+    "src/freedreno/radish/rd_event.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/source/src/freedreno/radish/rd_event.c",
+      "bytes": 4999,
+      "sha256": "324cd260d6cb805d6b8548f9f518df1fba8110dd6bef25ae7f072c7ac17ac49c"
+    },
+    "src/freedreno/radish/rd_sampling.h": {
+      "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/source/src/freedreno/radish/rd_sampling.h",
+      "bytes": 1096,
+      "sha256": "541a70b8aca605c0719aa03d551241da16136d6a17ff801bb5d379d7e6d86932"
+    },
+    "src/freedreno/radish/rd_queue.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/source/src/freedreno/radish/rd_queue.c",
+      "bytes": 45229,
+      "sha256": "da170e7c4d4a1fc9db0da5ded100376fab80b57fb70af2427a4ff81fbbdc4890"
+    },
+    "src/freedreno/radish/meson.build": {
+      "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/source/src/freedreno/radish/meson.build",
+      "bytes": 1777,
+      "sha256": "8b5d6cd1839eb92a2dd9a0038ea3f1c9840935694b7acdfc36a1dd46714d732d"
+    },
+    "src/freedreno/radish/rd_instance.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/source/src/freedreno/radish/rd_instance.c",
+      "bytes": 13499,
+      "sha256": "90ee6981facc895b930e93b4071c9019aeafaa177d786a7de6bc3ee3137e60dc"
+    },
+    "src/freedreno/radish/rd_resources.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/source/src/freedreno/radish/rd_resources.c",
+      "bytes": 27624,
+      "sha256": "8c2c129bcc6129d910fd992a2563de1feae7e675619dc0fa571bd664fb380e3b"
+    },
+    "src/freedreno/radish/rd_nir_sampling.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/source/src/freedreno/radish/rd_nir_sampling.c",
+      "bytes": 23572,
+      "sha256": "64bed3318324ec74b2dde5bd2fb3d9b8dc996eb4077d2d09daf1dc2aec6c0b7a"
+    },
+    "src/freedreno/radish/rd_image.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/source/src/freedreno/radish/rd_image.c",
+      "bytes": 50355,
+      "sha256": "be031b4ffe443d085a66c1adf2fe800400eae403ec701ce09978b52dbebc8def"
+    },
+    "src/freedreno/radish/rd_device.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/source/src/freedreno/radish/rd_device.c",
+      "bytes": 6266,
+      "sha256": "b47a9e92dbdcca9ef58f62066c03d3b10a6ba4cb795a7a737ccfe1c4e67021df"
+    },
+    "src/freedreno/radish/rd_private.h": {
+      "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/source/src/freedreno/radish/rd_private.h",
+      "bytes": 8794,
+      "sha256": "b4fd0b4017316865f92f740285bf900fb93fe59189f2bba658fb665d5bc91502"
+    },
+    "src/freedreno/radish/rd_pipeline.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/source/src/freedreno/radish/rd_pipeline.c",
+      "bytes": 25457,
+      "sha256": "db56340993aeffdf8e945058864f4f7737f350ed990f559f95be66d553bcd599"
+    },
+    "src/freedreno/radish/rd_descriptor.c": {
+      "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/source/src/freedreno/radish/rd_descriptor.c",
+      "bytes": 17524,
+      "sha256": "b3cd22b2ace3540674a9cb98c55d4a9fcd62c1ffcb90fabe37fa478791ceb147"
+    }
+  },
+  "driver": {
+    "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/libvulkan_radish.so",
+    "bytes": 49078376,
+    "sha256": "a41b28271dc836173a41269c6ff68c983a6e20ced73e5aa557ee30f5ca9b4cbc"
+  },
+  "source_reviews": [
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/compute11-etc2-feature-experimental-0045/independent-experimental-source-review.json",
+        "bytes": 1789,
+        "sha256": "b2a543a7cce1ffaf1bcd17a3fb07409525f61148b3a14e74d3647f093b53d934"
+      },
+      "result": {
+        "status": "passed for explicitly authorized experimental public-feature test candidate",
+        "patch": {
+          "path": "/run/media/jethac/Shared/radish/compute11-etc2-feature-experimental-0045/etc2-feature-experimental.patch",
+          "bytes": 667,
+          "sha256": "52975f4f3f973d1ec8d5fefe4be9be811d4e47db1b3ae9c8885b86ad5544b4da"
+        },
+        "baseline": {
+          "path": "/run/media/jethac/Shared/radish/compute11-etc2-feature-experimental-0045/baseline/rd_instance.c",
+          "bytes": 13077,
+          "sha256": "697e58afd7e1df74c4820ab6e18721246ebf6020e26ecc1e028d7ba909000814"
+        },
+        "candidate": {
+          "path": "/run/media/jethac/Shared/radish/compute11-etc2-feature-experimental-0045/candidate/rd_instance.c",
+          "bytes": 13115,
+          "sha256": "cac62c4a5b1123e0bbe30a80b2a66f7f53693a72e81f3270bfc592724d0436e2"
+        },
+        "source_pins_verified": 7,
+        "checks": [
+          "Exact one added feature initializer; all other features, API/queue, limits, guards and compiler unchanged.",
+          "All ten ETC2/EAC native FD5 mappings and admitted image-format switch cases present in frozen required source.",
+          "Existing normalized format-filter path and compressed optimal BLIT_SRC query trait retained; compression buffer/linear/storage claims remain absent.",
+          "Previously reviewed block-aware layout/copies/view stack retained."
+        ],
+        "limitations": [
+          "Not a conformance or sRGB precision qualification. All 42 strict custom sRGB linear failures remain FAIL; equivalent uncompressed sRGB evidence does not erase them.",
+          "Actual feature query/enablement and original CTS numerical outcomes still required.",
+          "GRAPHICS-only blit execution has no valid exposed queue; only query trait/interface obligations claimed.",
+          "Existing D24 helper asserts feature false and remains paired to frozen9407."
+        ]
+      }
+    },
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/compute11-framebuffer-samples-0045/independent-mask-source-review.json",
+        "bytes": 2624,
+        "sha256": "ed668336ca25a9f9ba8858fdbe5205a64740fb62e97c280b11c6e64f7c35bb63"
+      },
+      "result": {
+        "status": "passed finite four-property source review; actual query/composed format consistency remains gate",
+        "patch": {
+          "path": "/run/media/jethac/Shared/radish/compute11-framebuffer-samples-0045/framebuffer-samples.patch",
+          "bytes": 684,
+          "sha256": "a47b27b90ea30a6b484aa1b13bd7c668b1de4587d290ce599441e9f5ae9d5652"
+        },
+        "candidate": {
+          "path": "/run/media/jethac/Shared/radish/compute11-framebuffer-samples-0045/candidate/rd_instance.c",
+          "bytes": 13465,
+          "sha256": "2ba9d85ee72f14e53a08e0b1721c2a64e3de653916685c6b737e25e0e3b82a5b"
+        },
+        "exact_delta": [
+          "framebufferColorSampleCounts",
+          "framebufferDepthSampleCounts",
+          "framebufferStencilSampleCounts",
+          "framebufferNoAttachmentsSampleCounts"
+        ],
+        "normative_rows": [
+          {
+            "line": 2745,
+            "text": "| pname:framebufferColorSampleCounts         | - | (ename:VK_SAMPLE_COUNT_1_BIT \\| ename:VK_SAMPLE_COUNT_4_BIT) | min"
+          },
+          {
+            "line": 2746,
+            "text": "| pname:framebufferDepthSampleCounts         | - | (ename:VK_SAMPLE_COUNT_1_BIT \\| ename:VK_SAMPLE_COUNT_4_BIT) | min"
+          },
+          {
+            "line": 2747,
+            "text": "| pname:framebufferStencilSampleCounts       | - | (ename:VK_SAMPLE_COUNT_1_BIT \\| ename:VK_SAMPLE_COUNT_4_BIT) | min"
+          },
+          {
+            "line": 2748,
+            "text": "| pname:framebufferNoAttachmentsSampleCounts | - | (ename:VK_SAMPLE_COUNT_1_BIT \\| ename:VK_SAMPLE_COUNT_4_BIT) | min"
+          }
+        ],
+        "checks": [
+          "Exact four formerlyzero property initializers become1|4; no otherfeatures/limits/guards/sample-mask-word changes.",
+          "Pinned capabilities sampleCounts relation is per-format supersets/intersection, so oldzero global masks werepropertyfailure but didnotbythemselves invalidate queried4x hostimages.",
+          "Current native FDL5 sample4 representation/views/copystride/source admission preserved; existing validhost-object and limitedcomputeMS evidence reused within theirscope.",
+          "Noattachment framebuffer host metadata needs noimage payload. Renderingcannotbelegallyissued onexposedcompute-only queue; no executedrasterizationclaim."
+        ],
+        "open": [
+          "Per-format nonattachment sampleCounts=1 restriction remains authorseparate patch; do not treatfour propertyfields aloneas completequery consistency.",
+          "Requiredcolorformat breadth and sample-qualifiedformatqueries require pairedreview/actualvalidation.",
+          "No new initialized4x depth numerical or actual rendering claim.",
+          "maxSampleMaskWords remains open."
+        ],
+        "citation_correction": "Local pinned limits minimum rows are2745-2748 (not release2612-2615); exactrowtext retainedabove."
+      }
+    },
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/compute11-subpixel-property-0045/independent-source-review.json",
+        "bytes": 1729,
+        "sha256": "84a1e1f929b4f035c7648c48b2a77a043ff2cd6ec12285d47ef3cd35681b3b27"
+      },
+      "result": {
+        "status": "PASS finite one-property correction source/provenance",
+        "patch": {
+          "path": "/run/media/jethac/Shared/radish/compute11-subpixel-property-0045/subpixel-property.patch",
+          "bytes": 400,
+          "sha256": "e3e2df20a216cc683e26d4d1556eb39084b9c3073d85d44441cc4f5c0c2a5d54"
+        },
+        "release": {
+          "path": "/run/media/jethac/Shared/radish/compute11-subpixel-property-0045/release.json",
+          "bytes": 4064,
+          "sha256": "e55daf5d382e831f7537785133743fab89d88f4dd576a9faf46b5b76d0728105"
+        },
+        "checks": [
+          "Exact only subPixelPrecisionBits4 addition over fourmask2ba9; all source/primary dependency hashes rechecked. No shader, coordinate, threshold or work change.",
+          "Matched Freedreno commoncap initialization calls Mesa u_init_pipe_screen_caps default rasterizer_subpixel_bits4; matched gen5 initializer has no override. This is matchedFD5 capability provenance, not Turnip/A6xx or mandatoryminimum alone.",
+          "Pinned raw1.1 limits source requires minimum4; zero value independently violates scalar contract. Graphics queue absence is not treated as a numeric/property waiver.",
+          "Original CTS compute sampling reference passes this reported value to CPU rasterizer; its negative shift precondition when0 is concretely invalid. Correcting real property restores reference domain; exact prior mismatchpixel cause is not established by source alone.",
+          "Preserve4c46 original failingQPA and diagnostic19110. New changed-property originalcase numerical/native evidence remains required; no original strict customSRGB mismatch erased or tolerance edited."
+        ],
+        "scope": "Only property query correction. No graphics execution/renderer, maxSampleMaskWords, new hardware guard or conformance claim."
+      }
+    }
+  ],
+  "host_strip": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-subpixel-property-0045/independent-narrow-host-strip-review.json",
+      "bytes": 1612,
+      "sha256": "b24062dd957139469140c37af839971a0774e08cd76aa6ed7abc31a3e21ffb7a"
+    },
+    "result": {
+      "status": "PASS exact narrow source/AArch64/debugstrip pairing; originalcase next",
+      "owner_result": {
+        "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/result.json",
+        "bytes": 4861,
+        "sha256": "1208c447948eba920915a037a6309d0df45c8c16cff690ed0aa9f5b985855fee"
+      },
+      "original": {
+        "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-build-0045/libvulkan_radish.so",
+        "bytes": 49078376,
+        "sha256": "a41b28271dc836173a41269c6ff68c983a6e20ced73e5aa557ee30f5ca9b4cbc"
+      },
+      "stripped": {
+        "path": "/run/media/jethac/Shared/radish/compute11-subpixel-masks-strip-0045/subpixel-masks/libvulkan_radish.so",
+        "bytes": 13621512,
+        "sha256": "1982bcdd2c26a2f858e08df3fde94af1cf0b3d4e3df7ccfb8f8f811edf2e5512"
+      },
+      "changed_sources_over_4c46": [
+        "src/freedreno/radish/rd_instance.c"
+      ],
+      "checks": [
+        "Every savedsource hash rechecked. Onlyrd_instance differs from4c46; exact90ee candidate comprisesfoura47b maskfields+e3e2 subPixel4. rd_image/nativeattachmentd161 and all shader/compiler/sampling/layout/allocator sources are byte-exact4c46.",
+        "Both ELF64 little-endian machine183. Independentlyparsed complete programheaders byte-exact; every SHF_ALLOC section metadata and contents exactlyequal afterdebugstrip (including NOBITSmetadata)."
+      ],
+      "allocated_sections_rechecked": 26,
+      "limits": "This intentionally narrower candidate excludes broaderd161 format/query source. No newshader/sourcegate needed solelyfor propertyreport, but actualoriginalfirstCTS outcome remainsrequired. Priorfailures/customSRGBoracles retained."
+    }
+  },
+  "bounds": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-etc2-sampling-next-0045/source-bounds.json",
+      "bytes": 8006,
+      "sha256": "25341f1933933ae1e55d4191eee4e7c24f1ed6fbd6e71d305c5e76b501746cfc"
+    },
+    "result": {
+      "status": "source-bounded original official CTS compressed sampling partition; no device action",
+      "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+      "sources": {
+        "vktPipelineTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/pipeline/vktPipelineTests.cpp",
+          "bytes": 13622,
+          "sha256": "c83244fe0e083db02f4bd4caa84e673ef3909e2e74f38fefe95f3132139e3a38"
+        },
+        "vktPipelineImageTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/pipeline/vktPipelineImageTests.cpp",
+          "bytes": 38868,
+          "sha256": "0662e7f6980ab98e6c7f5e5c6dd96118344da8c8c193965e67d0f14c8d5c5d17"
+        },
+        "vktPipelineImageSamplingInstance.cpp": {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/pipeline/vktPipelineImageSamplingInstance.cpp",
+          "bytes": 88316,
+          "sha256": "0148750db4d680ecd9572a559555815f31df5aaf7cefed3da865d9ed457d5a12"
+        },
+        "vktPipelineImageUtil.cpp": {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/pipeline/vktPipelineImageUtil.cpp",
+          "bytes": 62035,
+          "sha256": "822c47433542ffbdd109209993f2afc596c58e3cfaa5fd7a9146fe9f6f2f05d3"
+        },
+        "vktPipelineVertexUtil.cpp": {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/pipeline/vktPipelineVertexUtil.cpp",
+          "bytes": 34449,
+          "sha256": "469412561d6ed9560020a37a644bbb020b3b3f9fbe1f1252edfb443d9d9178ad"
+        }
+      },
+      "format_inventory": {
+        "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/framework/vulkan/generated/vulkan/vkFormatLists.inl",
+        "bytes": 49926,
+        "sha256": "7fdae39942f0d334cdd88c122cb639c8973b73a402d5ec17563c7ecca2d62046"
+      },
+      "case_file": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-etc2-sampling-next-0045/cases.txt",
+        "bytes": 1415,
+        "sha256": "720b0fc1e87264e258f9075a8d2f3dacc2f01e13be05a812431a881a8cd5fcfe"
+      },
+      "cases": [
+        "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8_unorm_block.count_1.size.13x13_compute",
+        "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8_srgb_block.count_1.size.13x13_compute",
+        "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8a1_unorm_block.count_1.size.13x13_compute",
+        "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8a1_srgb_block.count_1.size.13x13_compute",
+        "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8a8_unorm_block.count_1.size.13x13_compute",
+        "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8a8_srgb_block.count_1.size.13x13_compute",
+        "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.eac_r11_unorm_block.count_1.size.13x13_compute",
+        "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.eac_r11_snorm_block.count_1.size.13x13_compute",
+        "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.eac_r11g11_unorm_block.count_1.size.13x13_compute",
+        "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.eac_r11g11_snorm_block.count_1.size.13x13_compute"
+      ],
+      "case_count": 10,
+      "public_environment": {
+        "api": "private truthful Vulkan1.1 candidate",
+        "required_feature": "textureCompressionETC2 queried by isSupportedSamplableFormat; original CTS device creation/feature enablement retained",
+        "required_candidate": "Experimental52975 atop implemented ten-format/native block/copy/view +BLIT_SRC query stack; fixedcorelookup may compose",
+        "optional_features_not_required": [
+          "sampled-image-array dynamic indexing (count1)",
+          "ASTC/BC",
+          "protected pipeline access",
+          "shader objects",
+          "storage image extended formats",
+          "graphics queue"
+        ]
+      },
+      "per_case": {
+        "input_image": {
+          "type": "2D optimal sampled+transfer destination",
+          "extent": [
+            13,
+            13,
+            1
+          ],
+          "layers": 1,
+          "samples": 1,
+          "mip_extents": [
+            [
+              13,
+              13,
+              1
+            ],
+            [
+              6,
+              6,
+              1
+            ],
+            [
+              3,
+              3,
+              1
+            ],
+            [
+              1,
+              1,
+              1
+            ]
+          ],
+          "block_count": 22,
+          "compressed_payload_bytes_max": 352
+        },
+        "output_image": {
+          "format": "R8G8B8A8_UNORM",
+          "extent": [
+            13,
+            13,
+            1
+          ],
+          "layers": 1,
+          "samples": 1,
+          "mips": 1,
+          "usage": [
+            "COLOR_ATTACHMENT",
+            "TRANSFER_SRC",
+            "STORAGE"
+          ],
+          "logical_bytes": 676,
+          "note": "Original compute path retains COLOR_ATTACHMENT usage but creates no renderpass/framebuffer or graphics pipeline; existing RGBA8 attachment mechanism is required."
+        },
+        "vertices_ssbo_bytes": 192,
+        "vertices": 6,
+        "shader_local": [
+          1,
+          1,
+          1
+        ],
+        "dispatch_grid": [
+          13,
+          13,
+          1
+        ],
+        "dispatches": 1,
+        "invocations": 169,
+        "shader_loop_max": 2,
+        "shader_work": "CPU-generated two-triangle barycentric interpolation loop, one texture lookup and one RGBA8 imageStore per invocation; no shared memory/barriers/atomics.",
+        "descriptors": {
+          "combined_image_sampler": 1,
+          "storage_image": 1,
+          "storage_buffer": 1
+        },
+        "sampler": "NEAREST min/mag/mip, clamp edge, no anisotropy/compare, LOD0 input; complete four-mip upload",
+        "transfer": "One four-region compressed buffer-image upload plus one RGBA8 image-buffer readback; original fence/dependencies.",
+        "logical_payload_bound_bytes": 2000,
+        "allocation_note": "Logical payload bound is not peak-process/device allocation claim. Original CTS allocator/alignment/pitches/library/compiler overhead remain inside unchanged384MiB/90s scope; no limit widening."
+      },
+      "group_work": {
+        "dispatches": 10,
+        "invocations": 1690,
+        "output_rgba8_bytes": 6760,
+        "execution": "Existing grouped original-runner invokes fixed cases sequentially with per-case fault/service stop and separate QPA; no concurrent peak multiplication."
+      },
+      "source_sections": {
+        "registration": "ImageTests:573-741 size13x13 and _compute;745-800 count1/all formats;835-930 combined/2d/suballocation hierarchy;PipelineTests:119,229",
+        "shader": "ImageTests:155-214 parameters;251-329 local1/interpolation/texture/imageStore",
+        "objects": "ImageSamplingInstance:503-741 input/output/SSBO/descriptors;742 graphics-only branch skipped;935-974 compute pipeline/dispatch",
+        "verify": "ImageSamplingInstance:1658-1707 precision construction;1751-1780 readback/reference",
+        "uploads": "ImageUtil:459-536 compressed payload/regions;268-320 RGBA8 readback",
+        "feature": "ImageUtil:77-119 actual textureCompressionETC2 check"
+      },
+      "acceptance_scope": [
+        "Original unmodified case/QPA verdicts only; NotSupported is not PASS and must remain explicit.",
+        "Original verifier explicitly states low precision and not an accuracy test. Compressed assumed bitdepth7, nearest threshold derived6bits plus sRGB4/255; RGBA8 output quantization also present.",
+        "A PASS cannot erase 42 stricter float diagnostic sRGB failures or establish normative precision/full feature conformance.",
+        "No linear filtering, mip selection breadth, arrays/cubes, BLIT execution, multisampling or broader shader/format closure claimed."
+      ],
+      "controls": "Reuse original0e715 CTS/pinned75699 loader, original90s384MiB/64MiB reserve, per-case fault stop; no harness/source/threshold changes."
+    }
+  },
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-etc2-subpixel-first-runner-0045/independent-ten-actual-review.json",
+      "bytes": 3292,
+      "sha256": "e9990c0072a3dbe3524a946ce2c419cab5c4ee5659e2d4033b74f0be3b703ca9"
+    },
+    "result": {
+      "status": "PASS ten exact original official ETC2/EAC compute sampling cases",
+      "cases": [
+        "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8_unorm_block.count_1.size.13x13_compute",
+        "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8_srgb_block.count_1.size.13x13_compute",
+        "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8a1_unorm_block.count_1.size.13x13_compute",
+        "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8a1_srgb_block.count_1.size.13x13_compute",
+        "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8a8_unorm_block.count_1.size.13x13_compute",
+        "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8a8_srgb_block.count_1.size.13x13_compute",
+        "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.eac_r11_unorm_block.count_1.size.13x13_compute",
+        "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.eac_r11_snorm_block.count_1.size.13x13_compute",
+        "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.eac_r11g11_unorm_block.count_1.size.13x13_compute",
+        "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.eac_r11g11_snorm_block.count_1.size.13x13_compute"
+      ],
+      "rounds": [
+        {
+          "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-etc2-subpixel-first/probe",
+          "run_log_sha256": "ee622b85e972526cf261f504143bfd7b4ebd95f3eda1aa50c96267c00b2f1191",
+          "cases": 1,
+          "dispatches": 1,
+          "chunks": 4,
+          "submits": 4,
+          "service": [
+            "2.503s"
+          ],
+          "memory": [
+            "163.4M (swap: 0B)"
+          ]
+        },
+        {
+          "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-etc2-subpixel-remaining/probe",
+          "run_log_sha256": "8a4c0cd9538de0536c583fcd71d432e5fc72cada8556e88d3b03134483119241",
+          "cases": 9,
+          "dispatches": 9,
+          "chunks": 36,
+          "submits": 36,
+          "service": [
+            "21.770s"
+          ],
+          "memory": [
+            "164.8M (swap: 0B)"
+          ]
+        }
+      ],
+      "first_vs_preserved_failed_pixel_scope": {
+        "all_MESA_info_bytes_equal": true,
+        "bytes": 87233,
+        "sha256": "ed27f9235d7fe95da0b4dc8c7d0a89e72b63700d0b370c9daf32211729f10544",
+        "same_CTS_loader_case_shader_seed_oracle": true,
+        "known_source_change": "Four framebuffer sample masks and hardware-backed subPixelPrecisionBits4 only; source/host reviewed independently.",
+        "causal_evidence": "Failed result independently matched all676 original-seed decoded bytes while CTS reference received invalid subpixel0; changing the property restores original case pass with identical full MESA compiler output. No texture implementation or threshold correction."
+      },
+      "scope": "Ten sampled compute cases, not full ETC feature/conformance or stronger precision closure. All42 strict custom sRGB linear failures remain retained; no custom tolerance change.",
+      "device_actions": 0
+    }
+  },
+  "first": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-etc2-subpixel-first/probe/runner-result.json",
+      "bytes": 1710,
+      "sha256": "41aa117d38729a1fb27e55d781d9be1ae5dd294da2b888ff97ee70013dd36211"
+    },
+    "result": {
+      "status": "passed",
+      "mode": "probe",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 168,
+          "sha256": "c3b53914b61ec7a8321e566adaa9d3e7082954499c1a4ff35f510bb668a0604f"
+        },
+        "deqp-vk": {
+          "bytes": 97536760,
+          "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+        },
+        "libvulkan.so.1": {
+          "bytes": 703696,
+          "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+        },
+        "info-cases.txt": {
+          "bytes": 142,
+          "sha256": "d5eded3eae2f8560b94cccd4cc61cce61ef43c63b619ee0edb8231db60fa8838"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13621512,
+          "sha256": "1982bcdd2c26a2f858e08df3fde94af1cf0b3d4e3df7ccfb8f8f811edf2e5512"
+        },
+        "payload.json": {
+          "bytes": 970,
+          "sha256": "deec47033f7639830f5c8dec0ff8c41e2ae8e16afbbd9cde3515576239ce1beb"
+        }
+      },
+      "run_log": {
+        "bytes": 89011,
+        "sha256": "ee622b85e972526cf261f504143bfd7b4ebd95f3eda1aa50c96267c00b2f1191"
+      },
+      "qpa": {
+        "bytes": 2117,
+        "sha256": "aa779d715e3ccc87a2a13781ff5d10372d6231ea010c7b85db0877621fad4214"
+      },
+      "cases": [
+        {
+          "name": "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8_unorm_block.count_1.size.13x13_compute",
+          "status": "Pass",
+          "detail": "Result image matches reference"
+        }
+      ],
+      "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+    }
+  },
+  "remaining_nine": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-etc2-subpixel-remaining/probe/runner-result.json",
+      "bytes": 3668,
+      "sha256": "3c4f83e682ca23faf892898cc3eb77027d34a4303139bde94f87e717126ccb7c"
+    },
+    "result": {
+      "status": "passed",
+      "mode": "probe",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 172,
+          "sha256": "4f086c5d3cb4c4b388e80a993d2779987cfd72ee7ea23e124e0ed29c2dcf968c"
+        },
+        "deqp-vk": {
+          "bytes": 97536760,
+          "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+        },
+        "libvulkan.so.1": {
+          "bytes": 703696,
+          "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+        },
+        "info-cases.txt": {
+          "bytes": 1273,
+          "sha256": "971329acb1c0c6b6be461540c5560506991bfc96f334e2af315c6e4cbc7d75de"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13621512,
+          "sha256": "1982bcdd2c26a2f858e08df3fde94af1cf0b3d4e3df7ccfb8f8f811edf2e5512"
+        },
+        "payload.json": {
+          "bytes": 975,
+          "sha256": "192b39f83558c16abe1e1a7bfc7e41aa1ecd1ea7fba57c51c8a5732afd7343e0"
+        }
+      },
+      "run_log": {
+        "bytes": 800500,
+        "sha256": "8a4c0cd9538de0536c583fcd71d432e5fc72cada8556e88d3b03134483119241"
+      },
+      "qpa": {
+        "bytes": 19146,
+        "sha256": "53a9fc976ade262c3530158d4b1c92796928ad650e6a7eb42cf6caffc4718026"
+      },
+      "cases": [
+        {
+          "name": "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8_srgb_block.count_1.size.13x13_compute",
+          "status": "Pass",
+          "detail": "Result image matches reference"
+        },
+        {
+          "name": "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8a1_unorm_block.count_1.size.13x13_compute",
+          "status": "Pass",
+          "detail": "Result image matches reference"
+        },
+        {
+          "name": "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8a1_srgb_block.count_1.size.13x13_compute",
+          "status": "Pass",
+          "detail": "Result image matches reference"
+        },
+        {
+          "name": "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8a8_unorm_block.count_1.size.13x13_compute",
+          "status": "Pass",
+          "detail": "Result image matches reference"
+        },
+        {
+          "name": "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8a8_srgb_block.count_1.size.13x13_compute",
+          "status": "Pass",
+          "detail": "Result image matches reference"
+        },
+        {
+          "name": "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.eac_r11_unorm_block.count_1.size.13x13_compute",
+          "status": "Pass",
+          "detail": "Result image matches reference"
+        },
+        {
+          "name": "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.eac_r11_snorm_block.count_1.size.13x13_compute",
+          "status": "Pass",
+          "detail": "Result image matches reference"
+        },
+        {
+          "name": "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.eac_r11g11_unorm_block.count_1.size.13x13_compute",
+          "status": "Pass",
+          "detail": "Result image matches reference"
+        },
+        {
+          "name": "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.eac_r11g11_snorm_block.count_1.size.13x13_compute",
+          "status": "Pass",
+          "detail": "Result image matches reference"
+        }
+      ],
+      "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+    }
+  },
+  "original_failure": "official11-etc2-first-failure-0045.json",
+  "precision_limit": "Original CTS thresholds are unchanged. These ten bounded13x13 cases do not erase42 stricter custom sRGB mismatches or establish complete compression conformance.",
+  "interpretation": "Failed old GPUResult676bytes match an independently reconstructed seed123 texture, not a captured CTS reference. Matched Freedreno source establishes subpixel4; old0 is below required minimum and makes the unmodified CPU raster reference use an invalid shift. First actual native MESA records are byte-identical before/after; corrected property firstPass then exact original suffix9Pass supports the invalid query as the cause of the original CTS failure. Four framebuffer masks were corrected concurrently; no shader/sampling/layout/threshold changes.",
+  "reproduction": "Apply exact three patches over published1cd9 in order. Use first runner/case file, then remaining runner/exact nine-case suffix only after first PASS and clean postflight. Original90s384MiB/8MiB log allowance/64MiB reserve/per-case faultstop preserved. Source/native guards and inference selection unchanged."
+}

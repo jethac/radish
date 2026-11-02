@@ -1,0 +1,10 @@
+--- a/src/freedreno/radish/rd_instance.c
++++ b/src/freedreno/radish/rd_instance.c
+@@ -178,6 +178,7 @@
+       .maxDrawIndexedIndexValue = (1u << 24) - 1,
+       .minTexelOffset = -8,
+       .maxTexelOffset = 7,
++      .subPixelPrecisionBits = 4,
+       .subTexelPrecisionBits = 4,
+       .mipmapPrecisionBits = 8,
+       .sampledImageColorSampleCounts = VK_SAMPLE_COUNT_1_BIT | VK_SAMPLE_COUNT_4_BIT,

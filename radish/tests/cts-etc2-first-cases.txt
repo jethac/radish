@@ -1,0 +1,1 @@
+dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8_unorm_block.count_1.size.13x13_compute

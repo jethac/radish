@@ -1,0 +1,5 @@
+dEQP-VK.info.physical_devices
+dEQP-VK.info.device_features
+dEQP-VK.info.device_queue_family_properties
+dEQP-VK.info.device_memory_properties
+dEQP-VK.info.device_properties

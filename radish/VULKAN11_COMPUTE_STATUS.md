@@ -5,20 +5,20 @@ come before further performance experiments. The selected fcd/d332 inference
 stack is frozen. The intended GPU budget is entirely compute; CPU handles
 graphics. No graphics headroom reservation should be added. Any removal must
 identify a real source reservation and preserve correctness/resource guards;
-this is not authorization to change OS graphics or services. The private integrated candidate ac2a5bbe includes representative resource corrections. It remains separate from selected inference and is not a qualified replacement. See the [machine-readable ledger](results/vulkan11-compute-ledger-0045.json).
+this is not authorization to change OS graphics or services. The separate a41b validation candidate includes representative resource corrections and the source-backed subpixel query fix. It remains separate from selected inference and is not a qualified replacement. See the [machine-readable ledger](results/vulkan11-compute-ledger-0045.json).
 
 | Area | Evidence | Remaining work |
 | --- | --- | --- |
 | Public 1.1 API, queries and promoted aliases | Real public1.1 negotiation,28core names/23KHR aliases and selected error/query semantics pass | Complete promoted command semantics and applicable API CTS |
 | SPIR-V1.0–1.3 and BASIC | Legal1.1 custom BASIC consumer plus all six original BASIC compute CTS cases and four SPIR-V version cases pass | Full generic shader semantics, legal geometry/precision/memory combinations and remaining applicable shader CTS |
-| Limits and resource combinations | Original guards; five-buffer Q4; combined12UBO+5SSBO+4image+hidden metadata actual PASS | All applicable limits/combinations;15 remaining property messages after16 fixes; no queue-based waiver |
+| Limits and resource combinations | Original guards; five-buffer Q4; combined12UBO+5SSBO+4image+hidden metadata actual PASS | All applicable limits/combinations;9 remaining property messages after source-backed corrections; no queue-based waiver |
 | Required formats | Static audit of47 rows; four packed storage formats and core SNORM endpoints/OOB now pass representative checks | ETC2/EAC sRGB numerical failure remains; complete required format/filter/transfer CTS |
 | Images and transfers | Representative cube, MS, oversized-array, storage and atomic consumers | Required formats/types/views/mips/alias/copy/filter combinations and CTS |
 | Buffers and robustness | Corrected legal exact-range and subword consumers; original invalid module erratum retained | Scalar/vector/array/alias/atomic and memory-model CTS |
 | Descriptors and lifetimes | Static compaction, dynamic offsets, templates, two-round valid recording consumers | Pools, copies, compatible layouts, destruction/re-record and allocation errors |
 | Memory and synchronization | Guarded allocations, coherent mapping, barriers/events/queries/binary and timeline consumers | Full applicable allocation/alias/cache/visibility/order/lifetime CTS |
 | Advertised optional features | Scoped storage8/16, Int8 and timeline actuals | Their complete conditional contracts and applicable extension CTS; other optional bits remain truthful |
-| Standard-version obligations beyond compute execution |15 current property messages, historical31 and required graphics-oriented format cells retained | Normative applicability or real implementation; no invented compute-only conformance profile |
+| Standard-version obligations beyond compute execution |9 current property messages, historical31 and required graphics-oriented format cells retained | Normative applicability or real implementation; no invented compute-only conformance profile |
 
 The official pinned CTS is revision
 `5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e`, original binary
@@ -205,3 +205,45 @@ enumeration name. That was a validation-route error, preserved separately;
 public-loader validation resolves it without adding a fake layer function.
 Pointer completeness does not establish every function's semantics or Vulkan
 conformance. The compression-feature candidate remains separate and unqualified.
+
+## Required atomics, descriptors and compressed sampling
+
+Nine 32-bit atomic operations pass on signed/unsigned storage images and texel
+buffers: 1,152 old/final output words and all five allocation guards. Distinct
+addresses per invocation limit this to operator semantics, not competing-address
+ordering. [Atomic evidence](results/required-image-atomics-0045.json) includes the
+public build and retained native checks. [Seven original descriptor cases](results/official11-descriptor-0045.json)
+also pass, including pool reset/exhaustion, layout lifetime and two compute dispatches.
+
+All ten approved original ETC2/EAC compute sampling cases now pass on a41b.
+The first case had failed because the driver reported subpixel precision zero,
+below the required minimum; that value invalidated an original CTS CPU-reference
+precondition. Its captured GPU output matched all 676 bytes of an independently
+reconstructed seed texture. The source-backed correction reports four bits,
+matching Freedreno. The first native programs remain byte-identical, and the
+original case, shader and thresholds remain unchanged. The first corrected case
+and then the original nine-case suffix passed, without repeating the first case.
+[Exact source and actual results](results/official11-etc2-subpixel-0045.json)
+preserve the [original failure and pixel diagnosis](results/official11-etc2-first-failure-0045.json).
+The independent texture reconstruction is not a captured CTS reference image.
+
+The stricter custom sRGB tests still contain 42 mismatches. These bounded original
+CTS passes do not settle that precision obligation or establish full conformance.
+The isolated ETC2 feature candidate stays separate from selected inference.
+
+One original information batch on the coherent candidate remains **four Pass,
+one properties Fail**. Its messages fall from 15 to 9, with no new messages:
+eight vertex/fragment properties and `maxSampleMaskWords` remain.
+[The complete comparison](results/official11-subpixel-info-0045.json) preserves
+the earlier 31 and 15-message checkpoints. Counts are not a normative coverage denominator.
+
+Future grouped runners use one approved case file, pinned by hash and count
+before staging, and derive execution and collection from that same file. The
+historical duplicated-inventory setup rejection is preserved; it ran no CTS.
+
+New native-format/transient changes are a separate host-built candidate. The
+next consumer is being corrected for newer unconditional graphics-queue validity
+rules for render-pass/framebuffer host construction. Earlier such host-object
+captures remain implementation observations; they do not by themselves qualify
+those calls on a device exposing only a compute queue. Image/query/view/layout
+coverage and graphics execution are separate obligations.
