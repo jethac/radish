@@ -1,0 +1,221 @@
+--- a/src/freedreno/radish/rd_queue.c
++++ b/src/freedreno/radish/rd_queue.c
+@@ -18,6 +18,7 @@
+ #include <string.h>
+ 
+ struct rd_submit_profile {
++   uint64_t chunks;
+    int64_t total_ns;
+    int64_t max_ns;
+ };
+@@ -29,7 +30,7 @@
+    const char *reason;
+    const char *calibration;
+    unsigned sample;
+-   uint32_t seqno;
++   uint64_t chunks;
+    uint64_t submit_count;
+ };
+ 
+@@ -137,17 +138,17 @@
+    }
+    char line[1024];
+    int length = snprintf(line, sizeof(line),
+-      "RADISH_GPU_ELAPSED version=1 sample=%u valid=%u reason=%s pipeline=%p grid=4,2,1 local=16,8,1 instrlen=27 chunks=%u submits=%" PRIu64 " submit_id=%" PRIu64 " start_ticks=%" PRIu64 " stop_ticks=%" PRIu64 " delta_ticks=%" PRIu64 " gpu_ns=%" PRIu64 " host_start_ns=%" PRId64 " host_done_ns=%" PRId64 " submit_ns=%" PRId64 " result=%d\n",
++      "RADISH_GPU_ELAPSED version=1 sample=%u valid=%u reason=%s pipeline=%p grid=4,2,1 local=16,8,1 instrlen=27 chunks=%" PRIu64 " submits=%" PRIu64 " submit_id=%" PRIu64 " start_ticks=%" PRIu64 " stop_ticks=%" PRIu64 " delta_ticks=%" PRIu64 " gpu_ns=%" PRIu64 " host_start_ns=%" PRId64 " host_done_ns=%" PRId64 " submit_ns=%" PRId64 " result=%d\n",
+       sample->sample, (unsigned)(sample->reason == NULL), sample->reason ? sample->reason : "ok",
+-      (void *)sample->dispatch->pipeline, device->seqno - sample->seqno,
++      (void *)sample->dispatch->pipeline, sample->chunks,
+       device->submit_count - sample->submit_count, device->submit_count,
+       values[0], values[2], delta, gpu_ns, start, done, host_ns, result);
+    if (sample->calibration)
+       length = snprintf(line, sizeof(line),
+-         "RADISH_GPU_ELAPSED version=1 sample=%u valid=%u reason=%s pipeline=%p grid=4,2,1 local=16,8,1 instrlen=%u chunks=%u submits=%" PRIu64 " submit_id=%" PRIu64 " start_ticks=%" PRIu64 " stop_ticks=%" PRIu64 " delta_ticks=%" PRIu64 " gpu_ns=%" PRIu64 " host_start_ns=%" PRId64 " host_done_ns=%" PRId64 " submit_ns=%" PRId64 " result=%d calibration=%s\n",
++         "RADISH_GPU_ELAPSED version=1 sample=%u valid=%u reason=%s pipeline=%p grid=4,2,1 local=16,8,1 instrlen=%u chunks=%" PRIu64 " submits=%" PRIu64 " submit_id=%" PRIu64 " start_ticks=%" PRIu64 " stop_ticks=%" PRIu64 " delta_ticks=%" PRIu64 " gpu_ns=%" PRIu64 " host_start_ns=%" PRId64 " host_done_ns=%" PRId64 " submit_ns=%" PRId64 " result=%d calibration=%s\n",
+          sample->sample, (unsigned)(sample->reason == NULL), sample->reason ? sample->reason : "ok",
+          (void *)sample->dispatch->pipeline,
+-         sample->dispatch->pipeline->variant->instrlen, device->seqno - sample->seqno,
++         sample->dispatch->pipeline->variant->instrlen, sample->chunks,
+          device->submit_count - sample->submit_count, device->submit_count,
+          values[0], values[2], delta, gpu_ns, start, done, host_ns, result,
+          sample->calibration);
+@@ -384,32 +385,11 @@
+ }
+ 
+ static void
+-rd_emit_constants(struct fd_ringbuffer *ring, const struct rd_dispatch *dispatch,
+-                  const uint32_t group_base[3])
++rd_emit_constants(struct fd_ringbuffer *ring, const struct rd_dispatch *dispatch)
+ {
+    const struct ir3_shader_variant *v = dispatch->pipeline->variant;
+    const struct ir3_const_state *state = ir3_const_state(v);
+    emit_const(ring, 0, MIN2(32, v->constlen * 4), dispatch->push);
+-   if (v->need_driver_params) {
+-      struct ir3_driver_params_cs params = {
+-         .num_work_groups_x = dispatch->grid[0],
+-         .num_work_groups_y = dispatch->grid[1],
+-         .num_work_groups_z = dispatch->grid[2],
+-         .work_dim = 3,
+-         .base_group_x = dispatch->base[0] + group_base[0],
+-         .base_group_y = dispatch->base[1] + group_base[1],
+-         .base_group_z = dispatch->base[2] + group_base[2],
+-         .subgroup_size = 16,
+-         .subgroup_id_shift = 4,
+-         .local_group_size_x = v->local_size[0],
+-         .local_group_size_y = v->local_size[1],
+-         .local_group_size_z = v->local_size[2],
+-      };
+-      unsigned base = state->allocs.consts[IR3_CONST_ALLOC_DRIVER_PARAMS].offset_vec4 * 4;
+-      unsigned size = MIN2(state->num_driver_params, v->constlen * 4 - base);
+-      if (size)
+-         emit_const(ring, base, size, (const uint32_t *)&params);
+-   }
+    if (v->constant_data_size) {
+       if (ir3_const_can_upload(&state->allocs, IR3_CONST_ALLOC_UBO_PTRS,
+                               v->constlen)) {
+@@ -451,6 +431,34 @@
+ }
+ 
+ static void
++rd_emit_driver_params(struct fd_ringbuffer *ring, const struct rd_dispatch *dispatch,
++                      const uint32_t group_base[3])
++{
++   const struct ir3_shader_variant *v = dispatch->pipeline->variant;
++   const struct ir3_const_state *state = ir3_const_state(v);
++   if (v->need_driver_params) {
++      struct ir3_driver_params_cs params = {
++         .num_work_groups_x = dispatch->grid[0],
++         .num_work_groups_y = dispatch->grid[1],
++         .num_work_groups_z = dispatch->grid[2],
++         .work_dim = 3,
++         .base_group_x = dispatch->base[0] + group_base[0],
++         .base_group_y = dispatch->base[1] + group_base[1],
++         .base_group_z = dispatch->base[2] + group_base[2],
++         .subgroup_size = 16,
++         .subgroup_id_shift = 4,
++         .local_group_size_x = v->local_size[0],
++         .local_group_size_y = v->local_size[1],
++         .local_group_size_z = v->local_size[2],
++      };
++      unsigned base = state->allocs.consts[IR3_CONST_ALLOC_DRIVER_PARAMS].offset_vec4 * 4;
++      unsigned size = MIN2(state->num_driver_params, v->constlen * 4 - base);
++      if (size)
++         emit_const(ring, base, size, (const uint32_t *)&params);
++   }
++}
++
++static void
+ rd_flush(struct rd_device *device, struct fd_ringbuffer *ring)
+ {
+    uint32_t seqno = ++device->seqno;
+@@ -533,17 +541,20 @@
+ rd_emit_dispatch_chunk(struct rd_device *device, struct fd_ringbuffer *ring,
+                        const struct rd_dispatch *dispatch,
+                        const uint32_t grid[3], const uint32_t base[3],
+-                       struct rd_gpu_elapsed *sample)
++                       bool first_chunk, struct rd_gpu_elapsed *sample)
+ {
+    const struct ir3_shader_variant *v = dispatch->pipeline->variant;
+-   cs_restore_emit(ring, device);
+-   if (sample && sample->bo)
+-      rd_gpu_elapsed_emit(ring, sample->bo, 0);
+-   cs_program_emit(ring, dispatch->pipeline);
+-   rd_emit_constants(ring, dispatch, base);
+-   rd_emit_buffers(device, ring, dispatch);
+-   rd_emit_shader_resources(device, ring, dispatch);
+-   rd_emit_image_constants(ring, dispatch);
++   if (first_chunk) {
++      cs_restore_emit(ring, device);
++      if (sample && sample->bo)
++         rd_gpu_elapsed_emit(ring, sample->bo, 0);
++      cs_program_emit(ring, dispatch->pipeline);
++      rd_emit_constants(ring, dispatch);
++      rd_emit_buffers(device, ring, dispatch);
++      rd_emit_shader_resources(device, ring, dispatch);
++      rd_emit_image_constants(ring, dispatch);
++   }
++   rd_emit_driver_params(ring, dispatch, base);
+    OUT_PKT4(ring, REG_A5XX_HLSQ_CS_NDRANGE_0, 7);
+    OUT_RING(ring, A5XX_HLSQ_CS_NDRANGE_0_KERNELDIM(3) |
+       A5XX_HLSQ_CS_NDRANGE_0_LOCALSIZEX(v->local_size[0] - 1) |
+@@ -563,7 +574,6 @@
+    OUT_RING(ring, grid[1]);
+    OUT_RING(ring, grid[2]);
+    OUT_WFI5(ring);
+-   rd_flush(device, ring);
+ }
+ 
+ static bool
+@@ -691,7 +701,7 @@
+           rd_gpu_elapsed_reserve(&storage.sample)) {
+          sample = &storage;
+          sample->dispatch = dispatch;
+-         sample->seqno = device->seqno;
++         sample->chunks = 0;
+          sample->submit_count = device->submit_count;
+          rd_gpu_elapsed_prepare(device, sample);
+       }
+@@ -723,7 +733,7 @@
+          sample = &storage;
+          sample->dispatch = dispatch;
+          sample->calibration = calibration;
+-         sample->seqno = device->seqno;
++         sample->chunks = 0;
+          sample->submit_count = device->submit_count;
+          rd_gpu_elapsed_prepare(device, sample);
+       }
+@@ -750,7 +760,7 @@
+             sample = &storage;
+             sample->dispatch = dispatch;
+             sample->calibration = "shared-hot";
+-            sample->seqno = device->seqno;
++            sample->chunks = 0;
+             sample->submit_count = device->submit_count;
+             rd_gpu_elapsed_prepare(device, sample);
+          }
+@@ -776,7 +786,7 @@
+          sample = &storage;
+          sample->dispatch = dispatch;
+          sample->calibration = "packed-a";
+-         sample->seqno = device->seqno;
++         sample->chunks = 0;
+          sample->submit_count = device->submit_count;
+          rd_gpu_elapsed_prepare(device, sample);
+       }
+@@ -810,8 +820,13 @@
+             for (unsigned i = 0; i < 3; i++)
+                grid[i] = MIN2(tile[i], dispatch->grid[i] - base[i]);
+             rd_emit_dispatch_chunk(device, ring, dispatch, grid, base,
+-                                   chunks == 0 ? sample : NULL);
++                                   chunks == 0, sample);
++            if (profile)
++               profile->chunks++;
++            if (sample)
++               sample->chunks++;
+             if (++chunks == max_chunks) {
++               rd_flush(device, ring);
+                if (sample && sample->bo) {
+                   rd_gpu_elapsed_emit(ring, sample->bo, 16);
+                   OUT_WFI5(ring);
+@@ -830,6 +845,7 @@
+       }
+    }
+    if (submit) {
++      rd_flush(device, ring);
+       VkResult result = rd_finish_submit(device, submit, ring, profile, sample);
+       rd_gpu_elapsed_release(sample);
+       return result;
+@@ -1003,11 +1019,11 @@
+             if (recorded->type == RD_CMD_DISPATCH) {
+                const struct rd_dispatch *d = dispatch;
+                const struct ir3_shader_variant *v = d->pipeline->variant;
+-               fprintf(stderr, "RADISH_PROFILE dispatch pipeline=%p grid=%u,%u,%u local=%u,%u,%u barrier=%u loops=%u instrlen=%u chunks=%u submits=%" PRIu64 " ns=%" PRId64 " submit_ns=%" PRId64 " submit_max_ns=%" PRId64 " result=%d\n",
++               fprintf(stderr, "RADISH_PROFILE dispatch pipeline=%p grid=%u,%u,%u local=%u,%u,%u barrier=%u loops=%u instrlen=%u chunks=%" PRIu64 " submits=%" PRIu64 " ns=%" PRId64 " submit_ns=%" PRId64 " submit_max_ns=%" PRId64 " result=%d\n",
+                        (void *)d->pipeline, d->grid[0], d->grid[1], d->grid[2],
+                        v->local_size[0], v->local_size[1], v->local_size[2],
+                        (unsigned)v->has_barrier, v->loops, v->instrlen,
+-                       chunks, submits, elapsed, submit_profile.total_ns,
++                       submit_profile.chunks, submits, elapsed, submit_profile.total_ns,
+                        submit_profile.max_ns, result);
+             } else if (recorded->type == RD_CMD_IMAGE_COPY || recorded->type == RD_CMD_IMAGE_CLEAR) {
+                const struct rd_image_transfer *t = &recorded->image_transfer;

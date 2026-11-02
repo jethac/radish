@@ -352,6 +352,7 @@ int run_request_loop(const std::vector<std::string>& args,const std::vector<std:
     std::vector<MemorySample> memory;
     std::unique_ptr<LoopPipelineCache> shared;
     std::unique_ptr<CoreSession> session;
+    std::unique_ptr<radish_frontend::Session> frontend_session;
     std::string phase="before_request";
     size_t active=0;
     double cleanup=0,cancellation_observed=-1;
@@ -385,7 +386,7 @@ int run_request_loop(const std::vector<std::string>& args,const std::vector<std:
         out << "\n  ],\n  \"timing_scope\": \"Each request regenerates frontend/source and one tail. A same-shape core remains resident; per-request extraction includes GPU allocator trimming. Request timing excludes publication and final session teardown; session timing includes completed captures and final teardown. Memory samples are phase observations, not isolated peaks. Accuracy requires separate same-boundary references for every completed request.\"\n}\n";
         atomic_session_manifest(args[5],out.str());
     };
-    auto cleanup_core=[&]() { double start=now(); session.reset(); shared.reset(); cleanup=now()-start; };
+    auto cleanup_core=[&]() { double start=now(); session.reset(); shared.reset(); frontend_session.reset(); cleanup=now()-start; };
     auto checkpoint=[&](const char* next) {
         phase=next;
         memory.push_back(memory_sample(next,active,process_start));
@@ -397,7 +398,9 @@ int run_request_loop(const std::vector<std::string>& args,const std::vector<std:
         for(active=0;active<queued.size();++active) {
             checkpoint("before_request");
             double request_start=now(),front_start=now();
-            radish_frontend::Boundary boundary=radish_frontend::generate_frontend(ort_library,args[0]+"/frontend-only.onnx",args[0]+"/harmonic-source.onnx",queued[active],max_T,ort_threads);
+            if(!frontend_session) frontend_session.reset(new radish_frontend::Session(
+                ort_library,args[0]+"/frontend-only.onnx",args[0]+"/harmonic-source.onnx",ort_threads));
+            radish_frontend::Boundary boundary=frontend_session->generate(queued[active],max_T);
             double frontend_wall=now()-front_start;
             check_boundary(boundary);
             checkpoint("after_frontend");

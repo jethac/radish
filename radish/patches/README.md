@@ -1,5 +1,17 @@
 # Source checkpoints
 
+## Current optimization implementation checkpoint
+
+The `0046` patches are isolated candidates over the exact sources pinned in
+`../results/optimization-five-status-0046.json`. They are not a new selected
+inference or conformance build. Apply the compiled-cache and queue patches to
+that corrected Mesa overlay; the GQA patch applies to the frozen ASR source;
+the direct-window patch applies after the selected ncnn packed-A overlay.
+Host build evidence and outstanding device checks are recorded separately.
+Performance measurements remain disabled until all five areas are implemented
+and pass the required correctness and resource checks.
+
+
 These are local experimental checkpoints, not upstream submissions or Vulkan
 conformance evidence. See `../NOTES.md` and `../VULKAN_AUDIT.md` for failures,
 limits and validation scope. Published checkpoints remain experimental; publication is not an upstream submission.

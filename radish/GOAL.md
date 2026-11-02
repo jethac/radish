@@ -18,6 +18,32 @@ belongs in a dedicated branch/worktree of `jethac/turnip-rt`, initially under
 `src/freedreno/radish/`. That path is a proposal, subject to the build-system audit.
 The AC8 branches and working checkout must remain usable independently.
 
+## Current implementation priority — 2026-11-03
+
+The user has authorized implementation of all five optimization areas before
+any new performance measurement. This supersedes the earlier conformance-first
+execution order without removing any conformance or inference requirement below.
+The paused campaign's conversion47 remains unexecuted.
+
+1. Retain CPU neural-frontend and harmonic-source ORT sessions across requests,
+   with validated graph optimization and bounded session/activation lifetime.
+2. Improve TTS convolution kernels, layout and data reuse.
+3. Reduce application graph/packing overhead and driver command/state overhead,
+   preserving dependencies, resource guards and correctness.
+4. Implement phase-specific STT kernels, quantized decoding, GQA and memory
+   liveness needed for the full model to fit.
+5. Add selectively validated mixed precision and real compiled Vulkan pipeline
+   cache entries, including keying, serialization, merge and reuse.
+
+Each area requires concrete integrated code and correctness/resource evidence.
+Until all five are implemented, do not run latency or throughput measurements,
+benchmarks, profiling or speedup selection. Source inspection, builds, native
+resource admission and correctness checks are permitted. Existing timeout,
+memory, disk, fault, service and device-ownership controls remain unchanged.
+Historical f222, selected inference fcd/d332 and the corrected5c6d source/build
+remain preserved. Later full conformance, matched performance, deployment and
+GPU-efficiency obligations stay in the goal.
+
 ## Done means
 
 - The Vulkan loader discovers Radish through an explicit, private ICD manifest

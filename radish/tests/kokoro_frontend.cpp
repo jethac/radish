@@ -14,6 +14,7 @@
 #include <iomanip>
 #include <limits>
 #include <memory>
+#include <map>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -32,7 +33,11 @@ static void require(bool condition, const std::string& message) {
     if (!condition) throw std::runtime_error(message);
 }
 static double now() {
+#ifdef RADISH_FRONTEND_NO_TIMING
+    return 0;
+#else
     return std::chrono::duration<double>(std::chrono::steady_clock::now().time_since_epoch()).count();
+#endif
 }
 static std::string path(const std::string& directory, const char* name) {
     return directory + "/" + name;
@@ -127,10 +132,14 @@ class Runtime {
     OrtEnv* environment = nullptr;
     OrtMemoryInfo* memory = nullptr;
     OrtSessionOptions* options = nullptr;
+    bool persistent;
+    std::map<std::string, OrtHandle<OrtSession>> sessions;
 public:
     const OrtApi* api = nullptr;
     std::string version;
-    Runtime(const std::string& filename, int threads) {
+    double timestamp() const { return persistent ? 0 : now(); }
+    Runtime(const std::string& filename, int threads, bool keep_sessions = false)
+        : persistent(keep_sessions) {
         try {
             library = dlopen(filename.c_str(), RTLD_NOW | RTLD_LOCAL);
             if (!library) { const char* error = dlerror(); throw std::runtime_error(error ? error : "dlopen failed"); }
@@ -145,7 +154,7 @@ public:
             int major = 0, minor = 0;
             require(std::sscanf(version.c_str(), "%d.%d", &major, &minor) == 2 && major == 1 && minor >= 24,
                     "ORT API24 requires runtime1.24 or newer in the1.x series; got " + version);
-            std::printf("ONNX Runtime %s; requested C API24; threads=%d; optimization=disabled\n", version.c_str(), threads);
+            std::printf("ONNX Runtime %s; requested C API24; threads=%d; optimization=%s\n", version.c_str(), threads, "disabled");
             std::fflush(stdout);
             api = base->GetApi(ORT_API_VERSION);
             require(api != nullptr, "runtime does not provide C API24");
@@ -155,6 +164,10 @@ public:
             check(api->SetIntraOpNumThreads(options, threads));
             check(api->SetInterOpNumThreads(options, 1));
             check(api->SetSessionGraphOptimizationLevel(options, ORT_DISABLE_ALL));
+            if (persistent) {
+                check(api->DisableCpuMemArena(options));
+                check(api->DisableMemPattern(options));
+            }
             check(api->AddSessionConfigEntry(options, "session.intra_op.allow_spinning", "0"));
             check(api->AddSessionConfigEntry(options, "session.inter_op.allow_spinning", "0"));
         } catch (...) { cleanup(); throw; }
@@ -163,6 +176,7 @@ public:
     Runtime& operator=(const Runtime&) = delete;
     ~Runtime() { cleanup(); }
     void cleanup() {
+        sessions.clear();
         if (api) {
             if (options) api->ReleaseSessionOptions(options);
             if (memory) api->ReleaseMemoryInfo(memory);
@@ -197,23 +211,32 @@ public:
     }
     std::vector<Tensor> run(const std::string& model, const std::vector<const char*>& input_names,
                            const std::vector<const OrtValue*>& inputs, const std::vector<const char*>& output_names,
-                           Timing& timing, size_t max_values) const {
-        const double begin = now();
-        OrtSession* raw = nullptr;
-        check(api->CreateSession(environment, model.c_str(), options, &raw));
-        OrtHandle<OrtSession> session(raw, api->ReleaseSession);
-        timing.load = now() - begin;
-        names(session.get(), true, input_names);
-        names(session.get(), false, output_names);
+                           Timing& timing, size_t max_values) {
+        const double begin = timestamp();
+        OrtHandle<OrtSession> owned(nullptr, api->ReleaseSession);
+        OrtSession* session = nullptr;
+        auto found = sessions.find(model);
+        if (found != sessions.end()) {
+            session = found->second.get();
+            timing.load = 0;
+        } else {
+            require(!persistent || sessions.size() < 2, "frontend session capacity exceeded");
+            check(api->CreateSession(environment, model.c_str(), options, &session));
+            owned.reset(session);
+            names(session, true, input_names);
+            names(session, false, output_names);
+            if (persistent) sessions.emplace(model, std::move(owned));
+            timing.load = timestamp() - begin;
+        }
         std::vector<OrtValue*> results(output_names.size(), nullptr);
         struct Outputs {
             const OrtApi* api; std::vector<OrtValue*>& values;
             ~Outputs() { for (OrtValue* value : values) if (value) api->ReleaseValue(value); }
         } cleanup_results = {api, results};
-        const double started = now();
-        check(api->Run(session.get(), nullptr, input_names.data(), inputs.data(), inputs.size(),
+        const double started = timestamp();
+        check(api->Run(session, nullptr, input_names.data(), inputs.data(), inputs.size(),
                        output_names.data(), output_names.size(), results.data()));
-        timing.run = now() - started;
+        timing.run = timestamp() - started;
         std::vector<Tensor> copied;
         for (OrtValue* value : results) {
             int is_tensor = 0;
@@ -245,7 +268,7 @@ public:
 } // namespace
 
 namespace radish_frontend {
-Boundary generate_frontend(const std::string& library, const std::string& frontend,
+static Boundary generate(Runtime& runtime, const std::string& library, const std::string& frontend,
                            const std::string& source, const std::string& input,
                            int max_frames, int threads) {
     require(max_frames >= 1 && max_frames <= 4096, "invalid max-frames");
@@ -258,10 +281,9 @@ Boundary generate_frontend(const std::string& library, const std::string& fronte
     require(ids.front() == 0 && ids.back() == 0, "token IDs require both zero pads");
     for (size_t i = 1; i + 1 < ids.size(); ++i) require(ids[i] >= 1 && ids[i] <= 177, "invalid Kokoro token ID");
     finite(style, "style"); finite(speed, "speed"); require(speed[0] > 0, "speed must be positive");
-    const double started = now();
+    const double started = runtime.timestamp();
     Boundary boundary;
     {
-        Runtime runtime(library, threads);
         OrtHandle<OrtValue> token_tensor = runtime.tensor(ids.data(), ids.size()*sizeof(int64_t), {1, int64_t(ids.size())}, ONNX_TENSOR_ELEMENT_DATA_TYPE_INT64);
         OrtHandle<OrtValue> style_tensor = runtime.tensor(style.data(), style.size()*sizeof(float), {1, 256}, ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT);
         OrtHandle<OrtValue> speed_tensor = runtime.tensor(speed.data(), sizeof(float), {1}, ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT);
@@ -287,7 +309,7 @@ Boundary generate_frontend(const std::string& library, const std::string& fronte
             require(duration >= 1 && std::floor(duration) == duration, "invalid token duration"); sum += duration;
         }
         require(sum == double(t), "duration sum does not match ASR length");
-        std::printf("Frontend: T=%lld load=%.6fs run=%.6fs; session released before source\n",
+        std::printf("Frontend: T=%lld load=%.6fs run=%.6fs\n",
                     static_cast<long long>(t), front_time.load, front_time.run); std::fflush(stdout);
         OrtHandle<OrtValue> f0_tensor = runtime.tensor(front[1].values.data(), front[1].values.size()*sizeof(float),
                                                      front[1].shape, ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT);
@@ -302,10 +324,49 @@ Boundary generate_frontend(const std::string& library, const std::string& fronte
         boundary.ort_version = runtime.version;
         boundary.frontend_time = front_time; boundary.source_time = source_time;
     }
-    boundary.boundary_seconds = now() - started;
+    boundary.boundary_seconds = runtime.timestamp() - started;
     boundary.ids = std::move(ids); boundary.style = std::move(style); boundary.speed = speed[0];
     boundary.ort_library = library; boundary.frontend_graph = frontend; boundary.source_graph = source;
     boundary.input_directory = input; boundary.threads = threads;
+    return boundary;
+}
+
+Boundary generate_frontend(const std::string& library, const std::string& frontend,
+                           const std::string& source, const std::string& input,
+                           int max_T, int threads) {
+    const double begin = now();
+    Boundary boundary;
+    {
+        Runtime runtime(library, threads);
+        boundary = generate(runtime, library, frontend, source, input, max_T, threads);
+    }
+    boundary.boundary_seconds = now() - begin;
+    return boundary;
+}
+
+struct Session::Impl {
+    std::string library, frontend, source;
+    int threads;
+    Runtime runtime;
+    bool used = false;
+    Impl(const std::string& l, const std::string& f, const std::string& s, int t)
+        : library(l), frontend(f), source(s), threads(t), runtime(l, t, true) {}
+};
+
+Session::Session(const std::string& library, const std::string& frontend,
+                 const std::string& source, int threads) {
+    require(threads >= 1 && threads <= 6, "invalid threads");
+    require(frontend != source, "frontend and source must be distinct graphs");
+    impl.reset(new Impl(library, frontend, source, threads));
+}
+Session::~Session() = default;
+Boundary Session::generate(const std::string& input, int max_T) {
+    Boundary boundary = radish_frontend::generate(impl->runtime, impl->library,
+        impl->frontend, impl->source, input, max_T, impl->threads);
+    boundary.optimization = "disabled";
+    boundary.sessions_reused = impl->used;
+    boundary.timing_collected = false;
+    impl->used = true;
     return boundary;
 }
 
@@ -331,7 +392,9 @@ void export_boundary(const Boundary& boundary, const std::string& output) {
            << "  \"ort_version\": " << quote(boundary.ort_version) << ", \"ort_api\": 24,\n"
            << "  \"ort_library\": " << quote(library) << ",\n  \"frontend_graph\": " << quote(frontend)
            << ",\n  \"source_graph\": " << quote(source) << ",\n  \"input_directory\": " << quote(input) << ",\n"
-           << "  \"threads\": " << threads << ", \"optimization\": \"disabled\",\n"
+           << "  \"threads\": " << threads << ", \"optimization\": " << quote(boundary.optimization)
+           << ", \"sessions_reused\": " << (boundary.sessions_reused ? "true" : "false") << ",\n"
+           << "  \"timing_collected\": " << (boundary.timing_collected ? "true" : "false") << ",\n"
            << "  \"tokens_with_pads\": " << ids.size() << ", \"T\": " << t << ", \"frames\": " << frames
            << ", \"samples\": " << samples << ", \"sample_rate\": 24000,\n"
            << "  \"frontend\": {\"load_seconds\": " << front_time.load << ", \"run_seconds\": " << front_time.run << "},\n"

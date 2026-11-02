@@ -1,0 +1,46 @@
+{
+  "status": "Implementation in progress; performance gate CLOSED",
+  "authorization": "Implement all five optimization areas before any latency/throughput measurements, profiling or speedup selection.",
+  "source_baselines": {
+    "Mesa": "exact active corrected5c6d source overlay in compute11-active-conformance-candidate-0045.json; historicalf222 and selectedfcd unchanged",
+    "ncnn": "selected packed-a/d332 source overlay; author direct-window patch preimages pinned by release39baf654",
+    "ASR": "frozen AArch64 profile source; GQA14011c86 over01c3c7a1"
+  },
+  "areas": [
+    {
+      "area": 1,
+      "implementation": "Persistent frontend/harmonic ORT session pair retained across runtime requests, dynamic-shape validation, owned outputs and bounded session count; activation arena/pattern retention disabled",
+      "evidence": "AArch64 runtime cross-build; host exact fresh-vs-persistent outputs at1/4threads for T78,213,168,78 with style change; no Random nodes; target memory/correctness pending",
+      "graph_policy": "Original ORT_DISABLE_ALL retained. Generic BASIC changed F0 and harmonic phase under strict oracle; rejected, not tolerance-adjusted."
+    },
+    {
+      "area": 2,
+      "implementation": "Direct-window C128/K11/d1,3,5 convolution kernel reading original packed input and fusing padding; removes planar intermediate and conversion dispatch",
+      "evidence": "FP32 source independently reviewed; AArch64 model links,260 unchanged archive members and2 replaced; native/full-output checks pending"
+    },
+    {
+      "area": 3,
+      "implementation": "Reuse invariant program/resource/static state within bounded chunks of one dispatch; keep per-chunk base/NDRANGE and WFI, flush/wait at existing batch end; direct-window graph intermediate elimination",
+      "evidence": "Queue source independently reviewed and AArch64 linked; multi-chunk/dependency correctness pending"
+    },
+    {
+      "area": 4,
+      "implementation": "GQA native broadcast removes repeated K/V tensors and redundant copies. Phase-specific quantized kernels and encoder-to-prefill device-buffer handoff are authored and building separately",
+      "evidence": "GQA source reviewed. Preliminary host-only build used incorrect capability-profile option and is unadmitted; corrected combined build active. No GPU/full-model/memory result yet"
+    },
+    {
+      "area": 5,
+      "implementation": "Real compiled Vulkan cache entries using Mesa cache import/export/merge and IR3 native serializer, including sampling NIR and resource metadata; selective weight-only precision source is being integrated",
+      "evidence": "Cache source cross-builds and independent review in progress. Populated roundtrip/hit/code-resource/output checks pending; precision native/quality checks pending"
+    }
+  ],
+  "measurement_policy": "No new performance results. Timers disabled in the frontend correctness helper; driver PROFILE/GPU_ELAPSED disabled in forthcoming correctness scopes. Required timeout/memory/fault/service telemetry remains.",
+  "patches": {
+    "0046-radish-compiled-pipeline-cache.patch": "3676b04a9f71b2f0ac676bb327693059193797218621e141706f91b09bf754af",
+    "0046-radish-queue-state-reuse.patch": "e2df8c5915b011b20d67b41352f4d126be922d0bfbf0989d9d3b0bc43e7fc728",
+    "0046-asr-gqa-broadcast.patch": "fc9d80c19ed82f6cb9ccc8deb28c5aac42ad8101e6ee820c8e61bf44952dbf59",
+    "0046-ncnn-direct-window.patch": "191e323377c006072d3a142bafaea58ab211897eceee389d1077126d3bd4542a"
+  },
+  "existing_results": "Original743 CTS cases and modified132 robustness outcomes remain historical pinned evidence; no conformance count or selected performance change.",
+  "completion_gate": "All five areas must have integrated working code and relevant source/build/native/resource/numerical/lifetime evidence before measuring performance. Full-model output/waveform and process memory gates remain."
+}

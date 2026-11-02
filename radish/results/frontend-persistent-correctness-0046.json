@@ -1,0 +1,70 @@
+{
+  "status": "strict request semantics PASS on host ORT1.31.1 at1and4threads; AArch64 cross-build only; targetmemory/correctness pending",
+  "policy": "retain ORT_DISABLE_ALL; BASIC failed strict comparison and was not selected",
+  "request_sequence": [
+    "short T78",
+    "full T213",
+    "Japanese with different style T168",
+    "short T78 repeated"
+  ],
+  "checks": [
+    "request-owned complete ASR/F0/N/har/duration arrays bit-exact to fresh session for each request",
+    "repeated short boundary bit-exact after two intervening shape/style requests",
+    "exactly two sessions retained outside runtime request loop",
+    "no Random nodes in both exact pinned graphs, no RNG reset",
+    "no timing collected; helper compiled RADISH_FRONTEND_NO_TIMING"
+  ],
+  "logs": {
+    "frontend-correctness.log": "c2144f8acf996fd78acf74341a56266a4a028f2c462a081d2f7a1449ebaad0c9",
+    "frontend-correctness-safe.log": "1a58f38ba9541f6cfdabfed84c53bd5ec916ae454c5215b0d10d687b5083ce1a",
+    "frontend-correctness-safe4.log": "f65bf1853574fb0fee628cad2301fb92c461401341ef3934436c76b15ecb4234"
+  },
+  "source": {
+    "tests/kokoro_frontend.cpp": "877aa74714d4565baf74a89a4a9d021b1b8ac1350774596ad3917708d9443481",
+    "tests/kokoro_frontend.h": "20eecb1dbc77bc34777365e5f020a88a5021a2076888e1ed5962a988cba5bc0f",
+    "tests/ncnn/kokoro_runtime.cpp": "0a51e252adfb48d778f497709cdf0ad191e03803733a30fdd28eb20c414aa5f9"
+  },
+  "graph_audit": {
+    "graphs": [
+      {
+        "file": "/run/media/jethac/Shared/radish/kokoro-frontend-models/frontend-only.onnx",
+        "sha256": "56ba27008352a2191b631ebbf269bf4506d690a1b83d8ff8ff5524b11291ddd3",
+        "nodes": 1201,
+        "random_nodes": 0
+      },
+      {
+        "file": "/run/media/jethac/Shared/radish/kokoro-frontend-models/harmonic-source.onnx",
+        "sha256": "4bdcb9f2f54d6efbfdcefce384300352933cc71fa562930f23eaeb3443528fd2",
+        "nodes": 57,
+        "random_nodes": 0
+      }
+    ],
+    "inputs": [
+      {
+        "directory": "/run/media/jethac/Shared/radish/kokoro-runtime-short",
+        "files": {
+          "ids.i64": "3c3bfd2e56f6f778a6082ee0b183a68d2053d36c4fd1f3ee12126dc3c9d68ae6",
+          "style.f32": "30a2c76520b76bce395b3e2c33592c56322dffb50d70f7f0f7aeaef968407d66",
+          "speed.f32": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
+        }
+      },
+      {
+        "directory": "/run/media/jethac/Shared/radish/kokoro-runtime-full",
+        "files": {
+          "ids.i64": "59be815147b69aa3c35ec078861f234de785b4c50c1336586e3dd40b38ed29d6",
+          "style.f32": "30a2c76520b76bce395b3e2c33592c56322dffb50d70f7f0f7aeaef968407d66",
+          "speed.f32": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
+        }
+      },
+      {
+        "directory": "/run/media/jethac/Shared/radish/kokoro-runtime-ja-greet",
+        "files": {
+          "ids.i64": "6e5e83f37cffe684ee2507d03617fed92df2354455c70febcc39e2b8aacc1a49",
+          "style.f32": "4e7e3b01f1f8f5a458f5f27eba6440b2e59cf70babc4589840bf2db0dd54718b",
+          "speed.f32": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
+        }
+      }
+    ],
+    "policy": "original ORT_DISABLE_ALL retained after strict BASIC comparison failed; no RNG reset or clock collection"
+  }
+}
