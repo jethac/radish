@@ -1,0 +1,59 @@
+--- a/src/freedreno/ir3/ir3_shader.h
++++ b/src/freedreno/ir3/ir3_shader.h
+@@ -627,6 +627,7 @@
+    enum ir3_wavesize_option api_wavesize;
+    uint32_t api_subgroup_size;
+    uint32_t workgroup_resident_threads;
++   uint32_t max_compute_reg_footprint;
+    /* What wavesizes we're allowed to actually use. If the API wavesize is
+     * single-only, then this must be single-only too.
+     */
+--- a/src/freedreno/ir3/ir3_disk_cache.cpp
++++ b/src/freedreno/ir3/ir3_disk_cache.cpp
+@@ -86,6 +86,8 @@
+                      sizeof(shader->options.api_subgroup_size));
+    _mesa_blake3_update(&ctx, &shader->options.workgroup_resident_threads,
+                      sizeof(shader->options.workgroup_resident_threads));
++   _mesa_blake3_update(&ctx, &shader->options.max_compute_reg_footprint,
++                     sizeof(shader->options.max_compute_reg_footprint));
+    _mesa_blake3_update(&ctx, &shader->options.real_wavesize,
+                      sizeof(shader->options.real_wavesize));
+    _mesa_blake3_update(&ctx, &shader->options.nir_options,
+--- a/src/freedreno/ir3/ir3_ra.c
++++ b/src/freedreno/ir3/ir3_ra.c
+@@ -2854,6 +2854,25 @@
+        v->shader->nir->info.uses_control_barrier)
+       phys_file_size = MIN2(phys_file_size, calc_cs_barrier_reg_budget(v, false));
+ 
++   if (!v->mergedregs && mesa_shader_stage_is_compute(v->type) &&
++       v->shader_options.max_compute_reg_footprint) {
++      unsigned wave_size = v->compiler->info->threadsize_base *
++         (ir3_should_double_threadsize(v, 0) ? 2 : 1);
++      uint64_t resident_threads = wave_size;
++      if (v->has_barrier) {
++         uint64_t local_size = (uint64_t)v->local_size[0] *
++            v->local_size[1] * v->local_size[2];
++         resident_threads = DIV_ROUND_UP(local_size, wave_size) * wave_size;
++         resident_threads = MAX2(resident_threads,
++            v->shader_options.workgroup_resident_threads);
++      }
++      if (!resident_threads)
++         goto fail;
++      unsigned budget = MIN2(phys_file_size,
++         4ull * (v->shader_options.max_compute_reg_footprint / resident_threads));
++      phys_file_size = ROUND_DOWN_TO(budget, 4 * 2);
++   }
++
+    if (!v->mergedregs &&
+        limit_pressure.full + limit_pressure.half > phys_file_size) {
+       /* a whole register is reserved even for a single component of it */
+--- a/src/freedreno/radish/rd_pipeline.c
++++ b/src/freedreno/radish/rd_pipeline.c
+@@ -346,6 +346,7 @@
+       .api_subgroup_size = 16,
+       .workgroup_resident_threads = (pipeline->linear_subgroups || pipeline->linear_barriers) ?
+          DIV_ROUND_UP(local_count, 16) * device->info.threadsize_base : 0,
++      .max_compute_reg_footprint = 4096,
+       .real_wavesize = IR3_SINGLE_ONLY,
+       .push_consts_type = IR3_PUSH_CONSTS_PER_STAGE,
+       .push_consts_dwords = 32,

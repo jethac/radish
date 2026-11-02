@@ -634,3 +634,5 @@ d468a7b2dcadda77b4e06a286eba806aac28c6222f0f3ec9e8330cddf8dba657  0035-ncnn-inst
 | `0044-radish-image-query-constants-wip.patch` | After cube-native-resources0044 | Exact descriptor-size constants preserve sixteen sampled plus four storage resources:176words/fullguards pass. Existing cube/subword/publicRBA requalify; native high-index S2EN remains unqualified. |
 
 | `0044-radish-barrier-large-array-wip.patch` | After image-query-constants0044 | Irregular barrier32/33/3×5×3 checks pass3,520 words/fullguards; public automatic128MiB array sampling passes176 words/sparsecanaries. Broader configurations and fullmodel remain separate. |
+
+| `0044-radish-register-budget-wip.patch` | After barrier-large-array0044 | Match compiler allocation to unchanged residency guard; all179 model programs load. First full inference fails numerically; failed output preserved, no performance acceptance or batching expansion. |

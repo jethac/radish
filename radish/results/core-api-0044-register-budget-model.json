@@ -1,0 +1,169 @@
+{
+  "status": "model_load_fixed; first_extraction_numerical_failure",
+  "compile_session": 91507,
+  "full_session": 67429,
+  "driver": {
+    "bytes": 49007584,
+    "sha256": "0315b6a6450764d00bee358fbe74633d383afdcfa4c04ad16cda41c8d2ffd0a7"
+  },
+  "source_snapshot": "checkpoint-register-budget-source",
+  "patch": {
+    "bytes": 2787,
+    "sha256": "364f3b6fc38d0c35c5bd6d0e825a6ca792930862e6affbe69db4966dea4e9d97"
+  },
+  "runner": {
+    "bytes": 16896,
+    "sha256": "3a8f1faf03606b048450ea69a1f34c6474c003322dd1cf64f98e5983b04ac8ab"
+  },
+  "configuration": {
+    "bytes": 5541,
+    "sha256": "653631e7f1156c09696fdb863c4d9292131d8223cf9b351eaf2edd1a5ac99fc1"
+  },
+  "model": {
+    "bytes": 11129352,
+    "sha256": "0b2f39fa6d7263026f1d12a4b03a10a0a531788451db9e774927acfffa03c664"
+  },
+  "source_build": {
+    "bytes": 6096,
+    "sha256": "ff7bd557fb4df7696c8f67b2291b7501c1b24b1ec39b6443b0772804260f4121"
+  },
+  "native_admission": {
+    "bytes": 126909,
+    "sha256": "0418f14c0b75f67ad6d57471c3dfd74f5559f7e07434d7e800163dc87309ccae"
+  },
+  "captures": {
+    "compile": {
+      "path": "/run/media/jethac/Shared/radish/full-model-register-budget-0044/evidence-core0044-register-budget-first/compile",
+      "files": {
+        "run.log": {
+          "bytes": 44518684,
+          "sha256": "b1fc23a0dd81dfde88e64d9d7458b37f2c4abe7422490493bf235dfdd55b84bd"
+        },
+        "result.json": {
+          "bytes": 689,
+          "sha256": "e01ccb0ed654e91780e3b8002bec3998c35206b713182bb8e53d50141df95267"
+        },
+        "fault-check.txt": {
+          "bytes": 41,
+          "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+        },
+        "services-before.txt": {
+          "bytes": 14,
+          "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+        },
+        "services-after.txt": {
+          "bytes": 14,
+          "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+        },
+        "drain-000.txt": {
+          "bytes": 55,
+          "sha256": "899a8a5a73232d4a07b56824413da1c88dc2dc685e89886ca2bc05f89923b9f6"
+        },
+        "service.txt": {
+          "bytes": 564,
+          "sha256": "bf2b4081dd6f252bccd9df4160d1396f4c894f41c8618af43367f726590e8572"
+        }
+      }
+    },
+    "full": {
+      "path": "/run/media/jethac/Shared/radish/full-model-register-budget-0044/evidence-core0044-register-budget-first/full",
+      "files": {
+        "run.log": {
+          "bytes": 337938,
+          "sha256": "679152dade404e9be7a32acb9fe1dd9d21dce5358218babcbef350770ab02c01"
+        },
+        "result.json": {
+          "bytes": 684,
+          "sha256": "25138620c6a2dc312441adf7d5b3286aea43539f6027cde38b19d7268b1d2e93"
+        },
+        "fault-check.txt": {
+          "bytes": 41,
+          "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+        },
+        "services-before.txt": {
+          "bytes": 14,
+          "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+        },
+        "services-after.txt": {
+          "bytes": 14,
+          "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+        },
+        "drain-000.txt": {
+          "bytes": 55,
+          "sha256": "899a8a5a73232d4a07b56824413da1c88dc2dc685e89886ca2bc05f89923b9f6"
+        },
+        "service.txt": {
+          "bytes": 714,
+          "sha256": "594128f4928b2c02e7aae34b95c83db0ab03d74a8928df35cc98ed20721d1fff"
+        }
+      }
+    }
+  },
+  "allocation_fix": {
+    "before_program52_full_half": [
+      16,
+      21
+    ],
+    "after_program52_full_half": [
+      15,
+      2
+    ],
+    "resident_threads": 128,
+    "before_footprint": 6784,
+    "after_footprint": 4096,
+    "unchanged_guard": 4096,
+    "native_programs_admitted": 179,
+    "private_load_store_instructions": 0,
+    "private_bytes": "Not explicitly reported; no numeric byte allocation inferred.",
+    "geometry_robustness_oracle_unchanged": true
+  },
+  "compile": {
+    "cold_load_seconds": 31.247,
+    "service_seconds": 31.507,
+    "peak_mib": 274.6,
+    "swap_peak_mib": 16.3,
+    "load_and_weight_upload": "passed; no inference in this process"
+  },
+  "full": {
+    "cold_load_seconds": 20.594,
+    "first_extraction_seconds": 68.468763,
+    "first_extraction_process_cpu_seconds": 6.863683,
+    "service_seconds": 89.62,
+    "peak_mib": 379.9,
+    "swap_peak_mib": 44.8,
+    "gpu_layer_traces": 589,
+    "cpu_layer_traces": 0,
+    "all_trace_returns_zero": true,
+    "dispatch_profiles": 1424,
+    "all_dispatch_returns_zero": true,
+    "math_profiles": 58,
+    "math_chunks": 26256,
+    "math_submits": 26256,
+    "dispatch_chunks": 71654,
+    "dispatch_submits": 47568,
+    "output_values": 562342,
+    "mismatches": 558210,
+    "max_abs": 71.1856575,
+    "relative_rms": 0.88834753,
+    "atol": 0.002,
+    "rtol": 0.002,
+    "second_extraction": "unattempted after first numerical failure",
+    "failed_candidate": {
+      "bytes": 2249368,
+      "sha256": "90b78338ea226cf1d3589509a3ae14802305b48b5be0a37264a416257b8c0600"
+    },
+    "expected_accepted_output_sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287"
+  },
+  "postflight": {
+    "both_processes_no_new_gpu_faults": true,
+    "both_services_active": true,
+    "own_units_drained": true
+  },
+  "scope": [
+    "Original accepted0042 runner, model, fixture, references and output gates unchanged.",
+    "Allocation policy now matches unchanged final admission; no spill instructions observed, so spilling is not asserted.",
+    "All23 packed-A variants have native65 and miss original batching allowlist; no batching policy was expanded.",
+    "This is a failed correctness replay, not an accepted inference or performance result; no resident-repeat, short-request or waveform timing exists for this payload.",
+    "Earlier focused functional captures remain independently scoped. Original33ec load failure and current failed output preserved. Further full-model execution held for source diagnosis."
+  ]
+}

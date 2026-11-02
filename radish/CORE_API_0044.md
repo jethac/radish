@@ -1,5 +1,13 @@
 # Core compute implementation: checkpoint 0044
 
+## 2026-11-02: model load is fixed; first inference fails numerically
+
+The allocator now honors the same register-footprint budget as the driver’s final admission check. This fixes the reproduced pipeline-creation failure without disabling robustness, changing workgroup geometry or weakening the 4,096-unit guard. Program 52 uses 15 full and 2 half registers instead of 16 full and 21 half; all 179 model programs are admitted. No private load/store instructions appear, so this result does not establish spilling. The eighteenth increment is `0044-radish-register-budget-wip.patch`.
+
+The unchanged full-model replay on ICD `0315b6a6` then executes all 589 GPU layers with zero returned errors, but the first full output comparison **fails**: 558,210 of 562,342 values exceed the original tolerance, with maximum absolute error 71.1856575. The second extraction is unattempted. Failed output bytes and both logs are preserved. [Exact source, payload and failed correctness result](results/core-api-0044-register-budget-model.json).
+
+The failed replay reports a 20.594-second load and 68.468763-second first extraction; these are diagnostic timings, not an accepted performance result. Service peak memory is 379.9 MiB with 44.8 MiB swap, within the original bounds. No new GPU faults occur, and both live services remain active. The 58 packed-A math dispatches now emit 26,256 submissions because their native length 65 misses the unchanged batching allowlist. No batching adjustment is made while numerics are wrong. Full-model execution is held for diagnosis; focused earlier functional results retain their separate scope.
+
 ## 2026-11-02: unchanged full-model replay finds a pipeline regression
 
 The first full-model load/compile replay on ICD `33ec9c03` fails at layer201, `conv1d_19`: `vkCreateComputePipelines failed -8`. The accepted0042 runner, model, fixture and reference oracle are unchanged. Model load does not complete, so inference, numerical comparisons and cold/resident request timings are unattempted. [Exact failure and payload](results/core-api-0044-model-load-regression.json).
