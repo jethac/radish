@@ -1,0 +1,217 @@
+{
+  "status": "bounded_storage_cube_and_multisample_paths_pass",
+  "source_snapshot": "checkpoint-oversized-ms-source",
+  "public_patch": {
+    "bytes": 10542,
+    "sha256": "e5fac8ff91000ec5c8d8c10e85c1a55181dddcb79369c4888aa0e988a43d2692"
+  },
+  "final_driver": {
+    "bytes": 49022896,
+    "sha256": "96222d95514e5a80011d84d808acc763a2c667d75c850be7576a21bfe74a5277"
+  },
+  "captures": {
+    "storage_cube": {
+      "session": 57480,
+      "capture": "/run/media/jethac/Shared/radish/core-compute-0044-storage-cube-ms/probe",
+      "driver": {
+        "bytes": 49022992,
+        "sha256": "8a337a49cd6f03e957fe4a2ad87dfb31115368a6d55b7be504bc83298b53bb74"
+      },
+      "files": {
+        "run.log": {
+          "bytes": 97254,
+          "sha256": "6eea22f726661d1e0ea998d12e1b6e5c0c5c863f01761e8d9b6422c4e5aed890"
+        },
+        "fault-check.txt": {
+          "bytes": 41,
+          "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+        },
+        "services-before.txt": {
+          "bytes": 14,
+          "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+        },
+        "services-after.txt": {
+          "bytes": 14,
+          "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+        },
+        "host-before.json": {
+          "bytes": 2689,
+          "sha256": "88f79b09ba6baceb2a05e2e013984780dc179564d9434251e392791a14d71829"
+        },
+        "launch.json": {
+          "bytes": 1704,
+          "sha256": "33122c1707676542b31735fb6f6ca91228ba2fbf58f01dfc37287e5c18bfc2f2"
+        },
+        "collection.json": {
+          "bytes": 37,
+          "sha256": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e"
+        }
+      },
+      "conditions": {
+        "service_seconds": 0.851,
+        "peak_mib": 5.7,
+        "swap_mib": 0,
+        "new_gpu_faults": false,
+        "services_active": true,
+        "own_unit_terminal": true
+      }
+    },
+    "ms_lanes": {
+      "session": 46421,
+      "capture": "/run/media/jethac/Shared/radish/core-compute-0044-ms-lanes-setup-corrected/probe",
+      "driver": {
+        "bytes": 49022992,
+        "sha256": "8a337a49cd6f03e957fe4a2ad87dfb31115368a6d55b7be504bc83298b53bb74"
+      },
+      "files": {
+        "run.log": {
+          "bytes": 202984,
+          "sha256": "6d32d4c97aec1355c34758e65e797297dd8b0e02cf0ae06829e156d2619b385f"
+        },
+        "fault-check.txt": {
+          "bytes": 41,
+          "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+        },
+        "services-before.txt": {
+          "bytes": 14,
+          "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+        },
+        "services-after.txt": {
+          "bytes": 14,
+          "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+        },
+        "host-before.json": {
+          "bytes": 2689,
+          "sha256": "88f79b09ba6baceb2a05e2e013984780dc179564d9434251e392791a14d71829"
+        },
+        "launch.json": {
+          "bytes": 1738,
+          "sha256": "9e200b0e9718f1a7e6cdc99384e87c5906e545fe2415f0d471fb320b6213ebc3"
+        },
+        "collection.json": {
+          "bytes": 37,
+          "sha256": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e"
+        }
+      },
+      "conditions": {
+        "service_seconds": 0.722,
+        "peak_mib": 6,
+        "swap_mib": 0,
+        "new_gpu_faults": false,
+        "services_active": true,
+        "own_unit_terminal": true
+      }
+    },
+    "public_oversized_ms": {
+      "session": 84991,
+      "capture": "/run/media/jethac/Shared/radish/core-compute-0044-public-oversized-ms/probe",
+      "driver": {
+        "bytes": 49022896,
+        "sha256": "96222d95514e5a80011d84d808acc763a2c667d75c850be7576a21bfe74a5277"
+      },
+      "files": {
+        "run.log": {
+          "bytes": 286531,
+          "sha256": "5778d905a17a7bdb73a8ecd3a74da9a333c2231474b43f48eeaf8e65fb358638"
+        },
+        "fault-check.txt": {
+          "bytes": 41,
+          "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+        },
+        "services-before.txt": {
+          "bytes": 14,
+          "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+        },
+        "services-after.txt": {
+          "bytes": 14,
+          "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+        },
+        "host-before.json": {
+          "bytes": 1921,
+          "sha256": "f63ee5cf2e3805d5d5c81184b1a301fa56e38152dc253ed6e577abad6374020c"
+        },
+        "launch.json": {
+          "bytes": 1412,
+          "sha256": "9233039cc68c8f647e4788fa06363398f3e54b02660c5382f09283d93ba3a58d"
+        },
+        "collection.json": {
+          "bytes": 37,
+          "sha256": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e"
+        }
+      },
+      "conditions": {
+        "service_seconds": 2.142,
+        "peak_mib": 134.4,
+        "swap_mib": 0,
+        "new_gpu_faults": false,
+        "services_active": true,
+        "own_unit_terminal": true
+      }
+    }
+  },
+  "storage_cube": {
+    "exact_output_words": 1536,
+    "rounds": 2,
+    "faces": 6,
+    "view_mip": 1,
+    "base_array_layer": 6,
+    "operations": [
+      "size",
+      "load",
+      "store",
+      "atomicAdd",
+      "atomicCompSwap"
+    ],
+    "full_image_and_output_allocation_guards": true,
+    "native_units": 7,
+    "full_registers": 8,
+    "half_registers": 0,
+    "internal_texture_aliases": 0,
+    "qualification_limit": "Cube sub-suite passed before separate MS setup failure; failed combined capture lacks assets-after. Subsequent exact-payload MS run verifies those immutable assets before/after. No CubeArray claim."
+  },
+  "internal_ms_lanes": {
+    "exact_output_words": 630,
+    "full_image_words_per_round": 16416,
+    "full_output_allocation_guards": true,
+    "native_ISAMM_reads": 4,
+    "raw_LDG_reads": 4,
+    "same_BO": true,
+    "raw_mask": 2,
+    "same_cached_child": true,
+    "qualification_limit": "Internal OPTIMAL-memory layout tags prove this R32 sample-lane mapping; not a portable public image producer."
+  },
+  "public_large_ms": {
+    "format": "R32_UINT",
+    "extent": [
+      2048,
+      2048,
+      1
+    ],
+    "layers": 2,
+    "samples": 4,
+    "image_bytes": 134217728,
+    "Vk_allocation_bytes": 134217856,
+    "BO_bytes": 134221824,
+    "layer_pitch_bytes": 67108864,
+    "native_layer_pitch_limit_bytes": 67104768,
+    "private_force_flag_present": false,
+    "automatic_raw_mask": 4,
+    "exact_output_words": 240,
+    "rounds": 2,
+    "full_small_output_allocation_guard": true,
+    "sparse_image_words_each_round": 64,
+    "same_BO_and_cached_child": true,
+    "producer": "Public per-layer CmdClearColorImage plus transfer-to-compute dependency.",
+    "qualification_limit": "Equal values per sample from clear; distinct lane evidence is the separate tiny internal test. Sparse image checks, no full128MiB host copy/scan."
+  },
+  "setup_failure": {
+    "session": 57480,
+    "scope": "MS helper required privateforce1 and exited beforedlopen/compile when omitted. Corrected MS-only invocation reused exact frozen payload; Cube not repeated."
+  },
+  "limits": "Original384MiB/128MiBswap/90s controls and64MiB diskreserve retained. Compute/shared implementation milestone, not complete Vulkan/CTS conformance or every legal image/format/workgroup permutation. Graphics remains outside campaign.",
+  "independent_transition_gate": {
+    "bytes": 3471,
+    "sha256": "30e8fa970f4fec05a01ebb0a40fd0a42e43703ad020d5cb3efdf212677669600",
+    "meaning": "Bounded agreed compute/shared closeout enables Straylight performance work; not general conformance."
+  }
+}

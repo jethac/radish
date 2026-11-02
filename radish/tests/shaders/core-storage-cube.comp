@@ -1,0 +1,26 @@
+#version 450
+layout(local_size_x=1,local_size_y=1,local_size_z=1) in;
+layout(set=0,binding=0,r32ui) coherent uniform uimageCube faces;
+layout(set=0,binding=1,std430) writeonly buffer Output { uint words[]; };
+void main()
+{
+   ivec3 p=ivec3(gl_GlobalInvocationID);
+   uint before=imageLoad(faces,p).x;
+   imageStore(faces,p,uvec4(before+64u,0u,0u,0u));
+   memoryBarrierImage();
+   uint added=imageAtomicAdd(faces,p,5u);
+   uint swapped=imageAtomicCompSwap(faces,p,before+69u,before+128u);
+   memoryBarrierImage();
+   uint after=imageLoad(faces,p).x;
+   ivec2 size=imageSize(faces);
+   uint index=(gl_GlobalInvocationID.z*4u+gl_GlobalInvocationID.y)*4u+gl_GlobalInvocationID.x;
+   uint base=index*8u;
+   words[base+0u]=before;
+   words[base+1u]=added;
+   words[base+2u]=swapped;
+   words[base+3u]=after;
+   words[base+4u]=uint(size.x);
+   words[base+5u]=uint(size.y);
+   words[base+6u]=gl_GlobalInvocationID.z;
+   words[base+7u]=index;
+}

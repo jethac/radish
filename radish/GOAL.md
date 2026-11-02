@@ -261,7 +261,7 @@ Graphics remains outside this campaign. The original accuracy, memory, service
 coexistence and material-headroom requirements remain unchanged; a CPU crossover
 or an isolated kernel win is not the completion boundary.
 
-At the user's 2026-11-02 direction, pause performance experiments and complete
+The user's earlier 2026-11-02 direction paused performance experiments to fill
 compute behavior required by Vulkan 1.0 and 1.1 for the fleet. Graphics remains
 outside scope. The 40 missing, broken or blocked command paths in the audit
 (33 Vulkan 1.0 paths and seven Vulkan 1.1 additions) are one tracked worklist,
@@ -283,6 +283,10 @@ reported while implementing the remaining required compute behavior.
 
 All implementation, integration, builds, device validation and publication are
 delegated to subagents; the root agent coordinates the campaign and user
-conversation. Resume performance experiments only after this functionality
-priority is handled or the user redirects. The original inference performance
-and GPU-efficiency goals remain in force.
+conversation. The bounded compute/shared transition gate is now satisfied: the
+concrete resource closeout and unchanged full-model correctness checks pass,
+with full conformance limits and failed CTS evidence retained. The user has
+authorized the Straylight performance phase, starting with safe batching on
+the same correct kernels and original numerical/resource guards. Keep cold,
+resident, fixed-core and end-to-end results distinct. The original performance
+and GPU-efficiency goals remain in force; no CPU-crossover shortcut applies.

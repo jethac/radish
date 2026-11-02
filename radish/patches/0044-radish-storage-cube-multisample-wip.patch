@@ -1,0 +1,204 @@
+--- a/src/freedreno/radish/rd_image.c
++++ b/src/freedreno/radish/rd_image.c
+@@ -112,8 +112,6 @@
+    }
+    if (usage & shader_usage & ~supported)
+       return false;
+-   if ((flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) && (usage & VK_IMAGE_USAGE_STORAGE_BIT))
+-      return false;
+    return rd_image_texel_size(format) &&
+           (type == VK_IMAGE_TYPE_1D || type == VK_IMAGE_TYPE_2D || type == VK_IMAGE_TYPE_3D) &&
+           (tiling == VK_IMAGE_TILING_LINEAR || tiling == VK_IMAGE_TILING_OPTIMAL) &&
+@@ -226,10 +224,6 @@
+       fdl5_layout_image(&image->native_layout, &parameters);
+       image->native_layout.mip_levels = image->vk.mip_levels;
+       if (!image->native_layout.size || image->native_layout.size > limit)
+-         return false;
+-      if ((image->vk.usage & VK_IMAGE_USAGE_SAMPLED_BIT) &&
+-          image->vk.samples != VK_SAMPLE_COUNT_1_BIT &&
+-          image->vk.array_layers > 1 && image->native_layout.layer_size > (0x3fffull << 12))
+          return false;
+       image->size = image->native_layout.size;
+       for (uint32_t level = 0; level < image->vk.mip_levels; level++) {
+--- a/src/freedreno/radish/rd_nir_resources.c
++++ b/src/freedreno/radish/rd_nir_resources.c
+@@ -252,7 +252,8 @@
+    }
+    enum glsl_sampler_dim dim = nir_intrinsic_image_dim(intr);
+    if ((dim != GLSL_SAMPLER_DIM_1D && dim != GLSL_SAMPLER_DIM_2D &&
+-        dim != GLSL_SAMPLER_DIM_3D && dim != GLSL_SAMPLER_DIM_BUF) ||
++        dim != GLSL_SAMPLER_DIM_3D && dim != GLSL_SAMPLER_DIM_CUBE &&
++        dim != GLSL_SAMPLER_DIM_BUF) ||
+        (nir_intrinsic_image_array(intr) && dim != GLSL_SAMPLER_DIM_1D &&
+         dim != GLSL_SAMPLER_DIM_2D)) {
+       state->failed = true;
+--- a/src/freedreno/radish/rd_nir_sampling.c
++++ b/src/freedreno/radish/rd_nir_sampling.c
+@@ -48,21 +48,23 @@
+ }
+ 
+ static nir_def *
+-rd_raw_pixel(nir_builder *b, struct rd_fetch_state *state, unsigned texture,
+-               nir_def *lod, nir_def *layer, nir_def *x, nir_def *y)
++rd_raw_sample(nir_builder *b, struct rd_fetch_state *state, unsigned texture,
++               nir_def *lod, nir_def *layer, nir_def *x, nir_def *y, nir_def *sample)
+ {
+    const struct rd_sampling_view *view = &state->key->views[texture];
+    nir_def *valid = nir_iand(b, nir_ult_imm(b, lod, view->levels),
+       nir_iand(b, nir_ult_imm(b, layer, view->layers), nir_iand(b,
+          nir_ult(b, x, rd_level_value(b, lod, view, 3)),
+          nir_ult(b, y, rd_level_value(b, lod, view, 4)))));
++   valid = nir_iand(b, valid, nir_ult_imm(b, sample, view->samples));
+    nir_def *zero = nir_imm_zero(b, 4, 32);
+    nir_push_if(b, valid);
+    nir_def *pair = nir_load_ssbo(b, 2, 32, nir_imm_int(b, state->buffer),
+       nir_imm_int(b, texture * 8), .align_mul = 8);
+    nir_def *offset = nir_iadd(b, rd_level_value(b, lod, view, 0),
+       nir_iadd(b, nir_imul(b, layer, rd_level_value(b, lod, view, 2)),
+-         nir_iadd(b, nir_imul(b, y, rd_level_value(b, lod, view, 1)), nir_imul_imm(b, x, view->cpp))));
++         nir_iadd(b, nir_imul(b, y, rd_level_value(b, lod, view, 1)),
++            nir_iadd(b, nir_imul_imm(b, x, view->cpp * view->samples), nir_imul_imm(b, sample, view->cpp)))));
+    nir_def *address = nir_iadd(b, nir_pack_64_2x32(b, pair),
+       nir_u2u64(b, nir_iand_imm(b, offset, ~3u)));
+    nir_def *packed = nir_load_global(b, MAX2(view->cpp, 4) / 4, 32, address, .align_mul = 4);
+@@ -71,6 +73,13 @@
+    nir_def *rgba = nir_format_unpack_rgba(b, packed, rd_sample_format(view));
+    nir_pop_if(b, NULL);
+    return nir_if_phi(b, rgba, zero);
++}
++
++static nir_def *
++rd_raw_pixel(nir_builder *b, struct rd_fetch_state *state, unsigned texture,
++               nir_def *lod, nir_def *layer, nir_def *x, nir_def *y)
++{
++   return rd_raw_sample(b, state, texture, lod, layer, x, y, nir_imm_int(b, 0));
+ }
+ 
+ static nir_def *
+@@ -356,13 +365,21 @@
+       return false;
+    if (tex->op == nir_texop_txs || tex->op == nir_texop_query_levels)
+       return false;
+-   if ((tex->op != nir_texop_txf && tex->op != nir_texop_txl && tex->op != nir_texop_txd && tex->op != nir_texop_tg4) ||
+-       !((tex->sampler_dim == GLSL_SAMPLER_DIM_2D && tex->is_array) ||
+-         (tex->sampler_dim == GLSL_SAMPLER_DIM_CUBE && !tex->is_array)) || tex->def.bit_size != 32) {
++   const struct rd_sampling_view *view = &state->key->views[tex->texture_index];
++   bool ms = tex->sampler_dim == GLSL_SAMPLER_DIM_MS && tex->is_array;
++   if (ms && tex->op == nir_texop_texture_samples) {
++      b->cursor = nir_before_instr(instr);
++      nir_def_replace(&tex->def, nir_imm_intN_t(b, view->samples, tex->def.bit_size));
++      return true;
++   }
++   if ((ms ? tex->op != nir_texop_txf_ms :
++        (tex->op != nir_texop_txf && tex->op != nir_texop_txl && tex->op != nir_texop_txd && tex->op != nir_texop_tg4)) ||
++       !((tex->sampler_dim == GLSL_SAMPLER_DIM_2D && tex->is_array) || ms ||
++         (tex->sampler_dim == GLSL_SAMPLER_DIM_CUBE && !tex->is_array)) ||
++       (!ms && view->samples != 1) || tex->def.bit_size != 32) {
+       state->failed = true;
+       return false;
+    }
+-   const struct rd_sampling_view *view = &state->key->views[tex->texture_index];
+    int ci = nir_tex_instr_src_index(tex, nir_tex_src_coord);
+    int oi = nir_tex_instr_src_index(tex, nir_tex_src_offset);
+    if (ci < 0 || tex->src[ci].src.ssa->num_components != 3 || tex->src[ci].src.ssa->bit_size != 32 ||
+@@ -378,7 +395,18 @@
+    nir_def *dx = oi >= 0 ? nir_channel(b, tex->src[oi].src.ssa, 0) : nir_imm_int(b, 0);
+    nir_def *dy = oi >= 0 ? nir_channel(b, tex->src[oi].src.ssa, 1) : nir_imm_int(b, 0);
+    nir_def *rgba;
+-   if (tex->op == nir_texop_txf) {
++   if (ms) {
++      int si = nir_tex_instr_src_index(tex, nir_tex_src_ms_index);
++      if (tex->is_shadow || si < 0 || tex->src[si].src.ssa->num_components != 1 ||
++          tex->src[si].src.ssa->bit_size != 32) {
++         state->failed = true;
++         return false;
++      }
++      rgba = rd_raw_sample(b, state, tex->texture_index, nir_imm_int(b, 0),
++         nir_channel(b, coord, 2), nir_iadd(b, nir_channel(b, coord, 0), dx),
++         nir_iadd(b, nir_channel(b, coord, 1), dy), tex->src[si].src.ssa);
++      rgba = rd_fetch_swizzle(b, rgba, view->swizzle, rd_sample_format(view));
++   } else if (tex->op == nir_texop_txf) {
+       if (tex->is_shadow) { state->failed = true; return false; }
+       int li = nir_tex_instr_src_index(tex, nir_tex_src_lod);
+       rgba = rd_raw_pixel(b, state, tex->texture_index,
+--- a/src/freedreno/radish/rd_resources.c
++++ b/src/freedreno/radish/rd_resources.c
+@@ -258,6 +258,10 @@
+       }
+       out->depth = view->view_type == VK_IMAGE_VIEW_TYPE_3D ? extent.depth :
+                    out->type == A5XX_TEX_CUBE ? view->layer_count / 6 : view->layer_count;
++      if (descriptor->type == VK_DESCRIPTOR_TYPE_STORAGE_IMAGE && out->type == A5XX_TEX_CUBE) {
++         out->type = A5XX_TEX_2D;
++         out->depth = view->layer_count;
++      }
+       out->mip_levels = view->level_count - 1;
+       out->image_size_only = descriptor->type == VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+       out->pitchalign = image->native_layout.pitchalign - 6;
+@@ -547,7 +551,10 @@
+          values[offset + 3] = resource.buffer ?
+             descriptor->buffer_view->vk.elements : resource.width;
+          values[offset + 4] = resource.height;
+-         values[offset + 5] = resource.depth;
++         values[offset + 5] = !resource.buffer &&
++            (descriptor->image_view->vk.view_type == VK_IMAGE_VIEW_TYPE_CUBE ||
++             descriptor->image_view->vk.view_type == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY) ?
++            descriptor->image_view->vk.layer_count / 6 : resource.depth;
+       }
+    }
+    for (uint32_t i = 0; i < IR3_MAX_SHADER_BUFFERS; i++) {
+--- a/src/freedreno/radish/rd_sampling.c
++++ b/src/freedreno/radish/rd_sampling.c
+@@ -27,11 +27,6 @@
+                   view->view_type == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY;
+       if (!array && !cube)
+          continue;
+-      if (image->vk.samples != VK_SAMPLE_COUNT_1_BIT) {
+-         if (image->levels[view->base_mip_level].array_pitch > (0x3fffull << 12))
+-            return VK_ERROR_FEATURE_NOT_PRESENT;
+-         continue;
+-      }
+       if (!force && image->levels[view->base_mip_level].array_pitch <= (0x3fffull << 12))
+          continue;
+       if (!image->memory || view->level_count > RD_IMAGE_MAX_LEVELS)
+@@ -43,6 +38,7 @@
+       target->levels = view->level_count;
+       target->layers = view->layer_count;
+       target->cpp = image->texel_size;
++      target->samples = image->vk.samples;
+       for (unsigned l = 0; l < view->level_count; l++) {
+          unsigned level = view->base_mip_level + l;
+          const struct rd_image_level *layout = &image->levels[level];
+@@ -67,7 +63,9 @@
+                continue;
+             const nir_tex_instr *tex = nir_instr_as_tex(instr);
+             if (tex->texture_index >= 16 || !(key.mask & (1u << tex->texture_index)) ||
+-                tex->op == nir_texop_txf || tex->op == nir_texop_txs || tex->op == nir_texop_query_levels)
++                tex->op == nir_texop_txf || tex->op == nir_texop_txf_ms ||
++                tex->op == nir_texop_texture_samples || tex->op == nir_texop_txs ||
++                tex->op == nir_texop_query_levels)
+                continue;
+             if (tex->sampler_index >= 16)
+                return VK_ERROR_FEATURE_NOT_PRESENT;
+@@ -103,9 +101,9 @@
+       for (unsigned i = 0; i < 16; i++) {
+          if (!(key.mask & (1u << i))) continue;
+          const struct rd_sampling_view *view = &key.views[i];
+-         fprintf(stderr, "RADISH_SAMPLING_BO texture=%u address=%llx bo_size=%u format=%u cpp=%u layers=%u levels=%u offset=%u row=%u array=%u\n",
++         fprintf(stderr, "RADISH_SAMPLING_BO texture=%u address=%llx bo_size=%u format=%u cpp=%u samples=%u layers=%u levels=%u offset=%u row=%u array=%u\n",
+             i, (unsigned long long)addresses[i], fd_bo_size(bos[i]), view->format,
+-            view->cpp, view->layers, view->levels, view->level[0].offset,
++            view->cpp, view->samples, view->layers, view->levels, view->level[0].offset,
+             view->level[0].row_pitch, view->level[0].array_pitch);
+       }
+       for (unsigned i = 0; i < source->buffer_count; i++) {
+--- a/src/freedreno/radish/rd_sampling.h
++++ b/src/freedreno/radish/rd_sampling.h
+@@ -10,7 +10,7 @@
+ struct rd_sampling_view {
+    VkFormat format;
+    VkComponentMapping swizzle;
+-   uint32_t levels, layers, cpp;
++   uint32_t levels, layers, cpp, samples;
+    struct rd_sampling_level level[RD_IMAGE_MAX_LEVELS];
+ };
+ struct rd_sampling_key {

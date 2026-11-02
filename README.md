@@ -21,8 +21,9 @@ a separate driver, with its own a5xx resource bindings and command emission.
 
 ## Current status
 
-**Current priority:** performance experiments are paused while the driver fills
-its Vulkan1.0/1.1 compute execution and resource gaps. The latest
+**Current priority:** the concrete compute/shared implementation and unchanged
+full-model correctness gates pass. Work now moves to restoring safe batching
+and end-to-end Straylight GPU performance, with correctness guards preserved. The latest
 [0044 checkpoint](radish/CORE_API_0044.md) has representative valid-use evidence
 for the original40 command paths, alongside focused BASIC, private/constant,
 normal/noopt and historical32/64 barrier-reduction checks. A descriptor-order
@@ -36,8 +37,9 @@ A locally corrected CTS initialization harness runs five information cases:
 four pass and the full property-limit test still fails; six corrected fields
 reduce its failure messages from37 to31. The40-path count is not complete
 semantic coverage or conformance. Graphics is outside scope; remaining compute
-limits, sampled-image behavior and legal workgroups are active work. Performance
-experiments remain paused; the inference results below are the prior baseline.
+limits, sampled-image behavior and legal workgroups are active work. Storage-Cube and public128MiB multisample-array checks also pass with scoped
+output/guard evidence. No full Vulkan/CTS conformance or graphics support is
+claimed; the inference results below remain the prior performance baseline.
 
 Radish runs every core layer of Kokoro's neural decoder on the GPU through ncnn.
 The latest opt-in graph fuses 42 normalization/AffineSnake chains and executes

@@ -106,7 +106,20 @@
     "packed_math_submits": 3294,
     "total_submits": 10235,
     "current_resident_increase_percent": 97.97798967823613,
-    "scope": "Uncontrolled comparison of the same fixed core, not the end-to-end waveform/request baseline. Driver robustness/compiler/native resource policy changed. Current packed kernels fail the unchanged batching fingerprint and submit each chunk; the timing difference is not causally apportioned."
+    "scope": "Uncontrolled comparison of the same fixed core, not the end-to-end waveform/request baseline. Driver robustness/compiler/native resource policy changed. Current packed kernels fail the unchanged batching fingerprint and submit each chunk; the timing difference is not causally apportioned.",
+    "submit_accounting": {
+      "total_increase": 26257,
+      "packed_math_increase": 22962,
+      "normalization_short_batch_gate_increase": 2721,
+      "smaller_local_geometry_chunk_increase": 574,
+      "all_ordered_owners_match": 1520,
+      "transfers_unchanged": 96,
+      "receipt": {
+        "bytes": 25756,
+        "sha256": "2e6c2d8e7e7d24765876c5d203a39447fb4ca1f1fd4f7b02121f6b44289d9776"
+      },
+      "scope": "Explains submission-count changes, not their individual contribution to wall time."
+    }
   },
   "preserved_setup_failure": {
     "session": 63062,

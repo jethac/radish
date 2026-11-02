@@ -1,0 +1,29 @@
+#version 450
+layout(local_size_x=1,local_size_y=1,local_size_z=1) in;
+layout(set=0,binding=0) uniform usampler2DMS native_layer0;
+layout(set=0,binding=1) uniform usampler2DMS native_layer1;
+layout(set=0,binding=2) uniform usampler2DMSArray raw_image;
+layout(set=0,binding=3,std430) writeonly buffer Output { uint words[]; } output_data;
+const ivec2 locations[8]=ivec2[8](ivec2(0,2047),ivec2(2047,0),ivec2(1023,1023),ivec2(1024,1024),ivec2(1,2046),ivec2(2046,1),ivec2(17,31),ivec2(2030,2015));
+void main()
+{
+   uint i=gl_GlobalInvocationID.x;
+   if (i>=8u) return;
+   ivec2 p=locations[i];
+   int layer=int(i&1u);
+   uint base=i*15u;
+   for (int s=0;s<4;s++) {
+      uint native_value=layer==0?texelFetch(native_layer0,p,s).r:texelFetch(native_layer1,p,s).r;
+      output_data.words[base+uint(s)]=native_value;
+      output_data.words[base+4u+uint(s)]=texelFetch(raw_image,ivec3(p,layer),s).r;
+   }
+   ivec2 a=textureSize(native_layer0);
+   ivec3 b=textureSize(raw_image);
+   output_data.words[base+8u]=uint(a.x);
+   output_data.words[base+9u]=uint(a.y);
+   output_data.words[base+10u]=uint(b.x);
+   output_data.words[base+11u]=uint(b.y);
+   output_data.words[base+12u]=uint(b.z);
+   output_data.words[base+13u]=uint(textureSamples(native_layer1));
+   output_data.words[base+14u]=uint(textureSamples(raw_image));
+}

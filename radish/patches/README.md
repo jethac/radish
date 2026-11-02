@@ -638,3 +638,5 @@ d468a7b2dcadda77b4e06a286eba806aac28c6222f0f3ec9e8330cddf8dba657  0035-ncnn-inst
 | `0044-radish-register-budget-wip.patch` | After barrier-large-array0044 | Match compiler allocation to unchanged residency guard; all179 model programs load. First full inference fails numerically; failed output preserved, no performance acceptance or batching expansion. |
 
 | `0044-radish-exact-buffer-size-wip.patch` | After register-budget0044 | Exact descriptor byte-size constants fix aligned SSBO bounds; valid SPIR-V RBA/boundary cases and all218112 first-convolution values pass. Fullmodel pending; historical invalid-module erratum retained. |
+
+| `0044-radish-storage-cube-multisample-wip.patch` | After exact-buffer-size0044 | Six-face storageCube, tiny internal distinct MS lanes and public128MiB automatic MS array fetch pass bounded outputs/guards. Full conformance and all resource permutations remain unclaimed. |
