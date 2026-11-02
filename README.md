@@ -31,7 +31,7 @@ runs now pass unchanged resource, depth, array-fetch, robustness and allocation
 guard checks. The bounded private array path also passes filtered sampling, gradient LOD,
 wrap/border and gather checks. Four-sample color clear/copy/fetch and
 depth/stencil size/count consumers also pass with explicit coverage limits;
-corrected cube and subword consumers now pass their full outputs and guards after rebuilding the child native texture inventory. Earlier faulting candidates are preserved. A separate small sixteen-native-texture-plus-image-alias consumer now reproduces GPU read faults; that required capacity is unresolved. Further GPU runs, including oversized execution and full-model regression, are held during diagnosis.
+corrected cube and subword consumers now pass their full outputs and guards after rebuilding the child native texture inventory. Earlier faulting candidates are preserved. The separate sixteen-sampled-texture/four-storage-resource consumer now passes through descriptor-size constants, with existing cube/subword/public robustness checks requalified. Earlier native-query faults remain preserved; high-index S2EN support is not claimed. Oversized execution, irregular workgroups and full-model regression remain pending.
 A locally corrected CTS initialization harness runs five information cases:
 four pass and the full property-limit test still fails; six corrected fields
 reduce its failure messages from37 to31. The40-path count is not complete

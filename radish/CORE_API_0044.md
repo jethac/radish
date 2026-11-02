@@ -1,5 +1,13 @@
 # Core compute implementation: checkpoint 0044
 
+## 2026-11-02: required native resource capacity passes through descriptor constants
+
+Storage-image and texel-buffer size queries now read exact current view dimensions from driver constants. The unchanged capacity consumer retains sixteen live sampled textures and four storage resources, and passes all176 output words plus all21 allocation guards. Its compiled shader uses no internal texture aliases or GETSIZE/GETBUF instructions. This implements the required resource combination without reducing advertised limits; it does not establish high-index native S2EN support. The earlier failure remains below. [Exact paired source and results](results/core-api-0044-image-query-constants.json).
+
+The measured ICD `7a4369e3` also passes the existing cube6,120-word and subword5,950-word consumers, full allocation guards, and ordinary public robustBufferAccess checks including40001-element texel buffers, short/dynamic ranges and add/CAS. Descriptor updates still precede fresh command recording. Capacity took646ms/7.1MiB; focused requalification took4.942s/17MiB. Both had zero swap, no new GPU faults and both services active.
+
+The sixteenth increment is `0044-radish-image-query-constants-wip.patch`, applied after cube-native-resources. The existing builder adds `capacity`, selected by the standard runner with `--suite capacity`. Irregular workgroups, oversized-image execution and full inference remain separate functional checks. Performance experiments remain paused.
+
 ## 2026-11-02: full native resource capacity still faults
 
 A small core-compute consumer with sixteen genuinely live sampled textures, two storage-image size queries and two storage-texel-buffer size queries compiles successfully but faults on execution. The current `c1c3a520` driver emits native texture slots0–15 and query aliases16–19; both GETSIZE and GETBUF use indirect `s2en` instructions. The shader has only five native instruction units,8 full/2 half registers, and no shared/private storage or software sampling fallback. Its first round returns an incorrect first output and ten printed GPU read-fault messages. [Exact payload, state and failure evidence](results/core-api-0044-native-capacity-fault.json).

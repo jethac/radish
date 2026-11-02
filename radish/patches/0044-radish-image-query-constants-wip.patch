@@ -1,0 +1,93 @@
+--- a/src/freedreno/ir3/ir3_compiler_nir.c
++++ b/src/freedreno/ir3/ir3_compiler_nir.c
+@@ -1796,6 +1796,24 @@
+                               struct ir3_instruction **dst)
+ {
+    struct ir3_builder *b = &ctx->build;
++   if (ctx->compiler->gen == 5 && ctx->so->shader_options.nir_options.a5xx_image_size_consts) {
++      const struct ir3_const_state *state = ir3_const_state(ctx->so);
++      unsigned index = nir_src_as_uint(intr->src[0]);
++      assert(index < ARRAY_SIZE(state->image_dims.off));
++      assert(state->image_dims.mask & (1u << index));
++      assert(nir_src_as_uint(intr->src[1]) == 0);
++      unsigned base = ir3_const_reg(state, IR3_CONST_ALLOC_IMAGE_DIMS, 0) +
++                      state->image_dims.off[index] + 3;
++      for (unsigned i = 0; i < intr->def.num_components; i++) {
++         unsigned component = nir_intrinsic_image_dim(intr) == GLSL_SAMPLER_DIM_1D &&
++                              nir_intrinsic_image_array(intr) && i == 1 ? 2 : i;
++         assert(component < 3);
++         dst[i] = create_uniform(b, base + component);
++         if (intr->def.bit_size == 16)
++            dst[i] = ir3_COV(b, dst[i], TYPE_U32, TYPE_U16);
++      }
++      return;
++   }
+    struct tex_src_info info = get_image_ssbo_samp_tex_src(ctx, &intr->src[0], true);
+    struct ir3_instruction *sam, *lod;
+    unsigned flags, ncoords = ir3_get_image_coords(intr, &flags);
+--- a/src/freedreno/ir3/ir3_nir.c
++++ b/src/freedreno/ir3/ir3_nir.c
+@@ -2038,6 +2038,14 @@
+       ir3_nir_scan_driver_consts(compiler, nir, &v->key,
+                                  &const_state->image_dims);
+ 
++   if (compiler->gen == 5 && v->shader_options.nir_options.a5xx_image_size_consts) {
++      for (unsigned i = 0; i < ARRAY_SIZE(const_state->image_dims.off); i++) {
++         if (const_state->image_dims.mask & (1u << i))
++            const_state->image_dims.off[i] *= 2;
++      }
++      const_state->image_dims.count *= 2;
++   }
++
+    if ((compiler->gen < 5) && (v->stream_output.num_outputs > 0)) {
+       const_state->num_driver_params =
+          MAX2(const_state->num_driver_params, IR3_DP_VS(vtxcnt_max) + 1);
+--- a/src/freedreno/ir3/ir3_shader.h
++++ b/src/freedreno/ir3/ir3_shader.h
+@@ -616,6 +616,7 @@
+    uint32_t disable_optimizations;
+    uint32_t a5xx_image_buffer_2d;
+    uint32_t a5xx_raw_global_loads;
++   uint32_t a5xx_image_size_consts;
+ };
+ 
+ struct ir3_shader_options {
+--- a/src/freedreno/radish/rd_pipeline.c
++++ b/src/freedreno/radish/rd_pipeline.c
+@@ -335,6 +335,7 @@
+       .nir_options.robust_modes = device->vk.enabled_features.robustBufferAccess ? nir_var_mem_ssbo : 0,
+       .nir_options.a5xx_image_buffer_2d = true,
+       .nir_options.a5xx_raw_global_loads = true,
++      .nir_options.a5xx_image_size_consts = true,
+       .nir_options.disable_optimizations = flags & VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT,
+       .api_wavesize = IR3_SINGLE_ONLY,
+       .api_subgroup_size = 16,
+--- a/src/freedreno/radish/rd_resources.c
++++ b/src/freedreno/radish/rd_resources.c
+@@ -527,7 +527,8 @@
+    if (!state->image_dims.count ||
+        !ir3_const_can_upload(&state->allocs, IR3_CONST_ALLOC_IMAGE_DIMS, v->constlen))
+       return;
+-   uint32_t values[48] = {0};
++   uint32_t values[96] = {0};
++   assert(state->image_dims.count <= ARRAY_SIZE(values));
+    for (uint32_t i = 0; i < 16; i++) {
+       if (!(state->image_dims.mask & (1u << i)))
+          continue;
+@@ -542,9 +543,15 @@
+          descriptor->image_view->vk.view_type == VK_IMAGE_VIEW_TYPE_1D_ARRAY ?
+          resource.array_pitch : resource.row_pitch;
+       values[offset + 2] = resource.array_pitch;
++      if (v->shader_options.nir_options.a5xx_image_size_consts) {
++         values[offset + 3] = resource.buffer ?
++            descriptor->buffer_view->vk.elements : resource.width;
++         values[offset + 4] = resource.height;
++         values[offset + 5] = resource.depth;
++      }
+    }
+    uint32_t offset = state->allocs.consts[IR3_CONST_ALLOC_IMAGE_DIMS].offset_vec4;
+-   uint32_t count = align(state->image_dims.count, 4);
++   uint32_t count = MIN2(align(state->image_dims.count, 4), (v->constlen - offset) * 4);
+    rd_resource_packet(ring, offset, SB4_CS_SHADER, ST4_CONSTANTS, count / 4, count);
+    for (uint32_t i = 0; i < count; i++)
+       OUT_RING(ring, values[i]);

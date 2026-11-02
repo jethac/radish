@@ -1,0 +1,165 @@
+{
+  "status": "passed",
+  "driver": {
+    "bytes": 49006080,
+    "sha256": "7a4369e38c23a2448dd17267e379338de48d586d6f5dad9057eb8bd941777069"
+  },
+  "source_snapshot": "checkpoint-image-query-constants-v2-source",
+  "patch": {
+    "name": "0044-radish-image-query-constants-wip.patch",
+    "bytes": 4272,
+    "sha256": "a5ab9b4a1092aab918eef6c116c71b4cc09370a61a36efcb5a55a0a4bb8b60d6"
+  },
+  "runs": {
+    "query-constants-capacity": {
+      "session": 13392,
+      "capture": "/run/media/jethac/Shared/radish/core-compute-0044-query-constants-capacity/probe",
+      "run_log": {
+        "bytes": 173867,
+        "sha256": "afe0c00b13d19f1d366b92d35bd1bcdd5295ed982293a88f18ec510cc02681e0"
+      },
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 158,
+          "sha256": "aa3632ecfe5335f4763d4a623620d58c826a2f2af9d4c01d2bb5fca6bf1e35e7"
+        },
+        "resources": {
+          "bytes": 745840,
+          "sha256": "729340daca1b0cc2a9d5874a6e25c49279b12140fd4851d936988d6e77d0a7ce"
+        },
+        "resources.spv": {
+          "bytes": 6444,
+          "sha256": "5b549fa5a58348c7a0837f8dc7a3fadd5c63049c49d75816b0d5cacb6f2eee70"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 49006080,
+          "sha256": "7a4369e38c23a2448dd17267e379338de48d586d6f5dad9057eb8bd941777069"
+        },
+        "payload.json": {
+          "bytes": 823,
+          "sha256": "32ce6f6f3bb0cd77ab113a76ebe0a2acb86e919aa519550f92dedb54216832bb"
+        }
+      },
+      "fault_check": {
+        "bytes": 41,
+        "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+      },
+      "services_after": {
+        "bytes": 14,
+        "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+      }
+    },
+    "query-constants-regression": {
+      "session": 47577,
+      "capture": "/run/media/jethac/Shared/radish/core-compute-0044-query-constants-regression/probe",
+      "run_log": {
+        "bytes": 4958693,
+        "sha256": "c463e9ba5404adcf2bc490fa02c4479de05f20a9bec88eaf3677f0927049cbcf"
+      },
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 160,
+          "sha256": "f788ad4542d09c546f13bbc39ccfadce2e5eb0cf89da896757a7caa7891b408a"
+        },
+        "robust": {
+          "bytes": 733792,
+          "sha256": "9023d43ead65da54a83076b41d39b44f46b05eb8ccc36784679ba95bb13cc4f8"
+        },
+        "resources": {
+          "bytes": 747592,
+          "sha256": "50cb6b4329fdb8cd47dab0598cca5cab5bcf29f1868e0daf899a9969eaaf197c"
+        },
+        "resources.spv": {
+          "bytes": 14748,
+          "sha256": "02096c573c08fa6c8eb10820bf62f26b91c135edee80d12c9a9a2ad2a8b032c4"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "robust.spv": {
+          "bytes": 6492,
+          "sha256": "080526d997f35eb5992519f281f21c52c2eafb8997f3708c58b83652fa2d8160"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 49006080,
+          "sha256": "7a4369e38c23a2448dd17267e379338de48d586d6f5dad9057eb8bd941777069"
+        },
+        "subword": {
+          "bytes": 728496,
+          "sha256": "3e3eef22dc240e59ebb736af7d32a9b0b2c3e66c1510267aae5ee9b968d905e3"
+        },
+        "subword.spv": {
+          "bytes": 12632,
+          "sha256": "83eb550949f3954485226dd49203e289a469043567c8a558de02f83e322e0ef7"
+        },
+        "payload.json": {
+          "bytes": 1349,
+          "sha256": "779f03d02f95cce71b66b62704e298f98ec73eca3092135eedc7e36d3d57c778"
+        }
+      },
+      "fault_check": {
+        "bytes": 41,
+        "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+      },
+      "services_after": {
+        "bytes": 14,
+        "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+      }
+    }
+  },
+  "capacity": {
+    "exact_output_words": 176,
+    "full_guarded_allocations": 21,
+    "sampled_textures": 16,
+    "samplers": 16,
+    "storage_images": 2,
+    "storage_texel_buffers": 2,
+    "native_texture_aliases": 0,
+    "query_lowering": "Exact current descriptor dimensions in image_dims constants; no GETSIZE/GETBUF native query",
+    "native_units": 5,
+    "registers_full_half": [
+      9,
+      0
+    ],
+    "shared_bytes": 0,
+    "private_bytes": 0,
+    "service_seconds": 0.646,
+    "peak_mib": 7.1
+  },
+  "regression": {
+    "cube_words": 6120,
+    "subword_words": 5950,
+    "public_robust_spans": [
+      1,
+      3,
+      12,
+      16
+    ],
+    "robust_texel_elements": 40001,
+    "full_allocation_guards": "passed",
+    "service_seconds": 4.942,
+    "peak_mib": 17
+  },
+  "conditions": {
+    "new_gpu_faults": false,
+    "services_active": true,
+    "swap_bytes": 0
+  },
+  "limits": [
+    "Semantic capacity passes through descriptor constants; high-index native S2EN query support is not established.",
+    "Existing declared resource limits are unchanged; original28696 failure is retained.",
+    "Storage-image dimension forms beyond the exercised2D/texel-buffer paths are source-supported, not all independently executed here.",
+    "Irregular barriers, oversized execution and full inference remain separate pending checks.",
+    "No performance or complete Vulkan/CTS conformance claim."
+  ],
+  "public_capacity_host_build": {
+    "receipt_sha256": "5cc71b0598eb2b06cb3512f5ba7ccd9e913909020ab4273f6e8a74bd7a7df6b2",
+    "SPIRV_exact_measured": true,
+    "device_actions": 0
+  }
+}
