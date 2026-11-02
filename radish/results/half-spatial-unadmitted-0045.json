@@ -1,0 +1,230 @@
+{
+  "status": "unadmitted and unselected; no tensor execution or performance result",
+  "selected_model": "d33222d4d62e209f8b05807d78224862778d4a3afe540a4130ee70743b59aff7",
+  "selected_driver": "fcd47b1fdc6f0b1ab52bb71ea1d1331ec0c9b98dbe5da050c7e27b4f0f2b6389",
+  "patches": [
+    {
+      "path": "patches/0045-ncnn-half-spatial-unadmitted.patch",
+      "bytes": 5922,
+      "sha256": "cee51e09d99db44a52e2db961ed3a5320ce1b309b8a9f667daf9401ca1bd0bb8"
+    },
+    {
+      "path": "patches/0045-ncnn-half-spatial-direct-spec-fix.patch",
+      "bytes": 3374,
+      "sha256": "daf5de5102687b2c0d7a2f556705d36fcee520ee38a8b9e8a5b119f8a8203e1f"
+    },
+    {
+      "path": "patches/0045-radish-half-spatial-unadmitted.patch",
+      "bytes": 2708,
+      "sha256": "148325de2d1ab891068017a4963145faef71111f44140771482f9366201b8904"
+    }
+  ],
+  "source_scope": "Target Ci128/Co128/Kw11/bias1/dilation1,3,5 only:64-channel x32-spatial/K16/local8x8/shared6144, original global dot order/B division. Paired narrow queue class retains unchanged guards, requires two-group footprint<=4096 and preload/native<=32.",
+  "corrected_model": {
+    "bytes": 11134200,
+    "sha256": "8d079805ad3bac28a801a2617d4d13fc7782c0dec7edf36adbadbba176948354"
+  },
+  "corrected_build": {
+    "status": "private corrected structural ncnn host build passed",
+    "model": {
+      "bytes": 11134200,
+      "sha256": "8d079805ad3bac28a801a2617d4d13fc7782c0dec7edf36adbadbba176948354"
+    },
+    "archive": {
+      "bytes": 11455636,
+      "sha256": "4ef3cc9eb8174ece0fb8182b552ccb232ea4a4ec644870f4c63a1707a478e28a"
+    },
+    "baseline_model": {
+      "bytes": 11133128,
+      "sha256": "d33222d4d62e209f8b05807d78224862778d4a3afe540a4130ee70743b59aff7"
+    },
+    "patch": {
+      "bytes": 3374,
+      "sha256": "daf5de5102687b2c0d7a2f556705d36fcee520ee38a8b9e8a5b119f8a8203e1f"
+    },
+    "changed_generated_header": {
+      "layer/vulkan/shader/convolution1d_radish_planar_packed_a.comp.hex.h": {
+        "bytes": 13967,
+        "sha256": "385e0900cb8d8d94a27653bb4dc1de3c3531cf835e47ffd4ca032ef6d0d9b52f"
+      }
+    },
+    "other_generated_headers_and_registry_exact": true,
+    "untouched_archive_members": 260,
+    "untouched_member_bytes_sha256": "d3e3cb03ba43b4bce8c62cdbf3f5bf4e7edcb02b25ac4361a52580532f794b2d",
+    "scope": "Corrected direct tile specIDs5/6 on final structural shader+host over selected d332. Paired cc24 queue unchanged; full native/two-group/functional admission pending."
+  },
+  "compile_result": {
+    "status": "passed",
+    "mode": "compile",
+    "contract": {
+      "pins": {
+        "bytes": 6719,
+        "sha256": "36cf6db2ab355e60658f4309b67eaac1476e0770d8d4efad207058cdcfbb03da"
+      },
+      "runner": {
+        "bytes": 17564,
+        "sha256": "59309575ee38bd052c80d79a21cd37114abb7861d970da7bbbe51a2b7a0fc9c1"
+      },
+      "packed_a": "1",
+      "tiled_batch": "8"
+    },
+    "packed_a": "1",
+    "tiled_batch": "8",
+    "compile_label": "core0045-half-spec",
+    "run_log": {
+      "bytes": 25196514,
+      "sha256": "ef0de48b757f5a4fdebd6817d9c0afd5e1f6de8fbd75d4036ccdc47124fed340"
+    },
+    "collection_errors": [],
+    "scope": "Execution/source/driver/inode/output checks only; root audits actual native resources and admission separately."
+  },
+  "runtime_seconds": 18.146,
+  "peak_memory_mib": 274.1,
+  "swap_mib": 0,
+  "target_native": {
+    "verdict": "COMPILE_PASS but intended native two-group/math8 admission FAIL; no tensor execution authorized",
+    "run_log_sha256": "ef0de48b757f5a4fdebd6817d9c0afd5e1f6de8fbd75d4036ccdc47124fed340",
+    "targets": [
+      {
+        "program": 105,
+        "spec_values": [
+          11,
+          128,
+          128,
+          1,
+          1,
+          32,
+          16
+        ],
+        "local": [
+          8,
+          8,
+          1
+        ],
+        "shared": 6144,
+        "full": 21,
+        "half": 0,
+        "constlen": 20,
+        "loops": 3,
+        "dwords": 1832,
+        "native_units": 58,
+        "pair_half_register_footprint": 5376,
+        "weighted_mad_f32_static": 512,
+        "private_ldp_stp": false,
+        "failed_gates": [
+          "full21 exceeds16",
+          "native58 exceeds32/preload threshold",
+          "loops3 differsrequired4",
+          "twoGroup5376 exceeds4096"
+        ],
+        "selected_baseline_weighted_mad_f32_static": 32,
+        "selected_baseline_native_sha256": "cedd19a207479d1c22c5a0e6f56d82f905b77c4e661ec05e5c898f7aa89dc1bf"
+      },
+      {
+        "program": 111,
+        "spec_values": [
+          11,
+          128,
+          128,
+          1,
+          3,
+          32,
+          16
+        ],
+        "local": [
+          8,
+          8,
+          1
+        ],
+        "shared": 6144,
+        "full": 21,
+        "half": 0,
+        "constlen": 20,
+        "loops": 3,
+        "dwords": 1856,
+        "native_units": 58,
+        "pair_half_register_footprint": 5376,
+        "weighted_mad_f32_static": 512,
+        "private_ldp_stp": false,
+        "failed_gates": [
+          "full21 exceeds16",
+          "native58 exceeds32/preload threshold",
+          "loops3 differsrequired4",
+          "twoGroup5376 exceeds4096"
+        ],
+        "selected_baseline_weighted_mad_f32_static": 32,
+        "selected_baseline_native_sha256": "59233371395a618321c5ce4539cc7ae7115022d5423342a7afe3544f9917cb32"
+      },
+      {
+        "program": 124,
+        "spec_values": [
+          11,
+          128,
+          128,
+          1,
+          5,
+          32,
+          16
+        ],
+        "local": [
+          8,
+          8,
+          1
+        ],
+        "shared": 6144,
+        "full": 21,
+        "half": 0,
+        "constlen": 20,
+        "loops": 3,
+        "dwords": 1856,
+        "native_units": 58,
+        "pair_half_register_footprint": 5376,
+        "weighted_mad_f32_static": 512,
+        "private_ldp_stp": false,
+        "failed_gates": [
+          "full21 exceeds16",
+          "native58 exceeds32/preload threshold",
+          "loops3 differsrequired4",
+          "twoGroup5376 exceeds4096"
+        ],
+        "selected_baseline_weighted_mad_f32_static": 32,
+        "selected_baseline_native_sha256": "8fe6464fdf0d06ca3c9554371d3081bbeba2e5349e2cc28a3ac560553e5ce90d"
+      }
+    ],
+    "interpretation": "All seven actual specs are applied: tile_n32/tile_k16, real local8x8/shared6144. InnerK loop is absent in final native;512 static weighted MAD.F32 =32 accumulators\u00d716 K steps, vs selected32 static MAD.F32 with dynamic K32 innerloop. This supports automatic complete unrolling of the16step inner loop, not ignored tile specs. Three loops remain for outer/preload control. Source arithmetic order/coverage was separately proved; no expanded native recurrence acceptance is needed because resource/length/loop gates fail.",
+    "queue_behavior": "Strict unchanged new predicate correctly rejects intended pair2 and math8. Default barrierbudget1 remains; no guard relaxation/full tensor retry. Candidate is unselected; d332/fcd retained.",
+    "remaining": "Batch may propose a separate source/compiler loop-shape correction only through review; current malformed-source failure77062 and corrected native resourcefailure81833 both preserved.",
+    "scope": "Program statistics and actual specialized optimized NIR/native inspected; no causality claim about measured performance or hardware simultaneous residency. No new GPU action."
+  },
+  "preserved_failure": "Original77062 malformed SPIR-V failed before native52: SpecConstantOp Select at byte2636 referenced id107 defined later as function OpPhi at4128. Pinned host before/after injection reproduce signature. No claim of byte identity to undumped tablet module.",
+  "correction": "Direct scalar SpecID5/6 dimensions and seven-value host maps fix malformed derived constants. Exact target8x8 and nontarget16x8 artifacts validate Vulkan1.0; shader dot body unchanged by correction.",
+  "blocked_scope": "Target21F0H/native58/3loops gives two-group register footprint5376>4096. Strict predicate declines intended two-group/math8; no full tensor replay. No source/resource guard relaxation.",
+  "interpretation": "512 static weighted MAD versus baseline32 and one fewer loop support innerK16 auto-unrolling; this is code-generation diagnosis, not execution timing or numerical correctness.",
+  "control_failure": "All156 nonpacked records remain exact, but all20 non-target packed native bodies also change despite preserved64/32 tile,16x8 local and16KiB shared. Generalized signed i/tile_x replaces selected i>>4 and expands division; expected control native identity fails.",
+  "independent_receipts": {
+    "/run/media/jethac/Shared/radish/packed-half-spatial-spec-fix-z5gf3ure/spirv-diagnosis-review.json": {
+      "bytes": 2880,
+      "sha256": "7310a0f975e71311e590c820bb5547b3f9a6b7ba8c19dcefd881c98f1fa95f5a"
+    },
+    "/run/media/jethac/Shared/radish/packed-half-spatial-spec-fix-z5gf3ure/corrected-module-build-review.json": {
+      "bytes": 2996,
+      "sha256": "4bc1f8720fd433365031598bcef6017e5f51fadc7cc1ad3b607f79ef5e256690"
+    },
+    "/run/media/jethac/Shared/radish/asr-graph-profile-ovmz54r9/half-spatial-spec-fix-build-review.json": {
+      "bytes": 1872,
+      "sha256": "00183be6f763c169013994af27bc29eaa23ba98cada2dbd51a5335eb100ff5d1"
+    },
+    "/run/media/jethac/Shared/radish/asr-graph-profile-ovmz54r9/half-spatial-native-admission-fail.json": {
+      "bytes": 3800,
+      "sha256": "509173437f31b047532f5935c5457368692cd6196eb6f4f5ceea7581d84f5871"
+    },
+    "/run/media/jethac/Shared/radish/packed-half-spatial-tile-0045-l4sjohso/scheduler-resource-feasibility.json": {
+      "bytes": 5272,
+      "sha256": "3032cfd870ecba543b5ca863ef2cdd4a38f588e1aa61702378656f225aaa59f6"
+    },
+    "/run/media/jethac/Shared/radish/packed-half-spatial-spec-fix-z5gf3ure/native-admission-failed.json": {
+      "bytes": 12452,
+      "sha256": "3a1eabbd3041aed0d831a38ecd3990e0515e5c7cefed4f22147d2276015491a5"
+    }
+  }
+}

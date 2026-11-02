@@ -1,0 +1,115 @@
+{
+  "verdict": "COMPILE_PASS but intended native two-group/math8 admission FAIL; no tensor execution authorized",
+  "run_log_sha256": "ef0de48b757f5a4fdebd6817d9c0afd5e1f6de8fbd75d4036ccdc47124fed340",
+  "targets": [
+    {
+      "program": 105,
+      "spec_values": [
+        11,
+        128,
+        128,
+        1,
+        1,
+        32,
+        16
+      ],
+      "local": [
+        8,
+        8,
+        1
+      ],
+      "shared": 6144,
+      "full": 21,
+      "half": 0,
+      "constlen": 20,
+      "loops": 3,
+      "dwords": 1832,
+      "native_units": 58,
+      "pair_half_register_footprint": 5376,
+      "weighted_mad_f32_static": 512,
+      "private_ldp_stp": false,
+      "failed_gates": [
+        "full21 exceeds16",
+        "native58 exceeds32/preload threshold",
+        "loops3 differsrequired4",
+        "twoGroup5376 exceeds4096"
+      ],
+      "selected_baseline_weighted_mad_f32_static": 32,
+      "selected_baseline_native_sha256": "cedd19a207479d1c22c5a0e6f56d82f905b77c4e661ec05e5c898f7aa89dc1bf"
+    },
+    {
+      "program": 111,
+      "spec_values": [
+        11,
+        128,
+        128,
+        1,
+        3,
+        32,
+        16
+      ],
+      "local": [
+        8,
+        8,
+        1
+      ],
+      "shared": 6144,
+      "full": 21,
+      "half": 0,
+      "constlen": 20,
+      "loops": 3,
+      "dwords": 1856,
+      "native_units": 58,
+      "pair_half_register_footprint": 5376,
+      "weighted_mad_f32_static": 512,
+      "private_ldp_stp": false,
+      "failed_gates": [
+        "full21 exceeds16",
+        "native58 exceeds32/preload threshold",
+        "loops3 differsrequired4",
+        "twoGroup5376 exceeds4096"
+      ],
+      "selected_baseline_weighted_mad_f32_static": 32,
+      "selected_baseline_native_sha256": "59233371395a618321c5ce4539cc7ae7115022d5423342a7afe3544f9917cb32"
+    },
+    {
+      "program": 124,
+      "spec_values": [
+        11,
+        128,
+        128,
+        1,
+        5,
+        32,
+        16
+      ],
+      "local": [
+        8,
+        8,
+        1
+      ],
+      "shared": 6144,
+      "full": 21,
+      "half": 0,
+      "constlen": 20,
+      "loops": 3,
+      "dwords": 1856,
+      "native_units": 58,
+      "pair_half_register_footprint": 5376,
+      "weighted_mad_f32_static": 512,
+      "private_ldp_stp": false,
+      "failed_gates": [
+        "full21 exceeds16",
+        "native58 exceeds32/preload threshold",
+        "loops3 differsrequired4",
+        "twoGroup5376 exceeds4096"
+      ],
+      "selected_baseline_weighted_mad_f32_static": 32,
+      "selected_baseline_native_sha256": "8fe6464fdf0d06ca3c9554371d3081bbeba2e5349e2cc28a3ac560553e5ce90d"
+    }
+  ],
+  "interpretation": "All seven actual specs are applied: tile_n32/tile_k16, real local8x8/shared6144. InnerK loop is absent in final native;512 static weighted MAD.F32 =32 accumulators\u00d716 K steps, vs selected32 static MAD.F32 with dynamic K32 innerloop. This supports automatic complete unrolling of the16step inner loop, not ignored tile specs. Three loops remain for outer/preload control. Source arithmetic order/coverage was separately proved; no expanded native recurrence acceptance is needed because resource/length/loop gates fail.",
+  "queue_behavior": "Strict unchanged new predicate correctly rejects intended pair2 and math8. Default barrierbudget1 remains; no guard relaxation/full tensor retry. Candidate is unselected; d332/fcd retained.",
+  "remaining": "Batch may propose a separate source/compiler loop-shape correction only through review; current malformed-source failure77062 and corrected native resourcefailure81833 both preserved.",
+  "scope": "Program statistics and actual specialized optimized NIR/native inspected; no causality claim about measured performance or hardware simultaneous residency. No new GPU action."
+}

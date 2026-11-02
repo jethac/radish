@@ -1,0 +1,136 @@
+--- a/ncnn/src/layer/vulkan/shader/convolution1d_radish_planar_packed_a.comp
++++ b/ncnn/src/layer/vulkan/shader/convolution1d_radish_planar_packed_a.comp
+@@ -1,12 +1,18 @@
+ #version 450
+ 
+-// FP32 implicit GEMM: 64 output channels x 64 positions, reduction blocks of
+-// 32, eight vec4 accumulators per invocation. Host local size is 16x8x1.
++// FP32 implicit GEMM with eight vec4 accumulators per invocation.
+ layout(constant_id = 0) const int kernel_w = 1;
+ layout(constant_id = 1) const int num_input = 32;
+ layout(constant_id = 2) const int num_output = 64;
+ layout(constant_id = 3) const int bias_term = 0;
+ layout(constant_id = 4) const int dilation_w = 1;
++
++const bool compact_tile = kernel_w == 11 && num_input == 128 && num_output == 128 && bias_term == 1
++    && (dilation_w == 1 || dilation_w == 3 || dilation_w == 5);
++const int tile_n = compact_tile ? 32 : 64;
++const int tile_k = compact_tile ? 16 : 32;
++const int tile_x = tile_n / 4;
++const int tile_threads = tile_x * 8;
+ 
+ layout(binding = 0) readonly buffer weights { vec4 weight_data[]; };
+ layout(binding = 1) readonly buffer bottom_blob { float bottom_blob_data[]; };
+@@ -19,9 +25,9 @@
+     int outw;
+ } p;
+ 
+-// Exactly 16 KiB; all invocations fill and consume both tiles at each barrier.
+-shared float sa[32][64];
+-shared vec4 sb[32][16];
++// All invocations fill and consume both tiles at each barrier.
++shared float sa[tile_k][64];
++shared vec4 sb[tile_k][tile_x];
+ 
+ vec4 load_input(int k, int x)
+ {
+@@ -36,9 +42,9 @@
+ {
+     const int tx = int(gl_LocalInvocationID.x);
+     const int ty = int(gl_LocalInvocationID.y);
+-    const int tid = ty * 16 + tx;
++    const int tid = ty * tile_x + tx;
+     const int mb = int(gl_WorkGroupID.y) * 64;
+-    const int nb = int(gl_WorkGroupID.x) * 64;
++    const int nb = int(gl_WorkGroupID.x) * tile_n;
+     const int K = num_input * kernel_w;
+ 
+     vec4 acc[8];
+@@ -48,9 +54,9 @@
+         acc[r] = vec4(bias_term != 0 && co < num_output ? bias_data[co] : 0.f);
+     }
+ 
+-    for (int k0 = 0; k0 < K; k0 += 32)
++    for (int k0 = 0; k0 < K; k0 += tile_k)
+     {
+-        for (int i = tid; i < 32 * 16; i += 128)
++        for (int i = tid; i < tile_k * 16; i += tile_threads)
+         {
+             const int r = i >> 4;
+             const int q = i % 16;
+@@ -60,15 +66,15 @@
+             sa[r][q * 4 + 2] = a.z;
+             sa[r][q * 4 + 3] = a.w;
+         }
+-        for (int i = tid; i < 32 * 16; i += 128)
++        for (int i = tid; i < tile_k * tile_x; i += tile_threads)
+         {
+-            const int r = i >> 4;
+-            const int q = i % 16;
++            const int r = i / tile_x;
++            const int q = i % tile_x;
+             sb[r][q] = load_input(k0 + r, nb + q * 4);
+         }
+         barrier();
+ 
+-        for (int k = 0; k < 32; k++)
++        for (int k = 0; k < tile_k; k++)
+         {
+             vec4 b = sb[k][tx];
+             for (int r = 0; r < 8; r++)
+--- a/ncnn/src/layer/vulkan/convolution1d_vulkan.cpp
++++ b/ncnn/src/layer/vulkan/convolution1d_vulkan.cpp
+@@ -388,7 +388,9 @@
+         specializations[4].i = dilation_w;
+ 
+         pipeline_convolution1d_gemm = new Pipeline(vkdev);
+-        const uint32_t local_x = radish_tiled32 ? 8 : 16;
++        const bool compact_tile = radish_planar && requested_packed_a && num_input == 128
++                                  && num_output == 128 && kernel_w == 11 && bias_term == 1;
++        const uint32_t local_x = radish_tiled32 || compact_tile ? 8 : 16;
+         const uint32_t local_y = radish_tiled32 ? 4 : 8;
+         pipeline_convolution1d_gemm->set_local_size_xyz(local_x, local_y, 1);
+         if (pipeline_convolution1d_gemm->local_size_x() != local_x
+@@ -404,7 +406,7 @@
+ 
+         if (radish_planar)
+         {
+-            if (!radish_planar_pipeline(pipeline_convolution1d_gemm, 4, 2, 16, 8))
++            if (!radish_planar_pipeline(pipeline_convolution1d_gemm, 4, 2, local_x, 8))
+                 return -1;
+             pipeline_radish_planar_pad = new (std::nothrow) Pipeline(vkdev);
+             if (!pipeline_radish_planar_pad)
+@@ -1145,10 +1147,14 @@
+ 
+     if (radish_planar)
+     {
++        const bool compact_tile = kernel_w == 11 && num_output == 128 && bias_term == 1
++                                  && bottom_blob.h == 32 && pipeline_convolution1d_gemm
++                                  && pipeline_convolution1d_gemm->local_size_x() == 8;
++        const uint32_t math_local_x = compact_tile ? 8 : 16;
+         uint32_t pad_bits;
+         memcpy(&pad_bits, &pad_value, sizeof(pad_bits));
+         if (!use_radish_tiled || radish_tiled32 || !radish_planar_fp32(opt)
+-            || !radish_planar_pipeline(pipeline_convolution1d_gemm, 4, 2, 16, 8)
++            || !radish_planar_pipeline(pipeline_convolution1d_gemm, 4, 2, math_local_x, 8)
+             || !radish_planar_pipeline(pipeline_radish_planar_pad, 2, 4, 8, 8)
+             || !opt.workspace_vkallocator || !opt.blob_vkallocator
+             || opt.workspace_vkallocator->vkdev != vkdev || opt.blob_vkallocator->vkdev != vkdev
+@@ -1202,7 +1208,7 @@
+ 
+         const uint64_t pad_groups_x = ((uint64_t)lp / 4 + 7) / 8;
+         const uint64_t pad_groups_y = ((uint64_t)channels + 7) / 8;
+-        const uint64_t math_groups_x = ((uint64_t)outw + 63) / 64;
++        const uint64_t math_groups_x = (((uint64_t)outw + 63) / 64) * (compact_tile ? 2 : 1);
+         const uint64_t math_groups_y = (uint64_t)num_output / 64;
+         if (pad_groups_x > limits.maxComputeWorkGroupCount[0]
+             || pad_groups_y > limits.maxComputeWorkGroupCount[1]
+@@ -1253,7 +1259,7 @@
+         constants[0].i = lp;
+         constants[1].i = outw;
+         VkMat dispatcher;
+-        dispatcher.w = (int)math_groups_x * 16;
++        dispatcher.w = (int)math_groups_x * math_local_x;
+         dispatcher.h = (int)math_groups_y * 8;
+         dispatcher.c = 1;
+         cmd.record_pipeline(pipeline_convolution1d_gemm, bindings, constants, dispatcher);

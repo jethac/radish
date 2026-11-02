@@ -304,3 +304,36 @@ Correctness permits this explicit tradeoff, not a default recommendation. CPU
 resident short/full 15.411271/36.802922 s remains faster than 17.297296/41.225818 s.
 Sustained behavior, live application integration, current-graph cancellation and
 restart remain unvalidated; neither GPU saturation nor Vulkan conformance follows.
+
+
+## Structural half-spatial candidate: native admission failed (0045)
+
+The isolated64-channel ×32-position/K16/local8×8 candidate reduced shared memory
+to6KiB and proposed two X workgroups per existing chunk. Its narrow queue class
+kept the original guards and required aggregate register usage≤4096,12KiB shared
+for the pair, native length≤32 and unchanged math8 eligibility. fcd/d332 remains
+selected; this candidate has no tensor correctness or performance result.
+
+The first build failed SPIR-V parsing before native program52. Pinned host
+reproduction found a specialization Select using a later function-local Phi,
+already malformed before local-size injection. Direct scalar tile SpecIDs5/6,
+with seven-value host maps, fixed that issue; exact8×8 target modules validate.
+This was not missing Mesa Select support or a resource guard failure.
+
+The corrected model compiled in18.146s with274.1MiB/no swap and clean postflight,
+but all three targets used21 full registers, native length58 and three loops.
+Their intended two-group register footprint is5376, above the unchanged4096 bound.
+The queue therefore does not admit the intended scheduling path, and the full
+replay was held.512 static weighted MADs versus32 in the baseline, with one fewer
+loop, support compiler unrolling of the innerK16 loop; this is not a timing claim.
+
+The156 nonpacked records remain exact. The20 non-target packed controls preserve
+their tile/local/shared geometry but their native bodies also change: generalized
+signed `i / tile_x` replaced the selected `i >> 4` row-index expression and expands
+division. Thus expected control-native identity also fails. A subsequent source
+experiment would need to preserve those original address operations as well as
+keep the target inner loop; neither issue warrants relaxing the existing gates.
+
+[The finite result](results/half-spatial-unadmitted-0045.json) preserves source,
+build/module diagnosis and native receipts. The unadmitted patches are isolated
+experiments, not additions to the selected inference path. No guards were relaxed.

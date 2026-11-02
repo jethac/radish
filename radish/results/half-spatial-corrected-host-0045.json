@@ -1,0 +1,88 @@
+{
+  "status": "passed source/host/module pairing; actual native and two-group admission pending",
+  "build_result": {
+    "path": "/run/media/jethac/Shared/radish/packed-half-spatial-spec-build-0045/build-result.json",
+    "bytes": 1163,
+    "sha256": "c845096d06ca2a857f4fd7d4b6004ab7519b39a923a586f34b34a5523f3fe63b"
+  },
+  "model": {
+    "path": "/run/media/jethac/Shared/radish/packed-half-spatial-spec-build-0045/radish-model",
+    "bytes": 11134200,
+    "sha256": "8d079805ad3bac28a801a2617d4d13fc7782c0dec7edf36adbadbba176948354"
+  },
+  "archive": {
+    "path": "/run/media/jethac/Shared/radish/packed-half-spatial-spec-build-0045/libncnn.a",
+    "bytes": 11455636,
+    "sha256": "4ef3cc9eb8174ece0fb8182b552ccb232ea4a4ec644870f4c63a1707a478e28a"
+  },
+  "changed_archive_members": [
+    "gpu.cpp.o",
+    "convolution1d_vulkan.cpp.o"
+  ],
+  "unchanged_archive_members": 260,
+  "source_snapshot_exact_release": true,
+  "gpu_dependency_contains_exact_generated_header": true,
+  "exact_target_host_result": {
+    "path": "/run/media/jethac/Shared/radish/half-spatial-spec-v2-target-host-0045/result.json",
+    "bytes": 1734,
+    "sha256": "da1587eb95beb9e2725553faec1134f0b0618bba6ccc1e5244d7d6c4f1f1d6dd"
+  },
+  "target_modules": {
+    "target_dilation3.spv": {
+      "pin": {
+        "bytes": 10672,
+        "sha256": "1822061a0b9d7377ed2f193113dfdd71a55e8c7e2c0c7824f56a2fdec398326e"
+      },
+      "local": [
+        8,
+        8,
+        1
+      ],
+      "shared_bytes_from_types": 6144
+    },
+    "target_dilation1.spv": {
+      "pin": {
+        "bytes": 10672,
+        "sha256": "734daeac722bb18e470a61b584888bd2554908e606c9456d0d69138353a4e355"
+      },
+      "local": [
+        8,
+        8,
+        1
+      ],
+      "shared_bytes_from_types": 6144
+    },
+    "target_dilation5.spv": {
+      "pin": {
+        "bytes": 10672,
+        "sha256": "09f533bd34f9f158de115c62a6a68410288e24eb27cccf65a7c0682295a24c55"
+      },
+      "local": [
+        8,
+        8,
+        1
+      ],
+      "shared_bytes_from_types": 6144
+    }
+  },
+  "target_injection_delta_from_retained16x8": [
+    [
+      26,
+      16,
+      8
+    ]
+  ],
+  "interpretation": [
+    "Before-injection bytes exactly prior correctedcapture; copied injection changes only localX16to8",
+    "Three actual targetdimension maps validate Vulkan1.0 and independently resolve6KiBWorkgroup arrays/local8x8",
+    "First program52 keeps seven-map [3,544,1024,1,1,64,32]/local16x8 priorvalidated",
+    "Original selected d332/fcd, invalid12ff source/capture and pairedcc24 queue remain frozen",
+    "All other generated source, accepted API/tails/deviceoptions/loader and original B division preserved"
+  ],
+  "pending": [
+    "179 actualpipeline admission and23packed mapping",
+    "Target105/111/124 native\u226432/private0/4loops/pairedfootprint\u22644096",
+    "Actual two-group dispatcher admission/geometry before functional acceptance",
+    "Original fullnumerical/guard/fault checks and fair timing only after admission"
+  ]
+}

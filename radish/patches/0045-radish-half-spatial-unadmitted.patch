@@ -1,0 +1,56 @@
+--- a/src/freedreno/radish/rd_queue.c
++++ b/src/freedreno/radish/rd_queue.c
+@@ -590,6 +590,25 @@
+ }
+ 
+ static bool
++rd_paired_shared_batch_resources(struct rd_device *device,
++                                  const struct rd_pipeline *pipeline)
++{
++   const struct ir3_shader_variant *v = pipeline->variant;
++   if (fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) != 506 ||
++       device->info.num_sp_cores != 1 || device->info.threadsize_base != 32 ||
++       v->local_size[0] != 8 || v->local_size[1] != 8 || v->local_size[2] != 1 ||
++       !v->has_barrier || v->loops != 4 || v->shared_size != 6144 || v->pvtmem_size ||
++       v->info.double_threadsize || v->info.preamble_instrs_count ||
++       v->info.max_reg + 1 > 16 || !v->instrlen || v->instrlen > 32 ||
++       !rd_shared_batch_resources(pipeline))
++      return false;
++   const uint64_t pair_threads = 2ull * 64;
++   const uint64_t pair_shared = 2ull * v->shared_size;
++   return pair_threads * ir3_shader_halfregs(v) <= 4096 &&
++          pair_shared <= 16384 && pair_shared <= device->info.cs_shared_mem_size;
++}
++
++static bool
+ rd_short_buffer_batch_resources(struct rd_device *device,
+                                  const struct rd_pipeline *pipeline)
+ {
+@@ -637,6 +656,10 @@
+        (uint64_t)v->local_size[0] * v->local_size[1] * v->local_size[2] <= 32 &&
+        shared_groups >= 1 && shared_groups <= 8)
+       budget = shared_groups;
++   bool paired_shared = dispatch->grid[0] >= 2 &&
++      rd_paired_shared_batch_resources(device, dispatch->pipeline);
++   if (paired_shared)
++      budget = 2;
+    bool tiled_x2 = debug_get_num_option("RADISH_TILED_GROUPS_X", 1) == 2 &&
+       dispatch->grid[0] >= 2 &&
+       fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) == 506 &&
+@@ -663,11 +686,11 @@
+    int64_t tiled_chunks = debug_get_num_option("RADISH_TILED_BATCH_CHUNKS", 1);
+    if ((tiled_chunks == 2 || tiled_chunks == 4 || tiled_chunks == 8) &&
+        fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) == 506 &&
+-       v->local_size[0] == 16 && v->local_size[1] == 8 &&
+-       v->local_size[2] == 1 && v->has_barrier && v->loops == 4 &&
+-       v->shared_size == 16384 && !v->pvtmem_size &&
+-       !v->info.double_threadsize && v->info.max_reg + 1 <= 16 &&
+-       rd_shared_batch_resources(dispatch->pipeline))
++       ((v->local_size[0] == 16 && v->local_size[1] == 8 &&
++         v->local_size[2] == 1 && v->has_barrier && v->loops == 4 &&
++         v->shared_size == 16384 && !v->pvtmem_size &&
++         !v->info.double_threadsize && v->info.max_reg + 1 <= 16 &&
++         rd_shared_batch_resources(dispatch->pipeline)) || paired_shared))
+       max_chunks = tiled_chunks;
+    if (tiled_x2)
+       max_chunks = MIN2(max_chunks, 4);

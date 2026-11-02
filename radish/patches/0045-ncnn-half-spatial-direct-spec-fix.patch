@@ -1,0 +1,62 @@
+--- a/ncnn/src/layer/vulkan/shader/convolution1d_radish_planar_packed_a.comp
++++ b/ncnn/src/layer/vulkan/shader/convolution1d_radish_planar_packed_a.comp
+@@ -7,10 +7,8 @@
+ layout(constant_id = 3) const int bias_term = 0;
+ layout(constant_id = 4) const int dilation_w = 1;
+ 
+-const bool compact_tile = kernel_w == 11 && num_input == 128 && num_output == 128 && bias_term == 1
+-    && (dilation_w == 1 || dilation_w == 3 || dilation_w == 5);
+-const int tile_n = compact_tile ? 32 : 64;
+-const int tile_k = compact_tile ? 16 : 32;
++layout(constant_id = 5) const int tile_n = 64;
++layout(constant_id = 6) const int tile_k = 32;
+ const int tile_x = tile_n / 4;
+ const int tile_threads = tile_x * 8;
+ 
+--- a/ncnn/src/layer/vulkan/convolution1d_vulkan.cpp
++++ b/ncnn/src/layer/vulkan/convolution1d_vulkan.cpp
+@@ -341,6 +341,12 @@
+         specializations[2].i = num_output;
+         specializations[3].i = 1;
+         specializations[4].i = 1;
++        if (requested_packed_a)
++        {
++            specializations.resize(7);
++            specializations[5].i = 64;
++            specializations[6].i = 32;
++        }
+         pipeline_convolution1d_gemm = new (std::nothrow) Pipeline(vkdev);
+         pipeline_radish_planar_pad = new (std::nothrow) Pipeline(vkdev);
+         if (!pipeline_convolution1d_gemm || !pipeline_radish_planar_pad)
+@@ -356,7 +362,7 @@
+         if (pad_ret != 0)
+             return pad_ret;
+         if (!radish_planar_pipeline(pipeline_convolution1d_gemm, 4, 2, 16, 8)
+-            || pipeline_convolution1d_gemm->shader_info().specialization_count != 5
++            || pipeline_convolution1d_gemm->shader_info().specialization_count != (requested_packed_a ? 7 : 5)
+             || !radish_planar_pipeline(pipeline_radish_planar_pad, 2, 5, 8, 8)
+             || pipeline_radish_planar_pad->shader_info().specialization_count != 0)
+             return -1;
+@@ -390,6 +396,12 @@
+         pipeline_convolution1d_gemm = new Pipeline(vkdev);
+         const bool compact_tile = radish_planar && requested_packed_a && num_input == 128
+                                   && num_output == 128 && kernel_w == 11 && bias_term == 1;
++        if (radish_planar && requested_packed_a)
++        {
++            specializations.resize(7);
++            specializations[5].i = compact_tile ? 32 : 64;
++            specializations[6].i = compact_tile ? 16 : 32;
++        }
+         const uint32_t local_x = radish_tiled32 || compact_tile ? 8 : 16;
+         const uint32_t local_y = radish_tiled32 ? 4 : 8;
+         pipeline_convolution1d_gemm->set_local_size_xyz(local_x, local_y, 1);
+@@ -1045,7 +1057,8 @@
+         if (!use_radish_tiled || !radish_planar || radish_tiled32 || use_cooperative_matrix
+             || !opt.use_vulkan_compute || !radish_planar_fp32(opt) || opt.use_shader_local_memory
+             || !radish_planar_pipeline(pipeline_convolution1d_gemm, 4, 2, 16, 8)
+-            || pipeline_convolution1d_gemm->shader_info().specialization_count != 5
++            || (pipeline_convolution1d_gemm->shader_info().specialization_count != 5
++                && pipeline_convolution1d_gemm->shader_info().specialization_count != 7)
+             || !radish_planar_pipeline(pipeline_radish_planar_pad, 2, 5, 8, 8)
+             || pipeline_radish_planar_pad->shader_info().specialization_count != 0
+             || !opt.workspace_vkallocator || !opt.blob_vkallocator

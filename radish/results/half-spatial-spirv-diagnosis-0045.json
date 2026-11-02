@@ -1,0 +1,79 @@
+{
+  "status": "malformed pinned compiler output diagnosed; direct-spec replacement source and initial Vulkan1.0 validation passed; actual native pending",
+  "failed_tablet_log": {
+    "path": "/run/media/jethac/Shared/radish/packed-half-spatial-replay-0045/evidence-core0045-half-spatial/compile/run.log",
+    "bytes": 5140751,
+    "sha256": "c508d4c0ec6388619d63e6183db4dc9800588f93a14f68acbffd49c170eabc34"
+  },
+  "host_reproduction": {
+    "path": "/run/media/jethac/Shared/radish/half-spatial-pinned-spirv-host-0045/result.json",
+    "bytes": 2060,
+    "sha256": "0c19b62f35de70c0f14b3faf230ec5ee9de1b896bb341a96f451006a61eb4ba7"
+  },
+  "failed_modules": [
+    {
+      "path": "/run/media/jethac/Shared/radish/half-spatial-pinned-spirv-host-0045/before-injection.spv",
+      "bytes": 11372,
+      "sha256": "3c525bc19f8838cc443c7354e31bd23d5b98d12eb9cb6e51e70349c8756ce042"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/half-spatial-pinned-spirv-host-0045/after-injection.spv",
+      "bytes": 11372,
+      "sha256": "2e7eea9360f5d8cc2f7bf7668cbab26037382671f12a960dddd1cee71821da48"
+    }
+  ],
+  "illegal_global_spec_select": {
+    "offset_bytes": 2636,
+    "opcode": 52,
+    "operands": [
+      6,
+      110,
+      169,
+      107,
+      108,
+      109
+    ]
+  },
+  "referenced_later_function_phi": {
+    "offset_bytes": 4128,
+    "opcode": 245,
+    "operands": [
+      86,
+      107,
+      98,
+      5,
+      106,
+      99
+    ]
+  },
+  "local_injection_changed_words": [
+    {
+      "word": 26,
+      "before": 1,
+      "after": 16
+    },
+    {
+      "word": 27,
+      "before": 1,
+      "after": 8
+    }
+  ],
+  "conclusion": "Same id107/byte2636 failure signature as tablet. Host reproduction is not claimed byte-identical to a tablet-dumped module; exact runtime module was not dumped. Invalid constant-to-function-value reference exists before injection; Mesa Select support is not the issue.",
+  "corrected_source": {
+    "path": "/run/media/jethac/Shared/radish/packed-half-spatial-spec-fix-z5gf3ure/release.json",
+    "bytes": 3064,
+    "sha256": "0584d7a45f0904c3b80fabb9c485d8bdd98f383389dfd7f85fedbbdec5e052b2"
+  },
+  "corrected_host": {
+    "path": "/run/media/jethac/Shared/radish/half-spatial-spec-v2-host-0045/result.json",
+    "bytes": 1807,
+    "sha256": "cea43ee0750436916f2978aa166e29b934e0e7c1a36d80ece6d363a31cdac9b3"
+  },
+  "initial_host_scope": "Seven direct specialization decorations. Pre/post16x8 Vulkan1.0 validation and four specialized dimension maps pass. Exact8x8 target injection is a separate pending artifact; do not treat current16x8 target map files as real target geometry.",
+  "preserved": [
+    "Original global dot order/kernel body/source data/tails",
+    "Target6KiB/local64 intent, requires actualnativegate",
+    "Original five specs, all guards and paired driver",
+    "Failed module/validator/capture retained"
+  ]
+}

@@ -1,0 +1,687 @@
+{
+  "status": "failed intended two-workgroup native admission; compilation passed",
+  "programs": 179,
+  "logs": [
+    {
+      "path": "/run/media/jethac/Shared/radish/packed-a-shift-replay-0045/evidence-core0045-packed-shift/compile/run.log",
+      "bytes": 24418533,
+      "sha256": "59568c89cf4ee27fe0222f9f80b16909d34388405bea6bad75edaf4152debb5f"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/packed-half-spatial-spec-replay-0045/evidence-core0045-half-spec/compile/run.log",
+      "bytes": 25196514,
+      "sha256": "ef0de48b757f5a4fdebd6817d9c0afd5e1f6de8fbd75d4036ccdc47124fed340"
+    }
+  ],
+  "unchanged_full_records": 156,
+  "unchanged_non_target_packed_native": 0,
+  "changed_records": [
+    52,
+    69,
+    88,
+    103,
+    105,
+    109,
+    111,
+    120,
+    122,
+    124,
+    136,
+    149,
+    151,
+    152,
+    153,
+    154,
+    156,
+    169,
+    171,
+    172,
+    174,
+    175,
+    176
+  ],
+  "changed_native": [
+    52,
+    69,
+    88,
+    103,
+    105,
+    109,
+    111,
+    120,
+    122,
+    124,
+    136,
+    149,
+    151,
+    152,
+    153,
+    154,
+    156,
+    169,
+    171,
+    172,
+    174,
+    175,
+    176
+  ],
+  "rows": [
+    {
+      "program": 52,
+      "specs": [
+        3,
+        544,
+        1024,
+        1,
+        1,
+        64,
+        32
+      ],
+      "local": [
+        16,
+        8,
+        1
+      ],
+      "shared": 16384,
+      "full": 16,
+      "half": 0,
+      "loops": 4,
+      "dwords": 896,
+      "native_length": 28,
+      "static_scalar_mad_equivalents": 32,
+      "private_native_ops": 0,
+      "native_exact_baseline": false
+    },
+    {
+      "program": 69,
+      "specs": [
+        3,
+        1024,
+        1024,
+        1,
+        1,
+        64,
+        32
+      ],
+      "local": [
+        16,
+        8,
+        1
+      ],
+      "shared": 16384,
+      "full": 16,
+      "half": 0,
+      "loops": 4,
+      "dwords": 896,
+      "native_length": 28,
+      "static_scalar_mad_equivalents": 32,
+      "private_native_ops": 0,
+      "native_exact_baseline": false
+    },
+    {
+      "program": 88,
+      "specs": [
+        3,
+        1120,
+        1024,
+        1,
+        1,
+        64,
+        32
+      ],
+      "local": [
+        16,
+        8,
+        1
+      ],
+      "shared": 16384,
+      "full": 16,
+      "half": 0,
+      "loops": 4,
+      "dwords": 896,
+      "native_length": 28,
+      "static_scalar_mad_equivalents": 32,
+      "private_native_ops": 0,
+      "native_exact_baseline": false
+    },
+    {
+      "program": 103,
+      "specs": [
+        7,
+        256,
+        256,
+        1,
+        1,
+        64,
+        32
+      ],
+      "local": [
+        16,
+        8,
+        1
+      ],
+      "shared": 16384,
+      "full": 16,
+      "half": 0,
+      "loops": 4,
+      "dwords": 896,
+      "native_length": 28,
+      "static_scalar_mad_equivalents": 32,
+      "private_native_ops": 0,
+      "native_exact_baseline": false
+    },
+    {
+      "program": 105,
+      "specs": [
+        11,
+        128,
+        128,
+        1,
+        1,
+        32,
+        16
+      ],
+      "local": [
+        8,
+        8,
+        1
+      ],
+      "shared": 6144,
+      "full": 21,
+      "half": 0,
+      "loops": 3,
+      "dwords": 1832,
+      "native_length": 58,
+      "static_scalar_mad_equivalents": 512,
+      "private_native_ops": 0,
+      "native_exact_baseline": false,
+      "pair_register_product": 5376,
+      "pair_admitted": false
+    },
+    {
+      "program": 109,
+      "specs": [
+        7,
+        256,
+        256,
+        1,
+        3,
+        64,
+        32
+      ],
+      "local": [
+        16,
+        8,
+        1
+      ],
+      "shared": 16384,
+      "full": 16,
+      "half": 0,
+      "loops": 4,
+      "dwords": 904,
+      "native_length": 29,
+      "static_scalar_mad_equivalents": 32,
+      "private_native_ops": 0,
+      "native_exact_baseline": false
+    },
+    {
+      "program": 111,
+      "specs": [
+        11,
+        128,
+        128,
+        1,
+        3,
+        32,
+        16
+      ],
+      "local": [
+        8,
+        8,
+        1
+      ],
+      "shared": 6144,
+      "full": 21,
+      "half": 0,
+      "loops": 3,
+      "dwords": 1856,
+      "native_length": 58,
+      "static_scalar_mad_equivalents": 512,
+      "private_native_ops": 0,
+      "native_exact_baseline": false,
+      "pair_register_product": 5376,
+      "pair_admitted": false
+    },
+    {
+      "program": 120,
+      "specs": [
+        3,
+        1120,
+        512,
+        1,
+        1,
+        64,
+        32
+      ],
+      "local": [
+        16,
+        8,
+        1
+      ],
+      "shared": 16384,
+      "full": 16,
+      "half": 0,
+      "loops": 4,
+      "dwords": 896,
+      "native_length": 28,
+      "static_scalar_mad_equivalents": 32,
+      "private_native_ops": 0,
+      "native_exact_baseline": false
+    },
+    {
+      "program": 122,
+      "specs": [
+        7,
+        256,
+        256,
+        1,
+        5,
+        64,
+        32
+      ],
+      "local": [
+        16,
+        8,
+        1
+      ],
+      "shared": 16384,
+      "full": 16,
+      "half": 0,
+      "loops": 4,
+      "dwords": 904,
+      "native_length": 29,
+      "static_scalar_mad_equivalents": 32,
+      "private_native_ops": 0,
+      "native_exact_baseline": false
+    },
+    {
+      "program": 124,
+      "specs": [
+        11,
+        128,
+        128,
+        1,
+        5,
+        32,
+        16
+      ],
+      "local": [
+        8,
+        8,
+        1
+      ],
+      "shared": 6144,
+      "full": 21,
+      "half": 0,
+      "loops": 3,
+      "dwords": 1856,
+      "native_length": 58,
+      "static_scalar_mad_equivalents": 512,
+      "private_native_ops": 0,
+      "native_exact_baseline": false,
+      "pair_register_product": 5376,
+      "pair_admitted": false
+    },
+    {
+      "program": 136,
+      "specs": [
+        3,
+        512,
+        512,
+        1,
+        1,
+        64,
+        32
+      ],
+      "local": [
+        16,
+        8,
+        1
+      ],
+      "shared": 16384,
+      "full": 16,
+      "half": 0,
+      "loops": 4,
+      "dwords": 896,
+      "native_length": 28,
+      "static_scalar_mad_equivalents": 32,
+      "private_native_ops": 0,
+      "native_exact_baseline": false
+    },
+    {
+      "program": 149,
+      "specs": [
+        3,
+        256,
+        256,
+        1,
+        1,
+        64,
+        32
+      ],
+      "local": [
+        16,
+        8,
+        1
+      ],
+      "shared": 16384,
+      "full": 16,
+      "half": 0,
+      "loops": 4,
+      "dwords": 896,
+      "native_length": 28,
+      "static_scalar_mad_equivalents": 32,
+      "private_native_ops": 0,
+      "native_exact_baseline": false
+    },
+    {
+      "program": 151,
+      "specs": [
+        11,
+        256,
+        256,
+        1,
+        1,
+        64,
+        32
+      ],
+      "local": [
+        16,
+        8,
+        1
+      ],
+      "shared": 16384,
+      "full": 16,
+      "half": 0,
+      "loops": 4,
+      "dwords": 896,
+      "native_length": 28,
+      "static_scalar_mad_equivalents": 32,
+      "private_native_ops": 0,
+      "native_exact_baseline": false
+    },
+    {
+      "program": 152,
+      "specs": [
+        3,
+        256,
+        256,
+        1,
+        3,
+        64,
+        32
+      ],
+      "local": [
+        16,
+        8,
+        1
+      ],
+      "shared": 16384,
+      "full": 16,
+      "half": 0,
+      "loops": 4,
+      "dwords": 900,
+      "native_length": 29,
+      "static_scalar_mad_equivalents": 32,
+      "private_native_ops": 0,
+      "native_exact_baseline": false
+    },
+    {
+      "program": 153,
+      "specs": [
+        11,
+        256,
+        256,
+        1,
+        3,
+        64,
+        32
+      ],
+      "local": [
+        16,
+        8,
+        1
+      ],
+      "shared": 16384,
+      "full": 16,
+      "half": 0,
+      "loops": 4,
+      "dwords": 900,
+      "native_length": 29,
+      "static_scalar_mad_equivalents": 32,
+      "private_native_ops": 0,
+      "native_exact_baseline": false
+    },
+    {
+      "program": 154,
+      "specs": [
+        3,
+        256,
+        256,
+        1,
+        5,
+        64,
+        32
+      ],
+      "local": [
+        16,
+        8,
+        1
+      ],
+      "shared": 16384,
+      "full": 16,
+      "half": 0,
+      "loops": 4,
+      "dwords": 900,
+      "native_length": 29,
+      "static_scalar_mad_equivalents": 32,
+      "private_native_ops": 0,
+      "native_exact_baseline": false
+    },
+    {
+      "program": 156,
+      "specs": [
+        11,
+        256,
+        256,
+        1,
+        5,
+        64,
+        32
+      ],
+      "local": [
+        16,
+        8,
+        1
+      ],
+      "shared": 16384,
+      "full": 16,
+      "half": 0,
+      "loops": 4,
+      "dwords": 900,
+      "native_length": 29,
+      "static_scalar_mad_equivalents": 32,
+      "private_native_ops": 0,
+      "native_exact_baseline": false
+    },
+    {
+      "program": 169,
+      "specs": [
+        3,
+        128,
+        128,
+        1,
+        1,
+        64,
+        32
+      ],
+      "local": [
+        16,
+        8,
+        1
+      ],
+      "shared": 16384,
+      "full": 16,
+      "half": 0,
+      "loops": 4,
+      "dwords": 896,
+      "native_length": 28,
+      "static_scalar_mad_equivalents": 32,
+      "private_native_ops": 0,
+      "native_exact_baseline": false
+    },
+    {
+      "program": 171,
+      "specs": [
+        7,
+        128,
+        128,
+        1,
+        1,
+        64,
+        32
+      ],
+      "local": [
+        16,
+        8,
+        1
+      ],
+      "shared": 16384,
+      "full": 16,
+      "half": 0,
+      "loops": 4,
+      "dwords": 896,
+      "native_length": 28,
+      "static_scalar_mad_equivalents": 32,
+      "private_native_ops": 0,
+      "native_exact_baseline": false
+    },
+    {
+      "program": 172,
+      "specs": [
+        3,
+        128,
+        128,
+        1,
+        3,
+        64,
+        32
+      ],
+      "local": [
+        16,
+        8,
+        1
+      ],
+      "shared": 16384,
+      "full": 16,
+      "half": 0,
+      "loops": 4,
+      "dwords": 900,
+      "native_length": 29,
+      "static_scalar_mad_equivalents": 32,
+      "private_native_ops": 0,
+      "native_exact_baseline": false
+    },
+    {
+      "program": 174,
+      "specs": [
+        7,
+        128,
+        128,
+        1,
+        3,
+        64,
+        32
+      ],
+      "local": [
+        16,
+        8,
+        1
+      ],
+      "shared": 16384,
+      "full": 16,
+      "half": 0,
+      "loops": 4,
+      "dwords": 904,
+      "native_length": 29,
+      "static_scalar_mad_equivalents": 32,
+      "private_native_ops": 0,
+      "native_exact_baseline": false
+    },
+    {
+      "program": 175,
+      "specs": [
+        3,
+        128,
+        128,
+        1,
+        5,
+        64,
+        32
+      ],
+      "local": [
+        16,
+        8,
+        1
+      ],
+      "shared": 16384,
+      "full": 16,
+      "half": 0,
+      "loops": 4,
+      "dwords": 900,
+      "native_length": 29,
+      "static_scalar_mad_equivalents": 32,
+      "private_native_ops": 0,
+      "native_exact_baseline": false
+    },
+    {
+      "program": 176,
+      "specs": [
+        7,
+        128,
+        128,
+        1,
+        5,
+        64,
+        32
+      ],
+      "local": [
+        16,
+        8,
+        1
+      ],
+      "shared": 16384,
+      "full": 16,
+      "half": 0,
+      "loops": 4,
+      "dwords": 904,
+      "native_length": 29,
+      "static_scalar_mad_equivalents": 32,
+      "private_native_ops": 0,
+      "native_exact_baseline": false
+    }
+  ],
+  "independent_target_review": {
+    "path": "/run/media/jethac/Shared/radish/asr-graph-profile-ovmz54r9/half-spatial-native-admission-fail.json",
+    "bytes": 3800,
+    "sha256": "509173437f31b047532f5935c5457368692cd6196eb6f4f5ceea7581d84f5871"
+  },
+  "blockers": [
+    "Target21F0H gives pair5376>unchanged4096",
+    "Target3loops insteadrequired4",
+    "Targetnative58 insteadrequired<=32",
+    "All20 nontarget native bodies also change: generalized signed i/tile_x emits divide expansion instead of selected i>>4"
+  ],
+  "interpretation": "InnerK16 dot is fully unrolled:512 static scalarMAD equivalents vs32 baseline and one fewer loop. Correct7spec dimensions/local/shared are applied. Current predicate rejects two-group/math8 class. No full inference/actual2group emission; all guards preserved.",
+  "next_source_hypothesis": "Retain innerK loop with DontUnroll and preserve signed shift row extraction for the two known power-of-two tile_x values; source-only correction, no changed data/work or safety guard."
+}
