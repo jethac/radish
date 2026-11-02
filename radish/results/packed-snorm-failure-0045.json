@@ -1,0 +1,62 @@
+{
+  "status": "FAIL retained; no packed SNORM qualification",
+  "driver": "8eee220c; exact debug-stripped5777dbac",
+  "captures": [
+    {
+      "label": "packed-formats",
+      "log": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-packed-formats/probe/run.log",
+        "bytes": 157638,
+        "sha256": "ceaa0e17ad4254dc5626960553e161012d0d930b8a340d73b3aa860b18a42ef9"
+      },
+      "failure": {
+        "status": "failed",
+        "error": "probe/compile process returned 1",
+        "started": true,
+        "terminal": false,
+        "process_returncode": 1,
+        "remote": "/var/tmp/radish/core-compute-core0045-packed-formats",
+        "unit": "radish-core-compute-probe-1793613760268447218"
+      },
+      "collection": {
+        "passed": true,
+        "errors": []
+      },
+      "fault_check": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-packed-formats/probe/fault-check.txt",
+        "bytes": 41,
+        "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+      }
+    },
+    {
+      "label": "snorm-diagnostic",
+      "log": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-snorm-diagnostic/probe/run.log",
+        "bytes": 235132,
+        "sha256": "59b9e6dc6e2cd91ee44252bfe263075bb1f2d71c8862ce526655c6066f6de385"
+      },
+      "failure": {
+        "status": "failed",
+        "error": "probe/compile process returned 1",
+        "started": true,
+        "terminal": false,
+        "process_returncode": 1,
+        "remote": "/var/tmp/radish/core-compute-core0045-snorm-diagnostic",
+        "unit": "radish-core-compute-probe-1793615699657292831"
+      },
+      "collection": {
+        "passed": true,
+        "errors": []
+      },
+      "fault_check": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-snorm-diagnostic/probe/fault-check.txt",
+        "bytes": 41,
+        "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+      }
+    }
+  ],
+  "original_mismatch": "round0 buffer4 word36 actual00000000 expectedffffff81",
+  "diagnostic": "Changed-source capture preserves all original data/oracles and adds intermediate observations. Lane0 raw load bits00a60081,00f000cb,0,0 precede the zero rounded/integer results. Original failure has no raw-float capture; changed lifetimes limit historical-state inference.",
+  "qualified": "All four typed storage allocation checks precede the original output failure; no full-format pass follows.",
+  "next": "Source-backed typed image load format/output-width diagnosis, followed by changed-source validation. No identical payload retry or oracle relaxation."
+}

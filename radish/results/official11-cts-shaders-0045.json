@@ -1,0 +1,239 @@
+{
+  "status": "PASS ten exact original official shader cases; incomplete conformance coverage",
+  "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+  "cts_binary": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
+  "driver": "d6b92001; exact debug-stripped415cc1ca",
+  "partitions": [
+    {
+      "label": "spirv",
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 154,
+            "sha256": "514c82ea7c41a68423fdfdc2f495ae446457ace761f788fa13166b45a7bca735"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 276,
+            "sha256": "4cbf54f93ac271f13eacf9387c89158de66a16f9e6eb2f4e088457988efba595"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13607648,
+            "sha256": "415cc1cacd4598b8fcfb209fe279229cfee0c98b0a1076c074745a4f799ef64e"
+          },
+          "payload.json": {
+            "bytes": 956,
+            "sha256": "5a447449c1d38d95ee78c6e7378b28687e1f4ce4fbb2ba63373b1a58bfe0437b"
+          }
+        },
+        "run_log": {
+          "bytes": 51176,
+          "sha256": "80feddf4f0017a4b51d1ad43d60242bf46a9115701016eb40a819c3fc9aa774d"
+        },
+        "qpa": {
+          "bytes": 4027,
+          "sha256": "4f875c24a18b7b6c040e3361014b7f595b719b3b47d806b660f704d1865109fc"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.spirv_version.1_0_compute",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.spirv_version.1_1_compute",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.spirv_version.1_2_compute",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.spirv_version.1_3_compute",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      },
+      "independent_review": {
+        "path": "/run/media/jethac/Shared/radish/compute11-public-contract-_g6j46fe/official-spirv-actual-review.json",
+        "bytes": 3327,
+        "sha256": "5524a38c9a730da941046367eee0dd66c41fd03e9b709bc242dd4765d00409c6"
+      },
+      "collection": {
+        "passed": true,
+        "errors": []
+      }
+    },
+    {
+      "label": "elect",
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 154,
+            "sha256": "0380e0da7b2b7a047f9b8a88ade6eb61a6e0a03f65946265f05a579360190151"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 46,
+            "sha256": "3a856eba8131830d7c7722a84e29634c33f164edbb48dda428ea1e4a7b0c2f95"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13607648,
+            "sha256": "415cc1cacd4598b8fcfb209fe279229cfee0c98b0a1076c074745a4f799ef64e"
+          },
+          "payload.json": {
+            "bytes": 955,
+            "sha256": "0bd33825ac5af284268c83a374034df389e2066904f72391fe6a5bcff9c8dca7"
+          }
+        },
+        "run_log": {
+          "bytes": 305677,
+          "sha256": "2015c64315f484f11efb58d6a3c1d932476a02707bf99efb58812ed22e39148d"
+        },
+        "qpa": {
+          "bytes": 1784,
+          "sha256": "73b5479ce5007055cc18e6db559245a86b486adcc49fc5e724691f2f1c5d3c0d"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.subgroups.basic.compute.subgroupelect",
+            "status": "Pass",
+            "detail": "OK"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      },
+      "independent_review": {
+        "path": "/run/media/jethac/Shared/radish/compute11-public-contract-_g6j46fe/official-elect-actual-review.json",
+        "bytes": 3225,
+        "sha256": "763331be215814ec778f279500dfe1943aecea7dd3ef578cfc5252de81567a5d"
+      },
+      "collection": {
+        "passed": true,
+        "errors": []
+      }
+    },
+    {
+      "label": "barriers",
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 157,
+            "sha256": "247bdaa347ffad99cf19917ad71704e839b3be1a5c92475b8c4176f661ba993d"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 281,
+            "sha256": "f1bb8094158ab2a024a21a104c6814285c76ecc3cc32f319698629f5b58c2eb2"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13607648,
+            "sha256": "415cc1cacd4598b8fcfb209fe279229cfee0c98b0a1076c074745a4f799ef64e"
+          },
+          "payload.json": {
+            "bytes": 959,
+            "sha256": "980fbf0007ac19d4750945b295392df45dc7a853fa667001815d63dd4ecbeae4"
+          }
+        },
+        "run_log": {
+          "bytes": 1157081,
+          "sha256": "b33ee07f8a9470cc177ab9fad27b6634db5240d1417741110d6e99a4a5c6cc9c"
+        },
+        "qpa": {
+          "bytes": 8958,
+          "sha256": "52d6f01e3ed9b5ff219dfe99dfd912325b298038fc15ef54be24fc585602a63c"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.subgroups.basic.compute.subgroupbarrier",
+            "status": "Pass",
+            "detail": "OK"
+          },
+          {
+            "name": "dEQP-VK.subgroups.basic.compute.subgroupmemorybarrier",
+            "status": "Pass",
+            "detail": "OK"
+          },
+          {
+            "name": "dEQP-VK.subgroups.basic.compute.subgroupmemorybarrierbuffer",
+            "status": "Pass",
+            "detail": "OK"
+          },
+          {
+            "name": "dEQP-VK.subgroups.basic.compute.subgroupmemorybarriershared",
+            "status": "Pass",
+            "detail": "OK"
+          },
+          {
+            "name": "dEQP-VK.subgroups.basic.compute.subgroupmemorybarrierimage",
+            "status": "Pass",
+            "detail": "OK"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      },
+      "independent_review": {
+        "path": "/run/media/jethac/Shared/radish/compute11-public-contract-_g6j46fe/official-barriers-actual-review.json",
+        "bytes": 4788,
+        "sha256": "fe2c15ecf3c348374d3906454af3e3924bc18746ba1ddb1432ec80bfdb5ae605"
+      },
+      "collection": {
+        "passed": true,
+        "errors": []
+      }
+    }
+  ],
+  "case_counts": {
+    "version_cases": 4,
+    "basic_cases": 6,
+    "basic_shapes_per_case": 7
+  },
+  "limits": "Original90s/384MiB/128MiBswap/64MiB diskreserve; five barriers sequential with per-case fault stop. No CTS source or oracle modification.",
+  "remaining": "All other applicable instruction/type/control/GLSL/precision/resource/robustness/synchronization/API and feature-conditioned CTS. Six cases across seven shapes are six cases, not42cases."
+}

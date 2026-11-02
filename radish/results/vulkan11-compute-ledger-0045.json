@@ -13,10 +13,12 @@
   "official_cts": {
     "source_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
     "binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
-    "state": "Exact originalbinary actualcompleted5info:4Pass/1propertiesFail with31messages; startupresolved. Allotherapplicablepartitions open.",
+    "state": "Exact unmodified binary: first5info4Pass/1propertiesFail, then4SPIRVversion+6BASICcompute casesPass. These15executedcases are14Pass/1Fail, not totalrequiredcoverage.",
     "modified_harness": "f85cb13b diagnostics only, never official passes",
     "remaining_property_failures": 31,
-    "actual_record": "official11-cts-info-0045.json"
+    "actual_record": "official11-cts-info-0045.json",
+    "shader_record": "official11-cts-shaders-0045.json",
+    "additional_normative_gap": "maxFramebufferLayers currently0 versus required256; pinned info CTS checks0 so its31messages are not an exhaustive obligation list."
   },
   "categories": [
     {
@@ -32,23 +34,23 @@
       "requirement": "31 retained required-property failure messages",
       "implementation": "No invented graphics values. Exact failed CTS artifact retained",
       "evidence": "cts-limit-applicability-0044-11ct63go/sampled-ms-property-review.json",
-      "remaining": "Resolve version/conformance applicability with primary specification and original CTS. Categories are2inputattachment,8vertex/fragment,3draw/raster,6viewport,7framebuffer,1fragmentSampleMask,4point/line. No blanket queue waiver; no standalone normal Compute1.1 profile assumed.",
+      "remaining": "Resolve version/conformance applicability with primary specification and original CTS. Categories are2inputattachment,8vertex/fragment,3draw/raster,6viewport,7framebuffer,1fragmentSampleMask,4point/line. No blanket queue waiver; no standalone normal Compute1.1 profile assumed. Additional maxFramebufferLayers0/minimum256 obligation is tracked despite no CTS failure message. Five disabled-feature defaults and descriptor/attachment source increments are host candidates, not actual property passes.",
       "owner": "resource"
     },
     {
       "id": "format-unconditional",
       "requirement": "47 unconditional required compute-relevant format rows",
-      "implementation": "43 source admissions present; four packed A8 storage texel rows corrected in private ebc04699",
-      "evidence": "required-format-admission.json; ordinary resource/cube/subword/depth actuals cover representative formats",
-      "remaining": "Packed four-format consumer source pending source/module/native/actual gates; execute applicable CTS full format families, not all closed by static switches.",
+      "implementation": "Private ebc four packed storage-texel admissions built; native compiler gate passes.",
+      "evidence": "packed-snorm-failure-0045.json retains original and diagnostic numerical failures with cleanpostflight.",
+      "remaining": "Fix SNORM typed-load defect and qualify all four packed formats, then applicable complete format CTS.",
       "owner": "resource"
     },
     {
       "id": "format-compression",
       "requirement": "At least one complete BC/ETC2+EAC/ASTC-LDR family required by mandatory-format footer",
-      "implementation": "MISSING: current image/native format switches support no complete compressed family",
-      "evidence": "Primary formats-v1.1.126.txt compressed table footers; native FD5 ETC2/EAC TFMT backing exists",
-      "remaining": "Implement complete ETC2/EAC10-format family, block-aware layout/copy, same-class/block-compatible views, truthful public feature, native numerical/filter/transfer gates. Keep ordinary sampling fast path;4KiB\u00b2 layer chains fit native pitch.",
+      "implementation": "Complete10-format private resource backing host-built d903 using Mesa block/layout/view helpers; compression feature remainsfalse.",
+      "evidence": "ISC detexcab11584 oracle with retained notices/defined-integer patch, known fixtures and40960blocks passes hostASAN/UBSAN; consumer hostpaired028f/e3da.",
+      "remaining": "Actual complete10-format native/numerical/copy/view/filter validation, truthful feature admission and applicable CTS. Host source/oracle success does not qualify GPU behavior.",
       "owner": "resource"
     },
     {
@@ -150,9 +152,9 @@
     {
       "id": "shader11",
       "requirement": "Public1.1 SPIR-V1.0\u20131.3 and COMPUTE+BASIC subgroup semantics",
-      "implementation": "Private1.1 contract source candidate; existing generic NIR/IR3",
-      "evidence": "Historical BASIC private/API1.0-invalid-environment scope retained as erratum",
-      "remaining": "Batch owns validpublic1.1 BASIC/module environment/full applicable shader CTS, not closed by command list.",
+      "implementation": "Private realpublic1.1 candidate and generic Mesa compiler",
+      "evidence": "public11-basic-0045.json and official11-cts-shaders-0045.json; historical invalid-environment probe remains erratum.",
+      "remaining": "Full applicable shader/environment/GLSL/precision/memory/geometry semantics and CTS beyond ten initial cases.",
       "owner": "batch"
     }
   ],
@@ -175,7 +177,7 @@
       "id": "contract.version_lookup",
       "required": "Instance/device version negotiation, all28 core1.1 names and advertisedKHR aliases; core and extension availability rules.",
       "implementation": "d468 privatecandidate/Mesa common runtime",
-      "evidence": "Source+host review only; actual contract helper pending",
+      "evidence": "Bounded realpublic1.1 contract actualPASS; complete promoted command semantics remainopen.",
       "cts": [
         "dEQP-VK.api.version_check.*",
         "dEQP-VK.api.get_device_proc_addr.*",
@@ -208,7 +210,7 @@
       "id": "shader.spirv_environment",
       "required": "All legal SPIR-V1.0/1.1/1.2/1.3 compute modules and GLSL.std.4501.0 under feature-conditioned capabilities, not only currentmodelmodules.",
       "implementation": "MesaSPIRV\u2192NIR\u2192IR3; existing importers not a complete executionproof",
-      "evidence": "Required full environment open; existing BASIC1.3 internalcapture remainserratum; newpublic1.1helper pending",
+      "evidence": "Four exact official FNegate versioncases1.0/1.1/1.2/1.3 PASS. Generic legal module semantics remainopen.",
       "cts": [
         "dEQP-VK.spirv_assembly.instruction.compute.spirv_version.1_0_compute",
         "dEQP-VK.spirv_assembly.instruction.compute.spirv_version.1_1_compute",
@@ -244,7 +246,7 @@
       "id": "shader.required_basic",
       "required": "BASIC+COMPUTE, nonzero poweroftwo subgroupSize; Elect, executionbarrier and memorybarrier generic/buffer/shared/image; builtins, partial/multiple/divergent subgroups and all legalworkgroups.",
       "implementation": "Radishlinear subgroup geometry+IR3; newlegal1.1public consumer",
-      "evidence": "Prior5case1.0/SPV1.3 invalidenvironment scope retained. Legal1.1fullconsumer pending; sixrequiredCTS ops open.",
+      "evidence": "Legalpublic custom5shape consumer PASS and all six exact original BASICcompute CTS cases across their seven built-in shapes PASS. Broader valid-shape/memory interactions remain part of full applicable validation.",
       "cts": [
         "dEQP-VK.subgroups.basic.compute.subgroupelect",
         "dEQP-VK.subgroups.basic.compute.subgroupbarrier",
@@ -290,7 +292,8 @@
     "version_cases": 4,
     "basic_operations": 6,
     "total_initialshadercases": 10,
-    "meaning": "Exactsource-registered initialpartition only; not totalmandatorycoverage"
+    "meaning": "Exactsource-registered initialpartition only; not totalmandatorycoverage",
+    "status": "all ten initial registered cases PASS; not total mandatory coverage"
   },
   "representative_public11": {
     "record": "public11-basic-0045.json",

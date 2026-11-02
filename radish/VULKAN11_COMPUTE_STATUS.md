@@ -11,9 +11,9 @@ qualified replacement. See the [machine-readable ledger](results/vulkan11-comput
 | Area | Evidence | Remaining work |
 | --- | --- | --- |
 | Public 1.1 API, queries and promoted aliases | Real public1.1 negotiation,28core names/23KHR aliases and selected error/query semantics pass | Complete promoted command semantics and applicable API CTS |
-| SPIR-V1.0–1.3 and BASIC | Legal1.1 BASIC fivecase actualPASS; historical internal probe retained with erratum | All required BASIC operations (including image barrier), full generic shader semantics and applicable shader CTS |
-| Limits and resource combinations | Original guards; five-buffer Q4; combined12UBO+5SSBO+4image+hidden metadata actual PASS | All applicable limits/combinations and31 retained property failures; no queue-based waiver |
-| Required formats | Static audit of47 compute-relevant rows; four packed storage-texel admissions need correction | Packed consumer, complete mandatory compressed family, applicable format/filter/transfer CTS |
+| SPIR-V1.0–1.3 and BASIC | Legal1.1 custom BASIC consumer plus all six original BASIC compute CTS cases and four SPIR-V version cases pass | Full generic shader semantics, legal geometry/precision/memory combinations and remaining applicable shader CTS |
+| Limits and resource combinations | Original guards; five-buffer Q4; combined12UBO+5SSBO+4image+hidden metadata actual PASS | All applicable limits/combinations,31 retained property failures and additional maxFramebufferLayers obligation; no queue-based waiver |
+| Required formats | Static audit of47 compute-relevant rows; four packed storage-texel admissions need correction | Packed SNORM numerical failure to fix; ETC2/EAC host implementation and independent decoder ready, GPU qualification pending; applicable full format/filter/transfer CTS |
 | Images and transfers | Representative cube, MS, oversized-array, storage and atomic consumers | Required formats/types/views/mips/alias/copy/filter combinations and CTS |
 | Buffers and robustness | Corrected legal exact-range and subword consumers; original invalid module erratum retained | Scalar/vector/array/alias/atomic and memory-model CTS |
 | Descriptors and lifetimes | Static compaction, dynamic offsets, templates, two-round valid recording consumers | Pools, copies, compatible layouts, destruction/re-record and allocation errors |
@@ -76,3 +76,33 @@ split runner. Use matching internal headers, exact driver hashes and original
 compile-before-functional/resource/fault gates. These scripts never change the
 system ICD or production services. Full reproduction commands and original
 payload pins are in the receipts.
+
+
+The initial official shader partition now passes: four SPIR-V version cases and
+six BASIC compute cases, with seven built-in shapes per BASIC case. The five
+barrier cases ran sequentially in one unchanged 90-second/384MiB scope, with
+separate QPAs and a kernel-fault check before each next case. All 35 barrier
+dispatches passed; peak memory was 85.9MiB with no swap. See the
+[exact case results](results/official11-cts-shaders-0045.json). Together with the
+information partition, 15 executed cases comprise 14 Pass and one Fail. This is
+an executed inventory, not the required-case denominator.
+
+The packed storage-format consumer exposed a SNORM load defect. Its original
+output check failed, and a separate diagnostic captured incorrect raw load bits
+before scaling, rounding or integer conversion. All original oracles remain
+unchanged; the failure is [retained explicitly](results/packed-snorm-failure-0045.json).
+The diagnostic changes compiler lifetimes and cannot reconstruct the earlier
+capture's unobserved state. No packed SNORM qualification is claimed.
+
+The ETC2/EAC candidate reuses Mesa's block-aware image helpers and FDL5 layout.
+Its independent CPU reference reuses the ISC-licensed
+[detex decoder at the pinned revision](https://github.com/hglm/detex/tree/cab11584d9be140602a66fd9a88ef0b99f08a97a),
+with original notices and a small defined-integer patch retained. Host sanitizer
+checks and the ten-format consumer build pass; GPU qualification is separate.
+
+Property source work corrects feature-disabled defaults and implements shared
+input-attachment descriptor objects. Attachment image and mixed-stage push
+increments are separate host candidates. They are not counted as actual CTS
+passes. The normative ledger also includes maxFramebufferLayers: the current
+zero value fails the required minimum256 even though this pinned CTS path does
+not report it. The31 observed messages are not an exhaustive requirement list.
