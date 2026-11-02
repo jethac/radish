@@ -1,5 +1,11 @@
 # Core compute implementation: checkpoint 0044
 
+## 2026-11-02: shared-resource batching recovers 22% of fixed-core time
+
+A same-binary batch1→8 pair reduces resident extraction from 67.626229 to 52.746539 seconds (22.0028%). Both repeat2 processes pass every full reference comparison and retain the accepted output bytes, all 589 GPU layers and unchanged shaders/geometry. Only 58 packed-math submission counts change: 26,256→3,294; all 1,462 other command signatures/submissions remain identical. Total submissions fall 36,492→13,530.
+
+The new eligibility predicate checks actual SSBO/resource/register use in place of the old native-length fingerprint, preserving occupancy, synchronization and numerical guards. Candidate peak swap is 23.6 MiB versus zero; this is a sequential representative pair, not randomized statistics. The 52.746539-second result remains 53.76% slower than the historical 0042 same fixed-core result, and is not an end-to-end waveform measurement. Both services stay active with no new faults. [Source, controls and exact evidence](BATCHING_RECOVERY.md).
+
 ## 2026-11-02: storage Cube and public large multisample paths pass
 
 The required non-array storage-Cube path passes all1,536 output words across six faces at a nonzero mip/base layer, including read/write, add/CAS and size queries, with full image/output allocation guards. A separate tiny multisample test checks four distinct sample tags through native nonarray fetches and raw array fetches from the same BO:630 exact words and full small-image guards pass. This second test is explicitly internal OPTIMAL-memory layout evidence, not a portable public image producer.

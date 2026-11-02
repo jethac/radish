@@ -1,0 +1,44 @@
+--- a/src/freedreno/radish/rd_queue.c
++++ b/src/freedreno/radish/rd_queue.c
+@@ -566,6 +566,29 @@
+    rd_flush(device, ring);
+ }
+ 
++static bool
++rd_shared_batch_resources(const struct rd_pipeline *pipeline)
++{
++   const struct ir3_shader_variant *v = pipeline->variant;
++   if (pipeline->resource_count != 4 || pipeline->descriptor_count != 4 ||
++       pipeline->buffer_count != 4 || pipeline->used_descriptors != UINT64_C(15) ||
++       pipeline->resource_usage.texture_count || pipeline->resource_usage.sampler_count ||
++       pipeline->resource_usage.image_count || pipeline->sampling_mask ||
++       v->image_mapping.num_tex || v->num_ssbos != 4 || v->constant_data_size ||
++       pipeline->linear_subgroups || pipeline->linear_barriers || pipeline->packed_1d_barrier ||
++       v->shader_options.workgroup_resident_threads ||
++       !v->shader_options.nir_options.a5xx_ssbo_size_consts)
++      return false;
++   for (unsigned i = 0; i < 4; i++) {
++      if (pipeline->resources[i].type != VK_DESCRIPTOR_TYPE_STORAGE_BUFFER ||
++          pipeline->resources[i].buffer_slot != i || pipeline->buffer_descriptors[i] != i)
++         return false;
++   }
++   uint64_t resident_threads = (uint64_t)v->local_size[0] *
++      v->local_size[1] * v->local_size[2];
++   return resident_threads * ir3_shader_halfregs(v) <= 4096;
++}
++
+ static VkResult
+ rd_execute_dispatch(struct rd_device *device, const struct rd_dispatch *dispatch,
+                     struct rd_submit_profile *profile)
+@@ -614,10 +637,7 @@
+        v->local_size[2] == 1 && v->has_barrier && v->loops == 4 &&
+        v->shared_size == 16384 && !v->pvtmem_size &&
+        !v->info.double_threadsize && v->info.max_reg + 1 <= 16 &&
+-       v->info.max_half_reg == -1 &&
+-       dispatch->pipeline->descriptor_count == 4 &&
+-       (v->instrlen == 27 || v->instrlen == 28 || v->instrlen == 31 ||
+-        v->instrlen == 36 || v->instrlen == 37))
++       rd_shared_batch_resources(dispatch->pipeline))
+       max_chunks = tiled_chunks;
+    if (tiled_x2)
+       max_chunks = MIN2(max_chunks, 4);

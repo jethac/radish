@@ -1,0 +1,417 @@
+{
+  "status": "passed",
+  "scope": "Same driver/model/input two sequential repeat2 processes, explicit math-batch1 then8; representative paired observation, not randomized statistics, GPU elapsed timing, or end-to-end speech timing.",
+  "driver": {
+    "bytes": 49023936,
+    "sha256": "940886e9f1d824b46fb18ab8de51361e07a448cfb003dbe502ae7ffc53e9d037"
+  },
+  "model": {
+    "bytes": 11129352,
+    "sha256": "0b2f39fa6d7263026f1d12a4b03a10a0a531788451db9e774927acfffa03c664"
+  },
+  "fixture": {
+    "decoder.ncnn.param": {
+      "bytes": 51660,
+      "sha256": "ccab4ff803f05c6ca1f9dbc86b557e28d72488c94f0584f149108523b474aa43"
+    },
+    "decoder.ncnn.bin": {
+      "bytes": 213042160,
+      "sha256": "0f77cf77ff79a7724662f2e79a4d50284eb498abb2e519469a188e33f6c051ae"
+    },
+    "asr.f32": {
+      "bytes": 436224,
+      "sha256": "0ed2c9c4aa1899c0e6ca10d70a739f3cec00d731e392930c02ade852bf94515b"
+    },
+    "f0.f32": {
+      "bytes": 1704,
+      "sha256": "16572fb20769acd644b3076d54a5c8e09ba7b19da73306b8f63808d0098f9e1c"
+    },
+    "n.f32": {
+      "bytes": 1704,
+      "sha256": "32ea97959622ceef6632794fd4dcdafc2bd8a3984c70449b81093c9fe19a86b8"
+    },
+    "style.f32": {
+      "bytes": 1024,
+      "sha256": "30a2c76520b76bce395b3e2c33592c56322dffb50d70f7f0f7aeaef968407d66"
+    },
+    "har.f32": {
+      "bytes": 2249368,
+      "sha256": "65c949af78751bbe2c7736c02ba97cd4f7d17ebd551c8c8c65125e6adaa0bbe3"
+    },
+    "reference.f32": {
+      "bytes": 2249368,
+      "sha256": "4aabc5a98f714ac385561dbbc604b0d40f8a9027e645fcc38096c02c20ea395c"
+    }
+  },
+  "native_admission": {
+    "path": "/run/media/jethac/Shared/radish/batching-recovery-review-0045-0es2v4rf/native-admission.json",
+    "bytes": 42159,
+    "sha256": "5862d4b4eefeac876a1db5a213fd2e7fa6b1cb7b35c1a1a15875567386994ef5"
+  },
+  "environment_differences": {
+    "RADISH_TILED_BATCH_CHUNKS": [
+      "1",
+      "8"
+    ]
+  },
+  "scopes": {
+    "1": {
+      "result": {
+        "path": "/run/media/jethac/Shared/radish/batching-recovery-0045/evidence-core0045-batch1/full/result.json",
+        "bytes": 722,
+        "sha256": "0401fa08d3627e70e84089035cb026a5a35c2347211947be08f47c2f17629444"
+      },
+      "run_log": {
+        "path": "/run/media/jethac/Shared/radish/batching-recovery-0045/evidence-core0045-batch1/full/run.log",
+        "bytes": 673398,
+        "sha256": "df4742ff34877601c33ddec33c901db7fef07b8d2fc8919156ea099dce94b386"
+      },
+      "launch": {
+        "path": "/run/media/jethac/Shared/radish/batching-recovery-0045/evidence-core0045-batch1/full/launch.json",
+        "bytes": 2635,
+        "sha256": "eb399e5b76ff97115ecd019a61f3ed15c5c8b40c27f2b23a45a892e58b0686c0"
+      },
+      "cold_load_seconds": 20.321,
+      "outputs": [
+        {
+          "pin": {
+            "path": "/run/media/jethac/Shared/radish/batching-recovery-0045/evidence-core0045-batch1/full/ncnn-vulkan-candidate.f32",
+            "bytes": 2249368,
+            "sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287"
+          },
+          "values": 562342,
+          "mismatches": 0,
+          "max_abs": 0.000110626220703125
+        },
+        {
+          "pin": {
+            "path": "/run/media/jethac/Shared/radish/batching-recovery-0045/evidence-core0045-batch1/full/ncnn-vulkan-output.f32",
+            "bytes": 2249368,
+            "sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287"
+          },
+          "values": 562342,
+          "mismatches": 0,
+          "max_abs": 0.000110626220703125
+        }
+      ],
+      "environment": {
+        "RADISH_NCNN_TRACE": "1",
+        "RADISH_NCNN_PIPELINE_CACHE": "1",
+        "RADISH_NCNN_SHARED32": "0",
+        "RADISH_NCNN_TILED": "1",
+        "RADISH_NCNN_TILED32": "0",
+        "RADISH_NCNN_PLANAR": "1",
+        "RADISH_NCNN_PLANAR_PACKED_A": "1",
+        "RADISH_NCNN_NORM_SUM4": "1",
+        "RADISH_NCNN_NORM_OUTPLACE": "1",
+        "RADISH_NCNN_PAD_CHANNELS": "1",
+        "RADISH_NCNN_MIXED_STORAGE": "0",
+        "RADISH_NCNN_RESHAPE_ALIAS": "1",
+        "RADISH_PROFILE": "1",
+        "RADISH_BATCH_CHUNKS": "8",
+        "RADISH_TILED_BATCH_CHUNKS": "1",
+        "RADISH_TILED_GROUPS_X": "1",
+        "RADISH_SHARED_GROUPS": "8",
+        "RADISH_GPU_ELAPSED": "0",
+        "LD_LIBRARY_PATH": "/var/tmp/radish/model-driver-0045-940886e9",
+        "VK_DRIVER_FILES": "/var/tmp/radish/model-driver-0045-940886e9/radish_icd.json"
+      },
+      "postflight": {
+        "fault-check.txt": {
+          "path": "/run/media/jethac/Shared/radish/batching-recovery-0045/evidence-core0045-batch1/full/fault-check.txt",
+          "bytes": 41,
+          "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+        },
+        "services-after.txt": {
+          "path": "/run/media/jethac/Shared/radish/batching-recovery-0045/evidence-core0045-batch1/full/services-after.txt",
+          "bytes": 14,
+          "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+        },
+        "assets-before.txt": {
+          "path": "/run/media/jethac/Shared/radish/batching-recovery-0045/evidence-core0045-batch1/full/assets-before.txt",
+          "bytes": 3147,
+          "sha256": "c49895c22a947fb41c0ba9ef4a1272a0a2bd68465994c576def331b9390e4521"
+        },
+        "assets-after.txt": {
+          "path": "/run/media/jethac/Shared/radish/batching-recovery-0045/evidence-core0045-batch1/full/assets-after.txt",
+          "bytes": 3147,
+          "sha256": "c49895c22a947fb41c0ba9ef4a1272a0a2bd68465994c576def331b9390e4521"
+        },
+        "drain-000.txt": {
+          "path": "/run/media/jethac/Shared/radish/batching-recovery-0045/evidence-core0045-batch1/full/drain-000.txt",
+          "bytes": 55,
+          "sha256": "899a8a5a73232d4a07b56824413da1c88dc2dc685e89886ca2bc05f89923b9f6"
+        }
+      },
+      "resource_summary": [
+        "Service runtime: 2min 35.972s",
+        "Memory peak: 408M (swap: 0B)"
+      ]
+    },
+    "8": {
+      "result": {
+        "path": "/run/media/jethac/Shared/radish/batching-recovery-0045/evidence-core0045-batch8/full/result.json",
+        "bytes": 722,
+        "sha256": "c0c64a4ab7296bda6e0253fdd6de6eef2dbe159fc92bf9c098a70467fd9aa7ed"
+      },
+      "run_log": {
+        "path": "/run/media/jethac/Shared/radish/batching-recovery-0045/evidence-core0045-batch8/full/run.log",
+        "bytes": 673652,
+        "sha256": "b1d68809723086315e564ee07dfcd65ed5c4c32620434dabd498302609ecea5e"
+      },
+      "launch": {
+        "path": "/run/media/jethac/Shared/radish/batching-recovery-0045/evidence-core0045-batch8/full/launch.json",
+        "bytes": 2635,
+        "sha256": "bb53924ce3f56570df6a0669096279e04ee31b469d429a206d052a87e20c9b53"
+      },
+      "cold_load_seconds": 20.222,
+      "outputs": [
+        {
+          "pin": {
+            "path": "/run/media/jethac/Shared/radish/batching-recovery-0045/evidence-core0045-batch8/full/ncnn-vulkan-candidate.f32",
+            "bytes": 2249368,
+            "sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287"
+          },
+          "values": 562342,
+          "mismatches": 0,
+          "max_abs": 0.000110626220703125
+        },
+        {
+          "pin": {
+            "path": "/run/media/jethac/Shared/radish/batching-recovery-0045/evidence-core0045-batch8/full/ncnn-vulkan-output.f32",
+            "bytes": 2249368,
+            "sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287"
+          },
+          "values": 562342,
+          "mismatches": 0,
+          "max_abs": 0.000110626220703125
+        }
+      ],
+      "environment": {
+        "RADISH_NCNN_TRACE": "1",
+        "RADISH_NCNN_PIPELINE_CACHE": "1",
+        "RADISH_NCNN_SHARED32": "0",
+        "RADISH_NCNN_TILED": "1",
+        "RADISH_NCNN_TILED32": "0",
+        "RADISH_NCNN_PLANAR": "1",
+        "RADISH_NCNN_PLANAR_PACKED_A": "1",
+        "RADISH_NCNN_NORM_SUM4": "1",
+        "RADISH_NCNN_NORM_OUTPLACE": "1",
+        "RADISH_NCNN_PAD_CHANNELS": "1",
+        "RADISH_NCNN_MIXED_STORAGE": "0",
+        "RADISH_NCNN_RESHAPE_ALIAS": "1",
+        "RADISH_PROFILE": "1",
+        "RADISH_BATCH_CHUNKS": "8",
+        "RADISH_TILED_BATCH_CHUNKS": "8",
+        "RADISH_TILED_GROUPS_X": "1",
+        "RADISH_SHARED_GROUPS": "8",
+        "RADISH_GPU_ELAPSED": "0",
+        "LD_LIBRARY_PATH": "/var/tmp/radish/model-driver-0045-940886e9",
+        "VK_DRIVER_FILES": "/var/tmp/radish/model-driver-0045-940886e9/radish_icd.json"
+      },
+      "postflight": {
+        "fault-check.txt": {
+          "path": "/run/media/jethac/Shared/radish/batching-recovery-0045/evidence-core0045-batch8/full/fault-check.txt",
+          "bytes": 41,
+          "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+        },
+        "services-after.txt": {
+          "path": "/run/media/jethac/Shared/radish/batching-recovery-0045/evidence-core0045-batch8/full/services-after.txt",
+          "bytes": 14,
+          "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+        },
+        "assets-before.txt": {
+          "path": "/run/media/jethac/Shared/radish/batching-recovery-0045/evidence-core0045-batch8/full/assets-before.txt",
+          "bytes": 3147,
+          "sha256": "95976396242dd8c7afa3abfa815f54a1d4a3bd0c1673ab6d9125873bb13bd5f4"
+        },
+        "assets-after.txt": {
+          "path": "/run/media/jethac/Shared/radish/batching-recovery-0045/evidence-core0045-batch8/full/assets-after.txt",
+          "bytes": 3147,
+          "sha256": "95976396242dd8c7afa3abfa815f54a1d4a3bd0c1673ab6d9125873bb13bd5f4"
+        },
+        "drain-000.txt": {
+          "path": "/run/media/jethac/Shared/radish/batching-recovery-0045/evidence-core0045-batch8/full/drain-000.txt",
+          "bytes": 55,
+          "sha256": "899a8a5a73232d4a07b56824413da1c88dc2dc685e89886ca2bc05f89923b9f6"
+        }
+      },
+      "resource_summary": [
+        "Service runtime: 2min 6.097s",
+        "Memory peak: 407.6M (swap: 23.6M)"
+      ]
+    }
+  },
+  "iterations": [
+    {
+      "iteration": 1,
+      "baseline_wall_seconds": 67.590699,
+      "candidate_wall_seconds": 52.666168,
+      "wall_saved_seconds": 14.924531000000002,
+      "time_reduction_percent": 22.08074664237457,
+      "speedup": 1.2833798540269723,
+      "packed_math_command_seconds": [
+        47.617986889,
+        32.420431984
+      ],
+      "packed_math_saved_seconds": 15.197554905,
+      "retained_command_saved_seconds": -0.27163486800000136,
+      "unprofiled_residual_change_seconds": -0.0013890369999973728,
+      "packed_math_submits": [
+        26256,
+        3294
+      ],
+      "total_submits": [
+        36492,
+        13530
+      ],
+      "chunks": 71750,
+      "ordered_command_signatures_except_math_submits_exact": true,
+      "retained_command_count": 1462
+    },
+    {
+      "iteration": 2,
+      "baseline_wall_seconds": 67.626229,
+      "candidate_wall_seconds": 52.746539,
+      "wall_saved_seconds": 14.879689999999997,
+      "time_reduction_percent": 22.002838573181418,
+      "speedup": 1.2820979401131891,
+      "packed_math_command_seconds": [
+        47.580400814,
+        32.361585773
+      ],
+      "packed_math_saved_seconds": 15.218815041,
+      "retained_command_saved_seconds": -0.3322102599999983,
+      "unprofiled_residual_change_seconds": -0.006914781000004311,
+      "packed_math_submits": [
+        26256,
+        3294
+      ],
+      "total_submits": [
+        36492,
+        13530
+      ],
+      "chunks": 71750,
+      "ordered_command_signatures_except_math_submits_exact": true,
+      "retained_command_count": 1462
+    }
+  ],
+  "all_final_outputs_exact_accepted_bytes": true,
+  "reference": {
+    "path": "/run/media/jethac/Shared/radish/kokoro-core-shapes-norm-affine-snake-deconv2d/reference.f32",
+    "bytes": 2249368,
+    "sha256": "4aabc5a98f714ac385561dbbc604b0d40f8a9027e645fcc38096c02c20ea395c"
+  },
+  "first_iteration_limit": "Both first-iteration full numeric comparisons are recorded in immutable logs; final output filenames were overwritten by iteration2, so no independent first-output byte hash is claimed.",
+  "remaining_submit_delta_vs_0042": {
+    "total": 3295,
+    "normalization": 2721,
+    "geometry": 574
+  },
+  "mapper": {
+    "path": "/run/media/jethac/Shared/radish/batching-recovery-review-0045-0es2v4rf/map-paired.py",
+    "bytes": 12267,
+    "sha256": "60f49cf11a8544a0fdfee85f303fb6d3073237b790c89be9cbf20ff3cec5bbf2"
+  },
+  "comparison_source": {
+    "path": "/run/media/jethac/Shared/radish/batching-recovery-review-0045-0es2v4rf/compare-paired.py",
+    "bytes": 5660,
+    "sha256": "d56e6ad71c35980178969271de6a68132cee7f835e170e464dd5bbb5a120c915"
+  },
+  "maps": [
+    {
+      "path": "/run/media/jethac/Shared/radish/batching-recovery-review-0045-0es2v4rf/batch1-first.json",
+      "bytes": 1284938,
+      "sha256": "c19163220d2ad40d98fc0d8f93a8ccf770bc34c05724e05fc51e0dc7d18fdf17"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/batching-recovery-review-0045-0es2v4rf/batch1-warm.json",
+      "bytes": 1287059,
+      "sha256": "c79ad9db809de8a9bfd84eff8950fa0c9a8df5e5f70f9ce8cbe9fb2a826e5850"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/batching-recovery-review-0045-0es2v4rf/batch8-first.json",
+      "bytes": 1284900,
+      "sha256": "e386c98a2e946ec08706a6551b71d66003638a15f8e56324bbc6d3336a261de1"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/batching-recovery-review-0045-0es2v4rf/batch8-warm.json",
+      "bytes": 1287177,
+      "sha256": "f49d06413861a28a6e72e19f87c67b4d228b75754b79654ab8bca848ca56943e"
+    }
+  ],
+  "checkpoint": "0045 shared-resource batching recovery",
+  "source": {
+    "patch": "0045-radish-shared-resource-batching.patch",
+    "sha256": "a3162bbf071b7f6800e59c757b0d1de9d1aa5594253959715a35e04ce544caf1",
+    "bytes": 2055,
+    "baseline_queue_sha256": "6c7d562ee195806b9b435d5fca44ecd837fb9a5e6e7ac7c02f75ccae94f35b74",
+    "candidate_queue_sha256": "67f0c209aa5a012c643f0d33adc9851a3a86ca5e533787050c7313ace627ba2d",
+    "only_changed_file": "src/freedreno/radish/rd_queue.c",
+    "reconstruction": "Exact reconstruction from final 0044 storage-Cube/multisample checkpoint; compiler, shaders, normalization, geometry, WFI and cache-flush paths unchanged."
+  },
+  "runner": {
+    "adapter": {
+      "sha256": "2266725bb0b6c334f028dab85e3caf0fecd1cc315af0c3c3b7b5b04630648ae8",
+      "bytes": 17209
+    },
+    "original": {
+      "sha256": "3a8f1faf03606b048450ea69a1f34c6474c003322dd1cf64f98e5983b04ac8ab",
+      "bytes": 16896
+    },
+    "delta": "Recorded tiled-batch 1 or 8 and cross-label reuse of the identical admitted model; original two full numerical comparisons, accepted byte check, 640 MiB/128 MiB swap/300 s limits and lock/service/fault checks retained."
+  },
+  "independent_reviews": {
+    "review.json": {
+      "sha256": "d791164c22adbfad605c1130dd6c5a832e5671edfae533c74f8207224e53ac83",
+      "bytes": 4853
+    },
+    "native-admission.json": {
+      "sha256": "5862d4b4eefeac876a1db5a213fd2e7fa6b1cb7b35c1a1a15875567386994ef5",
+      "bytes": 42159
+    },
+    "actual-paired-review.json": {
+      "sha256": "6cf31c6026371f4a305cf35c0a9b211cc9a8005b1853cf22874692878d79bcca",
+      "bytes": 13555
+    }
+  },
+  "native_identity": {
+    "programs": 179,
+    "decoded_mesa_info_bytes": 44393814,
+    "sha256": "c30ea306facd42744172adab9c9e8d03b64995f49d2b29644e592dc32ec8c0fa",
+    "scope": "Identical decoded MESA preload information to corrected full-model admission; not a literal assembled shader-BO hash.",
+    "packed_tuples": 23,
+    "packed_native_units": {
+      "59": 9,
+      "60": 14
+    },
+    "registers": "15 full + 2 half; 128 * combined-half-vector footprint = 4096",
+    "private_instructions": "No LDP/STP in retained native trace."
+  },
+  "conditions": {
+    "baseline": {
+      "peak_memory_mib": 408,
+      "peak_swap_mib": 0,
+      "gpu_temperature_c_before_after": [
+        33.5,
+        35.5
+      ]
+    },
+    "candidate": {
+      "peak_memory_mib": 407.6,
+      "peak_swap_mib": 23.6,
+      "gpu_temperature_c_before_after": [
+        34.2,
+        35.2
+      ]
+    },
+    "scope": "Sequential representative pair; no fixed clocks or randomized statistical claim. Kernel/clocks/services/system ICD unchanged. Whole-window thermal/devfreq captures retained privately."
+  },
+  "historical_comparison": {
+    "accepted_0042_resident_seconds": 34.303633,
+    "candidate_resident_seconds": 52.746539,
+    "remaining_regression_percent": 53.76371068335533,
+    "scope": "Same fixed-core workload, uncontrolled cross-checkpoint comparison. Not the separate end-to-end waveform baseline."
+  },
+  "remaining_work": "Normalization batching and subgroup-derived geometry account for 3295 remaining submissions relative to 0042; whole-latency attribution is not established. End-to-end Straylight performance remains the campaign goal."
+}

@@ -290,3 +290,5 @@ authorized the Straylight performance phase, starting with safe batching on
 the same correct kernels and original numerical/resource guards. Keep cold,
 resident, fixed-core and end-to-end results distinct. The original performance
 and GPU-efficiency goals remain in force; no CPU-crossover shortcut applies.
+
+The first performance recovery, 0045, preserves exact model outputs and reduces resident fixed-core time by 22.0028% through existing safe math batching. The candidate still takes 52.746539 seconds versus the historical 34.303633-second fixed-core result. Continue normalization/submission recovery and end-to-end Straylight optimization; this result is not campaign completion. See BATCHING_RECOVERY.md.

@@ -22,8 +22,7 @@ a separate driver, with its own a5xx resource bindings and command emission.
 ## Current status
 
 **Current priority:** the concrete compute/shared implementation and unchanged
-full-model correctness gates pass. Work now moves to restoring safe batching
-and end-to-end Straylight GPU performance, with correctness guards preserved. The latest
+full-model correctness gates pass. Work now targets end-to-end Straylight GPU performance, with correctness guards preserved. The first [batching recovery](radish/BATCHING_RECOVERY.md) lowers same-binary resident fixed-core time by 22.00%, from 67.63 to 52.75 seconds, with exact outputs. The latest
 [0044 checkpoint](radish/CORE_API_0044.md) has representative valid-use evidence
 for the original40 command paths, alongside focused BASIC, private/constant,
 normal/noopt and historical32/64 barrier-reduction checks. A descriptor-order
@@ -32,7 +31,7 @@ runs now pass unchanged resource, depth, array-fetch, robustness and allocation
 guard checks. The bounded private array path also passes filtered sampling, gradient LOD,
 wrap/border and gather checks. Four-sample color clear/copy/fetch and
 depth/stencil size/count consumers also pass with explicit coverage limits;
-corrected cube and subword consumers now pass their full outputs and guards after rebuilding the child native texture inventory. Earlier faulting candidates are preserved. The separate sixteen-sampled-texture/four-storage-resource consumer now passes through descriptor-size constants, with existing cube/subword/public robustness checks requalified. Earlier native-query faults remain preserved; high-index S2EN support is not claimed. Focused irregular-workgroup barrier checks and a real128MiB two-layer image now pass. The expanded driver now passes the unchanged full fixed-core model twice: all 589 GPU layers execute and all output bytes match the accepted baseline. Its resident time is67.914s versus34.304s for the same accepted0042 fixed-core workload, an uncontrolled97.98% regression; changed native kernels miss the unchanged batching fingerprint. Exact descriptor-size constants repair the aligned-buffer/first-convolution failure. A separate invalid-SPIR-V error in historical RBA probes is documented and corrected, with all original robustness cases passing a validated replacement module.
+corrected cube and subword consumers now pass their full outputs and guards after rebuilding the child native texture inventory. Earlier faulting candidates are preserved. The separate sixteen-sampled-texture/four-storage-resource consumer now passes through descriptor-size constants, with existing cube/subword/public robustness checks requalified. Earlier native-query faults remain preserved; high-index S2EN support is not claimed. Focused irregular-workgroup barrier checks and a real128MiB two-layer image now pass. The expanded driver now passes the unchanged full fixed-core model twice: all 589 GPU layers execute and all output bytes match the accepted baseline. The recovered resident time is 52.747s versus 34.304s for the same accepted 0042 fixed-core workload, an uncontrolled 53.76% remaining regression; the paired candidate used 23.6 MiB swap. Exact descriptor-size constants repair the aligned-buffer/first-convolution failure. A separate invalid-SPIR-V error in historical RBA probes is documented and corrected, with all original robustness cases passing a validated replacement module.
 A locally corrected CTS initialization harness runs five information cases:
 four pass and the full property-limit test still fails; six corrected fields
 reduce its failure messages from37 to31. The40-path count is not complete
