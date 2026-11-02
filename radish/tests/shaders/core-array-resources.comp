@@ -18,6 +18,22 @@ layout(set=1,binding=43) uniform sampler2DArray repeat_array;
 layout(set=1,binding=47) uniform sampler2DArray edge_array;
 layout(set=1,binding=53) uniform sampler2DArray mirror_array;
 layout(set=1,binding=59) uniform sampler2DArray border_array;
+layout(set=1,binding=61) uniform samplerCube nearest_cube;
+layout(set=1,binding=67) uniform samplerCube linear_cube;
+layout(set=1,binding=71) uniform samplerCube gradient_cube;
+layout(set=1,binding=73) uniform samplerCube gather_cube;
+vec3 cube_direction(uint face,uint row)
+{
+   const float us[5]=float[5](0.0,0.875,0.875,-0.875,0.125);
+   const float vs[5]=float[5](0.0,0.125,0.875,0.125,-0.875);
+   float u=us[row],v=vs[row];
+   if (face==0) return vec3(1.0,-v,-u);
+   if (face==1) return vec3(-1.0,-v,u);
+   if (face==2) return vec3(u,1.0,v);
+   if (face==3) return vec3(u,-1.0,-v);
+   if (face==4) return vec3(u,-v,1.0);
+   return vec3(-u,-v,-1.0);
+}
 void main()
 {
    uint x=gl_GlobalInvocationID.x,y=gl_GlobalInvocationID.y;
@@ -29,7 +45,7 @@ void main()
    uvec4 original=imageLoad(target_image,ivec2(x,y));
    uint before=imageLoad(target_texels,int(i)).r;
    uint source=texelFetch(source_texels,int(i)).r;
-   uint r=i*29;
+   uint r=i*36;
    result[r+0]=a.x; result[r+1]=b.x; result[r+2]=seed[i];
    result[r+3]=source; result[r+4]=before; result[r+5]=original.r;
    result[r+6]=floatBitsToUint(textureLod(nearest_image,vec2(un,(float(ty)+0.5)*0.25),0.0).r);
@@ -55,6 +71,12 @@ void main()
    result[r+24]=floatBitsToUint(textureGrad(mirror_array,shifted,vec2(0.25,0.0),vec2(0.0,0.25)).r);
    uvec4 gathered=floatBitsToUint(textureGather(border_array,filter_coord,0));
    result[r+25]=gathered.x; result[r+26]=gathered.y; result[r+27]=gathered.z; result[r+28]=gathered.w;
+   vec3 direction=cube_direction(x%6u,y);
+   result[r+29]=floatBitsToUint(textureLod(nearest_cube,direction,0.0).r);
+   result[r+30]=floatBitsToUint(textureLod(linear_cube,direction,0.5).r);
+   result[r+31]=floatBitsToUint(textureGrad(gradient_cube,direction,vec3(2.0,0.0,0.0),vec3(0.0,2.0,0.0)).r);
+   uvec4 cube_gather=floatBitsToUint(textureGather(gather_cube,direction,0));
+   result[r+32]=cube_gather.x; result[r+33]=cube_gather.y; result[r+34]=cube_gather.z; result[r+35]=cube_gather.w;
    imageStore(target_image,ivec2(x,y),uvec4(value,0,0,0));
    imageStore(target_texels,int(i),uvec4(before+a.x+b.x+source,0,0,0));
 }

@@ -1,0 +1,118 @@
+{
+  "session": 46829,
+  "status": "passed",
+  "driver_sha256": "c1c3a5205ebaff573fa0eea94ea0d16e5c27516a6ca2d22e69e9ecd93ac2f71f",
+  "source_snapshot": "checkpoint-live-native-diagnostics-source",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-0044-live-native-textures/probe",
+  "run_log": {
+    "bytes": 4075573,
+    "sha256": "e8642eb71c07edc8c4bb9e60be10fa6ae9b0faa535de054968e6f9a019b758c6"
+  },
+  "cube": {
+    "rounds": 2,
+    "records_per_round": 85,
+    "fields": 36,
+    "exact_words": 6120,
+    "buffer_allocations_guarded": 9,
+    "image_allocations_guarded": 12,
+    "child_native_units": 206,
+    "registers_full_half": [
+      21,
+      44
+    ],
+    "private_bytes": 0,
+    "native_textures": 7,
+    "image_size_aliases": [
+      7,
+      8
+    ],
+    "raw_mask": "ff80",
+    "cache": "same child reused with different BO data after valid descriptor re-recording"
+  },
+  "subword": {
+    "rounds": 2,
+    "records_per_round": 85,
+    "fields": 35,
+    "exact_words": 5950,
+    "formats": [
+      "R8_UINT",
+      "R5G6B5_UNORM_PACK16",
+      "R16_SFLOAT"
+    ],
+    "child_native_units": [
+      107,
+      99
+    ],
+    "native_textures": 7,
+    "image_size_aliases": [
+      7,
+      8
+    ],
+    "raw_mask": "f80",
+    "cache": "format-dependent keys select distinct children; exact full outputs and allocation guards pass"
+  },
+  "conditions": {
+    "service_seconds": 3.848,
+    "peak_mib": 15.7,
+    "swap_bytes": 0,
+    "new_faults": false,
+    "services_active": true
+  },
+  "diagnostics": "Existing IR3 disassembly and default-off read-only actual BO/descriptor logging enabled. Raw BO index namespace remains7..15 while native texture tail ends6.",
+  "limits": [
+    "Qualifies these lowered tiny cube/subword cases, not all formats or large allocations.",
+    "Dead-tail correction changes native code207->206 and actual aliases16/17->7/8; hardware fault cause and true16-native-texture-plus-alias capacity are not proven.",
+    "Prior69261/75124 faults and their source/artifacts remain preserved.",
+    "All other GPU scopes held pending their subsequent reviewed plans; no performance claim."
+  ],
+  "public_patch": {
+    "name": "0044-radish-cube-native-resources-wip.patch",
+    "sha256": "c29a59d0af504cd0c72cfbd425cbf01ac4ca99af4eb631d43e02c935d316efc8"
+  },
+  "additional_source_only_scope": "Includes version-scoped older-core multisample depth/stencil CmdCopyImage restriction removal; no depth/stencil sample-value qualification. Diagnostics default off.",
+  "measured_payload": {
+    "radish_icd.json": {
+      "bytes": 154,
+      "sha256": "7b9d1e3980341a41474ca8ca24d0903c40fda6a034cc3f8675f1a319e4a1cce5"
+    },
+    "resources": {
+      "bytes": 747488,
+      "sha256": "2422d3e962c3683553d1ed03b6c0826e51a19e26464894380ec35fd5773669d2"
+    },
+    "resources.spv": {
+      "bytes": 14748,
+      "sha256": "02096c573c08fa6c8eb10820bf62f26b91c135edee80d12c9a9a2ad2a8b032c4"
+    },
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 49000536,
+      "sha256": "c1c3a5205ebaff573fa0eea94ea0d16e5c27516a6ca2d22e69e9ecd93ac2f71f"
+    },
+    "subword": {
+      "bytes": 728408,
+      "sha256": "acca955ddca5b5f22986eed5aa11317258344a9685487903257b1adace280afd"
+    },
+    "subword.spv": {
+      "bytes": 12632,
+      "sha256": "83eb550949f3954485226dd49203e289a469043567c8a558de02f83e322e0ef7"
+    },
+    "payload.json": {
+      "bytes": 1083,
+      "sha256": "6c2d44f71d3088ca11bc310e719ae684e5719054ea5376986440442ca50f6f59"
+    }
+  },
+  "public_host_build": {
+    "receipt_sha256": "840e30e1b63d0841978c374621e7c496a7b291a179c42cc89e76c4fde6cb9632",
+    "units": 9,
+    "status": "passed; public path adaptation/build only, no additional device run"
+  },
+  "source_pins": {
+    "radish/tests/core_array_resources.c": "55e3fb6d27060a711eaea835e234f16375ab77a99f921d80f4b207cfee3b4605",
+    "radish/tests/shaders/core-array-resources.comp": "d46a5670f57b90f6855f671a130090434785808ef025f20e21ae050db3b13c0c",
+    "radish/tests/core_subword_resources.c": "72e86b16af1329d3e697f72366ffbaf0919ab1c70a3e54f965e9ae75477db808",
+    "radish/tests/shaders/core-subword-resources.comp": "22b39524691179af90d9fbc74ea8cbd53fa68d0e64e0cb8de76393e52a366286"
+  }
+}

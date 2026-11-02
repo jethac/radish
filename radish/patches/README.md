@@ -628,3 +628,5 @@ d468a7b2dcadda77b4e06a286eba806aac28c6222f0f3ec9e8330cddf8dba657  0035-ncnn-inst
 | `0044-radish-filtered-array-wip.patch` | After compute-properties0044 | Software array TXL/TXD/gather filtering; bounded valid-order consumer passes4,930 exact words and full guards. Cube/large-array/full sampler coverage remains open. |
 
 | `0044-radish-sampled-ms-wip.patch` | After filtered-array0044 | Native sampled4 layout/descriptors and color clear/copy/fetch consumer,4,320 exact words/guards. Depth/stencil query-only; distinct sample values unqualified. CTS sampled-count failures removed, full property case still fails. |
+
+| `0044-radish-cube-native-resources-wip.patch` | After sampled-MS0044 | Rebuild live child native texture inventory, preserve raw indices; corrected cube/subword consumers pass6,120/5,950 words and guards. Prior faults retained; true16-native+alias capacity remains open. |

@@ -1,5 +1,13 @@
 # Core compute implementation: checkpoint 0044
 
+## 2026-11-02: corrected cube and subword consumers pass
+
+The child pipeline now rebuilds its native texture inventory after software lowering, preserving the original application and raw-address indices. The unchanged cube consumer passes all 6,120 output words and full allocation guards; the subword consumer then passes all 5,950 words and guards. Cube checks cover six faces, a nonzero base layer, seams/corners, spatial and mip filtering, explicit gradients and gather. Subword checks cover R8_UINT, packed R5G6B5 and R16_SFLOAT decoding/filtering. Valid descriptor re-recording, cache reuse or format-key change, and current BO data checks remain intact. [Exact results and limits](results/core-api-0044-cube-subword.json).
+
+The measured private ICD `c1c3a520` used native and read-only BO/descriptor diagnostics. Its cube child emits seven live native textures and image-size aliases at 7/8, rather than the stale 16/17 inventory. Both consumers completed in one 3.848-second service window, 15.7 MiB peak and zero swap, with no new GPU faults and both services active. The preceding failures below remain preserved. This resolves these reproduced cases; it does not establish the hardware fault mechanism or qualify the legal combination of sixteen genuinely live native textures plus image aliases. That capacity obligation remains open.
+
+The fifteenth increment is `0044-radish-cube-native-resources-wip.patch`. It also retains the independently reviewed sampler-count correction, default-off resource diagnostics, and a version-scoped older-core depth/stencil multisample-copy condition change with no sample-data qualification. The existing builder/runner uses `--suite array` for the cube consumer and adds `--suite subword`. Oversized execution, broader barriers and full inference regression remain subsequent functional checks. Performance work remains paused.
+
 ## 2026-11-02: cube experiment faults; qualification paused
 
 The private cube consumer failed its first round and generated ten GPU memory faults. A separate build containing only the reviewed sampler-count correction reproduced the same output mismatch and fault addresses. The corrected run retained the full native trace; it completed cleanup in 2.082 seconds, used 15.4 MiB with no swap, and left both services active. Subword execution was not attempted. [Exact payloads, failure evidence and limits](results/core-api-0044-cube-fault.json).
@@ -137,7 +145,7 @@ budget. It does not solve the earlier legal-workgroup/shared-memory failures.
 
 ## Consolidated reproduction
 
-Apply the fourteen0044 incremental patches in order to the documented0042 Mesa
+Apply the fifteen0044 incremental patches in order to the documented0042 Mesa
 stack and build the isolated driver. Build probes against its matching internal
 ABI:
 
