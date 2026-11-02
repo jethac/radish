@@ -1,0 +1,510 @@
+{
+  "status": "passed",
+  "scope": "Same ICD/loader/inputs/settings and explicit robust=false; only reviewed packed-A mb division-to-shift source/model delta. Four tail fixes and per-device API exact. Sequential repeat2 observations, not randomized or GPU elapsed timing.",
+  "scopes": [
+    {
+      "requested_robustness": 0,
+      "run_log": {
+        "path": "/run/media/jethac/Shared/radish/ncnn-explicit-rba-false-0045/evidence-core0045-explicit-robust-false/full/run.log",
+        "bytes": 670778,
+        "sha256": "12566c8ba2c6f8a2f9f93a6a34cbd8d09bf860e8765a7080b945e721a34f73bd"
+      },
+      "result": {
+        "path": "/run/media/jethac/Shared/radish/ncnn-explicit-rba-false-0045/evidence-core0045-explicit-robust-false/full/result.json",
+        "bytes": 730,
+        "sha256": "2ad3a1124cc8bda537beb541704cd2bc1682fc50d1fff1698045e06015a3c671"
+      },
+      "runner": {
+        "path": "/run/media/jethac/Shared/radish/ncnn-explicit-rba-false-0045/run-model.py",
+        "bytes": 17564,
+        "sha256": "59309575ee38bd052c80d79a21cd37114abb7861d970da7bbbe51a2b7a0fc9c1"
+      },
+      "pins": {
+        "path": "/run/media/jethac/Shared/radish/ncnn-explicit-rba-false-0045/pins.json",
+        "bytes": 5677,
+        "sha256": "82e1ce91e7efb0cb08a7ea01ee6814e17b9972aba42700a60d93d0a56eac744f"
+      },
+      "cold_seconds": 11.7,
+      "resource_lines": [
+        "Service runtime: 1min 21.570s",
+        "Memory peak: 405.4M (swap: 0B)"
+      ],
+      "outputs": [
+        {
+          "pin": {
+            "path": "/run/media/jethac/Shared/radish/ncnn-explicit-rba-false-0045/evidence-core0045-explicit-robust-false/full/ncnn-vulkan-candidate.f32",
+            "bytes": 2249368,
+            "sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287"
+          },
+          "values": 562342,
+          "mismatches": 0,
+          "max_abs": 0.000110626220703125
+        },
+        {
+          "pin": {
+            "path": "/run/media/jethac/Shared/radish/ncnn-explicit-rba-false-0045/evidence-core0045-explicit-robust-false/full/ncnn-vulkan-output.f32",
+            "bytes": 2249368,
+            "sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287"
+          },
+          "values": 562342,
+          "mismatches": 0,
+          "max_abs": 0.000110626220703125
+        }
+      ]
+    },
+    {
+      "requested_robustness": 0,
+      "run_log": {
+        "path": "/run/media/jethac/Shared/radish/packed-a-shift-replay-0045/evidence-core0045-packed-shift/full/run.log",
+        "bytes": 670731,
+        "sha256": "775f06e2d9cbd2df91073df5bf61a455378cb1a738623c9a0f5aa932d1169c14"
+      },
+      "result": {
+        "path": "/run/media/jethac/Shared/radish/packed-a-shift-replay-0045/evidence-core0045-packed-shift/full/result.json",
+        "bytes": 721,
+        "sha256": "95a9a7db148dc9d09b87ae8e31cf4bcd1e9a82fc8fc9a94c295e7e7b17113653"
+      },
+      "runner": {
+        "path": "/run/media/jethac/Shared/radish/packed-a-shift-replay-0045/run-model.py",
+        "bytes": 17564,
+        "sha256": "59309575ee38bd052c80d79a21cd37114abb7861d970da7bbbe51a2b7a0fc9c1"
+      },
+      "pins": {
+        "path": "/run/media/jethac/Shared/radish/packed-a-shift-replay-0045/pins.json",
+        "bytes": 5695,
+        "sha256": "aabe0359bf2366455083e1269e53054b095bc7cb056692f94e67f275697ce2d9"
+      },
+      "cold_seconds": 11.892,
+      "resource_lines": [
+        "Service runtime: 1min 20.990s",
+        "Memory peak: 406.2M (swap: 0B)"
+      ],
+      "outputs": [
+        {
+          "pin": {
+            "path": "/run/media/jethac/Shared/radish/packed-a-shift-replay-0045/evidence-core0045-packed-shift/full/ncnn-vulkan-candidate.f32",
+            "bytes": 2249368,
+            "sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287"
+          },
+          "values": 562342,
+          "mismatches": 0,
+          "max_abs": 0.000110626220703125
+        },
+        {
+          "pin": {
+            "path": "/run/media/jethac/Shared/radish/packed-a-shift-replay-0045/evidence-core0045-packed-shift/full/ncnn-vulkan-output.f32",
+            "bytes": 2249368,
+            "sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287"
+          },
+          "values": 562342,
+          "mismatches": 0,
+          "max_abs": 0.000110626220703125
+        }
+      ]
+    }
+  ],
+  "environment_exact": true,
+  "all_final_outputs_exact_accepted_bytes": true,
+  "reference": {
+    "path": "/run/media/jethac/Shared/radish/kokoro-core-shapes-norm-affine-snake-deconv2d/reference.f32",
+    "bytes": 2249368,
+    "sha256": "4aabc5a98f714ac385561dbbc604b0d40f8a9027e645fcc38096c02c20ea395c"
+  },
+  "iterations": [
+    {
+      "iteration": "first",
+      "baseline_seconds": 35.067822,
+      "candidate_seconds": 34.700589,
+      "saved_seconds": 0.3672329999999988,
+      "reduction_percent": 1.0472078933216862,
+      "speedup": 1.0105829039386045,
+      "math_seconds": [
+        23.179558418,
+        22.890995551
+      ],
+      "math_saved_seconds": 0.28856286699999956,
+      "other_profiled_saved_seconds": 0.0755029230000055,
+      "unprofiled_residual_change_seconds": 0.0031672099999937586,
+      "all1520_owners_geometry_chunks_submits_exact": true,
+      "commands": 1520,
+      "total_submits": 10809,
+      "chunks": 71750,
+      "math_submits": 3294,
+      "native_length_changed_commands": 30,
+      "loop_changes": [],
+      "max_submit_ns": [
+        83033744,
+        77806577
+      ]
+    },
+    {
+      "iteration": "warm",
+      "baseline_seconds": 34.333299,
+      "candidate_seconds": 33.952417,
+      "saved_seconds": 0.3808819999999997,
+      "reduction_percent": 1.1093661579098466,
+      "speedup": 1.0112181115117667,
+      "math_seconds": [
+        22.915150743,
+        22.743955537
+      ],
+      "math_saved_seconds": 0.17119520600000016,
+      "other_profiled_saved_seconds": 0.2137562939999995,
+      "unprofiled_residual_change_seconds": -0.004069499999999948,
+      "all1520_owners_geometry_chunks_submits_exact": true,
+      "commands": 1520,
+      "total_submits": 10809,
+      "chunks": 71750,
+      "math_submits": 3294,
+      "native_length_changed_commands": 30,
+      "loop_changes": [],
+      "max_submit_ns": [
+        67995271,
+        64413037
+      ]
+    }
+  ],
+  "profile_attribution": [
+    {
+      "iteration": "first",
+      "by_owner_type": {
+        "IO": {
+          "baseline_seconds": 0.051805857,
+          "candidate_seconds": 0.048767158,
+          "saved_seconds": 0.003038698999999999
+        },
+        "Crop": {
+          "baseline_seconds": 0.000653855,
+          "candidate_seconds": 0.000324325,
+          "saved_seconds": 0.00032952999999999997
+        },
+        "InnerProduct": {
+          "baseline_seconds": 0.093725071,
+          "candidate_seconds": 0.094778616,
+          "saved_seconds": -0.001053545000000003
+        },
+        "Reshape": {
+          "baseline_seconds": 0.245091331,
+          "candidate_seconds": 0.244536748,
+          "saved_seconds": 0.0005545829999999974
+        },
+        "Slice": {
+          "baseline_seconds": 0.076878309,
+          "candidate_seconds": 0.076248703,
+          "saved_seconds": 0.0006296060000000048
+        },
+        "BinaryOp": {
+          "baseline_seconds": 0.762483477,
+          "candidate_seconds": 0.798231248,
+          "saved_seconds": -0.03574777100000004
+        },
+        "Convolution1D": {
+          "baseline_seconds": 26.150228083,
+          "candidate_seconds": 25.843588241,
+          "saved_seconds": 0.30663984199999916
+        },
+        "Concat": {
+          "baseline_seconds": 0.020682551,
+          "candidate_seconds": 0.019648469,
+          "saved_seconds": 0.0010340820000000021
+        },
+        "InstanceNorm": {
+          "baseline_seconds": 0.492000069,
+          "candidate_seconds": 0.442802592,
+          "saved_seconds": 0.04919747699999999
+        },
+        "ReLU": {
+          "baseline_seconds": 0.171200054,
+          "candidate_seconds": 0.16838407,
+          "saved_seconds": 0.0028159839999999936
+        },
+        "DeconvolutionDepthWise": {
+          "baseline_seconds": 0.084736926,
+          "candidate_seconds": 0.091343137,
+          "saved_seconds": -0.006606211000000001
+        },
+        "Interp": {
+          "baseline_seconds": 0.016413061,
+          "candidate_seconds": 0.012061021,
+          "saved_seconds": 0.00435204
+        },
+        "Deconvolution": {
+          "baseline_seconds": 2.642118911,
+          "candidate_seconds": 2.650679814,
+          "saved_seconds": -0.00856090300000023
+        },
+        "RadishNormAffineSnake": {
+          "baseline_seconds": 3.608963195,
+          "candidate_seconds": 3.574402249,
+          "saved_seconds": 0.03456094600000004
+        },
+        "RadishAffineSnake": {
+          "baseline_seconds": 0.285675907,
+          "candidate_seconds": 0.276350639,
+          "saved_seconds": 0.009325267999999998
+        },
+        "Padding": {
+          "baseline_seconds": 0.027040795,
+          "candidate_seconds": 0.02283823,
+          "saved_seconds": 0.004202564999999998
+        }
+      }
+    },
+    {
+      "iteration": "warm",
+      "by_owner_type": {
+        "IO": {
+          "baseline_seconds": 0.034853993,
+          "candidate_seconds": 0.05023372,
+          "saved_seconds": -0.015379727000000003
+        },
+        "Crop": {
+          "baseline_seconds": 0.000435574,
+          "candidate_seconds": 0.000573286,
+          "saved_seconds": -0.000137712
+        },
+        "InnerProduct": {
+          "baseline_seconds": 0.086127815,
+          "candidate_seconds": 0.091008007,
+          "saved_seconds": -0.004880192000000005
+        },
+        "Reshape": {
+          "baseline_seconds": 0.219633665,
+          "candidate_seconds": 0.220564606,
+          "saved_seconds": -0.0009309409999999907
+        },
+        "Slice": {
+          "baseline_seconds": 0.061651866,
+          "candidate_seconds": 0.067453419,
+          "saved_seconds": -0.005801553000000001
+        },
+        "BinaryOp": {
+          "baseline_seconds": 0.734551279,
+          "candidate_seconds": 0.72528714,
+          "saved_seconds": 0.009264138999999894
+        },
+        "Convolution1D": {
+          "baseline_seconds": 25.884620458,
+          "candidate_seconds": 25.685861202,
+          "saved_seconds": 0.19875925599999889
+        },
+        "Concat": {
+          "baseline_seconds": 0.019122133,
+          "candidate_seconds": 0.020735817,
+          "saved_seconds": -0.0016136840000000006
+        },
+        "InstanceNorm": {
+          "baseline_seconds": 0.458961801,
+          "candidate_seconds": 0.425583318,
+          "saved_seconds": 0.033378483000000014
+        },
+        "ReLU": {
+          "baseline_seconds": 0.152187822,
+          "candidate_seconds": 0.143445272,
+          "saved_seconds": 0.008742549999999988
+        },
+        "DeconvolutionDepthWise": {
+          "baseline_seconds": 0.061244577,
+          "candidate_seconds": 0.085562606,
+          "saved_seconds": -0.024318028999999998
+        },
+        "Interp": {
+          "baseline_seconds": 0.01241003,
+          "candidate_seconds": 0.016023337,
+          "saved_seconds": -0.003613306999999998
+        },
+        "Deconvolution": {
+          "baseline_seconds": 2.516655635,
+          "candidate_seconds": 2.458771754,
+          "saved_seconds": 0.05788388099999997
+        },
+        "RadishNormAffineSnake": {
+          "baseline_seconds": 3.527222125,
+          "candidate_seconds": 3.410629296,
+          "saved_seconds": 0.11659282900000001
+        },
+        "RadishAffineSnake": {
+          "baseline_seconds": 0.284066634,
+          "candidate_seconds": 0.270718557,
+          "saved_seconds": 0.013348076999999958
+        },
+        "Padding": {
+          "baseline_seconds": 0.022100679,
+          "candidate_seconds": 0.020993368,
+          "saved_seconds": 0.0011073110000000032
+        }
+      }
+    }
+  ],
+  "native_admissions": [
+    {
+      "path": "/run/media/jethac/Shared/radish/ncnn-robust-device-private-f75wknqc/explicit-false-native/admission.json",
+      "bytes": 3895,
+      "sha256": "5eca808110716f03ae5dff262db136a2652639a23e041be341b2cc7b7f280a99"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/ncnn-robust-device-private-f75wknqc/shift-native/admission.json",
+      "bytes": 2852,
+      "sha256": "8a3428248bfa4b29a56ecd70239782044ab84eafb3550a3c1e4f7b0a0b3e715f"
+    }
+  ],
+  "comparison_source": {
+    "path": "/run/media/jethac/Shared/radish/ncnn-robust-device-private-f75wknqc/compare-shift.py",
+    "bytes": 6770,
+    "sha256": "14854e90b82fa6521635d7adb62c8e934cfb6220d9964c5998aee08d726e0442"
+  },
+  "first_output_limit": "Both complete first-iteration numerical comparisons are logged; retained final files contain iteration2, not separate first-output byte hashes.",
+  "limitations": [
+    "One address-expression source change for the pinned FP32 workload; no driver or robustness-policy change.",
+    "All1520 ordered commands retain owner/geometry/chunks/submits/loops;30 execution native lengths change28 to27, while all58 packed bodies use the reviewed shorter address sequence.",
+    "Runs are sequential; thermal/cache/resource effects are not randomized. Memory/swap records are explicit.",
+    "Japanese tablet boundary/end-to-end runtime remains a separate workload gate."
+  ],
+  "paired_review": {
+    "bytes": 13310,
+    "sha256": "78f94c8fe01bb54452020ba0b6c80115a74e2a70494da38a6194dfa2e9beb2d7"
+  },
+  "native_admission": {
+    "status": "passed",
+    "scope": "Shifted packed-A native/resource admission only; subsequent full reference execution remains required.",
+    "programs": 179,
+    "run_log": {
+      "path": "/run/media/jethac/Shared/radish/packed-a-shift-replay-0045/evidence-core0045-packed-shift/compile/run.log",
+      "bytes": 24418533,
+      "sha256": "59568c89cf4ee27fe0222f9f80b16909d34388405bea6bad75edaf4152debb5f"
+    },
+    "result": {
+      "path": "/run/media/jethac/Shared/radish/packed-a-shift-replay-0045/evidence-core0045-packed-shift/compile/result.json",
+      "bytes": 726,
+      "sha256": "51725db02bbbf8f4e1f2a32d6ffadf9065673243cb8496999caad3f2994c6f01"
+    },
+    "model": {
+      "bytes": 11133128,
+      "sha256": "d33222d4d62e209f8b05807d78224862778d4a3afe540a4130ee70743b59aff7"
+    },
+    "driver": {
+      "bytes": 49025280,
+      "sha256": "fcd47b1fdc6f0b1ab52bb71ea1d1331ec0c9b98dbe5da050c7e27b4f0f2b6389"
+    },
+    "unchanged_full_mesa_records": 156,
+    "changed_records": [
+      52,
+      69,
+      88,
+      103,
+      105,
+      109,
+      111,
+      120,
+      122,
+      124,
+      136,
+      149,
+      151,
+      152,
+      153,
+      154,
+      156,
+      169,
+      171,
+      172,
+      174,
+      175,
+      176
+    ],
+    "all_other_shader_sources_and_four_tail_guards_exact": true,
+    "packed_A": {
+      "tuples": 23,
+      "native_counts": {
+        "27": 9,
+        "28": 14
+      },
+      "local": [
+        16,
+        8,
+        1
+      ],
+      "shared_bytes": 16384,
+      "ssbos": 4,
+      "full": 16,
+      "half": 0,
+      "footprint": 4096,
+      "loops": 4,
+      "mad_equivalents": 32,
+      "vec4_shared_loads": 3,
+      "private_native_operations": 0
+    },
+    "all_programs": {
+      "path": "/run/media/jethac/Shared/radish/ncnn-robust-device-private-f75wknqc/shift-native/all-programs.json",
+      "bytes": 53646,
+      "sha256": "d37e44cccd22493f9a8ccdfd96e2149b10a99d285fd52d0a1b9f51a688abb847"
+    },
+    "packed_inventory": {
+      "path": "/run/media/jethac/Shared/radish/ncnn-robust-device-private-f75wknqc/shift-native/packed-variants.json",
+      "bytes": 30831,
+      "sha256": "289619e55bad34e3842e0f6c8ccb564169e0e7b58a3f1c3b659e99e34df69c61"
+    },
+    "source_review": {
+      "path": "/run/media/jethac/Shared/radish/ncnn-robust-device-private-f75wknqc/packed-a-shift-source-review.json",
+      "bytes": 1004,
+      "sha256": "8ac9b04c45fee4a33d2c1b8a9d036556e53277793f43307a1f62bdc842876b05"
+    },
+    "independent_native_review": {
+      "path": "/run/media/jethac/Shared/radish/core-api-resource-consumers-0044-ymiuefnt/stage58-packed-shift-native-review/review.json",
+      "bytes": 2124,
+      "sha256": "701a86df07fefe719ff82d1f8e197b7d89203e154a9d09f04ea36ecd3c540e73"
+    },
+    "limits": [
+      "Eight fewer encoded instructions per packed variant are compiler evidence, not measured latency.",
+      "Current safety/resource/backing guards and profile batching conditions remain unchanged; inference must confirm counts and both full outputs."
+    ]
+  },
+  "build": {
+    "status": "private_host_build_passed",
+    "model": {
+      "bytes": 11133128,
+      "sha256": "d33222d4d62e209f8b05807d78224862778d4a3afe540a4130ee70743b59aff7"
+    },
+    "archive": {
+      "bytes": 11454002,
+      "sha256": "fa947ecb928ca0349b64ea20bc685abe70990d09c15325934c05f6aafcc60152"
+    },
+    "baseline_model": {
+      "bytes": 11133128,
+      "sha256": "85ad367f649922acb1d773725584d2f0b81c2c8c7c1e4d9cc6b15cdb1f68fc5b"
+    },
+    "patch": {
+      "bytes": 603,
+      "sha256": "ac3d2bea1ed8fdc6d81fe1c75e68797b874ab449349122a63a0d32f27b9ce00f"
+    },
+    "changed_generated_header": {
+      "layer/vulkan/shader/convolution1d_radish_planar_packed_a.comp.hex.h": {
+        "bytes": 12827,
+        "sha256": "d16f9a0308fe50d059b3dbb5c0374977777aeccda790077e3fea0e36901dbffd"
+      }
+    },
+    "other_generated_headers_and_registry_exact": true,
+    "untouched_archive_members": 261,
+    "untouched_member_bytes_sha256": "108654ea88eb0922ea40d6ebbd72564a5600c7b24213ec0f1f141da98c7ce9cd",
+    "scope": "One packed-A mb/4\u2192mb>>2 expression on fixed-tail/private device85ad baseline. No device run; choose same explicit robustness mode for future paired admission/measurement."
+  },
+  "published_patch": {
+    "bytes": 593,
+    "sha256": "a4854a8b873428376b12eca1a0064805f3e008d6c78cde78fbfb7708f4c30937"
+  },
+  "source_release": {
+    "bytes": 8369,
+    "sha256": "d12292f6c491aebabefbb88359b1fd5e51a61a0470964d492f5af7c1a673217a"
+  },
+  "ncnn_branch": {
+    "url": "https://github.com/jethac/ncnn/tree/radish/0045-packed-a-shift",
+    "commit": "27ef2cecf3f2aef6e7cabad1b630767f0898ae02"
+  },
+  "extra_readonly_frequency": {
+    "before_hz": 19200000,
+    "after_hz": 19200000,
+    "minimum_hz": 19200000,
+    "maximum_hz": 650000000,
+    "note": "Idle pre/post samples only; no inference about sustained operating frequency or utilization. Busy counter files were absent; original thermal/trans_stat captures remain."
+  }
+}

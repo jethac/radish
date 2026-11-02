@@ -1,5 +1,16 @@
 # Packed-A convolution experiment
 
+## 2026-11-02: nonnegative block shift passes the current full model
+
+Replacing only packed-A `(mb / 4)` with `(mb >> 2)` removes eight encoded instructions from each of the 23 variants; the existing nonnegative block invariant proves equivalence. Nine variants shrink native28→27 and fourteen remain native28. All retain 16 full/no half registers, four loops, 16 KiB shared storage and unchanged floating arithmetic/shared loads/stores. The other 156 compiler records are byte-identical.
+
+On the same qualified explicit robust=false path, first fixed-core extraction changes 35.067822→34.700589 seconds; resident changes **34.333299→33.952417 seconds (1.1094%)**. Full references and accepted output bytes pass twice, with all 589 GPU layers. All 1,520 ordered owners/geometries/loops/chunks/submissions remain identical: 10,809 total submits, 3,294 math. Both runs have zero swap (405.4 versus 406.2 MiB peak); no new faults, both services active.
+
+This is a small sequential observation. Math command wall time saves only 0.171195 seconds of the 0.380882-second resident reduction, while other commands also improve; do not attribute the whole gain to this expression or claim statistical confidence. Cold load changes 11.700→11.892 seconds. Read-only pre/post frequency samples are idle 19.2 MHz and do not establish sustained GPU frequency or utilization. No clock/power settings changed.
+
+[Exact source/native/profile evidence](results/packed-a-mb-shift-0045.json) and the [isolated ncnn branch](https://github.com/jethac/ncnn/tree/radish/0045-packed-a-shift) preserve this candidate separately from the robustness choice. Apply `0045-ncnn-packed-a-mb-shift.patch` after the explicit-device/four-tail stack and regenerate the packed-A embedded header. The equivalent, fully correct candidate is selected for the next private runtime build; end-to-end Japanese validation remains separate.
+
+
 Generated-by: LLM
 
 Checkpoint 0042 packs constant convolution weights so the A preload can store one

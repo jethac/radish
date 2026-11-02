@@ -656,3 +656,5 @@ Both feature modes pass the full fixed core; resident51.504783→34.333299 secon
 ## Host-only ASR integration (0045)
 
 `0045-straylight-asr-vulkan-optin.patch` applies to the exact Straylight source snapshot pinned in `../results/asr-vulkan-host-only-0045.json`. CPU remains default. Rebuild both C++ and Rust for config ABI2; the host Vulkan build/link passes, but current16-bit-storage/Vulkan1.2 backend requirements still block Radish device qualification. No service deployment or inference result is claimed. Commands are in `../ASR_VULKAN_HANDOFF.txt`.
+
+`0045-ncnn-packed-a-mb-shift.patch` is a separate one-expression candidate after the explicit-device/four-tail ncnn stack. All full outputs pass with fewer encoded instructions. Resident33.952417 seconds versus34.333299 is a modest sequential observation, not sole-cause/statistical attribution. See `../GPU_PACKED_A.md` and `../results/packed-a-mb-shift-0045.json`.
