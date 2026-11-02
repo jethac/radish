@@ -21,6 +21,8 @@ a separate driver, with its own a5xx resource bindings and command emission.
 
 ## Current status
 
+The first intended Japanese request now passes complete core and waveform validation on its exact tablet frontend/source boundary: 47.314 seconds first synthesis for 4.2 seconds of audio, with all 589 core layers on Vulkan. [The scoped runtime result](radish/RUNTIME_INTEGRATION.md) keeps resident and matched Japanese CPU measurements separate; no end-to-end speedup is claimed.
+
 **Current priority:** the concrete compute/shared implementation and unchanged
 full-model correctness gates pass. Work now targets end-to-end Straylight GPU performance, with correctness guards preserved. [Batching recovery](radish/BATCHING_RECOVERY.md) first lowers resident fixed-core time by 22.00%, from 67.63 to 52.75 seconds; the separately paired normalization change reaches 51.44 seconds, with exact outputs. The subsequent [explicit app robustness pair](radish/EXPLICIT_ROBUSTNESS.md), after four shader-tail fixes, reaches 34.33 seconds on the same driver while retaining requested robustness support and application defaults. The latest
 [0044 checkpoint](radish/CORE_API_0044.md) has representative valid-use evidence

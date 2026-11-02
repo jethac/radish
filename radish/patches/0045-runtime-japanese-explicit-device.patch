@@ -1,0 +1,351 @@
+--- a/radish/tests/ncnn/kokoro_runtime.cpp
++++ b/radish/tests/ncnn/kokoro_runtime.cpp
+@@ -14,6 +14,8 @@
+ #include <cstring>
+ #include <cstdlib>
+ #include <dirent.h>
++#include <dlfcn.h>
++#include <limits.h>
+ #include <fcntl.h>
+ #include <fstream>
+ #include <iomanip>
+@@ -121,18 +123,58 @@
+     std::vector<double> extractions,workspace_trim;
+     double load_seconds=0;
+ };
++struct VulkanPolicy {
++    int robust_buffer_access=-1;
++    std::string loader;
++};
++#if NCNN_VULKAN
++void initialize_gpu(const VulkanPolicy& policy,radish_ncnn::GpuInstance& instance,
++                    std::unique_ptr<ncnn::VulkanDevice>& owned_device,const ncnn::VulkanDevice*& device) {
++    char requested_loader[PATH_MAX]={0};
++    if(!policy.loader.empty()) {
++#if NCNN_SIMPLEVK
++        require(realpath(policy.loader.c_str(),requested_loader)!=nullptr,"cannot resolve Vulkan loader");
++        struct stat info;
++        require(stat(requested_loader,&info)==0 && S_ISREG(info.st_mode),"Vulkan loader is not a regular file");
++#else
++        require(false,"--vulkan-loader requires NCNN_SIMPLEVK");
++#endif
++    }
++    require(ncnn::create_gpu_instance(policy.loader.empty()?nullptr:requested_loader)==0,"cannot create GPU instance");
++    instance.active=true;
++#if NCNN_SIMPLEVK
++    if(!policy.loader.empty()) {
++        Dl_info loaded_info={};
++        char loaded_path[PATH_MAX]={0};
++        require(dladdr(reinterpret_cast<void*>(ncnn::vkGetInstanceProcAddr),&loaded_info)!=0
++                && loaded_info.dli_fname && realpath(loaded_info.dli_fname,loaded_path),"cannot identify actual Vulkan loader");
++        require(std::strcmp(requested_loader,loaded_path)==0,"actual Vulkan loader differs from requested loader");
++        std::printf("ncnn Vulkan loader: %s\n",loaded_path);
++    }
++#endif
++    require(ncnn::get_gpu_count()==1,"expected one private Radish GPU");
++    if(policy.robust_buffer_access!=-1) {
++        owned_device.reset(new ncnn::VulkanDevice(0,policy.robust_buffer_access!=0));
++        device=owned_device.get();
++    } else device=ncnn::get_gpu_device(0);
++    require(device && device->is_valid(),"invalid GPU device");
++    require(std::strstr(device->info.device_name(),"Radish")!=nullptr,"expected Radish device");
++    if(policy.robust_buffer_access!=-1) {
++        const bool expected=policy.robust_buffer_access!=0 && device->info.physicalDevicefeatures().robustBufferAccess;
++        require(device->enabled_robust_buffer_access()==expected,"enabled robustness differs from requested policy");
++        std::printf("ncnn robustness: requested=%d enabled=%d owned_device=1\n",policy.robust_buffer_access,device->enabled_robust_buffer_access()?1:0);
++    }
++}
++#endif
+ struct LoopPipelineCache {
+ #if NCNN_VULKAN
+     radish_ncnn::GpuInstance instance;
++    std::unique_ptr<ncnn::VulkanDevice> owned_device;
+     const ncnn::VulkanDevice* device=nullptr;
+     std::unique_ptr<ncnn::PipelineCache> cache;
+-    void initialize() {
++    void initialize(const VulkanPolicy& policy) {
+         if(cache) return;
+-        require(ncnn::create_gpu_instance()==0,"cannot create shared GPU instance"); instance.active=true;
+-        require(ncnn::get_gpu_count()==1,"expected one private Radish GPU");
+-        device=ncnn::get_gpu_device(0);
+-        require(device && device->is_valid(),"invalid shared GPU device");
+-        require(std::strstr(device->info.device_name(),"Radish")!=nullptr,"expected Radish device");
++        initialize_gpu(policy,instance,owned_device,device);
+         require(!device->info.bug_corrupted_online_pipeline_cache(),"shared pipeline cache lookup is disabled");
+         cache.reset(new ncnn::PipelineCache(device));
+     }
+@@ -144,6 +186,7 @@
+     std::string parameters;
+ #if NCNN_VULKAN
+     radish_ncnn::GpuInstance instance;
++    std::unique_ptr<ncnn::VulkanDevice> owned_device;
+     const ncnn::VulkanDevice* device=nullptr;
+ #endif
+     radish_ncnn::SnakeContext snake;
+@@ -153,17 +196,13 @@
+ public:
+     double load_seconds=0;
+     CoreSession(const radish::KokoroShapePlan& plan,const std::string& weights,
+-                bool use_vulkan,int threads,bool request_loop,LoopPipelineCache* shared=nullptr):vulkan(use_vulkan),resident(request_loop),parameters(plan.param_text) {
++                bool use_vulkan,int threads,bool request_loop,const VulkanPolicy& policy,LoopPipelineCache* shared=nullptr):vulkan(use_vulkan),resident(request_loop),parameters(plan.param_text) {
+ #if NCNN_VULKAN
+     if(vulkan) {
+         if(shared) {
+-            shared->initialize(); device=shared->device;
++            shared->initialize(policy); device=shared->device;
+         } else {
+-            require(ncnn::create_gpu_instance()==0,"cannot create GPU instance"); instance.active=true;
+-            require(ncnn::get_gpu_count()==1,"expected one private Radish GPU");
+-            device=ncnn::get_gpu_device(0);
+-            require(device && device->is_valid(),"invalid GPU device");
+-            require(std::strstr(device->info.device_name(),"Radish")!=nullptr,"expected Radish device");
++            initialize_gpu(policy,instance,owned_device,device);
+         }
+         std::printf("ncnn device: %s\n",device->info.device_name());
+     }
+@@ -234,8 +273,8 @@
+ }
+ };
+ CoreResult run_core(const radish_frontend::Boundary& boundary,const radish::KokoroShapePlan& plan,
+-                    const std::string& weights,bool vulkan,int threads,int repeat) {
+-    CoreSession session(plan,weights,vulkan,threads,false);
++                    const std::string& weights,bool vulkan,int threads,int repeat,const VulkanPolicy& policy) {
++    CoreSession session(plan,weights,vulkan,threads,false,policy);
+     CoreResult result=session.extract(boundary,repeat);
+     result.load_seconds=session.load_seconds;
+     return result;
+@@ -345,7 +384,7 @@
+ int run_request_loop(const std::vector<std::string>& args,const std::vector<std::string>& queued,
+                      const std::string& parameters,const radish_waveform::Tail& tail,
+                      const std::string& ort_library,bool vulkan,int threads,int ort_threads,int max_T,
+-                     int layers,int blobs,const char* core_graph,const std::string& cancel_file,double process_start,bool reuse_pipeline_cache) {
++                     int layers,int blobs,const char* core_graph,const std::string& cancel_file,double process_start,bool reuse_pipeline_cache,const VulkanPolicy& policy) {
+     require(!args[5].empty() && args[5].back()!='/',"session output must name a new directory");
+     require(mkdir(args[5].c_str(),0700)==0,"cannot create exclusive session directory");
+     std::vector<RequestRecord> completed;
+@@ -411,7 +450,7 @@
+             if(!hit) {
+                 double eviction_start=now(); session.reset(); eviction=now()-eviction_start;
+                 if(reuse_pipeline_cache && !shared) shared.reset(new LoopPipelineCache);
+-                session.reset(new CoreSession(plan,args[3],vulkan,threads,true,shared.get()));
++                session.reset(new CoreSession(plan,args[3],vulkan,threads,true,policy,shared.get()));
+                 load=session->load_seconds;
+             }
+             std::printf("request %zu core cache %s T=%lld\n",active,hit?"hit":"miss",static_cast<long long>(boundary.T));
+@@ -467,12 +506,20 @@
+         double start=now();
+         bool vulkan=true,backend_selected=false,affine_snake=false,norm_affine_snake=false,deconv2d=false,request_loop=false,reuse_pipeline_cache=false;
+         int threads=4,ort_threads=4,max_T=512,repeat=1;
++        VulkanPolicy policy;
+         std::string ort_library="/usr/local/lib/straylight-listen/libonnxruntime.so";
+         std::vector<std::string> args,next_inputs;
+         std::string cancel_file;
+         for(int i=1;i<argc;++i) {
+             std::string arg=argv[i];
+-            if(arg=="--request-loop") {
++            if(arg=="--vulkan-loader") {
++                require(policy.loader.empty() && ++i<argc && argv[i][0]=='/',"--vulkan-loader requires one absolute path");
++                policy.loader=argv[i];
++            } else if(arg=="--robust-buffer-access") {
++                require(policy.robust_buffer_access==-1 && ++i<argc
++                        && (!std::strcmp(argv[i],"0") || !std::strcmp(argv[i],"1")),"--robust-buffer-access requires one value,0 or1");
++                policy.robust_buffer_access=argv[i][0]-'0';
++            } else if(arg=="--request-loop") {
+                 require(!request_loop,"duplicate --request-loop"); request_loop=true;
+             } else if(arg=="--reuse-pipeline-cache") {
+                 require(!reuse_pipeline_cache,"duplicate --reuse-pipeline-cache"); reuse_pipeline_cache=true;
+@@ -499,7 +546,9 @@
+                 else repeat=integer(argv[i],1,10);
+             } else { require(arg.compare(0,2,"--")!=0,"unknown option: "+arg); args.push_back(arg); }
+         }
+-        require(args.size()==6,"usage: radish-kokoro-runtime [--affine-snake|--norm-affine-snake] [--deconv2d] [--vulkan|--cpu-packed] [--threads N] [--ort-threads N] [--max-frames N] [--repeat N] [--ort-lib PATH] [--request-loop --next-input DIR ... [--cancel-file PATH] [--reuse-pipeline-cache]] MODELS INPUT_DIR PARAM WEIGHTS TAIL NEW_OUTPUT; use the staging wrapper to verify artifact hashes");
++        require(args.size()==6,"usage: radish-kokoro-runtime [--affine-snake|--norm-affine-snake] [--deconv2d] [--vulkan|--cpu-packed] [--vulkan-loader ABS_PATH] [--robust-buffer-access 0|1] [--threads N] [--ort-threads N] [--max-frames N] [--repeat N] [--ort-lib PATH] [--request-loop --next-input DIR ... [--cancel-file PATH] [--reuse-pipeline-cache]] MODELS INPUT_DIR PARAM WEIGHTS TAIL NEW_OUTPUT; use the staging wrapper to verify artifact hashes");
++        require(policy.loader.empty() || vulkan,"--vulkan-loader requires Vulkan");
++        require(policy.robust_buffer_access==-1 || (vulkan && !policy.loader.empty()),"--robust-buffer-access requires Vulkan and --vulkan-loader");
+         require(request_loop ? !next_inputs.empty() && repeat==1 : next_inputs.empty() && cancel_file.empty(),
+                 "request-loop requires one to three --next-input directories and --repeat1; next-input/cancel-file are loop-only");
+         if(reuse_pipeline_cache) {
+@@ -527,7 +576,7 @@
+             const char* graph=norm_affine_snake ? "norm-affine-snake-deconv2d" : deconv2d ? (affine_snake?"affine-snake-deconv2d":"snake-deconv2d")
+                                       : affine_snake?"affine-snake":layers==906?"snake":"instancenorm";
+             return run_request_loop(args,queued,parameters,tail,ort_library,vulkan,threads,ort_threads,max_T,
+-                                    layers,blobs,graph,cancel_file,start,reuse_pipeline_cache);
++                                    layers,blobs,graph,cancel_file,start,reuse_pipeline_cache,policy);
+         }
+         Output output(args[5]);
+         double front_start=now();
+@@ -542,7 +591,7 @@
+                                      : affine_snake?"affine-snake":plan.layers==906?"snake":"instancenorm";
+         std::printf("frontend complete including ORT release: %.6f s; T=%lld; metadata-only shapes: %d blobs in %.6f s\n",frontend_wall,(long long)boundary.T,plan.blobs,shapes_wall);
+         double core_start=now();
+-        CoreResult core=run_core(boundary,plan,args[3],vulkan,threads,repeat);
++        CoreResult core=run_core(boundary,plan,args[3],vulkan,threads,repeat,policy);
+         double core_wall=now()-core_start;
+         double tail_start=now();
+         std::vector<float> audio=radish_waveform::synthesize(core.values.data(),core.values.size(),static_cast<size_t>(boundary.frames),tail);
+--- a/radish/scripts/device-runtime.sh
++++ b/radish/scripts/device-runtime.sh
+@@ -1,19 +1,21 @@
+ #!/usr/bin/env bash
+ main() {
+ set -euo pipefail
+-TOP=$(cd "$(dirname "$0")/../.." && pwd)
++TOP=/home/jethac/Projects/lenovo-8
++PRIVATE=$(cd "$(dirname "$0")" && pwd)
++WRAPPER=$PRIVATE/device-runtime.sh
+ WORK=${RADISH_WORK:-/run/media/jethac/Shared/radish}
+ SERIAL=${RADISH_SERIAL:-feb0bd1f028e4cb0}
+ MODELS=${RADISH_FRONTEND_MODELS:-$WORK/kokoro-frontend-models}
+ BINARY=${RADISH_RUNTIME_BINARY:-$WORK/build-ncnn-simpleomp/radish-kokoro-runtime}
+ DRIVER=${RADISH_RUNTIME_DRIVER:-$WORK/build/src/freedreno/radish/libvulkan_radish.so}
+ LOADER=${RADISH_RUNTIME_LOADER:-$WORK/build-loader/loader/libvulkan.so}
+-CAPTURE=$TOP/radish/scripts/kokoro-runtime-capture.py
++CAPTURE=$PRIVATE/kokoro-runtime-capture.py
+ LOADER_SHA=75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a
+ TEMPLATE=$WORK/kokoro-core-shapes-instancenorm
+ TAIL=$WORK/kokoro-tail.bin
+ KIND=${1:-}
+-case $KIND in runtime-short|runtime-full) ;; *) echo 'usage: device-runtime.sh runtime-short|runtime-full [run-label] [--snake|--affine-snake|--snake-deconv2d|--affine-snake-deconv2d|--norm-affine-snake-deconv2d] [--vulkan|--cpu-packed] [--threads N] [--ort-threads N] [--max-frames N] [--repeat N] [--request-loop --next-input runtime-short|runtime-full ... [--reuse-pipeline-cache]]' >&2; exit 2 ;; esac
++case $KIND in runtime-short|runtime-full|runtime-ja-greet) ;; *) echo 'usage: device-runtime.sh runtime-short|runtime-full|runtime-ja-greet [run-label] [--snake|--affine-snake|--snake-deconv2d|--affine-snake-deconv2d|--norm-affine-snake-deconv2d] [--vulkan|--cpu-packed] [--robust-buffer-access 0|1] [--threads N] [--ort-threads N] [--max-frames N] [--repeat N] [--request-loop --next-input runtime-short|runtime-full|runtime-ja-greet ... [--reuse-pipeline-cache]]' >&2; exit 2 ;; esac
+ shift
+ RUN=$(date +%s%N)
+ if [[ $# -gt 0 && $1 != --* ]]; then RUN=$1; shift; fi
+@@ -24,12 +26,16 @@
+ ORT_THREADS=4
+ MAX_FRAMES=512
+ REPEAT=1
++ROBUST=
+ CORE_GRAPH=instancenorm
+ REQUEST_LOOP=false
+ REUSE_PIPELINE_CACHE=false
+ NEXT_INPUTS=()
+ while [[ $# -gt 0 ]]; do
+     case $1 in
++        --robust-buffer-access)
++            [[ -z $ROBUST && $# -ge 2 && ( $2 == 0 || $2 == 1 ) ]] || { echo '--robust-buffer-access requires one value, 0 or 1' >&2; exit 2; }
++            ROBUST=$2; shift ;;
+         --reuse-pipeline-cache)
+             ! $REUSE_PIPELINE_CACHE || { echo 'duplicate --reuse-pipeline-cache' >&2; exit 2; }
+             REUSE_PIPELINE_CACHE=true ;;
+@@ -37,7 +43,7 @@
+             ! $REQUEST_LOOP || { echo 'duplicate --request-loop' >&2; exit 2; }
+             REQUEST_LOOP=true ;;
+         --next-input)
+-            [[ $# -ge 2 && ( $2 == runtime-short || $2 == runtime-full ) ]] || { echo 'next input must be runtime-short or runtime-full' >&2; exit 2; }
++            [[ $# -ge 2 && ( $2 == runtime-short || $2 == runtime-full || $2 == runtime-ja-greet ) ]] || { echo 'next input must be runtime-short, runtime-full or runtime-ja-greet' >&2; exit 2; }
+             NEXT_INPUTS+=("$2"); shift ;;
+         --snake|--affine-snake|--snake-deconv2d|--affine-snake-deconv2d|--norm-affine-snake-deconv2d)
+             [[ $CORE_GRAPH == instancenorm ]] || { echo 'select one core graph' >&2; exit 2; }
+@@ -58,6 +64,7 @@
+     esac
+     shift
+ done
++[[ -z $ROBUST || $BACKEND == vulkan ]] || { echo 'explicit robustness requires Vulkan' >&2; exit 2; }
+ [[ $THREADS =~ ^[1-6]$ && $ORT_THREADS =~ ^[1-6]$ ]] || { echo 'thread counts must be 1..6' >&2; exit 2; }
+ [[ $MAX_FRAMES =~ ^[1-9][0-9]{0,3}$ && $MAX_FRAMES -le 4096 ]] || { echo 'max frames must be 1..4096' >&2; exit 2; }
+ [[ $REPEAT =~ ^([1-9]|10)$ ]] || { echo 'repeat must be 1..10' >&2; exit 2; }
+@@ -142,6 +149,11 @@
+ mkdir -p "$WORK/evidence"
+ [[ ! -e $WORK/evidence/$TAG-inputs.json && ! -e $WORK/evidence/$TAG.txt && ! -e $WORK/evidence/$TAG-icd.json ]] || { echo 'run label already has evidence' >&2; exit 2; }
+ PREPARE_ARGS=()
++DEVICE_ARGS=
++if [[ -n $ROBUST ]]; then
++    PREPARE_ARGS+=(--robust-buffer-access "$ROBUST")
++    DEVICE_ARGS="--vulkan-loader $REMOTE/libvulkan.so.1 --robust-buffer-access $ROBUST"
++fi
+ LOOP_ARGS=
+ INPUT_KINDS=("$KIND")
+ INPUT_REMOTE=$REMOTE/input
+@@ -164,7 +176,7 @@
+     --output "$WORK/evidence/$TAG-inputs.json" --icd "$WORK/evidence/$TAG-icd.json" \
+     --remote "$REMOTE" --backend "$BACKEND" --threads "$THREADS" --ort-threads "$ORT_THREADS" \
+     --max-frames "$MAX_FRAMES" --repeat "$REPEAT" --core-graph "$CORE_GRAPH" --validator "$VALIDATOR" \
+-    --wrapper "$TOP/radish/scripts/device-runtime.sh" --source-root "$TOP" \
++    --wrapper "$WRAPPER" --source-root "$TOP" \
+     --env RADISH_NCNN_TILED=$TILED --env RADISH_NCNN_TILED32=$TILED32 --env RADISH_NCNN_PLANAR=$PLANAR \
+     --env RADISH_NCNN_PLANAR_PACKED_A=$PACKED_A --env RADISH_NCNN_PAD_CHANNELS=$PAD_CHANNELS --env RADISH_NCNN_NORM_SUM4=$NORM_SUM4 --env RADISH_NCNN_NORM_OUTPLACE=$NORM_OUTPLACE --env RADISH_NCNN_SHARED32=$SHARED32 \
+     --env RADISH_NCNN_MIXED_STORAGE=$MIXED --env RADISH_NCNN_RESHAPE_ALIAS=$RESHAPE_ALIAS \
+@@ -201,7 +213,7 @@
+     "${ADB[@]}" shell 'df -Pk /var/tmp' > "$WORK/evidence/$TAG-disk-after.txt" || result=1
+     "${ADB[@]}" shell "journalctl --no-pager -u $UNIT" > "$WORK/evidence/$TAG-service.txt" || result=1
+     "${ADB[@]}" shell 'systemctl is-active straylight-listen straylight-voice' || result=1
+-    python3 "$TOP/radish/scripts/check-gpu-log.py" "$WORK/evidence/$TAG-dmesg-before.txt" "$WORK/evidence/$TAG-dmesg-after.txt" || result=1
++    python3 "$PRIVATE/check-gpu-log.py" "$WORK/evidence/$TAG-dmesg-before.txt" "$WORK/evidence/$TAG-dmesg-after.txt" || result=1
+     CHECKED=true
+     return "$result"
+ }
+@@ -324,7 +336,7 @@
+ echo "Runtime backend=$BACKEND graph=$CORE_GRAPH repeat=$REPEAT threads=$THREADS ort_threads=$ORT_THREADS; shared weights=$DEVICE_WEIGHTS"
+ echo "GPU controls: tiled=$TILED tiled32=$TILED32 planar=$PLANAR packed_a=$PACKED_A norm_sum4=$NORM_SUM4 norm_outplace=$NORM_OUTPLACE pad_channels=$PAD_CHANNELS batch=$BATCH tiled_batch=$TILED_BATCH tiled_groups_x=$TILED_GROUPS_X shared_groups=$GROUPS_PER_CHUNK shared32=$SHARED32 mixed=$MIXED cache=$CACHE trace=$TRACE profile=$PROFILE reshape_alias=$RESHAPE_ALIAS"
+ STARTED=true
+-timeout 330s "${ADB[@]}" shell "chmod 755 $REMOTE/radish-kokoro-runtime && systemd-run --unit=$UNIT --wait --pipe --collect -p MemoryMax=640M -p MemorySwapMax=128M -p RuntimeMaxSec=300 -p TimeoutStopSec=15 -p LimitCORE=0 --setenv=RADISH_NCNN_TILED=$TILED --setenv=RADISH_NCNN_TILED32=$TILED32 --setenv=RADISH_NCNN_PLANAR=$PLANAR --setenv=RADISH_NCNN_PLANAR_PACKED_A=$PACKED_A --setenv=RADISH_NCNN_NORM_SUM4=$NORM_SUM4 --setenv=RADISH_NCNN_NORM_OUTPLACE=$NORM_OUTPLACE --setenv=RADISH_NCNN_PAD_CHANNELS=$PAD_CHANNELS --setenv=RADISH_NCNN_SHARED32=$SHARED32 --setenv=RADISH_NCNN_MIXED_STORAGE=$MIXED --setenv=RADISH_NCNN_RESHAPE_ALIAS=$RESHAPE_ALIAS --setenv=RADISH_NCNN_PIPELINE_CACHE=$CACHE --setenv=RADISH_NCNN_TRACE=$TRACE --setenv=RADISH_PROFILE=$PROFILE --setenv=RADISH_BATCH_CHUNKS=$BATCH --setenv=RADISH_TILED_BATCH_CHUNKS=$TILED_BATCH --setenv=RADISH_TILED_GROUPS_X=$TILED_GROUPS_X --setenv=RADISH_SHARED_GROUPS=$GROUPS_PER_CHUNK --setenv=LD_LIBRARY_PATH=$REMOTE --setenv=VK_DRIVER_FILES=$REMOTE/radish_icd.json $REMOTE/radish-kokoro-runtime $CORE_ARGS $LOOP_ARGS --$BACKEND --threads $THREADS --ort-threads $ORT_THREADS --max-frames $MAX_FRAMES --repeat $REPEAT $REMOTE/models $INPUT_REMOTE $REMOTE/decoder.ncnn.param $DEVICE_WEIGHTS $REMOTE/kokoro-tail.bin $REMOTE/output" 2>&1 | tee "$WORK/evidence/$TAG.txt"
++timeout 330s "${ADB[@]}" shell "chmod 755 $REMOTE/radish-kokoro-runtime && systemd-run --unit=$UNIT --wait --pipe --collect -p MemoryMax=640M -p MemorySwapMax=128M -p RuntimeMaxSec=300 -p TimeoutStopSec=15 -p LimitCORE=0 --setenv=RADISH_NCNN_TILED=$TILED --setenv=RADISH_NCNN_TILED32=$TILED32 --setenv=RADISH_NCNN_PLANAR=$PLANAR --setenv=RADISH_NCNN_PLANAR_PACKED_A=$PACKED_A --setenv=RADISH_NCNN_NORM_SUM4=$NORM_SUM4 --setenv=RADISH_NCNN_NORM_OUTPLACE=$NORM_OUTPLACE --setenv=RADISH_NCNN_PAD_CHANNELS=$PAD_CHANNELS --setenv=RADISH_NCNN_SHARED32=$SHARED32 --setenv=RADISH_NCNN_MIXED_STORAGE=$MIXED --setenv=RADISH_NCNN_RESHAPE_ALIAS=$RESHAPE_ALIAS --setenv=RADISH_NCNN_PIPELINE_CACHE=$CACHE --setenv=RADISH_NCNN_TRACE=$TRACE --setenv=RADISH_PROFILE=$PROFILE --setenv=RADISH_BATCH_CHUNKS=$BATCH --setenv=RADISH_TILED_BATCH_CHUNKS=$TILED_BATCH --setenv=RADISH_TILED_GROUPS_X=$TILED_GROUPS_X --setenv=RADISH_SHARED_GROUPS=$GROUPS_PER_CHUNK --setenv=LD_LIBRARY_PATH=$REMOTE --setenv=VK_DRIVER_FILES=$REMOTE/radish_icd.json $REMOTE/radish-kokoro-runtime $CORE_ARGS $LOOP_ARGS $DEVICE_ARGS --$BACKEND --threads $THREADS --ort-threads $ORT_THREADS --max-frames $MAX_FRAMES --repeat $REPEAT $REMOTE/models $INPUT_REMOTE $REMOTE/decoder.ncnn.param $DEVICE_WEIGHTS $REMOTE/kokoro-tail.bin $REMOTE/output" 2>&1 | tee "$WORK/evidence/$TAG.txt"
+ DRAINED=true
+ if rg -n 'vkCreateComputePipelines failed|new_pipeline failed' "$WORK/evidence/$TAG.txt"; then exit 1; fi
+ "${ADB[@]}" shell "$REMOTE_CHECK" > "$WORK/evidence/$TAG-assets-after.txt"
+--- a/radish/scripts/kokoro-runtime-capture.py
++++ b/radish/scripts/kokoro-runtime-capture.py
+@@ -81,6 +81,9 @@
+             and capture['source_sha256'] == SOURCE_PIN, 'unexpected input capture provenance')
+     inputs = {name: asset(source / name) for name in ('ids.i64', 'style.f32', 'speed.f32')}
+     require(all(value == capture['files'][name] for name, value in inputs.items()), 'raw input differs from capture')
++    if source.name == 'kokoro-runtime-ja-greet':
++        expected = {'ids.i64': {'bytes': 400, 'sha256': '6e5e83f37cffe684ee2507d03617fed92df2354455c70febcc39e2b8aacc1a49'}, 'style.f32': {'bytes': 1024, 'sha256': '4e7e3b01f1f8f5a458f5f27eba6440b2e59cf70babc4589840bf2db0dd54718b'}, 'speed.f32': {'bytes': 4, 'sha256': 'e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c'}}
++        require(inputs == expected, 'Japanese route requires the frozen ja-greet tokens, blended voice and speed 1')
+     require(inputs['style.f32']['bytes'] == 1024 and inputs['speed.f32']['bytes'] == 4
+             and 24 <= inputs['ids.i64']['bytes'] <= 4096 and inputs['ids.i64']['bytes'] % 8 == 0,
+             'invalid raw frontend input lengths')
+@@ -121,6 +124,7 @@
+     require((args.request_loop and 1 <= len(args.next_source) <= 3 and args.repeat == 1
+              and args.core_graph in ('affine-snake-deconv2d', 'norm-affine-snake-deconv2d'))
+             or (not args.request_loop and not args.next_source), 'invalid request-loop selection')
++    require(args.robust_buffer_access is None or args.backend == 'vulkan', 'explicit robustness requires Vulkan')
+     require(not args.reuse_pipeline_cache or (args.request_loop and args.backend == 'vulkan'),
+             'pipeline cache reuse requires a Vulkan request loop')
+     graph_manifest = read_json(args.models / 'frontend-models.json')
+@@ -182,6 +186,9 @@
+               'repeat': args.repeat, 'remote_directory': args.remote,
+               'reuse_pipeline_cache': args.reuse_pipeline_cache,
+               'scope': 'Pinned single-process synthesis inputs; generation itself does not establish accuracy.'}
++    if args.robust_buffer_access is not None:
++        record['vulkan_device_policy'] = {'robust_buffer_access': args.robust_buffer_access,
++                                          'loader': args.remote + '/libvulkan.so.1', 'owned_device': True}
+     record['implementation'] = {str(path.resolve()): asset(path) for path in
+                                 (args.wrapper, Path(__file__), args.wrapper.parent / 'check-gpu-log.py')}
+     record['source_identity'] = {str(path.resolve()): asset(path) for path in
+@@ -196,7 +203,7 @@
+         record['request_loop'] = True
+         record['requests'] = []
+         for source in [args.source] + args.next_source:
+-            require(source.name in ('kokoro-runtime-short', 'kokoro-runtime-full'), 'unsupported loop input directory')
++            require(source.name in ('kokoro-runtime-short', 'kokoro-runtime-full', 'kokoro-runtime-ja-greet'), 'unsupported loop input directory')
+             kind = source.name.removeprefix('kokoro-')
+             record['requests'].append({'request_kind': kind,
+                 'remote_input_directory': args.remote + '/input-' + kind,
+@@ -412,6 +419,18 @@
+ 
+ def finalize(args):
+     record = read_json(args.record)
++    if 'vulkan_device_policy' in record:
++        policy = record['vulkan_device_policy']
++        require(record['backend'] == 'vulkan' and policy['robust_buffer_access'] in (0, 1)
++                and policy['owned_device'] is True
++                and policy['loader'] == record['remote_directory'] + '/libvulkan.so.1', 'invalid explicit device policy')
++        require(bool(args.evidence), 'missing runtime log for explicit device policy')
++        log = args.evidence[0].read_text()
++        observed = re.findall(r'^ncnn robustness: requested=([01]) enabled=([01]) owned_device=([01])$', log, re.M)
++        expected = (str(policy['robust_buffer_access']), str(policy['robust_buffer_access']), '1')
++        require(observed and all(value == expected for value in observed), 'actual device robustness differs from request')
++        loaders = re.findall(r'^ncnn Vulkan loader: (.+)$', log, re.M)
++        require(len(loaders) == len(observed) and all(value == policy['loader'] for value in loaders), 'actual Vulkan loader differs from pinned loader')
+     recheck(record)
+     shared_graphs = read_json(args.shared_graphs)
+     require(set(shared_graphs) == set(record['frontend_inputs']['graphs']), 'unexpected reused graph inventory')
+@@ -474,6 +493,7 @@
+     p.add_argument('--next-source', type=Path, action='append', default=[])
+     p.add_argument('--request-loop', action='store_true')
+     p.add_argument('--reuse-pipeline-cache', action='store_true')
++    p.add_argument('--robust-buffer-access', type=int, choices=(0, 1))
+     p.add_argument('--remote', required=True)
+     p.add_argument('--backend', choices=['vulkan', 'cpu-packed'], required=True)
+     p.add_argument('--core-graph', choices=CORE_GRAPHS, required=True)

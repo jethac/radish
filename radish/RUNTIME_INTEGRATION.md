@@ -1,5 +1,15 @@
 # Kokoro runtime integration audit
 
+## 2026-11-02: first Japanese runtime request passes full validation
+
+The intended Japanese greeting now runs through the tablet frontend/source, all 589 Vulkan core layers, and the CPU waveform tail. The voice blend is 0.7 `jf_alpha` / 0.3 `af_heart`; the actual boundary produces T=168 and 100,800 samples (4.2 seconds at 24 kHz). All 443,542 core values and all waveform samples pass the unchanged full comparisons. Core maximum absolute error is 8.774e-5; waveform SNR is 96.41 dB against the required 50 dB.
+
+This first request takes 47.314285 seconds synthesis: 8.038820 seconds frontend scope, 11.831491 seconds core loading, 26.928692 seconds first extraction, and 0.082031 seconds tail. Peak memory is 413.7 MiB with zero swap. The retained profiles contain 56,204 chunks and 8,627 submissions, including 2,604 packed-math submissions; no new fault occurs and both services remain active.
+
+References use the original decoder and tail on all eight exact tablet boundary files. This does not independently recompute the frontend/source or compare against an unsplit original-model waveform. Resident synthesis and an exact matching four-thread ncnn CPU baseline are separate pending scopes; unrelated English timings are not a baseline for this utterance.
+
+The private runtime uses the qualified shifted ncnn archive, an explicitly verified loader, and the reviewed workload-scoped robust=false device. Application defaults and driver robustness support remain unchanged. [Exact inputs, source pairing, complete numerical results and independent reviews](results/japanese-first-runtime-0045.json) and [reproducible runtime/wrapper patch](patches/0045-runtime-japanese-explicit-device.patch) preserve this qualification. The patch requires the paired [ncnn campaign branch](https://github.com/jethac/ncnn/tree/radish/0045-packed-a-shift) and matching runtime rebuild; it does not deploy or replace the live services.
+
 2026-11-02: one private tablet executable runs the CPU frontend/source,
 metadata propagation, FP32 Vulkan neural core and CPU waveform tail from token
 IDs/style/speed. The new opt-in `--norm-affine-snake-deconv2d` graph fuses 42
