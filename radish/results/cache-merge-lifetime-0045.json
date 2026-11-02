@@ -1,0 +1,526 @@
+{
+  "status": "Core cache/lifetime functional probe passed; empty cache entries explicit",
+  "driver": {
+    "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/libvulkan_radish.so",
+    "bytes": 49078792,
+    "sha256": "8298f0892597d288d130715975fe08d38c618b69dfd82c6cc9b62aa045b8c640"
+  },
+  "source": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-cache-merge-consumer-0045/release.json",
+      "bytes": 3096,
+      "sha256": "164eaecb00ab5412a2de41a76c9bf3d7491678f0e110e0eec8282ded1c494a32"
+    },
+    "result": {
+      "status": "Private source-only core cache qualification consumer, owner build/native/actual pending",
+      "sources": {
+        "cache_merge.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-cache-merge-consumer-0045/probe/cache_merge.c",
+          "bytes": 12007,
+          "sha256": "d151ce5ce1e99cf4da60496f22d55d45fdccd67deb419c30134bea9390a63a8d"
+        },
+        "cache_merge.comp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-cache-merge-consumer-0045/probe/cache_merge.comp",
+          "bytes": 305,
+          "sha256": "36784bbc6464859c2e2c73a87e7e76dcc52bda132594a9a9e4ed3c1587232e46"
+        },
+        "core_resources.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-cache-merge-consumer-0045/probe/core_resources.c",
+          "bytes": 35622,
+          "sha256": "a5024c99a2bbc55983659dc2083a3b8d91e73c0c0760fc8509fdc2dc75405378"
+        },
+        "test_common.h": {
+          "path": "/run/media/jethac/Shared/radish/compute11-cache-merge-consumer-0045/probe/test_common.h",
+          "bytes": 684,
+          "sha256": "4b022481571560cd58577d1303955f8c96e72891a2647947daa607eb5fd93b2b"
+        }
+      },
+      "baseline": "Existing timeline36784 shader and exact32word (i*17)^0x51a3b7d9 oracle/full512Bstorage helper; no driver mutation or new framework. Current8298 public1.1/source ABI6c0847 owner pairing required.",
+      "cache_sequence": "Create two source caches and one real pipeline in each, record serialized header and opaque data; merge into distinct destination; destroy both source pipelines/caches; serialize destination, recreate cache with exact blob, destroy destination, create final pipeline using recreated cache, serialize again then destroy recreated cache and module. Layout destroyed after EndCommandBuffer before submit; descriptor layout also destroyed after descriptor allocation/recording. Executingpipeline/descriptors/pool/buffer/command objects live through fence and fulloracle.",
+      "cache_evidence": "Header validated against actualvendor/device/UUID/version. Size0 permitted and reported. CommonMesa count atoffset32 is diagnostic only withknown32Bheader/size>=36; reportcount0/header+count as no opaque entries. Nonzero postheaderbytes alone never called filled. No hit/optimization required, no opaque byte equality required aftermerge/recreation.",
+      "bounds": "3pipeline creations, peak3cacheobjects/2sourcepipelines; cache serialization capped1MiB perbuffer with sequential free,1storagebuffer512B+allocatorguards,1dispatch local32/grid1,32 exactoutputs/fullallocation. No images/transfers/shared/barriers inshader; twohost/compute memory dependencies. Compileonly has allcache/pipeline operations but no data/commands.",
+      "features": "PublicAPI1.1; core cache operations only, RBAtrue, no timeline/cache-control/graphics optional features. Shaderbyte-exact retained Shader-only module expected.",
+      "limitations": "Attemptedpopulation viaactualpipelinecreation isnotproof opaqueentriesexist; explicitlyreportcommonobjectcount. DirectICD/dispatchtable route not publicloaderglobal evidence. Native/source/actual admission required; no conformance/performance conclusion."
+    }
+  },
+  "source_scope": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-cache-merge-consumer-0045/cache-source-scope.json",
+      "bytes": 1913,
+      "sha256": "5398eef3a5d762503be7e87b4c02f267aec2c85b07435268fa51f8b4aa37b5ef"
+    },
+    "result": {
+      "status": "Source interpretation only; actual bytes pending",
+      "sources": [
+        {
+          "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/source/src/freedreno/radish/rd_pipeline.c",
+          "sha256": "20b6542536c5c34b3e36799f8caf4ee5f3bb52ce5557a0ee1fa260182b2d97e7"
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/source/src/freedreno/radish/rd_device.c",
+          "sha256": "b47a9e92dbdcca9ef58f62066c03d3b10a6ba4cb795a7a737ccfe1c4e67021df"
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/vulkan/runtime/vk_pipeline_cache.c",
+          "sha256": "2102cb79d1d033193627ca34c72b418334d315d48c8b9ae53f13626fe0fd9bac"
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/vulkan/util/vk_util.h",
+          "sha256": "73aa772aad3e09431cb5dd3a6a8ecaaa2b3b3fc3d80fff3112637044b37c5cd4"
+        }
+      ],
+      "findings": [
+        "rd_CreateComputePipelines553-594 accepts cache parameter but does not look up/insert any pipeline cache objects; each shader is compiled normally. rd_device compileroptions disable_cache=true is separate IR3 cachepolicy.",
+        "Common cache header is four32bit fields+16B UUID=32B; GetPipelineCacheData730-810 always reserves/writes objectcount atoffset32. Empty serialization is36B (header+zero count), not fourbytes of useful compiled payload.",
+        "Common MergePipelineCaches locks/copies actualobjectentries, but this Radish creation path is expected to leave no source entries. This is a source prediction; consumeractual mustreportit."
+      ],
+      "scope": "Exercise callable corecache lifecycle/merge/serialization/recreation without requiring optimizer cachehits. Even successfulnumerics will not be called populated-entry transfer evidence whenactualcount0. No driver mutation justified to manufacture a cachehit or filledcache forconformance."
+    }
+  },
+  "source_host_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-cache-merge-consumer-0045/independent-source-host-review.json",
+      "bytes": 2541,
+      "sha256": "6608684450cbfa829da8be8dc420f1b8132455ae524e2d7282ea1d9089afc28c"
+    },
+    "result": {
+      "status": "PASS finite source/oracle/lifetime and host/module pairing; native/actualpending",
+      "release": {
+        "path": "/run/media/jethac/Shared/radish/compute11-cache-merge-consumer-0045/release.json",
+        "bytes": 3096,
+        "sha256": "164eaecb00ab5412a2de41a76c9bf3d7491678f0e110e0eec8282ded1c494a32"
+      },
+      "helper": {
+        "path": "/run/media/jethac/Shared/radish/compute11-cache-merge-build-0045/probe/cache_merge",
+        "bytes": 734744,
+        "sha256": "6aa56911b4e0d9c65cebe77f070c450598a5b08d07eb96400107917fa5bf062d"
+      },
+      "module": {
+        "path": "/run/media/jethac/Shared/radish/compute11-cache-merge-build-0045/probe/cache_merge.spv",
+        "bytes": 1072,
+        "sha256": "b24abc64579f58ba8838922d69c862cf19436b3ca15d013f6ce09b4190c706a7"
+      },
+      "driver": {
+        "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/libvulkan_radish.so",
+        "bytes": 49078792,
+        "sha256": "8298f0892597d288d130715975fe08d38c618b69dfd82c6cc9b62aa045b8c640"
+      },
+      "checks": [
+        "Exactd151C/36784retainedtimelineGLSL/a502/4b02 utilities; all4sourcesrehashed",
+        "HelperELF183/moduleSPIRV1.0 Shaderonly/local32; same8298/new6c08 headerpins, ownerVulkan1.0valPASS",
+        "Two distinctsourcecaches populatedbyactualpipelinecreation; merge distinctdestination; sourcepipeline/cache destruction precedesdestinationserialize,recreateandfinalpipeline creation. No destroyedsourcehandle reuse",
+        "Cacheblob1MiB bound, header32+sizeguard/vendor/device/UUID checked; commonobjectcountdiagnosticonly. Zero/header-only explicitlynotpopulatedopaqueproof; no cachehit requirement",
+        "Cache/module destroyedonlyafterfinalpipelinecreate. Pipeline/set layouts destroyedafterrecording; executingpipeline/descriptorpool/set/buffer/commands alive throughfence. DestroyPipelineLayout/DestroyDescriptorSetLayout have no pendingGPU-use prohibition in primaryrefpages",
+        "Original32*(i*17)^seed oracle andfullbufferallocation, HOST\u2192COMPUTE\u2192HOSTdependencies/flush/fence/invalidate exact; onegrid1/local32dispatch. Compile-only has no buffers/commands"
+      ],
+      "primary_links": [
+        "https://docs.vulkan.org/refpages/latest/refpages/source/vkDestroyPipelineLayout.html",
+        "https://docs.vulkan.org/refpages/latest/refpages/source/vkDestroyDescriptorSetLayout.html",
+        "https://docs.vulkan.org/refpages/latest/refpages/source/vkGetPipelineCacheData.html"
+      ],
+      "limits": "Finite coreAPI/cache/lifetimequalification only, no cache-hit/serializedpopulation/performance/fullconformanceclaim. Originalscope/guards unchanged."
+    }
+  },
+  "native_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-cache-merge-consumer-0045/independent-native-review.json",
+      "bytes": 1483,
+      "sha256": "ea9e2d6245766eaff1c893a3359f2b6891e34d7625c1a4598b94e6e37cd0f309"
+    },
+    "result": {
+      "status": "PASS finite native/cachelifecycle compile-only admission",
+      "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-cache-merge/compile",
+      "log": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-cache-merge/compile/run.log",
+        "bytes": 55469,
+        "sha256": "b822431582ffa74c0cff5cfcc7e1fed22d0a2dc7a0704068ea86b493771c360a"
+      },
+      "source_host_review": {
+        "path": "/run/media/jethac/Shared/radish/compute11-cache-merge-consumer-0045/independent-source-host-review.json",
+        "bytes": 2541,
+        "sha256": "6608684450cbfa829da8be8dc420f1b8132455ae524e2d7282ea1d9089afc28c"
+      },
+      "native": "Threeexactnativebodiesafteronlydiagnosticprogram-indexnormalization; hash9f0fe9...,native2/2F1H/16const/0loops/private0/local32. One boundedg0SSBOstore; i*17xorpushseed retained. Moduleb24/36784 exact originaltimeline shader.",
+      "cache": "Allfourserializedrows36B/32Bheader+4B commoncount0/payload0, samehash. This is callableemptycache merge/serialize/recreate behavior; no filledcache/hit proof.",
+      "lifetimes": "Two sourcepipeline/caches destroyedbeforemergedserialization; destinationdestroyedafterrecreation, recreatedcache/moduledestroyedafterfinalpipelinecreate. Compile-only has no buffer/command/dispatch.",
+      "postflight": "Exit0,375ms,clean faultcheck",
+      "next": "Originalone-dispatch32word/fullallocation functional withlegal post-record layout destruction, pipelinealive throughfence; no optimization/cachehit requirement."
+    }
+  },
+  "runner": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-cache-merge/probe/runner-result.json",
+      "bytes": 1160,
+      "sha256": "3412360e9fa805c9a1b38879a197800c314ac2f6e8983eb947c490518ada82e1"
+    },
+    "result": {
+      "status": "passed",
+      "mode": "probe",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 149,
+          "sha256": "f49180489290ebd9004400b3e8311d5694e15fe1e0d3b285d1c07eec4ba7071d"
+        },
+        "resources": {
+          "bytes": 734744,
+          "sha256": "6aa56911b4e0d9c65cebe77f070c450598a5b08d07eb96400107917fa5bf062d"
+        },
+        "resources.spv": {
+          "bytes": 1072,
+          "sha256": "b24abc64579f58ba8838922d69c862cf19436b3ca15d013f6ce09b4190c706a7"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13621840,
+          "sha256": "e7a01d22ba1d45f194344614ec978180c65a5f9951f282921d9fd4f3e9efc31e"
+        },
+        "payload.json": {
+          "bytes": 814,
+          "sha256": "9d7c30ce4905f3370456cb4731b53c0d571ef36700ed10765fcad5b3a640ecc9"
+        }
+      },
+      "run_log": {
+        "bytes": 55830,
+        "sha256": "864a9df1c618f607f847f835bf220df442d57db6bce51a3e74ea488c3ba42bea"
+      },
+      "scope": "Raw ICD assets/services/faults and consolidated assertions passed. This is experimental compute coverage, not Vulkan conformance."
+    }
+  },
+  "public_builder": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-public-cache-merge-builder-check-0045/receipt.json",
+      "bytes": 8160,
+      "sha256": "e1a9d046880cbf3f6457200d5903897c2b9a5bc07b3c95d688049aa082b8379c"
+    },
+    "result": {
+      "units": {
+        "cache-merge": {
+          "commands": [
+            [
+              "clang",
+              "--target=aarch64-linux-gnu",
+              "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+              "-mcpu=cortex-a53",
+              "-Isrc/freedreno/radish/libvulkan_radish.so.p",
+              "-Isrc/freedreno/radish",
+              "-I../mesa/src/freedreno/radish",
+              "-Isrc/freedreno",
+              "-I../mesa/src/freedreno",
+              "-Isrc/freedreno/registers",
+              "-I../mesa/src/freedreno/registers",
+              "-Isrc/freedreno/registers/adreno",
+              "-I../mesa/src/freedreno/registers/adreno",
+              "-Isrc/freedreno/common",
+              "-I../mesa/src/freedreno/common",
+              "-Iinclude",
+              "-I../mesa/include",
+              "-Isrc",
+              "-I../mesa/src",
+              "-Isrc/vulkan/util",
+              "-I../mesa/src/vulkan/util",
+              "-Isrc/vulkan/runtime",
+              "-I../mesa/src/vulkan/runtime",
+              "-I../mesa/src/vulkan/runtime/bvh",
+              "-Isrc/compiler/nir",
+              "-I../mesa/src/compiler/nir",
+              "-Isrc/compiler",
+              "-I../mesa/src/compiler",
+              "-Isrc/util",
+              "-Isrc/util/format",
+              "-Isrc/compiler/spirv",
+              "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include",
+              "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include/libdrm",
+              "-fvisibility=hidden",
+              "-fdiagnostics-color=always",
+              "-D_FILE_OFFSET_BITS=64",
+              "-Wall",
+              "-Winvalid-pch",
+              "-std=c11",
+              "-O2",
+              "-g",
+              "-D__STDC_CONSTANT_MACROS",
+              "-D__STDC_FORMAT_MACROS",
+              "-D__STDC_LIMIT_MACROS",
+              "-DPACKAGE_VERSION=\"27.0.0-devel\"",
+              "-DHAVE_OPENGL=0",
+              "-DHAVE_OPENGL_ES_1=0",
+              "-DHAVE_OPENGL_ES_2=0",
+              "-DMESA_SYSTEM_HAS_KMS_DRM=1",
+              "-DVIDEO_CODEC_VC1DEC=0",
+              "-DVIDEO_CODEC_H264DEC=0",
+              "-DVIDEO_CODEC_H264ENC=0",
+              "-DVIDEO_CODEC_H265DEC=0",
+              "-DVIDEO_CODEC_H265ENC=0",
+              "-DVIDEO_CODEC_AV1DEC=0",
+              "-DVIDEO_CODEC_AV1ENC=0",
+              "-DVIDEO_CODEC_VP9DEC=0",
+              "-DVIDEO_CODEC_MPEG12DEC=0",
+              "-DVIDEO_CODEC_JPEGDEC=0",
+              "-DUSE_LIBGLVND=0",
+              "-DHAVE_LIBDRM",
+              "-DHAVE_GFX_COMPUTE",
+              "-DGLAPI_EXPORT_PROTO_ENTRY_POINTS=1",
+              "-DALLOW_KCMP",
+              "-DMESA_DEBUG=0",
+              "-DENABLE_SHADER_CACHE",
+              "-DHAVE___BUILTIN_BSWAP32",
+              "-DHAVE___BUILTIN_BSWAP64",
+              "-DHAVE___BUILTIN_CLZ",
+              "-DHAVE___BUILTIN_CLZLL",
+              "-DHAVE___BUILTIN_CTZ",
+              "-DHAVE___BUILTIN_EXPECT",
+              "-DHAVE___BUILTIN_FFS",
+              "-DHAVE___BUILTIN_FFSLL",
+              "-DHAVE___BUILTIN_POPCOUNT",
+              "-DHAVE___BUILTIN_POPCOUNTLL",
+              "-DHAVE___BUILTIN_UNREACHABLE",
+              "-DHAVE___BUILTIN_TYPES_COMPATIBLE_P",
+              "-DHAVE___BUILTIN_ADD_OVERFLOW",
+              "-DHAVE_FUNC_ATTRIBUTE_CONST",
+              "-DHAVE_FUNC_ATTRIBUTE_FLATTEN",
+              "-DHAVE_FUNC_ATTRIBUTE_MALLOC",
+              "-DHAVE_FUNC_ATTRIBUTE_PURE",
+              "-DHAVE_FUNC_ATTRIBUTE_UNUSED",
+              "-DHAVE_FUNC_ATTRIBUTE_WARN_UNUSED_RESULT",
+              "-DHAVE_FUNC_ATTRIBUTE_WEAK",
+              "-DHAVE_FUNC_ATTRIBUTE_FORMAT",
+              "-DHAVE_FUNC_ATTRIBUTE_PACKED",
+              "-DHAVE_FUNC_ATTRIBUTE_RETURNS_NONNULL",
+              "-DHAVE_FUNC_ATTRIBUTE_ALIAS",
+              "-DHAVE_FUNC_ATTRIBUTE_NORETURN",
+              "-DHAVE_FUNC_ATTRIBUTE_COLD",
+              "-DHAVE_FUNC_ATTRIBUTE_VISIBILITY",
+              "-DHAVE_UINT128",
+              "-DHAVE_REALLOCARRAY",
+              "-DHAVE_FMEMOPEN",
+              "-DHAVE_MALLINFO2",
+              "-D_GNU_SOURCE",
+              "-DUSE_GCC_ATOMIC_BUILTINS",
+              "-DMAJOR_IN_SYSMACROS",
+              "-DHAS_SCHED_H",
+              "-DHAS_SCHED_GETAFFINITY",
+              "-DHAVE_LINUX_FUTEX_H",
+              "-DHAVE_ENDIAN_H",
+              "-DHAVE_DLFCN_H",
+              "-DHAVE_SYS_SHM_H",
+              "-DHAVE_CET_H",
+              "-DHAVE_POLL_H",
+              "-DHAVE_SYS_INOTIFY_H",
+              "-DHAVE_LINUX_UDMABUF_H",
+              "-DHAVE_STRTOF",
+              "-DHAVE_MKOSTEMP",
+              "-DHAVE_MEMFD_CREATE",
+              "-DHAVE_RANDOM_R",
+              "-DHAVE_FLOCK",
+              "-DHAVE_STRTOK_R",
+              "-DHAVE_GETRANDOM",
+              "-DHAVE_POSIX_FALLOCATE",
+              "-DHAVE_SECURE_GETENV",
+              "-DHAVE_SYSCONF",
+              "-DHAVE_SC_PHYS_PAGES",
+              "-DHAVE_GNU_QSORT_R",
+              "-DHAVE_STRUCT_TIMESPEC",
+              "-DHAVE_PROGRAM_INVOCATION_NAME",
+              "-DHAVE_ISSIGNALING",
+              "-DHAVE_POSIX_MEMALIGN",
+              "-DHAVE_DIRENT_D_TYPE",
+              "-DHAVE_STRTOD_L",
+              "-DHAVE_DLADDR",
+              "-DHAVE_DL_ITERATE_PHDR",
+              "-DHAVE_ZLIB",
+              "-DHAVE_COMPRESSION",
+              "-DHAVE_PTHREAD",
+              "-DHAVE_PTHREAD_SETAFFINITY",
+              "-DDRAW_LLVM_AVAILABLE=0",
+              "-DAMD_LLVM_AVAILABLE=0",
+              "-DGALLIVM_USE_ORCJIT=0",
+              "-DTHREAD_SANITIZER=0",
+              "-DHAVE_DRI2",
+              "-DHAVE_RENDERDOC_INTEGRATION=1",
+              "-Werror=implicit-function-declaration",
+              "-Werror=missing-prototypes",
+              "-Werror=return-type",
+              "-Werror=empty-body",
+              "-Werror=incompatible-pointer-types",
+              "-Werror=int-conversion",
+              "-Wimplicit-fallthrough",
+              "-Wmisleading-indentation",
+              "-Wno-missing-field-initializers",
+              "-Wno-format-truncation",
+              "-fno-math-errno",
+              "-fno-trapping-math",
+              "-Qunused-arguments",
+              "-fno-common",
+              "-Wno-unknown-pragmas",
+              "-Wno-microsoft-enum-value",
+              "-Wno-unused-function",
+              "-Werror=format",
+              "-Wformat-security",
+              "-Werror=thread-safety",
+              "-ffunction-sections",
+              "-fdata-sections",
+              "-Wno-unused-command-line-argument",
+              "-fPIC",
+              "-DVK_USE_PLATFORM_DISPLAY_KHR",
+              "-pthread",
+              "-DXXH_FORCE_ALIGN_CHECK=0",
+              "-DXXH_FORCE_MEMORY_ACCESS=0",
+              "-Wno-override-init",
+              "-Wno-initializer-overrides",
+              "-fuse-ld=lld",
+              "--gcc-install-dir=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+              "-I/home/jethac/Projects/radish/radish/tests",
+              "/home/jethac/Projects/radish/radish/tests/core_cache_merge.c",
+              "-o",
+              "/run/media/jethac/Shared/radish/compute11-public-cache-merge-builder-check-0045/cache-merge",
+              "-ldl",
+              "-pthread"
+            ],
+            [
+              "glslangValidator",
+              "-V",
+              "--target-env",
+              "vulkan1.0",
+              "/home/jethac/Projects/radish/radish/tests/shaders/core-cache-merge.comp",
+              "-o",
+              "/run/media/jethac/Shared/radish/compute11-public-cache-merge-builder-check-0045/cache-merge.spv"
+            ],
+            [
+              "spirv-val",
+              "--target-env",
+              "vulkan1.0",
+              "/run/media/jethac/Shared/radish/compute11-public-cache-merge-builder-check-0045/cache-merge.spv"
+            ]
+          ],
+          "files": {
+            "/home/jethac/Projects/radish/radish/tests/core_cache_merge.c": {
+              "sha256": "d151ce5ce1e99cf4da60496f22d55d45fdccd67deb419c30134bea9390a63a8d",
+              "bytes": 12007
+            },
+            "/run/media/jethac/Shared/radish/compute11-public-cache-merge-builder-check-0045/cache-merge": {
+              "sha256": "36bca6116153e4265cd7918041ffb2596ceb58a3e385511c2efc988465991a7e",
+              "bytes": 734592
+            },
+            "/home/jethac/Projects/radish/radish/tests/shaders/core-cache-merge.comp": {
+              "sha256": "36784bbc6464859c2e2c73a87e7e76dcc52bda132594a9a9e4ed3c1587232e46",
+              "bytes": 305
+            },
+            "/run/media/jethac/Shared/radish/compute11-public-cache-merge-builder-check-0045/cache-merge.spv": {
+              "sha256": "b24abc64579f58ba8838922d69c862cf19436b3ca15d013f6ce09b4190c706a7",
+              "bytes": 1072
+            }
+          }
+        }
+      },
+      "scope": "Host build only; probes require the matching internal driver ABI."
+    }
+  },
+  "scope": "Core cache create/merge/serialize/recreate calls and source-cache/pipeline/module lifetimes, then pipeline-layout destruction after recording before submission. The executing pipeline remains alive. One local32 dispatch checks32 exact outputs and the entire160-word allocation. All four cache serializations contain36 bytes:32-byte header and zero common object count. No opaque entry movement, cache hit, optimization or speedup is established. No driver change; real cache population is deferred to the performance phase.",
+  "actual_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-cache-merge-consumer-0045/actual-review.json",
+      "bytes": 3481,
+      "sha256": "f99c1a7fdb2e019966a71414ffc0227b16191254aa8f1078fc4869e1f758ebe8"
+    },
+    "result": {
+      "status": "PASS finite observable core cache merge/recreate/lifetime and unchanged guarded compute oracle",
+      "evidence": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-cache-merge/probe/run.log",
+        "bytes": 55830,
+        "sha256": "864a9df1c618f607f847f835bf220df442d57db6bce51a3e74ea488c3ba42bea"
+      },
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 149,
+          "sha256": "f49180489290ebd9004400b3e8311d5694e15fe1e0d3b285d1c07eec4ba7071d"
+        },
+        "resources": {
+          "bytes": 734744,
+          "sha256": "6aa56911b4e0d9c65cebe77f070c450598a5b08d07eb96400107917fa5bf062d"
+        },
+        "resources.spv": {
+          "bytes": 1072,
+          "sha256": "b24abc64579f58ba8838922d69c862cf19436b3ca15d013f6ce09b4190c706a7"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13621840,
+          "sha256": "e7a01d22ba1d45f194344614ec978180c65a5f9951f282921d9fd4f3e9efc31e"
+        },
+        "payload.json": {
+          "bytes": 814,
+          "sha256": "9d7c30ce4905f3370456cb4731b53c0d571ef36700ed10765fcad5b3a640ecc9"
+        }
+      },
+      "cache_data": [
+        {
+          "label": "source0",
+          "bytes": "36",
+          "header_bytes": "32",
+          "post_header_bytes": "4",
+          "common_count_valid": "1",
+          "common_objects": "0",
+          "fnv64": "5d160b09c8c088b1",
+          "payload_present": "0"
+        },
+        {
+          "label": "source1",
+          "bytes": "36",
+          "header_bytes": "32",
+          "post_header_bytes": "4",
+          "common_count_valid": "1",
+          "common_objects": "0",
+          "fnv64": "5d160b09c8c088b1",
+          "payload_present": "0"
+        },
+        {
+          "label": "merged_after_source_destroy",
+          "bytes": "36",
+          "header_bytes": "32",
+          "post_header_bytes": "4",
+          "common_count_valid": "1",
+          "common_objects": "0",
+          "fnv64": "5d160b09c8c088b1",
+          "payload_present": "0"
+        },
+        {
+          "label": "recreated_after_pipeline",
+          "bytes": "36",
+          "header_bytes": "32",
+          "post_header_bytes": "4",
+          "common_count_valid": "1",
+          "common_objects": "0",
+          "fnv64": "5d160b09c8c088b1",
+          "payload_present": "0"
+        }
+      ],
+      "dispatch": [
+        {
+          "pipeline": "0xaaab08f9b450",
+          "grid": "1,1,1",
+          "local": "32,1,1",
+          "barrier": "0",
+          "loops": "0",
+          "instrlen": "2",
+          "chunks": "1",
+          "submits": "1",
+          "ns": "4178653",
+          "submit_ns": "3865007",
+          "submit_max_ns": "3865007",
+          "result": "0"
+        }
+      ],
+      "oracle": "32 original uint results checked against (i*17)^seed plus entire 160-word allocation; no separate raw memory dump oracle claimed.",
+      "lifetime": "Two source pipelines/caches destroyed after merging; destination destroyed after serializing/recreating; recreated cache and shader module destroyed before data allocation. Pipeline layout and descriptor layout destroyed after recording before submit. Executing pipeline, descriptor pool/set, storage and command objects remain alive through fence/readback.",
+      "scope": "All four serializations are 32-byte headers plus a zero object-count word: no compiled-object payload, populated-entry transfer or cache-hit proof. Ignoring cache hints is legal; empty caches are a performance opportunity, not a conformance blocker. No extra work is needed to force entries.",
+      "safety": "383ms service, 359ms CPU, 6.3MiB peak, zero swap; original controls, clean collection/fault/services."
+    }
+  }
+}

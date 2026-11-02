@@ -1,0 +1,191 @@
+{
+  "status": "Retained results contain100 unique original CTS Pass cases; no conformance denominator",
+  "partitions": {
+    "information": 5,
+    "SPIR-V versions": 4,
+    "BASIC election": 1,
+    "BASIC barriers": 5,
+    "shared variables": 4,
+    "command barriers": 2,
+    "buffer operations": 22,
+    "descriptor lifetime": 7,
+    "ETC2/EAC sampling first": 1,
+    "ETC2/EAC sampling suffix": 9,
+    "pipeline statistics": 8,
+    "timestamps": 10,
+    "promoted queries": 13,
+    "corrected layout lifetime": 1,
+    "cache and pipeline lifetime original": 8
+  },
+  "unique_count": 100,
+  "names": [
+    "dEQP-VK.api.array.oversized_array.core.get_pipeline_cache_data",
+    "dEQP-VK.api.descriptor_pool.out_of_pool_memory",
+    "dEQP-VK.api.descriptor_pool.repeated_free_reset_short",
+    "dEQP-VK.api.descriptor_pool.repeated_reset_short",
+    "dEQP-VK.api.descriptor_pool.zero_pool_size_count",
+    "dEQP-VK.api.descriptor_set.descriptor_set_layout.empty_set.normal",
+    "dEQP-VK.api.descriptor_set.descriptor_set_layout_binding.update_subsequent_binding",
+    "dEQP-VK.api.descriptor_set.descriptor_set_layout_lifetime.compute",
+    "dEQP-VK.api.info.get_physical_device_properties2.features.16_bit_storage_features",
+    "dEQP-VK.api.info.get_physical_device_properties2.features.core",
+    "dEQP-VK.api.info.get_physical_device_properties2.features.multiview_features",
+    "dEQP-VK.api.info.get_physical_device_properties2.features.protected_memory_features",
+    "dEQP-VK.api.info.get_physical_device_properties2.features.sampler_ycbcr_conversion_features",
+    "dEQP-VK.api.info.get_physical_device_properties2.features.shader_draw_parameters_features",
+    "dEQP-VK.api.info.get_physical_device_properties2.features.variable_pointers_features",
+    "dEQP-VK.api.info.get_physical_device_properties2.format_properties.basic",
+    "dEQP-VK.api.info.get_physical_device_properties2.memory_properties.basic",
+    "dEQP-VK.api.info.get_physical_device_properties2.properties.basic",
+    "dEQP-VK.api.info.get_physical_device_properties2.queue_family_properties.basic",
+    "dEQP-VK.api.maintenance3_check.descriptor_set",
+    "dEQP-VK.api.maintenance3_check.maintenance3_properties",
+    "dEQP-VK.api.object_management.multiple_shared_resources.compute_pipeline",
+    "dEQP-VK.api.object_management.multiple_unique_resources.compute_pipeline",
+    "dEQP-VK.api.object_management.multiple_unique_resources.pipeline_cache",
+    "dEQP-VK.api.object_management.single.pipeline_cache",
+    "dEQP-VK.api.pipeline.pipeline_layout.lifetime.destroy_after_end",
+    "dEQP-VK.compute.pipeline.basic.copy_ssbo_multiple_groups",
+    "dEQP-VK.compute.pipeline.basic.copy_ssbo_multiple_invocations",
+    "dEQP-VK.compute.pipeline.basic.copy_ssbo_single_invocation",
+    "dEQP-VK.compute.pipeline.basic.shared_atomic_op_multiple_groups",
+    "dEQP-VK.compute.pipeline.basic.shared_atomic_op_multiple_invocations",
+    "dEQP-VK.compute.pipeline.basic.shared_atomic_op_single_group",
+    "dEQP-VK.compute.pipeline.basic.shared_atomic_op_single_invocation",
+    "dEQP-VK.compute.pipeline.basic.shared_var_multiple_groups",
+    "dEQP-VK.compute.pipeline.basic.shared_var_multiple_invocations",
+    "dEQP-VK.compute.pipeline.basic.shared_var_single_group",
+    "dEQP-VK.compute.pipeline.basic.shared_var_single_invocation",
+    "dEQP-VK.compute.pipeline.basic.ssbo_cmd_barrier_multiple",
+    "dEQP-VK.compute.pipeline.basic.ssbo_cmd_barrier_single",
+    "dEQP-VK.compute.pipeline.basic.ssbo_local_barrier_multiple_groups",
+    "dEQP-VK.compute.pipeline.basic.ssbo_local_barrier_single_group",
+    "dEQP-VK.compute.pipeline.basic.ssbo_local_barrier_single_invocation",
+    "dEQP-VK.compute.pipeline.basic.ssbo_rw_multiple_groups",
+    "dEQP-VK.compute.pipeline.basic.ssbo_rw_single_invocation",
+    "dEQP-VK.compute.pipeline.basic.ssbo_unsized_arr_multiple_groups",
+    "dEQP-VK.compute.pipeline.basic.ssbo_unsized_arr_single_invocation",
+    "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_multiple_groups",
+    "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_multiple_invocations",
+    "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_single_group",
+    "dEQP-VK.compute.pipeline.basic.ubo_to_ssbo_single_invocation",
+    "dEQP-VK.compute.pipeline.basic.write_multiple_arr_multiple_groups",
+    "dEQP-VK.compute.pipeline.basic.write_multiple_arr_single_invocation",
+    "dEQP-VK.compute.pipeline.basic.write_multiple_unsized_arr_multiple_groups",
+    "dEQP-VK.compute.pipeline.basic.write_multiple_unsized_arr_single_invocation",
+    "dEQP-VK.info.device_features",
+    "dEQP-VK.info.device_memory_properties",
+    "dEQP-VK.info.device_properties",
+    "dEQP-VK.info.device_queue_family_properties",
+    "dEQP-VK.info.physical_devices",
+    "dEQP-VK.pipeline.monolithic.cache.compute_tests.compute_stage",
+    "dEQP-VK.pipeline.monolithic.derivative.compute.derivative_by_handle",
+    "dEQP-VK.pipeline.monolithic.derivative.compute.derivative_by_index",
+    "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.eac_r11_snorm_block.count_1.size.13x13_compute",
+    "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.eac_r11_unorm_block.count_1.size.13x13_compute",
+    "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.eac_r11g11_snorm_block.count_1.size.13x13_compute",
+    "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.eac_r11g11_unorm_block.count_1.size.13x13_compute",
+    "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8_srgb_block.count_1.size.13x13_compute",
+    "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8_unorm_block.count_1.size.13x13_compute",
+    "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8a1_srgb_block.count_1.size.13x13_compute",
+    "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8a1_unorm_block.count_1.size.13x13_compute",
+    "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8a8_srgb_block.count_1.size.13x13_compute",
+    "dEQP-VK.pipeline.monolithic.image.suballocation.sampling_type.combined.view_type.2d.format.etc2_r8g8b8a8_unorm_block.count_1.size.13x13_compute",
+    "dEQP-VK.pipeline.monolithic.timestamp.basic_compute_tests.all_commands_stage_out_of_render_pass",
+    "dEQP-VK.pipeline.monolithic.timestamp.basic_compute_tests.all_commands_stage_out_of_render_pass_with_availability_bit",
+    "dEQP-VK.pipeline.monolithic.timestamp.basic_compute_tests.compute_shader_stage_out_of_render_pass",
+    "dEQP-VK.pipeline.monolithic.timestamp.basic_compute_tests.compute_shader_stage_out_of_render_pass_with_availability_bit",
+    "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.check_timestamp_compute_and_graphics",
+    "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.consistent_results",
+    "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.fill_buffer_before_copy",
+    "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.reset_query_before_copy",
+    "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.timestamp_only",
+    "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.timestamp_only_with_availability_bit",
+    "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.32bits_cmdcopyquerypoolresults_primary_cq",
+    "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.32bits_primary_cq",
+    "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.64bits_cmdcopyquerypoolresults_stride_zero_primary_cq",
+    "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.64bits_dstoffset_cmdcopyquerypoolresults_primary_cq",
+    "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.64bits_primary_cq",
+    "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.64bits_secondary_cq",
+    "dEQP-VK.query_pool.statistics_query.reset_after_copy.compute_shader_invocations.64bits_dstoffset_cmdcopyquerypoolresults_primary_cq",
+    "dEQP-VK.query_pool.statistics_query.reset_before_copy.compute_shader_invocations.64bits_dstoffset_cmdcopyquerypoolresults_primary_cq",
+    "dEQP-VK.spirv_assembly.instruction.compute.spirv_version.1_0_compute",
+    "dEQP-VK.spirv_assembly.instruction.compute.spirv_version.1_1_compute",
+    "dEQP-VK.spirv_assembly.instruction.compute.spirv_version.1_2_compute",
+    "dEQP-VK.spirv_assembly.instruction.compute.spirv_version.1_3_compute",
+    "dEQP-VK.subgroups.basic.compute.subgroupbarrier",
+    "dEQP-VK.subgroups.basic.compute.subgroupelect",
+    "dEQP-VK.subgroups.basic.compute.subgroupmemorybarrier",
+    "dEQP-VK.subgroups.basic.compute.subgroupmemorybarrierbuffer",
+    "dEQP-VK.subgroups.basic.compute.subgroupmemorybarrierimage",
+    "dEQP-VK.subgroups.basic.compute.subgroupmemorybarriershared"
+  ],
+  "source_receipts": {
+    "information": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-native-scalars-info/probe/runner-result.json",
+      "sha256": "1ae58c8f22190a4e1c49d5dde96ad61231d17de7f72d1de5c6c227de99e3b18c"
+    },
+    "SPIR-V versions": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-spirv/probe/runner-result.json",
+      "sha256": "0c14d7543b86c8e96205ba91e6ab7d3dab078f9e197412a5330773a71ccf4262"
+    },
+    "BASIC election": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-elect/probe/runner-result.json",
+      "sha256": "04aeab78c16e0c03708d3fe5de6f9999c9dd9d91b670294cf16c906a161fdf56"
+    },
+    "BASIC barriers": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-barriers/probe/runner-result.json",
+      "sha256": "9245e714476ae235539a889462468b8454f18a74d061857a0624e448b5a24ecc"
+    },
+    "shared variables": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-shared/probe/runner-result.json",
+      "sha256": "048a5011cbc5ad2c3cb93f7aa7a6028706414a167f7a8fb827cf88925a6ec196"
+    },
+    "command barriers": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-command-barrier/probe/runner-result.json",
+      "sha256": "0fd76bbe515efcfad0d9a17d88be4523714938986812c4c946c1cf1448f972a0"
+    },
+    "buffer operations": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-buffer-group/probe/runner-result.json",
+      "sha256": "200419bbb2b60fea2d9c4c68856a1fcaeda8b6a96e5fc7a163a7aaf3349e7891"
+    },
+    "descriptor lifetime": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-descriptor/probe/runner-result.json",
+      "sha256": "f185a00c3acf1f20e75a247974de2a7728f1afd1f83250ada2d501257a7d01fc"
+    },
+    "ETC2/EAC sampling first": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-etc2-subpixel-first/probe/runner-result.json",
+      "sha256": "41aa117d38729a1fb27e55d781d9be1ae5dd294da2b888ff97ee70013dd36211"
+    },
+    "ETC2/EAC sampling suffix": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-etc2-subpixel-remaining/probe/runner-result.json",
+      "sha256": "3c4f83e682ca23faf892898cc3eb77027d34a4303139bde94f87e717126ccb7c"
+    },
+    "pipeline statistics": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-query-statistics/probe/runner-result.json",
+      "sha256": "6dfc4a0f83648fbee67de198741ded15da12050aba3fad8d937e86b503ad2f7a"
+    },
+    "timestamps": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-timestamps/probe/runner-result.json",
+      "sha256": "ba4ffe9e119303b3530867eb42d660e720157a43eb59bd2a15adba8bd8d2c397"
+    },
+    "promoted queries": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-promoted-query/probe/runner-result.json",
+      "sha256": "6e3d8b4eb8566b9aca77d2cb3a56823f3dde1b2da3282d789d0ab79f986092ce"
+    },
+    "corrected layout lifetime": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-cache-lifetime-one/probe/runner-result.json",
+      "sha256": "afa91c13bf6713b4b733bdd4a8fe5a1b99dbc5d70cf15c17c5f6621ca8323430"
+    },
+    "cache and pipeline lifetime original": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-cache-lifetime-next-0045/actual-partial-review.json",
+      "sha256": "257e5706fb6f16272960471955813bbfa62921b952e791582186c47b1fd7e8a7"
+    }
+  },
+  "limitations": "Separate historical revisions/candidates, not one full conformance run; original oracle limits preserved. Failed historical info/ETC cases were corrected and later passed; custom42 strict sRGB mismatches remain unresolved. Original mistyped cache case0/0 is not a case or pass.",
+  "source_receipt_identity": {
+    "path": "/run/media/jethac/Shared/radish/compute11-verified-case-count-0045.json",
+    "bytes": 12862,
+    "sha256": "d3b5462f2a8880b257c2dd8bca9febb1177e2ea78d0e8bdf53c110fa40651414"
+  }
+}

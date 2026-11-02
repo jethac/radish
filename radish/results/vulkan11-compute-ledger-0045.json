@@ -7,13 +7,13 @@
     "status": "frozen"
   },
   "candidate": {
-    "driver": "8298f0892597d288d130715975fe08d38c618b69dfd82c6cc9b62aa045b8c640",
-    "status": "Separate8298 validation checkpoint adds native-backed requiredBLEND query traits over1f5c. Eighteen original query lifecycle cases passed on immutable1f. Full applicable conformance/strictsRGB remainopen; selectedfcd/d332 unchanged."
+    "driver": "f222ff480f6c9ef3785c446661f12ccacbc91f119b0e7d405347b949b4dc325d",
+    "status": "Separate f222 validation checkpoint adds required native-backed BLIT and VERTEX query traits over8298. Extended block storage and original cache/promoted-query CTS remain pinned to unchanged8298. Full applicable conformance and strict sRGB remain open; selected fcd/d332 unchanged."
   },
   "official_cts": {
     "source_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
     "binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
-    "state": "Pinned original binary: allfive info cases nowPASS, observed property messages31 to15 to9 to0. Teninitialshader,fourshared,twocommandbarrier,22buffer,seven descriptor andtenETCcompute casesPASS. This remains partial applicable coverage. Eight advertised-statistics andten coretimestamp casesPASS with documented originaloracle limits.",
+    "state": "Pinned original binary: allfive info cases nowPASS, observed property messages31 to15 to9 to0. Teninitialshader,fourshared,twocommandbarrier,22buffer,seven descriptor andtenETCcompute casesPASS. This remains partial applicable coverage. Eight advertised-statistics andten coretimestamp casesPASS with documented originaloracle limits. Thirteen individual1.1/core2/maintenance3 query cases passed. Cache/lifetime eight original passes plus corrected single registered case passed; original0/0 inventory failure retained.",
     "modified_harness": "f85cb13b diagnostics only, never official passes",
     "remaining_property_failures": 0,
     "actual_record": "official11-native-scalars-info-0045.json",
@@ -30,7 +30,12 @@
       15,
       9
     ],
-    "query_record": "official11-query-lifecycle-0045.json"
+    "query_record": "official11-query-lifecycle-0045.json",
+    "promoted_query_record": "official11-promoted-query-0045.json",
+    "cache_lifetime_record": "official11-cache-lifetime-0045.json",
+    "qualified_unique_case_inventory": "official11-qualified-case-inventory-0045.json",
+    "qualified_unique_cases": 100,
+    "inventory_limitation": "Historical passes span separate pinned candidates and exact source-bounded runs. This is neither one complete conformance run nor a percentage of all applicable requirements."
   },
   "categories": [
     {
@@ -68,8 +73,8 @@
     {
       "id": "format-graphics-properties",
       "requirement": "Required blit/attachment/vertex format feature columns",
-      "implementation": "51FD5-backed color-format query admissions and seven sampled-only negatives; dense transient attachment allocation/view/layout support. No graphics queue/engine or rendering claim. Fourteen required native-backed BLEND query traits added; pure query coverage does not claim graphics execution.",
-      "evidence": "Current format query and explicit compute queue; primary required-format table retained; exact command-applicability review permits native compressed BLIT_SRC querytrait; tenactualqueries pass, no graphics-only blit executed.; native-attachment-resources-0045.json validv3 excludes graphics-only hostcalls and checks58queries/80imagesviews/192barriers16fences.; required-blend-query-0045.json all14positive+4negative querycontrolsPASS, legacy/core2 agree.",
+      "implementation": "51FD5-backed color-format query admissions and seven sampled-only negatives; dense transient attachment allocation/view/layout support. No graphics queue/engine or rendering claim. Fourteen required native-backed BLEND query traits added; pure query coverage does not claim graphics execution. Exact mandatory47 BLIT_SRC/38 BLIT_DST and45 VERTEX_BUFFER query traits added with matched native backing.",
+      "evidence": "Current format query and explicit compute queue; primary required-format table retained; exact command-applicability review permits native compressed BLIT_SRC querytrait; tenactualqueries pass, no graphics-only blit executed.; native-attachment-resources-0045.json validv3 excludes graphics-only hostcalls and checks58queries/80imagesviews/192barriers16fences.; required-blend-query-0045.json all14positive+4negative querycontrolsPASS, legacy/core2 agree.; required-blit-vertex-query-0045.json99 positive/negative physical query rows passed; no graphics execution.",
       "remaining": "Resolve standard conformance versus explicit compute scope, without fake flags or treating table cells as automatically waived. Blit queue applicability is separate from property obligation.",
       "owner": "resource"
     },
@@ -77,7 +82,7 @@
       "id": "images",
       "requirement": "Required image types, mips/layers/cube/views, copies, clear and sampled/storage/atomics",
       "implementation": "Native single/MS sampling plus software oversized-array/cube path; mutable/alias/extended/split-instance and2D-of3D view creation; storageCube face layers",
-      "evidence": "core_resources/core_array_resources/core_subword_resources/core_multisample/core_ms_lanes/core_oversized_image/core_oversized_ms/core_storage_cube; paired actual results; depth-host-layouts-0045.json six D16/D32/S8x1/4 host/layout cases and24fenced maintenance2 transitions pass, no initialized samples.; d24s8-public-0045.json initialized single-sample depth/stencil sampling and genuinely changing masked aspect copies pass256samplewords/32exactpackedreadbacktexels/fullguards.; R32SINT/UINTstorageimage/texelbufferatomicoperatorrepresentativeactualPASS.; native-attachment-resources-0045.json valid image/query/view/layout scope passes, including denseTRANSIENT. Earlier renderpass/framebuffer host-success portions are historical observations under newer unconditional graphics-queue VUIDs.",
+      "evidence": "core_resources/core_array_resources/core_subword_resources/core_multisample/core_ms_lanes/core_oversized_image/core_oversized_ms/core_storage_cube; paired actual results; depth-host-layouts-0045.json six D16/D32/S8x1/4 host/layout cases and24fenced maintenance2 transitions pass, no initialized samples.; d24s8-public-0045.json initialized single-sample depth/stencil sampling and genuinely changing masked aspect copies pass256samplewords/32exactpackedreadbacktexels/fullguards.; R32SINT/UINTstorageimage/texelbufferatomicoperatorrepresentativeactualPASS.; native-attachment-resources-0045.json valid image/query/view/layout scope passes, including denseTRANSIENT. Earlier renderpass/framebuffer host-success portions are historical observations under newer unconditional graphics-queue VUIDs.; extended-block-storage-0045.json existing EXTENDED_USAGE/block-compatible raw storage-view path passed two rounds with64 exact outputs/32 modified block readbacks/fullguards.",
       "remaining": "Full required-format/type/filter/mip/view/transfer CTS, all valid flag combinations, precision and alias cases remain. Optional cubeArray/multisampled storage/anisotropy/extended-format feature bits may remainfalse.",
       "owner": "resource"
     },
@@ -109,7 +114,7 @@
       "id": "descriptor-layout",
       "requirement": "Layouts, immutable samplers, sparse binding numbers, static arrays, templates/copies/dynamic offsets",
       "implementation": "Logical1024 set descriptors with active64 static compaction; sorted bindings; retained layout references and sampler value copies",
-      "evidence": "Existing API5/resource/template actuals and prior lifetime source audit; representative INPUT_ATTACHMENT pool/free/reset/write/copy/template lifecycle actual95866 passes.; official11-descriptor-0045.json sevenoriginalpool/layout/update/lifetimecasesPASS, includingtwoactualcomputedispatches.",
+      "evidence": "Existing API5/resource/template actuals and prior lifetime source audit; representative INPUT_ATTACHMENT pool/free/reset/write/copy/template lifecycle actual95866 passes.; official11-descriptor-0045.json sevenoriginalpool/layout/update/lifetimecasesPASS, includingtwoactualcomputedispatches.; official11-promoted-query-0045.json2047 descriptor-type subset queries and maintenance3 minima passed; query-only, not2047 allocated layouts.",
       "remaining": "Original CTS descriptor/pool/copy/consecutive-binding/compatible-layout and allocation-error cases. Optional opaque dynamic indexing remainsfalse, not silently accepted.",
       "owner": "resource"
     },
@@ -117,7 +122,7 @@
       "id": "lifetime-reuse",
       "requirement": "Shader/module/layout/set/resource lifetime and recorded command reuse",
       "implementation": "Pipeline retains layout\u2192setlayout; descriptor set retains setlayout; sampler copied; synchronous shader compilation; command pools/reset/secondary state runtime",
-      "evidence": "Prior source lifetime audit; valid-order two-round reuse checks and API5primary/secondary/template checks",
+      "evidence": "Prior source lifetime audit; valid-order two-round reuse checks and API5primary/secondary/template checks; official11-cache-lifetime-0045.json cache/pipeline/lifetime cases with exact original oracle limitations. Cache population/hits are not established.; cache-merge-lifetime-0045.json core merge/recreate and layout lifetime with32 exact outputs/full160-word allocation passed. Four cache blobs are36B with zero entries; no filled-entry or hit claim.",
       "remaining": "Target destroyed shader/layout/sampler-after-creation semantics and invalidation/re-record behavior through original CTS; do not use invalid late-update historical observations.",
       "owner": "resource"
     },
@@ -157,7 +162,7 @@
       "id": "optional11",
       "requirement": "Protected memory/variable pointers/YCbCr/optional subgroup operations",
       "implementation": "May remainfalse with feature-conditioned behavior;16storage true already has backing",
-      "evidence": "Batch primary reviewd557d7e8 plus current feature chain",
+      "evidence": "Batch primary reviewd557d7e8 plus current feature chain; all six original individual1.1 feature-query branches executed and were consistent across poison patterns; false optional bits are not functionality claims.",
       "remaining": "Validate feature/query/error/entrypoint contracts for required promotions; no optional feature enabled just to satisfy API name. Batch owns contract.",
       "owner": "batch"
     },
@@ -325,6 +330,10 @@
     "system_scope": "No globalgraphics/service/clock/kernelchanges"
   },
   "depth_layout_erratum": "Pinned Vulkan1.1 DEPTH_STENCIL_READ_ONLY_OPTIMAL requires DEPTH_STENCIL_ATTACHMENT usage. Earlier sampled-only depth consumers are implementation observations for that path until valid-usage requalification; no retroactive public qualification.",
-  "next_private_source": "Existing block-compatible EXTENDED_USAGE image/view path has source support; bounded storage-view consumer next without speculative driver change. Original pipeline-cache/derivative/lifetime CTS source partition is being bounded. Full shader/memory/resource/API/precision coverage remains; no performance tuning.",
-  "required_core_lookup": "core-lookup-public-0045.json: public165GIPA/137GDPA complete afterfiveactualdevicepointer fixes. This is lookup only, not allcommandexecution. DirectICDloaderglobal limitation retained."
+  "next_private_source": "Original188 core-format physical-query cases are source-bounded for the next unchanged-budget scope. Private arrays have ordinary functional evidence; deliberate compiler-spill qualification remains open. Broader shader, memory, resource and precision coverage remains; no performance tuning.",
+  "required_core_lookup": "core-lookup-public-0045.json: public165GIPA/137GDPA complete afterfiveactualdevicepointer fixes. This is lookup only, not allcommandexecution. DirectICDloaderglobal limitation retained.",
+  "deferred_performance_opportunities": {
+    "pipeline_cache_population": "Pipeline creation currently does not populate common cache entries; header/object-count serialization is callable behavior only. Real cache population/reuse and measured benefit belong to the later performance phase; no speedup assumed."
+  },
+  "cache_merge_record": "cache-merge-lifetime-0045.json"
 }

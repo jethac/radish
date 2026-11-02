@@ -1,0 +1,13 @@
+dEQP-VK.api.info.get_physical_device_properties2.features.core
+dEQP-VK.api.info.get_physical_device_properties2.properties.basic
+dEQP-VK.api.info.get_physical_device_properties2.format_properties.basic
+dEQP-VK.api.info.get_physical_device_properties2.queue_family_properties.basic
+dEQP-VK.api.info.get_physical_device_properties2.memory_properties.basic
+dEQP-VK.api.info.get_physical_device_properties2.features.16_bit_storage_features
+dEQP-VK.api.info.get_physical_device_properties2.features.multiview_features
+dEQP-VK.api.info.get_physical_device_properties2.features.protected_memory_features
+dEQP-VK.api.info.get_physical_device_properties2.features.sampler_ycbcr_conversion_features
+dEQP-VK.api.info.get_physical_device_properties2.features.shader_draw_parameters_features
+dEQP-VK.api.info.get_physical_device_properties2.features.variable_pointers_features
+dEQP-VK.api.maintenance3_check.maintenance3_properties
+dEQP-VK.api.maintenance3_check.descriptor_set

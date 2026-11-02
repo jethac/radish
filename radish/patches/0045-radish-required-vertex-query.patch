@@ -1,0 +1,74 @@
+--- a/src/freedreno/radish/rd_image.c
++++ b/src/freedreno/radish/rd_image.c
+@@ -282,6 +282,61 @@
+    }
+ }
+ 
++static bool
++rd_image_required_vertex_buffer(VkFormat format)
++{
++   switch (format) {
++   case VK_FORMAT_R8_UNORM:
++   case VK_FORMAT_R8_SNORM:
++   case VK_FORMAT_R8_UINT:
++   case VK_FORMAT_R8_SINT:
++   case VK_FORMAT_R8G8_UNORM:
++   case VK_FORMAT_R8G8_SNORM:
++   case VK_FORMAT_R8G8_UINT:
++   case VK_FORMAT_R8G8_SINT:
++   case VK_FORMAT_R8G8B8A8_UNORM:
++   case VK_FORMAT_R8G8B8A8_SNORM:
++   case VK_FORMAT_R8G8B8A8_UINT:
++   case VK_FORMAT_R8G8B8A8_SINT:
++   case VK_FORMAT_B8G8R8A8_UNORM:
++   case VK_FORMAT_A8B8G8R8_UNORM_PACK32:
++   case VK_FORMAT_A8B8G8R8_SNORM_PACK32:
++   case VK_FORMAT_A8B8G8R8_UINT_PACK32:
++   case VK_FORMAT_A8B8G8R8_SINT_PACK32:
++   case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
++   case VK_FORMAT_R16_UNORM:
++   case VK_FORMAT_R16_SNORM:
++   case VK_FORMAT_R16_UINT:
++   case VK_FORMAT_R16_SINT:
++   case VK_FORMAT_R16_SFLOAT:
++   case VK_FORMAT_R16G16_UNORM:
++   case VK_FORMAT_R16G16_SNORM:
++   case VK_FORMAT_R16G16_UINT:
++   case VK_FORMAT_R16G16_SINT:
++   case VK_FORMAT_R16G16_SFLOAT:
++   case VK_FORMAT_R16G16B16A16_UNORM:
++   case VK_FORMAT_R16G16B16A16_SNORM:
++   case VK_FORMAT_R16G16B16A16_UINT:
++   case VK_FORMAT_R16G16B16A16_SINT:
++   case VK_FORMAT_R16G16B16A16_SFLOAT:
++   case VK_FORMAT_R32_UINT:
++   case VK_FORMAT_R32_SINT:
++   case VK_FORMAT_R32_SFLOAT:
++   case VK_FORMAT_R32G32_UINT:
++   case VK_FORMAT_R32G32_SINT:
++   case VK_FORMAT_R32G32_SFLOAT:
++   case VK_FORMAT_R32G32B32_UINT:
++   case VK_FORMAT_R32G32B32_SINT:
++   case VK_FORMAT_R32G32B32_SFLOAT:
++   case VK_FORMAT_R32G32B32A32_UINT:
++   case VK_FORMAT_R32G32B32A32_SINT:
++   case VK_FORMAT_R32G32B32A32_SFLOAT:
++      return true;
++   default:
++      return false;
++   }
++}
++
+ static VkImageUsageFlags2KHR
+ rd_image_shader_usage(VkFormat format)
+ {
+@@ -379,7 +434,8 @@
+ {
+    VkFormatFeatureFlags flags = rd_image_texel_size(format) ?
+       VK_FORMAT_FEATURE_TRANSFER_SRC_BIT | VK_FORMAT_FEATURE_TRANSFER_DST_BIT : 0;
+-   VkFormatFeatureFlags buffer = 0;
++   VkFormatFeatureFlags buffer = rd_image_required_vertex_buffer(format) ?
++      VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT : 0;
+    if (rd_shader_format_supported(format)) {
+       if (rd_image_texel_size(format))
+          flags |= VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT;

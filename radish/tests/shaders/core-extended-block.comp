@@ -1,0 +1,14 @@
+#version 450
+layout(local_size_x=1) in;
+layout(set=0,binding=0,rgba32ui) uniform uimage2D blocks;
+layout(set=0,binding=1,std430) writeonly buffer Results { uint words[]; };
+void main() {
+ uint lane=gl_GlobalInvocationID.x;
+ ivec2 xy=ivec2(int(lane&1u),int(lane>>1u));
+ uvec4 old=imageLoad(blocks,xy);
+ uvec4 mask=uvec4(0x01020408u,0x10204080u,0xa55a0ff0u,0x55aa33ccu)^uvec4(lane*0x11111111u);
+ imageStore(blocks,xy,old^mask);
+ for(uint k=0u;k<4u;k++)words[lane*8u+k]=old[k];
+ ivec2 size=imageSize(blocks);words[lane*8u+4u]=uint(size.x);words[lane*8u+5u]=uint(size.y);
+ words[lane*8u+6u]=lane;words[lane*8u+7u]=0x5a0c0000u|lane;
+}

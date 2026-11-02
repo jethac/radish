@@ -1,0 +1,9 @@
+dEQP-VK.pipeline.monolithic.cache.compute_tests.compute_stage
+dEQP-VK.pipeline.monolithic.derivative.compute.derivative_by_handle
+dEQP-VK.pipeline.monolithic.derivative.compute.derivative_by_index
+dEQP-VK.api.pipeline_layout.lifetime.destroy_after_end
+dEQP-VK.api.array.oversized_array.core.get_pipeline_cache_data
+dEQP-VK.api.object_management.single.pipeline_cache
+dEQP-VK.api.object_management.multiple_unique_resources.pipeline_cache
+dEQP-VK.api.object_management.multiple_unique_resources.compute_pipeline
+dEQP-VK.api.object_management.multiple_shared_resources.compute_pipeline

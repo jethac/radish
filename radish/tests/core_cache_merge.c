@@ -1,0 +1,60 @@
+int resource_baseline_main(int argc,char **argv);
+#define main resource_baseline_main
+#include "core_resources.c"
+#undef main
+
+enum { CACHE_WORDS=32, CACHE_BLOB_LIMIT=1024*1024 };
+static int cache_data(const struct vk_device_dispatch_table *d,VkDevice device,
+                      VkPipelineCache cache,const VkPhysicalDeviceProperties *props,
+                      const char *label,void **data,size_t *size)
+{
+ *data=NULL;*size=0;SUCCESS(d->GetPipelineCacheData(device,cache,size,NULL));REQUIRE(*size<=CACHE_BLOB_LIMIT);
+ if(!*size){printf("CACHE_DATA label=%s bytes=0 header_bytes=0 post_header_bytes=0 common_objects=0 payload_present=0\n",label);return 0;}
+ *data=malloc(*size);REQUIRE(*data);memset(*data,0xcd,*size);size_t capacity=*size;
+ SUCCESS(d->GetPipelineCacheData(device,cache,size,*data));REQUIRE(*size<=capacity&&*size>=32);
+ VkPipelineCacheHeaderVersionOne h;memcpy(&h,*data,sizeof(h));REQUIRE(h.headerSize>=sizeof(h)&&h.headerSize<=*size&&h.headerVersion==VK_PIPELINE_CACHE_HEADER_VERSION_ONE);
+ REQUIRE(h.vendorID==props->vendorID&&h.deviceID==props->deviceID&&!memcmp(h.pipelineCacheUUID,props->pipelineCacheUUID,VK_UUID_SIZE));
+ uint32_t common_objects=0;bool common_count_valid=h.headerSize==32&&*size>=36;
+ if(common_count_valid)memcpy(&common_objects,(const uint8_t *)*data+32,4);
+ uint64_t hash=UINT64_C(14695981039346656037);for(size_t i=0;i<*size;i++)hash=(hash^((const uint8_t *)*data)[i])*UINT64_C(1099511628211);
+ printf("CACHE_DATA label=%s bytes=%zu header_bytes=%u post_header_bytes=%zu common_count_valid=%u common_objects=%u fnv64=%016"PRIx64" payload_present=%u\n",label,*size,h.headerSize,*size-h.headerSize,common_count_valid,common_objects,hash,common_count_valid&&common_objects>0);fflush(stdout);
+ return 0;
+}
+int main(int argc,char **argv)
+{
+ REQUIRE(argc==3||(argc==4&&!strcmp(argv[3],"--compile-only")));
+ void *lib=dlopen(argv[1],RTLD_NOW|RTLD_LOCAL);REQUIRE(lib);
+ PFN_vkGetInstanceProcAddr gipa=(PFN_vkGetInstanceProcAddr)dlsym(lib,"vk_icdGetInstanceProcAddr");REQUIRE(gipa);
+ VkInstance instance=VK_NULL_HANDLE;INSTANCE_FN(CreateInstance);VkApplicationInfo app={.sType=VK_STRUCTURE_TYPE_APPLICATION_INFO,.apiVersion=VK_API_VERSION_1_1};VkInstanceCreateInfo ici={.sType=VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,.pApplicationInfo=&app};SUCCESS(CreateInstance(&ici,NULL,&instance));
+ INSTANCE_FN(EnumeratePhysicalDevices);INSTANCE_FN(GetPhysicalDeviceProperties);INSTANCE_FN(GetPhysicalDeviceFeatures);INSTANCE_FN(GetPhysicalDeviceMemoryProperties);INSTANCE_FN(GetPhysicalDeviceQueueFamilyProperties);INSTANCE_FN(CreateDevice);INSTANCE_FN(DestroyInstance);
+ uint32_t count=1;VkPhysicalDevice physical;SUCCESS(EnumeratePhysicalDevices(instance,&count,&physical));REQUIRE(count==1);VkPhysicalDeviceProperties props;GetPhysicalDeviceProperties(physical,&props);REQUIRE(props.apiVersion>=VK_API_VERSION_1_1&&props.limits.maxComputeWorkGroupInvocations>=32&&props.limits.maxComputeWorkGroupSize[0]>=32&&props.limits.maxPushConstantsSize>=4);
+ VkQueueFamilyProperties qp;count=0;GetPhysicalDeviceQueueFamilyProperties(physical,&count,NULL);REQUIRE(count==1);GetPhysicalDeviceQueueFamilyProperties(physical,&count,&qp);REQUIRE(qp.queueFlags&VK_QUEUE_COMPUTE_BIT);
+ VkPhysicalDeviceFeatures features;GetPhysicalDeviceFeatures(physical,&features);REQUIRE(features.robustBufferAccess);VkPhysicalDeviceFeatures enabled={.robustBufferAccess=VK_TRUE};float priority=1;VkDeviceQueueCreateInfo qi={.sType=VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,.queueCount=1,.pQueuePriorities=&priority};VkDeviceCreateInfo di={.sType=VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,.queueCreateInfoCount=1,.pQueueCreateInfos=&qi,.pEnabledFeatures=&enabled};VkDevice device;SUCCESS(CreateDevice(physical,&di,NULL,&device));const struct vk_device_dispatch_table *d=&rd_device_from_handle(device)->vk.dispatch_table;
+ REQUIRE(d->CreatePipelineCache&&d->MergePipelineCaches&&d->GetPipelineCacheData&&d->DestroyPipelineCache);
+ VkDescriptorSetLayoutBinding binding={.binding=0,.descriptorType=VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,.descriptorCount=1,.stageFlags=VK_SHADER_STAGE_COMPUTE_BIT};VkDescriptorSetLayoutCreateInfo li={.sType=VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,.bindingCount=1,.pBindings=&binding};VkDescriptorSetLayout set_layout;SUCCESS(d->CreateDescriptorSetLayout(device,&li,NULL,&set_layout));
+ VkPushConstantRange push_range={.stageFlags=VK_SHADER_STAGE_COMPUTE_BIT,.size=4};VkPipelineLayoutCreateInfo pi={.sType=VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,.setLayoutCount=1,.pSetLayouts=&set_layout,.pushConstantRangeCount=1,.pPushConstantRanges=&push_range};VkPipelineLayout layout;SUCCESS(d->CreatePipelineLayout(device,&pi,NULL,&layout));
+ size_t bytes;uint32_t *code=read_spirv(argv[2],&bytes);REQUIRE(code);VkShaderModuleCreateInfo mi={.sType=VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,.codeSize=bytes,.pCode=code};VkShaderModule module;SUCCESS(d->CreateShaderModule(device,&mi,NULL,&module));free(code);
+ VkComputePipelineCreateInfo pci={.sType=VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO,.stage={.sType=VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,.stage=VK_SHADER_STAGE_COMPUTE_BIT,.module=module,.pName="main"},.layout=layout};
+ VkPipelineCacheCreateInfo ci={.sType=VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO};VkPipelineCache sources[2],destination,recreated;VkPipeline source_pipelines[2],pipeline;
+ for(unsigned i=0;i<2;i++){SUCCESS(d->CreatePipelineCache(device,&ci,NULL,&sources[i]));SUCCESS(d->CreateComputePipelines(device,sources[i],1,&pci,NULL,&source_pipelines[i]));void *data;size_t size;REQUIRE(cache_data(d,device,sources[i],&props,i?"source1":"source0",&data,&size)==0);free(data);}
+ SUCCESS(d->CreatePipelineCache(device,&ci,NULL,&destination));SUCCESS(d->MergePipelineCaches(device,destination,2,sources));
+ for(unsigned i=0;i<2;i++){d->DestroyPipeline(device,source_pipelines[i],NULL);d->DestroyPipelineCache(device,sources[i],NULL);}
+ void *serialized;size_t serialized_size;REQUIRE(cache_data(d,device,destination,&props,"merged_after_source_destroy",&serialized,&serialized_size)==0);
+ ci.initialDataSize=serialized_size;ci.pInitialData=serialized;SUCCESS(d->CreatePipelineCache(device,&ci,NULL,&recreated));free(serialized);d->DestroyPipelineCache(device,destination,NULL);
+ SUCCESS(d->CreateComputePipelines(device,recreated,1,&pci,NULL,&pipeline));void *roundtrip;size_t roundtrip_size;REQUIRE(cache_data(d,device,recreated,&props,"recreated_after_pipeline",&roundtrip,&roundtrip_size)==0);free(roundtrip);d->DestroyPipelineCache(device,recreated,NULL);d->DestroyShaderModule(device,module,NULL);
+ struct rd_pipeline *compiled=rd_pipeline_from_handle(pipeline);REQUIRE(compiled->descriptor_count==1&&compiled->buffer_count==1&&compiled->resource_usage.image_count==0&&compiled->variant->local_size[0]==32&&compiled->variant->local_size[1]==1&&compiled->variant->local_size[2]==1);
+ printf("CACHE_MERGE_COMPILED source_pipelines=2 final_pipelines=1 active=1 buffers=1 images=0 native=%u full=%d half=%d private=%u local=32,1,1 source_caches_destroyed=1 destination_destroyed=1 recreated_destroyed=1 shader_module_destroyed=1 before_allocations=1\n",compiled->variant->instrlen,compiled->variant->info.max_reg+1,compiled->variant->info.max_half_reg+1,compiled->variant->pvtmem_size);fflush(stdout);
+ if(argc==4){d->DestroyPipeline(device,pipeline,NULL);d->DestroyPipelineLayout(device,layout,NULL);d->DestroyDescriptorSetLayout(device,set_layout,NULL);d->DestroyDevice(device,NULL);DestroyInstance(instance,NULL);dlclose(lib);puts("PASS CACHE_MERGE compile-only: core cache create/merge/serialize/recreate and pipeline lifetime; no buffer or dispatch");return 0;}
+ VkPhysicalDeviceMemoryProperties memory;GetPhysicalDeviceMemoryProperties(physical,&memory);struct storage output={0};REQUIRE(storage_create(d,device,&memory,512,VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,&output)==0);
+ for(size_t i=0;i<output.words;i++)output.map[i]=poison(i,81,0);memcpy(output.saved,output.map,output.words*4);const uint32_t seed=UINT32_C(0x51a3b7d9);for(unsigned i=0;i<CACHE_WORDS;i++)output.saved[output.binding_words+GUARD+i]=(i*17u)^seed;
+ VkMappedMemoryRange range={.sType=VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,.memory=output.memory,.size=VK_WHOLE_SIZE};SUCCESS(d->FlushMappedMemoryRanges(device,1,&range));
+ VkDescriptorPoolSize pool_size={VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,1};VkDescriptorPoolCreateInfo pool_info={.sType=VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,.maxSets=1,.poolSizeCount=1,.pPoolSizes=&pool_size};VkDescriptorPool pool;SUCCESS(d->CreateDescriptorPool(device,&pool_info,NULL,&pool));VkDescriptorSetAllocateInfo allocate={.sType=VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,.descriptorPool=pool,.descriptorSetCount=1,.pSetLayouts=&set_layout};VkDescriptorSet set;SUCCESS(d->AllocateDescriptorSets(device,&allocate,&set));VkDescriptorBufferInfo buffer_info={output.buffer,GUARD*4,CACHE_WORDS*4};VkWriteDescriptorSet write={.sType=VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,.dstSet=set,.dstBinding=0,.descriptorCount=1,.descriptorType=VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,.pBufferInfo=&buffer_info};d->UpdateDescriptorSets(device,1,&write,0,NULL);
+ VkCommandPoolCreateInfo cp={.sType=VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO};VkCommandPool command_pool;SUCCESS(d->CreateCommandPool(device,&cp,NULL,&command_pool));VkCommandBufferAllocateInfo ca={.sType=VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,.commandPool=command_pool,.level=VK_COMMAND_BUFFER_LEVEL_PRIMARY,.commandBufferCount=1};VkCommandBuffer command;SUCCESS(d->AllocateCommandBuffers(device,&ca,&command));VkCommandBufferBeginInfo begin={.sType=VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};SUCCESS(d->BeginCommandBuffer(command,&begin));
+ VkMemoryBarrier before={.sType=VK_STRUCTURE_TYPE_MEMORY_BARRIER,.srcAccessMask=VK_ACCESS_HOST_WRITE_BIT,.dstAccessMask=VK_ACCESS_SHADER_WRITE_BIT};d->CmdPipelineBarrier(command,VK_PIPELINE_STAGE_HOST_BIT,VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,0,1,&before,0,NULL,0,NULL);d->CmdBindPipeline(command,VK_PIPELINE_BIND_POINT_COMPUTE,pipeline);d->CmdBindDescriptorSets(command,VK_PIPELINE_BIND_POINT_COMPUTE,layout,0,1,&set,0,NULL);d->CmdPushConstants(command,layout,VK_SHADER_STAGE_COMPUTE_BIT,0,4,&seed);d->CmdDispatch(command,1,1,1);
+ VkMemoryBarrier after={.sType=VK_STRUCTURE_TYPE_MEMORY_BARRIER,.srcAccessMask=VK_ACCESS_SHADER_WRITE_BIT,.dstAccessMask=VK_ACCESS_HOST_READ_BIT};d->CmdPipelineBarrier(command,VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,VK_PIPELINE_STAGE_HOST_BIT,0,1,&after,0,NULL,0,NULL);SUCCESS(d->EndCommandBuffer(command));
+ d->DestroyPipelineLayout(device,layout,NULL);d->DestroyDescriptorSetLayout(device,set_layout,NULL);
+ VkQueue queue;d->GetDeviceQueue(device,0,0,&queue);VkFenceCreateInfo fi={.sType=VK_STRUCTURE_TYPE_FENCE_CREATE_INFO};VkFence fence;SUCCESS(d->CreateFence(device,&fi,NULL,&fence));VkSubmitInfo submit={.sType=VK_STRUCTURE_TYPE_SUBMIT_INFO,.commandBufferCount=1,.pCommandBuffers=&command};SUCCESS(d->QueueSubmit(queue,1,&submit,fence));SUCCESS(d->WaitForFences(device,1,&fence,VK_TRUE,UINT64_C(5000000000)));SUCCESS(d->InvalidateMappedMemoryRanges(device,1,&range));
+ for(size_t i=0;i<output.words;i++)if(output.map[i]!=output.saved[i]){fprintf(stderr,"FAIL CACHE_MERGE word=%zu actual=%08x expected=%08x\n",i,output.map[i],output.saved[i]);return 1;}
+ printf("CACHE_MERGE_GPU_PASS outputs=32 complete_allocation_words=%zu guards=exact executing_pipeline_alive=1 layout_destroyed_before_submit=1 cache_hit_requirement=0\n",output.words);fflush(stdout);
+ d->DestroyFence(device,fence,NULL);d->DestroyCommandPool(device,command_pool,NULL);d->DestroyDescriptorPool(device,pool,NULL);free(output.saved);d->UnmapMemory(device,output.memory);d->DestroyBuffer(device,output.buffer,NULL);d->FreeMemory(device,output.memory,NULL);d->DestroyPipeline(device,pipeline,NULL);d->DestroyDevice(device,NULL);DestroyInstance(instance,NULL);dlclose(lib);puts("PASS CACHE_MERGE: core merge/recreate and guarded32word unchanged oracle; opaque cache entries reported, no cache-hit or performance requirement");return 0;
+}

@@ -1,0 +1,2370 @@
+{
+  "status": "Required format-query pair passed; no graphics execution qualification",
+  "driver": {
+    "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/libvulkan_radish.so",
+    "bytes": 49079616,
+    "sha256": "f222ff480f6c9ef3785c446661f12ccacbc91f119b0e7d405347b949b4dc325d"
+  },
+  "reconstruction": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-required-formats-public-stack-0045/reconstruction.json",
+      "bytes": 6472,
+      "sha256": "2893c602451b54138ea997e3730c9822de2c8b97168e4732f180631e25c3e3ef"
+    },
+    "result": {
+      "status": "Exact f222 source reconstruction PASS",
+      "sources": {
+        "src/freedreno/radish/rd_nir_resources.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_nir_resources.c",
+          "bytes": 14792,
+          "sha256": "49ba435efd7edaa8bee8563cf3121297bbf06091a79f0e3736cbd4b2111c21b9"
+        },
+        "src/freedreno/radish/rd_command.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_command.c",
+          "bytes": 13873,
+          "sha256": "9d8186e6219d989daaad17aaeb04347219295f913301df38dd97a6d3680a2498"
+        },
+        "src/freedreno/radish/rd_transfer.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_transfer.c",
+          "bytes": 2992,
+          "sha256": "a93968bf54724b1a068d7169940952286b73a0eb08f9fe78ee3ef4e608d5812b"
+        },
+        "src/freedreno/radish/rd_nir_robust.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_nir_robust.c",
+          "bytes": 9502,
+          "sha256": "eb7b2f530891fd81fbb5e9d048f2d4c93ad22b10476b0202fb9bca4dda28111c"
+        },
+        "src/freedreno/radish/rd_image.h": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_image.h",
+          "bytes": 1793,
+          "sha256": "6c0847bb62fd18eef4e4398a7efc89afde57fbed64d64ab152586078d9555747"
+        },
+        "src/freedreno/radish/rd_memory.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_memory.c",
+          "bytes": 6238,
+          "sha256": "210d76aecc691fefb8765c60fa677f273a4c4d8f6aac4aa2239ed0f78b8cc9f8"
+        },
+        "src/freedreno/radish/rd_sampling.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_sampling.c",
+          "bytes": 6391,
+          "sha256": "2e1832d37ce206d98d7d8c778c231e19565c0d810b133c56ed46af107b360599"
+        },
+        "src/freedreno/radish/rd_query.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_query.c",
+          "bytes": 14017,
+          "sha256": "8f83148f39b51411963dd2b201979f0e7d94f496a3e34b81601278bcdf622978"
+        },
+        "src/freedreno/radish/rd_nir_resources.h": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_nir_resources.h",
+          "bytes": 953,
+          "sha256": "0afa75cc3e1c856496b4b52b6c65eca90ac751cbefaf807e3af1421fbca93599"
+        },
+        "src/freedreno/radish/rd_event.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_event.c",
+          "bytes": 4999,
+          "sha256": "324cd260d6cb805d6b8548f9f518df1fba8110dd6bef25ae7f072c7ac17ac49c"
+        },
+        "src/freedreno/radish/rd_sampling.h": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_sampling.h",
+          "bytes": 1096,
+          "sha256": "541a70b8aca605c0719aa03d551241da16136d6a17ff801bb5d379d7e6d86932"
+        },
+        "src/freedreno/radish/rd_queue.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_queue.c",
+          "bytes": 45229,
+          "sha256": "da170e7c4d4a1fc9db0da5ded100376fab80b57fb70af2427a4ff81fbbdc4890"
+        },
+        "src/freedreno/radish/meson.build": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/meson.build",
+          "bytes": 1777,
+          "sha256": "8b5d6cd1839eb92a2dd9a0038ea3f1c9840935694b7acdfc36a1dd46714d732d"
+        },
+        "src/freedreno/radish/rd_instance.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_instance.c",
+          "bytes": 13859,
+          "sha256": "c5763ff7a03fed9a13aebf291eeae5c182cfb79eba83c1b839d74d67a0682bac"
+        },
+        "src/freedreno/radish/rd_resources.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_resources.c",
+          "bytes": 27624,
+          "sha256": "8c2c129bcc6129d910fd992a2563de1feae7e675619dc0fa571bd664fb380e3b"
+        },
+        "src/freedreno/radish/rd_nir_sampling.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_nir_sampling.c",
+          "bytes": 23572,
+          "sha256": "64bed3318324ec74b2dde5bd2fb3d9b8dc996eb4077d2d09daf1dc2aec6c0b7a"
+        },
+        "src/freedreno/radish/rd_image.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_image.c",
+          "bytes": 58716,
+          "sha256": "d37a73a0af9dab8a092f107bebaeb34fc7ac819070469639215e6b2f21814211"
+        },
+        "src/freedreno/radish/rd_device.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_device.c",
+          "bytes": 6266,
+          "sha256": "b47a9e92dbdcca9ef58f62066c03d3b10a6ba4cb795a7a737ccfe1c4e67021df"
+        },
+        "src/freedreno/radish/rd_private.h": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_private.h",
+          "bytes": 8794,
+          "sha256": "b4fd0b4017316865f92f740285bf900fb93fe59189f2bba658fb665d5bc91502"
+        },
+        "src/freedreno/radish/rd_pipeline.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_pipeline.c",
+          "bytes": 25832,
+          "sha256": "20b6542536c5c34b3e36799f8caf4ee5f3bb52ce5557a0ee1fa260182b2d97e7"
+        },
+        "src/freedreno/radish/rd_descriptor.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_descriptor.c",
+          "bytes": 17524,
+          "sha256": "b3cd22b2ace3540674a9cb98c55d4a9fcd62c1ffcb90fabe37fa478791ceb147"
+        }
+      },
+      "patches": [
+        {
+          "path": "/home/jethac/Projects/radish/radish/patches/0045-radish-required-blit-query.patch",
+          "bytes": 3947,
+          "sha256": "c6204710085b45cfbce3360d4e4786ffc57112000169afb10ac71ec6179ea29e"
+        },
+        {
+          "path": "/home/jethac/Projects/radish/radish/patches/0045-radish-required-vertex-query.patch",
+          "bytes": 2344,
+          "sha256": "5b4b6098f6647b20ddd8fc7c6f1a8d78bd1dd5221222c25e5146a29fdbbca970"
+        }
+      ]
+    }
+  },
+  "sources": {
+    "blit": {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/compute11-required-blit-query-0045/release.json",
+        "bytes": 3881,
+        "sha256": "d6cb7d1e691bb32507f820b457f842ff9e38c06cfa7aaab2cd110b9569d05eda"
+      },
+      "result": {
+        "status": "private source-only mandatory BLIT query correction; independent/source/host/actual query gates pending",
+        "baseline": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blit-query-0045/baseline/rd_image.c",
+          "bytes": 53639,
+          "sha256": "f9e2f1450640ea3610ff8fc0d9ca284524d51183d60413659d943767a8966f54"
+        },
+        "candidate": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blit-query-0045/candidate/rd_image.c",
+          "bytes": 56995,
+          "sha256": "8a31015d6ed3c91755e8f6c06e3d40c58131347cf0270c92bd998f7ce436aa1b"
+        },
+        "patch": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blit-query-0045/required-blit-query.patch",
+          "bytes": 3947,
+          "sha256": "c6204710085b45cfbce3360d4e4786ffc57112000169afb10ac71ec6179ea29e"
+        },
+        "sources": {
+          "test_common.h": {
+            "path": "/run/media/jethac/Shared/radish/compute11-required-blit-query-0045/probe/test_common.h",
+            "bytes": 684,
+            "sha256": "4b022481571560cd58577d1303955f8c96e72891a2647947daa607eb5fd93b2b"
+          },
+          "blit_query.c": {
+            "path": "/run/media/jethac/Shared/radish/compute11-required-blit-query-0045/probe/blit_query.c",
+            "bytes": 4606,
+            "sha256": "a55230c3f1c82cafa0f57ab3340bc6ae286b6ede8fc138281daec8e1a4a8b310"
+          }
+        },
+        "table": {
+          "path": "/run/media/jethac/Shared/radish/compute11-framebuffer-samples-0045/v1.1.126-formats.txt",
+          "bytes": 186297,
+          "sha256": "5c18a9811018f3ad99067523a120e1e6d8aeae90a53688f5d44b195d56ddedba"
+        },
+        "required_rows": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blit-query-0045/required-rows.json",
+          "bytes": 2753,
+          "sha256": "32c2587b400385c25e97f0dd5360354e3849abad26c5e2fc8e0fc3e36f5d8f64"
+        },
+        "mapping": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blit-query-0045/native-mappings.json",
+          "bytes": 3769,
+          "sha256": "f494ea8bfbef4a59a895dc99b0a2bd1a36c2c750397225b2f95402d6e06e8b87"
+        },
+        "table_indices": "SRC second feature column zero-based1, DST seventh zero-based6; sym1 unconditional only.47SRC/38DST, all38DST subset47SRC. Not optional sym2 rows or arbitrary format inflation.",
+        "source_backing": "All47 requiredSRC formats already have explicit nativeFD5 texture descriptors; all38 requiredDST belong to independently reviewed51 native color RB mappings. Reuse native format representation/filter/RB controls documented by prior compressed BLIT applicability and FD5 source. No new hardware or graphics-reservation assumption.",
+        "scope": "Adds only required optimal BLIT_SRC/DST query bits. Existing compressed BLIT_SRC, linear features, buffer features, COLOR/BLEND traits, image/query admission, views, sampling/shaders/allocations/guards unchanged. Legacy/core2/flags2 share exact path.",
+        "applicability": "Command-specific: CmdBlitImage is GRAPHICS-only in pinned registry, exposed queues COMPUTE-only. Required query traits remain mandatory; valid public blit execution domain empty. No unreachable internal blit engine or graphics call/test introduced. Core lookup independently required/implemented. No executed-blit qualification claim.",
+        "applicability_receipt": {
+          "path": "/run/media/jethac/Shared/radish/compute11-blit-applicability-0045/review.json",
+          "bytes": 1889,
+          "sha256": "efc9e6c3f496caec9a606ff0a6b8f4689c61748a0e518c55c76f6ba5f5142988"
+        },
+        "probe": "Reuses reviewed BLEND query helper58df +utility4b02 pattern;47required SRC/38ofthose DST+3unsupported negative controls, legacy/core2 equality; physical queries only, no VkDevice/memory/commands/graphics objects.",
+        "limitations": "No full Vulkan/formats/blit or general sRGB precision conformance claim. All42 strict sRGB failure observations retained. Selected inference fcd/d332 untouched.",
+        "licenses": "Matched Mesa MIT source snapshots retain original license/copyright; no runtime dependency."
+      }
+    },
+    "vertex": {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-query-0045/release.json",
+        "bytes": 4123,
+        "sha256": "de09922278d9b962cf83305e4cf377a556dcbb3151116f279bc8071673d94c2a"
+      },
+      "result": {
+        "status": "private exact required VERTEX_BUFFER query trait correction; independent/host/actual pending",
+        "patch": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-query-0045/required-vertex-query.patch",
+          "bytes": 2344,
+          "sha256": "5b4b6098f6647b20ddd8fc7c6f1a8d78bd1dd5221222c25e5146a29fdbbca970"
+        },
+        "baseline": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-query-0045/baseline/rd_image.c",
+          "bytes": 56995,
+          "sha256": "8a31015d6ed3c91755e8f6c06e3d40c58131347cf0270c92bd998f7ce436aa1b"
+        },
+        "candidate": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-query-0045/candidate/rd_image.c",
+          "bytes": 58716,
+          "sha256": "d37a73a0af9dab8a092f107bebaeb34fc7ac819070469639215e6b2f21814211"
+        },
+        "sources": {
+          "test_common.h": {
+            "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-query-0045/probe/test_common.h",
+            "bytes": 684,
+            "sha256": "4b022481571560cd58577d1303955f8c96e72891a2647947daa607eb5fd93b2b"
+          },
+          "vertex_query.c": {
+            "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-query-0045/probe/vertex_query.c",
+            "bytes": 3896,
+            "sha256": "25d07394b23d849df44c8db4dde70aa8edd810b27e43a0c424b5014b6be86a93"
+          }
+        },
+        "table": {
+          "path": "/run/media/jethac/Shared/radish/compute11-framebuffer-samples-0045/v1.1.126-formats.txt",
+          "bytes": 186297,
+          "sha256": "5c18a9811018f3ad99067523a120e1e6d8aeae90a53688f5d44b195d56ddedba"
+        },
+        "table_index": "VERTEX_BUFFER tenth feature column zero-based9, exact45 unconditional sym1 rows; ignoresoptional/blank rows.",
+        "required_rows": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-query-0045/required-rows.json",
+          "bytes": 1315,
+          "sha256": "eb95582269e6de5c9bff8612cb35c5741fde6de53740daadfbc844c954a495d7"
+        },
+        "native_mapping": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-query-0045/native-mappings.json",
+          "bytes": 7230,
+          "sha256": "722a241440e179dfab7ea4bc50b2db91c6795b249e12305b52cdb0b62534b761"
+        },
+        "implementation": "One exact45-format predicate sets bufferFeatures VERTEX_BUFFER only; imagefeatures/usage/creation/view/format/allocations/shaders unchanged. Separate from nativeTFMT predicate so required RGB32 threechannel vertex formats are included. BLEND and BLIT patches must apply first in composed source.",
+        "backing": "All45 exact Vulkan little-endian format mappings resolve to non-NONE VT/V_ VFMT5 entries in matched fd5_format.c. A8B8G8R8 packed32 aliases R8G8B8A8 and A2B10G10R10 aliases R10G10B10A2. No sRGB vertex or optionaldouble/packed16 extras inferred. Native VFD fetch converts16bit inputs to shader domain without claiming optionalshaderFloat16/Int16 arithmetic.",
+        "public_scope": "49physical queries, legacy/core2 equality;45positives+SRGB/depth/compressed/64bit negatives. No VkDevice, graphics constructors, commands, memoryorvertexexecution. Current valid graphicsexecutiondomain empty since no GRAPHICSqueue; requiredquerytrait notwaived.",
+        "limitations": "Query property/native-representation proof only, not graphics execution, generalformat/fullVulkan conformance. AllstrictsRGBfailures remain; fcd/d332 unchanged.",
+        "provenance": {
+          "fd5_format.c": {
+            "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-query-0045/provenance/fd5_format.c",
+            "bytes": 17594,
+            "sha256": "8d51438586612313bf6f65fe07eae0950c10ce8df4f695fbe568929a8102c7a7"
+          },
+          "u_format_gen.h": {
+            "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-query-0045/provenance/u_format_gen.h",
+            "bytes": 124574,
+            "sha256": "3d659e5135249d5a0a116aa209015949912e22045bf4b13ea0ab41fd743c7dc4"
+          },
+          "vk_format.c": {
+            "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-query-0045/provenance/vk_format.c",
+            "bytes": 43073,
+            "sha256": "915632f8bb07c8767df3439728c27cfa4dbfd2b64c6342b36000090f5d0a9530"
+          }
+        },
+        "license": "Matched Mesa MIT source originals preserved; no new runtime dependency or codeengine."
+      }
+    }
+  },
+  "source_reviews": {
+    "blit": {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/compute11-required-blit-query-0045/independent-source-consumer-review.json",
+        "bytes": 10162,
+        "sha256": "6d545233c993383d9549b753784a261064c5b4693c67aadfa76a7f6b930314fb"
+      },
+      "result": {
+        "status": "PASS finite required BLIT query source/consumer counterpart",
+        "release_sha256": "d6cb7d1e691bb32507f820b457f842ff9e38c06cfa7aaab2cd110b9569d05eda",
+        "patch_sha256": "c6204710085b45cfbce3360d4e4786ffc57112000169afb10ac71ec6179ea29e",
+        "required_SRC47": [
+          "VK_FORMAT_A1R5G5B5_UNORM_PACK16",
+          "VK_FORMAT_A2B10G10R10_UINT_PACK32",
+          "VK_FORMAT_A2B10G10R10_UNORM_PACK32",
+          "VK_FORMAT_A8B8G8R8_SINT_PACK32",
+          "VK_FORMAT_A8B8G8R8_SNORM_PACK32",
+          "VK_FORMAT_A8B8G8R8_SRGB_PACK32",
+          "VK_FORMAT_A8B8G8R8_UINT_PACK32",
+          "VK_FORMAT_A8B8G8R8_UNORM_PACK32",
+          "VK_FORMAT_B10G11R11_UFLOAT_PACK32",
+          "VK_FORMAT_B4G4R4A4_UNORM_PACK16",
+          "VK_FORMAT_B8G8R8A8_SRGB",
+          "VK_FORMAT_B8G8R8A8_UNORM",
+          "VK_FORMAT_D16_UNORM",
+          "VK_FORMAT_D32_SFLOAT",
+          "VK_FORMAT_E5B9G9R9_UFLOAT_PACK32",
+          "VK_FORMAT_R16G16B16A16_SFLOAT",
+          "VK_FORMAT_R16G16B16A16_SINT",
+          "VK_FORMAT_R16G16B16A16_UINT",
+          "VK_FORMAT_R16G16_SFLOAT",
+          "VK_FORMAT_R16G16_SINT",
+          "VK_FORMAT_R16G16_UINT",
+          "VK_FORMAT_R16_SFLOAT",
+          "VK_FORMAT_R16_SINT",
+          "VK_FORMAT_R16_UINT",
+          "VK_FORMAT_R32G32B32A32_SFLOAT",
+          "VK_FORMAT_R32G32B32A32_SINT",
+          "VK_FORMAT_R32G32B32A32_UINT",
+          "VK_FORMAT_R32G32_SFLOAT",
+          "VK_FORMAT_R32G32_SINT",
+          "VK_FORMAT_R32G32_UINT",
+          "VK_FORMAT_R32_SFLOAT",
+          "VK_FORMAT_R32_SINT",
+          "VK_FORMAT_R32_UINT",
+          "VK_FORMAT_R5G6B5_UNORM_PACK16",
+          "VK_FORMAT_R8G8B8A8_SINT",
+          "VK_FORMAT_R8G8B8A8_SNORM",
+          "VK_FORMAT_R8G8B8A8_SRGB",
+          "VK_FORMAT_R8G8B8A8_UINT",
+          "VK_FORMAT_R8G8B8A8_UNORM",
+          "VK_FORMAT_R8G8_SINT",
+          "VK_FORMAT_R8G8_SNORM",
+          "VK_FORMAT_R8G8_UINT",
+          "VK_FORMAT_R8G8_UNORM",
+          "VK_FORMAT_R8_SINT",
+          "VK_FORMAT_R8_SNORM",
+          "VK_FORMAT_R8_UINT",
+          "VK_FORMAT_R8_UNORM"
+        ],
+        "required_DST38": [
+          "VK_FORMAT_A1R5G5B5_UNORM_PACK16",
+          "VK_FORMAT_A2B10G10R10_UINT_PACK32",
+          "VK_FORMAT_A2B10G10R10_UNORM_PACK32",
+          "VK_FORMAT_A8B8G8R8_SINT_PACK32",
+          "VK_FORMAT_A8B8G8R8_SRGB_PACK32",
+          "VK_FORMAT_A8B8G8R8_UINT_PACK32",
+          "VK_FORMAT_A8B8G8R8_UNORM_PACK32",
+          "VK_FORMAT_B8G8R8A8_SRGB",
+          "VK_FORMAT_B8G8R8A8_UNORM",
+          "VK_FORMAT_R16G16B16A16_SFLOAT",
+          "VK_FORMAT_R16G16B16A16_SINT",
+          "VK_FORMAT_R16G16B16A16_UINT",
+          "VK_FORMAT_R16G16_SFLOAT",
+          "VK_FORMAT_R16G16_SINT",
+          "VK_FORMAT_R16G16_UINT",
+          "VK_FORMAT_R16_SFLOAT",
+          "VK_FORMAT_R16_SINT",
+          "VK_FORMAT_R16_UINT",
+          "VK_FORMAT_R32G32B32A32_SFLOAT",
+          "VK_FORMAT_R32G32B32A32_SINT",
+          "VK_FORMAT_R32G32B32A32_UINT",
+          "VK_FORMAT_R32G32_SFLOAT",
+          "VK_FORMAT_R32G32_SINT",
+          "VK_FORMAT_R32G32_UINT",
+          "VK_FORMAT_R32_SFLOAT",
+          "VK_FORMAT_R32_SINT",
+          "VK_FORMAT_R32_UINT",
+          "VK_FORMAT_R5G6B5_UNORM_PACK16",
+          "VK_FORMAT_R8G8B8A8_SINT",
+          "VK_FORMAT_R8G8B8A8_SRGB",
+          "VK_FORMAT_R8G8B8A8_UINT",
+          "VK_FORMAT_R8G8B8A8_UNORM",
+          "VK_FORMAT_R8G8_SINT",
+          "VK_FORMAT_R8G8_UINT",
+          "VK_FORMAT_R8G8_UNORM",
+          "VK_FORMAT_R8_SINT",
+          "VK_FORMAT_R8_UINT",
+          "VK_FORMAT_R8_UNORM"
+        ],
+        "independent_existing_Radish_TFMT_mapping": {
+          "VK_FORMAT_B4G4R4A4_UNORM_PACK16": {
+            "existing_Radish_TFMT": "TFMT5_4_4_4_4_UNORM",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R8_UINT": {
+            "existing_Radish_TFMT": "TFMT5_8_UINT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R8G8B8A8_SNORM": {
+            "existing_Radish_TFMT": "TFMT5_8_8_8_8_SNORM",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R8_SINT": {
+            "existing_Radish_TFMT": "TFMT5_8_SINT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R16_UINT": {
+            "existing_Radish_TFMT": "TFMT5_16_UINT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R8G8_SINT": {
+            "existing_Radish_TFMT": "TFMT5_8_8_SINT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R32G32_SINT": {
+            "existing_Radish_TFMT": "TFMT5_32_32_SINT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_A8B8G8R8_SNORM_PACK32": {
+            "existing_Radish_TFMT": "TFMT5_8_8_8_8_SNORM",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R16G16B16A16_UINT": {
+            "existing_Radish_TFMT": "TFMT5_16_16_16_16_UINT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_A2B10G10R10_UNORM_PACK32": {
+            "existing_Radish_TFMT": "TFMT5_10_10_10_2_UNORM",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R16G16B16A16_SINT": {
+            "existing_Radish_TFMT": "TFMT5_16_16_16_16_SINT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R32_UINT": {
+            "existing_Radish_TFMT": "TFMT5_32_UINT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R16_SINT": {
+            "existing_Radish_TFMT": "TFMT5_16_SINT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R16_SFLOAT": {
+            "existing_Radish_TFMT": "TFMT5_16_FLOAT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R16G16B16A16_SFLOAT": {
+            "existing_Radish_TFMT": "TFMT5_16_16_16_16_FLOAT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R8_UNORM": {
+            "existing_Radish_TFMT": "TFMT5_8_UNORM",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R32G32B32A32_UINT": {
+            "existing_Radish_TFMT": "TFMT5_32_32_32_32_UINT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_E5B9G9R9_UFLOAT_PACK32": {
+            "existing_Radish_TFMT": "TFMT5_9_9_9_E5_FLOAT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R32G32B32A32_SINT": {
+            "existing_Radish_TFMT": "TFMT5_32_32_32_32_SINT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R8G8_UNORM": {
+            "existing_Radish_TFMT": "TFMT5_8_8_UNORM",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_B8G8R8A8_UNORM": {
+            "existing_Radish_TFMT": "TFMT5_8_8_8_8_UNORM",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_D32_SFLOAT": {
+            "existing_Radish_TFMT": "TFMT5_32_FLOAT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R16G16_UINT": {
+            "existing_Radish_TFMT": "TFMT5_16_16_UINT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_A8B8G8R8_SRGB_PACK32": {
+            "existing_Radish_TFMT": "TFMT5_8_8_8_8_UNORM",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_A1R5G5B5_UNORM_PACK16": {
+            "existing_Radish_TFMT": "TFMT5_5_5_5_1_UNORM",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R8_SNORM": {
+            "existing_Radish_TFMT": "TFMT5_8_SNORM",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R8G8_UINT": {
+            "existing_Radish_TFMT": "TFMT5_8_8_UINT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_B8G8R8A8_SRGB": {
+            "existing_Radish_TFMT": "TFMT5_8_8_8_8_UNORM",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R5G6B5_UNORM_PACK16": {
+            "existing_Radish_TFMT": "TFMT5_5_6_5_UNORM",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R8G8B8A8_UNORM": {
+            "existing_Radish_TFMT": "TFMT5_8_8_8_8_UNORM",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R32_SINT": {
+            "existing_Radish_TFMT": "TFMT5_32_SINT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R32_SFLOAT": {
+            "existing_Radish_TFMT": "TFMT5_32_FLOAT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_A8B8G8R8_UNORM_PACK32": {
+            "existing_Radish_TFMT": "TFMT5_8_8_8_8_UNORM",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_D16_UNORM": {
+            "existing_Radish_TFMT": "TFMT5_16_UNORM",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R16G16_SINT": {
+            "existing_Radish_TFMT": "TFMT5_16_16_SINT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R32G32_UINT": {
+            "existing_Radish_TFMT": "TFMT5_32_32_UINT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R8G8B8A8_UINT": {
+            "existing_Radish_TFMT": "TFMT5_8_8_8_8_UINT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_A8B8G8R8_UINT_PACK32": {
+            "existing_Radish_TFMT": "TFMT5_8_8_8_8_UINT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R8G8B8A8_SINT": {
+            "existing_Radish_TFMT": "TFMT5_8_8_8_8_SINT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_A8B8G8R8_SINT_PACK32": {
+            "existing_Radish_TFMT": "TFMT5_8_8_8_8_SINT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R8G8B8A8_SRGB": {
+            "existing_Radish_TFMT": "TFMT5_8_8_8_8_UNORM",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R16G16_SFLOAT": {
+            "existing_Radish_TFMT": "TFMT5_16_16_FLOAT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R32G32_SFLOAT": {
+            "existing_Radish_TFMT": "TFMT5_32_32_FLOAT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_A2B10G10R10_UINT_PACK32": {
+            "existing_Radish_TFMT": "TFMT5_10_10_10_2_UINT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R32G32B32A32_SFLOAT": {
+            "existing_Radish_TFMT": "TFMT5_32_32_32_32_FLOAT",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_R8G8_SNORM": {
+            "existing_Radish_TFMT": "TFMT5_8_8_SNORM",
+            "native_FD5_format_present": true
+          },
+          "VK_FORMAT_B10G11R11_UFLOAT_PACK32": {
+            "existing_Radish_TFMT": "TFMT5_11_11_10_FLOAT",
+            "native_FD5_format_present": true
+          }
+        },
+        "Radish_source_pin": {
+          "path": "/run/media/jethac/Shared/radish/compute11-snorm-storage-fix-0045/candidate/rd_resources.c",
+          "sha256": "1c2ef719892178591d49fcb9f6623be1e32ade4e489633bde53da2407dd4a157"
+        },
+        "exact_source_diff": true,
+        "scope": "Only optimal query bits; all SRC have nativeTFMT, all DST reviewednativeCOLOR/RB. Compressed SRC, image/view/admission/allocator/shader/guards unchanged. Legacy/core2 helper arrays and destination booleans exactly reproduce pinned unconditional table columns.",
+        "valid_domain": "CmdBlitImage GRAPHICS-only with no exposed GRAPHICS queue; actual execution domain empty, mandatory query traits remain. No blit implementation/executed blit or general precision claim.",
+        "probe": "50physicalqueries, no device/memory/commands/graphicsobjects. CurrentdirectICD route is not publicloaderglobalqualification."
+      }
+    },
+    "vertex": {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-query-0045/independent-source-consumer-review.json",
+        "bytes": 11310,
+        "sha256": "756f50db350415b1ba754888e62f2ba6af894fbf40a4c42217956fc1103feabd"
+      },
+      "result": {
+        "status": "PASS finite required VERTEX_BUFFER source/consumer counterpart",
+        "release_sha256": "de09922278d9b962cf83305e4cf377a556dcbb3151116f279bc8071673d94c2a",
+        "patch_sha256": "5b4b6098f6647b20ddd8fc7c6f1a8d78bd1dd5221222c25e5146a29fdbbca970",
+        "required45": [
+          "VK_FORMAT_A2B10G10R10_UNORM_PACK32",
+          "VK_FORMAT_A8B8G8R8_SINT_PACK32",
+          "VK_FORMAT_A8B8G8R8_SNORM_PACK32",
+          "VK_FORMAT_A8B8G8R8_UINT_PACK32",
+          "VK_FORMAT_A8B8G8R8_UNORM_PACK32",
+          "VK_FORMAT_B8G8R8A8_UNORM",
+          "VK_FORMAT_R16G16B16A16_SFLOAT",
+          "VK_FORMAT_R16G16B16A16_SINT",
+          "VK_FORMAT_R16G16B16A16_SNORM",
+          "VK_FORMAT_R16G16B16A16_UINT",
+          "VK_FORMAT_R16G16B16A16_UNORM",
+          "VK_FORMAT_R16G16_SFLOAT",
+          "VK_FORMAT_R16G16_SINT",
+          "VK_FORMAT_R16G16_SNORM",
+          "VK_FORMAT_R16G16_UINT",
+          "VK_FORMAT_R16G16_UNORM",
+          "VK_FORMAT_R16_SFLOAT",
+          "VK_FORMAT_R16_SINT",
+          "VK_FORMAT_R16_SNORM",
+          "VK_FORMAT_R16_UINT",
+          "VK_FORMAT_R16_UNORM",
+          "VK_FORMAT_R32G32B32A32_SFLOAT",
+          "VK_FORMAT_R32G32B32A32_SINT",
+          "VK_FORMAT_R32G32B32A32_UINT",
+          "VK_FORMAT_R32G32B32_SFLOAT",
+          "VK_FORMAT_R32G32B32_SINT",
+          "VK_FORMAT_R32G32B32_UINT",
+          "VK_FORMAT_R32G32_SFLOAT",
+          "VK_FORMAT_R32G32_SINT",
+          "VK_FORMAT_R32G32_UINT",
+          "VK_FORMAT_R32_SFLOAT",
+          "VK_FORMAT_R32_SINT",
+          "VK_FORMAT_R32_UINT",
+          "VK_FORMAT_R8G8B8A8_SINT",
+          "VK_FORMAT_R8G8B8A8_SNORM",
+          "VK_FORMAT_R8G8B8A8_UINT",
+          "VK_FORMAT_R8G8B8A8_UNORM",
+          "VK_FORMAT_R8G8_SINT",
+          "VK_FORMAT_R8G8_SNORM",
+          "VK_FORMAT_R8G8_UINT",
+          "VK_FORMAT_R8G8_UNORM",
+          "VK_FORMAT_R8_SINT",
+          "VK_FORMAT_R8_SNORM",
+          "VK_FORMAT_R8_UINT",
+          "VK_FORMAT_R8_UNORM"
+        ],
+        "independent_little_endian_VFD_mapping": {
+          "VK_FORMAT_R8_UINT": {
+            "vk_format": "VK_FORMAT_R8_UINT",
+            "pipe_format": "R8_UINT",
+            "format": "VFMT5_8_UINT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R8G8B8A8_SNORM": {
+            "vk_format": "VK_FORMAT_R8G8B8A8_SNORM",
+            "pipe_format": "R8G8B8A8_SNORM",
+            "format": "VFMT5_8_8_8_8_SNORM",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R8_SINT": {
+            "vk_format": "VK_FORMAT_R8_SINT",
+            "pipe_format": "R8_SINT",
+            "format": "VFMT5_8_SINT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R16_UINT": {
+            "vk_format": "VK_FORMAT_R16_UINT",
+            "pipe_format": "R16_UINT",
+            "format": "VFMT5_16_UINT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R8G8_SINT": {
+            "vk_format": "VK_FORMAT_R8G8_SINT",
+            "pipe_format": "R8G8_SINT",
+            "format": "VFMT5_8_8_SINT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R32G32_SINT": {
+            "vk_format": "VK_FORMAT_R32G32_SINT",
+            "pipe_format": "R32G32_SINT",
+            "format": "VFMT5_32_32_SINT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_A8B8G8R8_SNORM_PACK32": {
+            "vk_format": "VK_FORMAT_A8B8G8R8_SNORM_PACK32",
+            "pipe_format": "R8G8B8A8_SNORM",
+            "format": "VFMT5_8_8_8_8_SNORM",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R16G16B16A16_UINT": {
+            "vk_format": "VK_FORMAT_R16G16B16A16_UINT",
+            "pipe_format": "R16G16B16A16_UINT",
+            "format": "VFMT5_16_16_16_16_UINT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_A2B10G10R10_UNORM_PACK32": {
+            "vk_format": "VK_FORMAT_A2B10G10R10_UNORM_PACK32",
+            "pipe_format": "R10G10B10A2_UNORM",
+            "format": "VFMT5_10_10_10_2_UNORM",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R16G16B16A16_SINT": {
+            "vk_format": "VK_FORMAT_R16G16B16A16_SINT",
+            "pipe_format": "R16G16B16A16_SINT",
+            "format": "VFMT5_16_16_16_16_SINT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R32_UINT": {
+            "vk_format": "VK_FORMAT_R32_UINT",
+            "pipe_format": "R32_UINT",
+            "format": "VFMT5_32_UINT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R16_SINT": {
+            "vk_format": "VK_FORMAT_R16_SINT",
+            "pipe_format": "R16_SINT",
+            "format": "VFMT5_16_SINT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R16_SFLOAT": {
+            "vk_format": "VK_FORMAT_R16_SFLOAT",
+            "pipe_format": "R16_FLOAT",
+            "format": "VFMT5_16_FLOAT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R16G16B16A16_SNORM": {
+            "vk_format": "VK_FORMAT_R16G16B16A16_SNORM",
+            "pipe_format": "R16G16B16A16_SNORM",
+            "format": "VFMT5_16_16_16_16_SNORM",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R16G16B16A16_SFLOAT": {
+            "vk_format": "VK_FORMAT_R16G16B16A16_SFLOAT",
+            "pipe_format": "R16G16B16A16_FLOAT",
+            "format": "VFMT5_16_16_16_16_FLOAT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R8_UNORM": {
+            "vk_format": "VK_FORMAT_R8_UNORM",
+            "pipe_format": "R8_UNORM",
+            "format": "VFMT5_8_UNORM",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R32G32B32A32_UINT": {
+            "vk_format": "VK_FORMAT_R32G32B32A32_UINT",
+            "pipe_format": "R32G32B32A32_UINT",
+            "format": "VFMT5_32_32_32_32_UINT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R32G32B32A32_SINT": {
+            "vk_format": "VK_FORMAT_R32G32B32A32_SINT",
+            "pipe_format": "R32G32B32A32_SINT",
+            "format": "VFMT5_32_32_32_32_SINT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R32G32B32_SINT": {
+            "vk_format": "VK_FORMAT_R32G32B32_SINT",
+            "pipe_format": "R32G32B32_SINT",
+            "format": "VFMT5_32_32_32_SINT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R8G8_UNORM": {
+            "vk_format": "VK_FORMAT_R8G8_UNORM",
+            "pipe_format": "R8G8_UNORM",
+            "format": "VFMT5_8_8_UNORM",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_B8G8R8A8_UNORM": {
+            "vk_format": "VK_FORMAT_B8G8R8A8_UNORM",
+            "pipe_format": "B8G8R8A8_UNORM",
+            "format": "VFMT5_8_8_8_8_UNORM",
+            "kind": "VT",
+            "swap": "WXYZ"
+          },
+          "VK_FORMAT_R16_UNORM": {
+            "vk_format": "VK_FORMAT_R16_UNORM",
+            "pipe_format": "R16_UNORM",
+            "format": "VFMT5_16_UNORM",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R16G16_UINT": {
+            "vk_format": "VK_FORMAT_R16G16_UINT",
+            "pipe_format": "R16G16_UINT",
+            "format": "VFMT5_16_16_UINT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R16G16_SNORM": {
+            "vk_format": "VK_FORMAT_R16G16_SNORM",
+            "pipe_format": "R16G16_SNORM",
+            "format": "VFMT5_16_16_SNORM",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R8_SNORM": {
+            "vk_format": "VK_FORMAT_R8_SNORM",
+            "pipe_format": "R8_SNORM",
+            "format": "VFMT5_8_SNORM",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R8G8_UINT": {
+            "vk_format": "VK_FORMAT_R8G8_UINT",
+            "pipe_format": "R8G8_UINT",
+            "format": "VFMT5_8_8_UINT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R16_SNORM": {
+            "vk_format": "VK_FORMAT_R16_SNORM",
+            "pipe_format": "R16_SNORM",
+            "format": "VFMT5_16_SNORM",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R8G8B8A8_UNORM": {
+            "vk_format": "VK_FORMAT_R8G8B8A8_UNORM",
+            "pipe_format": "R8G8B8A8_UNORM",
+            "format": "VFMT5_8_8_8_8_UNORM",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R32_SINT": {
+            "vk_format": "VK_FORMAT_R32_SINT",
+            "pipe_format": "R32_SINT",
+            "format": "VFMT5_32_SINT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R32_SFLOAT": {
+            "vk_format": "VK_FORMAT_R32_SFLOAT",
+            "pipe_format": "R32_FLOAT",
+            "format": "VFMT5_32_FLOAT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R32G32B32_UINT": {
+            "vk_format": "VK_FORMAT_R32G32B32_UINT",
+            "pipe_format": "R32G32B32_UINT",
+            "format": "VFMT5_32_32_32_UINT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_A8B8G8R8_UNORM_PACK32": {
+            "vk_format": "VK_FORMAT_A8B8G8R8_UNORM_PACK32",
+            "pipe_format": "R8G8B8A8_UNORM",
+            "format": "VFMT5_8_8_8_8_UNORM",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R16G16_SINT": {
+            "vk_format": "VK_FORMAT_R16G16_SINT",
+            "pipe_format": "R16G16_SINT",
+            "format": "VFMT5_16_16_SINT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R32G32_UINT": {
+            "vk_format": "VK_FORMAT_R32G32_UINT",
+            "pipe_format": "R32G32_UINT",
+            "format": "VFMT5_32_32_UINT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R16G16_UNORM": {
+            "vk_format": "VK_FORMAT_R16G16_UNORM",
+            "pipe_format": "R16G16_UNORM",
+            "format": "VFMT5_16_16_UNORM",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R8G8B8A8_UINT": {
+            "vk_format": "VK_FORMAT_R8G8B8A8_UINT",
+            "pipe_format": "R8G8B8A8_UINT",
+            "format": "VFMT5_8_8_8_8_UINT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R32G32B32_SFLOAT": {
+            "vk_format": "VK_FORMAT_R32G32B32_SFLOAT",
+            "pipe_format": "R32G32B32_FLOAT",
+            "format": "VFMT5_32_32_32_FLOAT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_A8B8G8R8_UINT_PACK32": {
+            "vk_format": "VK_FORMAT_A8B8G8R8_UINT_PACK32",
+            "pipe_format": "R8G8B8A8_UINT",
+            "format": "VFMT5_8_8_8_8_UINT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R8G8B8A8_SINT": {
+            "vk_format": "VK_FORMAT_R8G8B8A8_SINT",
+            "pipe_format": "R8G8B8A8_SINT",
+            "format": "VFMT5_8_8_8_8_SINT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_A8B8G8R8_SINT_PACK32": {
+            "vk_format": "VK_FORMAT_A8B8G8R8_SINT_PACK32",
+            "pipe_format": "R8G8B8A8_SINT",
+            "format": "VFMT5_8_8_8_8_SINT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R16G16_SFLOAT": {
+            "vk_format": "VK_FORMAT_R16G16_SFLOAT",
+            "pipe_format": "R16G16_FLOAT",
+            "format": "VFMT5_16_16_FLOAT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R32G32_SFLOAT": {
+            "vk_format": "VK_FORMAT_R32G32_SFLOAT",
+            "pipe_format": "R32G32_FLOAT",
+            "format": "VFMT5_32_32_FLOAT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R16G16B16A16_UNORM": {
+            "vk_format": "VK_FORMAT_R16G16B16A16_UNORM",
+            "pipe_format": "R16G16B16A16_UNORM",
+            "format": "VFMT5_16_16_16_16_UNORM",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R32G32B32A32_SFLOAT": {
+            "vk_format": "VK_FORMAT_R32G32B32A32_SFLOAT",
+            "pipe_format": "R32G32B32A32_FLOAT",
+            "format": "VFMT5_32_32_32_32_FLOAT",
+            "kind": "VT",
+            "swap": "WZYX"
+          },
+          "VK_FORMAT_R8G8_SNORM": {
+            "vk_format": "VK_FORMAT_R8G8_SNORM",
+            "pipe_format": "R8G8_SNORM",
+            "format": "VFMT5_8_8_SNORM",
+            "kind": "VT",
+            "swap": "WZYX"
+          }
+        },
+        "exact_source_diff": true,
+        "scope": "Only bufferFeatures VERTEX_BUFFER for45 exact unconditional rows; image features/admission/allocations/shaders unchanged. Correct little-endian packed aliases, RGB32three-channel formats use nativeVFD despite no nativeRB. No SRGB/double arithmetic inference.",
+        "probe": "45positive+4negative physicalqueries/legacy-core2 equality, no device, memory, graphicsobjects or commands. Hardware-backed querytraits only, no graphics execution/fullconformance claim."
+      }
+    }
+  },
+  "host_reviews": {
+    "blit": {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/compute11-required-blit-query-0045/independent-host-build-review.json",
+        "bytes": 1340,
+        "sha256": "76cff79d48ba95d7554d4161dc7e60c0454e3946066d454e23563c4d33d792cb"
+      },
+      "result": {
+        "status": "PASS finite source/build pairing; source counterpart and actual query separate",
+        "driver": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blit-build-0045/libvulkan_radish.so",
+          "bytes": 49079352,
+          "sha256": "a9a36918c6dd2b1a42aceb1c8be3f8f4f566c7a1959befc548c15ae742fb4a14"
+        },
+        "helper": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blit-helper-build-0045/probe/blit_query",
+          "bytes": 154824,
+          "sha256": "1e5ed1e63d48e963c4f1d17b091c2245a4d5f16526f2d728128c76b16265477c"
+        },
+        "patch": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blit-query-0045/required-blit-query.patch",
+          "bytes": 3947,
+          "sha256": "c6204710085b45cfbce3360d4e4786ffc57112000169afb10ac71ec6179ea29e"
+        },
+        "source_changes_vs8298": [
+          "src/freedreno/radish/rd_image.c"
+        ],
+        "all_source_records_rehashed": 25,
+        "checks": [
+          "Exactcandidate8a310 onlyimagequerysourcechanged; allotherBLEND8298 sourcebytes exact",
+          "ExactC a552 andutility4b02, AArch64 ELF183, no privateRadishhelperheaders",
+          "Onlyrequired47SRC/38DST optimalquerytraits; no shader/ABI/imageadmission/guardchanges"
+        ],
+        "limitations": "No device/commands or executed blit claim. Command-specific graphics-onlydomain basis efc9 unchanged; formalconformance and strictsRGB failures remain."
+      }
+    },
+    "vertex": {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-query-0045/independent-host-build-review.json",
+        "bytes": 1276,
+        "sha256": "4597d93028c700a0f88ab91f93311acfe619072f14bfd3ec941794e320d53bf6"
+      },
+      "result": {
+        "status": "PASS final BLEND+BLIT+VERTEX source/buildpairing; actualquerypending",
+        "driver": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/libvulkan_radish.so",
+          "bytes": 49079616,
+          "sha256": "f222ff480f6c9ef3785c446661f12ccacbc91f119b0e7d405347b949b4dc325d"
+        },
+        "helper": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-helper-build-0045/probe/vertex_query",
+          "bytes": 153776,
+          "sha256": "a851a9df933a50255e3b2c9c485d17e1e8266eb3dd75f6308f1075083abadcba"
+        },
+        "patch": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-query-0045/required-vertex-query.patch",
+          "bytes": 2344,
+          "sha256": "5b4b6098f6647b20ddd8fc7c6f1a8d78bd1dd5221222c25e5146a29fdbbca970"
+        },
+        "changed_vsBLITa9a3": [
+          "src/freedreno/radish/rd_image.c"
+        ],
+        "all_source_records_rehashed": 25,
+        "checks": [
+          "Exactimage8a310\u2192d37a onlyVertexquerytraitdiff; allotherBLIT/BLENDsourcebytesunchanged",
+          "Publichelper25d0/4b02 exact, both ELF183, noprivateheaders",
+          "Batch756f45row little-endian/nativeVFDsourcecounterpartPASS"
+        ],
+        "limitations": "Query/native-representation evidence only; no graphicsobjects/commands/vertexexecution. ExistingstrictsRGBfailures unchanged."
+      }
+    }
+  },
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-query-0045/independent-paired-actual-review.json",
+      "bytes": 8853,
+      "sha256": "f8f895aeea6280d984437eb083fc3db547c18bf1c8bd7ba6b7d7f29e89b40aba"
+    },
+    "result": {
+      "status": "PASS finite paired requiredphysicalformatquery actual",
+      "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-required-blit-vertex-query/probe",
+      "log": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-required-blit-vertex-query/probe/run.log",
+        "bytes": 11305,
+        "sha256": "44c7c1c7f44e15744f3a2e1d50ca22ae13db01064b6cb66d4ed7b6dd7c7b078f"
+      },
+      "checks": [
+        "50BLIT rows:47SRCpositives,38ofthoseDSTpositives,3unsupportednegatives",
+        "49VERTEX rows:45native-backedpositives,4SRGB/depth/compressed/64bitnegatives",
+        "Legacy/core2 equality and optimal-vs-buffer/lineartraitseparation asserted for everyrow",
+        "No VkDevice/memory/graphicsobjects/commands/rendering/blitting/vertexexecution; publicphysicalqueries only",
+        "Exit0 andfaultcheckPASS; f222finalquerycandidate frozen, inferenceunchanged"
+      ],
+      "counts": {
+        "blit_src": 47,
+        "blit_dst": 38,
+        "blit_negative": 3,
+        "vertex": 45,
+        "vertex_negative": 4
+      },
+      "blit_rows": [
+        [
+          "required",
+          "0",
+          "3",
+          "0000d401",
+          "0"
+        ],
+        [
+          "required",
+          "1",
+          "4",
+          "0000dd81",
+          "1"
+        ],
+        [
+          "required",
+          "2",
+          "8",
+          "0000dd81",
+          "1"
+        ],
+        [
+          "required",
+          "3",
+          "9",
+          "0000dd83",
+          "1"
+        ],
+        [
+          "required",
+          "4",
+          "10",
+          "0000d483",
+          "0"
+        ],
+        [
+          "required",
+          "5",
+          "13",
+          "0000cc83",
+          "1"
+        ],
+        [
+          "required",
+          "6",
+          "14",
+          "0000cc83",
+          "1"
+        ],
+        [
+          "required",
+          "7",
+          "16",
+          "0000dd83",
+          "1"
+        ],
+        [
+          "required",
+          "8",
+          "17",
+          "0000d483",
+          "0"
+        ],
+        [
+          "required",
+          "9",
+          "20",
+          "0000cc83",
+          "1"
+        ],
+        [
+          "required",
+          "10",
+          "21",
+          "0000cc83",
+          "1"
+        ],
+        [
+          "required",
+          "11",
+          "37",
+          "0000dd83",
+          "1"
+        ],
+        [
+          "required",
+          "12",
+          "38",
+          "0000d483",
+          "0"
+        ],
+        [
+          "required",
+          "13",
+          "41",
+          "0000cc83",
+          "1"
+        ],
+        [
+          "required",
+          "14",
+          "42",
+          "0000cc83",
+          "1"
+        ],
+        [
+          "required",
+          "15",
+          "43",
+          "0000dd81",
+          "1"
+        ],
+        [
+          "required",
+          "16",
+          "44",
+          "0000dd81",
+          "1"
+        ],
+        [
+          "required",
+          "17",
+          "50",
+          "0000dd81",
+          "1"
+        ],
+        [
+          "required",
+          "18",
+          "51",
+          "0000dd83",
+          "1"
+        ],
+        [
+          "required",
+          "19",
+          "52",
+          "0000d483",
+          "0"
+        ],
+        [
+          "required",
+          "20",
+          "55",
+          "0000cc83",
+          "1"
+        ],
+        [
+          "required",
+          "21",
+          "56",
+          "0000cc83",
+          "1"
+        ],
+        [
+          "required",
+          "22",
+          "57",
+          "0000dd81",
+          "1"
+        ],
+        [
+          "required",
+          "23",
+          "64",
+          "0000dd83",
+          "1"
+        ],
+        [
+          "required",
+          "24",
+          "68",
+          "0000cc83",
+          "1"
+        ],
+        [
+          "required",
+          "25",
+          "74",
+          "0000cc83",
+          "1"
+        ],
+        [
+          "required",
+          "26",
+          "75",
+          "0000cc83",
+          "1"
+        ],
+        [
+          "required",
+          "27",
+          "76",
+          "0000dd83",
+          "1"
+        ],
+        [
+          "required",
+          "28",
+          "81",
+          "0000cc83",
+          "1"
+        ],
+        [
+          "required",
+          "29",
+          "82",
+          "0000cc83",
+          "1"
+        ],
+        [
+          "required",
+          "30",
+          "83",
+          "0000dd83",
+          "1"
+        ],
+        [
+          "required",
+          "31",
+          "95",
+          "0000cc83",
+          "1"
+        ],
+        [
+          "required",
+          "32",
+          "96",
+          "0000cc83",
+          "1"
+        ],
+        [
+          "required",
+          "33",
+          "97",
+          "0000dd83",
+          "1"
+        ],
+        [
+          "required",
+          "34",
+          "98",
+          "0000cc87",
+          "1"
+        ],
+        [
+          "required",
+          "35",
+          "99",
+          "0000cc87",
+          "1"
+        ],
+        [
+          "required",
+          "36",
+          "100",
+          "0000dc83",
+          "1"
+        ],
+        [
+          "required",
+          "37",
+          "101",
+          "0000cc83",
+          "1"
+        ],
+        [
+          "required",
+          "38",
+          "102",
+          "0000cc83",
+          "1"
+        ],
+        [
+          "required",
+          "39",
+          "103",
+          "0000dc83",
+          "1"
+        ],
+        [
+          "required",
+          "40",
+          "107",
+          "0000cc83",
+          "1"
+        ],
+        [
+          "required",
+          "41",
+          "108",
+          "0000cc83",
+          "1"
+        ],
+        [
+          "required",
+          "42",
+          "109",
+          "0000dc83",
+          "1"
+        ],
+        [
+          "required",
+          "43",
+          "122",
+          "0000d483",
+          "0"
+        ],
+        [
+          "required",
+          "44",
+          "123",
+          "0000d401",
+          "0"
+        ],
+        [
+          "required",
+          "45",
+          "124",
+          "0000d601",
+          "0"
+        ],
+        [
+          "required",
+          "46",
+          "126",
+          "0000d601",
+          "0"
+        ],
+        [
+          "negative",
+          "0",
+          "0",
+          "00000000",
+          "0"
+        ],
+        [
+          "negative",
+          "1",
+          "110",
+          "00000000",
+          "0"
+        ],
+        [
+          "negative",
+          "2",
+          "131",
+          "00000000",
+          "0"
+        ]
+      ],
+      "vertex_rows": [
+        [
+          "required",
+          "0",
+          "9",
+          "00000058"
+        ],
+        [
+          "required",
+          "1",
+          "10",
+          "00000058"
+        ],
+        [
+          "required",
+          "2",
+          "13",
+          "00000058"
+        ],
+        [
+          "required",
+          "3",
+          "14",
+          "00000058"
+        ],
+        [
+          "required",
+          "4",
+          "16",
+          "00000058"
+        ],
+        [
+          "required",
+          "5",
+          "17",
+          "00000058"
+        ],
+        [
+          "required",
+          "6",
+          "20",
+          "00000058"
+        ],
+        [
+          "required",
+          "7",
+          "21",
+          "00000058"
+        ],
+        [
+          "required",
+          "8",
+          "37",
+          "00000058"
+        ],
+        [
+          "required",
+          "9",
+          "38",
+          "00000058"
+        ],
+        [
+          "required",
+          "10",
+          "41",
+          "00000058"
+        ],
+        [
+          "required",
+          "11",
+          "42",
+          "00000058"
+        ],
+        [
+          "required",
+          "12",
+          "44",
+          "00000048"
+        ],
+        [
+          "required",
+          "13",
+          "51",
+          "00000058"
+        ],
+        [
+          "required",
+          "14",
+          "52",
+          "00000058"
+        ],
+        [
+          "required",
+          "15",
+          "55",
+          "00000058"
+        ],
+        [
+          "required",
+          "16",
+          "56",
+          "00000058"
+        ],
+        [
+          "required",
+          "17",
+          "64",
+          "00000058"
+        ],
+        [
+          "required",
+          "18",
+          "70",
+          "00000058"
+        ],
+        [
+          "required",
+          "19",
+          "71",
+          "00000058"
+        ],
+        [
+          "required",
+          "20",
+          "74",
+          "00000058"
+        ],
+        [
+          "required",
+          "21",
+          "75",
+          "00000058"
+        ],
+        [
+          "required",
+          "22",
+          "76",
+          "00000058"
+        ],
+        [
+          "required",
+          "23",
+          "77",
+          "00000058"
+        ],
+        [
+          "required",
+          "24",
+          "78",
+          "00000058"
+        ],
+        [
+          "required",
+          "25",
+          "81",
+          "00000058"
+        ],
+        [
+          "required",
+          "26",
+          "82",
+          "00000058"
+        ],
+        [
+          "required",
+          "27",
+          "83",
+          "00000058"
+        ],
+        [
+          "required",
+          "28",
+          "91",
+          "00000058"
+        ],
+        [
+          "required",
+          "29",
+          "92",
+          "00000058"
+        ],
+        [
+          "required",
+          "30",
+          "95",
+          "00000058"
+        ],
+        [
+          "required",
+          "31",
+          "96",
+          "00000058"
+        ],
+        [
+          "required",
+          "32",
+          "97",
+          "00000058"
+        ],
+        [
+          "required",
+          "33",
+          "98",
+          "00000078"
+        ],
+        [
+          "required",
+          "34",
+          "99",
+          "00000078"
+        ],
+        [
+          "required",
+          "35",
+          "100",
+          "00000058"
+        ],
+        [
+          "required",
+          "36",
+          "101",
+          "00000058"
+        ],
+        [
+          "required",
+          "37",
+          "102",
+          "00000058"
+        ],
+        [
+          "required",
+          "38",
+          "103",
+          "00000058"
+        ],
+        [
+          "required",
+          "39",
+          "104",
+          "00000048"
+        ],
+        [
+          "required",
+          "40",
+          "105",
+          "00000048"
+        ],
+        [
+          "required",
+          "41",
+          "106",
+          "00000048"
+        ],
+        [
+          "required",
+          "42",
+          "107",
+          "00000058"
+        ],
+        [
+          "required",
+          "43",
+          "108",
+          "00000058"
+        ],
+        [
+          "required",
+          "44",
+          "109",
+          "00000058"
+        ],
+        [
+          "negative",
+          "0",
+          "43",
+          "00000000"
+        ],
+        [
+          "negative",
+          "1",
+          "124",
+          "00000000"
+        ],
+        [
+          "negative",
+          "2",
+          "147",
+          "00000000"
+        ],
+        [
+          "negative",
+          "3",
+          "110",
+          "00000000"
+        ]
+      ],
+      "limitations": "Exactmandatoryquerytraitscope, notgeneralformat/precision/fullVulkanconformance. Original42strictsRGBfailures remain."
+    }
+  },
+  "runner": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-required-blit-vertex-query/probe/runner-result.json",
+      "bytes": 1161,
+      "sha256": "e1530522a48d20963a4954d8543345906fdf49c30969f010c15c51265b3d65f7"
+    },
+    "result": {
+      "status": "passed",
+      "mode": "probe",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 164,
+          "sha256": "41fe20126396ca0e9e99e8b99cd28734c8b6b36b466200cca559ff0e556f9abf"
+        },
+        "resources": {
+          "bytes": 154824,
+          "sha256": "1e5ed1e63d48e963c4f1d17b091c2245a4d5f16526f2d728128c76b16265477c"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13622368,
+          "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+        },
+        "vertex_query": {
+          "bytes": 153776,
+          "sha256": "a851a9df933a50255e3b2c9c485d17e1e8266eb3dd75f6308f1075083abadcba"
+        },
+        "payload.json": {
+          "bytes": 830,
+          "sha256": "f58afc8a49f3a05d93c3fbd745abfd818631be856a90d324408fccf2b71b3273"
+        }
+      },
+      "run_log": {
+        "bytes": 11305,
+        "sha256": "44c7c1c7f44e15744f3a2e1d50ca22ae13db01064b6cb66d4ed7b6dd7c7b078f"
+      },
+      "scope": "Raw ICD assets/services/faults and consolidated assertions passed. This is experimental compute coverage, not Vulkan conformance."
+    }
+  },
+  "public_builder": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-public-extended-formats-builder-check-0045/receipt.json",
+      "bytes": 22423,
+      "sha256": "288b95539f19b56e62b4176fa26fb173b53a1cac9ed9fc30cac3edc69915160b"
+    },
+    "result": {
+      "units": {
+        "blit-query": {
+          "commands": [
+            [
+              "clang",
+              "--target=aarch64-linux-gnu",
+              "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+              "-mcpu=cortex-a53",
+              "-Isrc/freedreno/radish/libvulkan_radish.so.p",
+              "-Isrc/freedreno/radish",
+              "-I../mesa/src/freedreno/radish",
+              "-Isrc/freedreno",
+              "-I../mesa/src/freedreno",
+              "-Isrc/freedreno/registers",
+              "-I../mesa/src/freedreno/registers",
+              "-Isrc/freedreno/registers/adreno",
+              "-I../mesa/src/freedreno/registers/adreno",
+              "-Isrc/freedreno/common",
+              "-I../mesa/src/freedreno/common",
+              "-Iinclude",
+              "-I../mesa/include",
+              "-Isrc",
+              "-I../mesa/src",
+              "-Isrc/vulkan/util",
+              "-I../mesa/src/vulkan/util",
+              "-Isrc/vulkan/runtime",
+              "-I../mesa/src/vulkan/runtime",
+              "-I../mesa/src/vulkan/runtime/bvh",
+              "-Isrc/compiler/nir",
+              "-I../mesa/src/compiler/nir",
+              "-Isrc/compiler",
+              "-I../mesa/src/compiler",
+              "-Isrc/util",
+              "-Isrc/util/format",
+              "-Isrc/compiler/spirv",
+              "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include",
+              "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include/libdrm",
+              "-fvisibility=hidden",
+              "-fdiagnostics-color=always",
+              "-D_FILE_OFFSET_BITS=64",
+              "-Wall",
+              "-Winvalid-pch",
+              "-std=c11",
+              "-O2",
+              "-g",
+              "-D__STDC_CONSTANT_MACROS",
+              "-D__STDC_FORMAT_MACROS",
+              "-D__STDC_LIMIT_MACROS",
+              "-DPACKAGE_VERSION=\"27.0.0-devel\"",
+              "-DHAVE_OPENGL=0",
+              "-DHAVE_OPENGL_ES_1=0",
+              "-DHAVE_OPENGL_ES_2=0",
+              "-DMESA_SYSTEM_HAS_KMS_DRM=1",
+              "-DVIDEO_CODEC_VC1DEC=0",
+              "-DVIDEO_CODEC_H264DEC=0",
+              "-DVIDEO_CODEC_H264ENC=0",
+              "-DVIDEO_CODEC_H265DEC=0",
+              "-DVIDEO_CODEC_H265ENC=0",
+              "-DVIDEO_CODEC_AV1DEC=0",
+              "-DVIDEO_CODEC_AV1ENC=0",
+              "-DVIDEO_CODEC_VP9DEC=0",
+              "-DVIDEO_CODEC_MPEG12DEC=0",
+              "-DVIDEO_CODEC_JPEGDEC=0",
+              "-DUSE_LIBGLVND=0",
+              "-DHAVE_LIBDRM",
+              "-DHAVE_GFX_COMPUTE",
+              "-DGLAPI_EXPORT_PROTO_ENTRY_POINTS=1",
+              "-DALLOW_KCMP",
+              "-DMESA_DEBUG=0",
+              "-DENABLE_SHADER_CACHE",
+              "-DHAVE___BUILTIN_BSWAP32",
+              "-DHAVE___BUILTIN_BSWAP64",
+              "-DHAVE___BUILTIN_CLZ",
+              "-DHAVE___BUILTIN_CLZLL",
+              "-DHAVE___BUILTIN_CTZ",
+              "-DHAVE___BUILTIN_EXPECT",
+              "-DHAVE___BUILTIN_FFS",
+              "-DHAVE___BUILTIN_FFSLL",
+              "-DHAVE___BUILTIN_POPCOUNT",
+              "-DHAVE___BUILTIN_POPCOUNTLL",
+              "-DHAVE___BUILTIN_UNREACHABLE",
+              "-DHAVE___BUILTIN_TYPES_COMPATIBLE_P",
+              "-DHAVE___BUILTIN_ADD_OVERFLOW",
+              "-DHAVE_FUNC_ATTRIBUTE_CONST",
+              "-DHAVE_FUNC_ATTRIBUTE_FLATTEN",
+              "-DHAVE_FUNC_ATTRIBUTE_MALLOC",
+              "-DHAVE_FUNC_ATTRIBUTE_PURE",
+              "-DHAVE_FUNC_ATTRIBUTE_UNUSED",
+              "-DHAVE_FUNC_ATTRIBUTE_WARN_UNUSED_RESULT",
+              "-DHAVE_FUNC_ATTRIBUTE_WEAK",
+              "-DHAVE_FUNC_ATTRIBUTE_FORMAT",
+              "-DHAVE_FUNC_ATTRIBUTE_PACKED",
+              "-DHAVE_FUNC_ATTRIBUTE_RETURNS_NONNULL",
+              "-DHAVE_FUNC_ATTRIBUTE_ALIAS",
+              "-DHAVE_FUNC_ATTRIBUTE_NORETURN",
+              "-DHAVE_FUNC_ATTRIBUTE_COLD",
+              "-DHAVE_FUNC_ATTRIBUTE_VISIBILITY",
+              "-DHAVE_UINT128",
+              "-DHAVE_REALLOCARRAY",
+              "-DHAVE_FMEMOPEN",
+              "-DHAVE_MALLINFO2",
+              "-D_GNU_SOURCE",
+              "-DUSE_GCC_ATOMIC_BUILTINS",
+              "-DMAJOR_IN_SYSMACROS",
+              "-DHAS_SCHED_H",
+              "-DHAS_SCHED_GETAFFINITY",
+              "-DHAVE_LINUX_FUTEX_H",
+              "-DHAVE_ENDIAN_H",
+              "-DHAVE_DLFCN_H",
+              "-DHAVE_SYS_SHM_H",
+              "-DHAVE_CET_H",
+              "-DHAVE_POLL_H",
+              "-DHAVE_SYS_INOTIFY_H",
+              "-DHAVE_LINUX_UDMABUF_H",
+              "-DHAVE_STRTOF",
+              "-DHAVE_MKOSTEMP",
+              "-DHAVE_MEMFD_CREATE",
+              "-DHAVE_RANDOM_R",
+              "-DHAVE_FLOCK",
+              "-DHAVE_STRTOK_R",
+              "-DHAVE_GETRANDOM",
+              "-DHAVE_POSIX_FALLOCATE",
+              "-DHAVE_SECURE_GETENV",
+              "-DHAVE_SYSCONF",
+              "-DHAVE_SC_PHYS_PAGES",
+              "-DHAVE_GNU_QSORT_R",
+              "-DHAVE_STRUCT_TIMESPEC",
+              "-DHAVE_PROGRAM_INVOCATION_NAME",
+              "-DHAVE_ISSIGNALING",
+              "-DHAVE_POSIX_MEMALIGN",
+              "-DHAVE_DIRENT_D_TYPE",
+              "-DHAVE_STRTOD_L",
+              "-DHAVE_DLADDR",
+              "-DHAVE_DL_ITERATE_PHDR",
+              "-DHAVE_ZLIB",
+              "-DHAVE_COMPRESSION",
+              "-DHAVE_PTHREAD",
+              "-DHAVE_PTHREAD_SETAFFINITY",
+              "-DDRAW_LLVM_AVAILABLE=0",
+              "-DAMD_LLVM_AVAILABLE=0",
+              "-DGALLIVM_USE_ORCJIT=0",
+              "-DTHREAD_SANITIZER=0",
+              "-DHAVE_DRI2",
+              "-DHAVE_RENDERDOC_INTEGRATION=1",
+              "-Werror=implicit-function-declaration",
+              "-Werror=missing-prototypes",
+              "-Werror=return-type",
+              "-Werror=empty-body",
+              "-Werror=incompatible-pointer-types",
+              "-Werror=int-conversion",
+              "-Wimplicit-fallthrough",
+              "-Wmisleading-indentation",
+              "-Wno-missing-field-initializers",
+              "-Wno-format-truncation",
+              "-fno-math-errno",
+              "-fno-trapping-math",
+              "-Qunused-arguments",
+              "-fno-common",
+              "-Wno-unknown-pragmas",
+              "-Wno-microsoft-enum-value",
+              "-Wno-unused-function",
+              "-Werror=format",
+              "-Wformat-security",
+              "-Werror=thread-safety",
+              "-ffunction-sections",
+              "-fdata-sections",
+              "-Wno-unused-command-line-argument",
+              "-fPIC",
+              "-DVK_USE_PLATFORM_DISPLAY_KHR",
+              "-pthread",
+              "-DXXH_FORCE_ALIGN_CHECK=0",
+              "-DXXH_FORCE_MEMORY_ACCESS=0",
+              "-Wno-override-init",
+              "-Wno-initializer-overrides",
+              "-fuse-ld=lld",
+              "--gcc-install-dir=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+              "-I/home/jethac/Projects/radish/radish/tests",
+              "/home/jethac/Projects/radish/radish/tests/core_blit_query.c",
+              "-o",
+              "/run/media/jethac/Shared/radish/compute11-public-extended-formats-builder-check-0045/blit-query",
+              "-ldl",
+              "-pthread"
+            ]
+          ],
+          "files": {
+            "/home/jethac/Projects/radish/radish/tests/core_blit_query.c": {
+              "sha256": "a55230c3f1c82cafa0f57ab3340bc6ae286b6ede8fc138281daec8e1a4a8b310",
+              "bytes": 4606
+            },
+            "/run/media/jethac/Shared/radish/compute11-public-extended-formats-builder-check-0045/blit-query": {
+              "sha256": "0868021000d57b7d4a77606a103c3bf7377ef7d5997c011f75d47fa13679ee1a",
+              "bytes": 154640
+            }
+          }
+        },
+        "vertex-query": {
+          "commands": [
+            [
+              "clang",
+              "--target=aarch64-linux-gnu",
+              "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+              "-mcpu=cortex-a53",
+              "-Isrc/freedreno/radish/libvulkan_radish.so.p",
+              "-Isrc/freedreno/radish",
+              "-I../mesa/src/freedreno/radish",
+              "-Isrc/freedreno",
+              "-I../mesa/src/freedreno",
+              "-Isrc/freedreno/registers",
+              "-I../mesa/src/freedreno/registers",
+              "-Isrc/freedreno/registers/adreno",
+              "-I../mesa/src/freedreno/registers/adreno",
+              "-Isrc/freedreno/common",
+              "-I../mesa/src/freedreno/common",
+              "-Iinclude",
+              "-I../mesa/include",
+              "-Isrc",
+              "-I../mesa/src",
+              "-Isrc/vulkan/util",
+              "-I../mesa/src/vulkan/util",
+              "-Isrc/vulkan/runtime",
+              "-I../mesa/src/vulkan/runtime",
+              "-I../mesa/src/vulkan/runtime/bvh",
+              "-Isrc/compiler/nir",
+              "-I../mesa/src/compiler/nir",
+              "-Isrc/compiler",
+              "-I../mesa/src/compiler",
+              "-Isrc/util",
+              "-Isrc/util/format",
+              "-Isrc/compiler/spirv",
+              "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include",
+              "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include/libdrm",
+              "-fvisibility=hidden",
+              "-fdiagnostics-color=always",
+              "-D_FILE_OFFSET_BITS=64",
+              "-Wall",
+              "-Winvalid-pch",
+              "-std=c11",
+              "-O2",
+              "-g",
+              "-D__STDC_CONSTANT_MACROS",
+              "-D__STDC_FORMAT_MACROS",
+              "-D__STDC_LIMIT_MACROS",
+              "-DPACKAGE_VERSION=\"27.0.0-devel\"",
+              "-DHAVE_OPENGL=0",
+              "-DHAVE_OPENGL_ES_1=0",
+              "-DHAVE_OPENGL_ES_2=0",
+              "-DMESA_SYSTEM_HAS_KMS_DRM=1",
+              "-DVIDEO_CODEC_VC1DEC=0",
+              "-DVIDEO_CODEC_H264DEC=0",
+              "-DVIDEO_CODEC_H264ENC=0",
+              "-DVIDEO_CODEC_H265DEC=0",
+              "-DVIDEO_CODEC_H265ENC=0",
+              "-DVIDEO_CODEC_AV1DEC=0",
+              "-DVIDEO_CODEC_AV1ENC=0",
+              "-DVIDEO_CODEC_VP9DEC=0",
+              "-DVIDEO_CODEC_MPEG12DEC=0",
+              "-DVIDEO_CODEC_JPEGDEC=0",
+              "-DUSE_LIBGLVND=0",
+              "-DHAVE_LIBDRM",
+              "-DHAVE_GFX_COMPUTE",
+              "-DGLAPI_EXPORT_PROTO_ENTRY_POINTS=1",
+              "-DALLOW_KCMP",
+              "-DMESA_DEBUG=0",
+              "-DENABLE_SHADER_CACHE",
+              "-DHAVE___BUILTIN_BSWAP32",
+              "-DHAVE___BUILTIN_BSWAP64",
+              "-DHAVE___BUILTIN_CLZ",
+              "-DHAVE___BUILTIN_CLZLL",
+              "-DHAVE___BUILTIN_CTZ",
+              "-DHAVE___BUILTIN_EXPECT",
+              "-DHAVE___BUILTIN_FFS",
+              "-DHAVE___BUILTIN_FFSLL",
+              "-DHAVE___BUILTIN_POPCOUNT",
+              "-DHAVE___BUILTIN_POPCOUNTLL",
+              "-DHAVE___BUILTIN_UNREACHABLE",
+              "-DHAVE___BUILTIN_TYPES_COMPATIBLE_P",
+              "-DHAVE___BUILTIN_ADD_OVERFLOW",
+              "-DHAVE_FUNC_ATTRIBUTE_CONST",
+              "-DHAVE_FUNC_ATTRIBUTE_FLATTEN",
+              "-DHAVE_FUNC_ATTRIBUTE_MALLOC",
+              "-DHAVE_FUNC_ATTRIBUTE_PURE",
+              "-DHAVE_FUNC_ATTRIBUTE_UNUSED",
+              "-DHAVE_FUNC_ATTRIBUTE_WARN_UNUSED_RESULT",
+              "-DHAVE_FUNC_ATTRIBUTE_WEAK",
+              "-DHAVE_FUNC_ATTRIBUTE_FORMAT",
+              "-DHAVE_FUNC_ATTRIBUTE_PACKED",
+              "-DHAVE_FUNC_ATTRIBUTE_RETURNS_NONNULL",
+              "-DHAVE_FUNC_ATTRIBUTE_ALIAS",
+              "-DHAVE_FUNC_ATTRIBUTE_NORETURN",
+              "-DHAVE_FUNC_ATTRIBUTE_COLD",
+              "-DHAVE_FUNC_ATTRIBUTE_VISIBILITY",
+              "-DHAVE_UINT128",
+              "-DHAVE_REALLOCARRAY",
+              "-DHAVE_FMEMOPEN",
+              "-DHAVE_MALLINFO2",
+              "-D_GNU_SOURCE",
+              "-DUSE_GCC_ATOMIC_BUILTINS",
+              "-DMAJOR_IN_SYSMACROS",
+              "-DHAS_SCHED_H",
+              "-DHAS_SCHED_GETAFFINITY",
+              "-DHAVE_LINUX_FUTEX_H",
+              "-DHAVE_ENDIAN_H",
+              "-DHAVE_DLFCN_H",
+              "-DHAVE_SYS_SHM_H",
+              "-DHAVE_CET_H",
+              "-DHAVE_POLL_H",
+              "-DHAVE_SYS_INOTIFY_H",
+              "-DHAVE_LINUX_UDMABUF_H",
+              "-DHAVE_STRTOF",
+              "-DHAVE_MKOSTEMP",
+              "-DHAVE_MEMFD_CREATE",
+              "-DHAVE_RANDOM_R",
+              "-DHAVE_FLOCK",
+              "-DHAVE_STRTOK_R",
+              "-DHAVE_GETRANDOM",
+              "-DHAVE_POSIX_FALLOCATE",
+              "-DHAVE_SECURE_GETENV",
+              "-DHAVE_SYSCONF",
+              "-DHAVE_SC_PHYS_PAGES",
+              "-DHAVE_GNU_QSORT_R",
+              "-DHAVE_STRUCT_TIMESPEC",
+              "-DHAVE_PROGRAM_INVOCATION_NAME",
+              "-DHAVE_ISSIGNALING",
+              "-DHAVE_POSIX_MEMALIGN",
+              "-DHAVE_DIRENT_D_TYPE",
+              "-DHAVE_STRTOD_L",
+              "-DHAVE_DLADDR",
+              "-DHAVE_DL_ITERATE_PHDR",
+              "-DHAVE_ZLIB",
+              "-DHAVE_COMPRESSION",
+              "-DHAVE_PTHREAD",
+              "-DHAVE_PTHREAD_SETAFFINITY",
+              "-DDRAW_LLVM_AVAILABLE=0",
+              "-DAMD_LLVM_AVAILABLE=0",
+              "-DGALLIVM_USE_ORCJIT=0",
+              "-DTHREAD_SANITIZER=0",
+              "-DHAVE_DRI2",
+              "-DHAVE_RENDERDOC_INTEGRATION=1",
+              "-Werror=implicit-function-declaration",
+              "-Werror=missing-prototypes",
+              "-Werror=return-type",
+              "-Werror=empty-body",
+              "-Werror=incompatible-pointer-types",
+              "-Werror=int-conversion",
+              "-Wimplicit-fallthrough",
+              "-Wmisleading-indentation",
+              "-Wno-missing-field-initializers",
+              "-Wno-format-truncation",
+              "-fno-math-errno",
+              "-fno-trapping-math",
+              "-Qunused-arguments",
+              "-fno-common",
+              "-Wno-unknown-pragmas",
+              "-Wno-microsoft-enum-value",
+              "-Wno-unused-function",
+              "-Werror=format",
+              "-Wformat-security",
+              "-Werror=thread-safety",
+              "-ffunction-sections",
+              "-fdata-sections",
+              "-Wno-unused-command-line-argument",
+              "-fPIC",
+              "-DVK_USE_PLATFORM_DISPLAY_KHR",
+              "-pthread",
+              "-DXXH_FORCE_ALIGN_CHECK=0",
+              "-DXXH_FORCE_MEMORY_ACCESS=0",
+              "-Wno-override-init",
+              "-Wno-initializer-overrides",
+              "-fuse-ld=lld",
+              "--gcc-install-dir=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+              "-I/home/jethac/Projects/radish/radish/tests",
+              "/home/jethac/Projects/radish/radish/tests/core_vertex_query.c",
+              "-o",
+              "/run/media/jethac/Shared/radish/compute11-public-extended-formats-builder-check-0045/vertex-query",
+              "-ldl",
+              "-pthread"
+            ]
+          ],
+          "files": {
+            "/home/jethac/Projects/radish/radish/tests/core_vertex_query.c": {
+              "sha256": "25d07394b23d849df44c8db4dde70aa8edd810b27e43a0c424b5014b6be86a93",
+              "bytes": 3896
+            },
+            "/run/media/jethac/Shared/radish/compute11-public-extended-formats-builder-check-0045/vertex-query": {
+              "sha256": "76b3c66059d2e30ff94f60d0b203d55f9bcfc5301bb4abf5c1871ea23209535b",
+              "bytes": 153584
+            }
+          }
+        },
+        "extended-block": {
+          "commands": [
+            [
+              "clang",
+              "--target=aarch64-linux-gnu",
+              "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+              "-mcpu=cortex-a53",
+              "-Isrc/freedreno/radish/libvulkan_radish.so.p",
+              "-Isrc/freedreno/radish",
+              "-I../mesa/src/freedreno/radish",
+              "-Isrc/freedreno",
+              "-I../mesa/src/freedreno",
+              "-Isrc/freedreno/registers",
+              "-I../mesa/src/freedreno/registers",
+              "-Isrc/freedreno/registers/adreno",
+              "-I../mesa/src/freedreno/registers/adreno",
+              "-Isrc/freedreno/common",
+              "-I../mesa/src/freedreno/common",
+              "-Iinclude",
+              "-I../mesa/include",
+              "-Isrc",
+              "-I../mesa/src",
+              "-Isrc/vulkan/util",
+              "-I../mesa/src/vulkan/util",
+              "-Isrc/vulkan/runtime",
+              "-I../mesa/src/vulkan/runtime",
+              "-I../mesa/src/vulkan/runtime/bvh",
+              "-Isrc/compiler/nir",
+              "-I../mesa/src/compiler/nir",
+              "-Isrc/compiler",
+              "-I../mesa/src/compiler",
+              "-Isrc/util",
+              "-Isrc/util/format",
+              "-Isrc/compiler/spirv",
+              "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include",
+              "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include/libdrm",
+              "-fvisibility=hidden",
+              "-fdiagnostics-color=always",
+              "-D_FILE_OFFSET_BITS=64",
+              "-Wall",
+              "-Winvalid-pch",
+              "-std=c11",
+              "-O2",
+              "-g",
+              "-D__STDC_CONSTANT_MACROS",
+              "-D__STDC_FORMAT_MACROS",
+              "-D__STDC_LIMIT_MACROS",
+              "-DPACKAGE_VERSION=\"27.0.0-devel\"",
+              "-DHAVE_OPENGL=0",
+              "-DHAVE_OPENGL_ES_1=0",
+              "-DHAVE_OPENGL_ES_2=0",
+              "-DMESA_SYSTEM_HAS_KMS_DRM=1",
+              "-DVIDEO_CODEC_VC1DEC=0",
+              "-DVIDEO_CODEC_H264DEC=0",
+              "-DVIDEO_CODEC_H264ENC=0",
+              "-DVIDEO_CODEC_H265DEC=0",
+              "-DVIDEO_CODEC_H265ENC=0",
+              "-DVIDEO_CODEC_AV1DEC=0",
+              "-DVIDEO_CODEC_AV1ENC=0",
+              "-DVIDEO_CODEC_VP9DEC=0",
+              "-DVIDEO_CODEC_MPEG12DEC=0",
+              "-DVIDEO_CODEC_JPEGDEC=0",
+              "-DUSE_LIBGLVND=0",
+              "-DHAVE_LIBDRM",
+              "-DHAVE_GFX_COMPUTE",
+              "-DGLAPI_EXPORT_PROTO_ENTRY_POINTS=1",
+              "-DALLOW_KCMP",
+              "-DMESA_DEBUG=0",
+              "-DENABLE_SHADER_CACHE",
+              "-DHAVE___BUILTIN_BSWAP32",
+              "-DHAVE___BUILTIN_BSWAP64",
+              "-DHAVE___BUILTIN_CLZ",
+              "-DHAVE___BUILTIN_CLZLL",
+              "-DHAVE___BUILTIN_CTZ",
+              "-DHAVE___BUILTIN_EXPECT",
+              "-DHAVE___BUILTIN_FFS",
+              "-DHAVE___BUILTIN_FFSLL",
+              "-DHAVE___BUILTIN_POPCOUNT",
+              "-DHAVE___BUILTIN_POPCOUNTLL",
+              "-DHAVE___BUILTIN_UNREACHABLE",
+              "-DHAVE___BUILTIN_TYPES_COMPATIBLE_P",
+              "-DHAVE___BUILTIN_ADD_OVERFLOW",
+              "-DHAVE_FUNC_ATTRIBUTE_CONST",
+              "-DHAVE_FUNC_ATTRIBUTE_FLATTEN",
+              "-DHAVE_FUNC_ATTRIBUTE_MALLOC",
+              "-DHAVE_FUNC_ATTRIBUTE_PURE",
+              "-DHAVE_FUNC_ATTRIBUTE_UNUSED",
+              "-DHAVE_FUNC_ATTRIBUTE_WARN_UNUSED_RESULT",
+              "-DHAVE_FUNC_ATTRIBUTE_WEAK",
+              "-DHAVE_FUNC_ATTRIBUTE_FORMAT",
+              "-DHAVE_FUNC_ATTRIBUTE_PACKED",
+              "-DHAVE_FUNC_ATTRIBUTE_RETURNS_NONNULL",
+              "-DHAVE_FUNC_ATTRIBUTE_ALIAS",
+              "-DHAVE_FUNC_ATTRIBUTE_NORETURN",
+              "-DHAVE_FUNC_ATTRIBUTE_COLD",
+              "-DHAVE_FUNC_ATTRIBUTE_VISIBILITY",
+              "-DHAVE_UINT128",
+              "-DHAVE_REALLOCARRAY",
+              "-DHAVE_FMEMOPEN",
+              "-DHAVE_MALLINFO2",
+              "-D_GNU_SOURCE",
+              "-DUSE_GCC_ATOMIC_BUILTINS",
+              "-DMAJOR_IN_SYSMACROS",
+              "-DHAS_SCHED_H",
+              "-DHAS_SCHED_GETAFFINITY",
+              "-DHAVE_LINUX_FUTEX_H",
+              "-DHAVE_ENDIAN_H",
+              "-DHAVE_DLFCN_H",
+              "-DHAVE_SYS_SHM_H",
+              "-DHAVE_CET_H",
+              "-DHAVE_POLL_H",
+              "-DHAVE_SYS_INOTIFY_H",
+              "-DHAVE_LINUX_UDMABUF_H",
+              "-DHAVE_STRTOF",
+              "-DHAVE_MKOSTEMP",
+              "-DHAVE_MEMFD_CREATE",
+              "-DHAVE_RANDOM_R",
+              "-DHAVE_FLOCK",
+              "-DHAVE_STRTOK_R",
+              "-DHAVE_GETRANDOM",
+              "-DHAVE_POSIX_FALLOCATE",
+              "-DHAVE_SECURE_GETENV",
+              "-DHAVE_SYSCONF",
+              "-DHAVE_SC_PHYS_PAGES",
+              "-DHAVE_GNU_QSORT_R",
+              "-DHAVE_STRUCT_TIMESPEC",
+              "-DHAVE_PROGRAM_INVOCATION_NAME",
+              "-DHAVE_ISSIGNALING",
+              "-DHAVE_POSIX_MEMALIGN",
+              "-DHAVE_DIRENT_D_TYPE",
+              "-DHAVE_STRTOD_L",
+              "-DHAVE_DLADDR",
+              "-DHAVE_DL_ITERATE_PHDR",
+              "-DHAVE_ZLIB",
+              "-DHAVE_COMPRESSION",
+              "-DHAVE_PTHREAD",
+              "-DHAVE_PTHREAD_SETAFFINITY",
+              "-DDRAW_LLVM_AVAILABLE=0",
+              "-DAMD_LLVM_AVAILABLE=0",
+              "-DGALLIVM_USE_ORCJIT=0",
+              "-DTHREAD_SANITIZER=0",
+              "-DHAVE_DRI2",
+              "-DHAVE_RENDERDOC_INTEGRATION=1",
+              "-Werror=implicit-function-declaration",
+              "-Werror=missing-prototypes",
+              "-Werror=return-type",
+              "-Werror=empty-body",
+              "-Werror=incompatible-pointer-types",
+              "-Werror=int-conversion",
+              "-Wimplicit-fallthrough",
+              "-Wmisleading-indentation",
+              "-Wno-missing-field-initializers",
+              "-Wno-format-truncation",
+              "-fno-math-errno",
+              "-fno-trapping-math",
+              "-Qunused-arguments",
+              "-fno-common",
+              "-Wno-unknown-pragmas",
+              "-Wno-microsoft-enum-value",
+              "-Wno-unused-function",
+              "-Werror=format",
+              "-Wformat-security",
+              "-Werror=thread-safety",
+              "-ffunction-sections",
+              "-fdata-sections",
+              "-Wno-unused-command-line-argument",
+              "-fPIC",
+              "-DVK_USE_PLATFORM_DISPLAY_KHR",
+              "-pthread",
+              "-DXXH_FORCE_ALIGN_CHECK=0",
+              "-DXXH_FORCE_MEMORY_ACCESS=0",
+              "-Wno-override-init",
+              "-Wno-initializer-overrides",
+              "-fuse-ld=lld",
+              "--gcc-install-dir=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+              "-I/home/jethac/Projects/radish/radish/tests",
+              "/home/jethac/Projects/radish/radish/tests/core_extended_block.c",
+              "-o",
+              "/run/media/jethac/Shared/radish/compute11-public-extended-formats-builder-check-0045/extended-block",
+              "-ldl",
+              "-pthread"
+            ],
+            [
+              "glslangValidator",
+              "-V",
+              "--target-env",
+              "vulkan1.0",
+              "/home/jethac/Projects/radish/radish/tests/shaders/core-extended-block.comp",
+              "-o",
+              "/run/media/jethac/Shared/radish/compute11-public-extended-formats-builder-check-0045/extended-block.spv"
+            ],
+            [
+              "spirv-val",
+              "--target-env",
+              "vulkan1.0",
+              "/run/media/jethac/Shared/radish/compute11-public-extended-formats-builder-check-0045/extended-block.spv"
+            ]
+          ],
+          "files": {
+            "/home/jethac/Projects/radish/radish/tests/core_extended_block.c": {
+              "sha256": "1e35cba68a85e1c25c2ae2b52ebdfbdf7b56a76dcfeac8a9aecfc4d28695bccc",
+              "bytes": 14702
+            },
+            "/run/media/jethac/Shared/radish/compute11-public-extended-formats-builder-check-0045/extended-block": {
+              "sha256": "ee3aa949b68a6915da86a153df931a958bccfb6eade27460965026c13eea4a07",
+              "bytes": 739840
+            },
+            "/home/jethac/Projects/radish/radish/tests/shaders/core-extended-block.comp": {
+              "sha256": "5997c3d7cf263d161816af3d6ace6eb263b7e219400166d1e3d8630eccd192ae",
+              "bytes": 630
+            },
+            "/run/media/jethac/Shared/radish/compute11-public-extended-formats-builder-check-0045/extended-block.spv": {
+              "sha256": "c27e94dfbc48608ae3e4d2a5230f297a9f01fa397399987707ba551d7665cc95",
+              "bytes": 2656
+            }
+          }
+        }
+      },
+      "scope": "Host build only; probes require the matching internal driver ABI."
+    }
+  },
+  "scope": "47 mandatory BLIT_SRC and38 BLIT_DST optimal-format traits with3 negative controls;45 mandatory VERTEX_BUFFER traits with4 negative controls. All99 physical queries agree between legacy and core2. Matched FD5 representations back the exact traits. No logical device, command, blit, vertex, graphics pipeline or rendering execution; current valid graphics-command domain remains empty. Broader format and precision qualification remains open."
+}

@@ -5,7 +5,7 @@ come before further performance experiments. The selected fcd/d332 inference
 stack is frozen. The intended GPU budget is entirely compute; CPU handles
 graphics. No graphics headroom reservation should be added. Any removal must
 identify a real source reservation and preserve correctness/resource guards;
-this is not authorization to change OS graphics or services. The separate 8298 validation candidate includes representative resource corrections and the source-backed subpixel query fix. It remains separate from selected inference and is not a qualified replacement. See the [machine-readable ledger](results/vulkan11-compute-ledger-0045.json).
+this is not authorization to change OS graphics or services. The separate f222 validation candidate includes representative resource corrections and the source-backed subpixel query fix. It remains separate from selected inference and is not a qualified replacement. See the [machine-readable ledger](results/vulkan11-compute-ledger-0045.json).
 
 | Area | Evidence | Remaining work |
 | --- | --- | --- |
@@ -164,7 +164,7 @@ before the next case. Fresh per-case images do not claim two-round image reuse.
 ## Initialized D24S8 and another22 original CTS cases
 
 The9407 resource checkpoint passes two initialized single-sample D24S8 rounds:
-256 sampled words,32 exact packed readback texels and full allocation guards.
+256 sampled words, 32 exact packed readback texels and full allocation guards.
 Eight depth and eight stencil components genuinely change while each copy
 preserves the opposite aspect. The first fixture copied identical depth values;
 that earlier pass remains sampling/stencil evidence only. The corrected input,
@@ -287,3 +287,47 @@ queries. [The source and actual query evidence](results/required-blend-query-004
 include no device creation, graphics host objects or blending execution. Broader
 format, precision, memory and shader conformance remains open, including the 42
 strict sRGB mismatches. The selected inference stack remains unchanged.
+
+## Promoted queries, storage views and format traits
+
+Thirteen original CTS cases now pass for core2 equality, six individual Vulkan
+1.1 feature structures, and maintenance3. All six feature-query branches ran;
+the descriptor case checked all 2,047 nonempty type combinations without resource
+allocation. False optional feature bits remain false. [The exact source and results](results/official11-promoted-query-0045.json)
+distinguish query consistency from feature execution.
+
+Eight cache/lifetime cases passed initially. A ninth requested path matched zero
+tests, and the wrapper correctly failed its inventory check. Only the corrected
+registered lifetime case ran next; its 100-word oracle passed. [Both captures](results/official11-cache-lifetime-0045.json)
+retain that error and the original oracle limitations. The destroyed object is
+the pipeline layout; the executing pipeline remains alive through the fence.
+Current cache serialization contains header/count metadata, without populated
+pipeline entries. Cache population and measured reuse belong to the later
+performance phase.
+
+The existing EXTENDED_USAGE/block-compatible image path passed a bounded
+RGBA32_UINT storage-view probe: 64 output words, 32 modified block readback words,
+complete buffer guards and image outer guards across two rounds on the same
+image. [This evidence](results/extended-block-storage-0045.json) does not qualify
+compression decoding or graphics execution.
+
+The new f222 source adds native-backed mandatory BLIT and VERTEX_BUFFER query
+traits. All 99 positive/negative queries passed through legacy and core2 calls:
+47 BLIT_SRC, 38 BLIT_DST and 45 VERTEX_BUFFER mandatory rows are covered. [The exact
+source and query evidence](results/required-blit-vertex-query-0045.json) contains
+no graphics commands. Full applicable conformance and the 42 strict sRGB
+mismatches remain open. The selected inference stack is unchanged.
+
+The retained result inventory contains 100 unique original CTS cases with a Pass
+result, including the corrected single lifetime case. [The deduplicated inventory](results/official11-qualified-case-inventory-0045.json)
+spans separately pinned candidates and preserves the original oracle limitations.
+It is neither a single full conformance run nor a percentage of applicable
+requirements. Historical failed captures remain available; the custom 42 strict
+sRGB mismatches are still unresolved.
+
+A separate core cache consumer also passed one guarded 32-word compute dispatch
+following merge, serialization, recreation and layout destruction before submit.
+[Its four cache blobs](results/cache-merge-lifetime-0045.json) are 36 bytes each:
+32-byte header plus a zero object count. This qualifies callable lifetime behavior,
+not populated-entry movement or cache hits. Ordinary private-array behavior has
+separate evidence; deliberate compiler-spill qualification remains open.

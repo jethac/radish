@@ -1,0 +1,400 @@
+{
+  "status": "Eight initial actual passes plus one corrected original lifetime pass; original inventory failure retained",
+  "driver": {
+    "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/libvulkan_radish.so",
+    "bytes": 49078792,
+    "sha256": "8298f0892597d288d130715975fe08d38c618b69dfd82c6cc9b62aa045b8c640"
+  },
+  "original_bounds": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-cache-lifetime-next-0045/source-bounds.json",
+      "bytes": 7483,
+      "sha256": "e1529979518bead9bf04f13a42a6cffb3d77c8ff1b7135658d63b39ceba447b9"
+    },
+    "result": {
+      "status": "Source-bounded original core compute cache/derivative/lifetime partition, no device execution",
+      "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+      "case_file": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-cache-lifetime-next-0045/cases.txt",
+        "sha256": "f94ab498cec165f22a40be4fb7a7f2fb25a94b770bf21107487fa9d26cb49a39",
+        "count": 9
+      },
+      "sources": {
+        "pipeline/vktPipelineCacheTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/pipeline/vktPipelineCacheTests.cpp",
+          "sha256": "627b8a1e2f2e45a3457d6e4d2ff9037daac6d9cd9f0b373247afe8f0e7f4d509",
+          "bytes": 110258
+        },
+        "pipeline/vktPipelineDerivativeTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/pipeline/vktPipelineDerivativeTests.cpp",
+          "sha256": "df3fa11de15b11d654278e51c0077fc523affe3aa48533ea81331a9326a96bb1",
+          "bytes": 7593
+        },
+        "pipeline/vktPipelineTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/pipeline/vktPipelineTests.cpp",
+          "sha256": "c83244fe0e083db02f4bd4caa84e673ef3909e2e74f38fefe95f3132139e3a38",
+          "bytes": 13622
+        },
+        "api/vktApiPipelineTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/api/vktApiPipelineTests.cpp",
+          "sha256": "68ce1169696e7a33c9fe596ac63fc4da055a653c285b3c106a2b0618dbdaba5c",
+          "bytes": 116041
+        },
+        "api/vktApiArrayTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/api/vktApiArrayTests.cpp",
+          "sha256": "e67b4e0118b725e875b95fbcdb9cc55a19ee9b7efa37ad34aec740ba8d713413",
+          "bytes": 46135
+        },
+        "api/vktApiObjectManagementTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/api/vktApiObjectManagementTests.cpp",
+          "sha256": "76c54e52508035a54dd1f2d312a55dd5f22fcfc7e229dcbdbe49e972485772b5",
+          "bytes": 171633
+        }
+      },
+      "cases": [
+        {
+          "case": "dEQP-VK.pipeline.monolithic.cache.compute_tests.compute_stage",
+          "dispatches": 2,
+          "logical_buffer_bytes": 6144,
+          "oracle_and_scope": "Two pipelines use the same cache but separately created identical descriptor/pipeline layouts. Two local1/grid128 FP32 vec4-square dispatches; original oracle compares 2048 output bytes between pipelines, not a CPU square oracle."
+        },
+        {
+          "case": "dEQP-VK.pipeline.monolithic.derivative.compute.derivative_by_handle",
+          "dispatches": 0,
+          "logical_buffer_bytes": 0,
+          "oracle_and_scope": "Checked creation of base ALLOW_DERIVATIVES and derived pipeline by handle; empty local1 shader/layout. No dispatch."
+        },
+        {
+          "case": "dEQP-VK.pipeline.monolithic.derivative.compute.derivative_by_index",
+          "dispatches": 0,
+          "logical_buffer_bytes": 0,
+          "oracle_and_scope": "One two-pipeline call with base index0 and destruction. Original test ignores VkResult; Pass alone proves no crash, not successful creation or arithmetic."
+        },
+        {
+          "case": "dEQP-VK.api.pipeline_layout.lifetime.destroy_after_end",
+          "dispatches": 1,
+          "logical_buffer_bytes": 400,
+          "oracle_and_scope": "Layout destroyed after command recording ends and before submission. One local1/grid100 dispatch with SpecID0=1 and 4-byte push75; 100 uint outputs exactly125+i after fence/invalidate."
+        },
+        {
+          "case": "dEQP-VK.api.array.oversized_array.core.get_pipeline_cache_data",
+          "dispatches": 0,
+          "logical_buffer_bytes": 0,
+          "oracle_and_scope": "Empty cache size query then oversized serialized data retrieval. Checks written count against capacity; does not validate cache header bytes or trailing poison. Current common runtime empty cache writes header plus uint32 count (36 bytes), so original count+512 host vector is548 bytes."
+        },
+        {
+          "case": "dEQP-VK.api.object_management.single.pipeline_cache",
+          "dispatches": 0,
+          "logical_buffer_bytes": 0,
+          "oracle_and_scope": "Create/destroy one empty cache with checked creation."
+        },
+        {
+          "case": "dEQP-VK.api.object_management.multiple_unique_resources.pipeline_cache",
+          "dispatches": 0,
+          "logical_buffer_bytes": 0,
+          "oracle_and_scope": "Create/destroy four empty caches with independent resource wrappers and checked creation."
+        },
+        {
+          "case": "dEQP-VK.api.object_management.multiple_unique_resources.compute_pipeline",
+          "dispatches": 0,
+          "logical_buffer_bytes": 0,
+          "oracle_and_scope": "Four checked compute pipeline creations, each with unique cache/module/layout dependencies; two SSBO declarations but no buffers or dispatch."
+        },
+        {
+          "case": "dEQP-VK.api.object_management.multiple_shared_resources.compute_pipeline",
+          "dispatches": 0,
+          "logical_buffer_bytes": 0,
+          "oracle_and_scope": "Four checked compute pipeline creations share one cache/module/layout dependency set; destroy pipelines before resources; no buffers or dispatch."
+        }
+      ],
+      "source_lines": {
+        "cache": "1032-1334; registry2401-2415; CACHE branch1231 uses same cache; BINARY branch not selected",
+        "derivatives": "82-166; registry174-186",
+        "layout_lifetime": "1225-1412; registry1752-1770",
+        "array": "492 oversized count+512;559-608 verifier;638 empty cache;1055 support switch default;1198-1217 registry",
+        "objects": "ShaderModule1204-1290;PipelineCache1294-1387;ComputePipeline2000-2095;four-object loops2468-2520;registries3614-3629/3718/3756"
+      },
+      "bounds": {
+        "cases": 9,
+        "dispatches": 3,
+        "logical_invocations": 356,
+        "max_local": [
+          1,
+          1,
+          1
+        ],
+        "max_grid": [
+          128,
+          1,
+          1
+        ],
+        "peak_logical_buffer_bytes": 6144,
+        "peak_compute_pipelines": 4,
+        "total_pipeline_creation_requests": 15,
+        "peak_storage_descriptors_per_layout": 2,
+        "max_push_bytes": 4,
+        "shader_loops": 0,
+        "shared_bytes": 0,
+        "images": 0,
+        "query_pools": 0,
+        "empty_cache_serialized_size_current_common_source": 36,
+        "empty_cache_oversized_host_vector": 548
+      },
+      "features": "Only core compute/pipeline/cache/lifetime operations; no pipelineStatisticsQuery, pipeline creation cache control, maintenance4/5/8, graphics pipelines/renderpass/framebuffer or optional arithmetic features. Original handles/results remain unmodified. NotSupported is not qualification.",
+      "exclusions": [
+        "Original filled-cache header/invalid-size/blob/merge tests derive GraphicsTestInstance and are outside compute-only valid domain.",
+        "Original object-management merged_pipeline_cache unconditionally checks VK_EXT_pipeline_creation_cache_control even the unsynchronized variant; feature absent, not selected.",
+        "Internally synchronized cache test requires maintenance8 and 2x1000 creations; excluded.",
+        "No filled-cache serialization/reconstruction/merge correctness claim, no actual cache-hit/performance proof.",
+        "By-index derivative ignores result in original source; no stronger claim from Pass alone."
+      ],
+      "controls": "Use unchanged original binary and fixed-inventory grouped engine, 9 sequential cases in original90s/384MiB, 8MiB log plus64MiB reserve and per-case fault stop. No CTS/source/shader/oracle changes. Logical allocations do not substitute for compiler/CTS RSS cap."
+    }
+  },
+  "object_scope": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-cache-lifetime-next-0045/lifetime-object-scope.json",
+      "bytes": 1482,
+      "sha256": "699f1f8d68b6e094fa299ab95b4988d4784e0f47d69d2015df3c1645ab7c4292"
+    },
+    "result": {
+      "source_bounds_sha256": "e1529979518bead9bf04f13a42a6cffb3d77c8ff1b7135658d63b39ceba447b9",
+      "destroy_after_end": "Only VkPipelineLayout is destroyed after EndCommandBuffer and before QueueSubmit. Executing VkPipeline, shader module, descriptor set/layout/pool, buffer/allocation, command pool/buffer remain alive through submit/wait/invalidate/oracle. No executing pipeline destruction is tested.",
+      "cache_compute": "Both executing pipelines and one shared cache plus module, separate identical layouts/descriptor sets, buffers remain alive through fence and comparison; destruction is normal RAII afterward. No before-submit cache destruction claim.",
+      "derivatives": "Handle case retains base while constructing derived; destroys derived then base on function return. Index case destroys both returned handles after one creation call, no work submitted. Neither proves destruction of an executing pipeline or arithmetic; index test omits VkResult check.",
+      "object_management": "Four pipelines destroyed before their shared or separate dependency resources (cache/module/layout); no dispatch/submission. Empty caches similarly created then destroyed.",
+      "next_gap": "Filled cache merge/serialization/reconstruction remains a real core callable contract. Existing merge cases have absent optional-cache-control or graphics dependencies; a finite existing compute-helper derivative may be prepared after these original cases. Cache hits/performance are not mandatory."
+    }
+  },
+  "partial_actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-cache-lifetime-next-0045/actual-partial-review.json",
+      "bytes": 3044,
+      "sha256": "257e5706fb6f16272960471955813bbfa62921b952e791582186c47b1fd7e8a7"
+    },
+    "result": {
+      "status": "PARTIAL:8actual originalCTS Pass;1requested name unexecuted, wrapper correctly FAIL inventory",
+      "cases": [
+        {
+          "case": "dEQP-VK.pipeline.monolithic.cache.compute_tests.compute_stage",
+          "status": "Pass",
+          "result": "Output buffers w/o pipeline blobs match.",
+          "qpa_sha256": "b3d55b800e3abdc987e98f38813cf9265d64faabc93d682d2dce1a2947857fcf"
+        },
+        {
+          "case": "dEQP-VK.pipeline.monolithic.derivative.compute.derivative_by_handle",
+          "status": "Pass",
+          "result": "OK",
+          "qpa_sha256": "c3bfaf39c142034ba7e078b91fb1bd134b8a8708a00de332cd9f1b5131bc0647"
+        },
+        {
+          "case": "dEQP-VK.pipeline.monolithic.derivative.compute.derivative_by_index",
+          "status": "Pass",
+          "result": "OK",
+          "qpa_sha256": "3977dc5a8efa644100c88c2a793556774aaeec43f867daebe0d734aadc0bc3e7"
+        },
+        {
+          "case": "dEQP-VK.api.pipeline_layout.lifetime.destroy_after_end",
+          "status": "NOT_EXECUTED_INVENTORY_ERROR",
+          "qpa_sha256": "56e4045f930b4ea3fd5183a009a788c45d4bbea4118aaa6b031f470824a61553"
+        },
+        {
+          "case": "dEQP-VK.api.array.oversized_array.core.get_pipeline_cache_data",
+          "status": "Pass",
+          "result": "Pass",
+          "qpa_sha256": "30a77abe86adef02b72b4018d31d22754debc5596720c21747ce15ae1cffcc68"
+        },
+        {
+          "case": "dEQP-VK.api.object_management.single.pipeline_cache",
+          "status": "Pass",
+          "result": "Ok",
+          "qpa_sha256": "653abeae104d90f832babd0b529449233273809daf0325a7e61431a694ff7bcc"
+        },
+        {
+          "case": "dEQP-VK.api.object_management.multiple_unique_resources.pipeline_cache",
+          "status": "Pass",
+          "result": "Ok",
+          "qpa_sha256": "3a549109e59082cb7be67026d5c6ee4614ebb1735afcab27450e25a3a0eeec51"
+        },
+        {
+          "case": "dEQP-VK.api.object_management.multiple_unique_resources.compute_pipeline",
+          "status": "Pass",
+          "result": "Ok",
+          "qpa_sha256": "c16195a4c37e275614b8738e26086a96fa65792458c5255ee83f89379f4b2f2e"
+        },
+        {
+          "case": "dEQP-VK.api.object_management.multiple_shared_resources.compute_pipeline",
+          "status": "Pass",
+          "result": "Ok",
+          "qpa_sha256": "08608a5820d0e380e237e342a2e9e1dea007968bf5675dd20c5ee091ba63b187"
+        }
+      ],
+      "actual_dispatches": 2,
+      "logical_invocations": 256,
+      "chunks": 4,
+      "submits": 4,
+      "oracle_scope": "Cache compute2048byte output-to-output equality only; derivatives and normal creation/destruction as sourcebound, index derivative ignores VkResult. Empty cache data size handling only. Layout-before-submit case never executed here; exact parent pipeline omission corrected separately936eef3b/list301765, no8case repeat.",
+      "failure_preserved": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-cache-lifetime/probe/failure.json",
+      "source_bounds_sha256": "e1529979518bead9bf04f13a42a6cffb3d77c8ff1b7135658d63b39ceba447b9",
+      "no_driver_failure_or_lifetime_pass_inferred_from_zero_case": true,
+      "postflight": "Clean fault/services/collection; original caps and all9per-casefaultchecks retained."
+    }
+  },
+  "original_wrapper_failure": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-cache-lifetime/probe/failure.json",
+      "bytes": 280,
+      "sha256": "7d05451f13eaff05852f54933458e40cd6591b01f2cc34ff39e7f55b5999ad59"
+    },
+    "result": {
+      "status": "failed",
+      "error": "CTS completed case inventory differs",
+      "started": true,
+      "terminal": true,
+      "process_returncode": 0,
+      "remote": "/var/tmp/radish/core-compute-core0045-official11-cache-lifetime",
+      "unit": "radish-core-compute-probe-1793624099928178690"
+    }
+  },
+  "corrected_bounds": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-cache-lifetime-one-0045/source-bounds.json",
+      "bytes": 1284,
+      "sha256": "936eef3b51e6942513d97b235f6f3d7fe800b50be134a0079b76723b26b4825e"
+    },
+    "result": {
+      "status": "Corrected one-case inventory; no rerun of8actualpasses",
+      "case_file": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-cache-lifetime-one-0045/cases.txt",
+        "sha256": "301765a47f731e52299dcaad0df29dbe1f14f481bad79f93e62514aab21ea8e2",
+        "count": 1
+      },
+      "source": {
+        "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/api/vktApiPipelineTests.cpp",
+        "sha256": "68ce1169696e7a33c9fe596ac63fc4da055a653c285b3c106a2b0618dbdaba5c"
+      },
+      "cause": "My original inventory omitted parent pipeline group. Source createPipelineTests1968-1974 constructs pipeline then pipeline_layout1772 then lifetime1752 then destroy_after_end1761. Shipped binary contains destroy_after_end and matching destroyAfterEnd function; case3actual0/0 is inventory failure, not driver/lifetime pass.",
+      "prior_failure": "core-compute-core0045-official11-cache-lifetime/probe/case-3.qpa preserved;8otheractualQPAsPass.",
+      "unchanged_bounds": "Same reviewed source body1255-1412: one local1/grid100 dispatch,400BSSBO,4Bpush,SpecID0=1,100exact125+i outputs; pipeline layout only destroyed afterrecording/before submit, executingpipeline and resources retainedthroughfence. Same original controls, no CTS/driver/oracle change."
+    }
+  },
+  "corrected_actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-cache-lifetime-one-0045/actual-review.json",
+      "bytes": 2152,
+      "sha256": "da0b97eba28cbde282dad5e7842699c35ff5849a6d2f8fae2466227d22ae9310"
+    },
+    "result": {
+      "status": "PASS actual original corrected lifetime case; now8previous+1original passes without reruns",
+      "case": "dEQP-VK.api.pipeline.pipeline_layout.lifetime.destroy_after_end",
+      "qpa_sha256": "e8f330afd18df90566daf4f54d0c6e399b82d22afc8157a85646e9f734879aaf",
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 167,
+          "sha256": "3e605d92f43c1fbf7f3cd291b8c4da6a43514347a00928dc6fcd41ad73c009bd"
+        },
+        "deqp-vk": {
+          "bytes": 97536760,
+          "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+        },
+        "libvulkan.so.1": {
+          "bytes": 703696,
+          "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+        },
+        "info-cases.txt": {
+          "bytes": 64,
+          "sha256": "301765a47f731e52299dcaad0df29dbe1f14f481bad79f93e62514aab21ea8e2"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13621840,
+          "sha256": "e7a01d22ba1d45f194344614ec978180c65a5f9951f282921d9fd4f3e9efc31e"
+        },
+        "payload.json": {
+          "bytes": 968,
+          "sha256": "f6665098b3ee45aa299d97ac6ed91e9c351b5b2587447c3c561ed0c7804463f2"
+        }
+      },
+      "dispatch": {
+        "pipeline": "0xaaaacd3a34d0",
+        "grid": "100,1,1",
+        "local": "1,1,1",
+        "barrier": "0",
+        "loops": "0",
+        "instrlen": "1",
+        "chunks": "2",
+        "submits": "2",
+        "ns": "4288552",
+        "submit_ns": "3787562",
+        "submit_max_ns": "3280581",
+        "result": "0"
+      },
+      "oracle": "100uint values125+i sourceoracle,400BSSBO; originalpipeline layout destroyed only after EndCommandBuffer before QueueSubmit. Executingpipeline/module/descriptors/pool/buffer remainlive throughfence; no executingpipeline destruction claim.",
+      "native": "Oneprogram2F0H/native1,local1,zero loops/barriers;100invocations,2chunks/2submits,result0.",
+      "prior_inventory_failure": "Originalcase3requestedname missingparent pipeline produced0/0 preserved257e5706; thisonecasecorrects onlyunexecuted scope. Eightpreviouspassesnotrerun.",
+      "safety": "Clean fault/services/collection, originalcaps unchanged."
+    }
+  },
+  "corrected_runner": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-cache-lifetime-one/probe/runner-result.json",
+      "bytes": 1605,
+      "sha256": "afa91c13bf6713b4b733bdd4a8fe5a1b99dbc5d70cf15c17c5f6621ca8323430"
+    },
+    "result": {
+      "status": "passed",
+      "mode": "probe",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 167,
+          "sha256": "3e605d92f43c1fbf7f3cd291b8c4da6a43514347a00928dc6fcd41ad73c009bd"
+        },
+        "deqp-vk": {
+          "bytes": 97536760,
+          "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+        },
+        "libvulkan.so.1": {
+          "bytes": 703696,
+          "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+        },
+        "info-cases.txt": {
+          "bytes": 64,
+          "sha256": "301765a47f731e52299dcaad0df29dbe1f14f481bad79f93e62514aab21ea8e2"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13621840,
+          "sha256": "e7a01d22ba1d45f194344614ec978180c65a5f9951f282921d9fd4f3e9efc31e"
+        },
+        "payload.json": {
+          "bytes": 968,
+          "sha256": "f6665098b3ee45aa299d97ac6ed91e9c351b5b2587447c3c561ed0c7804463f2"
+        }
+      },
+      "run_log": {
+        "bytes": 15338,
+        "sha256": "7079890b5621501c95ea717ba0c083eabf8b6b0fe44a8e6ef206aaf324729208"
+      },
+      "qpa": {
+        "bytes": 1847,
+        "sha256": "e8f330afd18df90566daf4f54d0c6e399b82d22afc8157a85646e9f734879aaf"
+      },
+      "cases": [
+        {
+          "name": "dEQP-VK.api.pipeline.pipeline_layout.lifetime.destroy_after_end",
+          "status": "Pass",
+          "detail": "Pass"
+        }
+      ],
+      "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+    }
+  },
+  "scope": "Initial nine-name inventory mistakenly omitted parent pipeline in one path, yielding0/0 and no QPA TestCaseResult; final runner correctly failed inventory. Eight actual cases passed. Only the corrected registered lifetime case was run next and passed its100-word oracle. Cache comparisons are output-to-output; derivative-index ignores VkResult; empty serialization checks count only. Pipeline layout is destroyed after recording before submit; executing pipeline and descriptors remain alive through fence. No filled cache, cache hit, optimization or full conformance claim."
+}

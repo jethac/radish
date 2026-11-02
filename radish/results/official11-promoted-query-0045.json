@@ -1,0 +1,354 @@
+{
+  "status": "Thirteen original promoted-query cases passed with actual supported query branches",
+  "driver": {
+    "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/libvulkan_radish.so",
+    "bytes": 49078792,
+    "sha256": "8298f0892597d288d130715975fe08d38c618b69dfd82c6cc9b62aa045b8c640"
+  },
+  "bounds": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-promoted-query-next-0045/source-bounds.json",
+      "bytes": 6648,
+      "sha256": "ee80fe5080469f529b9dd498df735c6b740b3ac87b1c261f94c4dc8ad255415b"
+    },
+    "result": {
+      "status": "Source-bounded original Vulkan1.1 individual properties/features and maintenance3 host queries; no device execution",
+      "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+      "case_file": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-promoted-query-next-0045/cases.txt",
+        "sha256": "91ab81b7717db9eb2555b460e9b55c5e4b5998ff1e80e1c62a73185a1d3de36b",
+        "count": 13
+      },
+      "sources": {
+        "external/vulkancts/modules/vulkan/api/vktApiFeatureInfo.cpp": {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/api/vktApiFeatureInfo.cpp",
+          "sha256": "7ca9941b18a894895c1ee4c5ac31b3163426de7b55687e641d7643a8f60b854b",
+          "bytes": 510556
+        },
+        "external/vulkancts/framework/vulkan/generated/vulkan/vkDeviceFeatures2.inl": {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/framework/vulkan/generated/vulkan/vkDeviceFeatures2.inl",
+          "sha256": "d34fd95de79b6a383f0096590f9da862d61cf7ab0c30313693db59e8e65c2656",
+          "bytes": 464950
+        },
+        "external/vulkancts/modules/vulkan/api/vktApiMaintenance3Check.cpp": {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/api/vktApiMaintenance3Check.cpp",
+          "sha256": "618821238d9b6a169b191bc393b6aa3feba026a4e86d3bfb7ccfc2dbe7eb8480",
+          "bytes": 40123
+        },
+        "external/vulkancts/modules/vulkan/api/vktApiTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/api/vktApiTests.cpp",
+          "sha256": "f8448b09583d40bca5e1ea3d3c87a37f13aa665541a553ab2b45a3da39962902",
+          "bytes": 6276
+        }
+      },
+      "cases": [
+        "dEQP-VK.api.info.get_physical_device_properties2.features.core",
+        "dEQP-VK.api.info.get_physical_device_properties2.properties.basic",
+        "dEQP-VK.api.info.get_physical_device_properties2.format_properties.basic",
+        "dEQP-VK.api.info.get_physical_device_properties2.queue_family_properties.basic",
+        "dEQP-VK.api.info.get_physical_device_properties2.memory_properties.basic",
+        "dEQP-VK.api.info.get_physical_device_properties2.features.16_bit_storage_features",
+        "dEQP-VK.api.info.get_physical_device_properties2.features.multiview_features",
+        "dEQP-VK.api.info.get_physical_device_properties2.features.protected_memory_features",
+        "dEQP-VK.api.info.get_physical_device_properties2.features.sampler_ycbcr_conversion_features",
+        "dEQP-VK.api.info.get_physical_device_properties2.features.shader_draw_parameters_features",
+        "dEQP-VK.api.info.get_physical_device_properties2.features.variable_pointers_features",
+        "dEQP-VK.api.maintenance3_check.maintenance3_properties",
+        "dEQP-VK.api.maintenance3_check.descriptor_set"
+      ],
+      "coverage": {
+        "features_core": "Poisoned legacy features versus Features2 full member equality; top sType/pNext preserved.",
+        "properties_basic": "Base property memberwise equality ignoring C padding; two different initial poison patterns for individual1.1 chain ID,Multiview,ProtectedMemory,Subgroup,PointClipping,Maintenance3. Checks member equality across patterns, not all normative minima. Additional property structs only if advertised extensions/version; no aggregate Vulkan11 structs.",
+        "formats": "Legacy versus FormatProperties2 for every original core VkFormat including UNDEFINED-zero behavior. This is consistency, not mandatory feature table coverage.",
+        "queues_memory": "Legacy/core2 queue count/fields and heap/type field equality; original count-bounded host vectors. Current device has1queue/1heap/1type, no resource allocation.",
+        "six_features": "Each individual1.1 struct queried twice with0/FF patterns, checks field consistency. Feature values may honestly be false; no enablement or execution claim. API1.1 makes allsix query branches execute even if corresponding optional bitfalse. Any Querying not supported Pass string must be reported as non-coverage.",
+        "maintenance3_properties": "Poisoned maxPerSetDescriptors and maxMemoryAllocationSize checked against1024 and1GiB minima; query only, no allocation request. Current source advertises1024 andUINT32_MAX-4095.",
+        "maintenance3_descriptor_set": "All2047 nonempty combinations of11core descriptor types. Distributes counts within actual per-stage/per-set/resource limits, InputAttachment FRAGMENT-only, others ALL valid layout stages; GetDescriptorSetLayoutSupport must true. At most11bindings and144descriptors per combination: maxPerStageResources128 plus up to16 standalone samplers excluded from that resource sum, no CreateDescriptorSetLayout/pool/pipeline/data/commands. Inline uniform blocks absent andexcluded by originalfeaturecheck."
+      },
+      "source_lines": {
+        "feature_queries": "FeatureInfo5515-5542; generated functions16bit6-46/multiview3310ff/protected4350ff/ycbcr4750ff/draw5244ff/variable6673ff; registry7832ff",
+        "property_chain": "FeatureInfo5544-6325, chain construction5666ff, comparisons5840ff",
+        "formats_queues_memory": "FeatureInfo6345-6480",
+        "custom_instance": "FeatureInfo756-835 actual enabled KHR getproperties2/devicegroupcreation support, both advertised oncandidate",
+        "maintenance3": "408-466 pureproperties;469-633 finite2047query loop;calculateBindings308-377;registry868-873"
+      },
+      "bounds": {
+        "cases": 13,
+        "dispatches": 0,
+        "transfers": 0,
+        "shader_modules": 0,
+        "pipelines": 0,
+        "gpu_allocations": 0,
+        "max_descriptor_query_bindings": 11,
+        "max_descriptor_query_count_current_device": 144,
+        "descriptor_support_query_calls": 2047,
+        "individual_feature_queries": 12,
+        "maximum_core_format_count": 185,
+        "host_struct_vectors": "Bounded by fixed Vulkan struct sizes/core enum count/actualsinglequeue; no data or buffer memory allocation."
+      },
+      "feature_distinction": "Vulkan1.1 individual structs are legal. Aggregate VkPhysicalDeviceVulkan11Features/Properties belong to1.2 and are deliberately excluded, as are vulkan1p2 consistency groups. Honest optional bits remain false; successful query consistency does not implement an optional feature.",
+      "exclusions": "Maintenance3 support_count variants require VK_EXT_descriptor_indexing unconditionally and areexcluded. No graphics constructors/protected queues/host allocation stress or extension-only features. No queue work from selectedcases; framework normal initialization remains original.",
+      "controls": "Original CTS binary with same fixedinventory90s/384MiB,8MiBlog+64MiBreserve and per-case fault stop. No source/oracle changes. A host query failure should remain a real result, not trigger limit inflation."
+    }
+  },
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-promoted-query-next-0045/actual-review.json",
+      "bytes": 5795,
+      "sha256": "4443789a7a6c2201b70d346ae238e3ee54a123c16ba54db6926399374fcdcbe5"
+    },
+    "result": {
+      "status": "PASS finite actual13 original individual1.1/promoted query cases",
+      "cases": [
+        {
+          "case": "dEQP-VK.api.info.get_physical_device_properties2.features.core",
+          "status": "Pass",
+          "result": "Querying device features succeeded",
+          "qpa_sha256": "a200b114defb7114ab2d0d92bedfae9af3e577b5e4843d51ada02a3c8f1abf68"
+        },
+        {
+          "case": "dEQP-VK.api.info.get_physical_device_properties2.properties.basic",
+          "status": "Pass",
+          "result": "Querying device properties succeeded",
+          "qpa_sha256": "84f59924514efd02b3f6836b44c98f06dcb7b103dbdd4713c520049841bf98e3"
+        },
+        {
+          "case": "dEQP-VK.api.info.get_physical_device_properties2.format_properties.basic",
+          "status": "Pass",
+          "result": "Querying device format properties succeeded",
+          "qpa_sha256": "4fea0de43680cdb8c1b8c57984ce323a9bc88c39937a24775e6421a7f268dbe6"
+        },
+        {
+          "case": "dEQP-VK.api.info.get_physical_device_properties2.queue_family_properties.basic",
+          "status": "Pass",
+          "result": "Querying device queue family properties succeeded",
+          "qpa_sha256": "1e56e669714f204454bcb98a0fa67112312e87b3221ff8973edd3833ddc265b6"
+        },
+        {
+          "case": "dEQP-VK.api.info.get_physical_device_properties2.memory_properties.basic",
+          "status": "Pass",
+          "result": "Querying device memory properties succeeded",
+          "qpa_sha256": "39552ba915b0f04f7d32d8a3cd46084c2ad5945ab069aa710672e4efebcfe643"
+        },
+        {
+          "case": "dEQP-VK.api.info.get_physical_device_properties2.features.16_bit_storage_features",
+          "status": "Pass",
+          "result": "Querying succeeded",
+          "qpa_sha256": "3e089178c67f23a14db3bad3c0f8e9f6674ad8b37f05aaeb3e028ecce475533e"
+        },
+        {
+          "case": "dEQP-VK.api.info.get_physical_device_properties2.features.multiview_features",
+          "status": "Pass",
+          "result": "Querying succeeded",
+          "qpa_sha256": "573ae6c364d4655fc59ee9de0e892016371f5bd1aedbf3251c08e18fc4278527"
+        },
+        {
+          "case": "dEQP-VK.api.info.get_physical_device_properties2.features.protected_memory_features",
+          "status": "Pass",
+          "result": "Querying succeeded",
+          "qpa_sha256": "1534dae8aba36567eb59de5266b8bbbbafeefa5858b2e4747b187b95bedd5b08"
+        },
+        {
+          "case": "dEQP-VK.api.info.get_physical_device_properties2.features.sampler_ycbcr_conversion_features",
+          "status": "Pass",
+          "result": "Querying succeeded",
+          "qpa_sha256": "7afa6494164dcb95bec1a1797faa8186891d232abba6f5b2e09f605d9e33c267"
+        },
+        {
+          "case": "dEQP-VK.api.info.get_physical_device_properties2.features.shader_draw_parameters_features",
+          "status": "Pass",
+          "result": "Querying succeeded",
+          "qpa_sha256": "2381ed59ff9440ec7f62c5da619de59738e78589e9d1596b3fe4b5e88d521fd8"
+        },
+        {
+          "case": "dEQP-VK.api.info.get_physical_device_properties2.features.variable_pointers_features",
+          "status": "Pass",
+          "result": "Querying succeeded",
+          "qpa_sha256": "71951aa2e8c0228007bc2c0637fc49e21d53973f290e20751619802fa750c0ab"
+        },
+        {
+          "case": "dEQP-VK.api.maintenance3_check.maintenance3_properties",
+          "status": "Pass",
+          "result": "Pass",
+          "qpa_sha256": "bfa01e914ad60b5dd6bac2b79a6250eeb2352a7f5c55fb72a9c93e5f13345c8e"
+        },
+        {
+          "case": "dEQP-VK.api.maintenance3_check.descriptor_set",
+          "status": "Pass",
+          "result": "Pass",
+          "qpa_sha256": "0b0a8a52539cf95ace0c83b0e6083e23e6225b607bc8b5637fe3dfede05b8a85"
+        }
+      ],
+      "source_bounds_sha256": "ee80fe5080469f529b9dd498df735c6b740b3ac87b1c261f94c4dc8ad255415b",
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 163,
+          "sha256": "b54e31a1a8bbac1bf468c3e6ef2736d56bfe2c4e60df1175ca706bda7b2e350a"
+        },
+        "deqp-vk": {
+          "bytes": 97536760,
+          "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+        },
+        "libvulkan.so.1": {
+          "bytes": 703696,
+          "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+        },
+        "info-cases.txt": {
+          "bytes": 965,
+          "sha256": "91ab81b7717db9eb2555b460e9b55c5e4b5998ff1e80e1c62a73185a1d3de36b"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13621840,
+          "sha256": "e7a01d22ba1d45f194344614ec978180c65a5f9951f282921d9fd4f3e9efc31e"
+        },
+        "payload.json": {
+          "bytes": 965,
+          "sha256": "3a2a0b8d348d9d718cd5038875cc30b299beb67ce47f1455f3990850ec7318f2"
+        }
+      },
+      "actual_property_chain_structs": [
+        "VkPhysicalDeviceIDProperties",
+        "VkPhysicalDeviceMultiviewProperties",
+        "VkPhysicalDeviceProtectedMemoryProperties",
+        "VkPhysicalDeviceSubgroupProperties",
+        "VkPhysicalDevicePointClippingProperties",
+        "VkPhysicalDeviceMaintenance3Properties"
+      ],
+      "all6_individual_feature_query_branches_executed": true,
+      "feature_values": "storageBuffer16BitAccess1; remaining16bit bits0, multiview/protected/YCbCr/shaderDrawParameters/variablePointers0. This is query consistency, not blanket optional/mandatory-feature legality or execution qualification.",
+      "maintenance3": {
+        "maxMemoryAllocationSize": 4294963200,
+        "maxPerSetDescriptors": 1024,
+        "actual_layout_support_combinations": 2047,
+        "distinct_type_subsets": 2047,
+        "maximum_bindings": 11,
+        "maximum_total_descriptors": 57
+      },
+      "scope": "Core2 versuslegacy equality plus two-poison individual struct consistency; maintenance3 minima and all2047 legal supportqueries. No aggregateVulkan11Features/Properties1.2structs. No memory/pipeline/shader/command/data work; no full allocation-limit or optional execution/conformance claim.",
+      "postflight": "4.988s wall21.1MiB0swap,clean fault/services/collection, originalcontrols."
+    }
+  },
+  "runner": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-promoted-query/probe/runner-result.json",
+      "bytes": 3701,
+      "sha256": "6e3d8b4eb8566b9aca77d2cb3a56823f3dde1b2da3282d789d0ab79f986092ce"
+    },
+    "result": {
+      "status": "passed",
+      "mode": "probe",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 163,
+          "sha256": "b54e31a1a8bbac1bf468c3e6ef2736d56bfe2c4e60df1175ca706bda7b2e350a"
+        },
+        "deqp-vk": {
+          "bytes": 97536760,
+          "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+        },
+        "libvulkan.so.1": {
+          "bytes": 703696,
+          "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+        },
+        "info-cases.txt": {
+          "bytes": 965,
+          "sha256": "91ab81b7717db9eb2555b460e9b55c5e4b5998ff1e80e1c62a73185a1d3de36b"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13621840,
+          "sha256": "e7a01d22ba1d45f194344614ec978180c65a5f9951f282921d9fd4f3e9efc31e"
+        },
+        "payload.json": {
+          "bytes": 965,
+          "sha256": "3a2a0b8d348d9d718cd5038875cc30b299beb67ce47f1455f3990850ec7318f2"
+        }
+      },
+      "run_log": {
+        "bytes": 9775,
+        "sha256": "822c0b6dd5434c2b363e7e59859b6d47f0bfdef242e0ba1e3362bc1805ccf6cb"
+      },
+      "qpa": {
+        "bytes": 671487,
+        "sha256": "c06e283bda0fc8be2dfa1eff11b01af13589568a4cc33907f4fe75512d787369"
+      },
+      "cases": [
+        {
+          "name": "dEQP-VK.api.info.get_physical_device_properties2.features.core",
+          "status": "Pass",
+          "detail": "Querying device features succeeded"
+        },
+        {
+          "name": "dEQP-VK.api.info.get_physical_device_properties2.properties.basic",
+          "status": "Pass",
+          "detail": "Querying device properties succeeded"
+        },
+        {
+          "name": "dEQP-VK.api.info.get_physical_device_properties2.format_properties.basic",
+          "status": "Pass",
+          "detail": "Querying device format properties succeeded"
+        },
+        {
+          "name": "dEQP-VK.api.info.get_physical_device_properties2.queue_family_properties.basic",
+          "status": "Pass",
+          "detail": "Querying device queue family properties succeeded"
+        },
+        {
+          "name": "dEQP-VK.api.info.get_physical_device_properties2.memory_properties.basic",
+          "status": "Pass",
+          "detail": "Querying device memory properties succeeded"
+        },
+        {
+          "name": "dEQP-VK.api.info.get_physical_device_properties2.features.16_bit_storage_features",
+          "status": "Pass",
+          "detail": "Querying succeeded"
+        },
+        {
+          "name": "dEQP-VK.api.info.get_physical_device_properties2.features.multiview_features",
+          "status": "Pass",
+          "detail": "Querying succeeded"
+        },
+        {
+          "name": "dEQP-VK.api.info.get_physical_device_properties2.features.protected_memory_features",
+          "status": "Pass",
+          "detail": "Querying succeeded"
+        },
+        {
+          "name": "dEQP-VK.api.info.get_physical_device_properties2.features.sampler_ycbcr_conversion_features",
+          "status": "Pass",
+          "detail": "Querying succeeded"
+        },
+        {
+          "name": "dEQP-VK.api.info.get_physical_device_properties2.features.shader_draw_parameters_features",
+          "status": "Pass",
+          "detail": "Querying succeeded"
+        },
+        {
+          "name": "dEQP-VK.api.info.get_physical_device_properties2.features.variable_pointers_features",
+          "status": "Pass",
+          "detail": "Querying succeeded"
+        },
+        {
+          "name": "dEQP-VK.api.maintenance3_check.maintenance3_properties",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.maintenance3_check.descriptor_set",
+          "status": "Pass",
+          "detail": "Pass"
+        }
+      ],
+      "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+    }
+  },
+  "scope": "Five core2 equality/chain cases, six individual Vulkan1.1 feature structs and maintenance3 properties/2047 descriptor-type subsets. All six feature branches execute under API1.1; honest false feature bits are not support claims. No aggregate1.2 structs, shaders, allocations, commands or graphics constructors. Equality/poison checks do not replace full normative or functional conformance."
+}

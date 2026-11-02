@@ -380,3 +380,11 @@ The next bounded evidence adds eighteen original query lifecycle cases and the
 required native-backed blend format-query traits. Their source/oracle limitations
 remain explicit; the full required behavior/precision/CTS work remains active.
 No performance experiment or inference-selection change follows from these passes.
+
+The next concrete requirement evidence covers individual 1.1/core2/maintenance3
+queries, the existing extended block storage-view path, required native format
+query traits, and precisely scoped cache/lifetime behavior. Full applicable
+shader, memory, image, precision and CTS validation remains unfinished. Real
+pipeline-cache population is a later optimization opportunity, not evidence
+manufactured for conformance and not an assumed speedup. Conformance remains
+first; full model accuracy, deployment, memory and performance work follows.

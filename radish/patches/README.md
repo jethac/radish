@@ -718,3 +718,8 @@ No graphics queue, initialized rendering or full-conformance claim is added.
 physical format-query traits. Exact8298 reconstruction and 14 positive / 4 negative
 query results are in `../results/required-blend-query-0045.json`; no graphics
 execution or full-conformance claim is inferred.
+
+`0045-radish-required-blit-query.patch` and then
+`0045-radish-required-vertex-query.patch` follow 8298. Both change physical format
+traits only. Exact f222 reconstruction and 99 positive/negative queries are in
+`../results/required-blit-vertex-query-0045.json`; no graphics execution claim.
