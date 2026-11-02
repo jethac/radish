@@ -40,3 +40,15 @@ This is one sequential pair, not randomized statistics or GPU elapsed timing. Th
 Apply [the incremental patch](patches/0045-radish-shared-resource-batching.patch) after the complete 0044 stack through storage-Cube/multisample. The source selector remains opt-in: `RADISH_TILED_BATCH_CHUNKS` defaults to 1. The measured pair fixes `RADISH_BATCH_CHUNKS=8`, `RADISH_SHARED_GROUPS=8`, `RADISH_TILED_GROUPS_X=1`, packed-A and the accepted normalization/model selectors, varying only `RADISH_TILED_BATCH_CHUNKS=1` versus `8`. Existing model wrappers already carry these controls. Retained native admission precedes the original repeat-2 model run, with unchanged references, exact accepted output check and 640 MiB/128 MiB swap/300-second bounds.
 
 [The exact result](results/batching-recovery-0045.json) records source, driver, model, fixtures, runner, native identity, capture and review hashes. The system ICD remains unchanged. This qualifies batching recovery for the measured workload; normalization batching, remaining latency and end-to-end Straylight performance remain active work.
+
+A separate queue-only hotspot timestamp diagnostic passes all 179 native
+identities and the original two full numerical runs, but emits zero of the
+required 2,400 raw timestamp records. It is preserved as an unmeasured
+diagnostic, not elapsed-GPU or utilization evidence. The selector confused
+compact first-use descriptor indices with Vulkan binding identities. The
+next narrow correction resolves set/binding/array through resource metadata;
+all range, resource and scheduling guards remain required. This illustrates
+why identifier domains need explicit mapping and why record counts/guards
+qualify measurement separately from successful execution. Selected fcd/d332
+is unchanged. See results/hotspot-timestamps-unmeasured-0045.json and the
+frozen failing source patch; there is no identical-payload retry or speed claim.

@@ -1,0 +1,63 @@
+{
+  "status": "numerical_pass_but_timestamp_diagnostic_not_measured",
+  "log": {
+    "bytes": 670270,
+    "sha256": "42df7fa59980a2e0d8ab416370d2cc4d181b212f20a15117f62a781c10f9424f"
+  },
+  "raw_records": 0,
+  "total_records": 0,
+  "first_core_s": 34.120237,
+  "resident_core_s": 34.03766,
+  "scope": "Full original numerical/fault/service gates pass; zero raw timestamp records prevents GPU interval/rate/utilization claim. Selector source diagnosis only; no retry authorized from this receipt.",
+  "source_patch": {
+    "bytes": 7937,
+    "sha256": "137482ab4dc7dcb2c35cca8f2b3fac509af67bbe025e0c36db1f883a9f64b397"
+  },
+  "driver": "04a5f2ef09383d905ee011752ea139b4b7f055ca538b43d32a36db67b08ccd99",
+  "model": "d33222d4d62e209f8b05807d78224862778d4a3afe540a4130ee70743b59aff7",
+  "native_admission": {
+    "bytes": 867,
+    "sha256": "f93a6ae3acca483e47e80c163616cd3ad9a05d3d959fb2319708d190f4fe6ec2"
+  },
+  "actual_independent_review": {
+    "verdict": "Numerical/postflightPASS; timestamp admissionFAIL (zero samples), noGPUinterval/throughput claim",
+    "log_sha256": "42df7fa59980a2e0d8ab416370d2cc4d181b212f20a15117f62a781c10f9424f",
+    "outputs": [
+      {
+        "file": "ncnn-vulkan-candidate.f32",
+        "sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287",
+        "values": 562342,
+        "max_abs": 0.000110626220703125
+      },
+      {
+        "file": "ncnn-vulkan-output.f32",
+        "sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287",
+        "values": 562342,
+        "max_abs": 0.000110626220703125
+      }
+    ],
+    "actual_hotspot_raw_records": 0,
+    "actual_hotspot_total_records": 0,
+    "expected_if_selected": {
+      "commands": 24,
+      "batches_per_command": 100,
+      "raw_records": 2400
+    },
+    "scope": "Originalbothfullreference log comparisons and finalretained562342raw/e128 independentCPUreference comparison pass; no newfault/servicesactive. Run statuspassed validates existingmodel gates only. Timerwork never admitted despiteenv1, so no guard/tick/interval validation or GPUelapsedtime exists.",
+    "source_diagnosis": "Stage8 dispatchdescriptors[] compactfirst-use indices are not Vulkanbinding ordinals. Selector/report interpreted descriptor0/2/3 as binding0/2/3, invalidating its shape inference; authorbatchowns semanticlookup correction by resourceidentity. No samepayloadretry justified.",
+    "limitations": "Finalraw files are lastiteration outputs; first numerical comparison retainedinlog. No measuredshaderclock/ALUutilization/performance conclusion. Source/model/guardsremainfcd/d332lineage; selectedbinaryunchanged."
+  },
+  "actual_independent_review_pin": {
+    "bytes": 1645,
+    "sha256": "595b643d7727d22b59be07a2057149ae4eb8d262ef2818b71cb22994dfac8a52"
+  },
+  "expected_measurement": {
+    "target_commands": 24,
+    "batches_per_command": 100,
+    "raw_records": 2400
+  },
+  "source_defect": "Selector/report assumed compact first-use dispatch descriptor indices were Vulkan binding ordinals. Correct source must resolve set/binding/array identity using resource metadata, retaining existing exact ranges and class guards.",
+  "identifier_lesson": "Indices from different identifier domains require an explicit mapping. Successful execution and unchanged native shaders do not prove a diagnostic activated; exact measurement counts and guards are separate qualification gates.",
+  "selected_inference": "fcd/d332 unchanged",
+  "setup_history": "Initial hardlink source absent: stopped before model/helper, clean postflight. Fresh label restored exact pinned hostmodel after every source path/hash/type/inode plus model/output/reserve precheck. Completed private assets archived only with two verified host restore copies."
+}

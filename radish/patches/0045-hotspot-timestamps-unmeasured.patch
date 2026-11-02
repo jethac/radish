@@ -1,0 +1,201 @@
+--- a/src/freedreno/radish/rd_queue.c
++++ b/src/freedreno/radish/rd_queue.c
+@@ -31,6 +31,9 @@
+    unsigned sample;
+    uint32_t seqno;
+    uint64_t submit_count;
++   bool hotspot;
++   unsigned batch, valid_batches;
++   uint64_t gpu_total_ns, host_total_ns, instrumentation_ns;
+ };
+ 
+ static bool
+@@ -47,6 +50,33 @@
+       value = observed;
+    }
+    return false;
++}
++
++static bool
++rd_gpu_hotspot_reserve(unsigned *sample)
++{
++   static unsigned attempts;
++   unsigned value = p_atomic_read(&attempts);
++   while (value < 24) {
++      unsigned observed = p_atomic_cmpxchg(&attempts, value, value + 1);
++      if (observed == value) {
++         *sample = value;
++         return true;
++      }
++      value = observed;
++   }
++   return false;
++}
++
++static void
++rd_gpu_elapsed_poison(struct rd_gpu_elapsed *sample)
++{
++   const uint64_t initial[4] = {
++      UINT64_MAX, UINT64_C(0x1964a5a55a5acafe),
++      UINT64_MAX, UINT64_C(0xe69b5a5aa5a53501)
++   };
++   memcpy(sample->map, initial, sizeof(initial));
++   __sync_synchronize();
+ }
+ 
+ static void
+@@ -73,12 +103,7 @@
+       rd_gpu_elapsed_release(sample);
+       return;
+    }
+-   const uint64_t initial[4] = {
+-      UINT64_MAX, UINT64_C(0x1964a5a55a5acafe),
+-      UINT64_MAX, UINT64_C(0xe69b5a5aa5a53501)
+-   };
+-   memcpy(sample->map, initial, sizeof(initial));
+-   __sync_synchronize();
++   rd_gpu_elapsed_poison(sample);
+ }
+ 
+ static void
+@@ -98,6 +123,7 @@
+ {
+    if (!sample)
+       return;
++   int64_t report_start = sample->hotspot ? os_time_get_nano() : 0;
+    uint64_t values[4] = {UINT64_MAX, 0, UINT64_MAX, 0};
+    uint64_t delta = 0, gpu_ns = 0;
+    int64_t host_ns = start >= 0 && done > start ? done - start : 0;
+@@ -151,11 +177,28 @@
+          device->submit_count - sample->submit_count, device->submit_count,
+          values[0], values[2], delta, gpu_ns, start, done, host_ns, result,
+          sample->calibration);
++   if (sample->hotspot) {
++      const struct rd_dispatch *d = sample->dispatch;
++      length = snprintf(line, sizeof(line),
++         "RADISH_GPU_HOTSPOT version=1 command=%u batch=%u valid=%u reason=%s pipeline=%p grid=%u,%u,%u local=16,8,1 instrlen=%u input_w=%u output_w=%u weight_range=%" PRIu64 " chunks=%u submits=%" PRIu64 " submit_id=%" PRIu64 " start_ticks=%" PRIu64 " stop_ticks=%" PRIu64 " delta_ticks=%" PRIu64 " gpu_ns=%" PRIu64 " host_start_ns=%" PRId64 " host_done_ns=%" PRId64 " submit_ns=%" PRId64 " result=%d\n",
++         sample->sample, sample->batch, (unsigned)(sample->reason == NULL),
++         sample->reason ? sample->reason : "ok", (void *)d->pipeline,
++         d->grid[0], d->grid[1], d->grid[2], d->pipeline->variant->instrlen,
++         d->push[0], d->push[1], (uint64_t)d->descriptors[0].range,
++         device->seqno - sample->seqno, device->submit_count - sample->submit_count,
++         device->submit_count, values[0], values[2], delta, gpu_ns,
++         start, done, host_ns, result);
++      sample->valid_batches += sample->reason == NULL;
++      sample->gpu_total_ns += gpu_ns;
++      sample->host_total_ns += host_ns;
++   }
+    if (length >= 0 && (size_t)length < sizeof(line))
+       fputs(line, stderr);
+    else
+       fprintf(stderr, "RADISH_GPU_ELAPSED version=1 sample=%u valid=0 reason=report_overflow\n",
+               sample->sample);
++   if (sample->hotspot)
++      sample->instrumentation_ns += os_time_get_nano() - report_start;
+ }
+ 
+ static void
+@@ -587,6 +630,19 @@
+    uint64_t resident_threads = (uint64_t)v->local_size[0] *
+       v->local_size[1] * v->local_size[2];
+    return resident_threads * ir3_shader_halfregs(v) <= 4096;
++}
++
++static bool
++rd_gpu_hotspot_enabled(const struct rd_dispatch *dispatch)
++{
++   const char *enabled = getenv("RADISH_GPU_ELAPSED_HOTSPOT");
++   const char *profiling = getenv("RADISH_PROFILE");
++   return enabled && !strcmp(enabled, "1") &&
++      profiling && !strcmp(profiling, "1") &&
++      dispatch->grid[0] == 400 && dispatch->grid[1] == 2 && dispatch->grid[2] == 1 &&
++      dispatch->push[1] == 25561 && dispatch->descriptors[0].range == 720896 &&
++      dispatch->descriptors[2].range >= UINT64_C(25561) * 128 * 4 &&
++      dispatch->descriptors[3].range >= 512;
+ }
+ 
+ static bool
+@@ -781,6 +837,22 @@
+          rd_gpu_elapsed_prepare(device, sample);
+       }
+    }
++   if (!sample && zero_base && profile && !dispatch->indirect && !tiled_x2 &&
++       max_chunks == 8 && tile[0] == 1 && tile[1] == 1 && tile[2] == 1 &&
++       fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) == 506 &&
++       v->local_size[0] == 16 && v->local_size[1] == 8 && v->local_size[2] == 1 &&
++       v->has_barrier && v->loops == 4 && v->shared_size == 16384 && !v->pvtmem_size &&
++       !v->info.double_threadsize && v->info.max_reg == 15 && v->info.max_half_reg == -1 &&
++       (v->instrlen == 27 || v->instrlen == 28) &&
++       rd_shared_batch_resources(dispatch->pipeline) && rd_gpu_hotspot_enabled(dispatch) &&
++       rd_gpu_hotspot_reserve(&storage.sample)) {
++      sample = &storage;
++      sample->hotspot = true;
++      sample->dispatch = dispatch;
++      int64_t prepare_start = os_time_get_nano();
++      rd_gpu_elapsed_prepare(device, sample);
++      sample->instrumentation_ns += os_time_get_nano() - prepare_start;
++   }
+    struct fd_submit *submit = NULL;
+    struct fd_ringbuffer *ring = NULL;
+    unsigned chunks = 0;
+@@ -789,6 +861,19 @@
+       for (base[1] = 0; base[1] < dispatch->grid[1]; base[1] += tile[1]) {
+          for (base[0] = 0; base[0] < dispatch->grid[0]; base[0] += tile[0]) {
+             if (!submit) {
++               if (sample && sample->hotspot) {
++                  int64_t reset_start = os_time_get_nano();
++                  sample->seqno = device->seqno;
++                  sample->submit_count = device->submit_count;
++                  if (sample->batch && !sample->reason) {
++                     if (fd_bo_cpu_prep(sample->bo, device->pipe,
++                                        FD_BO_PREP_WRITE | FD_BO_PREP_NOSYNC))
++                        sample->reason = "write_prep";
++                     else
++                        rd_gpu_elapsed_poison(sample);
++                  }
++                  sample->instrumentation_ns += os_time_get_nano() - reset_start;
++               }
+                submit = fd_submit_new(device->pipe);
+                if (!submit) {
+                   rd_gpu_elapsed_finish(device, sample,
+@@ -818,22 +903,37 @@
+                }
+                VkResult result = rd_finish_submit(device, submit, ring, profile,
+                                                    sample);
+-               rd_gpu_elapsed_release(sample);
+-               sample = NULL;
++               if (sample && sample->hotspot) {
++                  sample->batch++;
++               } else {
++                  rd_gpu_elapsed_release(sample);
++                  sample = NULL;
++               }
+                submit = NULL;
+                ring = NULL;
+                chunks = 0;
+-               if (result != VK_SUCCESS)
++               if (result != VK_SUCCESS) {
++                  rd_gpu_elapsed_release(sample);
+                   return result;
++               }
+             }
+          }
+       }
+    }
+    if (submit) {
++      if (sample && sample->hotspot && sample->bo) {
++         rd_gpu_elapsed_emit(ring, sample->bo, 16);
++         OUT_WFI5(ring);
++      }
+       VkResult result = rd_finish_submit(device, submit, ring, profile, sample);
+       rd_gpu_elapsed_release(sample);
+       return result;
+    }
++   if (sample && sample->hotspot)
++      fprintf(stderr, "RADISH_GPU_HOTSPOT_TOTAL version=1 command=%u pipeline=%p batches=%u valid_batches=%u gpu_ns=%" PRIu64 " submit_ns=%" PRIu64 " instrumentation_ns=%" PRIu64 "\n",
++              sample->sample, (void *)dispatch->pipeline, sample->batch,
++              sample->valid_batches, sample->gpu_total_ns, sample->host_total_ns,
++              sample->instrumentation_ns);
+    rd_gpu_elapsed_release(sample);
+    return VK_SUCCESS;
+ }
