@@ -436,7 +436,9 @@ now pass on unchanged f222/e699. This includes the 512-way Phi shader and
 171 nested selections at depth eight. Each difficult module first passed a
 separate bounded compile/resource check, then its original numerical CTS case.
 The wide shader executes allocator-generated 16-bit spill loads and stores;
-the original output comparison passes. Original epsilon/NaN oracle limits in
+the original output comparison passes. The wide case checks100 deterministic
+inputs (at most100 arms); the nested case also checks100 inputs. These original
+cases do not enumerate every control-flow path. Original epsilon/NaN oracle limits in
 two other cases remain explicit. No driver or test-oracle change was needed.
 
 [All 11 original legacy event/fence cases](results/official11-event-fence-0045.json)

@@ -2542,5 +2542,6 @@
       }
     }
   ],
-  "scope": "Original0e715 shaders, inputs, work and oracles are unchanged. Wide512-way Phi and171 nested selections/depth8 were retained and admitted separately before original execution. Native compile alone was not counted. Original epsilon/NaN limitations remain; no complete shader or Vulkan conformance claim. No driver or guard change."
+  "scope": "Original0e715 shaders, inputs, work and oracles are unchanged. Wide512-way Phi and171 nested selections/depth8 were retained and admitted separately before original execution. Native compile alone was not counted. Original epsilon/NaN limitations remain; no complete shader or Vulkan conformance claim. No driver or guard change.",
+  "finite_path_limit": "The original wide shader compiles all512 switch/Phi inputs, while100 deterministic inputs select at most100 arms. The nested shader also checks100 inputs. Neither original case enumerates every control-flow path."
 }
