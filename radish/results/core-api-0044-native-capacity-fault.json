@@ -1,0 +1,138 @@
+{
+  "session": 28696,
+  "status": "failed-new-gpu-fault",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-0044-native-capacity/probe",
+  "driver_sha256": "c1c3a5205ebaff573fa0eea94ea0d16e5c27516a6ca2d22e69e9ecd93ac2f71f",
+  "source_snapshot": "checkpoint-live-native-diagnostics-source",
+  "payload": {
+    "radish_icd.json": {
+      "bytes": 149,
+      "sha256": "b0f0d970c9436737431e990ed4856ceaad390330e55b273c686e6627e5744b08"
+    },
+    "resources": {
+      "bytes": 745792,
+      "sha256": "b00c4f6ff30ee3822bde8b43c3d37af91e822759cde2dce24e7021392dc94128"
+    },
+    "resources.spv": {
+      "bytes": 6444,
+      "sha256": "5b549fa5a58348c7a0837f8dc7a3fadd5c63049c49d75816b0d5cacb6f2eee70"
+    },
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 49000536,
+      "sha256": "c1c3a5205ebaff573fa0eea94ea0d16e5c27516a6ca2d22e69e9ecd93ac2f71f"
+    },
+    "payload.json": {
+      "bytes": 814,
+      "sha256": "a96d75d8d47e401e1b901022a144e8293326a5270fccde9ae3ee19932d34b906"
+    }
+  },
+  "capture_pins": {
+    "run.log": {
+      "bytes": 170519,
+      "sha256": "595afcfb6d4bdc09be7b0cc268e90cc79478f9ecfee3cafa7e31bb38792e9aed"
+    },
+    "failure.json": {
+      "bytes": 263,
+      "sha256": "8e373bb31e258dd24da70042a9abcecb125de36b93474a769e6f9c31f866f10c"
+    },
+    "collection.json": {
+      "bytes": 70,
+      "sha256": "be400cd7e1278531d1d27fe09a238615e57dfa843df419395e9540020cc10779"
+    },
+    "fault-check.txt": {
+      "bytes": 749,
+      "sha256": "e4a1f8060ad437c5aea5c8c8dc16402bd662943f1f34ed54ecfb683af5394ac3"
+    },
+    "services-before.txt": {
+      "bytes": 14,
+      "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+    },
+    "services-after.txt": {
+      "bytes": 14,
+      "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+    },
+    "drain-000.txt": {
+      "bytes": 55,
+      "sha256": "899a8a5a73232d4a07b56824413da1c88dc2dc685e89886ca2bc05f89923b9f6"
+    },
+    "host-before.json": {
+      "bytes": 1950,
+      "sha256": "e19e522f12bd2092afb063049a4aedb5bc85386218f9d015269669dd064c454e"
+    }
+  },
+  "compile_only": "passed; no data allocations or GPU dispatch",
+  "execution": {
+    "rounds_attempted": 1,
+    "rounds_passed": 0,
+    "grid": [
+      4,
+      1,
+      1
+    ],
+    "local": [
+      1,
+      1,
+      1
+    ],
+    "chunks": 1,
+    "submits": 1,
+    "native_units": 5,
+    "registers_full_half": [
+      8,
+      2
+    ],
+    "shared_bytes": 0,
+    "private_bytes": 0,
+    "sampled_textures": 16,
+    "samplers": 16,
+    "image_size_aliases": [
+      16,
+      17
+    ],
+    "texel_buffer_size_aliases": [
+      18,
+      19
+    ],
+    "native_query_forms": [
+      "getsize.s2en.uniform",
+      "getbuf.s2en.uniform"
+    ],
+    "software_fallback": false,
+    "first_mismatch": {
+      "allocation_word": 32,
+      "actual": "00000000",
+      "expected": "12000000"
+    }
+  },
+  "conditions": {
+    "service_seconds": 0.616,
+    "peak_mib": 6.9,
+    "swap_bytes": 0,
+    "services_active": true,
+    "own_unit_drained": true,
+    "printed_new_read_fault_iovas": [
+      "000000000243e000",
+      "000000000243e040",
+      "000000000243e080",
+      "000000000243e0c0",
+      "000000000243e100",
+      "000000000243e140",
+      "000000000243e180",
+      "000000000243e1c0",
+      "000000000243e280",
+      "000000000243e200"
+    ]
+  },
+  "limits": [
+    "No passing numerical/guard result is claimed; verification stopped at the first mismatch.",
+    "Ten printed fault messages are not an exhaustive hardware-transaction count; logs lack client/instruction-versus-data attribution.",
+    "The first output mismatch does not identify the faulting instruction.",
+    "Earlier cube/subword passes remain valid for their reduced native texture inventory; this demonstrates a separate required-capacity failure.",
+    "All further GPU execution held; irregular barriers, oversized execution and full-model replay unattempted.",
+    "No driver/feature/limit change in this checkpoint; performance remains paused."
+  ]
+}

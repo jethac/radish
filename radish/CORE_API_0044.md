@@ -1,5 +1,13 @@
 # Core compute implementation: checkpoint 0044
 
+## 2026-11-02: full native resource capacity still faults
+
+A small core-compute consumer with sixteen genuinely live sampled textures, two storage-image size queries and two storage-texel-buffer size queries compiles successfully but faults on execution. The current `c1c3a520` driver emits native texture slots0–15 and query aliases16–19; both GETSIZE and GETBUF use indirect `s2en` instructions. The shader has only five native instruction units,8 full/2 half registers, and no shared/private storage or software sampling fallback. Its first round returns an incorrect first output and ten printed GPU read-fault messages. [Exact payload, state and failure evidence](results/core-api-0044-native-capacity-fault.json).
+
+The runner stopped after that round, drained its unit and retained the full native/BO/descriptor log. Both services remained active; the service used616ms,6.9MiB and no swap. The earlier cube/subword passes remain valid for their smaller native inventory, but the required full-capacity combination is now a concrete unresolved failure. The first mismatch does not identify which instruction faulted. All further GPU execution is held while source diagnosis continues, including irregular barriers, oversized images and full-model replay.
+
+The exact failing consumer is retained as `tests/core_native_capacity.c` and `tests/shaders/core-native-capacity.comp`, using the existing frozen resource utilities. It is not added to the default device batch. This checkpoint changes no driver code, advertised limits or features.
+
 ## 2026-11-02: corrected cube and subword consumers pass
 
 The child pipeline now rebuilds its native texture inventory after software lowering, preserving the original application and raw-address indices. The unchanged cube consumer passes all 6,120 output words and full allocation guards; the subword consumer then passes all 5,950 words and guards. Cube checks cover six faces, a nonzero base layer, seams/corners, spatial and mip filtering, explicit gradients and gather. Subword checks cover R8_UINT, packed R5G6B5 and R16_SFLOAT decoding/filtering. Valid descriptor re-recording, cache reuse or format-key change, and current BO data checks remain intact. [Exact results and limits](results/core-api-0044-cube-subword.json).
