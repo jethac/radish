@@ -1,5 +1,13 @@
 # Core compute implementation: checkpoint 0044
 
+## 2026-11-02: model failure localized to the first packed convolution
+
+The unchanged style-projection fixture passes all 1,028 values against its independent reference, including the 530 KB weight-buffer path. This does not qualify every large buffer or the full model.
+
+Two selected prefixes of the unchanged full graph narrow the failure further. Blob 337, the input to `conv1d_19`, passes all 109,482 values against the pinned CPU reference. Blob 338 fails 217,728 of 218,112 comparisons; independent bit-level analysis finds every output equals its original channel bias repeated across all 213 positions. The layer contributes zero net accumulation. Its channel-padding preparation, weight access, robust predicates and native math remain under investigation. [Paired references, outputs and limits](results/core-api-0044-model-prefix-localization.json).
+
+Both prefix runs use the same `0315b6a6` driver and model, with no feature, shader, batching or oracle change. They complete without GPU faults, preserve active services and drain their units; peak memory is below 296 MiB with no swap. These are diagnostic results, not a repaired model or performance result. Further GPU runs remain held for a concrete source-backed discriminator or fix.
+
 ## 2026-11-02: model load is fixed; first inference fails numerically
 
 The allocator now honors the same register-footprint budget as the driver’s final admission check. This fixes the reproduced pipeline-creation failure without disabling robustness, changing workgroup geometry or weakening the 4,096-unit guard. Program 52 uses 15 full and 2 half registers instead of 16 full and 21 half; all 179 model programs are admitted. No private load/store instructions appear, so this result does not establish spilling. The eighteenth increment is `0044-radish-register-budget-wip.patch`.

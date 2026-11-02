@@ -1,0 +1,253 @@
+{
+  "status": "localized numerical failure in first packed convolution or its preparation",
+  "driver": {
+    "bytes": 49007584,
+    "sha256": "0315b6a6450764d00bee358fbe74633d383afdcfa4c04ad16cda41c8d2ffd0a7"
+  },
+  "runner": {
+    "bytes": 15486,
+    "sha256": "91bcda873798e327733f8261d4e07bf16f112fe231f2ba9dd918013c12e1a260"
+  },
+  "configuration": {
+    "bytes": 6490,
+    "sha256": "f07493e7f420ba25276def5cf1400e86ac0dc4e0c6cef7ed9b7a2476481669fd"
+  },
+  "CPU_reference_provenance": {
+    "bytes": 3577,
+    "sha256": "89a94ec21af126832d96adf528b138dae6ac546317cc8ee68ba7eb81c19b4b38"
+  },
+  "style_discriminator": {
+    "session": 54273,
+    "status": "passed scoped early style projection; fullmodel still fails",
+    "driver": {
+      "bytes": 49007584,
+      "sha256": "0315b6a6450764d00bee358fbe74633d383afdcfa4c04ad16cda41c8d2ffd0a7"
+    },
+    "runner": {
+      "bytes": 14327,
+      "sha256": "beb0f6ccf0096a8521ff6c1d75ab7905dac296d703e2bab482cec3e90d4d5851"
+    },
+    "pins": {
+      "bytes": 3944,
+      "sha256": "7a656235a7912a5baeb7b9e93f3d7962ca3417cefb5a590a447202fc076db92b"
+    },
+    "fixture_equivalence": {
+      "bytes": 2199,
+      "sha256": "df790128a02737d7e8ed66043ad43f036d276edf2c1a7718ff6f484e5c8a69a9"
+    },
+    "capture": "/run/media/jethac/Shared/radish/model-style-discriminator-0044/evidence-first/probe",
+    "run_log": {
+      "bytes": 1154865,
+      "sha256": "04e13f870e79d5b91fe58acf4637726a49248ad63916470595c6d8e08e909b2d"
+    },
+    "result": {
+      "bytes": 661,
+      "sha256": "af8333b3c5a4f9ec4a9df3ee5813baa3265c85a4ff312dee94515a4cc71b2cd2"
+    },
+    "outputs": {
+      "ncnn-vulkan-candidate.f32": {
+        "bytes": 4112,
+        "sha256": "866e870f76028eb25b3ed840af52d97812e975094b2f32926324c049ebbbcd25"
+      },
+      "ncnn-vulkan-output.f32": {
+        "bytes": 4112,
+        "sha256": "866e870f76028eb25b3ed840af52d97812e975094b2f32926324c049ebbbcd25"
+      }
+    },
+    "values": 1028,
+    "mismatches": 0,
+    "max_abs": 4.76837158e-07,
+    "atol": 2e-05,
+    "rtol": 2e-05,
+    "gpu_layers": 2,
+    "cpu_layers": 0,
+    "service_seconds": 1.422,
+    "peak_mib": 70.4,
+    "swap_bytes": 0,
+    "new_gpu_faults": false,
+    "services_active": true,
+    "scope": "Existing Crop/InnerProduct projection with530452-byte original weight prefix and full independent oracle. Not all SSBO sizes, packed math or fullmodel correctness."
+  },
+  "prefixes": {
+    "338": {
+      "session": 86915,
+      "comparison": {
+        "blob": "338",
+        "values": 218112,
+        "mismatches": 217728,
+        "max_abs": 22.50639234855771,
+        "relative_rms": 0.9995647246379242,
+        "atol": 0.002,
+        "rtol": 0.002,
+        "first_mismatches": [
+          {
+            "index": 0,
+            "got": -0.004977432079613209,
+            "reference": -0.2017783224582672
+          },
+          {
+            "index": 1,
+            "got": -0.004977432079613209,
+            "reference": 0.11881399154663086
+          },
+          {
+            "index": 2,
+            "got": -0.004977432079613209,
+            "reference": 0.1264602541923523
+          },
+          {
+            "index": 3,
+            "got": -0.004977432079613209,
+            "reference": 0.12629973888397217
+          },
+          {
+            "index": 4,
+            "got": -0.004977432079613209,
+            "reference": 0.12613603472709656
+          },
+          {
+            "index": 5,
+            "got": -0.004977432079613209,
+            "reference": 0.1260993480682373
+          },
+          {
+            "index": 6,
+            "got": -0.004977432079613209,
+            "reference": 0.12638717889785767
+          },
+          {
+            "index": 7,
+            "got": -0.004977432079613209,
+            "reference": 0.12721514701843262
+          }
+        ],
+        "output": {
+          "bytes": 872448,
+          "sha256": "3be7df651ae552be6c593a3e8aebe9264294aa505badd1fdbadb81594504e080"
+        },
+        "reference": {
+          "path": "/run/media/jethac/Shared/radish/model-prefix-reference-0044-f4vyagtr/fixture/ncnn-blob-338.f32",
+          "bytes": 872448,
+          "sha256": "673bceac55d69be942c3c574777ae42f1911494f9b75e011fc5069195ac429f3",
+          "shape_w_h": [
+            213,
+            1024
+          ],
+          "floats": 218112,
+          "finite": true
+        },
+        "gpu_layer_traces": 22
+      },
+      "capture": "/run/media/jethac/Shared/radish/model-prefix-discriminator-0044/evidence-blob338-first/probe",
+      "files": {
+        "run.log": {
+          "bytes": 10971,
+          "sha256": "2b95aa33d14163f0c8fa4ecf726fe6d056402edd4d003a3a15aba8096168af69"
+        },
+        "result.json": {
+          "bytes": 686,
+          "sha256": "d87eb0f5863d338d1f9a7f8ebbf469746ba846b89353e35be278b7f47c0b8b6f"
+        },
+        "comparison.json": {
+          "bytes": 1513,
+          "sha256": "8eafc9687f4e41d4edc5e1f549e0d05077b833aea07eca380402205b08bfc0c2"
+        },
+        "fault-check.txt": {
+          "bytes": 41,
+          "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+        },
+        "services-after.txt": {
+          "bytes": 14,
+          "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+        },
+        "drain-000.txt": {
+          "bytes": 55,
+          "sha256": "899a8a5a73232d4a07b56824413da1c88dc2dc685e89886ca2bc05f89923b9f6"
+        }
+      },
+      "conditions": {
+        "service_seconds": 21.552,
+        "peak_mib": 295.6,
+        "swap_bytes": 0,
+        "new_gpu_faults": false,
+        "services_active": true,
+        "own_unit_drained": true
+      }
+    },
+    "337": {
+      "session": 85288,
+      "comparison": {
+        "blob": "337",
+        "values": 109482,
+        "mismatches": 0,
+        "max_abs": 7.62939453125e-06,
+        "relative_rms": 9.854838212494122e-08,
+        "atol": 0.002,
+        "rtol": 0.002,
+        "first_mismatches": [],
+        "output": {
+          "bytes": 437928,
+          "sha256": "a6157fc70c4f6a552a506457cd8dfd2509250b283abcef76f1c7354b3292589e"
+        },
+        "reference": {
+          "path": "/run/media/jethac/Shared/radish/model-prefix-reference-0044-f4vyagtr/fixture/ncnn-blob-337.f32",
+          "bytes": 437928,
+          "sha256": "e199201248f25bf91168d3fa1b1f79e04dd9324c48f5d715f6849cfa48356c0d",
+          "shape_w_h": [
+            213,
+            514
+          ],
+          "floats": 109482,
+          "finite": true
+        },
+        "gpu_layer_traces": 21
+      },
+      "capture": "/run/media/jethac/Shared/radish/model-prefix-discriminator-0044/evidence-blob337-first/probe",
+      "files": {
+        "run.log": {
+          "bytes": 10525,
+          "sha256": "8a22cb872e8ebb516e3613ad1dc294f62ff920011ddb42da6514cb9eeca97fee"
+        },
+        "result.json": {
+          "bytes": 686,
+          "sha256": "299b791d7cbb228c4243556c79d05f59a7de96bf4ef0cb6166f01d247ee2e1a8"
+        },
+        "comparison.json": {
+          "bytes": 662,
+          "sha256": "e57e652f7606bcc3c3785cfda52ad1d2af9617613a73dcca0d31f7e7ce10820e"
+        },
+        "fault-check.txt": {
+          "bytes": 41,
+          "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+        },
+        "services-after.txt": {
+          "bytes": 14,
+          "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+        },
+        "drain-000.txt": {
+          "bytes": 55,
+          "sha256": "899a8a5a73232d4a07b56824413da1c88dc2dc685e89886ca2bc05f89923b9f6"
+        }
+      },
+      "conditions": {
+        "service_seconds": 21.079,
+        "peak_mib": 295.5,
+        "swap_bytes": 0,
+        "new_gpu_faults": false,
+        "services_active": true,
+        "own_unit_drained": true
+      }
+    }
+  },
+  "bias_forensics": {
+    "bytes": 15440,
+    "sha256": "fdb44392c76643b50c61aebd0e714ebb1ce9eac31166e81f1fb4f9a466969bfa"
+  },
+  "conclusion": "The 109482-value input337 passes; all218112 output338 float bits equal original conv1d_19 channel bias repeated across213positions. Zero net accumulation is established, but padded input514-to544, uploaded weights, robust predicates and native math are not yet distinguished.",
+  "scope": [
+    "Same0315 driver and unchanged accepted model/fullgraph/weights/inputs; no GPU code, feature, batching or oracle alteration.",
+    "All values compared to exact pinned CPU prefix references with original .002/.002 thresholds; nonfinite values rejected.",
+    "Style test independently passes1028 values at original2e-5 tolerance but does not establish fullmodel correctness.",
+    "No further fullmodel run, performance claim or conformance claim. GPU execution held for concrete source-backed discriminator/fix."
+  ]
+}
