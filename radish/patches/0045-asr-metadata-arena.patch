@@ -1,0 +1,103 @@
+--- a/src/arch/qwen3_asr/model.cpp
++++ b/src/arch/qwen3_asr/model.cpp
+@@ -48,6 +48,44 @@
+ 
+ static bool khr_gpu_graph_policy(const QwenAsrSession * cc) {
+     return khr_gpu_model_policy(static_cast<const QwenAsrModel *>(cc->model));
++}
++
++static size_t compute_metadata_bytes(QwenAsrSession * cc, size_t default_bytes, int n_conv_chunks,
++                                     bool encoder, size_t decoder_graph_size) {
++    if (!khr_gpu_graph_policy(cc)) return default_bytes;
++    const auto * cm = static_cast<const QwenAsrModel *>(cc->model);
++    if (n_conv_chunks < 0 || cm->hparams.dec_n_layers < 0 ||
++        cc->encoder_use_flash || cc->decoder_use_flash) return 0;
++    size_t bytes = 0;
++    size_t tensor_slots = 256;
++    const auto add = [](size_t & dst, size_t value) {
++        if (value > std::numeric_limits<size_t>::max() - dst) return false;
++        dst += value;
++        return true;
++    };
++    const auto add_tensors = [&](size_t count, size_t per_item) {
++        return count <= std::numeric_limits<size_t>::max() / per_item &&
++               add(tensor_slots, count * per_item);
++    };
++    if (encoder && (!add_tensors(cm->weights.enc_blocks.size(), 256) ||
++                    !add(bytes, ggml_graph_overhead_custom(8192, false)))) return 0;
++    if (decoder_graph_size &&
++        (!add_tensors(static_cast<size_t>(cm->hparams.dec_n_layers), 256) ||
++         !add(bytes, ggml_graph_overhead_custom(decoder_graph_size, false)))) return 0;
++    const int passes[] = { n_conv_chunks >= kConvPassChunks ? kConvPassChunks : 0,
++                           n_conv_chunks % kConvPassChunks };
++    for (int chunks : passes) {
++        if (!chunks) continue;
++        const size_t groups = (static_cast<size_t>(chunks) + kConvChunkGroup - 1) / kConvChunkGroup;
++        if (!add_tensors(groups, 128) || !add(bytes, ggml_graph_overhead_custom(64 + 48 * groups, false))) return 0;
++    }
++    const size_t tensor_bytes = ggml_tensor_overhead();
++    if (tensor_slots > std::numeric_limits<size_t>::max() / tensor_bytes ||
++        !add(bytes, tensor_slots * tensor_bytes)) return 0;
++    log_msg(TRANSCRIBE_LOG_LEVEL_INFO,
++            "qwen3_asr KHR metadata: bytes=%zu tensor_slots=%zu encoder=%d decoder_graph=%zu conv_chunks=%d",
++            bytes, tensor_slots, encoder ? 1 : 0, decoder_graph_size, n_conv_chunks);
++    return bytes;
+ }
+ 
+ static bool check_qwen_graph_placement(QwenAsrSession * cc, ggml_cgraph * graph) {
+@@ -876,7 +914,8 @@
+ 
+     {
+         ggml_init_params ip{};
+-        ip.mem_size     = 16 * 1024 * 1024;
++        ip.mem_size     = compute_metadata_bytes(cc, 16 * 1024 * 1024, pre ? 0 : timing.n_chunks, true, 16384);
++        if (!ip.mem_size) return TRANSCRIBE_ERR_OOM;
+         ip.mem_buffer   = nullptr;
+         ip.no_alloc     = true;
+         cc->compute_ctx = ggml_init(ip);
+@@ -1287,7 +1326,8 @@
+     }
+     {
+         ggml_init_params ip{};
+-        ip.mem_size     = 8 * 1024 * 1024;
++        ip.mem_size     = compute_metadata_bytes(cc, 8 * 1024 * 1024, 0, false, 8192);
++        if (!ip.mem_size) return TRANSCRIBE_ERR_OOM;
+         ip.mem_buffer   = nullptr;
+         ip.no_alloc     = true;
+         cc->compute_ctx = ggml_init(ip);
+@@ -1532,13 +1572,14 @@
+ 
+ // Fresh per-utterance graph arena. Frees any prior compute_ctx and inits a
+ // no_alloc metadata context of `mb` MiB.
+-transcribe_status reset_compute_ctx(QwenAsrSession * cc, int mb) {
++transcribe_status reset_compute_ctx(QwenAsrSession * cc, int mb, size_t metadata_bytes = SIZE_MAX) {
+     if (cc->compute_ctx != nullptr) {
+         ggml_free(cc->compute_ctx);
+         cc->compute_ctx = nullptr;
+     }
+     ggml_init_params ip{};
+-    ip.mem_size     = static_cast<size_t>(mb) * 1024 * 1024;
++    ip.mem_size     = metadata_bytes == SIZE_MAX ? static_cast<size_t>(mb) * 1024 * 1024 : metadata_bytes;
++    if (!ip.mem_size) return TRANSCRIBE_ERR_OOM;
+     ip.mem_buffer   = nullptr;
+     ip.no_alloc     = true;
+     cc->compute_ctx = ggml_init(ip);
+@@ -2310,7 +2351,8 @@
+     if (const transcribe_status st = ensure_sched(cc, cm); st != TRANSCRIBE_OK) {
+         return st;
+     }
+-    if (reset_compute_ctx(cc, 4) != TRANSCRIBE_OK) {
++    if (reset_compute_ctx(cc, 4, compute_metadata_bytes(cc, 4 * 1024 * 1024,
++                                                       static_cast<int>(todo.size()), false, 0)) != TRANSCRIBE_OK) {
+         return TRANSCRIBE_ERR_OOM;
+     }
+     std::vector<float> out;
+@@ -2405,7 +2447,7 @@
+     if (const transcribe_status st = ensure_sched(cc, cm); st != TRANSCRIBE_OK) {
+         return st;
+     }
+-    if (reset_compute_ctx(cc, 16) != TRANSCRIBE_OK) {
++    if (reset_compute_ctx(cc, 16, compute_metadata_bytes(cc, 16 * 1024 * 1024, 0, false, 16384)) != TRANSCRIBE_OK) {
+         return TRANSCRIBE_ERR_OOM;
+     }
+     const int         T_chunk = prefix_len - n_past;

@@ -1,0 +1,25 @@
+--- a/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -6710,11 +6710,21 @@
+         stride_batch_y = src1->nb[0] / ggml_type_size(src1->type);
+     }
+ 
++    vk_subbuffer output_span = ggml_vk_subbuffer(ctx, d_D, d_buf_offset);
++#ifdef GGML_VULKAN_KHR_PROFILE
++    output_span.size = ggml_nbytes(dst);
++    if (!output_span.size || d_buf_offset > d_D->size ||
++        output_span.size > d_D->size - d_buf_offset ||
++        output_span.size > ctx->device->properties.limits.maxStorageBufferRange) {
++        throw std::runtime_error("KHR matrix output strided tensor span exceeds actual buffer/range");
++    }
++#endif
++
+     // compute
+     ggml_vk_matmul(
+         ctx, subctx, pipeline,
+         { d_X, x_buf_offset, x_range }, { d_Y, y_buf_offset, y_range },
+-        ggml_vk_subbuffer(ctx, d_D, d_buf_offset), { ctx->prealloc_split_k, 0, d_sz * split_k },
++        output_span, { ctx->prealloc_split_k, 0, d_sz * split_k },
+         ne01, ne11, ne10,
+         ne10, ne10, stride_d, stride_batch_x, stride_batch_y, stride_batch_d,
+         split_k, ne12*ne13, ne02, ne12, r2, r3, padded_n

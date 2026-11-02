@@ -1,0 +1,11 @@
+--- a/src/arch/qwen3_asr/model.cpp
++++ b/src/arch/qwen3_asr/model.cpp
+@@ -338,7 +338,7 @@
+         gguf_free(gguf_data);
+         return st;
+     }
+-    if (khr_gpu_model_policy(m) && (!m->plan.primary || m->plan.primary_kind != BackendKind::Vulkan)) {
++    if (khr_gpu_model_policy(m.get()) && (!m->plan.primary || m->plan.primary_kind != BackendKind::Vulkan)) {
+         log_msg(TRANSCRIBE_LOG_LEVEL_ERROR,
+                 "qwen3_asr KHR profile: explicitly requested Vulkan resolved to %s before weight allocation",
+                 m->plan.primary ? ggml_backend_name(m->plan.primary) : "none");

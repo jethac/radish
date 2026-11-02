@@ -1,0 +1,94 @@
+{
+  "status": "metadata-only cold/retained prefix geometry passed",
+  "architecture": "x86_64 host helper, no device",
+  "source_release": {
+    "bytes": 1634,
+    "sha256": "4aeaa35b3e7c8da70e153de646d66c06e0607bc2b400d5cb4d16d280ff0cd0de"
+  },
+  "helper": {
+    "bytes": 51383504,
+    "sha256": "4cb543fab4e5001408c6d738c32e97159947556525e68072974de4357fd926aa"
+  },
+  "graphs": {
+    "bytes": 2543029,
+    "sha256": "118615f44660070bf49aaf98f869952258d1b46a0114da17047fdd099e433fa8"
+  },
+  "phases": [
+    {
+      "phase": "stream_subsample5",
+      "metadata_used": 19408,
+      "arena_bytes": 146368,
+      "tensor_objects": 39,
+      "nodes": 36
+    },
+    {
+      "phase": "cold_prefix9_kv272",
+      "metadata_used": 1177408,
+      "arena_bytes": 3391664,
+      "tensor_objects": 1407,
+      "nodes": 1347
+    },
+    {
+      "phase": "retained_prefix9_kv336",
+      "metadata_used": 1177408,
+      "arena_bytes": 3391664,
+      "tensor_objects": 1407,
+      "nodes": 1347
+    },
+    {
+      "phase": "combined_subsample5",
+      "metadata_used": 19408,
+      "arena_bytes": 5469760,
+      "tensor_objects": 39,
+      "nodes": 36
+    },
+    {
+      "phase": "encoder61",
+      "metadata_used": 606832,
+      "arena_bytes": 5469760,
+      "tensor_objects": 738,
+      "nodes": 697
+    },
+    {
+      "phase": "prefill76",
+      "metadata_used": 1767312,
+      "arena_bytes": 5469760,
+      "tensor_objects": 2099,
+      "nodes": 1301
+    },
+    {
+      "phase": "combined_subsample5",
+      "metadata_used": 19408,
+      "arena_bytes": 5469760,
+      "tensor_objects": 39,
+      "nodes": 36
+    },
+    {
+      "phase": "encoder61",
+      "metadata_used": 606832,
+      "arena_bytes": 5469760,
+      "tensor_objects": 738,
+      "nodes": 697
+    },
+    {
+      "phase": "prefill67_cached9",
+      "metadata_used": 1786816,
+      "arena_bytes": 5469760,
+      "tensor_objects": 2152,
+      "nodes": 1353
+    },
+    {
+      "phase": "step1_kv336",
+      "metadata_used": 849072,
+      "arena_bytes": 3062224,
+      "tensor_objects": 1410,
+      "nodes": 1350
+    }
+  ],
+  "model_metadata": {
+    "bytes": 577378048,
+    "sha256": "7441f767aa3ac2533c29aa6d5528ce538c15e9ddbaa606af23be6823cefb443a"
+  },
+  "wall_s": 0.06388609198620543,
+  "scope": "No backend init/payload/model compute. Cold prefix9 KV272 and retained prefix9 KV336; full76/cached67/step336 unchanged. Original assertions and arena sizing intact."
+}

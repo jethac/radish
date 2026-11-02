@@ -1,0 +1,73 @@
+--- a/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -2012,6 +2012,7 @@
+     const std::vector<std::string> unary_ops = {"elu", "gelu", "gelu_erf", "gelu_quick", "silu", "relu", "sqr", "sqrt", "sin", "cos", "clamp", "leaky_relu", "xielu", "neg", "tanh", "sigmoid", "hardsigmoid", "hardswish", "abs", "softplus", "step", "round", "ceil", "floor", "trunc", "sgn", "exp", "expm1"};
+     const bool direct_unary = std::any_of(unary_ops.begin(), unary_ops.end(), [&](const std::string & op) { return profile_name == op + "_f32" || profile_name == op + "_f16"; });
+     const bool direct_copy = profile_name.rfind("cpy_", 0) == 0 && profile_name.find("transpose") == std::string::npos;
++    if (profile_name == "repeat_i16" && wg_denoms[0] == 512) wg_denoms[0] = 128;
+     const bool direct_glu = profile_name.rfind("swiglu", 0) == 0 || profile_name.rfind("reglu", 0) == 0 || profile_name.rfind("geglu", 0) == 0;
+     if ((direct_unary || direct_copy || direct_glu || profile_name.rfind("concat_", 0) == 0) && wg_denoms[0] == 512) {
+         wg_denoms[0] = 128;
+@@ -9887,7 +9888,11 @@
+                 ne = CEIL_DIV(ne, 32 * ggml_blck_size(dst->type));
+             } else {
+                 // scalar types do one element per thread, running 512 threads
++#ifdef GGML_VULKAN_KHR_PROFILE
++                ne = CEIL_DIV(ne, 128);
++#else
+                 ne = CEIL_DIV(ne, 512);
++#endif
+             }
+             if (ne > 262144) {
+                 elements = { 512, 512, CEIL_DIV(ne, 262144) };
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp
+@@ -353,6 +353,8 @@
+     std::string target_env = (name.find("_cm2") != std::string::npos) ? "--target-env=vulkan1.3" : "--target-env=vulkan1.2";
+ #ifdef GGML_VULKAN_KHR_PROFILE
+     const std::vector<std::string> profile_variants = {
++        "repeat_i16",
++        "set_rows_f32_f16_i64",
+         "add_f32_f32_f32",
+         "argmax_f32",
+         "concat_i32",
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/repeat.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/repeat.comp
+@@ -1,9 +1,16 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #include "types.glsl"
+ #include "generic_unary_head.glsl"
+ 
++#ifdef GGML_VULKAN_KHR_PROFILE
++layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
++#else
+ layout(local_size_x = 512, local_size_y = 1, local_size_z = 1) in;
++#endif
+ 
+ uint src0_idx_mod(uint idx) {
+     const uint i13 = idx / (p.ne12*p.ne11*p.ne10);
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/copy_to_quant.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/copy_to_quant.comp
+@@ -1,10 +1,18 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #include "types.glsl"
+ 
+ #if defined(SET_ROWS) && QUANT_K == 1
++#ifdef GGML_VULKAN_KHR_PROFILE
++layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
++const uint BLOCK_SIZE = 128;
++#else
+ layout(local_size_x = 512, local_size_y = 1, local_size_z = 1) in;
+ const uint BLOCK_SIZE = 512;
++#endif
+ #else
+ layout(local_size_x = 32, local_size_y = 1, local_size_z = 1) in;
+ const uint BLOCK_SIZE = 32;

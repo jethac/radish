@@ -1,0 +1,41 @@
+{
+  "status": "new private memory-policy profile host libraries/listener link passed",
+  "libraries": {
+    "libstraylight_asr.a": {
+      "bytes": 60372,
+      "sha256": "90a0d64005902f365a65c7f9381dbb2594606b710532d2b66e4197233f29cc7d"
+    },
+    "libtranscribe.a": {
+      "bytes": 5356030,
+      "sha256": "e6befc3192b4806b05706d14aea59d32dc89d76fe20023aee157ec5ea9acbe3e"
+    },
+    "libggml.a": {
+      "bytes": 62748,
+      "sha256": "e42398c894bbe7282005943f7ea981e0c45b3e9a02d5dd3ac3c6e499f29159e8"
+    },
+    "libggml-base.a": {
+      "bytes": 1416600,
+      "sha256": "604ad45b40ec004248a78f90057eb226e521354ac6025420f869f6a62e8fbac9"
+    },
+    "libggml-cpu.a": {
+      "bytes": 1882514,
+      "sha256": "636ced78ffb9337ac82c102535eb07d51863ba26acccc0d7d01c2820fe0bc824"
+    },
+    "libggml-vulkan.a": {
+      "bytes": 48311500,
+      "sha256": "eb1cd0d599080ecec673d49bbda08c86ef353d4c56e399715ecb9683f91560ce"
+    }
+  },
+  "listener": {
+    "bytes": 116783200,
+    "sha256": "965237f38c82c1d5a39806de009bd7a33219e1fdff9588b6a797cd60ca1cd511"
+  },
+  "library_directory": "/run/media/jethac/Shared/radish/asr-profile-memory-link-build-0045/libs",
+  "stamp": "5700f127e38dd53c4735ea23ef743b4b538eacd4 5c8974acefce3dec backend=vulkan config-abi=2 khr-profile=1 graph-bounded=8b4a76b5 attention=c029d58c catalog=5041f38e placement=59421e95 batched=8f00bab0 kv=79d346b8 khr-proc=0a059df7 kv-granularity=50a8b128 backend-intent=63ba1e6b metadata-arena=1947ec9d output-span=5d92b0e3 output-span-move=5850790f intent-pointer=aff71126\n",
+  "source_pins": {
+    "bytes": 2082,
+    "sha256": "843c37f405becf31cd74601a45767aeebe808b42795987e6e22a13daeba61c6f"
+  },
+  "prior9980_listener_unchanged": true,
+  "scope": "Host Release C++/dev Rust link only. Metadata construction validation and complete actual peak/model placement/native/numerics remain separate. CPU/default and selected fcd/d332 untouched."
+}

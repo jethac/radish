@@ -1,0 +1,361 @@
+{
+  "status": "reviewed memory-policy source, metadata construction and real AArch64 cross-link passed",
+  "base_public_checkpoint": "ac2d38c8710af78d10f681fa696b348e228d9f93",
+  "apply_order_after_base": [
+    {
+      "path": "patches/0045-asr-kv-granularity.patch",
+      "bytes": 1494,
+      "sha256": "50a8b1283266733b144aada8e0249e1a7fc5ab252f14979a356e5cc5333eba92"
+    },
+    {
+      "path": "patches/0045-asr-backend-intent.patch",
+      "bytes": 2059,
+      "sha256": "63ba1e6b6373c5ba52dfec66c17b24e7fd9eb7af5da9c86f5e16fbea43a11fdb"
+    },
+    {
+      "path": "patches/0045-asr-metadata-arena.patch",
+      "bytes": 4842,
+      "sha256": "1947ec9dc70b78f33260fb978eecddfe69aefee5098fcd5e9be99911efbe083c"
+    },
+    {
+      "path": "patches/0045-asr-output-span.patch",
+      "bytes": 1127,
+      "sha256": "5d92b0e350ab038cfff10c31cc345d0d655d9d6c0432fb7e8218b98b7a7f4754"
+    },
+    {
+      "path": "patches/0045-asr-output-span-move.patch",
+      "bytes": 545,
+      "sha256": "5850790f381165fdae023afcbe4d98ee21236db6259f65d3de5d89a18f9dc1ae"
+    },
+    {
+      "path": "patches/0045-asr-intent-pointer.patch",
+      "bytes": 601,
+      "sha256": "aff711264fd83f4f8b86645957df827bba98d902fe25ca7b6ede8faece8a735d"
+    },
+    {
+      "path": "patches/0045-asr-cache-ops-profile.patch",
+      "bytes": 3192,
+      "sha256": "2dbf5c33ba5c5a75794c1c6f2edc96f586b74e42cbec6d3acf0af789547b5803"
+    }
+  ],
+  "architectures": {
+    "immutable_prior9980": "x86_64 host ELF62",
+    "memory_listener9652": "x86_64 host ELF62",
+    "new_listener7edf": "AArch64 ELF183, Cortex-A53 glibc",
+    "native_compile_helper5580": "AArch64 ELF183; no device execution yet"
+  },
+  "memory_host_result": {
+    "status": "new private memory-policy profile host libraries/listener link passed",
+    "libraries": {
+      "libstraylight_asr.a": {
+        "bytes": 60372,
+        "sha256": "90a0d64005902f365a65c7f9381dbb2594606b710532d2b66e4197233f29cc7d"
+      },
+      "libtranscribe.a": {
+        "bytes": 5356030,
+        "sha256": "e6befc3192b4806b05706d14aea59d32dc89d76fe20023aee157ec5ea9acbe3e"
+      },
+      "libggml.a": {
+        "bytes": 62748,
+        "sha256": "e42398c894bbe7282005943f7ea981e0c45b3e9a02d5dd3ac3c6e499f29159e8"
+      },
+      "libggml-base.a": {
+        "bytes": 1416600,
+        "sha256": "604ad45b40ec004248a78f90057eb226e521354ac6025420f869f6a62e8fbac9"
+      },
+      "libggml-cpu.a": {
+        "bytes": 1882514,
+        "sha256": "636ced78ffb9337ac82c102535eb07d51863ba26acccc0d7d01c2820fe0bc824"
+      },
+      "libggml-vulkan.a": {
+        "bytes": 48311500,
+        "sha256": "eb1cd0d599080ecec673d49bbda08c86ef353d4c56e399715ecb9683f91560ce"
+      }
+    },
+    "listener": {
+      "bytes": 116783200,
+      "sha256": "965237f38c82c1d5a39806de009bd7a33219e1fdff9588b6a797cd60ca1cd511"
+    },
+    "library_directory": "/run/media/jethac/Shared/radish/asr-profile-memory-link-build-0045/libs",
+    "stamp": "5700f127e38dd53c4735ea23ef743b4b538eacd4 5c8974acefce3dec backend=vulkan config-abi=2 khr-profile=1 graph-bounded=8b4a76b5 attention=c029d58c catalog=5041f38e placement=59421e95 batched=8f00bab0 kv=79d346b8 khr-proc=0a059df7 kv-granularity=50a8b128 backend-intent=63ba1e6b metadata-arena=1947ec9d output-span=5d92b0e3 output-span-move=5850790f intent-pointer=aff71126\n",
+    "source_pins": {
+      "bytes": 2082,
+      "sha256": "843c37f405becf31cd74601a45767aeebe808b42795987e6e22a13daeba61c6f"
+    },
+    "prior9980_listener_unchanged": true,
+    "scope": "Host Release C++/dev Rust link only. Metadata construction validation and complete actual peak/model placement/native/numerics remain separate. CPU/default and selected fcd/d332 untouched."
+  },
+  "target_cross_result": {
+    "status": "actual AArch64 backend archives and opt-in listener cross-link passed",
+    "architecture": "AArch64 ELF machine183, Cortex-A53, glibc target",
+    "listener": {
+      "bytes": 103772080,
+      "sha256": "7edf90f4619f54db7b7370b19bb84ce7db24c9a842396b66282d4c262b0d026b"
+    },
+    "libraries": {
+      "libstraylight_asr.a": {
+        "bytes": 45696,
+        "sha256": "c546dc70759acf2758ba1abdc3862f5eb475d934b47b243181622a931aa1dbfd"
+      },
+      "libggml-cpu.a": {
+        "bytes": 1383130,
+        "sha256": "d728defc3ed49b1ee5970b42e1b0edfc77a40f9f05f649b30d2aee16d16a601d"
+      },
+      "libtranscribe.a": {
+        "bytes": 5006050,
+        "sha256": "d0140af83af3cf268888b1aaece436d287dc5f980e2bf9bb7958cc3e06fd20ec"
+      },
+      "libggml-base.a": {
+        "bytes": 1443420,
+        "sha256": "d162abb5bdb78b854bed5289520fecf57b0e9c1aab266707e99c0df5a651394b"
+      },
+      "libggml.a": {
+        "bytes": 70718,
+        "sha256": "a55e736e8d1428ed7217f2573ab2182f54b22bc2f4e5ab8d6055913639738d0a"
+      },
+      "libggml-vulkan.a": {
+        "bytes": 47892804,
+        "sha256": "eab3ad42607d9841978233ae6415dfc649a4011d29c65c1264bd213cb317dfb2"
+      }
+    },
+    "library_directory": "/run/media/jethac/Shared/radish/asr-profile-aarch64-build-0045/libs",
+    "stamp": "5700f127e38dd53c4735ea23ef743b4b538eacd4 5c8974acefce3dec backend=vulkan config-abi=2 khr-profile=1 graph-bounded=8b4a76b5 attention=c029d58c catalog=5041f38e placement=59421e95 batched=8f00bab0 kv=79d346b8 khr-proc=0a059df7 kv-granularity=50a8b128 backend-intent=63ba1e6b metadata-arena=1947ec9d output-span=5d92b0e3 output-span-move=5850790f intent-pointer=aff71126 cache-ops=2dbf5c33 architecture=aarch64 cortex-a53=1\n",
+    "source_pins": {
+      "bytes": 561816,
+      "sha256": "2dee27b3a9ba89130c20dcf12fc615ccce058a72002b8e94c3bd34ed6e3cd332"
+    },
+    "loader": {
+      "bytes": 703696,
+      "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+    },
+    "sysroot": "/home/jethac/Projects/straylight-voice/sysroot",
+    "scope": "Cross-build/link only, no tablet launch/model-memory/numerical/performance/deployment admission. CPU default and frozen x86 host9980/9652 and selected fcd/d332 retained."
+  },
+  "metadata_result": {
+    "status": "metadata-only cold/retained prefix geometry passed",
+    "architecture": "x86_64 host helper, no device",
+    "source_release": {
+      "bytes": 1634,
+      "sha256": "4aeaa35b3e7c8da70e153de646d66c06e0607bc2b400d5cb4d16d280ff0cd0de"
+    },
+    "helper": {
+      "bytes": 51383504,
+      "sha256": "4cb543fab4e5001408c6d738c32e97159947556525e68072974de4357fd926aa"
+    },
+    "graphs": {
+      "bytes": 2543029,
+      "sha256": "118615f44660070bf49aaf98f869952258d1b46a0114da17047fdd099e433fa8"
+    },
+    "phases": [
+      {
+        "phase": "stream_subsample5",
+        "metadata_used": 19408,
+        "arena_bytes": 146368,
+        "tensor_objects": 39,
+        "nodes": 36
+      },
+      {
+        "phase": "cold_prefix9_kv272",
+        "metadata_used": 1177408,
+        "arena_bytes": 3391664,
+        "tensor_objects": 1407,
+        "nodes": 1347
+      },
+      {
+        "phase": "retained_prefix9_kv336",
+        "metadata_used": 1177408,
+        "arena_bytes": 3391664,
+        "tensor_objects": 1407,
+        "nodes": 1347
+      },
+      {
+        "phase": "combined_subsample5",
+        "metadata_used": 19408,
+        "arena_bytes": 5469760,
+        "tensor_objects": 39,
+        "nodes": 36
+      },
+      {
+        "phase": "encoder61",
+        "metadata_used": 606832,
+        "arena_bytes": 5469760,
+        "tensor_objects": 738,
+        "nodes": 697
+      },
+      {
+        "phase": "prefill76",
+        "metadata_used": 1767312,
+        "arena_bytes": 5469760,
+        "tensor_objects": 2099,
+        "nodes": 1301
+      },
+      {
+        "phase": "combined_subsample5",
+        "metadata_used": 19408,
+        "arena_bytes": 5469760,
+        "tensor_objects": 39,
+        "nodes": 36
+      },
+      {
+        "phase": "encoder61",
+        "metadata_used": 606832,
+        "arena_bytes": 5469760,
+        "tensor_objects": 738,
+        "nodes": 697
+      },
+      {
+        "phase": "prefill67_cached9",
+        "metadata_used": 1786816,
+        "arena_bytes": 5469760,
+        "tensor_objects": 2152,
+        "nodes": 1353
+      },
+      {
+        "phase": "step1_kv336",
+        "metadata_used": 849072,
+        "arena_bytes": 3062224,
+        "tensor_objects": 1410,
+        "nodes": 1350
+      }
+    ],
+    "model_metadata": {
+      "bytes": 577378048,
+      "sha256": "7441f767aa3ac2533c29aa6d5528ce538c15e9ddbaa606af23be6823cefb443a"
+    },
+    "wall_s": 0.06388609198620543,
+    "scope": "No backend init/payload/model compute. Cold prefix9 KV272 and retained prefix9 KV336; full76/cached67/step336 unchanged. Original assertions and arena sizing intact."
+  },
+  "exact_target_build_commands": [
+    {
+      "argv": [
+        "cmake",
+        "-S",
+        "/run/media/jethac/Shared/radish/asr-profile-aarch64-build-0045/app-asr",
+        "-B",
+        "/run/media/jethac/Shared/radish/asr-profile-aarch64-build-0045/build",
+        "-G",
+        "Ninja",
+        "-DTRANSCRIBE_SRC=/run/media/jethac/Shared/radish/asr-profile-aarch64-build-0045/transcribe.cpp",
+        "-DCMAKE_TOOLCHAIN_FILE=/run/media/jethac/Shared/radish/asr-profile-aarch64-build-0045/app-asr/aarch64.cmake",
+        "-DSTRAYLIGHT_SYSROOT=/home/jethac/Projects/straylight-voice/sysroot",
+        "-DCMAKE_C_FLAGS=--gcc-install-dir=/home/jethac/Projects/straylight-voice/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+        "-DCMAKE_CXX_FLAGS=--gcc-install-dir=/home/jethac/Projects/straylight-voice/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+        "-DSTRAYLIGHT_ASR_VULKAN=ON",
+        "-DGGML_VULKAN_KHR_PROFILE=ON",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+        "-DGGML_NATIVE=OFF",
+        "-DGGML_CPU_ARM_ARCH=armv8-a",
+        "-DGGML_OPENMP=OFF",
+        "-DTRANSCRIBE_USE_SYSTEM_BLAS=OFF",
+        "-DVulkan_INCLUDE_DIR=/run/media/jethac/Shared/radish/vulkan-headers/include",
+        "-DVulkan_LIBRARY=/run/media/jethac/Shared/radish/build-loader/loader/libvulkan.so",
+        "-DVulkan_GLSLC_EXECUTABLE=/usr/bin/glslc",
+        "-DSPIRV-Headers_DIR=/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/deps/spirv-headers-install/share/cmake/SPIRV-Headers"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/asr-profile-aarch64-build-0045",
+      "env": {}
+    },
+    {
+      "argv": [
+        "ninja",
+        "-C",
+        "/run/media/jethac/Shared/radish/asr-profile-aarch64-build-0045/build",
+        "-j3",
+        "straylight_asr",
+        "transcribe"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/asr-profile-aarch64-build-0045",
+      "env": {}
+    },
+    {
+      "argv": [
+        "cargo",
+        "build",
+        "--offline",
+        "--locked",
+        "--target",
+        "aarch64-unknown-linux-gnu",
+        "--features",
+        "asr-vulkan",
+        "-j3",
+        "--manifest-path",
+        "/run/media/jethac/Shared/radish/asr-profile-link-build-0045/rust-app/listen/Cargo.toml"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/asr-profile-aarch64-build-0045",
+      "env": {
+        "STRAYLIGHT_ASR_LIB": "/run/media/jethac/Shared/radish/asr-profile-aarch64-build-0045/libs",
+        "STRAYLIGHT_SYSROOT": "/home/jethac/Projects/straylight-voice/sysroot",
+        "CARGO_TARGET_DIR": "/run/media/jethac/Shared/radish/asr-profile-aarch64-build-0045/cargo-target",
+        "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER": "clang",
+        "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS": "-C link-arg=--target=aarch64-linux-gnu -C link-arg=-fuse-ld=lld -C link-arg=--sysroot=/home/jethac/Projects/straylight-voice/sysroot -C link-arg=-L/home/jethac/Projects/straylight-voice/sysroot/usr/lib -C link-arg=-L/home/jethac/Projects/straylight-voice/sysroot/usr/lib/aarch64-linux-gnu -C link-arg=-L/run/media/jethac/Shared/radish/build-loader/loader -C link-arg=-Wl,--allow-shlib-undefined -C link-arg=-Wno-unused-command-line-argument -C target-cpu=cortex-a53",
+        "CC_aarch64_unknown_linux_gnu": "clang",
+        "CFLAGS_aarch64_unknown_linux_gnu": "--target=aarch64-linux-gnu --sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+        "AR_aarch64_unknown_linux_gnu": "llvm-ar",
+        "PKG_CONFIG_SYSROOT_DIR": "/home/jethac/Projects/straylight-voice/sysroot",
+        "PKG_CONFIG_LIBDIR": "/home/jethac/Projects/straylight-voice/sysroot/usr/lib/pkgconfig:/home/jethac/Projects/straylight-voice/sysroot/usr/share/pkgconfig",
+        "PKG_CONFIG_ALLOW_CROSS": "1"
+      }
+    }
+  ],
+  "cache_module_result": [
+    {
+      "name": "repeat_i16",
+      "module": {
+        "bytes": 4480,
+        "sha256": "d4741e07244ec2082f1ec43196c35eba8f70b27ab919d9756f878ea2fe9cfff8"
+      },
+      "version": 65536,
+      "capabilities": [
+        "Shader",
+        "StorageBuffer16BitAccess"
+      ]
+    },
+    {
+      "name": "set_rows_f32_f16_i64",
+      "module": {
+        "bytes": 5872,
+        "sha256": "db1ae7a0643c55d5939b61436380e7a7e551624793a71370bc1c9e03918ff72c"
+      },
+      "version": 65536,
+      "capabilities": [
+        "Shader",
+        "StorageBuffer16BitAccess"
+      ]
+    }
+  ],
+  "independent_receipts": {
+    "/run/media/jethac/Shared/radish/asr-profile-metadata-arena-erhjvt21/memory-host-link-review.json": {
+      "bytes": 7084,
+      "sha256": "04869aa9beee50ffaa40ddc1537dacc3c3c428ae8a814854850689345fca5869"
+    },
+    "/run/media/jethac/Shared/radish/asr-profile-metadata-arena-erhjvt21/metadata-construction-actual-review.json": {
+      "bytes": 3837,
+      "sha256": "a33d5f9b7ade8364e5ee13353649e456d87d56bdd9554705416d21bfe45eb417"
+    },
+    "/run/media/jethac/Shared/radish/asr-graph-profile-ovmz54r9/memory-link-host-review.json": {
+      "bytes": 1304,
+      "sha256": "f885de9f73682629f60e7db51ce1542927f8955e7bb39887c10126fc83858cde"
+    },
+    "/run/media/jethac/Shared/radish/asr-graph-profile-ovmz54r9/aarch64-profile-link-review.json": {
+      "bytes": 4793,
+      "sha256": "46df84e2c841ea6ce43f349c9d765928d89be747131c0665267f3ce1186ee917"
+    },
+    "/run/media/jethac/Shared/radish/packed-half-spatial-tile-0045-l4sjohso/cache-ops-source-host-review.json": {
+      "bytes": 1959,
+      "sha256": "66ea5ab0d784e5fb8427e5adcd4fd3677fd7d070db98b26c246ea545ab16a45c"
+    }
+  },
+  "known_memory_subtotal_mib": 600.026,
+  "unaccounted_headroom_mib": 39.974,
+  "qualification_limits": [
+    "Known subtotal includes weights,336 KV,X and largest metadata arena; excludes unknown workspaces, libraries, compiler and actual cgroup peak. Full-model memory admission remains closed.",
+    "Actual prefix metadata is cold9/KV272 and retained9/KV336; no15-row compute phase was invented. Representative frontend466 shape is source metadata, not new measured frontend.",
+    "Full generated catalog links1566 data symbols;31 selected modules match validated modules, including two new cache operations. Optional unsupported variants still fail closed.",
+    "No tablet ASR execution, full-model numerical, performance or deployment claim; CPU default and selected fcd/d332 unchanged."
+  ],
+  "preserved_build_failures": [
+    "64161 output-span lvalue rejected;585079 move correction",
+    "86694 unique_ptr passed to borrowed-pointer predicate;aff711 get correction"
+  ]
+}

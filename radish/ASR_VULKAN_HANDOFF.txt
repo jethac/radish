@@ -88,3 +88,28 @@ Full model admission remains closed. Proposed smaller KV increments and GGML
 metadata sizing are separate future source work, not part of this linked
 checkpoint. No model accuracy, full ASR GPU execution, deployment or speed
 claim follows from host linking; fcd/d332 remains the selected Kokoro stack.
+
+2026-11-02 memory policy and actual AArch64 cross-link
+
+The new profile rounds KV capacity to16 tokens, checks requested Vulkan intent
+before weight allocation, sizes graph metadata through GGML overhead APIs, and
+uses exact strided matrix-output descriptor spans. CPU/default behavior and all
+nine placement checks remain. Two preserved C++ compile failures were corrected
+without semantic changes. Apply the seven increments in listed order in
+results/asr-memory-aarch64-checkpoint-0045.json after the prior checkpoint.
+
+The9652 and9980 listeners are x86_64 host builds. The new7edf90f4 listener and
+all six linked archives are actual AArch64 ELF objects built for Cortex-A53 with
+the existing target sysroot. Its invocation enables the KHR profile and links
+the fresh target backend and complete catalog. Two actual cache operations add
+repeat_i16 and set_rows_f32_f16_i64 with paired128-thread host coverage; both
+validate as Vulkan1.0 with Shader+StorageBuffer16BitAccess only. No Int64
+arithmetic capability is inferred from the bounded index representation.
+
+Metadata-only construction passes cold prefix9/KV272, retained prefix9/KV336,
+full76, cached67 and step336 layouts without initializing a backend or loading
+tensor payloads. This is arena sizing evidence, not model peak memory. The
+known600.026MiB subtotal leaves39.974MiB before unknown workspace, library,
+compiler and process overhead under the unchanged640MiB bound. Full-model
+memory admission remains closed. Native-family admission, tablet numerical
+work and deployment are still pending; fcd/d332 remains selected.

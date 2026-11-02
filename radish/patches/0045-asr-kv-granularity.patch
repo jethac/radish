@@ -1,0 +1,32 @@
+--- a/src/arch/qwen3_asr/model.cpp
++++ b/src/arch/qwen3_asr/model.cpp
+@@ -1003,9 +1003,14 @@
+     // hold prompt + decode budget, rounded up to a power of two (the step
+     // graph's flash-attn path wants pow2 attention width). A pre-allocated
+     // smaller cache is freed and re-allocated.
+-    int want_n_ctx = khr_gpu_graph_policy(cc) ? 1 : 1024;
+-    while (want_n_ctx < T_prompt + max_new) {
+-        want_n_ctx *= 2;
++    int want_n_ctx = 1024;
++    if (khr_gpu_graph_policy(cc)) {
++        want_n_ctx = static_cast<int>(std::min<int64_t>(ceiling,
++            ((static_cast<int64_t>(T_prompt) + max_new + 15) / 16) * 16));
++    } else {
++        while (want_n_ctx < T_prompt + max_new) {
++            want_n_ctx *= 2;
++        }
+     }
+     if (want_n_ctx > ceiling) {
+         want_n_ctx = ceiling;
+@@ -2370,9 +2375,8 @@
+         if (khr_gpu_graph_policy(cc)) {
+             const int needed = static_cast<int>(std::min<int64_t>(ceiling,
+                 static_cast<int64_t>(ids.size()) + T_enc_min + k_gen_reserve));
+-            n_ctx = 1;
+-            while (n_ctx < needed) n_ctx *= 2;
+-            n_ctx = std::min(n_ctx, ceiling);
++            n_ctx = static_cast<int>(std::min<int64_t>(ceiling,
++                ((static_cast<int64_t>(needed) + 15) / 16) * 16));
+             log_msg(TRANSCRIBE_LOG_LEVEL_INFO,
+                     "qwen3_asr KHR KV prefix: prompt=%zu audio_min=%d reserve=%d capacity=%d",
+                     ids.size(), T_enc_min, k_gen_reserve, n_ctx);

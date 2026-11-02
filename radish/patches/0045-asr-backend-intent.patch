@@ -1,0 +1,43 @@
+--- a/src/arch/qwen3_asr/model.cpp
++++ b/src/arch/qwen3_asr/model.cpp
+@@ -41,18 +41,20 @@
+ 
+ extern const Arch arch;
+ 
++static bool khr_gpu_model_policy(const QwenAsrModel * cm) {
++    const char * policy = std::getenv("TRANSCRIBE_VULKAN_KHR_PROFILE");
++    return policy && !std::strcmp(policy, "1") && cm->plan.requested == TRANSCRIBE_BACKEND_VULKAN;
++}
++
+ static bool khr_gpu_graph_policy(const QwenAsrSession * cc) {
+-    const char * policy = std::getenv("TRANSCRIBE_VULKAN_KHR_PROFILE");
+-    const auto * cm = static_cast<const QwenAsrModel *>(cc->model);
+-    return policy && !std::strcmp(policy, "1") && cm->plan.primary &&
+-           cm->plan.primary_kind != BackendKind::Cpu;
++    return khr_gpu_model_policy(static_cast<const QwenAsrModel *>(cc->model));
+ }
+ 
+ static bool check_qwen_graph_placement(QwenAsrSession * cc, ggml_cgraph * graph) {
+     if (khr_gpu_graph_policy(cc)) {
+         const auto * cm = static_cast<const QwenAsrModel *>(cc->model);
+-        const char * primary = ggml_backend_name(cm->plan.primary);
+-        if (cm->plan.primary_kind != BackendKind::Vulkan) {
++        const char * primary = cm->plan.primary ? ggml_backend_name(cm->plan.primary) : "none";
++        if (!cm->plan.primary || cm->plan.primary_kind != BackendKind::Vulkan) {
+             log_msg(TRANSCRIBE_LOG_LEVEL_ERROR, "qwen3_asr KHR profile requires Vulkan, got %s", primary);
+             return false;
+         }
+@@ -297,6 +299,13 @@
+         st != TRANSCRIBE_OK) {
+         gguf_free(gguf_data);
+         return st;
++    }
++    if (khr_gpu_model_policy(m) && (!m->plan.primary || m->plan.primary_kind != BackendKind::Vulkan)) {
++        log_msg(TRANSCRIBE_LOG_LEVEL_ERROR,
++                "qwen3_asr KHR profile: explicitly requested Vulkan resolved to %s before weight allocation",
++                m->plan.primary ? ggml_backend_name(m->plan.primary) : "none");
++        gguf_free(gguf_data);
++        return TRANSCRIBE_ERR_BACKEND;
+     }
+     m->backend         = ggml_backend_name(m->plan.primary);
+     m->primary_backend = m->plan.primary;

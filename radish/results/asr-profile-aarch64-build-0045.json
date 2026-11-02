@@ -1,0 +1,46 @@
+{
+  "status": "actual AArch64 backend archives and opt-in listener cross-link passed",
+  "architecture": "AArch64 ELF machine183, Cortex-A53, glibc target",
+  "listener": {
+    "bytes": 103772080,
+    "sha256": "7edf90f4619f54db7b7370b19bb84ce7db24c9a842396b66282d4c262b0d026b"
+  },
+  "libraries": {
+    "libstraylight_asr.a": {
+      "bytes": 45696,
+      "sha256": "c546dc70759acf2758ba1abdc3862f5eb475d934b47b243181622a931aa1dbfd"
+    },
+    "libggml-cpu.a": {
+      "bytes": 1383130,
+      "sha256": "d728defc3ed49b1ee5970b42e1b0edfc77a40f9f05f649b30d2aee16d16a601d"
+    },
+    "libtranscribe.a": {
+      "bytes": 5006050,
+      "sha256": "d0140af83af3cf268888b1aaece436d287dc5f980e2bf9bb7958cc3e06fd20ec"
+    },
+    "libggml-base.a": {
+      "bytes": 1443420,
+      "sha256": "d162abb5bdb78b854bed5289520fecf57b0e9c1aab266707e99c0df5a651394b"
+    },
+    "libggml.a": {
+      "bytes": 70718,
+      "sha256": "a55e736e8d1428ed7217f2573ab2182f54b22bc2f4e5ab8d6055913639738d0a"
+    },
+    "libggml-vulkan.a": {
+      "bytes": 47892804,
+      "sha256": "eab3ad42607d9841978233ae6415dfc649a4011d29c65c1264bd213cb317dfb2"
+    }
+  },
+  "library_directory": "/run/media/jethac/Shared/radish/asr-profile-aarch64-build-0045/libs",
+  "stamp": "5700f127e38dd53c4735ea23ef743b4b538eacd4 5c8974acefce3dec backend=vulkan config-abi=2 khr-profile=1 graph-bounded=8b4a76b5 attention=c029d58c catalog=5041f38e placement=59421e95 batched=8f00bab0 kv=79d346b8 khr-proc=0a059df7 kv-granularity=50a8b128 backend-intent=63ba1e6b metadata-arena=1947ec9d output-span=5d92b0e3 output-span-move=5850790f intent-pointer=aff71126 cache-ops=2dbf5c33 architecture=aarch64 cortex-a53=1\n",
+  "source_pins": {
+    "bytes": 561816,
+    "sha256": "2dee27b3a9ba89130c20dcf12fc615ccce058a72002b8e94c3bd34ed6e3cd332"
+  },
+  "loader": {
+    "bytes": 703696,
+    "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+  },
+  "sysroot": "/home/jethac/Projects/straylight-voice/sysroot",
+  "scope": "Cross-build/link only, no tablet launch/model-memory/numerical/performance/deployment admission. CPU default and frozen x86 host9980/9652 and selected fcd/d332 retained."
+}
