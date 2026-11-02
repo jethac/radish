@@ -1,0 +1,581 @@
+{
+  "status": "default_off_private_backend_host_objects_and_two_modules_passed",
+  "scope": "Host-only preparation. No backend link/cross-build/device/full-ASR/deployment claim. Selected inference remains fcd/d332.",
+  "source_patch": {
+    "path": "/home/jethac/Projects/radish/radish/patches/0045-ggml-vulkan-khr-profile-private.patch",
+    "bytes": 18721,
+    "sha256": "b3939d3b49413b9b3af39186d05ac168bedd87862978361dc3afdc7620267850"
+  },
+  "exact_source_reconstruction": true,
+  "base_source_release": {
+    "status": "First private opt-in source slice; hostbuild and emittedmodule validation pending; no author build/device",
+    "profile": "GGML_VULKAN_KHR_PROFILE=ON, defaultOFF; explicit GGML_VK_VISIBLE_DEVICES required. CoreAPI remains1.0; no driver/APIchange.",
+    "patch": {
+      "path": "/run/media/jethac/Shared/radish/asr-khr-profile-private-3dvgyw3a/khr-profile.patch",
+      "bytes": 15962,
+      "sha256": "94bda7504787533021e72c90eda6872228fd8fe0499a213b5f269dc14d24955d"
+    },
+    "files": [
+      {
+        "candidate": {
+          "path": "/run/media/jethac/Shared/radish/asr-khr-profile-private-3dvgyw3a/candidate/ggml/src/ggml-vulkan/CMakeLists.txt",
+          "bytes": 11071,
+          "sha256": "5cfa439348ce075d2d60ecfc4a0a46f2588e64da35aa75182afb89f5396de1b1"
+        },
+        "baseline": {
+          "path": "/run/media/jethac/Shared/radish/asr-khr-profile-private-3dvgyw3a/baseline/ggml/src/ggml-vulkan/CMakeLists.txt",
+          "bytes": 10773,
+          "sha256": "0c7ac5176786975fdd66709b5f9a2b092ce4d6a57456356e67c4d9f9193203c2"
+        }
+      },
+      {
+        "candidate": {
+          "path": "/run/media/jethac/Shared/radish/asr-khr-profile-private-3dvgyw3a/candidate/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+          "bytes": 886632,
+          "sha256": "ef02ab643c676c5261f565518c9cf160089bdcad7d5ce36d1d9de1eca051f936"
+        },
+        "baseline": {
+          "path": "/run/media/jethac/Shared/radish/asr-khr-profile-private-3dvgyw3a/baseline/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+          "bytes": 882387,
+          "sha256": "293865e755d40069bd55c6a3a2b0026a69eb34195ca99ffd348e6dde9d6e7cb6"
+        }
+      },
+      {
+        "candidate": {
+          "path": "/run/media/jethac/Shared/radish/asr-khr-profile-private-3dvgyw3a/candidate/ggml/src/ggml-vulkan/vulkan-shaders/CMakeLists.txt",
+          "bytes": 1787,
+          "sha256": "37a35f9cc57e6de03c351e885d114cbcc5d11f2919f6a633b11d49ceab26ff4d"
+        },
+        "baseline": {
+          "path": "/run/media/jethac/Shared/radish/asr-khr-profile-private-3dvgyw3a/baseline/ggml/src/ggml-vulkan/vulkan-shaders/CMakeLists.txt",
+          "bytes": 1696,
+          "sha256": "0cb2c1fd49730793094cbaca4a46d0e0fc56c8f279aa9712a4e7a53535400d64"
+        }
+      },
+      {
+        "candidate": {
+          "path": "/run/media/jethac/Shared/radish/asr-khr-profile-private-3dvgyw3a/candidate/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp",
+          "bytes": 82771,
+          "sha256": "4ae1c2d8b6e9f1ad1fc40bbc59e22005ba11527cc45470116bd282dd323c30b4"
+        },
+        "baseline": {
+          "path": "/run/media/jethac/Shared/radish/asr-khr-profile-private-3dvgyw3a/baseline/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp",
+          "bytes": 82519,
+          "sha256": "f146edcdb52dfdee67c628bec9c31f236230e9fd61c775cf5a158171154c5f33"
+        }
+      },
+      {
+        "candidate": {
+          "path": "/run/media/jethac/Shared/radish/asr-khr-profile-private-3dvgyw3a/candidate/ggml/src/ggml-vulkan/vulkan-shaders/dequant_q4_k.comp",
+          "bytes": 2740,
+          "sha256": "6d30e99b44bf171074711efab9a54897476fa549039fb8cbea0b655a32ab2df1"
+        },
+        "baseline": {
+          "path": "/run/media/jethac/Shared/radish/asr-khr-profile-private-3dvgyw3a/baseline/ggml/src/ggml-vulkan/vulkan-shaders/dequant_q4_k.comp",
+          "bytes": 2675,
+          "sha256": "0b90f25b79c59c9870b3421a9a60de78ef88d1a8ee97e831f3c0784513812e08"
+        }
+      },
+      {
+        "candidate": {
+          "path": "/run/media/jethac/Shared/radish/asr-khr-profile-private-3dvgyw3a/candidate/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vec_q4_k.comp",
+          "bytes": 6569,
+          "sha256": "74eb2cd3212aef18b8c165cb735627a1a4a8cad27cbcb1269d1b2b2bff12b78b"
+        },
+        "baseline": {
+          "path": "/run/media/jethac/Shared/radish/asr-khr-profile-private-3dvgyw3a/baseline/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vec_q4_k.comp",
+          "bytes": 6504,
+          "sha256": "02f84c2fc3ca217773bc281e34704965517728b8acb38c2bbd1163b8e0df54a8"
+        }
+      },
+      {
+        "candidate": {
+          "path": "/run/media/jethac/Shared/radish/asr-khr-profile-private-3dvgyw3a/candidate/ggml/src/ggml-vulkan/ggml-vulkan-khr-profile.hpp",
+          "bytes": 3053,
+          "sha256": "06258ff688d0c2e1583a07b937a634efe2cb23d8168146b6f33b1aa59a7ecfe6"
+        },
+        "baseline": null
+      }
+    ],
+    "scope": [
+      "Real individual KHR storage16/storage8/shaderFloat16Int8/timeline query/enable chains and KHRproperties2/hostwait dispatch. Missingextension orrequired actualfeature rejectsdevice. Existingdefault1.2 backend checks unchanged.",
+      "No coreVk11/Vk12 feature/property aggregates or unsupportedsubgroup/driverpropertyquery inprofile. Localzero aggregate mirrors retain existingoptionalcapselection. Internal32workgrouptile quantum doesnotadvertise subgroupoperations. Legacy getQueue usedforordinaryflags.",
+      "Only actualdequant_q4_k andnon-subgroupmul_mat_vec_q4_k_f32_f32 generatornames targetVulkan1.0; explicitStorageBufferclass pragma compiledonlyprofile. Othergeneratedvariants retaincurrenttarget; profile rejectsSPIRVversion>1.0 beforeVkShaderModule creation. Thisstage isdeliberatelynotfullASRready.",
+      "DefaultprofileOFF preservesoriginalgeneration/version/capability paths; no productionservice/currentinferencepayload changed."
+    ],
+    "required_before_device": [
+      "Compile backend profile/defaultOFF andgenerator, validate bothactualQ4modules withspirv-val --target-envvulkan1.0 andinspectexactcapabilities/StorageBufferclass.",
+      "Independentreview includes querychainlife, extensionenablement, dispatchaliases and allremaininguncovered shaderenvironment/capabilityrequirements.",
+      "Batch realshaderInt8candidate mustpassgenericsemantics/probe; requiredfeature isnot spoofed ormutated.",
+      "OtheractualASRmodules stillneedlegalprofiletarget/individualcapabilityadmission, originalresourcechecks andboundedworkloadscope; noASRdeployment authorizedbythisslice."
+    ]
+  },
+  "capacity_profile_release": {
+    "status": "Private source capacity correction; independent review/build/actualqualification pending",
+    "driver_patch": {
+      "path": "/run/media/jethac/Shared/radish/asr-ssbo-five-private-zwaqeozf/ssbo-five.patch",
+      "bytes": 463,
+      "sha256": "1745a0d0cd314a9da5b640bfdcb3f435756163afd1a3fdc06316fef04594d6cd"
+    },
+    "profile_patch": {
+      "path": "/run/media/jethac/Shared/radish/asr-ssbo-five-private-zwaqeozf/profile-actual-layout-capacity.patch",
+      "bytes": 2758,
+      "sha256": "0c07610b6b391bf1c3ddea7d3beac92355f16ac891b4ca10945c80bdc4daa3a2"
+    },
+    "driver_baseline": {
+      "path": "/run/media/jethac/Shared/radish/asr-ssbo-five-private-zwaqeozf/baseline/src/freedreno/radish/rd_instance.c",
+      "bytes": 11803,
+      "sha256": "9d026183e2df1e108975382b3ba4f453925f99fe7b7ab4e0ce42246ce59367d9"
+    },
+    "driver_candidate": {
+      "path": "/run/media/jethac/Shared/radish/asr-ssbo-five-private-zwaqeozf/candidate/src/freedreno/radish/rd_instance.c",
+      "bytes": 11803,
+      "sha256": "aada1afea35362c0ab0a296e60324898326c8bd594aafd57ddd55e93c1712010"
+    },
+    "profile_base_patch": {
+      "path": "/run/media/jethac/Shared/radish/asr-khr-profile-private-3dvgyw3a/khr-profile.patch",
+      "bytes": 15962,
+      "sha256": "94bda7504787533021e72c90eda6872228fd8fe0499a213b5f269dc14d24955d"
+    },
+    "hardware_source_pins": [
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/gallium/drivers/freedreno/freedreno_screen.c",
+        "bytes": 38684,
+        "sha256": "439fbba1f9e6dffc6a7992614c57931fc0478b2d4a7a5c890be437b37005ca3a"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/gallium/drivers/freedreno/a5xx/fd5_emit.c",
+        "bytes": 44105,
+        "sha256": "3e005c0b2d9408b6935ae990d57683d766c7a23295fd6bd7ef1289a82743f48e"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/gallium/drivers/freedreno/a5xx/fd5_image.c",
+        "bytes": 7088,
+        "sha256": "368c8eae6220340ce243200d921d433f5910f4dc13017d1bbfea4cb64edddea0"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_queue.c",
+        "bytes": 45229,
+        "sha256": "da170e7c4d4a1fc9db0da5ded100376fab80b57fb70af2427a4ff81fbbdc4890"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_resources.c",
+        "bytes": 26029,
+        "sha256": "d1764b1d4b77c4fb9bd88cf54c0f62c81f6f15b76bfd90c7f90fa77e030e277f"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_pipeline.c",
+        "bytes": 25457,
+        "sha256": "db56340993aeffdf8e945058864f4f7737f350ed990f559f95be66d553bcd599"
+      }
+    ],
+    "proof": [
+      "PinnedFD5screen reports24compute shader-buffer/image stateentries in sharedSB4_CS_SSBO namespace. FD5emit_ssbos uses same two sizewords/ST4_CONSTANTS andtwoaddresswords/ST4_UBO asRadish; images append atnum_ssbos+index.",
+      "Radish statically compacts ordinary UBO+SSBO descriptors into buffer indices; storage-image and storage-texel-buffer descriptors follow at v.num_ssbos+i. Uniform texel buffers occupy the sampled-texture namespace instead. Compiler constant-data UBO/private BOs use separate constant/private program addressing, not this descriptor bank.",
+      "Worstadvertised per-stage combination after minimalincrease is12UBOs+5SSBOs+4storageimages+1software-samplingmetadata buffer=22<=matched24stateentries.32entrysoftwarearrays/maskscoverthis; no sampled-texture/sampler-bank orresource-limit widening.",
+      "Only maxPerStageDescriptorStorageBuffers4\u21925 changes. AggregateSSBO24/dynamic4/UBO12/image4/texture16/sampler16/maxresource128/hardwareguards unchanged. No arbitrary12SSBO advertisement."
+    ],
+    "profile_behavior": [
+      "Shared profile DSL has min(actualperstage/setSSBOlimit,12)bindings; rejectsdevicesbelow5 andpipelinesaboveactualcapacitybeforeVkShaderModule. Thusfive-buffer matvec/fusions retained and12-binding invalidlayout removed.",
+      "Existing descriptorpoolmayreserve12 entries butallocatedlayoutusesactualcapacity; updatewritesuseactualpipelineparametercount. Commonassertdescriptor count==pipelinecount retained.",
+      "Omits all-zero VkDescriptorSetLayoutBindingFlagsCreateInfo inprofile because descriptor-indexing extension/core1.2 isnotadvertised. Defaultbackend keepsoriginalpNext/default12layout unchanged.",
+      "Remaininghigher-target/uncovered shaderfamilies andanyactualpipelineovercapacity stillfailclosed; no fullASRreadyclaim."
+    ],
+    "qualification": [
+      "Reviewsharednativebankunits/indexing andallcoexistencecountsindependently; no numericlimitguess accepted.",
+      "Hostbuildisolateddriver/profileovermatchedInt8candidate; actualboundedfiveSSBOconsumer andmatveccompile withoriginalresource/faultgates beforeclaim.",
+      "No authorbuild/device/canonicaledit. Selected fcdinferenceunchanged."
+    ]
+  },
+  "base_host_result": {
+    "status": "host objects/generator/modules passed; no ASR/device claim",
+    "source_patch": {
+      "bytes": 15962,
+      "sha256": "94bda7504787533021e72c90eda6872228fd8fe0499a213b5f269dc14d24955d"
+    },
+    "source_release": {
+      "bytes": 5867,
+      "sha256": "631a9f40f6d5d5da4a3f9e080e30ada156ea42f2cbb46aecc738ddc5b3823e89"
+    },
+    "artifacts": {
+      "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/backend-on.o": {
+        "bytes": 3115696,
+        "sha256": "9e16ee3b5db110c8050e35f458d3045c7bbe0b842b34366af6a442554cb07761"
+      },
+      "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/backend-off.o": {
+        "bytes": 3073344,
+        "sha256": "9b3bd8e04f9afcff27c61f8dd18d38b7d0b1f1419a1d46ce6775b8f218b4178d"
+      },
+      "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/vulkan-shaders-gen": {
+        "bytes": 401568,
+        "sha256": "879f5cfdb864b3740a7f0139d4c3c408cf0defb0e25f54cc3a1be52d22c8365d"
+      }
+    },
+    "modules": {
+      "dequant_q4_k": {
+        "module": {
+          "bytes": 6016,
+          "sha256": "43cc6c1e47746c7b5f0d33c520be0114d6dab25b0ae4ac068cac5ed2534b154e"
+        },
+        "capabilities": [
+          "Shader",
+          "Int8",
+          "StorageBuffer16BitAccess",
+          "StorageBuffer8BitAccess"
+        ],
+        "source": {
+          "bytes": 2740,
+          "sha256": "6d30e99b44bf171074711efab9a54897476fa549039fb8cbea0b655a32ab2df1"
+        }
+      },
+      "mul_mat_vec_q4_k_f32_f32": {
+        "module": {
+          "bytes": 18992,
+          "sha256": "2c4b4e98f4f4300710f0d5084e3ae9f6daf066e1e69954193b1b56dcc747bc43"
+        },
+        "capabilities": [
+          "Shader",
+          "Int8",
+          "StorageBuffer16BitAccess",
+          "StorageBuffer8BitAccess"
+        ],
+        "source": {
+          "bytes": 6569,
+          "sha256": "74eb2cd3212aef18b8c165cb735627a1a4a8cad27cbcb1269d1b2b2bff12b78b"
+        }
+      }
+    },
+    "scope": "Default OFF backend and opt-in profile object compiled against pinned headers; only two real Vulkan1.0 modules validated. No link/run/cross-build/full backend or inference qualification."
+  },
+  "capacity_host_result": {
+    "status": "host backend ON/OFF objects passed; no device/link/ASR claim",
+    "patch": {
+      "bytes": 2758,
+      "sha256": "0c07610b6b391bf1c3ddea7d3beac92355f16ac891b4ca10945c80bdc4daa3a2"
+    },
+    "files": {
+      "/run/media/jethac/Shared/radish/asr-khr-profile-five-build-0045/backend-on.o": {
+        "bytes": 3085800,
+        "sha256": "841b19aa8f1971a5888e6ec0cfdef39b3acaeeb9340b55fede85693ec0f4e2fa"
+      },
+      "/run/media/jethac/Shared/radish/asr-khr-profile-five-build-0045/backend-off.o": {
+        "bytes": 3073376,
+        "sha256": "cbd41b7e3cc748b518b6701161f99bbfbe2f1e0662ce1329742dbaa1d4f06163"
+      },
+      "/run/media/jethac/Shared/radish/asr-khr-profile-five-build-0045/source/ggml/src/ggml-vulkan/ggml-vulkan.cpp": {
+        "bytes": 887182,
+        "sha256": "f88aee0eb38125d57762de78227f5338a088ef52cfec0c05385864bd18b7c3da"
+      }
+    },
+    "unchanged_modules_from": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/result.json",
+    "source_release": "/run/media/jethac/Shared/radish/asr-ssbo-five-private-zwaqeozf/release.json"
+  },
+  "commands": [
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-DGGML_VULKAN_KHR_PROFILE",
+        "-DGGML_SCHED_MAX_COPIES=4",
+        "-DGGML_VULKAN_BFLOAT16_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_DECODE_VECTOR_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E2M1_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E4M3_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_INTEGER_DOT_GLSLC_SUPPORT",
+        "-D_GNU_SOURCE",
+        "-D_XOPEN_SOURCE=600",
+        "-I/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/source/ggml/src/ggml-vulkan/..",
+        "-I/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/build-native-vulkan/transcribe/ggml/src/ggml-vulkan",
+        "-I/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/source/ggml/src/../include",
+        "-isystem",
+        "/run/media/jethac/Shared/radish/vulkan-headers/include",
+        "-isystem",
+        "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/deps/spirv-headers-install/include",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wmissing-declarations",
+        "-Wmissing-noreturn",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wcast-qual",
+        "-Wno-unused-function",
+        "-Wno-array-bounds",
+        "-Wextra-semi",
+        "-o",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/backend-on.o",
+        "-c",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/source/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+        "-MD",
+        "-MF",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/backend-on.d"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/build-native-vulkan"
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-DGGML_SCHED_MAX_COPIES=4",
+        "-DGGML_VULKAN_BFLOAT16_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_DECODE_VECTOR_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E2M1_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E4M3_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_INTEGER_DOT_GLSLC_SUPPORT",
+        "-D_GNU_SOURCE",
+        "-D_XOPEN_SOURCE=600",
+        "-I/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/source/ggml/src/ggml-vulkan/..",
+        "-I/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/build-native-vulkan/transcribe/ggml/src/ggml-vulkan",
+        "-I/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/source/ggml/src/../include",
+        "-isystem",
+        "/run/media/jethac/Shared/radish/vulkan-headers/include",
+        "-isystem",
+        "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/deps/spirv-headers-install/include",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wmissing-declarations",
+        "-Wmissing-noreturn",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wcast-qual",
+        "-Wno-unused-function",
+        "-Wno-array-bounds",
+        "-Wextra-semi",
+        "-o",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/backend-off.o",
+        "-c",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/source/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+        "-MD",
+        "-MF",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/backend-off.d"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/build-native-vulkan"
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-std=c++17",
+        "-O3",
+        "-DNDEBUG",
+        "-DGGML_VULKAN_KHR_PROFILE",
+        "-DGGML_VULKAN_BFLOAT16_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_DECODE_VECTOR_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E2M1_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E4M3_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_INTEGER_DOT_GLSLC_SUPPORT",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/source/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp",
+        "-o",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/vulkan-shaders-gen",
+        "-pthread"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045"
+    },
+    {
+      "argv": [
+        "glslc",
+        "--target-env=vulkan1.0",
+        "-O",
+        "-DFLOAT_TYPE=float",
+        "-DFLOAT_TYPEV2=vec2",
+        "-DDATA_A_Q4_K=1",
+        "-DD_TYPE=float16_t",
+        "-DGGML_VULKAN_KHR_PROFILE=1",
+        "-MD",
+        "-MF",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/dequant_q4_k.d",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/source/ggml/src/ggml-vulkan/vulkan-shaders/dequant_q4_k.comp",
+        "-o",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/dequant_q4_k.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045"
+    },
+    {
+      "argv": [
+        "spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/dequant_q4_k.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045"
+    },
+    {
+      "argv": [
+        "spirv-dis",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/dequant_q4_k.spv",
+        "-o",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/dequant_q4_k.spvasm"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045"
+    },
+    {
+      "argv": [
+        "glslc",
+        "--target-env=vulkan1.0",
+        "-O",
+        "-DFLOAT_TYPE=float",
+        "-DFLOAT_TYPEV2=vec2",
+        "-DDATA_A_Q4_K=1",
+        "-DB_TYPE=float",
+        "-DB_TYPEV2=vec2",
+        "-DB_TYPEV4=vec4",
+        "-DD_TYPE=float",
+        "-DGGML_VULKAN_KHR_PROFILE=1",
+        "-MD",
+        "-MF",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/mul_mat_vec_q4_k_f32_f32.d",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/source/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vec_q4_k.comp",
+        "-o",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/mul_mat_vec_q4_k_f32_f32.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045"
+    },
+    {
+      "argv": [
+        "spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/mul_mat_vec_q4_k_f32_f32.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045"
+    },
+    {
+      "argv": [
+        "spirv-dis",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/mul_mat_vec_q4_k_f32_f32.spv",
+        "-o",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/mul_mat_vec_q4_k_f32_f32.spvasm"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045"
+    }
+  ],
+  "capacity_commands": [
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-DGGML_VULKAN_KHR_PROFILE",
+        "-DGGML_SCHED_MAX_COPIES=4",
+        "-DGGML_VULKAN_BFLOAT16_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_DECODE_VECTOR_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E2M1_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E4M3_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_INTEGER_DOT_GLSLC_SUPPORT",
+        "-D_GNU_SOURCE",
+        "-D_XOPEN_SOURCE=600",
+        "-I/run/media/jethac/Shared/radish/asr-khr-profile-five-build-0045/source/ggml/src/ggml-vulkan/..",
+        "-I/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/build-native-vulkan/transcribe/ggml/src/ggml-vulkan",
+        "-I/run/media/jethac/Shared/radish/asr-khr-profile-five-build-0045/source/ggml/src/../include",
+        "-isystem",
+        "/run/media/jethac/Shared/radish/vulkan-headers/include",
+        "-isystem",
+        "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/deps/spirv-headers-install/include",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wmissing-declarations",
+        "-Wmissing-noreturn",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wcast-qual",
+        "-Wno-unused-function",
+        "-Wno-array-bounds",
+        "-Wextra-semi",
+        "-o",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-five-build-0045/backend-on.o",
+        "-c",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-five-build-0045/source/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+        "-MD",
+        "-MF",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-five-build-0045/backend-on.d"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/build-native-vulkan"
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-DGGML_SCHED_MAX_COPIES=4",
+        "-DGGML_VULKAN_BFLOAT16_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_DECODE_VECTOR_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E2M1_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E4M3_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_INTEGER_DOT_GLSLC_SUPPORT",
+        "-D_GNU_SOURCE",
+        "-D_XOPEN_SOURCE=600",
+        "-I/run/media/jethac/Shared/radish/asr-khr-profile-five-build-0045/source/ggml/src/ggml-vulkan/..",
+        "-I/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/build-native-vulkan/transcribe/ggml/src/ggml-vulkan",
+        "-I/run/media/jethac/Shared/radish/asr-khr-profile-five-build-0045/source/ggml/src/../include",
+        "-isystem",
+        "/run/media/jethac/Shared/radish/vulkan-headers/include",
+        "-isystem",
+        "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/deps/spirv-headers-install/include",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wmissing-declarations",
+        "-Wmissing-noreturn",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wcast-qual",
+        "-Wno-unused-function",
+        "-Wno-array-bounds",
+        "-Wextra-semi",
+        "-o",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-five-build-0045/backend-off.o",
+        "-c",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-five-build-0045/source/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+        "-MD",
+        "-MF",
+        "/run/media/jethac/Shared/radish/asr-khr-profile-five-build-0045/backend-off.d"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/build-native-vulkan"
+    }
+  ],
+  "whole_source_pins": {
+    "path": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/source-pins.json",
+    "bytes": 357671,
+    "sha256": "79cc334fc4383a43243eab83327a5f7898eed0f42711e7381c7ecfd578bd295f"
+  },
+  "source_reviews": [
+    {
+      "path": "/run/media/jethac/Shared/radish/asr-shader-int8-private-b1hzh1le/khr-profile-source-review.json",
+      "bytes": 2171,
+      "sha256": "2e4f16df73d10f3c964a6dae7f3d55eb89974cab49564f90187f33dde69c7959"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/asr-five-ssbo-review-_6x7r5vm/review.json",
+      "bytes": 2707,
+      "sha256": "77d657ae9dbb4705943ade867c89b336f2fa76ee1869bd43f7447158e69b2b13"
+    }
+  ],
+  "remaining": [
+    "Existing public storage16/storage8/Int8/timeline consumers qualify bounded primitives, not complete backend workloads.",
+    "The profile requires actual individual extensions/features, uses API1.0/KHR dispatch, and fails closed on unsupported modules. No version/capability suppression.",
+    "Only two Q4 modules have been legally rebuilt at Vulkan1.0; remaining actual ASR modules need their own environment/capability/resource admission.",
+    "The five-buffer matvec requires a separately prepared driver capacity change and actual bounded resource qualification, not merely host compilation.",
+    "Runtime/device/profile linkage, numerical ASR work, memory/headroom/service coexistence and end-to-end performance remain pending."
+  ]
+}

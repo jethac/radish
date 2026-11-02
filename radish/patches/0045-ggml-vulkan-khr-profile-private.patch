@@ -1,0 +1,453 @@
+--- a/ggml/src/ggml-vulkan/CMakeLists.txt
++++ b/ggml/src/ggml-vulkan/CMakeLists.txt
+@@ -7,6 +7,8 @@
+ endif()
+ 
+ find_package(Vulkan COMPONENTS glslc REQUIRED)
++
++option(GGML_VULKAN_KHR_PROFILE "Build the explicit Vulkan1.0 KHR compatibility profile" OFF)
+ 
+ if (DEFINED ENV{VULKAN_SDK})
+     list(APPEND CMAKE_PREFIX_PATH "$ENV{VULKAN_SDK}")
+@@ -75,6 +77,10 @@
+                           VISIBILITY_INLINES_HIDDEN ON)
+ 
+     set(VULKAN_SHADER_GEN_CMAKE_ARGS "")
++    if (GGML_VULKAN_KHR_PROFILE)
++        target_compile_definitions(ggml-vulkan PRIVATE GGML_VULKAN_KHR_PROFILE)
++        list(APPEND VULKAN_SHADER_GEN_CMAKE_ARGS -DGGML_VULKAN_KHR_PROFILE=ON)
++    endif()
+ 
+     # Test all shader extensions
+     test_shader_extension_support(
+--- /dev/null
++++ b/ggml/src/ggml-vulkan/ggml-vulkan-khr-profile.hpp
+@@ -0,0 +1,67 @@
++#pragma once
++
++static bool ggml_vk_khr_profile_extensions(const vk::PhysicalDevice & physical) {
++    const char * required[] = {
++        VK_KHR_16BIT_STORAGE_EXTENSION_NAME,
++        VK_KHR_8BIT_STORAGE_EXTENSION_NAME,
++        VK_KHR_SHADER_FLOAT16_INT8_EXTENSION_NAME,
++        VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME,
++        VK_KHR_STORAGE_BUFFER_STORAGE_CLASS_EXTENSION_NAME,
++        VK_KHR_MAINTENANCE_3_EXTENSION_NAME,
++    };
++    const auto available = physical.enumerateDeviceExtensionProperties();
++    for (const char * name : required) {
++        bool found = false;
++        for (const auto & extension : available) {
++            found |= std::strcmp(extension.extensionName, name) == 0;
++        }
++        if (!found) {
++            return false;
++        }
++    }
++    return true;
++}
++
++struct ggml_vk_khr_profile_features {
++    VkPhysicalDevice16BitStorageFeaturesKHR storage16{};
++    VkPhysicalDevice8BitStorageFeaturesKHR storage8{};
++    VkPhysicalDeviceShaderFloat16Int8FeaturesKHR arithmetic{};
++    VkPhysicalDeviceTimelineSemaphoreFeaturesKHR timeline{};
++
++    ggml_vk_khr_profile_features() {
++        storage16.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES_KHR;
++        storage8.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES_KHR;
++        arithmetic.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_FLOAT16_INT8_FEATURES_KHR;
++        timeline.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TIMELINE_SEMAPHORE_FEATURES_KHR;
++        storage16.pNext = &storage8;
++        storage8.pNext = &arithmetic;
++        arithmetic.pNext = &timeline;
++    }
++
++    bool required_supported() const {
++        return storage16.storageBuffer16BitAccess && storage8.storageBuffer8BitAccess &&
++               arithmetic.shaderInt8 && timeline.timelineSemaphore;
++    }
++
++    void mirror(VkPhysicalDeviceVulkan11Features & f11,
++                VkPhysicalDeviceVulkan12Features & f12) const {
++        f11.storageBuffer16BitAccess = storage16.storageBuffer16BitAccess;
++        f11.uniformAndStorageBuffer16BitAccess = storage16.uniformAndStorageBuffer16BitAccess;
++        f11.storagePushConstant16 = storage16.storagePushConstant16;
++        f11.storageInputOutput16 = storage16.storageInputOutput16;
++        f12.storageBuffer8BitAccess = storage8.storageBuffer8BitAccess;
++        f12.uniformAndStorageBuffer8BitAccess = storage8.uniformAndStorageBuffer8BitAccess;
++        f12.storagePushConstant8 = storage8.storagePushConstant8;
++        f12.shaderFloat16 = arithmetic.shaderFloat16;
++        f12.shaderInt8 = arithmetic.shaderInt8;
++        f12.timelineSemaphore = timeline.timelineSemaphore;
++    }
++
++    static void append_extensions(std::vector<const char *> & extensions) {
++        extensions.push_back(VK_KHR_8BIT_STORAGE_EXTENSION_NAME);
++        extensions.push_back(VK_KHR_SHADER_FLOAT16_INT8_EXTENSION_NAME);
++        extensions.push_back(VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME);
++        extensions.push_back(VK_KHR_STORAGE_BUFFER_STORAGE_CLASS_EXTENSION_NAME);
++        extensions.push_back(VK_KHR_MAINTENANCE_3_EXTENSION_NAME);
++    }
++};
+--- a/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -1,4 +1,10 @@
+ #include "ggml-vulkan-common.h"
++#ifdef GGML_VULKAN_KHR_PROFILE
++#include "ggml-vulkan-khr-profile.hpp"
++#define getProperties2 getProperties2KHR
++#define vkGetPhysicalDeviceFeatures2 vkGetPhysicalDeviceFeatures2KHR
++#define waitSemaphores waitSemaphoresKHR
++#endif
+ 
+ namespace {
+ inline std::ostream & operator<<(std::ostream & os, vk::Buffer buffer) {
+@@ -584,6 +590,12 @@
+     GGML_ASSERT(parameter_count <= MAX_PARAMETER_COUNT);
+     GGML_ASSERT(wg_denoms[0] > 0 && wg_denoms[1] > 0 && wg_denoms[2] > 0); // NOLINT
+ 
++#ifdef GGML_VULKAN_KHR_PROFILE
++    if (spv_size < 20 || spv_size % 4 ||
++        reinterpret_cast<const uint32_t *>(spv_data)[1] > 0x00010000u) {
++        throw std::runtime_error("KHR profile requires a validated Vulkan1.0 shader variant: " + pipeline->name);
++    }
++#endif
+     vk::ShaderModuleCreateInfo shader_module_create_info({}, spv_size, reinterpret_cast<const uint32_t *>(spv_data));
+ 
+     // Patch SPIR-V to enable supported FP16 float controls, avoiding the need
+@@ -1047,7 +1059,12 @@
+         h = std::make_shared<vk_queue_handle_synchronized>();
+     }
+ 
++#ifdef GGML_VULKAN_KHR_PROFILE
++    GGML_ASSERT(!device->has_internally_synchronized_queues);
++    h->queue = device->device.getQueue(queue_family_index, queue_index);
++#else
+     h->queue = device->device.getQueue2(queue_info2);
++#endif
+     h->device = device;
+     // Avoid concurrent submissions on NVIDIA due to driver bug.
+     if (device->vendor_id == VK_VENDOR_ID_NVIDIA) {
+@@ -4113,6 +4130,9 @@
+             }
+         }
+ 
++#ifdef GGML_VULKAN_KHR_PROFILE
++        internally_sync_support = false;
++#endif
+         vk::PhysicalDeviceProperties2 props2;
+         vk::PhysicalDeviceMaintenance3Properties props3;
+         vk::PhysicalDeviceMaintenance4Properties props4;
+@@ -4126,6 +4146,10 @@
+         vk::PhysicalDeviceShaderIntegerDotProductPropertiesKHR shader_integer_dot_product_props;
+         vk::PhysicalDeviceExternalMemoryHostPropertiesEXT external_memory_host_props;
+ 
++#ifdef GGML_VULKAN_KHR_PROFILE
++        props2.pNext = &props3;
++        VkBaseOutStructure * last_struct = (VkBaseOutStructure *)&props3;
++#else
+         props2.pNext = &props3;
+         props3.pNext = &subgroup_props;
+         subgroup_props.pNext = &driver_props;
+@@ -4133,6 +4157,7 @@
+         vk11_props.pNext = &vk12_props;
+ 
+         VkBaseOutStructure * last_struct = (VkBaseOutStructure *)&vk12_props;
++#endif
+ 
+         if (maintenance4_support) {
+             last_struct->pNext = (VkBaseOutStructure *)&props4;
+@@ -4220,7 +4245,12 @@
+         }
+         device->suballocation_block_size = std::min(device->suballocation_block_size, device->max_memory_allocation_size);
+ 
++#ifdef GGML_VULKAN_KHR_PROFILE
++        // Internal workgroup tiling quantum; no subgroup operations are enabled.
++        device->subgroup_size = 32;
++#else
+         device->subgroup_size = subgroup_props.subgroupSize;
++#endif
+         device->subgroup_size_log2 = uint32_t(log2f(float(device->subgroup_size)));
+         device->uma = device->properties.deviceType == vk::PhysicalDeviceType::eIntegratedGpu;
+         if (sm_builtins) {
+@@ -4316,6 +4346,17 @@
+         vk11_features.pNext = &vk12_features;
+ 
+         last_struct = (VkBaseOutStructure *)&vk12_features;
++#ifdef GGML_VULKAN_KHR_PROFILE
++        ggml_vk_khr_profile_features khr_features;
++        if (!ggml_vk_khr_profile_extensions(device->physical_device)) {
++            throw std::runtime_error("KHR profile missing required storage/arithmetic/timeline/maintenance extensions");
++        }
++        vk11_features = {};
++        vk12_features = {};
++        device_features2.pNext = &khr_features.storage16;
++        last_struct = (VkBaseOutStructure *)&khr_features.timeline;
++        ggml_vk_khr_profile_features::append_extensions(device_extensions);
++#endif
+ 
+         VkPhysicalDeviceInternallySynchronizedQueuesFeaturesKHR internally_synchronized_queues_features{};
+         internally_synchronized_queues_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INTERNALLY_SYNCHRONIZED_QUEUES_FEATURES_KHR;
+@@ -4473,6 +4514,12 @@
+         }
+ 
+         vkGetPhysicalDeviceFeatures2(device->physical_device, &device_features2);
++#ifdef GGML_VULKAN_KHR_PROFILE
++        khr_features.mirror(vk11_features, vk12_features);
++        if (!khr_features.required_supported()) {
++            throw std::runtime_error("KHR profile requires storage16, storage8, shaderInt8 and timelineSemaphore");
++        }
++#endif
+ 
+         device->device_fault = device->device_fault && fault_features.deviceFault;
+ 
+@@ -4761,6 +4808,10 @@
+ #endif
+         device->name = GGML_VK_NAME + std::to_string(idx);
+ 
++#ifdef GGML_VULKAN_KHR_PROFILE
++        std::sort(device_extensions.begin(), device_extensions.end(), [](const char * a, const char * b) { return std::strcmp(a, b) < 0; });
++        device_extensions.erase(std::unique(device_extensions.begin(), device_extensions.end(), [](const char * a, const char * b) { return std::strcmp(a, b) == 0; }), device_extensions.end());
++#endif
+         device_create_info
+             .setFlags(vk::DeviceCreateFlags())
+             .setQueueCreateInfos(device_queue_create_infos)
+@@ -5009,12 +5060,17 @@
+     vk::PhysicalDeviceSubgroupProperties subgroup_props;
+     vk::PhysicalDeviceDriverProperties driver_props;
+     vk::PhysicalDeviceShaderIntegerDotProductPropertiesKHR shader_integer_dot_product_props;
++#ifdef GGML_VULKAN_KHR_PROFILE
++    props2.pNext = &props3;
++    VkBaseOutStructure * last_struct = (VkBaseOutStructure *)&props3;
++#else
+     props2.pNext = &props3;
+     props3.pNext = &subgroup_props;
+     subgroup_props.pNext = &driver_props;
+ 
+     // Pointer to the last chain element
+     VkBaseOutStructure * last_struct = (VkBaseOutStructure *)&driver_props;
++#endif
+ 
+     if (integer_dot_product) {
+         last_struct->pNext = (VkBaseOutStructure *)&shader_integer_dot_product_props;
+@@ -5039,6 +5095,16 @@
+ 
+     // Pointer to the last chain element
+     last_struct = (VkBaseOutStructure *)&vk12_features;
++#ifdef GGML_VULKAN_KHR_PROFILE
++    ggml_vk_khr_profile_features khr_features;
++    if (!ggml_vk_khr_profile_extensions(physical_device)) {
++        throw std::runtime_error("KHR profile missing required storage/arithmetic/timeline/maintenance extensions");
++    }
++    vk11_features = {};
++    vk12_features = {};
++    device_features2.pNext = &khr_features.storage16;
++    last_struct = (VkBaseOutStructure *)&khr_features.timeline;
++#endif
+ 
+ #if defined(GGML_VULKAN_COOPMAT_GLSLC_SUPPORT)
+     VkPhysicalDeviceCooperativeMatrixFeaturesKHR coopmat_features;
+@@ -5107,6 +5173,12 @@
+ #endif
+ 
+     vkGetPhysicalDeviceFeatures2(physical_device, &device_features2);
++#ifdef GGML_VULKAN_KHR_PROFILE
++    khr_features.mirror(vk11_features, vk12_features);
++    if (!khr_features.required_supported()) {
++        throw std::runtime_error("KHR profile requires storage16, storage8, shaderInt8 and timelineSemaphore");
++    }
++#endif
+ 
+     fp16 = fp16 && vk12_features.shaderFloat16;
+ 
+@@ -5189,12 +5261,16 @@
+     // See https://github.com/KhronosGroup/Vulkan-Hpp?tab=readme-ov-file#extensions--per-device-function-pointers-
+     ggml_vk_default_dispatcher_instance.init(vkGetInstanceProcAddr);
+ 
++#ifdef GGML_VULKAN_KHR_PROFILE
++    uint32_t api_version = VK_API_VERSION_1_0;
++#else
+     uint32_t api_version = vk::enumerateInstanceVersion();
+-
+     if (api_version < VK_API_VERSION_1_2) {
+         std::cerr << "ggml_vulkan: Error: Vulkan 1.2 required." << std::endl;
+         throw vk::SystemError(vk::Result::eErrorFeatureNotPresent, "Vulkan 1.2 required");
+     }
++
++#endif
+ 
+     vk::ApplicationInfo app_info{ "ggml-vulkan", 1, nullptr, 0, api_version };
+ 
+@@ -5210,6 +5286,16 @@
+         layers.push_back("VK_LAYER_KHRONOS_validation");
+     }
+     std::vector<const char*> extensions;
++#ifdef GGML_VULKAN_KHR_PROFILE
++    const char * required_instance[] = {VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME,
++                                        VK_KHR_EXTERNAL_MEMORY_CAPABILITIES_EXTENSION_NAME};
++    for (const char * name : required_instance) {
++        bool found = false;
++        for (const auto & extension : instance_extensions) found |= std::strcmp(extension.extensionName, name) == 0;
++        if (!found) throw std::runtime_error("KHR profile missing required instance extension");
++        extensions.push_back(name);
++    }
++#endif
+     if (layer_settings) {
+         extensions.push_back("VK_EXT_layer_settings");
+     }
+@@ -5273,6 +5359,9 @@
+ 
+     // Emulate behavior of CUDA_VISIBLE_DEVICES for Vulkan
+     char * devices_env = getenv("GGML_VK_VISIBLE_DEVICES");
++#ifdef GGML_VULKAN_KHR_PROFILE
++    if (devices_env == nullptr) throw std::runtime_error("KHR profile requires explicit GGML_VK_VISIBLE_DEVICES");
++#endif
+     if (devices_env != nullptr) {
+         size_t num_available_devices = devices.size();
+ 
+@@ -16235,6 +16324,13 @@
+ }
+ 
+ bool ggml_vk_device_is_supported(const vk::PhysicalDevice & vkdev) {
++#ifdef GGML_VULKAN_KHR_PROFILE
++    if (!ggml_vk_khr_profile_extensions(vkdev)) return false;
++    ggml_vk_khr_profile_features khr;
++    VkPhysicalDeviceFeatures2KHR core{VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2_KHR, &khr.storage16, {}};
++    vkGetPhysicalDeviceFeatures2KHR(vkdev, &core);
++    return khr.required_supported();
++#else
+     VkPhysicalDeviceFeatures2 device_features2;
+     device_features2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+ 
+@@ -16246,6 +16342,7 @@
+     vkGetPhysicalDeviceFeatures2(vkdev, &device_features2);
+ 
+     return vk11_features.storageBuffer16BitAccess;
++#endif
+ }
+ 
+ bool ggml_vk_khr_cooperative_matrix_support(const vk::PhysicalDeviceProperties& props, const vk::PhysicalDeviceDriverProperties& driver_props, vk_device_architecture arch) {
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/CMakeLists.txt
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/CMakeLists.txt
+@@ -2,6 +2,10 @@
+ project("vulkan-shaders-gen" C CXX)
+ 
+ find_package (Threads REQUIRED)
++
++if (GGML_VULKAN_KHR_PROFILE)
++    add_compile_definitions(GGML_VULKAN_KHR_PROFILE)
++endif()
+ 
+ if (GGML_VULKAN_COOPMAT_GLSLC_SUPPORT)
+     add_compile_definitions(GGML_VULKAN_COOPMAT_GLSLC_SUPPORT)
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/dequant_q4_k.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/dequant_q4_k.comp
+@@ -1,4 +1,7 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #include "dequant_head.glsl"
+ 
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vec_q4_k.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vec_q4_k.comp
+@@ -1,4 +1,7 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #extension GL_EXT_shader_explicit_arithmetic_types_int32 : require
+ 
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp
+@@ -349,12 +349,21 @@
+ 
+ void string_to_spv_func(std::string name, std::string in_path, std::string out_path, std::map<std::string, std::string> defines, bool coopmat, bool dep_file, compile_count_guard slot) {
+     std::string target_env = (name.find("_cm2") != std::string::npos) ? "--target-env=vulkan1.3" : "--target-env=vulkan1.2";
++#ifdef GGML_VULKAN_KHR_PROFILE
++    if (name == "dequant_q4_k" || name == "mul_mat_vec_q4_k_f32_f32") {
++        target_env = "--target-env=vulkan1.0";
++    }
++#endif
+ 
+     #ifdef _WIN32
+         std::vector<std::string> cmd = {GLSLC, "-fshader-stage=compute", target_env, "\"" + in_path + "\"", "-o", "\"" + out_path + "\""};
+     #else
+         std::vector<std::string> cmd = {GLSLC, "-fshader-stage=compute", target_env, in_path, "-o", out_path};
+     #endif
++
++#ifdef GGML_VULKAN_KHR_PROFILE
++    cmd.push_back("-DGGML_VULKAN_KHR_PROFILE=1");
++#endif
+ 
+     // disable spirv-opt for coopmat shaders for https://github.com/ggml-org/llama.cpp/issues/10734
+     // disable spirv-opt for bf16 shaders for https://github.com/ggml-org/llama.cpp/issues/15344
+
+--- a/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -594,6 +594,11 @@
+     if (spv_size < 20 || spv_size % 4 ||
+         reinterpret_cast<const uint32_t *>(spv_data)[1] > 0x00010000u) {
+         throw std::runtime_error("KHR profile requires a validated Vulkan1.0 shader variant: " + pipeline->name);
++    }
++#endif
++#ifdef GGML_VULKAN_KHR_PROFILE
++    if (parameter_count > ggml_vk_khr_profile_descriptor_capacity(device->properties)) {
++        throw std::runtime_error("KHR profile pipeline exceeds actual storage-buffer descriptor capacity: " + pipeline->name);
+     }
+ #endif
+     vk::ShaderModuleCreateInfo shader_module_create_info({}, spv_size, reinterpret_cast<const uint32_t *>(spv_data));
+@@ -4196,6 +4201,9 @@
+ 
+         device->physical_device.getProperties2(&props2);
+         device->properties = props2.properties;
++#ifdef GGML_VULKAN_KHR_PROFILE
++        ggml_vk_khr_profile_descriptor_capacity(device->properties);
++#endif
+         device->vendor_id = device->properties.vendorID;
+         device->driver_id = driver_props.driverID;
+ 
+@@ -4911,7 +4919,13 @@
+ 
+         std::vector<vk::DescriptorSetLayoutBinding> dsl_binding;
+         std::vector<vk::DescriptorBindingFlags> dsl_binding_flags;
+-        for (uint32_t i = 0; i < MAX_PARAMETER_COUNT; i++) {
++        for (uint32_t i = 0; i <
++#ifdef GGML_VULKAN_KHR_PROFILE
++             ggml_vk_khr_profile_descriptor_capacity(device->properties)
++#else
++             MAX_PARAMETER_COUNT
++#endif
++             ; i++) {
+             dsl_binding.push_back({i, vk::DescriptorType::eStorageBuffer, 1, vk::ShaderStageFlagBits::eCompute});
+             dsl_binding_flags.push_back({});
+         }
+@@ -4921,7 +4935,9 @@
+         vk::DescriptorSetLayoutCreateInfo descriptor_set_layout_create_info(
+             {},
+             dsl_binding);
++#ifndef GGML_VULKAN_KHR_PROFILE
+         descriptor_set_layout_create_info.setPNext(&dslbfci);
++#endif
+         device->dsl = device->device.createDescriptorSetLayout(descriptor_set_layout_create_info);
+ 
+         ggml_vk_load_shaders(device);
+--- a/ggml/src/ggml-vulkan/ggml-vulkan-khr-profile.hpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan-khr-profile.hpp
+@@ -65,3 +65,13 @@
+         extensions.push_back(VK_KHR_MAINTENANCE_3_EXTENSION_NAME);
+     }
+ };
++
++static uint32_t ggml_vk_khr_profile_descriptor_capacity(const vk::PhysicalDeviceProperties & props) {
++    const uint32_t capacity = std::min<uint32_t>(MAX_PARAMETER_COUNT,
++        std::min(props.limits.maxPerStageDescriptorStorageBuffers,
++                 props.limits.maxDescriptorSetStorageBuffers));
++    if (capacity < 5) {
++        throw std::runtime_error("KHR profile requires at least five storage-buffer descriptors");
++    }
++    return capacity;
++}

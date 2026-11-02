@@ -18,3 +18,32 @@ All C++ libraries and full Rust listener link passed. C++ uses Release; Rust qua
 Independent review: /run/media/jethac/Shared/radish/core-api-resource-consumers-0044-ymiuefnt/stage57-asr-optin-source-review/review.json SHA3f97fad3fc2ebfa82d565903ca0ab5ae96be9866fc6144670636207cd7696feb.
 
 Run-readiness limits: no model/GPU inference, no A53 cross-build, no device staging or service changes. The pinned backend retains its hard 16-bit buffer-storage and Vulkan1.2 shader/device-environment admission requirements. Current qualified Radish does not satisfy that interface. Host linking does not establish backend operation, operator coverage or performance. CPU-default builds require the paired ABI2 archive rebuild; stale archives fail the build stamp check.
+
+2026-11-02: bounded primitives and a private KHR backend path
+
+Public storage16, storage8, timeline and generic Int8 consumers now pass their
+separate legal-module/native/output scopes. Those results replace the original
+missing-primitive observations; they do not establish full ASR compatibility.
+
+The default-OFF GGML_VULKAN_KHR_PROFILE path uses actual individual KHR feature
+chains, API1.0 instance creation and KHR dispatch. It requires explicit device
+selection and rejects missing features or unsupported shader environments.
+The shared descriptor layout is capped by actual per-stage/set limits, retains
+all five matvec bindings, rejects overflow, and omits an unadvertised descriptor
+indexing pNext. It does not claim an official Vulkan profile or raise API version.
+
+Both default-OFF and profile-ON backend objects and the profile generator compile
+on the host. The real dequant_q4_k and non-subgroup mul_mat_vec_q4_k_f32_f32 source
+modules rebuild and validate for Vulkan1.0 with exactly Shader, Int8,
+StorageBuffer16BitAccess and StorageBuffer8BitAccess. Their source/defines and
+commands are pinned; original higher-target module bytes were not relabeled.
+
+The minimal five-SSBO driver change is still a separate candidate requiring
+actual capacity qualification. Complete backend linking/cross-build, other ASR
+module families, numerical device workloads and end-to-end deployment remain
+pending. Inference performance comparisons continue on frozen fcd/d332.
+
+See results/asr-khr-profile-host-only-0045.json and the exact private source
+patch patches/0045-ggml-vulkan-khr-profile-private.patch. Apply to the pinned
+transcribe.cpp dependency snapshot from the original host-only ASR handoff.
+CPU/default behavior is unchanged; this is not permission to deploy a service.

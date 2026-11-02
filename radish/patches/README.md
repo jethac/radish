@@ -655,7 +655,7 @@ Both feature modes pass the full fixed core; resident51.504783→34.333299 secon
 
 ## Host-only ASR integration (0045)
 
-`0045-straylight-asr-vulkan-optin.patch` applies to the exact Straylight source snapshot pinned in `../results/asr-vulkan-host-only-0045.json`. CPU remains default. Rebuild both C++ and Rust for config ABI2; the host Vulkan build/link passes, but current16-bit-storage/Vulkan1.2 backend requirements still block Radish device qualification. No service deployment or inference result is claimed. Commands are in `../ASR_VULKAN_HANDOFF.txt`.
+`0045-straylight-asr-vulkan-optin.patch` applies to the exact Straylight source snapshot pinned in `../results/asr-vulkan-host-only-0045.json`. CPU remains default. Rebuild both C++ and Rust for config ABI2; the host Vulkan build/link passes, but its original 16-bit-storage/Vulkan1.2 backend requirements blocked Radish device qualification; later bounded primitive checks and the private KHR host slice are recorded below. No service deployment or inference result is claimed. Commands are in `../ASR_VULKAN_HANDOFF.txt`.
 
 `0045-ncnn-packed-a-mb-shift.patch` is a separate one-expression candidate after the explicit-device/four-tail ncnn stack. All full outputs pass with fewer encoded instructions. Resident33.952417 seconds versus34.333299 is a modest sequential observation, not sole-cause/statistical attribution. See `../GPU_PACKED_A.md` and `../results/packed-a-mb-shift-0045.json`.
 
@@ -668,3 +668,5 @@ Both feature modes pass the full fixed core; resident51.504783→34.333299 secon
 `0045-current-mad-private-device.patch` is the exact measured private three-file overlay for the current arithmetic diagnostic: explicit loader/device policy, pinned helper, canonical payload metadata and elapsed-rate reporting. It preserves both GLSL programs and all original controls. See ../GPU_MAD_UNROLL.md; this changes no selected model shader or driver policy.
 
 `0045-radish-shader-int8.patch` follows storage8/timeline and adds only public KHR Int8 arithmetic exposure over the existing generic byte implementation. The validated U32-interface consumer checks 1,280 arithmetic/conversion/private/shared results and full guards. Float16 arithmetic and API1.0 are unchanged; ASR inference remains unqualified.
+
+`0045-ggml-vulkan-khr-profile-private.patch` is a default-OFF backend source overlay on the pinned transcribe.cpp dependency. ON/OFF host objects and two actual Vulkan1.0 Q4 modules pass; real feature checks and actual descriptor limits remain required. Five-buffer device qualification, complete shader/backend coverage and ASR inference remain pending. See ../results/asr-khr-profile-host-only-0045.json and ../ASR_VULKAN_HANDOFF.txt.
