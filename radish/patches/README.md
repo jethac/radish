@@ -322,7 +322,7 @@ over TILED; it remains default-off. Reconstruct 0020 from the prefix ending
 there, preserved in published checkpoint `b70b0a8c498dd8fabc4409acbface875de0c5e33`.
 
 Independent source review and exact ordered reconstruction pass, as do private
-Vulkan1.0 GLSL/SPIR-V, AArch64 syntax and canonical/SIMPLEOMP/runtime builds.
+Vulkan 1.0 GLSL/SPIR-V, AArch64 syntax and canonical/SIMPLEOMP/runtime builds.
 The focused actual compile uses 16 full/0 half registers, 950 instructions,
 1152 dwords, four loops and eight compiler max_waves, with no private/spill
 evidence (`operators-tile32x32-0021-compile.log`). Dilation1 passes all 25984
@@ -532,7 +532,7 @@ AffineSnake is a project-local module/graph route, not another ncnn/Mesa patch.
 The strict714/875 graph retains all weights and48 original alpha/reciprocal pairs;
 CPU/focused GPU and full fixed-core gates pass, with identical historical output
 bytes. Warm43.124072 s/current7.4 MiB swap; exact192→48 targeted commands save
-1.822263 s, all1606 retained per-owner signatures match although traversal order
+1.822263 s, all 1606 retained per-owner signatures match although traversal order
 changes. Actual kernel8 full/1 half/local32/no shared/private, native4, precise
 unfused arithmetic. See NOTES for compiler/attribution evidence. The transformer
 only produces provisional output; fixture preparation requires matching completed
@@ -662,3 +662,5 @@ Both feature modes pass the full fixed core; resident51.504783→34.333299 secon
 `0045-radish-storage16.patch` is a separate incremental checkpoint after the two0045 batching patches. It implements logical16-bit storage bounds and aligned U32 memory lowering, then advertises only KHR_16bit_storage/storageBuffer16BitAccess. The valid public consumer passes500 output words and complete four-allocation guards in five short/dynamic cases. Current inference comparisons remain on frozen fcd; no ASR/API1.2/conformance claim. See ../results/storage16-public-0045.json.
 
 `0045-ncnn-b-reciprocal-unselected.patch` is an optional isolated experiment after0045 packed-A mb shift, not part of the selected stack. The bounded address transformation and full numerical checks pass, but first/resident and targeted-layer wall times regress in the sequential comparison. Keep d332 selected; see ../results/packed-b-reciprocal-unselected-0045.json.
+
+`0045-radish-storage8-timeline.patch` follows 0045 storage16. It adds logical byte-storage lowering and conditional real-kernel timeline exposure, qualified by separate public 8-bit storage and KHR timeline consumers. API remains 1.0; current inference stays frozen fcd and ASR is not yet qualified. See ../results/storage8-timeline-public-0045.json.

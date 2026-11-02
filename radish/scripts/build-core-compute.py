@@ -45,7 +45,9 @@ def main():
              ('storage-cube', 'core_storage_cube.c', 'core-storage-cube.comp', 'vulkan1.0'),
              ('ms-lanes', 'core_ms_lanes.c', 'core-ms-lanes.comp', 'vulkan1.0'),
              ('oversized-ms', 'core_oversized_ms.c', 'core-oversized-ms.comp', 'vulkan1.0'),
-             ('storage16', 'core_storage16.c', 'core-storage16.comp', 'vulkan1.0')]
+             ('storage16', 'core_storage16.c', 'core-storage16.comp', 'vulkan1.0'),
+             ('storage8', 'core_storage8.c', 'core-storage8.comp', 'vulkan1.0'),
+             ('timeline', 'core_timeline.c', 'core-timeline.comp', 'vulkan1.0')]
     records = {}
     for name, cfile, glsl, target in units:
         source = top / 'radish/tests' / cfile

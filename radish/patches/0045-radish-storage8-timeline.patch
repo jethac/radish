@@ -1,0 +1,146 @@
+--- a/src/freedreno/radish/rd_nir_robust.c
++++ b/src/freedreno/radish/rd_nir_robust.c
+@@ -19,7 +19,8 @@
+ rd_robust_load(nir_builder *b, nir_intrinsic_instr *intr,
+                  struct rd_robust_state *state)
+ {
+-   if ((intr->def.bit_size != 16 && intr->def.bit_size != 32) ||
++   if ((intr->def.bit_size != 8 && intr->def.bit_size != 16 &&
++        intr->def.bit_size != 32) ||
+        intr->src[1].ssa->bit_size != 32 ||
+        nir_intrinsic_offset_shift(intr)) {
+       state->failed = true;
+@@ -52,7 +53,7 @@
+                   struct rd_robust_state *state)
+ {
+    uint32_t bits = nir_src_bit_size(intr->src[0]);
+-   if ((bits != 16 && bits != 32) || intr->src[2].ssa->bit_size != 32) {
++   if ((bits != 8 && bits != 16 && bits != 32) || intr->src[2].ssa->bit_size != 32) {
+       state->failed = true;
+       return false;
+    }
+@@ -187,7 +188,7 @@
+ }
+ 
+ static nir_mem_access_size_align
+-rd_storage16_access(nir_intrinsic_op intrin, uint8_t bytes, uint8_t bit_size,
++rd_subword_storage_access(nir_intrinsic_op intrin, uint8_t bytes, uint8_t bit_size,
+                     uint32_t align_mul, uint32_t align_offset,
+                     bool offset_is_const, enum gl_access_qualifier access,
+                     const void *data)
+@@ -199,15 +200,15 @@
+    (void)access;
+    (void)data;
+    return (nir_mem_access_size_align) {
+-      .num_components = bit_size == 16 ? 1 : bytes / (bit_size / 8),
+-      .bit_size = bit_size == 16 ? 32 : bit_size,
+-      .align = bit_size == 16 ? 4 : 1,
++      .num_components = (bit_size == 8 || bit_size == 16) ? 1 : bytes / (bit_size / 8),
++      .bit_size = (bit_size == 8 || bit_size == 16) ? 32 : bit_size,
++      .align = (bit_size == 8 || bit_size == 16) ? 4 : 1,
+       .shift = nir_mem_access_shift_method_scalar,
+    };
+ }
+ 
+ bool
+-rd_nir_lower_storage16(nir_shader *shader)
++rd_nir_lower_subword_storage(nir_shader *shader)
+ {
+    bool found = false;
+    nir_foreach_function_impl(impl, shader) {
+@@ -226,10 +227,10 @@
+             } else {
+                continue;
+             }
+-            if (bits != 16)
++            if (bits != 8 && bits != 16)
+                continue;
+             if (intr->src[offset].ssa->bit_size != 32 ||
+-                nir_intrinsic_align(intr) < 2 ||
++                nir_intrinsic_align(intr) < bits / 8 ||
+                 (nir_intrinsic_has_offset_shift(intr) &&
+                  nir_intrinsic_offset_shift(intr)))
+                return false;
+@@ -240,7 +241,7 @@
+    if (found) {
+       const nir_lower_mem_access_bit_sizes_options options = {
+          .modes = nir_var_mem_ssbo,
+-         .callback = rd_storage16_access,
++         .callback = rd_subword_storage_access,
+          .may_lower_unaligned_stores_to_atomics = true,
+       };
+       NIR_PASS(_, shader, nir_lower_mem_access_bit_sizes, &options);
+--- a/src/freedreno/radish/rd_nir_resources.h
++++ b/src/freedreno/radish/rd_nir_resources.h
+@@ -27,6 +27,6 @@
+    struct rd_nir_resource_usage *usage);
+ 
+ bool rd_nir_lower_robust_buffers(struct nir_shader *shader);
+-bool rd_nir_lower_storage16(struct nir_shader *shader);
++bool rd_nir_lower_subword_storage(struct nir_shader *shader);
+ 
+ #endif
+--- a/src/freedreno/radish/rd_pipeline.c
++++ b/src/freedreno/radish/rd_pipeline.c
+@@ -291,7 +291,7 @@
+       ralloc_free(nir);
+       return VK_ERROR_FEATURE_NOT_PRESENT;
+    }
+-   if (!rd_nir_lower_storage16(nir)) {
++   if (!rd_nir_lower_subword_storage(nir)) {
+       ralloc_free(nir);
+       return VK_ERROR_FEATURE_NOT_PRESENT;
+    }
+--- a/src/freedreno/radish/rd_instance.c
++++ b/src/freedreno/radish/rd_instance.c
+@@ -35,6 +35,7 @@
+    .KHR_get_memory_requirements2 = true,
+    .KHR_storage_buffer_storage_class = true,
+    .KHR_16bit_storage = true,
++   .KHR_8bit_storage = true,
+    .KHR_relaxed_block_layout = true,
+ };
+ 
+@@ -183,7 +184,7 @@
+    snprintf(properties.deviceName, sizeof(properties.deviceName),
+             "Radish Adreno 506 (experimental compute)");
+    const struct vk_features features = { .pipelineStatisticsQuery = true, .robustBufferAccess = true,
+-      .storageBuffer16BitAccess = true };
++      .storageBuffer16BitAccess = true, .storageBuffer8BitAccess = true };
+    VkResult result = vk_physical_device_init(&physical->vk, instance, &rd_device_extensions,
+                                              &features, &properties, &dispatch);
+    if (result != VK_SUCCESS) {
+
+--- a/src/freedreno/radish/rd_instance.c
++++ b/src/freedreno/radish/rd_instance.c
+@@ -182,9 +182,20 @@
+    properties.deviceNodeMask = 1;
+    snprintf(properties.deviceName, sizeof(properties.deviceName),
+             "Radish Adreno 506 (experimental compute)");
++   physical->sync_type = vk_drm_syncobj_get_type(render_fd);
++   const uint32_t timeline_sync_features = VK_SYNC_FEATURE_TIMELINE |
++      VK_SYNC_FEATURE_CPU_WAIT | VK_SYNC_FEATURE_CPU_SIGNAL |
++      VK_SYNC_FEATURE_WAIT_ANY | VK_SYNC_FEATURE_GPU_WAIT;
++   const bool timeline =
++      (physical->sync_type.features & timeline_sync_features) == timeline_sync_features &&
++      physical->sync_type.get_value && physical->sync_type.signal &&
++      physical->sync_type.wait_many;
++   struct vk_device_extension_table extensions = rd_device_extensions;
++   extensions.KHR_timeline_semaphore = timeline;
++   properties.maxTimelineSemaphoreValueDifference = timeline ? UINT64_MAX : 0;
+    const struct vk_features features = { .pipelineStatisticsQuery = true, .robustBufferAccess = true,
+-      .storageBuffer16BitAccess = true, .storageBuffer8BitAccess = true };
+-   VkResult result = vk_physical_device_init(&physical->vk, instance, &rd_device_extensions,
++      .storageBuffer16BitAccess = true, .storageBuffer8BitAccess = true, .timelineSemaphore = timeline };
++   VkResult result = vk_physical_device_init(&physical->vk, instance, &extensions,
+                                              &features, &properties, &dispatch);
+    if (result != VK_SUCCESS) {
+       vk_free(&instance->alloc, physical);
+@@ -194,7 +205,6 @@
+    }
+    physical->fd = fd;
+    physical->render_fd = render_fd;
+-   physical->sync_type = vk_drm_syncobj_get_type(render_fd);
+    physical->sync_wait_many = physical->sync_type.wait_many;
+    physical->sync_type.wait_many = rd_sync_wait_many;
+    physical->sync_types[0] = &physical->sync_type;

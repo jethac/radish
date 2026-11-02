@@ -1,5 +1,17 @@
 # Core compute implementation: checkpoint 0044
 
+## 2026-11-02: public byte storage and timeline semaphores pass separate consumers
+
+The next isolated checkpoint enables only `storageBuffer8BitAccess` under `VK_KHR_8bit_storage`; other 8-bit storage/arithmetic features remain false. A Vulkan 1.0 module with exactly `Shader` and `StorageBuffer8BitAccess` passes five ranges of 1/2/3/5/64 bytes, dynamic bases 32–96, all 500 output words and complete four-allocation checks per case. Four writers targeting separate bytes of one word preserve their neighbors. Actual native 17 uses 8F/7H, aligned U32 loads/atomic mask stores and the existing workgroup barrier. The scope takes 818 ms, 10.3 MiB, zero swap.
+
+A separate consumer queries and enables `VK_KHR_timeline_semaphore` and calls all three public KHR device aliases. Initial value 7, finite timeout 8, host signal 9, and WAIT_ANY/WAIT_ALL checks pass. A queued wait at 4,294,967,313 returns pending with its fence not ready; a later host signal releases it. One real 32-word compute dispatch completes, then signals 4,294,967,314. Host wait, fence, counter and all 160 allocation words agree. Native 2 uses 2F/0H/no private memory; 603 ms, 5.1 MiB, zero swap. Both scopes have clean fault checks and active services.
+
+Timeline advertisement is conditional on actual DRM timeline/CPU wait/signal/GPU wait support and callbacks, using existing common runtime and threaded queue completion. No API-version override or backend gate suppression is introduced; the public API remains 1.0. These representative prerequisites do not establish ASR compatibility, arbitrary external/multiqueue timeline behavior or conformance.
+
+[Exact source/module/feature/native/output evidence](results/storage8-timeline-public-0045.json) and [incremental source](patches/0045-radish-storage8-timeline.patch) apply after the storage16 checkpoint. The existing builder/runner adds `--suite storage8` and `--suite timeline`. The original storage8 module requested unsupported uniform-buffer capability and was rejected before execution; the source-backed storage-class pragma produces the validated replacement without weakening its oracle. Timeline staging reuses a hash-verified immutable private driver hardlink, preserving the original 64 MiB reserve rather than uploading another 49 MiB copy.
+
+Inference performance remains paired with frozen fcd/d332. Source review confirms current model/runtime helpers explicitly pin FP32 storage/packing/arithmetic options; that prevents silent selection of new 16-bit shader paths, but any future expanded-driver inference still requires its own native and output checks.
+
 ## 2026-11-02: public storage-only 16-bit buffers pass a bounded consumer
 
 A separate driver checkpoint advertises `VK_KHR_16bit_storage` with only `storageBuffer16BitAccess`. The public feature query and ordinary device-enable chain pass; API remains 1.0 and the other 16-bit storage/arithmetic features stay false. The executed Vulkan1.0 module validates with exactly `Shader` and `StorageBuffer16BitAccess` capabilities.
@@ -30,7 +42,7 @@ The new eligibility predicate checks actual SSBO/resource/register use in place 
 
 The required non-array storage-Cube path passes all1,536 output words across six faces at a nonzero mip/base layer, including read/write, add/CAS and size queries, with full image/output allocation guards. A separate tiny multisample test checks four distinct sample tags through native nonarray fetches and raw array fetches from the same BO:630 exact words and full small-image guards pass. This second test is explicitly internal OPTIMAL-memory layout evidence, not a portable public image producer.
 
-The public path then creates one128MiB R32_UINT image with four samples and two layers. Public clears produce the data, the64MiB layer pitch exceeds the native field, and the raw array path is selected automatically with no force flag. Native layer views and the array path agree on all240 outputs; full small-output guards and64 sparse image words per round pass, with the same BO and cached child reused. Service2.142s,134.4MiB peak,zero swap; no new faults and both services active. This is sparse validation, not a full128MiB readback or an equal-sample claim of distinct-lane proof. [Exact source, artifacts and limits](results/core-api-0044-storage-cube-multisample.json).
+The public path then creates one128MiB R32_UINT image with four samples and two layers. Public clears produce the data, the64MiB layer pitch exceeds the native field, and the raw array path is selected automatically with no force flag. Native layer views and the array path agree on all240 outputs; full small-output guards and64 sparse image words per round pass, with the same BO and cached child reused. Service2.142s,134.4MiB peak, zero swap; no new faults and both services active. This is sparse validation, not a full128MiB readback or an equal-sample claim of distinct-lane proof. [Exact source, artifacts and limits](results/core-api-0044-storage-cube-multisample.json).
 
 The first combined batch passed Cube but stopped MS before compilation because its required private flag was omitted. The corrected MS-only invocation passes; both records remain. Apply the twentieth increment `0044-radish-storage-cube-multisample-wip.patch` after exact-buffer-size. The existing builder/runner adds `storage-cube`, `ms-lanes` (explicit internal force flag) and `oversized-ms` suites, with matching private headers and SPIR-V validation.
 
@@ -116,7 +128,7 @@ The sampler-count error is real, but fixing it did not resolve the fault. Cube a
 
 ## 2026-11-02: sampled multisample paths execute
 
-ICDa7d6f917 passes two 120-record rounds with 18 exact words each (4,320 total), seven image allocation guards and the output allocation guard. R32_UINT/R16_UNORM images exercise per-layer clear, offset copy, native fetch at all four sample indices, and size/count queries across two layers. D16/D32/S8 checks cover creation and size/count only. Cleared samples have equal values, so this does not prove distinct sample-address selection or depth/stencil sample values. Service630ms,5.8MiB,zero swap; no new GPU faults and both services active. [Exact source, consumer and limits](results/core-api-0044-sampled-ms.json).
+ICDa7d6f917 passes two 120-record rounds with 18 exact words each (4,320 total), seven image allocation guards and the output allocation guard. R32_UINT/R16_UNORM images exercise per-layer clear, offset copy, native fetch at all four sample indices, and size/count queries across two layers. D16/D32/S8 checks cover creation and size/count only. Cleared samples have equal values, so this does not prove distinct sample-address selection or depth/stencil sample values. Service630ms,5.8MiB, zero swap; no new GPU faults and both services active. [Exact source, consumer and limits](results/core-api-0044-sampled-ms.json).
 
 The unchanged, locally modified CTS harness reruns only `dEQP-VK.info.device_properties`: exactly three sampled-image count failures disappear,34→31, with no new failures. The full case still fails; its complete report and all remaining failures are retained without waivers. No complete Vulkan or CTS conformance claim follows from these results.
 
@@ -132,13 +144,13 @@ Apply the thirteenth increment `0044-radish-filtered-array-wip.patch` after comp
 
 ## 2026-11-02: three property-limit failures corrected
 
-The same locally modified CTS harness reran only its failed device-properties case on ICD3bc37c79. Exactly three failures disappear: minimum/maximum texture offsets and discrete queue priorities;37 failure messages become34 with no additions. The full test still fails and its report is retained unchanged. Service451ms,14.7MiB,zero swap; no new GPU faults and both services active. [Comparison and full failed report](results/core-api-0044-compute-properties.json).
+The same locally modified CTS harness reran only its failed device-properties case on ICD3bc37c79. Exactly three failures disappear: minimum/maximum texture offsets and discrete queue priorities;37 failure messages become34 with no additions. The full test still fails and its report is retained unchanged. Service451ms,14.7MiB, zero swap; no new GPU faults and both services active. [Comparison and full failed report](results/core-api-0044-compute-properties.json).
 
 The twelfth increment `0044-radish-compute-properties-wip.patch` reports the existing native−8/+7 texture-offset range and retains two logical application priority hints for the sole queue. Both hints keep the same default kernel priority; this makes no cross-device scheduling or global-priority claim. The earlier direct mapping to global MSM priorities was rejected before execution/publication because it could starve another device. Sampled-image multisample/stencil behavior and other compute gaps remain; graphics-specific requirements are outside this campaign, not silently removed from CTS results.
 
 ## 2026-11-02: corrected descriptor ordering passes
 
-The replacement run on ICD48ffa7ce uses completed fence → command-pool reset → descriptor update → fresh record/bind → submit/wait. Both85-record resource rounds pass all22 fields (3740 words) and full8 image/9 buffer allocation guards. The unchanged tests cover dynamic buffers, compatible layout lifetime, mutable/fullsplit images, color clear/copy, D16/D32 sampling/comparison and depth copy. Four robust-buffer spans1/3/12/16 each pass40 output words and all five allocation guards through the ordinary public robustBufferAccess feature request. Service1.528s,13.8MiB,zero swap; no new GPU faults and both services active. [Exact replacement result](results/core-api-0044-valid-order.json).
+The replacement run on ICD48ffa7ce uses completed fence → command-pool reset → descriptor update → fresh record/bind → submit/wait. Both85-record resource rounds pass all22 fields (3740 words) and full8 image/9 buffer allocation guards. The unchanged tests cover dynamic buffers, compatible layout lifetime, mutable/fullsplit images, color clear/copy, D16/D32 sampling/comparison and depth copy. Four robust-buffer spans1/3/12/16 each pass40 output words and all five allocation guards through the ordinary public robustBufferAccess feature request. Service1.528s,13.8MiB, zero swap; no new GPU faults and both services active. [Exact replacement result](results/core-api-0044-valid-order.json).
 
 The resource run also qualifies the bounded private array-fetch path: two mips/two layers, a different image BO between recordings, reuse of the same specialized child and exact integer/default-alpha outputs. It forces `RADISH_SW_TEXEL_FETCH=1`; filtered/cube fallback and oversized image creation remain incomplete. The eleventh increment `0044-radish-array-fetch-wip.patch` adds this real LDG-consuming path. Native compile-only checks the base pipeline; descriptor-specialized code compiles lazily before first dispatch. Build success alone does not qualify every later specialization.
 
@@ -154,7 +166,7 @@ The original CTS initialization crash is separately resolved by a local harness 
 
 ## 2026-11-02: native depth consumers pass
 
-ICDa601f68d passes D16/D32 nearest normalized sampling, LESS_OR_EQUAL comparison at reference0.5, host PREINITIALIZED source visibility and a same-format D32 depth-image copy consumed by native sampling. Both85-record rounds pass all20 fields per record (3400 words total) and full6 image/9 buffer allocation guards. The existing UBO, dynamic-offset, late-update, mutable/fullsplit, color transfer and typed-texel checks remain intact. Service631ms,7.7MiB,zero swap; no new GPU faults and both services active. [Exact paired result](results/core-api-0044-depth.json).
+ICDa601f68d passes D16/D32 nearest normalized sampling, LESS_OR_EQUAL comparison at reference0.5, host PREINITIALIZED source visibility and a same-format D32 depth-image copy consumed by native sampling. Both85-record rounds pass all20 fields per record (3400 words total) and full6 image/9 buffer allocation guards. The existing UBO, dynamic-offset, late-update, mutable/fullsplit, color transfer and typed-texel checks remain intact. Service631ms,7.7MiB, zero swap; no new GPU faults and both services active. [Exact paired result](results/core-api-0044-depth.json).
 
 Apply the tenth increment `0044-radish-image-maintenance-wip.patch` after barrier-image-size. Additional source/build work supplies EXTENDED_USAGE and 2D_ARRAY_COMPATIBLE image contracts, the StorageBuffer-storage-class and relaxed-block-layout KHR backports, and an internal gen5 raw global-load primitive. Those newly added paths have not all been exercised by this depth consumer; raw global loads are not yet consumed in this payload and do not close large-array sampling. The published resource helper now includes the exact depth checks under the existing `--suite resources` route.
 
@@ -170,7 +182,7 @@ The existing CTS binary was attempted with five information/property cases but c
 
 ## 2026-11-02: public singleton groups and core robust buffers pass
 
-ICD448cc118 passes the three targeted suites: two4,160-invocation normal/noopt pipelines through public device-group dispatch/mask aliases with a DeviceIndex-zero oracle; two resource rounds with a full-image singleton split bind and compatible R32_SFLOAT-to-UINT storage view; and all four robust-buffer cases with1/3/12/16-byte ranges, dynamic offsets, partial vectors, writes/add/CAS,40001-element texel buffers and exact backing guards. Service2.005s,14.3MiB,zero swap; no new faults and both services active.
+ICD448cc118 passes the three targeted suites: two4,160-invocation normal/noopt pipelines through public device-group dispatch/mask aliases with a DeviceIndex-zero oracle; two resource rounds with a full-image singleton split bind and compatible R32_SFLOAT-to-UINT storage view; and all four robust-buffer cases with1/3/12/16-byte ranges, dynamic offsets, partial vectors, writes/add/CAS,40001-element texel buffers and exact backing guards. Service2.005s,14.3MiB, zero swap; no new faults and both services active.
 
 `VK_KHR_device_group` is now exposed for the actual single device. The peer-memory alias is checked but not called: Vulkan requires distinct local/remote indices, which a singleton cannot supply. Core `robustBufferAccess` is promoted after source review and these checks. The measured helper locally set the supported-feature field before ordinary CreateDevice enablement; the published helper requests the public feature directly. This property/helper adaptation is host-checked, not a separate device result. RBA2, null descriptors and general image robustness are not claimed.
 
@@ -180,7 +192,7 @@ Existing `build-core-compute.py` now builds `robust`; use `device-core-compute.p
 
 ## 2026-11-02: additional compute behavior, robustness still failing
 
-ICD4605a727 passes public singleton device-group creation/enumeration and external-memory capability queries, native resources, five BASIC shapes (including3×5×3), and actual pipeline-owned private/constant storage. The storage shader checks128 exact words while consuming2KiB private storage per invocation and a16KiB constant table. These four suites pass in7.743s,16.1MiB,zero swap; no GPU faults and both services active.
+ICD4605a727 passes public singleton device-group creation/enumeration and external-memory capability queries, native resources, five BASIC shapes (including3×5×3), and actual pipeline-owned private/constant storage. The storage shader checks128 exact words while consuming2KiB private storage per invocation and a16KiB constant table. These four suites pass in7.743s,16.1MiB, zero swap; no GPU faults and both services active.
 
 ICDf66ee860 separately passes the same4,160-invocation API5 oracle with normal compilation and `DISABLE_OPTIMIZATION`. The source supplies a per-pipeline compiler path, not only flag acceptance. Instance extensions `VK_KHR_device_group_creation` and `VK_KHR_external_memory_capabilities` are now public; external import/export features remain zero. Device extension `VK_KHR_device_group` remains withheld pending its remaining obligations.
 
@@ -219,7 +231,7 @@ subgroup-linear increment supplies the corrected mapping and capability promotio
 The original40 worklist now has40 representative command paths exercised.
 A subsequent resource-only run on ICD4b5d6cb6 passes full color clear and an
 offset11×3 image copy in both rounds, including full destination readback, row
-padding and allocation guards. It takes616ms,5.2MiB,zero swap, with no new faults
+padding and allocation guards. It takes616ms,5.2MiB, zero swap, with no new faults
 and both services active. This closes the command exercise worklist, not the
 complete compute contract. See [transfer result](results/core-api-0044-image-transfers.json). Core1.1 DispatchBase
 and external-buffer-property evidence still uses internal dispatch tables;

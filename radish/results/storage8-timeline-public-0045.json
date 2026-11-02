@@ -1,0 +1,1237 @@
+{
+  "status": "bounded_public_storage8_and_timeline_qualification_passed",
+  "source_build": {
+    "status": "host_cross_build_passed_only",
+    "driver": {
+      "bytes": 49034136,
+      "sha256": "f784f560c79af8d70e025ba6e5e308db9b3bba2bbd28e2b975dfa71caccfe6b8"
+    },
+    "source": {
+      "baseline_driver": "04bd8a8da119129363da8239c9633f0f07f46b7d238c4f52f867137a46c0276d",
+      "patches": {
+        "storage8": "0b7bdcc948713b689b642d25101cf6a1e59bc8a94a71f48002b9ffad7d2eec58",
+        "timeline_original": "3aa40c51b387dd36c70c499fef81cf469c12284180ddf5531d42e906e89f809e",
+        "timeline_merge": "3e7bd80e5e89155a7315a62b9735c0563be262e584652685abe42db404035d6c"
+      },
+      "merge": "Only retain storageBuffer8BitAccess=true in the common feature initializer when applying timeline delta; conditional timeline and8bit extension both preserved.",
+      "files": {
+        "src/freedreno/radish/rd_nir_robust.c": {
+          "baseline": "d6216a98d32d87eb3e9ad397fcd243e10aa31c5da99a5ef8847296b784a65fe4",
+          "candidate": "eb7b2f530891fd81fbb5e9d048f2d4c93ad22b10476b0202fb9bca4dda28111c"
+        },
+        "src/freedreno/radish/rd_nir_resources.h": {
+          "baseline": "759298aff05127b4d6679b279a461bf0c5d6e0d389be4e72a02ffb7b83ea9052",
+          "candidate": "0afa75cc3e1c856496b4b52b6c65eca90ac751cbefaf807e3af1421fbca93599"
+        },
+        "src/freedreno/radish/rd_pipeline.c": {
+          "baseline": "1b5a14ac381a86dcf636c96022a7e119c5e3d9f63b2315436f64c3282139b5a1",
+          "candidate": "db56340993aeffdf8e945058864f4f7737f350ed990f559f95be66d553bcd599"
+        },
+        "src/freedreno/radish/rd_instance.c": {
+          "baseline": "afe916001dddc7822a96e77adf5ca1fdc74feafc0fac4942af3c620f38f5ba15",
+          "candidate": "fa2d0d21884019bbbd9a18a5ec9bb4844d5795ceb587862e78956940d1b6637e"
+        }
+      },
+      "scope": "Private source/build-only next checkpoint, no device qualification; inference remains fcd."
+    },
+    "qualification": "none; storage8 and conditional timeline source only. Frozen fcd inference and qualified04bd storage16 artifacts preserved."
+  },
+  "published_patch": {
+    "path": "/home/jethac/Projects/radish/radish/patches/0045-radish-storage8-timeline.patch",
+    "bytes": 6249,
+    "sha256": "b92a6b153757180491c47cb7b71e6c19f292ceee08aa5609f48c29fd2e42d94f"
+  },
+  "exact_four_file_reconstruction": true,
+  "storage8_actual": {
+    "status": "passed-bounded-public-storage8",
+    "run_log": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-storage8-public-0045/probe/run.log",
+      "bytes": 275443,
+      "sha256": "279964fbeb3c8708ea779a07ddcd77d11d36d651d2e5fcdeec7c9d8ea491f8d2"
+    },
+    "runner_result": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-storage8-public-0045/probe/runner-result.json",
+      "bytes": 1161,
+      "sha256": "24926ba73f51457bf990381deb9ce257022f5a8616d8ceb12f27696b45805733"
+    },
+    "payload": {
+      "radish_icd.json": {
+        "bytes": 149,
+        "sha256": "b6a15943edfa68f1c43c35e10563913f2d868dedf3454a6421964b8e2116ad45"
+      },
+      "resources": {
+        "bytes": 736016,
+        "sha256": "9b8a85d02f75a7635826abbd7c94567992eec9b8e39f4a70561a7948341a783c"
+      },
+      "resources.spv": {
+        "bytes": 3384,
+        "sha256": "5136b2ea75996e1c813843a42b4068b84a23df62c359265d06ccdd90d0690231"
+      },
+      "check-gpu-log.py": {
+        "bytes": 1004,
+        "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+      },
+      "libvulkan_radish.so": {
+        "bytes": 49034136,
+        "sha256": "f784f560c79af8d70e025ba6e5e308db9b3bba2bbd28e2b975dfa71caccfe6b8"
+      },
+      "payload.json": {
+        "bytes": 814,
+        "sha256": "c271e70a90ecab3a8f6ef2c8ea0a71940428314b1c3738fb238a0a9f5267a826"
+      }
+    },
+    "public_features": [
+      "extension=1 supported=1 enabled=1 robust=1 other_storage8=0 arithmetic8=0",
+      "extension=1 supported=1 enabled=1 robust=1 other_storage8=0 arithmetic8=0"
+    ],
+    "cases": [
+      {
+        "case": 0,
+        "range_bytes": 1,
+        "dynamic_offset": 16,
+        "base": 32,
+        "outputs": 100,
+        "full_allocations_compared": 4
+      },
+      {
+        "case": 1,
+        "range_bytes": 2,
+        "dynamic_offset": 32,
+        "base": 48,
+        "outputs": 100,
+        "full_allocations_compared": 4
+      },
+      {
+        "case": 2,
+        "range_bytes": 3,
+        "dynamic_offset": 48,
+        "base": 64,
+        "outputs": 100,
+        "full_allocations_compared": 4
+      },
+      {
+        "case": 3,
+        "range_bytes": 5,
+        "dynamic_offset": 64,
+        "base": 80,
+        "outputs": 100,
+        "full_allocations_compared": 4
+      },
+      {
+        "case": 4,
+        "range_bytes": 64,
+        "dynamic_offset": 80,
+        "base": 96,
+        "outputs": 100,
+        "full_allocations_compared": 4
+      }
+    ],
+    "native": {
+      "encoded_groups": 17,
+      "full_registers": 8,
+      "half_registers": 7,
+      "private_bytes": 0,
+      "shared_bytes": 0,
+      "physical_local": [
+        16,
+        2,
+        1
+      ],
+      "logical_local": [
+        32,
+        1,
+        1
+      ],
+      "resident_halfvec_footprint": 736,
+      "guard": 4096,
+      "counts": {
+        "ldgb": 6,
+        "stgb": 7,
+        "atomic_and": 3,
+        "atomic_or": 3,
+        "bar": 1,
+        "fence": 1
+      },
+      "compile_and_execution_native_identical": true,
+      "signed_conversion": "cov.u8s32",
+      "extract": {
+        "path": "/run/media/jethac/Shared/radish/asr-storage8-private-ir205eoi/actual-native.txt",
+        "bytes": 9933,
+        "sha256": "f427a100efcebf1413d8f62b11b8ec9874a6ed4a273d9da5b152c068d48000cc"
+      }
+    },
+    "profiles": [
+      {
+        "pipeline": "0xaaaaedfa77f0",
+        "grid": "1,1,1",
+        "local": "16,2,1",
+        "barrier": "1",
+        "loops": "0",
+        "instrlen": "17",
+        "chunks": "1",
+        "submits": "1",
+        "ns": "3604541",
+        "submit_ns": "3190321",
+        "submit_max_ns": "3190321",
+        "result": "0"
+      },
+      {
+        "pipeline": "0xaaaaedfa77f0",
+        "grid": "1,1,1",
+        "local": "16,2,1",
+        "barrier": "1",
+        "loops": "0",
+        "instrlen": "17",
+        "chunks": "1",
+        "submits": "1",
+        "ns": "628595",
+        "submit_ns": "561304",
+        "submit_max_ns": "561304",
+        "result": "0"
+      },
+      {
+        "pipeline": "0xaaaaedfa77f0",
+        "grid": "1,1,1",
+        "local": "16,2,1",
+        "barrier": "1",
+        "loops": "0",
+        "instrlen": "17",
+        "chunks": "1",
+        "submits": "1",
+        "ns": "598179",
+        "submit_ns": "475470",
+        "submit_max_ns": "475470",
+        "result": "0"
+      },
+      {
+        "pipeline": "0xaaaaedfa77f0",
+        "grid": "1,1,1",
+        "local": "16,2,1",
+        "barrier": "1",
+        "loops": "0",
+        "instrlen": "17",
+        "chunks": "1",
+        "submits": "1",
+        "ns": "759377",
+        "submit_ns": "597189",
+        "submit_max_ns": "597189",
+        "result": "0"
+      },
+      {
+        "pipeline": "0xaaaaedfa77f0",
+        "grid": "1,1,1",
+        "local": "16,2,1",
+        "barrier": "1",
+        "loops": "0",
+        "instrlen": "17",
+        "chunks": "1",
+        "submits": "1",
+        "ns": "205938",
+        "submit_ns": "142969",
+        "submit_max_ns": "142969",
+        "result": "0"
+      }
+    ],
+    "conditions": {
+      "fault": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-storage8-public-0045/probe/fault-check.txt",
+        "bytes": 41,
+        "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+      },
+      "services": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-storage8-public-0045/probe/services-after.txt",
+        "bytes": 14,
+        "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+      },
+      "resource_lines": [
+        "Service runtime: 818ms",
+        "Memory peak: 10.3M (swap: 0B)"
+      ]
+    },
+    "scope": "Real public KHR8 feature queried/enabled, validated storage-only SPIRV. All500 result words and complete four allocations per case checked by the pinned independently reviewed helper, including signed/unsigned conversions, exact short bounds, dynamic bases and four adjacent byte writers.",
+    "limits": [
+      "No separate raw buffer files were pulled; full-allocation correctness is the pinned helper assertion, not an independent host raw replay.",
+      "Timeline capability is present in this private driver but not exercised by this consumer.",
+      "No shaderInt8 arithmetic, other8-bit feature, API-version, ASR inference or Vulkan conformance claim.",
+      "Selected fcd Kokoro payload remains unchanged."
+    ]
+  },
+  "timeline_actual": {
+    "status": "passed-bounded-public-timeline",
+    "run_log": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-timeline-public-0045/probe/run.log",
+      "bytes": 29341,
+      "sha256": "a55586fc30b88f5d84023c827b87c984da161ebef4b90bc40871a1b3c7023db0"
+    },
+    "runner_result": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-timeline-public-0045/probe/runner-result.json",
+      "bytes": 1160,
+      "sha256": "9ae847ffb4ebe4fbdf7dadcd5ce6218234c4a0e4721352acd85176799720f603"
+    },
+    "payload": {
+      "radish_icd.json": {
+        "bytes": 149,
+        "sha256": "ee45812b93ae3f72953e786a64a9f7ce1836bcd9a5d15fcab8b9a1db95d19b17"
+      },
+      "resources": {
+        "bytes": 738352,
+        "sha256": "8ab3ceae539cb670b7aceb0ab10c0456d18be4d1eb8faaa2f664b5b3a942601d"
+      },
+      "resources.spv": {
+        "bytes": 1072,
+        "sha256": "b24abc64579f58ba8838922d69c862cf19436b3ca15d013f6ce09b4190c706a7"
+      },
+      "check-gpu-log.py": {
+        "bytes": 1004,
+        "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+      },
+      "libvulkan_radish.so": {
+        "bytes": 49034136,
+        "sha256": "f784f560c79af8d70e025ba6e5e308db9b3bba2bbd28e2b975dfa71caccfe6b8"
+      },
+      "payload.json": {
+        "bytes": 814,
+        "sha256": "66ef5313fc91398dcd3f99bd004cd7e34df06415335f39b29158dac5e434e0f1"
+      }
+    },
+    "source_review": {
+      "path": "/run/media/jethac/Shared/radish/asr-storage8-private-ir205eoi/timeline-consumer-review.json",
+      "bytes": 1843,
+      "sha256": "a9990755ba2a1ee16505c353ea83239738c691bce7378ae85f15ebba7b763984"
+    },
+    "checks": [
+      "Real KHR public feature/aliases enabled onAPI1.0, maxDifference UINT64_MAX.",
+      "Initial/counter, finite timeout, host signal, ANY/ALL waits all asserted.",
+      "QueueSubmit returned while unsatisfied future wait was pending; fence-not-ready and finite completion timeout confirmed before host release.",
+      "Values4294967313\u21924294967314 survive64-bit transport and actual compute execution, completed semaphore plus fence precedes readback.",
+      "All32 outputwords and complete160-word allocation exact per pinned helper, no raw-host replay claim."
+    ],
+    "native": {
+      "groups": 2,
+      "full": 2,
+      "half": 0,
+      "private": 0,
+      "local": [
+        32,
+        1,
+        1
+      ],
+      "compile_execution_identity": true
+    },
+    "profile": {
+      "pipeline": "0xaaab05ab5210",
+      "grid": "1,1,1",
+      "local": "32,1,1",
+      "barrier": "0",
+      "loops": "0",
+      "instrlen": "2",
+      "chunks": "1",
+      "submits": "1",
+      "ns": "4648816",
+      "submit_ns": "4317773",
+      "submit_max_ns": "4317773",
+      "result": "0"
+    },
+    "conditions": {
+      "fault": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-timeline-public-0045/probe/fault-check.txt",
+        "bytes": 41,
+        "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+      },
+      "services": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-timeline-public-0045/probe/services-after.txt",
+        "bytes": 14,
+        "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+      },
+      "resources": [
+        "Service runtime: 603ms",
+        "Memory peak: 5.1M (swap: 0B)"
+      ]
+    },
+    "limits": "Representative public timeline behavior only; no API1.2/ASR/conformance or hardware wait acceleration claim. Selected fcd inference remains unchanged."
+  },
+  "independent_reviews": [
+    {
+      "path": "/run/media/jethac/Shared/radish/core-api-resource-consumers-0044-ymiuefnt/stage76-storage8-public-actual-review/review.json",
+      "bytes": 3501,
+      "sha256": "16e0a3c202059e66cd0d4351acb3b426b880aab0f5b6cd544f8937bac8d17893"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/core-api-resource-consumers-0044-ymiuefnt/stage78-timeline-public-actual-review/review.json",
+      "bytes": 3496,
+      "sha256": "50a58fe2c98112f5dae26159ecc8117085dc85405780c784a064e3073828702b"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/asr-storage8-private-ir205eoi/merged-source-review.json",
+      "bytes": 434,
+      "sha256": "78abc902c5a038eecb234ce337db83403345d6725acba05ca0ccba74dc85e408"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/core-api-resource-consumers-0044-ymiuefnt/stage73-inference-fp32-options-review/review.json",
+      "bytes": 2138,
+      "sha256": "e03a39064d532de35dcd5385290aede96b5f9b9862212f69562845eb518c717c"
+    }
+  ],
+  "host_modules": {
+    "storage8": {
+      "status": "host_build_and_spirv_val_feature_gate_passed",
+      "commands": [
+        [
+          "glslangValidator",
+          "-V",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/storage8-probe-v2/storage8.comp",
+          "-o",
+          "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/storage8-probe-v2/storage8.spv"
+        ],
+        [
+          "spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/storage8-probe-v2/storage8.spv"
+        ],
+        [
+          "spirv-dis",
+          "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/storage8-probe-v2/storage8.spv",
+          "-o",
+          "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/storage8-probe-v2/storage8.spvasm"
+        ]
+      ],
+      "capabilities": [
+        "Shader",
+        "StorageBuffer8BitAccess"
+      ],
+      "spirv_version": "1.0",
+      "files": {
+        "storage8": {
+          "bytes": 736016,
+          "sha256": "9b8a85d02f75a7635826abbd7c94567992eec9b8e39f4a70561a7948341a783c"
+        },
+        "storage8.c": {
+          "bytes": 13878,
+          "sha256": "7841cac60be3a7586990b615a088b4a9360ae2272bd7ed04ad452daf0f12a23f"
+        },
+        "storage8.comp": {
+          "bytes": 1286,
+          "sha256": "edaad7ea8b4f9405d075c042e6fbfa686ac3353d803c842971cd39cf8df05797"
+        },
+        "storage8.spv": {
+          "bytes": 3384,
+          "sha256": "5136b2ea75996e1c813843a42b4068b84a23df62c359265d06ccdd90d0690231"
+        },
+        "core_resources.c": {
+          "bytes": 35622,
+          "sha256": "a5024c99a2bbc55983659dc2083a3b8d91e73c0c0760fc8509fdc2dc75405378"
+        },
+        "test_common.h": {
+          "bytes": 684,
+          "sha256": "4b022481571560cd58577d1303955f8c96e72891a2647947daa607eb5fd93b2b"
+        }
+      },
+      "scope": "Only pragma selects required StorageBuffer class; existing public helper enables that KHR extension. Original exact C binary reused; same oracle/inputs/guards. No device qualification yet."
+    },
+    "timeline": {
+      "status": "host_build_and_spirv_val_passed",
+      "commands": [
+        [
+          "clang",
+          "--target=aarch64-linux-gnu",
+          "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+          "-mcpu=cortex-a53",
+          "-Isrc/freedreno/radish/libvulkan_radish.so.p",
+          "-Isrc/freedreno/radish",
+          "-I../mesa/src/freedreno/radish",
+          "-Isrc/freedreno",
+          "-I../mesa/src/freedreno",
+          "-Isrc/freedreno/registers",
+          "-I../mesa/src/freedreno/registers",
+          "-Isrc/freedreno/registers/adreno",
+          "-I../mesa/src/freedreno/registers/adreno",
+          "-Isrc/freedreno/common",
+          "-I../mesa/src/freedreno/common",
+          "-Iinclude",
+          "-I../mesa/include",
+          "-Isrc",
+          "-I../mesa/src",
+          "-Isrc/vulkan/util",
+          "-I../mesa/src/vulkan/util",
+          "-Isrc/vulkan/runtime",
+          "-I../mesa/src/vulkan/runtime",
+          "-I../mesa/src/vulkan/runtime/bvh",
+          "-Isrc/compiler/nir",
+          "-I../mesa/src/compiler/nir",
+          "-Isrc/compiler",
+          "-I../mesa/src/compiler",
+          "-Isrc/util",
+          "-Isrc/util/format",
+          "-Isrc/compiler/spirv",
+          "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include",
+          "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include/libdrm",
+          "-fvisibility=hidden",
+          "-fdiagnostics-color=always",
+          "-D_FILE_OFFSET_BITS=64",
+          "-Wall",
+          "-Winvalid-pch",
+          "-std=c11",
+          "-O2",
+          "-g",
+          "-D__STDC_CONSTANT_MACROS",
+          "-D__STDC_FORMAT_MACROS",
+          "-D__STDC_LIMIT_MACROS",
+          "-DPACKAGE_VERSION=\"27.0.0-devel\"",
+          "-DHAVE_OPENGL=0",
+          "-DHAVE_OPENGL_ES_1=0",
+          "-DHAVE_OPENGL_ES_2=0",
+          "-DMESA_SYSTEM_HAS_KMS_DRM=1",
+          "-DVIDEO_CODEC_VC1DEC=0",
+          "-DVIDEO_CODEC_H264DEC=0",
+          "-DVIDEO_CODEC_H264ENC=0",
+          "-DVIDEO_CODEC_H265DEC=0",
+          "-DVIDEO_CODEC_H265ENC=0",
+          "-DVIDEO_CODEC_AV1DEC=0",
+          "-DVIDEO_CODEC_AV1ENC=0",
+          "-DVIDEO_CODEC_VP9DEC=0",
+          "-DVIDEO_CODEC_MPEG12DEC=0",
+          "-DVIDEO_CODEC_JPEGDEC=0",
+          "-DUSE_LIBGLVND=0",
+          "-DHAVE_LIBDRM",
+          "-DHAVE_GFX_COMPUTE",
+          "-DGLAPI_EXPORT_PROTO_ENTRY_POINTS=1",
+          "-DALLOW_KCMP",
+          "-DMESA_DEBUG=0",
+          "-DENABLE_SHADER_CACHE",
+          "-DHAVE___BUILTIN_BSWAP32",
+          "-DHAVE___BUILTIN_BSWAP64",
+          "-DHAVE___BUILTIN_CLZ",
+          "-DHAVE___BUILTIN_CLZLL",
+          "-DHAVE___BUILTIN_CTZ",
+          "-DHAVE___BUILTIN_EXPECT",
+          "-DHAVE___BUILTIN_FFS",
+          "-DHAVE___BUILTIN_FFSLL",
+          "-DHAVE___BUILTIN_POPCOUNT",
+          "-DHAVE___BUILTIN_POPCOUNTLL",
+          "-DHAVE___BUILTIN_UNREACHABLE",
+          "-DHAVE___BUILTIN_TYPES_COMPATIBLE_P",
+          "-DHAVE___BUILTIN_ADD_OVERFLOW",
+          "-DHAVE_FUNC_ATTRIBUTE_CONST",
+          "-DHAVE_FUNC_ATTRIBUTE_FLATTEN",
+          "-DHAVE_FUNC_ATTRIBUTE_MALLOC",
+          "-DHAVE_FUNC_ATTRIBUTE_PURE",
+          "-DHAVE_FUNC_ATTRIBUTE_UNUSED",
+          "-DHAVE_FUNC_ATTRIBUTE_WARN_UNUSED_RESULT",
+          "-DHAVE_FUNC_ATTRIBUTE_WEAK",
+          "-DHAVE_FUNC_ATTRIBUTE_FORMAT",
+          "-DHAVE_FUNC_ATTRIBUTE_PACKED",
+          "-DHAVE_FUNC_ATTRIBUTE_RETURNS_NONNULL",
+          "-DHAVE_FUNC_ATTRIBUTE_ALIAS",
+          "-DHAVE_FUNC_ATTRIBUTE_NORETURN",
+          "-DHAVE_FUNC_ATTRIBUTE_COLD",
+          "-DHAVE_FUNC_ATTRIBUTE_VISIBILITY",
+          "-DHAVE_UINT128",
+          "-DHAVE_REALLOCARRAY",
+          "-DHAVE_FMEMOPEN",
+          "-DHAVE_MALLINFO2",
+          "-D_GNU_SOURCE",
+          "-DUSE_GCC_ATOMIC_BUILTINS",
+          "-DMAJOR_IN_SYSMACROS",
+          "-DHAS_SCHED_H",
+          "-DHAS_SCHED_GETAFFINITY",
+          "-DHAVE_LINUX_FUTEX_H",
+          "-DHAVE_ENDIAN_H",
+          "-DHAVE_DLFCN_H",
+          "-DHAVE_SYS_SHM_H",
+          "-DHAVE_CET_H",
+          "-DHAVE_POLL_H",
+          "-DHAVE_SYS_INOTIFY_H",
+          "-DHAVE_LINUX_UDMABUF_H",
+          "-DHAVE_STRTOF",
+          "-DHAVE_MKOSTEMP",
+          "-DHAVE_MEMFD_CREATE",
+          "-DHAVE_RANDOM_R",
+          "-DHAVE_FLOCK",
+          "-DHAVE_STRTOK_R",
+          "-DHAVE_GETRANDOM",
+          "-DHAVE_POSIX_FALLOCATE",
+          "-DHAVE_SECURE_GETENV",
+          "-DHAVE_SYSCONF",
+          "-DHAVE_SC_PHYS_PAGES",
+          "-DHAVE_GNU_QSORT_R",
+          "-DHAVE_STRUCT_TIMESPEC",
+          "-DHAVE_PROGRAM_INVOCATION_NAME",
+          "-DHAVE_ISSIGNALING",
+          "-DHAVE_POSIX_MEMALIGN",
+          "-DHAVE_DIRENT_D_TYPE",
+          "-DHAVE_STRTOD_L",
+          "-DHAVE_DLADDR",
+          "-DHAVE_DL_ITERATE_PHDR",
+          "-DHAVE_ZLIB",
+          "-DHAVE_COMPRESSION",
+          "-DHAVE_PTHREAD",
+          "-DHAVE_PTHREAD_SETAFFINITY",
+          "-DDRAW_LLVM_AVAILABLE=0",
+          "-DAMD_LLVM_AVAILABLE=0",
+          "-DGALLIVM_USE_ORCJIT=0",
+          "-DTHREAD_SANITIZER=0",
+          "-DHAVE_DRI2",
+          "-DHAVE_RENDERDOC_INTEGRATION=1",
+          "-Werror=implicit-function-declaration",
+          "-Werror=missing-prototypes",
+          "-Werror=return-type",
+          "-Werror=empty-body",
+          "-Werror=incompatible-pointer-types",
+          "-Werror=int-conversion",
+          "-Wimplicit-fallthrough",
+          "-Wmisleading-indentation",
+          "-Wno-missing-field-initializers",
+          "-Wno-format-truncation",
+          "-fno-math-errno",
+          "-fno-trapping-math",
+          "-Qunused-arguments",
+          "-fno-common",
+          "-Wno-unknown-pragmas",
+          "-Wno-microsoft-enum-value",
+          "-Wno-unused-function",
+          "-Werror=format",
+          "-Wformat-security",
+          "-Werror=thread-safety",
+          "-ffunction-sections",
+          "-fdata-sections",
+          "-Wno-unused-command-line-argument",
+          "-fPIC",
+          "-DVK_USE_PLATFORM_DISPLAY_KHR",
+          "-pthread",
+          "-DXXH_FORCE_ALIGN_CHECK=0",
+          "-DXXH_FORCE_MEMORY_ACCESS=0",
+          "-Wno-override-init",
+          "-Wno-initializer-overrides",
+          "-fuse-ld=lld",
+          "--gcc-install-dir=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+          "-I/home/jethac/Projects/lenovo-8/radish/tests",
+          "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/timeline-probe/timeline.c",
+          "-o",
+          "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/timeline-probe/timeline",
+          "-ldl",
+          "-pthread"
+        ],
+        [
+          "glslangValidator",
+          "-V",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/timeline-probe/timeline.comp",
+          "-o",
+          "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/timeline-probe/timeline.spv"
+        ],
+        [
+          "spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/timeline-probe/timeline.spv"
+        ],
+        [
+          "spirv-dis",
+          "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/timeline-probe/timeline.spv",
+          "-o",
+          "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/timeline-probe/timeline.spvasm"
+        ]
+      ],
+      "capabilities": [
+        "Shader"
+      ],
+      "files": {
+        "timeline": {
+          "bytes": 738352,
+          "sha256": "8ab3ceae539cb670b7aceb0ab10c0456d18be4d1eb8faaa2f664b5b3a942601d"
+        },
+        "timeline.c": {
+          "bytes": 14015,
+          "sha256": "2dca3cd74719cffc697754e2097aab2094889f5cfb8532b61da19d6fc81bd1c8"
+        },
+        "timeline.comp": {
+          "bytes": 305,
+          "sha256": "36784bbc6464859c2e2c73a87e7e76dcc52bda132594a9a9e4ed3c1587232e46"
+        },
+        "timeline.spv": {
+          "bytes": 1072,
+          "sha256": "b24abc64579f58ba8838922d69c862cf19436b3ca15d013f6ce09b4190c706a7"
+        },
+        "core_resources.c": {
+          "bytes": 35622,
+          "sha256": "a5024c99a2bbc55983659dc2083a3b8d91e73c0c0760fc8509fdc2dc75405378"
+        },
+        "test_common.h": {
+          "bytes": 684,
+          "sha256": "4b022481571560cd58577d1303955f8c96e72891a2647947daa607eb5fd93b2b"
+        }
+      },
+      "scope": "Matching frozen f784 headers, onlyShader module; no device qualification yet."
+    }
+  },
+  "execution_receipts": {
+    "storage8": {
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 149,
+            "sha256": "b6a15943edfa68f1c43c35e10563913f2d868dedf3454a6421964b8e2116ad45"
+          },
+          "resources": {
+            "bytes": 736016,
+            "sha256": "9b8a85d02f75a7635826abbd7c94567992eec9b8e39f4a70561a7948341a783c"
+          },
+          "resources.spv": {
+            "bytes": 3384,
+            "sha256": "5136b2ea75996e1c813843a42b4068b84a23df62c359265d06ccdd90d0690231"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 49034136,
+            "sha256": "f784f560c79af8d70e025ba6e5e308db9b3bba2bbd28e2b975dfa71caccfe6b8"
+          },
+          "payload.json": {
+            "bytes": 814,
+            "sha256": "c271e70a90ecab3a8f6ef2c8ea0a71940428314b1c3738fb238a0a9f5267a826"
+          }
+        },
+        "run_log": {
+          "bytes": 275443,
+          "sha256": "279964fbeb3c8708ea779a07ddcd77d11d36d651d2e5fcdeec7c9d8ea491f8d2"
+        },
+        "scope": "Raw ICD assets/services/faults and consolidated assertions passed. This is experimental compute coverage, not Vulkan conformance."
+      },
+      "preflight": {
+        "required_disk_kib": 115169,
+        "payload_bytes_to_upload": 49775503,
+        "existing_payload": false
+      }
+    },
+    "timeline": {
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 149,
+            "sha256": "ee45812b93ae3f72953e786a64a9f7ce1836bcd9a5d15fcab8b9a1db95d19b17"
+          },
+          "resources": {
+            "bytes": 738352,
+            "sha256": "8ab3ceae539cb670b7aceb0ab10c0456d18be4d1eb8faaa2f664b5b3a942601d"
+          },
+          "resources.spv": {
+            "bytes": 1072,
+            "sha256": "b24abc64579f58ba8838922d69c862cf19436b3ca15d013f6ce09b4190c706a7"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 49034136,
+            "sha256": "f784f560c79af8d70e025ba6e5e308db9b3bba2bbd28e2b975dfa71caccfe6b8"
+          },
+          "payload.json": {
+            "bytes": 814,
+            "sha256": "66ef5313fc91398dcd3f99bd004cd7e34df06415335f39b29158dac5e434e0f1"
+          }
+        },
+        "run_log": {
+          "bytes": 29341,
+          "sha256": "a55586fc30b88f5d84023c827b87c984da161ebef4b90bc40871a1b3c7023db0"
+        },
+        "scope": "Raw ICD assets/services/faults and consolidated assertions passed. This is experimental compute coverage, not Vulkan conformance."
+      },
+      "preflight": {
+        "required_disk_kib": 67285,
+        "payload_bytes_to_upload": 741391,
+        "existing_payload": false,
+        "reused_driver": "/var/tmp/radish/core-compute-storage8-public-0045/libvulkan_radish.so"
+      }
+    }
+  },
+  "limits": [
+    "Storage8 advertises only storageBuffer8BitAccess; other8-bit storage/arithmetic bits remain false.",
+    "Timeline feature/extension is conditional on real DRM sync capabilities/callbacks; existing common runtime and threaded queue implement it. API remains1.0.",
+    "Independent reviewers checked source oracles/native/capture assertions; device allocation snapshots were not separately exported for host recomputation.",
+    "These bounded prerequisites do not qualify ASR inference, arbitrary timeline/multiqueue/external use, API1.2 or conformance.",
+    "All current inference comparisons retain fcd. Shared options explicitly pin FP32; any future expanded-driver inference requires separate native/output qualification."
+  ],
+  "public_helper_host_reproduction": {
+    "storage8": {
+      "commands": [
+        [
+          "clang",
+          "--target=aarch64-linux-gnu",
+          "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+          "-mcpu=cortex-a53",
+          "-Isrc/freedreno/radish/libvulkan_radish.so.p",
+          "-Isrc/freedreno/radish",
+          "-I../mesa/src/freedreno/radish",
+          "-Isrc/freedreno",
+          "-I../mesa/src/freedreno",
+          "-Isrc/freedreno/registers",
+          "-I../mesa/src/freedreno/registers",
+          "-Isrc/freedreno/registers/adreno",
+          "-I../mesa/src/freedreno/registers/adreno",
+          "-Isrc/freedreno/common",
+          "-I../mesa/src/freedreno/common",
+          "-Iinclude",
+          "-I../mesa/include",
+          "-Isrc",
+          "-I../mesa/src",
+          "-Isrc/vulkan/util",
+          "-I../mesa/src/vulkan/util",
+          "-Isrc/vulkan/runtime",
+          "-I../mesa/src/vulkan/runtime",
+          "-I../mesa/src/vulkan/runtime/bvh",
+          "-Isrc/compiler/nir",
+          "-I../mesa/src/compiler/nir",
+          "-Isrc/compiler",
+          "-I../mesa/src/compiler",
+          "-Isrc/util",
+          "-Isrc/util/format",
+          "-Isrc/compiler/spirv",
+          "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include",
+          "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include/libdrm",
+          "-fvisibility=hidden",
+          "-fdiagnostics-color=always",
+          "-D_FILE_OFFSET_BITS=64",
+          "-Wall",
+          "-Winvalid-pch",
+          "-std=c11",
+          "-O2",
+          "-g",
+          "-D__STDC_CONSTANT_MACROS",
+          "-D__STDC_FORMAT_MACROS",
+          "-D__STDC_LIMIT_MACROS",
+          "-DPACKAGE_VERSION=\"27.0.0-devel\"",
+          "-DHAVE_OPENGL=0",
+          "-DHAVE_OPENGL_ES_1=0",
+          "-DHAVE_OPENGL_ES_2=0",
+          "-DMESA_SYSTEM_HAS_KMS_DRM=1",
+          "-DVIDEO_CODEC_VC1DEC=0",
+          "-DVIDEO_CODEC_H264DEC=0",
+          "-DVIDEO_CODEC_H264ENC=0",
+          "-DVIDEO_CODEC_H265DEC=0",
+          "-DVIDEO_CODEC_H265ENC=0",
+          "-DVIDEO_CODEC_AV1DEC=0",
+          "-DVIDEO_CODEC_AV1ENC=0",
+          "-DVIDEO_CODEC_VP9DEC=0",
+          "-DVIDEO_CODEC_MPEG12DEC=0",
+          "-DVIDEO_CODEC_JPEGDEC=0",
+          "-DUSE_LIBGLVND=0",
+          "-DHAVE_LIBDRM",
+          "-DHAVE_GFX_COMPUTE",
+          "-DGLAPI_EXPORT_PROTO_ENTRY_POINTS=1",
+          "-DALLOW_KCMP",
+          "-DMESA_DEBUG=0",
+          "-DENABLE_SHADER_CACHE",
+          "-DHAVE___BUILTIN_BSWAP32",
+          "-DHAVE___BUILTIN_BSWAP64",
+          "-DHAVE___BUILTIN_CLZ",
+          "-DHAVE___BUILTIN_CLZLL",
+          "-DHAVE___BUILTIN_CTZ",
+          "-DHAVE___BUILTIN_EXPECT",
+          "-DHAVE___BUILTIN_FFS",
+          "-DHAVE___BUILTIN_FFSLL",
+          "-DHAVE___BUILTIN_POPCOUNT",
+          "-DHAVE___BUILTIN_POPCOUNTLL",
+          "-DHAVE___BUILTIN_UNREACHABLE",
+          "-DHAVE___BUILTIN_TYPES_COMPATIBLE_P",
+          "-DHAVE___BUILTIN_ADD_OVERFLOW",
+          "-DHAVE_FUNC_ATTRIBUTE_CONST",
+          "-DHAVE_FUNC_ATTRIBUTE_FLATTEN",
+          "-DHAVE_FUNC_ATTRIBUTE_MALLOC",
+          "-DHAVE_FUNC_ATTRIBUTE_PURE",
+          "-DHAVE_FUNC_ATTRIBUTE_UNUSED",
+          "-DHAVE_FUNC_ATTRIBUTE_WARN_UNUSED_RESULT",
+          "-DHAVE_FUNC_ATTRIBUTE_WEAK",
+          "-DHAVE_FUNC_ATTRIBUTE_FORMAT",
+          "-DHAVE_FUNC_ATTRIBUTE_PACKED",
+          "-DHAVE_FUNC_ATTRIBUTE_RETURNS_NONNULL",
+          "-DHAVE_FUNC_ATTRIBUTE_ALIAS",
+          "-DHAVE_FUNC_ATTRIBUTE_NORETURN",
+          "-DHAVE_FUNC_ATTRIBUTE_COLD",
+          "-DHAVE_FUNC_ATTRIBUTE_VISIBILITY",
+          "-DHAVE_UINT128",
+          "-DHAVE_REALLOCARRAY",
+          "-DHAVE_FMEMOPEN",
+          "-DHAVE_MALLINFO2",
+          "-D_GNU_SOURCE",
+          "-DUSE_GCC_ATOMIC_BUILTINS",
+          "-DMAJOR_IN_SYSMACROS",
+          "-DHAS_SCHED_H",
+          "-DHAS_SCHED_GETAFFINITY",
+          "-DHAVE_LINUX_FUTEX_H",
+          "-DHAVE_ENDIAN_H",
+          "-DHAVE_DLFCN_H",
+          "-DHAVE_SYS_SHM_H",
+          "-DHAVE_CET_H",
+          "-DHAVE_POLL_H",
+          "-DHAVE_SYS_INOTIFY_H",
+          "-DHAVE_LINUX_UDMABUF_H",
+          "-DHAVE_STRTOF",
+          "-DHAVE_MKOSTEMP",
+          "-DHAVE_MEMFD_CREATE",
+          "-DHAVE_RANDOM_R",
+          "-DHAVE_FLOCK",
+          "-DHAVE_STRTOK_R",
+          "-DHAVE_GETRANDOM",
+          "-DHAVE_POSIX_FALLOCATE",
+          "-DHAVE_SECURE_GETENV",
+          "-DHAVE_SYSCONF",
+          "-DHAVE_SC_PHYS_PAGES",
+          "-DHAVE_GNU_QSORT_R",
+          "-DHAVE_STRUCT_TIMESPEC",
+          "-DHAVE_PROGRAM_INVOCATION_NAME",
+          "-DHAVE_ISSIGNALING",
+          "-DHAVE_POSIX_MEMALIGN",
+          "-DHAVE_DIRENT_D_TYPE",
+          "-DHAVE_STRTOD_L",
+          "-DHAVE_DLADDR",
+          "-DHAVE_DL_ITERATE_PHDR",
+          "-DHAVE_ZLIB",
+          "-DHAVE_COMPRESSION",
+          "-DHAVE_PTHREAD",
+          "-DHAVE_PTHREAD_SETAFFINITY",
+          "-DDRAW_LLVM_AVAILABLE=0",
+          "-DAMD_LLVM_AVAILABLE=0",
+          "-DGALLIVM_USE_ORCJIT=0",
+          "-DTHREAD_SANITIZER=0",
+          "-DHAVE_DRI2",
+          "-DHAVE_RENDERDOC_INTEGRATION=1",
+          "-Werror=implicit-function-declaration",
+          "-Werror=missing-prototypes",
+          "-Werror=return-type",
+          "-Werror=empty-body",
+          "-Werror=incompatible-pointer-types",
+          "-Werror=int-conversion",
+          "-Wimplicit-fallthrough",
+          "-Wmisleading-indentation",
+          "-Wno-missing-field-initializers",
+          "-Wno-format-truncation",
+          "-fno-math-errno",
+          "-fno-trapping-math",
+          "-Qunused-arguments",
+          "-fno-common",
+          "-Wno-unknown-pragmas",
+          "-Wno-microsoft-enum-value",
+          "-Wno-unused-function",
+          "-Werror=format",
+          "-Wformat-security",
+          "-Werror=thread-safety",
+          "-ffunction-sections",
+          "-fdata-sections",
+          "-Wno-unused-command-line-argument",
+          "-fPIC",
+          "-DVK_USE_PLATFORM_DISPLAY_KHR",
+          "-pthread",
+          "-DXXH_FORCE_ALIGN_CHECK=0",
+          "-DXXH_FORCE_MEMORY_ACCESS=0",
+          "-Wno-override-init",
+          "-Wno-initializer-overrides",
+          "-fuse-ld=lld",
+          "--gcc-install-dir=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+          "-I/home/jethac/Projects/radish/radish/tests",
+          "/home/jethac/Projects/radish/radish/tests/core_storage8.c",
+          "-o",
+          "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/public-helper-reproduction/storage8",
+          "-ldl",
+          "-pthread"
+        ],
+        [
+          "glslangValidator",
+          "-V",
+          "--target-env",
+          "vulkan1.0",
+          "/home/jethac/Projects/radish/radish/tests/shaders/core-storage8.comp",
+          "-o",
+          "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/public-helper-reproduction/storage8.spv"
+        ],
+        [
+          "spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/public-helper-reproduction/storage8.spv"
+        ]
+      ],
+      "runner_check": [
+        "python3",
+        "/home/jethac/Projects/radish/radish/scripts/device-core-compute.py",
+        "probe",
+        "public-host-reproduction",
+        "--driver",
+        "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/libvulkan_radish.so",
+        "--driver-sha256",
+        "f784f560c79af8d70e025ba6e5e308db9b3bba2bbd28e2b975dfa71caccfe6b8",
+        "--probe-dir",
+        "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/public-helper-reproduction",
+        "--suite",
+        "storage8",
+        "--check-only"
+      ],
+      "measured_module": "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/storage8-probe-v2/storage8.spv",
+      "exact_module_identity": true,
+      "files": {
+        "/home/jethac/Projects/radish/radish/tests/core_storage8.c": {
+          "sha256": "7841cac60be3a7586990b615a088b4a9360ae2272bd7ed04ad452daf0f12a23f",
+          "bytes": 13878
+        },
+        "/home/jethac/Projects/radish/radish/tests/shaders/core-storage8.comp": {
+          "sha256": "edaad7ea8b4f9405d075c042e6fbfa686ac3353d803c842971cd39cf8df05797",
+          "bytes": 1286
+        },
+        "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/public-helper-reproduction/storage8": {
+          "sha256": "e498c406f83776be77e2762b9bb4199293f7d6efe6e6a6cba4791bdc26e46c8e",
+          "bytes": 735840
+        },
+        "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/public-helper-reproduction/storage8.spv": {
+          "sha256": "5136b2ea75996e1c813843a42b4068b84a23df62c359265d06ccdd90d0690231",
+          "bytes": 3384
+        }
+      }
+    },
+    "timeline": {
+      "commands": [
+        [
+          "clang",
+          "--target=aarch64-linux-gnu",
+          "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+          "-mcpu=cortex-a53",
+          "-Isrc/freedreno/radish/libvulkan_radish.so.p",
+          "-Isrc/freedreno/radish",
+          "-I../mesa/src/freedreno/radish",
+          "-Isrc/freedreno",
+          "-I../mesa/src/freedreno",
+          "-Isrc/freedreno/registers",
+          "-I../mesa/src/freedreno/registers",
+          "-Isrc/freedreno/registers/adreno",
+          "-I../mesa/src/freedreno/registers/adreno",
+          "-Isrc/freedreno/common",
+          "-I../mesa/src/freedreno/common",
+          "-Iinclude",
+          "-I../mesa/include",
+          "-Isrc",
+          "-I../mesa/src",
+          "-Isrc/vulkan/util",
+          "-I../mesa/src/vulkan/util",
+          "-Isrc/vulkan/runtime",
+          "-I../mesa/src/vulkan/runtime",
+          "-I../mesa/src/vulkan/runtime/bvh",
+          "-Isrc/compiler/nir",
+          "-I../mesa/src/compiler/nir",
+          "-Isrc/compiler",
+          "-I../mesa/src/compiler",
+          "-Isrc/util",
+          "-Isrc/util/format",
+          "-Isrc/compiler/spirv",
+          "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include",
+          "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include/libdrm",
+          "-fvisibility=hidden",
+          "-fdiagnostics-color=always",
+          "-D_FILE_OFFSET_BITS=64",
+          "-Wall",
+          "-Winvalid-pch",
+          "-std=c11",
+          "-O2",
+          "-g",
+          "-D__STDC_CONSTANT_MACROS",
+          "-D__STDC_FORMAT_MACROS",
+          "-D__STDC_LIMIT_MACROS",
+          "-DPACKAGE_VERSION=\"27.0.0-devel\"",
+          "-DHAVE_OPENGL=0",
+          "-DHAVE_OPENGL_ES_1=0",
+          "-DHAVE_OPENGL_ES_2=0",
+          "-DMESA_SYSTEM_HAS_KMS_DRM=1",
+          "-DVIDEO_CODEC_VC1DEC=0",
+          "-DVIDEO_CODEC_H264DEC=0",
+          "-DVIDEO_CODEC_H264ENC=0",
+          "-DVIDEO_CODEC_H265DEC=0",
+          "-DVIDEO_CODEC_H265ENC=0",
+          "-DVIDEO_CODEC_AV1DEC=0",
+          "-DVIDEO_CODEC_AV1ENC=0",
+          "-DVIDEO_CODEC_VP9DEC=0",
+          "-DVIDEO_CODEC_MPEG12DEC=0",
+          "-DVIDEO_CODEC_JPEGDEC=0",
+          "-DUSE_LIBGLVND=0",
+          "-DHAVE_LIBDRM",
+          "-DHAVE_GFX_COMPUTE",
+          "-DGLAPI_EXPORT_PROTO_ENTRY_POINTS=1",
+          "-DALLOW_KCMP",
+          "-DMESA_DEBUG=0",
+          "-DENABLE_SHADER_CACHE",
+          "-DHAVE___BUILTIN_BSWAP32",
+          "-DHAVE___BUILTIN_BSWAP64",
+          "-DHAVE___BUILTIN_CLZ",
+          "-DHAVE___BUILTIN_CLZLL",
+          "-DHAVE___BUILTIN_CTZ",
+          "-DHAVE___BUILTIN_EXPECT",
+          "-DHAVE___BUILTIN_FFS",
+          "-DHAVE___BUILTIN_FFSLL",
+          "-DHAVE___BUILTIN_POPCOUNT",
+          "-DHAVE___BUILTIN_POPCOUNTLL",
+          "-DHAVE___BUILTIN_UNREACHABLE",
+          "-DHAVE___BUILTIN_TYPES_COMPATIBLE_P",
+          "-DHAVE___BUILTIN_ADD_OVERFLOW",
+          "-DHAVE_FUNC_ATTRIBUTE_CONST",
+          "-DHAVE_FUNC_ATTRIBUTE_FLATTEN",
+          "-DHAVE_FUNC_ATTRIBUTE_MALLOC",
+          "-DHAVE_FUNC_ATTRIBUTE_PURE",
+          "-DHAVE_FUNC_ATTRIBUTE_UNUSED",
+          "-DHAVE_FUNC_ATTRIBUTE_WARN_UNUSED_RESULT",
+          "-DHAVE_FUNC_ATTRIBUTE_WEAK",
+          "-DHAVE_FUNC_ATTRIBUTE_FORMAT",
+          "-DHAVE_FUNC_ATTRIBUTE_PACKED",
+          "-DHAVE_FUNC_ATTRIBUTE_RETURNS_NONNULL",
+          "-DHAVE_FUNC_ATTRIBUTE_ALIAS",
+          "-DHAVE_FUNC_ATTRIBUTE_NORETURN",
+          "-DHAVE_FUNC_ATTRIBUTE_COLD",
+          "-DHAVE_FUNC_ATTRIBUTE_VISIBILITY",
+          "-DHAVE_UINT128",
+          "-DHAVE_REALLOCARRAY",
+          "-DHAVE_FMEMOPEN",
+          "-DHAVE_MALLINFO2",
+          "-D_GNU_SOURCE",
+          "-DUSE_GCC_ATOMIC_BUILTINS",
+          "-DMAJOR_IN_SYSMACROS",
+          "-DHAS_SCHED_H",
+          "-DHAS_SCHED_GETAFFINITY",
+          "-DHAVE_LINUX_FUTEX_H",
+          "-DHAVE_ENDIAN_H",
+          "-DHAVE_DLFCN_H",
+          "-DHAVE_SYS_SHM_H",
+          "-DHAVE_CET_H",
+          "-DHAVE_POLL_H",
+          "-DHAVE_SYS_INOTIFY_H",
+          "-DHAVE_LINUX_UDMABUF_H",
+          "-DHAVE_STRTOF",
+          "-DHAVE_MKOSTEMP",
+          "-DHAVE_MEMFD_CREATE",
+          "-DHAVE_RANDOM_R",
+          "-DHAVE_FLOCK",
+          "-DHAVE_STRTOK_R",
+          "-DHAVE_GETRANDOM",
+          "-DHAVE_POSIX_FALLOCATE",
+          "-DHAVE_SECURE_GETENV",
+          "-DHAVE_SYSCONF",
+          "-DHAVE_SC_PHYS_PAGES",
+          "-DHAVE_GNU_QSORT_R",
+          "-DHAVE_STRUCT_TIMESPEC",
+          "-DHAVE_PROGRAM_INVOCATION_NAME",
+          "-DHAVE_ISSIGNALING",
+          "-DHAVE_POSIX_MEMALIGN",
+          "-DHAVE_DIRENT_D_TYPE",
+          "-DHAVE_STRTOD_L",
+          "-DHAVE_DLADDR",
+          "-DHAVE_DL_ITERATE_PHDR",
+          "-DHAVE_ZLIB",
+          "-DHAVE_COMPRESSION",
+          "-DHAVE_PTHREAD",
+          "-DHAVE_PTHREAD_SETAFFINITY",
+          "-DDRAW_LLVM_AVAILABLE=0",
+          "-DAMD_LLVM_AVAILABLE=0",
+          "-DGALLIVM_USE_ORCJIT=0",
+          "-DTHREAD_SANITIZER=0",
+          "-DHAVE_DRI2",
+          "-DHAVE_RENDERDOC_INTEGRATION=1",
+          "-Werror=implicit-function-declaration",
+          "-Werror=missing-prototypes",
+          "-Werror=return-type",
+          "-Werror=empty-body",
+          "-Werror=incompatible-pointer-types",
+          "-Werror=int-conversion",
+          "-Wimplicit-fallthrough",
+          "-Wmisleading-indentation",
+          "-Wno-missing-field-initializers",
+          "-Wno-format-truncation",
+          "-fno-math-errno",
+          "-fno-trapping-math",
+          "-Qunused-arguments",
+          "-fno-common",
+          "-Wno-unknown-pragmas",
+          "-Wno-microsoft-enum-value",
+          "-Wno-unused-function",
+          "-Werror=format",
+          "-Wformat-security",
+          "-Werror=thread-safety",
+          "-ffunction-sections",
+          "-fdata-sections",
+          "-Wno-unused-command-line-argument",
+          "-fPIC",
+          "-DVK_USE_PLATFORM_DISPLAY_KHR",
+          "-pthread",
+          "-DXXH_FORCE_ALIGN_CHECK=0",
+          "-DXXH_FORCE_MEMORY_ACCESS=0",
+          "-Wno-override-init",
+          "-Wno-initializer-overrides",
+          "-fuse-ld=lld",
+          "--gcc-install-dir=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+          "-I/home/jethac/Projects/radish/radish/tests",
+          "/home/jethac/Projects/radish/radish/tests/core_timeline.c",
+          "-o",
+          "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/public-helper-reproduction/timeline",
+          "-ldl",
+          "-pthread"
+        ],
+        [
+          "glslangValidator",
+          "-V",
+          "--target-env",
+          "vulkan1.0",
+          "/home/jethac/Projects/radish/radish/tests/shaders/core-timeline.comp",
+          "-o",
+          "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/public-helper-reproduction/timeline.spv"
+        ],
+        [
+          "spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/public-helper-reproduction/timeline.spv"
+        ]
+      ],
+      "runner_check": [
+        "python3",
+        "/home/jethac/Projects/radish/radish/scripts/device-core-compute.py",
+        "probe",
+        "public-host-reproduction",
+        "--driver",
+        "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/libvulkan_radish.so",
+        "--driver-sha256",
+        "f784f560c79af8d70e025ba6e5e308db9b3bba2bbd28e2b975dfa71caccfe6b8",
+        "--probe-dir",
+        "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/public-helper-reproduction",
+        "--suite",
+        "timeline",
+        "--check-only"
+      ],
+      "measured_module": "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/timeline-probe/timeline.spv",
+      "exact_module_identity": true,
+      "files": {
+        "/home/jethac/Projects/radish/radish/tests/core_timeline.c": {
+          "sha256": "2dca3cd74719cffc697754e2097aab2094889f5cfb8532b61da19d6fc81bd1c8",
+          "bytes": 14015
+        },
+        "/home/jethac/Projects/radish/radish/tests/shaders/core-timeline.comp": {
+          "sha256": "36784bbc6464859c2e2c73a87e7e76dcc52bda132594a9a9e4ed3c1587232e46",
+          "bytes": 305
+        },
+        "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/public-helper-reproduction/timeline": {
+          "sha256": "b43ef7e975b84236dfaf0325208aa8c122b6d4cf019df62582dada182e944fe7",
+          "bytes": 738176
+        },
+        "/run/media/jethac/Shared/radish/asr-storage8-timeline-build-0045/public-helper-reproduction/timeline.spv": {
+          "sha256": "b24abc64579f58ba8838922d69c862cf19436b3ca15d013f6ce09b4190c706a7",
+          "bytes": 1072
+        }
+      }
+    }
+  }
+}
