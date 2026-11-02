@@ -1,0 +1,55 @@
+--- a/radish/tests/ncnn/kokoro_runtime.cpp
++++ b/radish/tests/ncnn/kokoro_runtime.cpp
+@@ -381,6 +381,43 @@
+     double load,synthesis,publication,eviction;
+     size_t pipeline_cache_entries,device_pipeline_cache_entries;
+ };
++void observe_drm_fdinfo(const char* phase,size_t request) {
++    const auto stamp=[]() { return static_cast<long long>(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now().time_since_epoch()).count()); };
++    const long long begin=stamp();
++    std::string stat,starttime="unavailable",field;
++    std::ifstream stat_file("/proc/self/stat"); std::getline(stat_file,stat);
++    const size_t close=stat.rfind(')');
++    if(close!=std::string::npos) {
++        std::istringstream fields(stat.substr(close+1));
++        for(unsigned n=3;n<=22 && (fields>>field);++n) if(n==22) starttime=field;
++    }
++    std::printf("RADISH_DRM_FDINFO_BEGIN request=%zu phase=%s pid=%ld starttime_ticks=%s monotonic_ns=%lld\n",request,phase,static_cast<long>(getpid()),starttime.c_str(),begin);
++    DIR* directory=opendir("/proc/self/fd");
++    unsigned found=0;
++    if(directory) {
++        while(dirent* entry=readdir(directory)) {
++            if(entry->d_name[0]<'0' || entry->d_name[0]>'9') continue;
++            char target[PATH_MAX]={0};
++            const std::string link=std::string("/proc/self/fd/")+entry->d_name;
++            const ssize_t length=readlink(link.c_str(),target,sizeof(target)-1);
++            if(length<0 || static_cast<size_t>(length)>=sizeof(target)-1) continue;
++            target[length]=0;
++            if(std::strncmp(target,"/dev/dri/",9)!=0) continue;
++            ++found;
++            std::printf("RADISH_DRM_FDINFO_FD request=%zu phase=%s fd=%s node=%s\n",request,phase,entry->d_name,target);
++            std::ifstream info(std::string("/proc/self/fdinfo/")+entry->d_name);
++            std::string line; bool counters=false,readable=info.good();
++            while(std::getline(info,line)) {
++                if(line.find("drm-engine")!=std::string::npos || line.find("drm-cycles")!=std::string::npos) counters=true;
++                std::printf("RADISH_DRM_FDINFO_VALUE request=%zu phase=%s fd=%s %s\n",request,phase,entry->d_name,line.c_str());
++            }
++            std::printf("RADISH_DRM_FDINFO_COUNTERS request=%zu phase=%s fd=%s readable=%d engine_or_cycles=%s\n",request,phase,entry->d_name,readable?1:0,counters?"present":"absent");
++        }
++        closedir(directory);
++    }
++    std::printf("RADISH_DRM_FDINFO_END request=%zu phase=%s drm_fds=%u monotonic_ns=%lld\n",request,phase,found,stamp());
++}
++
+ int run_request_loop(const std::vector<std::string>& args,const std::vector<std::string>& queued,
+                      const std::string& parameters,const radish_waveform::Tail& tail,
+                      const std::string& ort_library,bool vulkan,int threads,int ort_threads,int max_T,
+@@ -427,6 +464,8 @@
+     auto cleanup_core=[&]() { double start=now(); session.reset(); shared.reset(); cleanup=now()-start; };
+     auto checkpoint=[&](const char* next) {
+         phase=next;
++        if(vulkan && (std::strcmp(next,"before_request")==0 || std::strcmp(next,"after_tail")==0))
++            observe_drm_fdinfo(next,active);
+         memory.push_back(memory_sample(next,active,process_start));
+         manifest("running","");
+         check_cancel(cancel_file,phase);

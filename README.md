@@ -5,7 +5,8 @@
 Radish is an experimental, compute-first Vulkan driver for Adreno 5xx, built
 inside Mesa's Freedreno project. It currently runs the Kokoro neural decoder
 through ncnn on the Adreno 506 in a Lenovo ThinkSmart View. FP32 output checks
-pass; GPU inference is still slower than the best measured CPU path. The goal
+pass. The matched Japanese resident runtime now beats four-thread ncnn CPU,
+while cold startup regresses and synthesis remains far from realtime. The goal
 is fast speech inference that makes full use of attainable GPU performance.
 
 ## Purpose
@@ -20,6 +21,8 @@ Radish shares Mesa's Vulkan infrastructure and Freedreno's ir3 compiler. It is
 a separate driver, with its own a5xx resource bindings and command emission.
 
 ## Current status
+
+The matched Japanese resident request now takes **32.835 seconds on Vulkan versus 37.262 seconds on four-thread ncnn CPU (11.88% lower)**, with all boundaries and complete outputs validated. The GPU first request remains slower, memory use is higher, and 4.2 seconds of audio still takes 7.82 times realtime to synthesize. [Exact engine, cold/resident, memory and sequential-pair limits](radish/RUNTIME_INTEGRATION.md) keep this milestone distinct from campaign completion.
 
 The first intended Japanese request now passes complete core and waveform validation on its exact tablet frontend/source boundary: 47.314 seconds first synthesis for 4.2 seconds of audio, with all 589 core layers on Vulkan. [The scoped runtime result](radish/RUNTIME_INTEGRATION.md) keeps resident and matched Japanese CPU measurements separate; no end-to-end speedup is claimed.
 

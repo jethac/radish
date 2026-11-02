@@ -1,5 +1,27 @@
 # Radish status
 
+## 2026-11-02: resident Japanese synthesis beats the matched ncnn CPU run
+
+For the same intended Japanese greeting, resident synthesis is **32.835343 seconds on Vulkan versus 37.262337 seconds on four-thread ncnn CPU**, a 4.426994-second / 11.8806% reduction. Both processes generate the frontend/source and waveform tail anew for each request; only the same-shape neural core stays resident. All eight actual boundary files are byte-identical across all four requests, and every complete core and waveform comparison passes.
+
+| Measured scope | Vulkan | ncnn CPU packed, four threads |
+| --- | ---: | ---: |
+| First complete synthesis | 44.566534 s | 41.565206 s |
+| First core load | 11.801287 s | 1.183339 s |
+| Resident frontend/source scope | 5.107639 s | 5.141995 s |
+| Resident core extraction | 27.461864 s | 31.877857 s |
+| Resident waveform tail | 0.084838 s | 0.080812 s |
+| Resident complete synthesis | 32.835343 s | 37.262337 s |
+| Process service peak memory / swap | 502.9 / 10.3 MiB | 379.1 / 0 MiB |
+
+The GPU first request is 7.22% slower. The resident win is one sequential comparison with distinct, pinned execution engines and different swap use, not randomized statistical evidence or a claim about the deployed default. CPU uses the accepted SIMPLEOMP1 ncnn runtime with four threads; both frontends use four-thread ONNX Runtime. GPU uses the selected shifted ncnn archive and its reviewed explicit device policy. The 4.2-second waveform still takes 32.84 seconds to synthesize on the GPU—about **7.82 times realtime**. CPU crossover is a milestone, not completion of the performance goal.
+
+Both GPU requests retain all 589 GPU layers and identical command signatures: 56,204 chunks / 8,627 submissions, including 2,604 packed-math submissions. The original memory, timeout, lock and disk-reserve controls remain; no new fault occurs and both live services stay active. There is no deployment or default change.
+
+Read-only fdinfo snapshots bracket the resident request with the same PID/starttime and DRM client. Two descriptors refer to that same client and are not double-counted. The kernel exposes engine-time and cycle fields, but both remain zero throughout; this yields **no usable active-time or utilization measurement**. The observations occur outside the synthesis timer. Existing whole-window devfreq residency, rather than idle pre/post frequency, is the separate clock evidence.
+
+[Exact paired inputs, boundaries, complete numerical checks, timings and reviews](results/japanese-resident-cpu-pair-0045.json) retain the scope. The optional [read-only observation patch](patches/0045-runtime-drm-fdinfo-observation.patch) applies after the measured Japanese runtime patch. References remain the original decoder/tail conditioned on each actual tablet boundary, not an independently recomputed frontend or an unsplit original-model waveform.
+
 ## 2026-11-02: first Japanese runtime request passes full validation
 
 The intended Japanese greeting now runs through the tablet frontend/source, all 589 Vulkan core layers, and the CPU waveform tail. The voice blend is 0.7 `jf_alpha` / 0.3 `af_heart`; the actual boundary produces T=168 and 100,800 samples (4.2 seconds at 24 kHz). All 443,542 core values and all waveform samples pass the unchanged full comparisons. Core maximum absolute error is 8.774e-5; waveform SNR is 96.41 dB against the required 50 dB.

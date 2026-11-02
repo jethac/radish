@@ -1,0 +1,1209 @@
+{
+  "status": "passed_independent_pair_review",
+  "scope": "Two fresh Japanese syntheses per process using the existing request loop; second request retains the same-shape core. Vulkan selected shifted ncnn versus accepted four-thread SIMPLEOMP1 ncnn CPU, both four-thread ORT frontend and CPU waveform tail. No production deployment/default change.",
+  "runs": {
+    "vulkan": {
+      "plan": {
+        "label": "core0045-ja-resident",
+        "tag": "runtime-runtime-ja-greet-vulkan-core0045-ja-resident-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache",
+        "argv": [
+          "bash",
+          "/run/media/jethac/Shared/radish/runtime-device-policy-0045-ggnaid09/wrapper-candidate/device-runtime.sh",
+          "runtime-ja-greet",
+          "core0045-ja-resident",
+          "--norm-affine-snake-deconv2d",
+          "--vulkan",
+          "--threads",
+          "4",
+          "--ort-threads",
+          "4",
+          "--max-frames",
+          "512",
+          "--repeat",
+          "1",
+          "--robust-buffer-access",
+          "0",
+          "--request-loop",
+          "--next-input",
+          "runtime-ja-greet",
+          "--reuse-pipeline-cache"
+        ],
+        "environment": {
+          "RADISH_WORK": "/run/media/jethac/Shared/radish",
+          "RADISH_DEVICE_LOCK": "/home/jethac/Projects/lenovo-8/.device.lock",
+          "RADISH_FRONTEND_MODELS": "/run/media/jethac/Shared/radish/kokoro-frontend-models",
+          "RADISH_RUNTIME_BINARY": "/run/media/jethac/Shared/radish/runtime-fdinfo-build-0045/radish-kokoro-runtime",
+          "RADISH_RUNTIME_DRIVER": "/run/media/jethac/Shared/radish/normalization-batching-0045/built/libvulkan_radish.so",
+          "RADISH_RUNTIME_LOADER": "/run/media/jethac/Shared/radish/build-loader/loader/libvulkan.so",
+          "RADISH_NCNN_TILED": "1",
+          "RADISH_NCNN_TILED32": "0",
+          "RADISH_NCNN_PLANAR": "1",
+          "RADISH_NCNN_PLANAR_PACKED_A": "1",
+          "RADISH_NCNN_PAD_CHANNELS": "1",
+          "RADISH_NCNN_NORM_SUM4": "1",
+          "RADISH_NCNN_NORM_OUTPLACE": "1",
+          "RADISH_NCNN_SHARED32": "0",
+          "RADISH_NCNN_MIXED_STORAGE": "0",
+          "RADISH_NCNN_RESHAPE_ALIAS": "1",
+          "RADISH_NCNN_PIPELINE_CACHE": "1",
+          "RADISH_NCNN_TRACE": "1",
+          "RADISH_PROFILE": "1",
+          "RADISH_BATCH_CHUNKS": "8",
+          "RADISH_TILED_BATCH_CHUNKS": "8",
+          "RADISH_TILED_GROUPS_X": "1",
+          "RADISH_SHARED_GROUPS": "8"
+        },
+        "source_release": {
+          "bytes": 4084,
+          "sha256": "19e48c6de874725a5581ca61a3a773df73babff8258badcbe443f8775bb87340"
+        },
+        "runtime_build": {
+          "bytes": 1690,
+          "sha256": "acabfe3a10cbb5b00dee9262dfeb91c5e724cfe7392b8cac20b6cc5bfbb12e53"
+        },
+        "runtime": {
+          "bytes": 11288872,
+          "sha256": "33cd9f3c02265f2193202b100d8e7b6273d321ba3a6479ba97f68014fec0e48c"
+        },
+        "available_kib": 337516,
+        "required_kib": 262144,
+        "shared_graphs": {
+          "frontend-only.onnx": {
+            "method": "hardlink",
+            "reused_from": "/var/tmp/radish/runtime-runtime-full-cpu-packed-cpu-first/models/frontend-only.onnx",
+            "remote_path": "/var/tmp/radish/runtime-runtime-ja-greet-vulkan-core0045-ja-resident-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache/models/frontend-only.onnx",
+            "bytes": 111933749,
+            "sha256": "56ba27008352a2191b631ebbf269bf4506d690a1b83d8ff8ff5524b11291ddd3"
+          },
+          "harmonic-source.onnx": {
+            "method": "hardlink",
+            "reused_from": "/var/tmp/radish/runtime-runtime-full-cpu-packed-cpu-first/models/harmonic-source.onnx",
+            "remote_path": "/var/tmp/radish/runtime-runtime-ja-greet-vulkan-core0045-ja-resident-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache/models/harmonic-source.onnx",
+            "bytes": 13810,
+            "sha256": "4bdcb9f2f54d6efbfdcefce384300352933cc71fa562930f23eaeb3443528fd2"
+          }
+        },
+        "note": "Original wrapper owns original lock; no enclosing flock. Prep captures host frontend boundary only; actual tablet boundary must be imported and fully validated after capture. No runtime result yet."
+      },
+      "session": {
+        "format": "radish-kokoro-runtime-session-v1",
+        "status": "complete",
+        "backend": "vulkan",
+        "core_graph": "norm-affine-snake-deconv2d",
+        "reuse_pipeline_cache": true,
+        "requested_requests": 2,
+        "completed_requests": 2,
+        "active_request_index": 2,
+        "phase": "complete",
+        "error": "",
+        "session_seconds": 77.7511837700149,
+        "final_core_cleanup_seconds": 0.24034298400511034,
+        "cancellation_observed_seconds": null,
+        "cancellation_scope": "Poll only between completed phases; active frontend/GPU work drains before cancellation is observed.",
+        "requests": [
+          {
+            "index": 0,
+            "directory": "request-000",
+            "input_directory": "/var/tmp/radish/runtime-runtime-ja-greet-vulkan-core0045-ja-resident-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache/input-runtime-ja-greet",
+            "T": 168,
+            "core_cache_hit": false,
+            "core_load_seconds": 11.801287315989612,
+            "synthesis_seconds": 44.5665337999817,
+            "through_publication_seconds": 44.601656728977105,
+            "previous_core_eviction_seconds": 2.0899460650980473e-07,
+            "pipeline_cache_entries": 177,
+            "device_pipeline_cache_entries": 5
+          },
+          {
+            "index": 1,
+            "directory": "request-001",
+            "input_directory": "/var/tmp/radish/runtime-runtime-ja-greet-vulkan-core0045-ja-resident-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache/input-runtime-ja-greet",
+            "T": 168,
+            "core_cache_hit": true,
+            "core_load_seconds": 0,
+            "synthesis_seconds": 32.835343083017506,
+            "through_publication_seconds": 32.86768600301002,
+            "previous_core_eviction_seconds": 0,
+            "pipeline_cache_entries": 177,
+            "device_pipeline_cache_entries": 5
+          }
+        ],
+        "memory_samples": [
+          {
+            "request_index": 0,
+            "phase": "before_request",
+            "seconds": 0.009685864992206916,
+            "rss_kib": 4696,
+            "process_high_water_kib": 4696,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 0,
+            "phase": "after_frontend",
+            "seconds": 5.097393753996585,
+            "rss_kib": 102532,
+            "process_high_water_kib": 191364,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 0,
+            "phase": "after_shapes",
+            "seconds": 5.132272984017618,
+            "rss_kib": 102596,
+            "process_high_water_kib": 191364,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 0,
+            "phase": "after_core_load",
+            "seconds": 16.94074183399789,
+            "rss_kib": 115440,
+            "process_high_water_kib": 191364,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 0,
+            "phase": "after_core",
+            "seconds": 44.47516646501026,
+            "rss_kib": 115376,
+            "process_high_water_kib": 191364,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 0,
+            "phase": "after_tail",
+            "seconds": 44.58225682101329,
+            "rss_kib": 115504,
+            "process_high_water_kib": 191364,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 0,
+            "phase": "before_publication",
+            "seconds": 44.609945402015,
+            "rss_kib": 115504,
+            "process_high_water_kib": 191364,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 1,
+            "phase": "before_request",
+            "seconds": 44.631878913001856,
+            "rss_kib": 72496,
+            "process_high_water_kib": 191364,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 1,
+            "phase": "after_frontend",
+            "seconds": 49.799016545002814,
+            "rss_kib": 181120,
+            "process_high_water_kib": 238140,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 1,
+            "phase": "after_shapes",
+            "seconds": 49.834691038005985,
+            "rss_kib": 181120,
+            "process_high_water_kib": 238140,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 1,
+            "phase": "after_core_load",
+            "seconds": 49.84007584801293,
+            "rss_kib": 181120,
+            "process_high_water_kib": 238140,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 1,
+            "phase": "after_core",
+            "seconds": 77.37109579201206,
+            "rss_kib": 179776,
+            "process_high_water_kib": 238140,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 1,
+            "phase": "after_tail",
+            "seconds": 77.47541806500521,
+            "rss_kib": 179776,
+            "process_high_water_kib": 238140,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 1,
+            "phase": "before_publication",
+            "seconds": 77.49899199701031,
+            "rss_kib": 179776,
+            "process_high_water_kib": 238140,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 2,
+            "phase": "session_cleanup",
+            "seconds": 77.75078007101547,
+            "rss_kib": 172632,
+            "process_high_water_kib": 238140,
+            "swap_kib": 0
+          }
+        ],
+        "timing_scope": "Each request regenerates frontend/source and one tail. A same-shape core remains resident; per-request extraction includes GPU allocator trimming. Request timing excludes publication and final session teardown; session timing includes completed captures and final teardown. Memory samples are phase observations, not isolated peaks. Accuracy requires separate same-boundary references for every completed request."
+      },
+      "requests": [
+        {
+          "runtime": {
+            "format": "radish-kokoro-runtime-v1",
+            "backend": "vulkan",
+            "core_graph": "norm-affine-snake-deconv2d",
+            "reuse_pipeline_cache": true,
+            "accuracy": "unreferenced generation; validate the captured boundary separately",
+            "T": 168,
+            "frames": 20161,
+            "samples": 100800,
+            "sample_rate": 24000,
+            "threads": 4,
+            "ort_threads": 4,
+            "repeat": 1,
+            "ort_version": "1.28.2",
+            "frontend_wall_seconds": 5.030403687007492,
+            "shape_seconds": 0.017590267001651227,
+            "shape_blobs": 755,
+            "core_load_seconds": 11.801287315989612,
+            "core_scope_seconds": 39.33576850901591,
+            "tail_seconds": 0.08800945899565704,
+            "synthesis_seconds": 44.5665337999817,
+            "extraction_seconds": [
+              27.454994992003776
+            ],
+            "environment": {
+              "RADISH_NCNN_TILED": "1",
+              "RADISH_NCNN_TILED32": "0",
+              "RADISH_NCNN_PLANAR": "1",
+              "RADISH_NCNN_PLANAR_PACKED_A": "1",
+              "RADISH_NCNN_NORM_SUM4": "1",
+              "RADISH_NCNN_NORM_OUTPLACE": "1",
+              "RADISH_NCNN_PAD_CHANNELS": "1",
+              "RADISH_NCNN_SHARED32": "0",
+              "RADISH_NCNN_MIXED_STORAGE": "0",
+              "RADISH_NCNN_PIPELINE_CACHE": "1",
+              "RADISH_NCNN_TRACE": "1",
+              "RADISH_PROFILE": "1",
+              "RADISH_BATCH_CHUNKS": "8",
+              "RADISH_TILED_BATCH_CHUNKS": "8",
+              "RADISH_TILED_GROUPS_X": "1",
+              "RADISH_SHARED_GROUPS": "8",
+              "RADISH_NCNN_RESHAPE_ALIAS": "1",
+              "VK_DRIVER_FILES": "/var/tmp/radish/runtime-runtime-ja-greet-vulkan-core0045-ja-resident-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache/radish_icd.json"
+            },
+            "request_index": 0,
+            "core_cache_hit": false,
+            "workspace_trim_seconds": [
+              9.5001e-05
+            ],
+            "timing_scope": "Complete request: fresh frontend/source, metadata, core cache miss load or retained Net extraction, and one tail; extraction includes completed uploads/downloads and allocator trim. Core scope includes any previous Net eviction. Excludes output publication and final session Net destruction."
+          },
+          "validation": {
+            "format": "radish-kokoro-runtime-validation-v1",
+            "capture": "/run/media/jethac/Shared/radish/kokoro-runtime-ja-greet-single-vulkan-core0045-ja-resident-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache/request-000",
+            "reference_directory": "/run/media/jethac/Shared/radish/japanese-resident-0045/reference-000",
+            "device_manifest": {
+              "bytes": 24551,
+              "sha256": "12271ac0f4d6873e156584a6c8532ba3f35c7cad5f7655980950354bcb9ab302"
+            },
+            "runtime_manifest": {
+              "bytes": 1866,
+              "sha256": "df8ae2a0f3a15c4778100c8e7a31bd8d4cb96b61a71202ce97d83f86f01339f6"
+            },
+            "reference_manifest": {
+              "bytes": 15872,
+              "sha256": "7785b38bf72781e6761b6654b9751bec6d14be2d664426a2d420d8c895de6ac9"
+            },
+            "boundary_identity": "all eight raw files byte-identical to the reference inputs",
+            "core": {
+              "values": 443542,
+              "actual": {
+                "bytes": 1774168,
+                "sha256": "ed8283d4b909d5217478508f85b1c97a251c06871a24ff2b6f7e82cd09e4cc46"
+              },
+              "reference": {
+                "bytes": 1774168,
+                "sha256": "ef963ac988d0b81f476d407e0f0512d455ad1c7ce749e4267f43af8ceae09de9"
+              },
+              "max_abs_error": 8.7738037109375e-05,
+              "relative_rms": 8.038358853943577e-07,
+              "snr_db": 121.89665219276594,
+              "atol": 0.002,
+              "rtol": 0.002,
+              "minimum_snr_db": null,
+              "mismatches": 0,
+              "passed": true
+            },
+            "waveform": {
+              "values": 100800,
+              "actual": {
+                "bytes": 403200,
+                "sha256": "32b5261c6f7f462ed8accf1f27979ec990cb42ae80c3a0b3e95f506862dca7a9"
+              },
+              "reference": {
+                "bytes": 403200,
+                "sha256": "26b5910c6ed2dc0f80cc042e46fae1fbdd3c390a3c13c42098dcea2d34060efb"
+              },
+              "max_abs_error": 1.1907890439033508e-05,
+              "relative_rms": 1.5121173457753728e-05,
+              "snr_db": 96.40829009408745,
+              "atol": 0.0002,
+              "rtol": 0.002,
+              "minimum_snr_db": 50.0,
+              "mismatches": 0,
+              "passed": true
+            },
+            "passed": true,
+            "scope": "Complete generated core and waveform compared to original ORT decoder/tail on the exact tablet frontend/source boundary. Frontend/source are not recomputed. Timing remains in the device runtime and cgroup evidence."
+          },
+          "runtime_pin": {
+            "bytes": 1866,
+            "sha256": "df8ae2a0f3a15c4778100c8e7a31bd8d4cb96b61a71202ce97d83f86f01339f6"
+          },
+          "validation_pin": {
+            "bytes": 2152,
+            "sha256": "50bd8fb5b2568639289d44528f2adddb4c89efb6f5be5042ebe4b8fdc1f10eea"
+          }
+        },
+        {
+          "runtime": {
+            "format": "radish-kokoro-runtime-v1",
+            "backend": "vulkan",
+            "core_graph": "norm-affine-snake-deconv2d",
+            "reuse_pipeline_cache": true,
+            "accuracy": "unreferenced generation; validate the captured boundary separately",
+            "T": 168,
+            "frames": 20161,
+            "samples": 100800,
+            "sample_rate": 24000,
+            "threads": 4,
+            "ort_threads": 4,
+            "repeat": 1,
+            "ort_version": "1.28.2",
+            "frontend_wall_seconds": 5.107639464986278,
+            "shape_seconds": 0.017967924010008574,
+            "shape_blobs": 755,
+            "core_load_seconds": 0,
+            "core_scope_seconds": 27.53111484000692,
+            "tail_seconds": 0.08483830199111253,
+            "synthesis_seconds": 32.835343083017506,
+            "extraction_seconds": [
+              27.461864090000745
+            ],
+            "environment": {
+              "RADISH_NCNN_TILED": "1",
+              "RADISH_NCNN_TILED32": "0",
+              "RADISH_NCNN_PLANAR": "1",
+              "RADISH_NCNN_PLANAR_PACKED_A": "1",
+              "RADISH_NCNN_NORM_SUM4": "1",
+              "RADISH_NCNN_NORM_OUTPLACE": "1",
+              "RADISH_NCNN_PAD_CHANNELS": "1",
+              "RADISH_NCNN_SHARED32": "0",
+              "RADISH_NCNN_MIXED_STORAGE": "0",
+              "RADISH_NCNN_PIPELINE_CACHE": "1",
+              "RADISH_NCNN_TRACE": "1",
+              "RADISH_PROFILE": "1",
+              "RADISH_BATCH_CHUNKS": "8",
+              "RADISH_TILED_BATCH_CHUNKS": "8",
+              "RADISH_TILED_GROUPS_X": "1",
+              "RADISH_SHARED_GROUPS": "8",
+              "RADISH_NCNN_RESHAPE_ALIAS": "1",
+              "VK_DRIVER_FILES": "/var/tmp/radish/runtime-runtime-ja-greet-vulkan-core0045-ja-resident-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache/radish_icd.json"
+            },
+            "request_index": 1,
+            "core_cache_hit": true,
+            "workspace_trim_seconds": [
+              0.00019474
+            ],
+            "timing_scope": "Complete request: fresh frontend/source, metadata, core cache miss load or retained Net extraction, and one tail; extraction includes completed uploads/downloads and allocator trim. Core scope includes any previous Net eviction. Excludes output publication and final session Net destruction."
+          },
+          "validation": {
+            "format": "radish-kokoro-runtime-validation-v1",
+            "capture": "/run/media/jethac/Shared/radish/kokoro-runtime-ja-greet-single-vulkan-core0045-ja-resident-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache/request-001",
+            "reference_directory": "/run/media/jethac/Shared/radish/japanese-resident-0045/reference-001",
+            "device_manifest": {
+              "bytes": 24535,
+              "sha256": "de23c072ca7218a142b17a56ddaf81d6f756a833fa493fa28bbba41c84f8a89c"
+            },
+            "runtime_manifest": {
+              "bytes": 1835,
+              "sha256": "58d204ba4a90eede053ffaab065a593b69435968aa5010fccd7f989c0ba5ab8d"
+            },
+            "reference_manifest": {
+              "bytes": 15877,
+              "sha256": "7639ba7de225b7903f3e4a829785e1473e7da7da2baf1f0e0670e418792b3489"
+            },
+            "boundary_identity": "all eight raw files byte-identical to the reference inputs",
+            "core": {
+              "values": 443542,
+              "actual": {
+                "bytes": 1774168,
+                "sha256": "ed8283d4b909d5217478508f85b1c97a251c06871a24ff2b6f7e82cd09e4cc46"
+              },
+              "reference": {
+                "bytes": 1774168,
+                "sha256": "ef963ac988d0b81f476d407e0f0512d455ad1c7ce749e4267f43af8ceae09de9"
+              },
+              "max_abs_error": 8.7738037109375e-05,
+              "relative_rms": 8.038358853943577e-07,
+              "snr_db": 121.89665219276594,
+              "atol": 0.002,
+              "rtol": 0.002,
+              "minimum_snr_db": null,
+              "mismatches": 0,
+              "passed": true
+            },
+            "waveform": {
+              "values": 100800,
+              "actual": {
+                "bytes": 403200,
+                "sha256": "32b5261c6f7f462ed8accf1f27979ec990cb42ae80c3a0b3e95f506862dca7a9"
+              },
+              "reference": {
+                "bytes": 403200,
+                "sha256": "26b5910c6ed2dc0f80cc042e46fae1fbdd3c390a3c13c42098dcea2d34060efb"
+              },
+              "max_abs_error": 1.1907890439033508e-05,
+              "relative_rms": 1.5121173457753728e-05,
+              "snr_db": 96.40829009408745,
+              "atol": 0.0002,
+              "rtol": 0.002,
+              "minimum_snr_db": 50.0,
+              "mismatches": 0,
+              "passed": true
+            },
+            "passed": true,
+            "scope": "Complete generated core and waveform compared to original ORT decoder/tail on the exact tablet frontend/source boundary. Frontend/source are not recomputed. Timing remains in the device runtime and cgroup evidence."
+          },
+          "runtime_pin": {
+            "bytes": 1835,
+            "sha256": "58d204ba4a90eede053ffaab065a593b69435968aa5010fccd7f989c0ba5ab8d"
+          },
+          "validation_pin": {
+            "bytes": 2152,
+            "sha256": "58971af5786db5a36edd2cbe246ede9a4f1706497cba3a1f9656f87e348678e6"
+          }
+        }
+      ],
+      "session_pin": {
+        "bytes": 4373,
+        "sha256": "db0012e25b3cf4054c5a445f4a199c2b0630c814cd5907504f8a5a777cddd05d"
+      },
+      "device_session_pin": {
+        "bytes": 12292,
+        "sha256": "d3a7d5a461b233bee7716c5d7385738809feaa1e7b85a15e1d3420231f044913"
+      },
+      "log": {
+        "bytes": 663130,
+        "sha256": "605ce9a1db0bc631e775bf350b6866cb58869325c440fca4e4f7d097e38073e1"
+      },
+      "counters_before": {
+        "bytes": 1682,
+        "sha256": "aceb46f686ab3145b905ca21139c9c8e23af7cb3bd2524275cd2e4fba1d08bee"
+      },
+      "counters_after": {
+        "bytes": 1682,
+        "sha256": "2a3ae0f8b0a3f0debf4559a8065e08cd01f5f00b320fb388860755f1b7d36c29"
+      }
+    },
+    "cpu-packed": {
+      "plan": {
+        "label": "core0045-ja-cpu",
+        "tag": "runtime-runtime-ja-greet-cpu-packed-core0045-ja-cpu-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-pad-channels-loop",
+        "argv": [
+          "bash",
+          "/run/media/jethac/Shared/radish/runtime-device-policy-0045-ggnaid09/wrapper-candidate/device-runtime.sh",
+          "runtime-ja-greet",
+          "core0045-ja-cpu",
+          "--norm-affine-snake-deconv2d",
+          "--cpu-packed",
+          "--threads",
+          "4",
+          "--ort-threads",
+          "4",
+          "--max-frames",
+          "512",
+          "--repeat",
+          "1",
+          "--request-loop",
+          "--next-input",
+          "runtime-ja-greet"
+        ],
+        "environment": {
+          "RADISH_WORK": "/run/media/jethac/Shared/radish",
+          "RADISH_DEVICE_LOCK": "/home/jethac/Projects/lenovo-8/.device.lock",
+          "RADISH_FRONTEND_MODELS": "/run/media/jethac/Shared/radish/kokoro-frontend-models",
+          "RADISH_RUNTIME_BINARY": "/run/media/jethac/Shared/radish/build-ncnn-simpleomp/radish-kokoro-runtime",
+          "RADISH_RUNTIME_DRIVER": "/run/media/jethac/Shared/radish/normalization-batching-0045/built/libvulkan_radish.so",
+          "RADISH_RUNTIME_LOADER": "/run/media/jethac/Shared/radish/build-loader/loader/libvulkan.so",
+          "RADISH_NCNN_TILED": "1",
+          "RADISH_NCNN_TILED32": "0",
+          "RADISH_NCNN_PLANAR": "1",
+          "RADISH_NCNN_PLANAR_PACKED_A": "1",
+          "RADISH_NCNN_PAD_CHANNELS": "1",
+          "RADISH_NCNN_NORM_SUM4": "1",
+          "RADISH_NCNN_NORM_OUTPLACE": "0",
+          "RADISH_NCNN_SHARED32": "0",
+          "RADISH_NCNN_MIXED_STORAGE": "0",
+          "RADISH_NCNN_RESHAPE_ALIAS": "1",
+          "RADISH_NCNN_PIPELINE_CACHE": "1",
+          "RADISH_NCNN_TRACE": "1",
+          "RADISH_PROFILE": "1",
+          "RADISH_BATCH_CHUNKS": "8",
+          "RADISH_TILED_BATCH_CHUNKS": "8",
+          "RADISH_TILED_GROUPS_X": "1",
+          "RADISH_SHARED_GROUPS": "8"
+        },
+        "source_release": {
+          "bytes": 4084,
+          "sha256": "19e48c6de874725a5581ca61a3a773df73babff8258badcbe443f8775bb87340"
+        },
+        "runtime_build": {
+          "reused_accepted_binary": {
+            "bytes": 11554952,
+            "sha256": "0971994a6b667dd311df02e7102afa6ce7de6ba95960c3b87f3727400931c28b"
+          },
+          "platform_header": {
+            "bytes": 12498,
+            "sha256": "ff33814603207b9facb77e12f4e78960a1f5b920148f1a41dfc8bf7b479fde30"
+          },
+          "engine": "ncnn CPU packed, SIMPLEOMP1, four threads; no GPU-only policy flags"
+        },
+        "runtime": {
+          "bytes": 11554952,
+          "sha256": "0971994a6b667dd311df02e7102afa6ce7de6ba95960c3b87f3727400931c28b"
+        },
+        "available_kib": 269332,
+        "required_kib": 262144,
+        "shared_graphs": {
+          "frontend-only.onnx": {
+            "method": "hardlink",
+            "reused_from": "/var/tmp/radish/runtime-runtime-full-cpu-packed-cpu-first/models/frontend-only.onnx",
+            "remote_path": "/var/tmp/radish/runtime-runtime-ja-greet-cpu-packed-core0045-ja-cpu-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-pad-channels-loop/models/frontend-only.onnx",
+            "bytes": 111933749,
+            "sha256": "56ba27008352a2191b631ebbf269bf4506d690a1b83d8ff8ff5524b11291ddd3"
+          },
+          "harmonic-source.onnx": {
+            "method": "hardlink",
+            "reused_from": "/var/tmp/radish/runtime-runtime-full-cpu-packed-cpu-first/models/harmonic-source.onnx",
+            "remote_path": "/var/tmp/radish/runtime-runtime-ja-greet-cpu-packed-core0045-ja-cpu-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-pad-channels-loop/models/harmonic-source.onnx",
+            "bytes": 13810,
+            "sha256": "4bdcb9f2f54d6efbfdcefce384300352933cc71fa562930f23eaeb3443528fd2"
+          }
+        },
+        "note": "Original wrapper owns original lock; no enclosing flock. Prep captures host frontend boundary only; actual tablet boundary must be imported and fully validated after capture. No runtime result yet."
+      },
+      "session": {
+        "format": "radish-kokoro-runtime-session-v1",
+        "status": "complete",
+        "backend": "cpu-packed",
+        "core_graph": "norm-affine-snake-deconv2d",
+        "reuse_pipeline_cache": false,
+        "requested_requests": 2,
+        "completed_requests": 2,
+        "active_request_index": 2,
+        "phase": "complete",
+        "error": "",
+        "session_seconds": 78.9480948279961,
+        "final_core_cleanup_seconds": 0.017572987009771168,
+        "cancellation_observed_seconds": null,
+        "cancellation_scope": "Poll only between completed phases; active frontend/GPU work drains before cancellation is observed.",
+        "requests": [
+          {
+            "index": 0,
+            "directory": "request-000",
+            "input_directory": "/var/tmp/radish/runtime-runtime-ja-greet-cpu-packed-core0045-ja-cpu-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-pad-channels-loop/input-runtime-ja-greet",
+            "T": 168,
+            "core_cache_hit": false,
+            "core_load_seconds": 1.1833394210261758,
+            "synthesis_seconds": 41.565205801976845,
+            "through_publication_seconds": 41.591663533996325,
+            "previous_core_eviction_seconds": 4.169996827840805e-07,
+            "pipeline_cache_entries": 0,
+            "device_pipeline_cache_entries": 0
+          },
+          {
+            "index": 1,
+            "directory": "request-001",
+            "input_directory": "/var/tmp/radish/runtime-runtime-ja-greet-cpu-packed-core0045-ja-cpu-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-pad-channels-loop/input-runtime-ja-greet",
+            "T": 168,
+            "core_cache_hit": true,
+            "core_load_seconds": 0,
+            "synthesis_seconds": 37.26233693800168,
+            "through_publication_seconds": 37.290693270013435,
+            "previous_core_eviction_seconds": 0,
+            "pipeline_cache_entries": 0,
+            "device_pipeline_cache_entries": 0
+          }
+        ],
+        "memory_samples": [
+          {
+            "request_index": 0,
+            "phase": "before_request",
+            "seconds": 0.02555611199932173,
+            "rss_kib": 4648,
+            "process_high_water_kib": 4648,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 0,
+            "phase": "after_frontend",
+            "seconds": 5.2203204660036135,
+            "rss_kib": 39412,
+            "process_high_water_kib": 191080,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 0,
+            "phase": "after_shapes",
+            "seconds": 5.521600897016469,
+            "rss_kib": 39476,
+            "process_high_water_kib": 191080,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 0,
+            "phase": "after_core_load",
+            "seconds": 6.717758714017691,
+            "rss_kib": 235076,
+            "process_high_water_kib": 235076,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 0,
+            "phase": "after_core",
+            "seconds": 41.49829255999066,
+            "rss_kib": 269396,
+            "process_high_water_kib": 347728,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 0,
+            "phase": "after_tail",
+            "seconds": 41.595736032002605,
+            "rss_kib": 269524,
+            "process_high_water_kib": 347728,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 0,
+            "phase": "before_publication",
+            "seconds": 41.6155365180166,
+            "rss_kib": 269524,
+            "process_high_water_kib": 347728,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 1,
+            "phase": "before_request",
+            "seconds": 41.62837137299357,
+            "rss_kib": 269524,
+            "process_high_water_kib": 347728,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 1,
+            "phase": "after_frontend",
+            "seconds": 46.82523354300065,
+            "rss_kib": 255732,
+            "process_high_water_kib": 401256,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 1,
+            "phase": "after_shapes",
+            "seconds": 46.86040268899524,
+            "rss_kib": 255732,
+            "process_high_water_kib": 401256,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 1,
+            "phase": "after_core_load",
+            "seconds": 46.8673075910192,
+            "rss_kib": 255732,
+            "process_high_water_kib": 401256,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 1,
+            "phase": "after_core",
+            "seconds": 78.7975533179997,
+            "rss_kib": 259188,
+            "process_high_water_kib": 401256,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 1,
+            "phase": "after_tail",
+            "seconds": 78.89606446199468,
+            "rss_kib": 259188,
+            "process_high_water_kib": 401256,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 1,
+            "phase": "before_publication",
+            "seconds": 78.91659239900764,
+            "rss_kib": 259188,
+            "process_high_water_kib": 401256,
+            "swap_kib": 0
+          },
+          {
+            "request_index": 2,
+            "phase": "session_cleanup",
+            "seconds": 78.94781623399467,
+            "rss_kib": 207684,
+            "process_high_water_kib": 401256,
+            "swap_kib": 0
+          }
+        ],
+        "timing_scope": "Each request regenerates frontend/source and one tail. A same-shape core remains resident; per-request extraction includes GPU allocator trimming. Request timing excludes publication and final session teardown; session timing includes completed captures and final teardown. Memory samples are phase observations, not isolated peaks. Accuracy requires separate same-boundary references for every completed request."
+      },
+      "requests": [
+        {
+          "runtime": {
+            "format": "radish-kokoro-runtime-v1",
+            "backend": "cpu-packed",
+            "core_graph": "norm-affine-snake-deconv2d",
+            "reuse_pipeline_cache": false,
+            "accuracy": "unreferenced generation; validate the captured boundary separately",
+            "T": 168,
+            "frames": 20161,
+            "samples": 100800,
+            "sample_rate": 24000,
+            "threads": 4,
+            "ort_threads": 4,
+            "repeat": 1,
+            "ort_version": "1.28.2",
+            "frontend_wall_seconds": 5.1404570230224635,
+            "shape_seconds": 0.01795157601009123,
+            "shape_blobs": 755,
+            "core_load_seconds": 1.1833394210261758,
+            "core_scope_seconds": 35.96394061099272,
+            "tail_seconds": 0.081495124992216,
+            "synthesis_seconds": 41.565205801976845,
+            "extraction_seconds": [
+              34.7176720740099
+            ],
+            "environment": {
+              "RADISH_NCNN_TILED": "1",
+              "RADISH_NCNN_TILED32": "0",
+              "RADISH_NCNN_PLANAR": "1",
+              "RADISH_NCNN_PLANAR_PACKED_A": "1",
+              "RADISH_NCNN_NORM_SUM4": "1",
+              "RADISH_NCNN_NORM_OUTPLACE": "0",
+              "RADISH_NCNN_PAD_CHANNELS": "1",
+              "RADISH_NCNN_SHARED32": "0",
+              "RADISH_NCNN_MIXED_STORAGE": "0",
+              "RADISH_NCNN_PIPELINE_CACHE": "1",
+              "RADISH_NCNN_TRACE": "1",
+              "RADISH_PROFILE": "1",
+              "RADISH_BATCH_CHUNKS": "8",
+              "RADISH_TILED_BATCH_CHUNKS": "8",
+              "RADISH_TILED_GROUPS_X": "1",
+              "RADISH_SHARED_GROUPS": "8",
+              "RADISH_NCNN_RESHAPE_ALIAS": "1",
+              "VK_DRIVER_FILES": "/var/tmp/radish/runtime-runtime-ja-greet-cpu-packed-core0045-ja-cpu-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-pad-channels-loop/radish_icd.json"
+            },
+            "request_index": 0,
+            "core_cache_hit": false,
+            "workspace_trim_seconds": [
+              0
+            ],
+            "timing_scope": "Complete request: fresh frontend/source, metadata, core cache miss load or retained Net extraction, and one tail; extraction includes completed uploads/downloads and allocator trim. Core scope includes any previous Net eviction. Excludes output publication and final session Net destruction."
+          },
+          "validation": {
+            "format": "radish-kokoro-runtime-validation-v1",
+            "capture": "/run/media/jethac/Shared/radish/kokoro-runtime-ja-greet-single-cpu-packed-core0045-ja-cpu-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-pad-channels-loop/request-000",
+            "reference_directory": "/run/media/jethac/Shared/radish/japanese-cpu-0045/reference-000",
+            "device_manifest": {
+              "bytes": 23459,
+              "sha256": "b091bdfe7e30818cbc523494d209277cea1d6c16c9dee0cbc2f16f645359c0e3"
+            },
+            "runtime_manifest": {
+              "bytes": 1819,
+              "sha256": "d69f86789a9aaaf01ba5c5985cc65362c3b86bc6ed48fe17b61daa8beb7387f7"
+            },
+            "reference_manifest": {
+              "bytes": 15211,
+              "sha256": "cc30c672787d148e2647e7cd3321c628001e4522d20cdfd31a64ca768a6a8258"
+            },
+            "boundary_identity": "all eight raw files byte-identical to the reference inputs",
+            "core": {
+              "values": 443542,
+              "actual": {
+                "bytes": 1774168,
+                "sha256": "b3c94e2daca2fb2a64157744933f0a3e2d85d05c56ac76b63a1c3c34d6809a43"
+              },
+              "reference": {
+                "bytes": 1774168,
+                "sha256": "ef963ac988d0b81f476d407e0f0512d455ad1c7ce749e4267f43af8ceae09de9"
+              },
+              "max_abs_error": 0.000293731689453125,
+              "relative_rms": 2.1572675390185345e-06,
+              "snr_db": 113.3219198284609,
+              "atol": 0.002,
+              "rtol": 0.002,
+              "minimum_snr_db": null,
+              "mismatches": 0,
+              "passed": true
+            },
+            "waveform": {
+              "values": 100800,
+              "actual": {
+                "bytes": 403200,
+                "sha256": "610e5eb71c64e04a67835ef25da0ea97882c43da48e9a19711722d14c436bb1c"
+              },
+              "reference": {
+                "bytes": 403200,
+                "sha256": "26b5910c6ed2dc0f80cc042e46fae1fbdd3c390a3c13c42098dcea2d34060efb"
+              },
+              "max_abs_error": 6.639212369918823e-05,
+              "relative_rms": 4.314528312864686e-05,
+              "snr_db": 87.30133353462944,
+              "atol": 0.0002,
+              "rtol": 0.002,
+              "minimum_snr_db": 50.0,
+              "mismatches": 0,
+              "passed": true
+            },
+            "passed": true,
+            "scope": "Complete generated core and waveform compared to original ORT decoder/tail on the exact tablet frontend/source boundary. Frontend/source are not recomputed. Timing remains in the device runtime and cgroup evidence."
+          },
+          "runtime_pin": {
+            "bytes": 1819,
+            "sha256": "d69f86789a9aaaf01ba5c5985cc65362c3b86bc6ed48fe17b61daa8beb7387f7"
+          },
+          "validation_pin": {
+            "bytes": 2116,
+            "sha256": "7e038f5e606cf9a10c428bc61072a220af2d4ec166f4dc6d28a8c3c89e7b2932"
+          }
+        },
+        {
+          "runtime": {
+            "format": "radish-kokoro-runtime-v1",
+            "backend": "cpu-packed",
+            "core_graph": "norm-affine-snake-deconv2d",
+            "reuse_pipeline_cache": false,
+            "accuracy": "unreferenced generation; validate the captured boundary separately",
+            "T": 168,
+            "frames": 20161,
+            "samples": 100800,
+            "sample_rate": 24000,
+            "threads": 4,
+            "ort_threads": 4,
+            "repeat": 1,
+            "ort_version": "1.28.2",
+            "frontend_wall_seconds": 5.14199451499735,
+            "shape_seconds": 0.017702932993415743,
+            "shape_blobs": 755,
+            "core_load_seconds": 0,
+            "core_scope_seconds": 31.93033760198159,
+            "tail_seconds": 0.08081159301218577,
+            "synthesis_seconds": 37.26233693800168,
+            "extraction_seconds": [
+              31.8778573939926
+            ],
+            "environment": {
+              "RADISH_NCNN_TILED": "1",
+              "RADISH_NCNN_TILED32": "0",
+              "RADISH_NCNN_PLANAR": "1",
+              "RADISH_NCNN_PLANAR_PACKED_A": "1",
+              "RADISH_NCNN_NORM_SUM4": "1",
+              "RADISH_NCNN_NORM_OUTPLACE": "0",
+              "RADISH_NCNN_PAD_CHANNELS": "1",
+              "RADISH_NCNN_SHARED32": "0",
+              "RADISH_NCNN_MIXED_STORAGE": "0",
+              "RADISH_NCNN_PIPELINE_CACHE": "1",
+              "RADISH_NCNN_TRACE": "1",
+              "RADISH_PROFILE": "1",
+              "RADISH_BATCH_CHUNKS": "8",
+              "RADISH_TILED_BATCH_CHUNKS": "8",
+              "RADISH_TILED_GROUPS_X": "1",
+              "RADISH_SHARED_GROUPS": "8",
+              "RADISH_NCNN_RESHAPE_ALIAS": "1",
+              "VK_DRIVER_FILES": "/var/tmp/radish/runtime-runtime-ja-greet-cpu-packed-core0045-ja-cpu-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-pad-channels-loop/radish_icd.json"
+            },
+            "request_index": 1,
+            "core_cache_hit": true,
+            "workspace_trim_seconds": [
+              0
+            ],
+            "timing_scope": "Complete request: fresh frontend/source, metadata, core cache miss load or retained Net extraction, and one tail; extraction includes completed uploads/downloads and allocator trim. Core scope includes any previous Net eviction. Excludes output publication and final session Net destruction."
+          },
+          "validation": {
+            "format": "radish-kokoro-runtime-validation-v1",
+            "capture": "/run/media/jethac/Shared/radish/kokoro-runtime-ja-greet-single-cpu-packed-core0045-ja-cpu-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-pad-channels-loop/request-001",
+            "reference_directory": "/run/media/jethac/Shared/radish/japanese-cpu-0045/reference-001",
+            "device_manifest": {
+              "bytes": 23441,
+              "sha256": "1a3fe37d444766e344ca9463de0801f88bed4844dc9711aa57852a0142607e8b"
+            },
+            "runtime_manifest": {
+              "bytes": 1802,
+              "sha256": "8adaf1dc932a5b9ac9c955ceb31e7aafba7bea5143a7530a6cb15cbd42d2090c"
+            },
+            "reference_manifest": {
+              "bytes": 15213,
+              "sha256": "8f2f070fbd7d6065295b503d17af49fc9395ec45c27ae666a5525587d49abecd"
+            },
+            "boundary_identity": "all eight raw files byte-identical to the reference inputs",
+            "core": {
+              "values": 443542,
+              "actual": {
+                "bytes": 1774168,
+                "sha256": "b3c94e2daca2fb2a64157744933f0a3e2d85d05c56ac76b63a1c3c34d6809a43"
+              },
+              "reference": {
+                "bytes": 1774168,
+                "sha256": "ef963ac988d0b81f476d407e0f0512d455ad1c7ce749e4267f43af8ceae09de9"
+              },
+              "max_abs_error": 0.000293731689453125,
+              "relative_rms": 2.1572675390185345e-06,
+              "snr_db": 113.3219198284609,
+              "atol": 0.002,
+              "rtol": 0.002,
+              "minimum_snr_db": null,
+              "mismatches": 0,
+              "passed": true
+            },
+            "waveform": {
+              "values": 100800,
+              "actual": {
+                "bytes": 403200,
+                "sha256": "610e5eb71c64e04a67835ef25da0ea97882c43da48e9a19711722d14c436bb1c"
+              },
+              "reference": {
+                "bytes": 403200,
+                "sha256": "26b5910c6ed2dc0f80cc042e46fae1fbdd3c390a3c13c42098dcea2d34060efb"
+              },
+              "max_abs_error": 6.639212369918823e-05,
+              "relative_rms": 4.314528312864686e-05,
+              "snr_db": 87.30133353462944,
+              "atol": 0.0002,
+              "rtol": 0.002,
+              "minimum_snr_db": 50.0,
+              "mismatches": 0,
+              "passed": true
+            },
+            "passed": true,
+            "scope": "Complete generated core and waveform compared to original ORT decoder/tail on the exact tablet frontend/source boundary. Frontend/source are not recomputed. Timing remains in the device runtime and cgroup evidence."
+          },
+          "runtime_pin": {
+            "bytes": 1802,
+            "sha256": "8adaf1dc932a5b9ac9c955ceb31e7aafba7bea5143a7530a6cb15cbd42d2090c"
+          },
+          "validation_pin": {
+            "bytes": 2116,
+            "sha256": "ab9618a1022ddbd37174de6f283d93534b50b4eca41d09c783e135bacb9842a6"
+          }
+        }
+      ],
+      "session_pin": {
+        "bytes": 4313,
+        "sha256": "c0e53f5efea158dc8f484e48fd362b331c6f90fd4634189e71efa9816cecabf1"
+      },
+      "device_session_pin": {
+        "bytes": 11691,
+        "sha256": "30da4011bcd89641e74e38daef9efd82c3d25877611c6da1deb0f98378034b81"
+      },
+      "log": {
+        "bytes": 119002,
+        "sha256": "0da6c03cf2720a5cc13add12c32fe77f94e1675380c62ca81f456f1100c4f24e"
+      },
+      "counters_before": {
+        "bytes": 1682,
+        "sha256": "efeb17876ecd362b7687ffa8bdb20d5f383cce9c237b4a0f4155ac19552b531f"
+      },
+      "counters_after": {
+        "bytes": 1682,
+        "sha256": "98f86538c03612bd24633002fe0ebedbf47b4c34e2c8202fdfba5d29dd1978af"
+      }
+    }
+  },
+  "all_four_actual_boundaries_byte_identical": {
+    "asr.f32": {
+      "bytes": 344064,
+      "sha256": "782bd347876a5411293b51769f98c73ac81b113f9e8e35b8027fe17bd270a941"
+    },
+    "durations.f32": {
+      "bytes": 200,
+      "sha256": "9961d7e10bfecfe74ab3469f6009b9b427fea5dbacb5bf2f22121db7cdca09ae"
+    },
+    "f0.f32": {
+      "bytes": 1344,
+      "sha256": "bf7ca49d5630bafb0df58bdee3230cda8a344d8e6051553bdce0b3488122e4f4"
+    },
+    "har.f32": {
+      "bytes": 1774168,
+      "sha256": "59f404ed3e3adbc6d521dbd8975080f964b18f5ed95491d6688fe8793375895b"
+    },
+    "ids.i64": {
+      "bytes": 400,
+      "sha256": "6e5e83f37cffe684ee2507d03617fed92df2354455c70febcc39e2b8aacc1a49"
+    },
+    "n.f32": {
+      "bytes": 1344,
+      "sha256": "1753435a4192672eb5059a88594d2e407993297222d11d3eaf592d69e69ed184"
+    },
+    "speed.f32": {
+      "bytes": 4,
+      "sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
+    },
+    "style.f32": {
+      "bytes": 1024,
+      "sha256": "4e7e3b01f1f8f5a458f5f27eba6440b2e59cf70babc4589840bf2db0dd54718b"
+    }
+  },
+  "comparison": {
+    "resident_cpu_seconds": 37.26233693800168,
+    "resident_gpu_seconds": 32.835343083017506,
+    "resident_saved_seconds": 4.426993854984175,
+    "resident_reduction_percent": 11.880612486409415,
+    "first_cpu_seconds": 41.565205801976845,
+    "first_gpu_seconds": 44.5665337999817,
+    "first_gpu_increase_percent": 7.220770209351657,
+    "audio_seconds": 4.2,
+    "gpu_resident_realtime_factor": 7.817938829289882,
+    "cpu_resident_realtime_factor": 8.871984985238495
+  },
+  "resources": {
+    "vulkan": {
+      "peak_mib": 502.9,
+      "peak_swap_mib": 10.3,
+      "service_seconds": 77.866
+    },
+    "cpu-packed": {
+      "peak_mib": 379.1,
+      "peak_swap_mib": 0,
+      "service_seconds": 79.1
+    },
+    "both_clean_fault_checks_and_active_services": true,
+    "bounds": {
+      "memory_mib": 640,
+      "swap_mib": 128,
+      "runtime_seconds": 300,
+      "stop_seconds": 15,
+      "disk_preflight_floor_mib": 256,
+      "disk_reserve_mib": 64
+    }
+  },
+  "fdinfo": {
+    "source_patch": {
+      "bytes": 3385,
+      "sha256": "961d73e3954fc307003a3452f2151e28be404d2d8b67b9c16129d39cfa0bd919"
+    },
+    "runtime_build": {
+      "status": "host_cross_build_passed",
+      "runtime": {
+        "bytes": 11288872,
+        "sha256": "33cd9f3c02265f2193202b100d8e7b6273d321ba3a6479ba97f68014fec0e48c"
+      },
+      "baseline_runtime": {
+        "bytes": 11284504,
+        "sha256": "604851efe9d10f5109ffd7afad81a37ab90d95bb76363c0bdbe1fbc9d3a1e962"
+      },
+      "source_patch": {
+        "bytes": 3385,
+        "sha256": "961d73e3954fc307003a3452f2151e28be404d2d8b67b9c16129d39cfa0bd919"
+      },
+      "candidate_cpp": {
+        "bytes": 39414,
+        "sha256": "fc9edcfb32618fd82da3024e7fe97479bcfc24ef51dc7d7f2459031828dc773d"
+      },
+      "archive": {
+        "bytes": 11454002,
+        "sha256": "fa947ecb928ca0349b64ea20bc685abe70990d09c15325934c05f6aafcc60152"
+      },
+      "other_six_objects_exact": {
+        "kokoro_waveform.cpp.o": {
+          "bytes": 18448,
+          "sha256": "b0e9bd27fa2cc47640c20f7e11f50ec53dedd208729ac05b3c4e38fbaf4615ce"
+        },
+        "radish_norm_affine_snake.cpp.o": {
+          "bytes": 63856,
+          "sha256": "586a3c4084d73dd26ddb5545aa045642c5bfc2582edec7a1067b70920c70ea37"
+        },
+        "radish_snake.cpp.o": {
+          "bytes": 49352,
+          "sha256": "3e11f7ff4a5c638b7db348f86179330137db102e9072d79c80da66015483739e"
+        },
+        "kokoro_frontend.cpp.o": {
+          "bytes": 66632,
+          "sha256": "7c287f99f063ba4873ce1954614a4edbc0c480da19527bc520564b0c885e50fb"
+        },
+        "radish_affine_snake.cpp.o": {
+          "bytes": 52944,
+          "sha256": "e33bcc0445aeb891c6749306794dc9444e6e7b14f03025b8751682daeecf19f0"
+        },
+        "kokoro_shapes.cpp.o": {
+          "bytes": 140608,
+          "sha256": "33e59299f876fe884193c89b971e83df169c0b1f9eb64cd0021f01a3681fa6e8"
+        }
+      },
+      "scope": "Observation-only C++ delta; previous source/header/archive pairing retained. No new device result."
+    },
+    "resident_windows": [
+      [
+        "before_request",
+        "410806",
+        "20799897",
+        "208043671300453"
+      ],
+      [
+        "after_tail",
+        "410806",
+        "20799897",
+        "208076514487937"
+      ]
+    ],
+    "client_ids": [
+      "832"
+    ],
+    "engine_values": [
+      "0"
+    ],
+    "cycle_values": [
+      "0"
+    ],
+    "usable_activity_measurement": false,
+    "interpretation": "Both descriptors report the same DRM client; do not double count. Engine time and cycles remain zero throughout, despite passing GPU work, so no useful GPU-active-time or utilization delta is available. Capacity metadata is not an activity counter. Read-only observation occurs outside per-request synthesis timing and inside session/publication timing."
+  },
+  "limitations": [
+    "One sequential GPU-then-CPU pair, not randomized repetitions/statistical confidence. GPU has10.3MiB peak swap; CPU0.",
+    "GPU wins this resident ncnn CPU comparison, but its first request is slower and32.835s for4.2s audio is about7.82x realtime. This is a milestone, not campaign completion.",
+    "CPU decoder baseline is ncnn packed/SIMPLEOMP1/fourthreads; it is not an ORT decoder measurement or a claim about the deployed default.",
+    "Original decoder/tail references use actual tablet frontend/source boundaries. Frontend/source are not independently recomputed and this is not an unsplit original-model waveform comparison.",
+    "The explicit robust=false policy is qualified for this reviewed fixed workload after tail fixes; driver support/application defaults remain unchanged."
+  ],
+  "independent_reviews": [
+    {
+      "path": "/run/media/jethac/Shared/radish/runtime-device-policy-0045-ggnaid09/japanese-cpu-gpu-pair-review.json",
+      "bytes": 14703,
+      "sha256": "b810509093d658f181c6e354a14d9e1e4417ce296ff2dc9d2e4512264fc2db27"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/runtime-device-policy-0045-ggnaid09/japanese-resident-profile-review.json",
+      "bytes": 5762,
+      "sha256": "9af4dc6a4ac9ea7e6bb23e6e84d17f67236043b91560745058bd5fa1e8cb4b9a"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/core-api-resource-consumers-0044-ymiuefnt/stage65-fdinfo-observation-review/review.json",
+      "bytes": 1718,
+      "sha256": "dddc22532f7784b1de19f526134b9d65bfa2a6d5555ba7f6845a8b9d2b1734a0"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/core-api-resource-consumers-0044-ymiuefnt/stage69-japanese-resident-cpu-actual-review/review.json",
+      "bytes": 26208,
+      "sha256": "71a413543d9dd644ebe2890417f7d5af98029b4f0e1237d16d09566d4a491eaf"
+    }
+  ]
+}
