@@ -29,10 +29,12 @@ normal/noopt and historical32/64 barrier-reduction checks. A descriptor-order
 mistake in earlier resource/RBA probes is documented; corrected update-before-record
 runs now pass unchanged resource, depth, array-fetch, robustness and allocation
 guard checks. The bounded private array path also passes filtered sampling, gradient LOD,
-wrap/border and gather checks; cube and oversized-array support remain incomplete.
+wrap/border and gather checks. Four-sample color clear/copy/fetch and
+depth/stencil size/count consumers also pass with explicit coverage limits;
+cube and oversized-array support remain incomplete.
 A locally corrected CTS initialization harness runs five information cases:
-four pass and the full property-limit test still fails; three corrected fields
-reduce its failure messages from37 to34. The40-path count is not complete
+four pass and the full property-limit test still fails; six corrected fields
+reduce its failure messages from37 to31. The40-path count is not complete
 semantic coverage or conformance. Graphics is outside scope; remaining compute
 limits, sampled-image behavior and legal workgroups are active work. Performance
 experiments remain paused; the inference results below are the prior baseline.

@@ -1,0 +1,143 @@
+{
+  "functional_status": "passed",
+  "driver": {
+    "bytes": 48956760,
+    "sha256": "a7d6f917fab9d0e4c9fb9176cee71bca4ed9bbd2aac7d80b7b283fcfa0b66879"
+  },
+  "source_snapshot": "checkpoint-sampled-ms-source",
+  "public_patch": {
+    "bytes": 14162,
+    "sha256": "772598c79ed06bedb84d72f5b7a9daaa0e77056c50989d0b114dd81d055a406e"
+  },
+  "capture": "WORK/core-compute-0044-sampled-ms/probe",
+  "run_log": {
+    "bytes": 2750,
+    "sha256": "41445186c88ff686d4ca1733787f8492cd76cf038e79d6a4503c77b183e21a18"
+  },
+  "payload": {
+    "radish_icd.json": {
+      "bytes": 144,
+      "sha256": "a8bcc69eca0563efbc27b966e4bf4a2ba4e7fc0dfc4a9502b30ba3cb485be538"
+    },
+    "resources": {
+      "bytes": 742696,
+      "sha256": "f51962bf509e2daed267ad3bb2794290d83d5696f411a16f295a701d6d6d0fff"
+    },
+    "resources.spv": {
+      "bytes": 5132,
+      "sha256": "5a652a81cf6a86eb2fe9071b87ba1ab99b9b230a7abc574ed0e39279d4544941"
+    },
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 48956760,
+      "sha256": "a7d6f917fab9d0e4c9fb9176cee71bca4ed9bbd2aac7d80b7b283fcfa0b66879"
+    },
+    "payload.json": {
+      "bytes": 809,
+      "sha256": "f7784e4c19bd60686dd75e648112c9759c7774eecb29396e8267711aa911442d"
+    }
+  },
+  "descriptor_order": "Descriptor writes before command recording; completed fence then reset/re-record for round2.",
+  "outputs": {
+    "rounds": 2,
+    "records_per_round": 120,
+    "fields_per_record": 18,
+    "exact_words": 4320,
+    "image_allocations_guarded": 7,
+    "output_allocation_guarded": true
+  },
+  "qualified_scope": [
+    "R32_UINT/R16_UNORM four-sample two-layer images: per-layer clear, offset image copy, native fetch for all four sample indices, exact size/count",
+    "D16/D32/S8 four-sample images: creation and native size/count queries only",
+    "Matching one/four sampled-image format/property bits; storage multisample remains unsupported",
+    "MS views excluded from single-sample software fallback; S8 single-sample raw format map is source-only in this capture"
+  ],
+  "native": {
+    "instruction_units": 9,
+    "full_registers": 9,
+    "local": [
+      4,
+      1,
+      1
+    ],
+    "grid": [
+      30,
+      1,
+      1
+    ],
+    "dispatches": 2
+  },
+  "conditions": {
+    "service_seconds": 0.63,
+    "peak_mib": 5.8,
+    "swap_mib": 0,
+    "new_gpu_faults": false,
+    "services_active": true
+  },
+  "cts": {
+    "status": "failed",
+    "harness": "Existing locally modified instance-extension selection; unchanged device_properties test/oracle only",
+    "capture": "WORK/core-compute-0044-cts-ms-properties/probe",
+    "run_log": {
+      "bytes": 851,
+      "sha256": "6321b548e910286098214a5344a0f513fcaa87df485d3cda0b24498bbe5a8ff1"
+    },
+    "full_qpa": {
+      "file": "core-api-0044-cts-ms-properties.qpa",
+      "bytes": 12560,
+      "sha256": "acaeab28eeaa8b93bd09c0925bdb73d9124cc9dbb988445b67ff3f37ceb2dfda"
+    },
+    "comparison": {
+      "previous": 34,
+      "current": 31,
+      "removed": [
+        "limit validation failed, sampledImageColorSampleCounts not valid-limit type bitmask actual is 1",
+        "limit validation failed, sampledImageDepthSampleCounts not valid-limit type bitmask actual is 1",
+        "limit validation failed, sampledImageStencilSampleCounts not valid-limit type bitmask actual is 0"
+      ],
+      "added": [],
+      "remaining": [
+        "limit Validation failed maxPerStageDescriptorInputAttachments not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxDescriptorSetInputAttachments not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxVertexInputAttributes not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxVertexInputBindings not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxVertexInputAttributeOffset not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxVertexInputBindingStride not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxVertexOutputComponents not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxFragmentInputComponents not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxFragmentOutputAttachments not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxFragmentCombinedOutputResources not valid-limit type MIN - actual is 0",
+        "limit Validation failed subPixelPrecisionBits not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxDrawIndexedIndexValue not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxDrawIndirectCount not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxViewports not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxViewportDimensions[0] not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxViewportDimensions[1] not valid-limit type MIN - actual is 0",
+        "limit validation failed, viewportBoundsRange[0] not valid-limit type MAX actual is 0",
+        "limit validation failed, viewportBoundsRange[1] not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxFramebufferWidth not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxFramebufferHeight not valid-limit type MIN - actual is 0",
+        "limit validation failed, framebufferColorSampleCounts not valid-limit type bitmask actual is 0",
+        "limit validation failed, framebufferDepthSampleCounts not valid-limit type bitmask actual is 0",
+        "limit validation failed, framebufferStencilSampleCounts not valid-limit type bitmask actual is 0",
+        "limit validation failed, framebufferNoAttachmentsSampleCounts not valid-limit type bitmask actual is 0",
+        "limit Validation failed maxColorAttachments not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxSampleMaskWords not valid-limit type MIN - actual is 0",
+        "limit validation failed, pointSizeRange[0] not valid-limit type MIN - actual is 0",
+        "limit validation failed, pointSizeRange[1] not valid-limit type MIN - actual is 0",
+        "limit validation failed, lineWidthRange[0] not valid-limit type MIN - actual is 0",
+        "limit validation failed, lineWidthRange[1] not valid-limit type MIN - actual is 0",
+        "limit validation failed, viewportBoundsRange[1] of 0is less than 2*maxViewportDimension[1] of 0"
+      ]
+    },
+    "service_seconds": 1.838,
+    "peak_mib": 13.4,
+    "swap_mib": 0,
+    "new_gpu_faults": false,
+    "services_active": true
+  },
+  "limits": "Equal values from clears do not discriminate distinct sample-address selection. Depth/stencil sample values, all formats, storage multisample, and full sampler/conformance behavior are not qualified. Remaining31 CTS failures are preserved without waivers; graphics implementation is outside this campaign."
+}

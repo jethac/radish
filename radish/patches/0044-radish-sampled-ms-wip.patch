@@ -1,0 +1,272 @@
+--- a/src/freedreno/radish/rd_image.c
++++ b/src/freedreno/radish/rd_image.c
+@@ -73,6 +73,7 @@
+       return vk_format_get_blocksize(format);
+    case VK_FORMAT_D16_UNORM:
+    case VK_FORMAT_D32_SFLOAT:
++   case VK_FORMAT_S8_UINT:
+       return vk_format_get_blocksize(format);
+    default:
+       return 0;
+@@ -124,6 +125,18 @@
+            (type == VK_IMAGE_TYPE_2D && tiling == VK_IMAGE_TILING_OPTIMAL)) &&
+           (!(flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) || type == VK_IMAGE_TYPE_2D) &&
+           (!(flags & VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT) || type == VK_IMAGE_TYPE_3D);
++}
++
++static VkSampleCountFlags
++rd_image_sample_counts(VkImageType type, VkImageTiling tiling,
++                       VkImageUsageFlags2KHR usage, VkImageCreateFlags2KHR flags)
++{
++   VkSampleCountFlags samples = VK_SAMPLE_COUNT_1_BIT;
++   if (type == VK_IMAGE_TYPE_2D && tiling == VK_IMAGE_TILING_OPTIMAL &&
++       !(usage & VK_IMAGE_USAGE_STORAGE_BIT) &&
++       !(flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT))
++      samples |= VK_SAMPLE_COUNT_4_BIT;
++   return samples;
+ }
+ 
+ VKAPI_ATTR void VKAPI_CALL
+@@ -154,7 +167,7 @@
+       .bufferFeatures = buffer,
+    };
+    VkFormatFeatureFlags2 flags2 = flags;
+-   if (vk_format_is_depth_or_stencil(format) && (flags & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT))
++   if (vk_format_has_depth(format) && (flags & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT))
+       flags2 |= VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_DEPTH_COMPARISON_BIT;
+    vk_foreach_struct(sType, next, out->pNext) {
+       if (sType == VK_STRUCTURE_TYPE_FORMAT_PROPERTIES_3) {
+@@ -182,7 +195,7 @@
+                     info->type == VK_IMAGE_TYPE_3D ? side : 1},
+       .maxMipLevels = info->type == VK_IMAGE_TYPE_3D ? 9 : RD_IMAGE_MAX_LEVELS,
+       .maxArrayLayers = info->type == VK_IMAGE_TYPE_3D ? 1 : 256,
+-      .sampleCounts = VK_SAMPLE_COUNT_1_BIT,
++      .sampleCounts = rd_image_sample_counts(info->type, info->tiling, info->usage, info->flags),
+       .maxResourceSize = RD_IMAGE_MAX_SIZE,
+    };
+    if (info->flags & VK_IMAGE_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT) {
+@@ -205,7 +218,7 @@
+    VkDeviceSize limit = RD_IMAGE_MAX_SIZE;
+    if (shader) {
+       const struct fdl_image_params parameters = {
+-         .format = vk_format_to_pipe_format(image->vk.format), .nr_samples = 1,
++         .format = vk_format_to_pipe_format(image->vk.format), .nr_samples = image->vk.samples,
+          .width0 = image->vk.extent.width, .height0 = image->vk.extent.height,
+          .depth0 = image->vk.extent.depth, .mip_levels = image->vk.mip_levels,
+          .array_size = image->vk.array_layers, .is_3d = image->vk.image_type == VK_IMAGE_TYPE_3D,
+@@ -240,7 +253,7 @@
+       VkExtent3D extent = vk_image_mip_level_extent(&image->vk, level);
+       struct rd_image_level *layout = &image->levels[level];
+       layout->offset = size;
+-      layout->row_pitch = align64((uint64_t)extent.width * image->texel_size, 64);
++      layout->row_pitch = align64((uint64_t)extent.width * image->texel_size * image->vk.samples, 64);
+       layout->depth_pitch = layout->row_pitch * extent.height;
+       if (shader)
+          layout->depth_pitch = align64(layout->depth_pitch, 4096);
+@@ -264,7 +277,10 @@
+    VkImageCreateFlags2KHR flags = vk_image_create_flags(info);
+    if (!rd_image_parameters(info->format, info->imageType, info->tiling,
+                             vk_image_usage_flags(info), flags) ||
+-       info->samples != VK_SAMPLE_COUNT_1_BIT || !info->mipLevels ||
++       (info->samples != VK_SAMPLE_COUNT_1_BIT && info->samples != VK_SAMPLE_COUNT_4_BIT) ||
++       !(info->samples & rd_image_sample_counts(info->imageType, info->tiling,
++                                               vk_image_usage_flags(info), flags)) ||
++       (info->samples != VK_SAMPLE_COUNT_1_BIT && info->mipLevels != 1) || !info->mipLevels ||
+        info->mipLevels > RD_IMAGE_MAX_LEVELS || !info->arrayLayers ||
+        info->arrayLayers > 256 || !info->extent.width || !info->extent.height ||
+        !info->extent.depth || info->sharingMode != VK_SHARING_MODE_EXCLUSIVE ||
+@@ -617,7 +633,8 @@
+       return false;
+    const struct rd_image_level *level = &image->levels[subresource->mipLevel];
+    *base = level->offset + subresource->baseArrayLayer * level->array_pitch +
+-           offset.z * level->depth_pitch + offset.y * level->row_pitch + offset.x * image->texel_size;
++           offset.z * level->depth_pitch + offset.y * level->row_pitch +
++           (uint64_t)offset.x * image->texel_size * image->vk.samples;
+    *row = level->row_pitch;
+    *slice = image->vk.image_type == VK_IMAGE_TYPE_3D ? level->depth_pitch : level->array_pitch;
+    *slices = image->vk.image_type == VK_IMAGE_TYPE_3D ? extent.depth : subresource->layerCount;
+@@ -647,8 +664,9 @@
+    VK_FROM_HANDLE(rd_image, src, src_handle);
+    VK_FROM_HANDLE(rd_image, dst, dst_handle);
+    if (!rd_image_command_valid(command, src && dst && src->texel_size == dst->texel_size &&
++       src->vk.samples == dst->vk.samples &&
+        (!(vk_format_is_depth_or_stencil(src->vk.format) || vk_format_is_depth_or_stencil(dst->vk.format)) ||
+-        src->vk.format == dst->vk.format) &&
++        (src->vk.format == dst->vk.format && src->vk.samples == VK_SAMPLE_COUNT_1_BIT)) &&
+        (src->vk.image_type == dst->vk.image_type ||
+         (src->vk.image_type == VK_IMAGE_TYPE_2D && dst->vk.image_type == VK_IMAGE_TYPE_3D) ||
+         (src->vk.image_type == VK_IMAGE_TYPE_3D && dst->vk.image_type == VK_IMAGE_TYPE_2D)) &&
+@@ -673,7 +691,7 @@
+           rd_image_box(dst, &regions[i].dstSubresource, regions[i].dstOffset, dst_extent,
+              &transfer.dst_offset, &transfer.dst_row_pitch, &transfer.dst_slice_pitch, &dst_slices) && src_slices == dst_slices))
+          return;
+-      transfer.row_bytes = (uint64_t)regions[i].extent.width * src->texel_size;
++      transfer.row_bytes = (uint64_t)regions[i].extent.width * src->texel_size * src->vk.samples;
+       transfer.rows = regions[i].extent.height;
+       transfer.slices = src_slices;
+       struct rd_command *recorded = rd_command_append(command, RD_CMD_IMAGE_COPY);
+@@ -688,7 +706,7 @@
+                        struct rd_image *image, VkImageLayout layout, bool to_image,
+                        uint32_t count, const VkBufferImageCopy *regions)
+ {
+-   if (!rd_image_command_valid(command, buffer && image &&
++   if (!rd_image_command_valid(command, buffer && image && image->vk.samples == VK_SAMPLE_COUNT_1_BIT &&
+        !vk_format_is_depth_or_stencil(image->vk.format) &&
+        (buffer->vk.usage & (to_image ? VK_BUFFER_USAGE_TRANSFER_SRC_BIT : VK_BUFFER_USAGE_TRANSFER_DST_BIT)) &&
+        (image->vk.usage & (to_image ? VK_IMAGE_USAGE_TRANSFER_DST_BIT : VK_IMAGE_USAGE_TRANSFER_SRC_BIT)) &&
+@@ -773,7 +791,7 @@
+             .dst_offset = image->levels[level].offset + ranges[i].baseArrayLayer * image->levels[level].array_pitch,
+             .dst_row_pitch = image->levels[level].row_pitch,
+             .dst_slice_pitch = image->vk.image_type == VK_IMAGE_TYPE_3D ? image->levels[level].depth_pitch : image->levels[level].array_pitch,
+-            .row_bytes = (uint64_t)extent.width * image->texel_size,
++            .row_bytes = (uint64_t)extent.width * image->texel_size * image->vk.samples,
+             .rows = extent.height, .slices = image->vk.image_type == VK_IMAGE_TYPE_3D ? extent.depth : layers,
+             .texel_size = image->texel_size,
+          };
+--- a/src/freedreno/radish/rd_instance.c
++++ b/src/freedreno/radish/rd_instance.c
+@@ -140,9 +140,10 @@
+       .maxTexelOffset = 7,
+       .subTexelPrecisionBits = 4,
+       .mipmapPrecisionBits = 8,
+-      .sampledImageColorSampleCounts = VK_SAMPLE_COUNT_1_BIT,
+-      .sampledImageIntegerSampleCounts = VK_SAMPLE_COUNT_1_BIT,
+-      .sampledImageDepthSampleCounts = VK_SAMPLE_COUNT_1_BIT,
++      .sampledImageColorSampleCounts = VK_SAMPLE_COUNT_1_BIT | VK_SAMPLE_COUNT_4_BIT,
++      .sampledImageIntegerSampleCounts = VK_SAMPLE_COUNT_1_BIT | VK_SAMPLE_COUNT_4_BIT,
++      .sampledImageDepthSampleCounts = VK_SAMPLE_COUNT_1_BIT | VK_SAMPLE_COUNT_4_BIT,
++      .sampledImageStencilSampleCounts = VK_SAMPLE_COUNT_1_BIT | VK_SAMPLE_COUNT_4_BIT,
+       .storageImageSampleCounts = VK_SAMPLE_COUNT_1_BIT,
+       .maxBoundDescriptorSets = 4,
+       .maxPerStageDescriptorSamplers = 16,
+--- a/src/freedreno/radish/rd_nir_resources.c
++++ b/src/freedreno/radish/rd_nir_resources.c
+@@ -57,10 +57,12 @@
+        tex->sampler_dim != GLSL_SAMPLER_DIM_2D &&
+        tex->sampler_dim != GLSL_SAMPLER_DIM_3D &&
+        tex->sampler_dim != GLSL_SAMPLER_DIM_CUBE &&
+-       tex->sampler_dim != GLSL_SAMPLER_DIM_BUF)
++       tex->sampler_dim != GLSL_SAMPLER_DIM_BUF &&
++       tex->sampler_dim != GLSL_SAMPLER_DIM_MS)
+       return false;
+    if ((tex->is_array && tex->sampler_dim != GLSL_SAMPLER_DIM_1D &&
+-        tex->sampler_dim != GLSL_SAMPLER_DIM_2D && tex->sampler_dim != GLSL_SAMPLER_DIM_CUBE) ||
++        tex->sampler_dim != GLSL_SAMPLER_DIM_2D && tex->sampler_dim != GLSL_SAMPLER_DIM_CUBE &&
++        tex->sampler_dim != GLSL_SAMPLER_DIM_MS) ||
+        tex->is_sparse ||
+        tex->def.bit_size != 32 ||
+        nir_tex_instr_src_index(tex, nir_tex_src_texture_offset) >= 0 ||
+@@ -73,10 +75,19 @@
+    case nir_texop_txd:
+    case nir_texop_tg4:
+    case nir_texop_txf:
++   case nir_texop_txf_ms:
++   case nir_texop_texture_samples:
+    case nir_texop_txs:
+    case nir_texop_query_levels:
+       break;
+    default:
++      return false;
++   }
++   if (tex->sampler_dim == GLSL_SAMPLER_DIM_MS) {
++      if (tex->is_shadow || (tex->op != nir_texop_txf_ms &&
++          tex->op != nir_texop_txs && tex->op != nir_texop_texture_samples))
++         return false;
++   } else if (tex->op == nir_texop_txf_ms || tex->op == nir_texop_texture_samples) {
+       return false;
+    }
+    if (tex->sampler_dim == GLSL_SAMPLER_DIM_BUF &&
+--- a/src/freedreno/radish/rd_nir_sampling.c
++++ b/src/freedreno/radish/rd_nir_sampling.c
+@@ -43,7 +43,8 @@
+ rd_sample_format(const struct rd_sampling_view *view)
+ {
+    return view->format == VK_FORMAT_D16_UNORM ? PIPE_FORMAT_R16_UNORM :
+-      view->format == VK_FORMAT_D32_SFLOAT ? PIPE_FORMAT_R32_FLOAT : vk_format_to_pipe_format(view->format);
++      view->format == VK_FORMAT_D32_SFLOAT ? PIPE_FORMAT_R32_FLOAT :
++      view->format == VK_FORMAT_S8_UINT ? PIPE_FORMAT_R8_UINT : vk_format_to_pipe_format(view->format);
+ }
+ 
+ static nir_def *
+@@ -298,7 +299,7 @@
+           ((sampler[0] >> 1) & 3) > 1 || ((sampler[0] >> 3) & 3) > 1 ||
+           (integer && tex->op != nir_texop_tg4 &&
+            ((sampler[0] & 1) || ((sampler[0] >> 1) & 3) || ((sampler[0] >> 3) & 3))) ||
+-          (tex->is_shadow && (!vk_format_is_depth_or_stencil(view->format) ||
++          (tex->is_shadow && (!vk_format_has_depth(view->format) ||
+            nir_tex_instr_src_index(tex, nir_tex_src_comparator) < 0))) {
+          state->failed = true;
+          return false;
+--- a/src/freedreno/radish/rd_resources.c
++++ b/src/freedreno/radish/rd_resources.c
+@@ -148,6 +148,7 @@
+    case VK_FORMAT_B8G8R8A8_SINT: return TFMT5_8_8_8_8_SINT;
+    case VK_FORMAT_D16_UNORM: return TFMT5_16_UNORM;
+    case VK_FORMAT_D32_SFLOAT: return TFMT5_32_FLOAT;
++   case VK_FORMAT_S8_UINT: return TFMT5_8_UINT;
+    default: return TFMT5_NONE;
+    }
+ }
+@@ -194,7 +195,8 @@
+ bool
+ rd_shader_format_filterable(VkFormat format)
+ {
+-   return rd_shader_format_supported(format) && !vk_format_is_int(format);
++   return rd_shader_format_supported(format) && !vk_format_is_int(format) &&
++          !vk_format_has_stencil(format);
+ }
+ 
+ static enum a5xx_tex_swiz
+@@ -228,6 +230,7 @@
+ {
+    memset(out, 0, sizeof(*out));
+    VkFormat format;
++   enum a3xx_msaa_samples samples = MSAA_ONE;
+    if (descriptor->image_view) {
+       const struct vk_image_view *view = &descriptor->image_view->vk;
+       const struct rd_image *image = container_of(view->image, struct rd_image, vk);
+@@ -239,6 +242,7 @@
+       out->offset = image->memory_offset + level->offset +
+                     view->base_array_layer * level->array_pitch;
+       format = view->format;
++      samples = image->vk.samples == VK_SAMPLE_COUNT_4_BIT ? MSAA_FOUR : MSAA_ONE;
+       out->format = rd_resource_format(format);
+       out->cpp = image->texel_size;
+       out->width = extent.width;
+@@ -289,7 +293,8 @@
+       out->buffer = true;
+    }
+    VkFormat sampled_format = format == VK_FORMAT_D16_UNORM ? VK_FORMAT_R16_UNORM :
+-                             format == VK_FORMAT_D32_SFLOAT ? VK_FORMAT_R32_SFLOAT : format;
++                             format == VK_FORMAT_D32_SFLOAT ? VK_FORMAT_R32_SFLOAT :
++                             format == VK_FORMAT_S8_UINT ? VK_FORMAT_R8_UINT : format;
+    const struct util_format_description *description = vk_format_description(sampled_format);
+    unsigned char swizzle[4];
+    memcpy(swizzle, description->swizzle, sizeof(swizzle));
+@@ -300,6 +305,7 @@
+       util_format_compose_swizzles(description->swizzle, requested, swizzle);
+    }
+    out->format_word = A5XX_TEX_CONST_0_FMT(out->format) |
++      A5XX_TEX_CONST_0_SAMPLES(samples) |
+       A5XX_TEX_CONST_0_SWIZ_X(rd_resource_swizzle(swizzle[0])) |
+       A5XX_TEX_CONST_0_SWIZ_Y(rd_resource_swizzle(swizzle[1])) |
+       A5XX_TEX_CONST_0_SWIZ_Z(rd_resource_swizzle(swizzle[2])) |
+--- a/src/freedreno/radish/rd_sampling.c
++++ b/src/freedreno/radish/rd_sampling.c
+@@ -25,8 +25,14 @@
+       bool array = view->view_type == VK_IMAGE_VIEW_TYPE_2D_ARRAY;
+       bool cube = view->view_type == VK_IMAGE_VIEW_TYPE_CUBE ||
+                   view->view_type == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY;
+-      if ((!array && !cube) || (!force && image->levels[view->base_mip_level].array_pitch <=
+-                                           (0x3fffull << 12)))
++      if (!array && !cube)
++         continue;
++      if (image->vk.samples != VK_SAMPLE_COUNT_1_BIT) {
++         if (image->levels[view->base_mip_level].array_pitch > (0x3fffull << 12))
++            return VK_ERROR_FEATURE_NOT_PRESENT;
++         continue;
++      }
++      if (!force && image->levels[view->base_mip_level].array_pitch <= (0x3fffull << 12))
+          continue;
+       if (!image->memory || view->level_count > RD_IMAGE_MAX_LEVELS)
+          return VK_ERROR_UNKNOWN;

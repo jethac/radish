@@ -1,5 +1,13 @@
 # Core compute implementation: checkpoint 0044
 
+## 2026-11-02: sampled multisample paths execute
+
+ICDa7d6f917 passes two 120-record rounds with 18 exact words each (4,320 total), seven image allocation guards and the output allocation guard. R32_UINT/R16_UNORM images exercise per-layer clear, offset copy, native fetch at all four sample indices, and size/count queries across two layers. D16/D32/S8 checks cover creation and size/count only. Cleared samples have equal values, so this does not prove distinct sample-address selection or depth/stencil sample values. Service630ms,5.8MiB,zero swap; no new GPU faults and both services active. [Exact source, consumer and limits](results/core-api-0044-sampled-ms.json).
+
+The unchanged, locally modified CTS harness reruns only `dEQP-VK.info.device_properties`: exactly three sampled-image count failures disappear,34→31, with no new failures. The full case still fails; its complete report and all remaining failures are retained without waivers. No complete Vulkan or CTS conformance claim follows from these results.
+
+Apply the fourteenth increment `0044-radish-sampled-ms-wip.patch` after filtered-array. The existing builder adds `multisample`, selected with `device-core-compute.py ... --suite multisample`. Native one/four-sample layout and descriptors, sample-aware color transfers, and stencil formats are implemented; storage multisample remains unsupported. Source for cube sampling is being built separately and has no execution evidence in this checkpoint. Performance experiments remain paused.
+
 ## 2026-11-02: filtered array consumer passes
 
 The bounded software array path now passes two 85-record rounds with 29 exact output words per record: 4,930 words total, plus all ten image and nine buffer allocation guards. The R32_SFLOAT array checks cover repeat/edge/mirror/border addressing, mag/min selection, spatial and mip linear filtering, explicit and gradient LOD with bias, layer rounding, and all four gather components. The second round changes image buffers and reuses the same cached shader after legal descriptor updates and fresh command recording. The prior 22 fields remain checked. [Paired source and result](results/core-api-0044-filtered-array.json).
@@ -123,7 +131,7 @@ budget. It does not solve the earlier legal-workgroup/shared-memory failures.
 
 ## Consolidated reproduction
 
-Apply the thirteen0044 incremental patches in order to the documented0042 Mesa
+Apply the fourteen0044 incremental patches in order to the documented0042 Mesa
 stack and build the isolated driver. Build probes against its matching internal
 ABI:
 
