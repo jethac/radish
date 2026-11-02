@@ -334,3 +334,11 @@ A retained BASIC probe used SPIR-V1.3 in an API1.0 helper with an internal overr
 its successes are internal semantics, not legal public1.0 qualification. Public
 legal1.1 BASIC/environment coverage remains an explicit compute requirement; see
 the scoped erratum in CORE_API_0044.md. Selected fcd/d332 remains unchanged.
+
+The target-only half-spatial/two-group experiment now passes exact native order,
+resource limits, actual two-group dispatch and full model correctness, but loses
+32.31% resident time (target layers+117.43%,zero swap). It remains unselected;
+fcd/d332 is unchanged. Source preload/barrier work increases are recorded without
+claiming a measured bottleneck cause. No identical retry or extra factor follows
+from this result; the broader model efficiency and ASR functional/memory goals
+remain incomplete.

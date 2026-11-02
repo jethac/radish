@@ -1,0 +1,40 @@
+{
+  "status": "passed finite source/native admission for original conditional full replay",
+  "programs": 179,
+  "counterpart_resource_control_review": {
+    "path": "/run/media/jethac/Shared/radish/packed-half-spatial-loop-fix-9k3xq9j7/native-resource-admission.json",
+    "bytes": 12772,
+    "sha256": "785e28170a6dc7fc7c2ebb200dae6994b2790e5fa4f2eb99d1db03e565b830ae"
+  },
+  "independent_target_review": {
+    "path": "/run/media/jethac/Shared/radish/asr-graph-profile-ovmz54r9/half-spatial-loop-native-review.json",
+    "bytes": 3420,
+    "sha256": "41221b1617c9e77ac4bd633c050e7af4e88d9bbb17a01514e3052161c4132567"
+  },
+  "independent_recurrence": {
+    "path": "/run/media/jethac/Shared/radish/asr-graph-profile-ovmz54r9/half-spatial-loop-native/recurrence-review.json",
+    "bytes": 1420,
+    "sha256": "0ae6d64ff637abafc92c2f4fa0a28d1763423e90f9140bd5d9af56584798e5f6"
+  },
+  "host_pairing": {
+    "path": "/run/media/jethac/Shared/radish/packed-half-spatial-loop-fix-9k3xq9j7/host-module-pairing-review.json",
+    "bytes": 3306,
+    "sha256": "e64c6ecb55658bcafa75946355a4a1cdf35cdfbcee7baa26065c000b853aa9a8"
+  },
+  "model": {
+    "sha256": "3115381ba9a1fc2771cc2d4e60df61e03b2a32f8e38208d862a7a28a4c351274"
+  },
+  "driver_runtime_equivalence": "stripped7c6aa exact allocated/programheader/runtime equivalent to cc242617 paired queue; selectedfcd/d332 remain unchanged",
+  "gates": [
+    "156nonpacked fullMESA and20nontargetpacked native controls exact",
+    "Three targets16F0H/4loops/native28/no private/shared6144/local8x8; pair4096register units/12288sharedbytes",
+    "Allnative32MAD chains/globalK32 compare exact baseline versus twoK16blocks for all128covered coordinates",
+    "Current strict resourceclass admitsXfirstpair2 andmath8 without numerical/resourceguard weakening"
+  ],
+  "actual_pending": [
+    "12target commandprofiles mustshowgrid800x2/local8x8/native28/loops4/chunks800/submits100",
+    "Both original562342value reference comparisons and acceptedfinale128bytes",
+    "Originalfault/service/memory/reserve/guard controls",
+    "No actualphysicaloverlap or model speedup inferredfromnativegate"
+  ]
+}

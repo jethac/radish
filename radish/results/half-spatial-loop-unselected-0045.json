@@ -1,0 +1,263 @@
+{
+  "status": "correct but slower; unselected",
+  "selected_model": "d33222d4d62e209f8b05807d78224862778d4a3afe540a4130ee70743b59aff7",
+  "selected_driver": "fcd47b1fdc6f0b1ab52bb71ea1d1331ec0c9b98dbe5da050c7e27b4f0f2b6389",
+  "candidate_model": {
+    "bytes": 11134264,
+    "sha256": "3115381ba9a1fc2771cc2d4e60df61e03b2a32f8e38208d862a7a28a4c351274"
+  },
+  "source_patch": {
+    "path": "patches/0045-ncnn-half-spatial-loop-index-unselected.patch",
+    "bytes": 805,
+    "sha256": "10ca348450dd91abe8ea3c3cf53b70f666a19ec08e82cb00e755719b6f761514"
+  },
+  "source_apply_order": [
+    "Selected d332 ncnn / fcd Radish source",
+    "0045-ncnn-half-spatial-unadmitted.patch",
+    "0045-ncnn-half-spatial-direct-spec-fix.patch",
+    "0045-ncnn-half-spatial-loop-index-unselected.patch",
+    "Paired Radish0045-radish-half-spatial-unadmitted.patch; queue unchanged during shader corrections"
+  ],
+  "prior_failure": "Original malformed specialization dimensions corrected by directSpecIDs; corrected8d079 then failed native register/code/control gates. Both captures and exact source preserved in half-spatial-unadmitted-0045.json.",
+  "latest_fix": "Retain ascending innerK loop withDontUnroll and exact shift3/4 B row extraction. Host seven-spec maps/queue/work/oracles unchanged.",
+  "build": {
+    "status": "private loop/row-index correction host build passed",
+    "model": {
+      "bytes": 11134264,
+      "sha256": "3115381ba9a1fc2771cc2d4e60df61e03b2a32f8e38208d862a7a28a4c351274"
+    },
+    "archive": {
+      "bytes": 11455716,
+      "sha256": "d42c7800572dc7f5ec4294c8b28f8c4cfb3404b78024c2e1fc1c2e20d019ee9e"
+    },
+    "baseline_model": {
+      "bytes": 11134200,
+      "sha256": "8d079805ad3bac28a801a2617d4d13fc7782c0dec7edf36adbadbba176948354"
+    },
+    "patch": {
+      "bytes": 805,
+      "sha256": "10ca348450dd91abe8ea3c3cf53b70f666a19ec08e82cb00e755719b6f761514"
+    },
+    "changed_generated_header": {
+      "layer/vulkan/shader/convolution1d_radish_planar_packed_a.comp.hex.h": {
+        "bytes": 14422,
+        "sha256": "e087db0391cd3ceb8093f3626ddbde0ad392ab3c438c0e90b58276fb7a2f3722"
+      }
+    },
+    "other_generated_headers_and_registry_exact": true,
+    "untouched_archive_members": 261,
+    "untouched_member_bytes_sha256": "aeec88be9e199ce4bb5e8c13fc8f6d52039efdbe46890faae6f3b042ec7c88fb",
+    "scope": "Only shader over corrected8d079 host; seven-spec maps and cc24 queue unchanged. No native/tensor/performance claim."
+  },
+  "module_validation": {
+    "status": "passed",
+    "source_release": {
+      "bytes": 2585,
+      "sha256": "cb6de71bac31de0854ffe0a7b9e7de704db733de9c40b1f29a100c5e2786c4e0"
+    },
+    "shader": {
+      "bytes": 3627,
+      "sha256": "5ae745ee7f984e8e253398f6924f38d6983cc8692b85118b691237fb2db58543"
+    },
+    "geometries": {
+      "local16x8": {
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "maps": {
+          "first_program52": [
+            3,
+            544,
+            1024,
+            1,
+            1,
+            64,
+            32
+          ]
+        },
+        "modules": {
+          "after-injection.spv": {
+            "bytes": 11144,
+            "sha256": "51e62d720926da5926efc00bbf250c2dd8d0218452167e76e14203553ced2cfd"
+          },
+          "first_program52.spv": {
+            "bytes": 10880,
+            "sha256": "1ee0c8facb726d6e999a00d262fc4f5cd388d309094181ba3cc16a1be83931e6"
+          },
+          "before-injection.spv": {
+            "bytes": 11144,
+            "sha256": "ce137853628131d30cf7b4f868da96ddb113cc362c615c0224fe75d892e00f8f"
+          }
+        },
+        "dont_unroll_present": true,
+        "header": {
+          "bytes": 14422,
+          "sha256": "e087db0391cd3ceb8093f3626ddbde0ad392ab3c438c0e90b58276fb7a2f3722"
+        }
+      },
+      "local8x8": {
+        "local": [
+          8,
+          8,
+          1
+        ],
+        "maps": {
+          "target_dilation1": [
+            11,
+            128,
+            128,
+            1,
+            1,
+            32,
+            16
+          ],
+          "target_dilation3": [
+            11,
+            128,
+            128,
+            1,
+            3,
+            32,
+            16
+          ],
+          "target_dilation5": [
+            11,
+            128,
+            128,
+            1,
+            5,
+            32,
+            16
+          ]
+        },
+        "modules": {
+          "target_dilation3.spv": {
+            "bytes": 10880,
+            "sha256": "32750a33f87d40cf3608643a329b92f87aef22d60e2bed241674475abad278fe"
+          },
+          "target_dilation1.spv": {
+            "bytes": 10880,
+            "sha256": "49e2c47df90272c0c1a348da819e484fe5d8a5ed73040c07a14c03f203971e71"
+          },
+          "after-injection.spv": {
+            "bytes": 11144,
+            "sha256": "0dff50a0831984253eb7429487d43a02bd1cac608759a151179e7e30cd0f37fe"
+          },
+          "target_dilation5.spv": {
+            "bytes": 10880,
+            "sha256": "6df7f8a388f2e0c684a0aa173c417d7ac80820706608b04d0c50e55e46f57e49"
+          },
+          "before-injection.spv": {
+            "bytes": 11144,
+            "sha256": "ce137853628131d30cf7b4f868da96ddb113cc362c615c0224fe75d892e00f8f"
+          }
+        },
+        "dont_unroll_present": true,
+        "header": {
+          "bytes": 14422,
+          "sha256": "e087db0391cd3ceb8093f3626ddbde0ad392ab3c438c0e90b58276fb7a2f3722"
+        }
+      }
+    },
+    "scope": "Pinned compiler/injection, exact seven-spec non-target16x8 and target8x8 modules; Vulkan1.0 validity and DontUnroll only, native/tensor admission pending."
+  },
+  "compile_result": {
+    "status": "passed",
+    "mode": "compile",
+    "contract": {
+      "pins": {
+        "bytes": 6744,
+        "sha256": "9eb2dfdf1b859d444ce1808a3e1ca527a961dea8acd420361c16519c3d5048f2"
+      },
+      "runner": {
+        "bytes": 17564,
+        "sha256": "59309575ee38bd052c80d79a21cd37114abb7861d970da7bbbe51a2b7a0fc9c1"
+      },
+      "packed_a": "1",
+      "tiled_batch": "8"
+    },
+    "packed_a": "1",
+    "tiled_batch": "8",
+    "compile_label": "core0045-half-loop",
+    "run_log": {
+      "bytes": 24465250,
+      "sha256": "91630dd6822daeff2893542605eb62f6af2be41f5bb290d96083fb0cc4eeaf2d"
+    },
+    "collection_errors": [],
+    "scope": "Execution/source/driver/inode/output checks only; root audits actual native resources and admission separately."
+  },
+  "full_result": {
+    "status": "passed",
+    "mode": "full",
+    "contract": {
+      "pins": {
+        "bytes": 6744,
+        "sha256": "9eb2dfdf1b859d444ce1808a3e1ca527a961dea8acd420361c16519c3d5048f2"
+      },
+      "runner": {
+        "bytes": 17564,
+        "sha256": "59309575ee38bd052c80d79a21cd37114abb7861d970da7bbbe51a2b7a0fc9c1"
+      },
+      "packed_a": "1",
+      "tiled_batch": "8"
+    },
+    "packed_a": "1",
+    "tiled_batch": "8",
+    "compile_label": "core0045-half-loop",
+    "run_log": {
+      "bytes": 670593,
+      "sha256": "9b04d00aec574e1e3488684263cf48b1714657c91a370664f004fa828d186864"
+    },
+    "collection_errors": [],
+    "scope": "Execution/source/driver/inode/output checks only; root audits actual native resources and admission separately."
+  },
+  "native": "179programs:156nonpacked records+20packed native controls exact selected; target3 are16F0H,4loops,local8x8/shared6144/native28/private0, pair128*32=4096/shared12288. Exact ordered32-accumulator recurrence checked.",
+  "actual_execution": "All1520 ordered owners/chunks/submits match baseline except12 intended geometry/native changes: targetgrid800x2/local8x8/n28/4loops/800chunks/100submits.71750totalchunks/10809submits;58mathcommands3294submits. Both full references and both retained final e128 files pass.",
+  "timings_seconds": {
+    "selected_first": 34.700589,
+    "candidate_first": 45.105765,
+    "selected_resident": 33.952417,
+    "candidate_resident": 44.921636,
+    "candidate_cold_load": 11.895,
+    "selected_target_resident_sum": 9.20380308,
+    "candidate_target_resident_sum": 20.011540353
+  },
+  "memory_mib": {
+    "selected": 406.2,
+    "candidate": 405.2,
+    "selected_swap": 0,
+    "candidate_swap": 0,
+    "scope": "systemd cgroup memory peak; separate from phase process RSS"
+  },
+  "analytical_source_costs": "A logical preload requests2x, B unchanged, aggregate1.5x; workgroup barrier events4x, participating-thread arrivals2x. These are source request counts, not measured DRAM traffic or causal attribution.",
+  "limitations": [
+    "Single sequential comparison; no statistical or pure-GPU interval claim",
+    "Issued two-group execute chunks demonstrated; simultaneous physical hardware residency unproven",
+    "No faults or numerical mismatch; original caps/reserve/services/guards preserved",
+    "No unchanged retry or additional factor experiment; selected fcd/d332 remains unchanged"
+  ],
+  "independent_receipts": {
+    "/run/media/jethac/Shared/radish/packed-half-spatial-loop-fix-9k3xq9j7/native-admission.json": {
+      "bytes": 2136,
+      "sha256": "9ee6cebf12e94e356add4724ab1ceabd0f3d66d7f7de9cb7e43c0f49361f3388"
+    },
+    "/run/media/jethac/Shared/radish/packed-half-spatial-loop-fix-9k3xq9j7/structural-full-review.json": {
+      "bytes": 35712,
+      "sha256": "c627ca0cfc13698e00fbd417dd67efe815e4efe3391befa1078214b2fb3bf46e"
+    },
+    "/run/media/jethac/Shared/radish/asr-graph-profile-ovmz54r9/half-spatial-full-review/actual-review.json": {
+      "bytes": 15609,
+      "sha256": "a35e962c742987a0aeac8ab7a641ce95a34d9501b42a2e2f91c5f9a95f7ed397"
+    },
+    "/run/media/jethac/Shared/radish/packed-half-spatial-loop-fix-9k3xq9j7/host-module-pairing-review.json": {
+      "bytes": 3306,
+      "sha256": "e64c6ecb55658bcafa75946355a4a1cdf35cdfbcee7baa26065c000b853aa9a8"
+    },
+    "/run/media/jethac/Shared/radish/asr-graph-profile-ovmz54r9/half-spatial-loop-build-review.json": {
+      "bytes": 2749,
+      "sha256": "d66a8029a98238043e8c71bbda673de92942f27f93afc44ac628aaf247125d38"
+    }
+  }
+}

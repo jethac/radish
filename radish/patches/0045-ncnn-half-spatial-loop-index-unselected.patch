@@ -1,0 +1,23 @@
+--- a/ncnn/src/layer/vulkan/shader/convolution1d_radish_planar_packed_a.comp
++++ b/ncnn/src/layer/vulkan/shader/convolution1d_radish_planar_packed_a.comp
+@@ -1,4 +1,5 @@
+ #version 450
++#extension GL_EXT_control_flow_attributes : require
+ 
+ // FP32 implicit GEMM with eight vec4 accumulators per invocation.
+ layout(constant_id = 0) const int kernel_w = 1;
+@@ -66,12 +67,13 @@
+         }
+         for (int i = tid; i < tile_k * tile_x; i += tile_threads)
+         {
+-            const int r = i / tile_x;
++            const int r = tile_x == 8 ? (i >> 3) : (i >> 4);
+             const int q = i % tile_x;
+             sb[r][q] = load_input(k0 + r, nb + q * 4);
+         }
+         barrier();
+ 
++        [[dont_unroll]]
+         for (int k = 0; k < tile_k; k++)
+         {
+             vec4 b = sb[k][tx];

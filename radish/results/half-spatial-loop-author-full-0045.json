@@ -1,0 +1,550 @@
+{
+  "verdict": "PASS original numerical/scheduling/two-group experiment; measured regression, KEEP selectedd332/fcd",
+  "run_log": {
+    "path": "/run/media/jethac/Shared/radish/packed-half-spatial-loop-replay-0045/evidence-core0045-half-loop/full/run.log",
+    "bytes": 670593,
+    "sha256": "9b04d00aec574e1e3488684263cf48b1714657c91a370664f004fa828d186864"
+  },
+  "outputs": [
+    {
+      "pin": {
+        "path": "/run/media/jethac/Shared/radish/packed-half-spatial-loop-replay-0045/evidence-core0045-half-loop/full/ncnn-vulkan-candidate.f32",
+        "bytes": 2249368,
+        "sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287"
+      },
+      "max_abs": 0.000110626220703125,
+      "mismatches": 0
+    },
+    {
+      "pin": {
+        "path": "/run/media/jethac/Shared/radish/packed-half-spatial-loop-replay-0045/evidence-core0045-half-loop/full/ncnn-vulkan-output.f32",
+        "bytes": 2249368,
+        "sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287"
+      },
+      "max_abs": 0.000110626220703125,
+      "mismatches": 0
+    }
+  ],
+  "per_iteration_GPU_paths": 589,
+  "all_GPU_ret0": 1178,
+  "iterations": [
+    {
+      "iteration": 1,
+      "old_wall_seconds": 34.700589,
+      "new_wall_seconds": 45.105765,
+      "wall_change_percent": 29.985589005420053,
+      "old_target_seconds": 9.259244186,
+      "new_target_seconds": 20.025649505,
+      "target_change_percent": 116.27736673452063,
+      "old_other_command_seconds": 25.173841700999997,
+      "new_other_command_seconds": 24.817413351000003,
+      "target_delta_seconds": 10.766405319,
+      "other_command_delta_seconds": -0.3564283499999945,
+      "residual_delta_seconds": -0.0048009690000085925,
+      "targets": [
+        {
+          "index": 911,
+          "owner": {
+            "name": "conv1d_28",
+            "groups": 13616,
+            "type": "Convolution1D",
+            "line": 1392,
+            "kind": "layer"
+          },
+          "old_ns": 803497235,
+          "new_ns": 1720250082,
+          "native": [
+            27,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        },
+        {
+          "index": 938,
+          "owner": {
+            "name": "conv1d_32",
+            "groups": 13616,
+            "type": "Convolution1D",
+            "line": 1430,
+            "kind": "layer"
+          },
+          "old_ns": 763126068,
+          "new_ns": 1655746520,
+          "native": [
+            27,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        },
+        {
+          "index": 966,
+          "owner": {
+            "name": "conv1d_36",
+            "groups": 13616,
+            "type": "Convolution1D",
+            "line": 1470,
+            "kind": "layer"
+          },
+          "old_ns": 772296593,
+          "new_ns": 1666863530,
+          "native": [
+            28,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        },
+        {
+          "index": 993,
+          "owner": {
+            "name": "conv1d_40",
+            "groups": 13616,
+            "type": "Convolution1D",
+            "line": 1508,
+            "kind": "layer"
+          },
+          "old_ns": 765993316,
+          "new_ns": 1649938067,
+          "native": [
+            27,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        },
+        {
+          "index": 1021,
+          "owner": {
+            "name": "conv1d_43",
+            "groups": 13632,
+            "type": "Convolution1D",
+            "line": 1548,
+            "kind": "layer"
+          },
+          "old_ns": 770081776,
+          "new_ns": 1666527070,
+          "native": [
+            28,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        },
+        {
+          "index": 1048,
+          "owner": {
+            "name": "conv1d_46",
+            "groups": 13616,
+            "type": "Convolution1D",
+            "line": 1586,
+            "kind": "layer"
+          },
+          "old_ns": 759021956,
+          "new_ns": 1661207420,
+          "native": [
+            27,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        },
+        {
+          "index": 1375,
+          "owner": {
+            "name": "conv1d_67",
+            "groups": 13616,
+            "type": "Convolution1D",
+            "line": 2065,
+            "kind": "layer"
+          },
+          "old_ns": 771490538,
+          "new_ns": 1671073698,
+          "native": [
+            27,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        },
+        {
+          "index": 1402,
+          "owner": {
+            "name": "conv1d_70",
+            "groups": 13616,
+            "type": "Convolution1D",
+            "line": 2114,
+            "kind": "layer"
+          },
+          "old_ns": 771435741,
+          "new_ns": 1661299608,
+          "native": [
+            27,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        },
+        {
+          "index": 1430,
+          "owner": {
+            "name": "conv1d_73",
+            "groups": 13616,
+            "type": "Convolution1D",
+            "line": 2154,
+            "kind": "layer"
+          },
+          "old_ns": 769366139,
+          "new_ns": 1675988815,
+          "native": [
+            28,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        },
+        {
+          "index": 1457,
+          "owner": {
+            "name": "conv1d_76",
+            "groups": 13616,
+            "type": "Convolution1D",
+            "line": 2192,
+            "kind": "layer"
+          },
+          "old_ns": 769821605,
+          "new_ns": 1665495714,
+          "native": [
+            27,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        },
+        {
+          "index": 1485,
+          "owner": {
+            "name": "conv1d_79",
+            "groups": 13632,
+            "type": "Convolution1D",
+            "line": 2232,
+            "kind": "layer"
+          },
+          "old_ns": 777727956,
+          "new_ns": 1670193904,
+          "native": [
+            28,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        },
+        {
+          "index": 1512,
+          "owner": {
+            "name": "conv1d_82",
+            "groups": 13616,
+            "type": "Convolution1D",
+            "line": 2270,
+            "kind": "layer"
+          },
+          "old_ns": 765385263,
+          "new_ns": 1661065077,
+          "native": [
+            27,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        }
+      ]
+    },
+    {
+      "iteration": 2,
+      "old_wall_seconds": 33.952417,
+      "new_wall_seconds": 44.921636,
+      "wall_change_percent": 32.30762334239709,
+      "old_target_seconds": 9.20380308,
+      "new_target_seconds": 20.011540353,
+      "target_change_percent": 117.42686342872082,
+      "old_other_command_seconds": 24.54852186,
+      "new_other_command_seconds": 24.708377446999997,
+      "target_delta_seconds": 10.807737273,
+      "other_command_delta_seconds": 0.15985558699999558,
+      "residual_delta_seconds": 0.0016261400000061599,
+      "targets": [
+        {
+          "index": 911,
+          "owner": {
+            "name": "conv1d_28",
+            "groups": 13616,
+            "type": "Convolution1D",
+            "line": 3673,
+            "kind": "layer"
+          },
+          "old_ns": 765202728,
+          "new_ns": 1662747842,
+          "native": [
+            27,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        },
+        {
+          "index": 938,
+          "owner": {
+            "name": "conv1d_32",
+            "groups": 13616,
+            "type": "Convolution1D",
+            "line": 3711,
+            "kind": "layer"
+          },
+          "old_ns": 766992735,
+          "new_ns": 1663933053,
+          "native": [
+            27,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        },
+        {
+          "index": 966,
+          "owner": {
+            "name": "conv1d_36",
+            "groups": 13616,
+            "type": "Convolution1D",
+            "line": 3751,
+            "kind": "layer"
+          },
+          "old_ns": 766922991,
+          "new_ns": 1671259115,
+          "native": [
+            28,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        },
+        {
+          "index": 993,
+          "owner": {
+            "name": "conv1d_40",
+            "groups": 13616,
+            "type": "Convolution1D",
+            "line": 3789,
+            "kind": "layer"
+          },
+          "old_ns": 760140337,
+          "new_ns": 1651152550,
+          "native": [
+            27,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        },
+        {
+          "index": 1021,
+          "owner": {
+            "name": "conv1d_43",
+            "groups": 13632,
+            "type": "Convolution1D",
+            "line": 3829,
+            "kind": "layer"
+          },
+          "old_ns": 766773501,
+          "new_ns": 1679513617,
+          "native": [
+            28,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        },
+        {
+          "index": 1048,
+          "owner": {
+            "name": "conv1d_46",
+            "groups": 13616,
+            "type": "Convolution1D",
+            "line": 3867,
+            "kind": "layer"
+          },
+          "old_ns": 761377523,
+          "new_ns": 1653329743,
+          "native": [
+            27,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        },
+        {
+          "index": 1375,
+          "owner": {
+            "name": "conv1d_67",
+            "groups": 13616,
+            "type": "Convolution1D",
+            "line": 4346,
+            "kind": "layer"
+          },
+          "old_ns": 769287222,
+          "new_ns": 1660613408,
+          "native": [
+            27,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        },
+        {
+          "index": 1402,
+          "owner": {
+            "name": "conv1d_70",
+            "groups": 13616,
+            "type": "Convolution1D",
+            "line": 4395,
+            "kind": "layer"
+          },
+          "old_ns": 768224970,
+          "new_ns": 1670560103,
+          "native": [
+            27,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        },
+        {
+          "index": 1430,
+          "owner": {
+            "name": "conv1d_73",
+            "groups": 13616,
+            "type": "Convolution1D",
+            "line": 4435,
+            "kind": "layer"
+          },
+          "old_ns": 769110388,
+          "new_ns": 1675725377,
+          "native": [
+            28,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        },
+        {
+          "index": 1457,
+          "owner": {
+            "name": "conv1d_76",
+            "groups": 13616,
+            "type": "Convolution1D",
+            "line": 4473,
+            "kind": "layer"
+          },
+          "old_ns": 768219180,
+          "new_ns": 1671023905,
+          "native": [
+            27,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        },
+        {
+          "index": 1485,
+          "owner": {
+            "name": "conv1d_79",
+            "groups": 13632,
+            "type": "Convolution1D",
+            "line": 4513,
+            "kind": "layer"
+          },
+          "old_ns": 777435069,
+          "new_ns": 1684977121,
+          "native": [
+            28,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        },
+        {
+          "index": 1512,
+          "owner": {
+            "name": "conv1d_82",
+            "groups": 13616,
+            "type": "Convolution1D",
+            "line": 4551,
+            "kind": "layer"
+          },
+          "old_ns": 764116436,
+          "new_ns": 1666704519,
+          "native": [
+            27,
+            28
+          ],
+          "new_chunks": 800,
+          "new_submits": 100
+        }
+      ]
+    }
+  ],
+  "clock_residency": [
+    {
+      "root": "/run/media/jethac/Shared/radish/packed-a-shift-replay-0045/evidence-core0045-packed-shift/full",
+      "residency_delta_ms": {
+        "19200000": 396,
+        "133300000": 32,
+        "216000000": 4,
+        "320000000": 72,
+        "400000000": 56,
+        "510000000": 56,
+        "560000000": 116,
+        "650000000": 68160
+      },
+      "total_seconds": 68.892,
+      "fraction650MHz": 0.9893746734018464,
+      "scope": "Devicewide sysfs frequency time-in-state deltas bracket the capture. Fraction is of reported residency only, not wholeprocesswall; suspended/unaccounted periods may be absent. Not GPU-active time, own-workload activity or ALUutilization."
+    },
+    {
+      "root": "/run/media/jethac/Shared/radish/packed-half-spatial-loop-replay-0045/evidence-core0045-half-loop/full",
+      "residency_delta_ms": {
+        "19200000": 372,
+        "133300000": 36,
+        "216000000": 0,
+        "320000000": 52,
+        "400000000": 4,
+        "510000000": 120,
+        "560000000": 48,
+        "650000000": 89636
+      },
+      "total_seconds": 90.268,
+      "fraction650MHz": 0.9929986263127576,
+      "scope": "Devicewide sysfs frequency time-in-state deltas bracket the capture. Fraction is of reported residency only, not wholeprocesswall; suspended/unaccounted periods may be absent. Not GPU-active time, own-workload activity or ALUutilization."
+    }
+  ],
+  "source_work_account": {
+    "original_output_tile": "64channels\u00d764positions\u00d7K32",
+    "candidate_equivalent_region": "two64channel\u00d732positiongroups, eachtwoK16blocks",
+    "original_global_preload_bytes_per_equivalent_region": 16384,
+    "candidate_global_preload_bytes_per_equivalent_region": 24576,
+    "A_global_load_bytes_factor": 2.0,
+    "B_global_load_bytes_factor": 1.0,
+    "aggregate_global_load_bytes_factor": 1.5,
+    "workgroup_barrier_events_factor": 4,
+    "participating_thread_barrier_events_factor": 2,
+    "source_only": "Logical shader-load requests, not actual DRAM/cache bytes, measured bandwidth, or causal timing attribution. Same ordered useful/issued FP32 arithmetic andsame recorded chunks/submits."
+  },
+  "actual_two_group_evidence": "Exact targetgrid1600workgroups and800chunks underunchangedsource tileX2 budget; native/source pairpredicate agrees, outputs+alloriginaloraclespass. This demonstrates issued2groups perexecute, not simultaneousphysicalresidency.",
+  "limitations": [
+    "Final retained raw outputs areiteration2; firstiterationfullreferencePASS islogged, noindependentfirstrawclaim.",
+    "Ordered1520profilecorrespondence usesbaselineownerlabels after allnontargetsignaturesandtargettransformationcheck; batchindependentlyownsFIFOownerremapping.",
+    "Profile commandns andmodelwall includehostencode/submission/waits/devicework; noGPUtimestamporALUbusymeasurementforthiscandidate.",
+    "Sequentialsinglepair, no identicalretry/confidenceclaim. Targetlogicalpreload/barrierincreases areprovedsourcecounts, not causal diagnosis of timing.",
+    "Candidate405.2MiB/0swap; clockresidencydata isdevicewide, not soleworkloadclock/activityproof. Retainallfailedpredecessorcaptures; no resourceguard widening."
+  ]
+}

@@ -337,3 +337,37 @@ keep the target inner loop; neither issue warrants relaxing the existing gates.
 [The finite result](results/half-spatial-unadmitted-0045.json) preserves source,
 build/module diagnosis and native receipts. The unadmitted patches are isolated
 experiments, not additions to the selected inference path. No guards were relaxed.
+
+
+## Corrected half-spatial experiment: correct but slower (0045)
+
+A narrow follow-up retains the innerK loop with `DontUnroll` and restores shift
+row indexing. All20 non-target packed native controls are now byte-identical to
+the selected model;156 nonpacked records also remain exact. The three targets
+use16 full registers, four loops,6KiB shared and native length28. The unchanged
+two-group aggregate register and shared-memory guards pass, and independent
+native recurrence analysis preserves every ordered accumulator dependency.
+
+The original repeat-two run passes both full numerical comparisons and both
+retained final accepted-output byte checks. All12 changed commands actually use
+grid800×2/local8×8,800 chunks and100 submissions, demonstrating two groups per
+execute chunk. Total71,750 chunks/10,809 submissions and math3,294 submissions
+remain unchanged. This does not prove simultaneous physical group residency.
+
+| Fixed-core scope | Selected d332 | Corrected half-spatial |
+| --- | ---: | ---: |
+| First extraction |34.700589s|45.105765s|
+| Resident extraction |33.952417s|44.921636s|
+|12 target commands, resident sum|9.203803080s|20.011540353s|
+|Cgroup memory peak / swap|406.2MiB /0|405.2MiB /0|
+
+Resident extraction is32.31% slower and the12 targets are117.43% slower. Other
+profiled work changes little. Source accounting shows twice the logical A preload
+requests, unchanged total B requests and1.5× combined requests; participating
+thread barrier arrivals double. These are source work counts, not measured DRAM
+traffic or a causal timing proof. The sequential run has no GPU timestamps.
+
+Keep fcd/d332 selected. The structurally corrected candidate is numerically
+qualified for this workload but unselected; no repeat is planned.
+[The result](results/half-spatial-loop-unselected-0045.json) includes patch order,
+artifact pins, both independent full reviews, source costs and original limits.
