@@ -1,0 +1,110 @@
+--- a/radish/tests/ncnn/model.cpp
++++ b/radish/tests/ncnn/model.cpp
+@@ -20,6 +20,9 @@
+ #include <cstring>
+ #include <cstdint>
+ #include <limits>
++#include <memory>
++#include <limits.h>
++#include <dlfcn.h>
+ #include <string>
+ #include <vector>
+ #include <sys/resource.h>
+@@ -240,10 +243,27 @@
+     std::setvbuf(stdout,0,_IONBF,0);
+     bool vulkan=false,style=false,load_only=false,cpu_packed=false,fp16_packed=false;
+     int repeat=1,threads=4;
++    int robust_buffer_access=-1;
+     std::string shapes_path;
++    std::string vulkan_loader;
+     std::vector<std::string> positional;
+     for(int i=1;i<argc;++i) {
+         if(!std::strcmp(argv[i],"--vulkan")) vulkan=true;
++        else if(!std::strcmp(argv[i],"--vulkan-loader")) {
++            if(!vulkan_loader.empty() || ++i==argc || argv[i][0]!='/') {
++                std::fprintf(stderr,"--vulkan-loader requires one absolute loader path\n");
++                return 1;
++            }
++            vulkan_loader=argv[i];
++        }
++        else if(!std::strcmp(argv[i],"--robust-buffer-access")) {
++            if(robust_buffer_access!=-1 || ++i==argc
++               || (std::strcmp(argv[i],"0") && std::strcmp(argv[i],"1"))) {
++                std::fprintf(stderr,"--robust-buffer-access requires one value, 0 or 1\n");
++                return 1;
++            }
++            robust_buffer_access=argv[i][0]-'0';
++        }
+         else if(!std::strcmp(argv[i],"--fp16-packed")) fp16_packed=true;
+         else if(!std::strcmp(argv[i],"--cpu-packed")) cpu_packed=true;
+         else if(!std::strcmp(argv[i],"--style")) style=true;
+@@ -275,6 +295,14 @@
+         else if(std::strncmp(argv[i],"--",2)) positional.push_back(argv[i]);
+         else { std::fprintf(stderr,"unknown option: %s\n",argv[i]); return 1; }
+     }
++    if(robust_buffer_access!=-1 && (!vulkan || vulkan_loader.empty())) {
++        std::fprintf(stderr,"--robust-buffer-access requires --vulkan and --vulkan-loader\n");
++        return 1;
++    }
++    if(!vulkan_loader.empty() && !vulkan) {
++        std::fprintf(stderr,"--vulkan-loader requires --vulkan\n");
++        return 1;
++    }
+     if(cpu_packed && (vulkan || !shapes_path.empty())) {
+         std::fprintf(stderr,"--cpu-packed cannot be combined with --vulkan or --capture-shapes\n");
+         return 1;
+@@ -286,7 +314,7 @@
+     if(positional.empty() || positional.size()>2 || (load_only && positional.size()==2)
+        || (repeat>1 && (load_only || positional.size()==2))
+        || (!shapes_path.empty() && (vulkan || style || load_only || repeat!=1 || positional.size()!=1))) {
+-        std::fprintf(stderr,"Usage: %s [--vulkan [--fp16-packed] | --cpu-packed] [--threads 1..6] [--style] [--load-only] [--repeat 1..10] [--capture-shapes NEW_FILE] DIR [BLOB]\nRepeated runs require inference with full reference comparison; shape capture requires one full-core scalar CPU run.\n",argv[0]);
++        std::fprintf(stderr,"Usage: %s [--vulkan [--fp16-packed] [--vulkan-loader ABS_PATH] [--robust-buffer-access 0|1] | --cpu-packed] [--threads 1..6] [--style] [--load-only] [--repeat 1..10] [--capture-shapes NEW_FILE] DIR [BLOB]\nRepeated runs require inference with full reference comparison; shape capture requires one full-core scalar CPU run.\n",argv[0]);
+         return 1;
+     }
+     const std::string dir=positional[0];
+@@ -304,13 +332,43 @@
+     const auto load_start=Clock::now();
+ #if NCNN_VULKAN
+     GpuInstance instance;
++    std::unique_ptr<ncnn::VulkanDevice> owned_device;
+     const ncnn::VulkanDevice* device=0;
+     if(vulkan) {
+-        CHECK(ncnn::create_gpu_instance()==0);
++        char requested_loader[PATH_MAX]={0};
++        if(!vulkan_loader.empty()) {
++#if !NCNN_SIMPLEVK
++            std::fprintf(stderr,"--vulkan-loader requires NCNN_SIMPLEVK\n");
++            return 1;
++#else
++            CHECK(realpath(vulkan_loader.c_str(),requested_loader));
++            struct stat loader_stat;
++            CHECK(stat(requested_loader,&loader_stat)==0 && S_ISREG(loader_stat.st_mode));
++#endif
++        }
++        CHECK(ncnn::create_gpu_instance(vulkan_loader.empty()?0:requested_loader)==0);
+         instance.active=true;
++#if NCNN_SIMPLEVK
++        if(!vulkan_loader.empty()) {
++            Dl_info loaded_info={};
++            char loaded_path[PATH_MAX]={0};
++            CHECK(dladdr(reinterpret_cast<void*>(ncnn::vkGetInstanceProcAddr),&loaded_info)!=0);
++            CHECK(loaded_info.dli_fname && realpath(loaded_info.dli_fname,loaded_path));
++            CHECK(std::strcmp(requested_loader,loaded_path)==0);
++            std::printf("ncnn Vulkan loader: %s\n",loaded_path);
++        }
++#endif
+         CHECK(ncnn::get_gpu_count()==1);
+-        device=ncnn::get_gpu_device(0);
++        if(robust_buffer_access!=-1) {
++            owned_device.reset(new ncnn::VulkanDevice(0,robust_buffer_access!=0));
++            device=owned_device.get();
++        } else device=ncnn::get_gpu_device(0);
+         CHECK(device && device->is_valid());
++        if(robust_buffer_access!=-1) {
++            const bool expected=robust_buffer_access!=0 && device->info.physicalDevicefeatures().robustBufferAccess;
++            CHECK(device->enabled_robust_buffer_access()==expected);
++            std::printf("ncnn robustness: requested=%d enabled=%d owned_device=1\n",robust_buffer_access,device->enabled_robust_buffer_access()?1:0);
++        }
+         std::printf("ncnn device: %s\n",device->info.device_name());
+     }
+ #endif

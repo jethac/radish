@@ -1,5 +1,12 @@
 # Radish status
 
+## 2026-11-02: explicit application robustness pair passes
+
+After correcting discarded-tail reads in four ncnn shader families, the same binary/ICD/explicit loader passes the full model with robustness enabled and disabled. Resident fixed-core time falls **51.504783→34.333299 seconds (33.3396%)**; both complete references and retained accepted output bytes pass. All 589 GPU layers and all 1,520 ordered command geometries/chunks/submissions remain; total submissions stay 10,809. Driver support and the application default remain unchanged.
+
+This is a workload-scoped explicit app feature choice after source/native bounds review. The sequential pair has 14.4 MiB versus zero swap, and does not establish arbitrary model safety, a CPU win or end-to-end speech latency. Both services remain active, no new faults occur, and original caps/reserve hold. The loader is selected and verified explicitly. [Source fixes, native evidence, timings and reproduction](EXPLICIT_ROBUSTNESS.md).
+
+
 ## 2026-11-02: normalization submission recovery passes
 
 With math batching fixed at eight, the next queue-only change reduces resident fixed-core time from **52.746539 to 51.440372 seconds (2.4763%)**. First extraction falls from 52.666168 to 51.590609 seconds. Both complete 562,342-value reference checks pass and the saved outputs retain the accepted bytes. All 589 layers execute on the GPU.

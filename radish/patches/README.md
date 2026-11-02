@@ -644,3 +644,11 @@ d468a7b2dcadda77b4e06a286eba806aac28c6222f0f3ec9e8330cddf8dba657  0035-ncnn-inst
 | `0045-radish-shared-resource-batching.patch` | After complete 0044 storage-Cube/multisample stack | Resource-based eligibility preserves guards and native code; same-binary tiled1→8 resident fixed-core time falls22.0028%, exact outputs. Sequential pair, candidate23.6MiB swap and remaining53.76% historical regression explicit. |
 
 | `0045-radish-short-buffer-batching.patch` | After shared-resource batching0045 | Bounded two-SSBO loop-free class; only225 normalization submit counts change,2,721 fewer, resident fixed-core2.4763% lower with exact outputs. Shader/math/geometry/guards unchanged; sequential conditions explicit. |
+
+## Explicit application robustness and bounded tails (0045)
+
+- `0045-ncnn-per-device-robustness.patch`: apply after the complete accepted 0042 ncnn stack. Adds an explicit per-device core feature choice, preserving the default.
+- `0045-ncnn-tail-loads.patch`: four active stock shader families; bounds discarded spatial/paired loads before opting out of robustness. Rebuild embedded headers and their owning object.
+- `0045-model-explicit-device-loader.patch`: separate private model-runner delta, applied at the Radish root. Uses an owned device and verified absolute loader path; the accepted builder remains unchanged.
+
+Both feature modes pass the full fixed core; resident51.504783→34.333299 seconds with exact outputs and unchanged submission schedule. This is audited-workload qualification, not a default flip or arbitrary model safety. See `../EXPLICIT_ROBUSTNESS.md`.
