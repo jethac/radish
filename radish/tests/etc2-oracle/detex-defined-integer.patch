@@ -1,0 +1,58 @@
+--- a/decompress-eac.c
++++ b/decompress-eac.c
+@@ -183,7 +183,7 @@
+ 	if (base_codeword == - 128)
+ 		// Not allowed in encoding. Decoder should handle it but we don't do that yet.
+ 		return false;
+-	int base_codeword_times_8 = base_codeword << 3;				// Arithmetic shift.
++	int base_codeword_times_8 = base_codeword * 8;
+ 	int modifier_index = (qword & 0x000F000000000000) >> 48;
+ 	const int8_t *modifier_table = eac_modifier_table[modifier_index];
+ 	int multiplier_times_8 = (qword & 0x00F0000000000000) >> (52 - 3);
+--- a/decompress-etc.c
++++ b/decompress-etc.c
+@@ -57,7 +57,7 @@
+ 
+ static DETEX_INLINE_ONLY int complement3bitshifted_slow(int x) {
+ 	if (x & 4)
+-		return ((x & 3) - 4) << 3;	// Note: shift is arithmetic.
++		return ((x & 3) - 4) * 8;
+ 	return x << 3;
+ }
+ 
+@@ -73,7 +73,7 @@
+ uint32_t table_codeword, int * DETEX_RESTRICT base_color_subblock,
+ uint8_t * DETEX_RESTRICT pixel_buffer) {
+ 	int pixel_index = ((pixel_index_word & (1 << i)) >> i)
+-		| ((pixel_index_word & (0x10000 << i)) >> (16 + i - 1));
++		| ((pixel_index_word & (0x10000u << i)) >> (16 + i - 1));
+ 	int r, g, b;
+ 	int modifier = modifier_table[table_codeword][pixel_index];
+ 	r = detexClamp0To255(base_color_subblock[0] + modifier);
+@@ -276,7 +276,7 @@
+ 	uint32_t *buffer = (uint32_t *)pixel_buffer;
+ 	for (int i = 0; i < 16; i++) {
+ 		int pixel_index = ((pixel_index_word & (1 << i)) >> i)			// Least significant bit.
+-			| ((pixel_index_word & (0x10000 << i)) >> (16 + i - 1));	// Most significant bit.
++			| ((pixel_index_word & (0x10000u << i)) >> (16 + i - 1));	// Most significant bit.
+ 		int r = paint_color_R[pixel_index];
+ 		int g = paint_color_G[pixel_index];
+ 		int b = paint_color_B[pixel_index];
+@@ -487,7 +487,7 @@
+ uint32_t pixel_index_word, uint32_t table_codeword,
+ int * DETEX_RESTRICT base_color_subblock, uint8_t * DETEX_RESTRICT pixel_buffer) {
+ 	int pixel_index = ((pixel_index_word & (1 << i)) >> i)
+-		| ((pixel_index_word & (0x10000 << i)) >> (16 + i - 1));
++		| ((pixel_index_word & (0x10000u << i)) >> (16 + i - 1));
+ 	int r, g, b;
+ 	int modifier = punchthrough_modifier_table[table_codeword][pixel_index];
+ 	r = detexClamp0To255(base_color_subblock[0] + modifier);
+@@ -639,7 +639,7 @@
+ 	uint32_t *buffer = (uint32_t *)pixel_buffer;
+ 	for (int i = 0; i < 16; i++) {
+ 		int pixel_index = ((pixel_index_word & (1 << i)) >> i)			// Least significant bit.
+-			| ((pixel_index_word & (0x10000 << i)) >> (16 + i - 1));	// Most significant bit.
++			| ((pixel_index_word & (0x10000u << i)) >> (16 + i - 1));	// Most significant bit.
+ 		int r = paint_color_R[pixel_index];
+ 		int g = paint_color_G[pixel_index];
+ 		int b = paint_color_B[pixel_index];

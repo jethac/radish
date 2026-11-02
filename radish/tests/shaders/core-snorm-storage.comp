@@ -1,0 +1,27 @@
+#version 450
+layout(local_size_x=1) in;
+layout(set=0,binding=0,rgba8) uniform imageBuffer unorm_image;
+layout(set=0,binding=1,rgba8_snorm) uniform imageBuffer snorm_image;
+layout(set=0,binding=2,rgba8ui) uniform uimageBuffer uint_image;
+layout(set=0,binding=3,rgba8i) uniform iimageBuffer sint_image;
+layout(set=0,binding=4,std430) writeonly buffer Results { uint words[]; };
+void main() {
+ uint lane=gl_GlobalInvocationID.x;
+ uvec4 u=uvec4(roundEven(imageLoad(unorm_image,int(lane))*255.0));
+ ivec4 s=ivec4(roundEven(imageLoad(snorm_image,int(lane))*127.0));
+ uvec4 ui=imageLoad(uint_image,int(lane));
+ ivec4 si=imageLoad(sint_image,int(lane));
+ for(uint c=0;c<4;c++) {
+  words[lane*16u+c]=u[c]; words[lane*16u+4u+c]=uint(s[c]);
+  words[lane*16u+8u+c]=ui[c]; words[lane*16u+12u+c]=uint(si[c]);
+ }
+ if(lane==0u) {
+  uvec4 high=floatBitsToUint(imageLoad(snorm_image,16));
+  uvec4 negative=floatBitsToUint(imageLoad(snorm_image,int(lane)-1));
+  for(uint c=0;c<4;c++) {words[128u+c]=high[c];words[132u+c]=negative[c];}
+ }
+ imageStore(unorm_image,int(lane+8u),vec4(0,1,0,1));
+ imageStore(snorm_image,int(lane+8u),vec4(-1,0,1,-1));
+ imageStore(uint_image,int(lane+8u),uvec4(lane,63u+lane,127u+lane,247u+lane));
+ imageStore(sint_image,int(lane+8u),ivec4(-120+int(lane),-1,0,120-int(lane)));
+}

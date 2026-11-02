@@ -1,0 +1,30 @@
+{
+  "public_builder": {
+    "path": "/home/jethac/Projects/radish/radish/scripts/build-core-compute.py",
+    "bytes": 6068,
+    "sha256": "700cfde28c3600a58d608ce1e27962437462e7c8851434bd08893d48a50ebdc0"
+  },
+  "actual_build_receipt": {
+    "path": "/run/media/jethac/Shared/radish/compute11-public-builder-check-0045/receipt.json",
+    "bytes": 49683,
+    "sha256": "dc91e70556b2994b73d1794050714e7d4dff38d2369735908dc460f1d5817f71"
+  },
+  "validated_units": [
+    "descriptor-host",
+    "etc2"
+  ],
+  "scope": "Actual AArch64 compile/link plus SPIR-V validation exercises new shaderless and vendored-oracle build paths; other source units match their independently built releases.",
+  "resource_runner": {
+    "measured": {
+      "path": "/run/media/jethac/Shared/radish/compute11-resource-batch-v2-runner-0045/device-resource-batch.py",
+      "bytes": 19919,
+      "sha256": "ae3ea8ec5683c4c85eaa881b8d4068c705725291b8a08c68b17fe3f5a4d3dd37"
+    },
+    "public": {
+      "path": "/home/jethac/Projects/radish/radish/scripts/device-core-resource-batch.py",
+      "bytes": 19916,
+      "sha256": "c3ea550479340d4976e576a21a21ad621137291b47c066ec18214b6b13f4ddb2"
+    },
+    "delta": "Only TOP uses repository root derived from __file__; all original controls and checks unchanged."
+  }
+}

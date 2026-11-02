@@ -5,21 +5,20 @@ come before further performance experiments. The selected fcd/d332 inference
 stack is frozen. The intended GPU budget is entirely compute; CPU handles
 graphics. No graphics headroom reservation should be added. Any removal must
 identify a real source reservation and preserve correctness/resource guards;
-this is not authorization to change OS graphics or services. The private API1.1 candidate d6b92001 now passes the bounded public contract and five BASIC cases; it is not a
-qualified replacement. See the [machine-readable ledger](results/vulkan11-compute-ledger-0045.json).
+this is not authorization to change OS graphics or services. The private integrated candidate ac2a5bbe includes representative resource corrections. It remains separate from selected inference and is not a qualified replacement. See the [machine-readable ledger](results/vulkan11-compute-ledger-0045.json).
 
 | Area | Evidence | Remaining work |
 | --- | --- | --- |
 | Public 1.1 API, queries and promoted aliases | Real public1.1 negotiation,28core names/23KHR aliases and selected error/query semantics pass | Complete promoted command semantics and applicable API CTS |
 | SPIR-V1.0–1.3 and BASIC | Legal1.1 custom BASIC consumer plus all six original BASIC compute CTS cases and four SPIR-V version cases pass | Full generic shader semantics, legal geometry/precision/memory combinations and remaining applicable shader CTS |
-| Limits and resource combinations | Original guards; five-buffer Q4; combined12UBO+5SSBO+4image+hidden metadata actual PASS | All applicable limits/combinations,31 retained property failures and additional maxFramebufferLayers obligation; no queue-based waiver |
-| Required formats | Static audit of47 compute-relevant rows; four packed storage-texel admissions need correction | Packed SNORM numerical failure to fix; ETC2/EAC host implementation and independent decoder ready, GPU qualification pending; applicable full format/filter/transfer CTS |
+| Limits and resource combinations | Original guards; five-buffer Q4; combined12UBO+5SSBO+4image+hidden metadata actual PASS | All applicable limits/combinations;15 remaining property messages after16 fixes; no queue-based waiver |
+| Required formats | Static audit of47 rows; four packed storage formats and core SNORM endpoints/OOB now pass representative checks | ETC2/EAC sRGB numerical failure remains; complete required format/filter/transfer CTS |
 | Images and transfers | Representative cube, MS, oversized-array, storage and atomic consumers | Required formats/types/views/mips/alias/copy/filter combinations and CTS |
 | Buffers and robustness | Corrected legal exact-range and subword consumers; original invalid module erratum retained | Scalar/vector/array/alias/atomic and memory-model CTS |
 | Descriptors and lifetimes | Static compaction, dynamic offsets, templates, two-round valid recording consumers | Pools, copies, compatible layouts, destruction/re-record and allocation errors |
 | Memory and synchronization | Guarded allocations, coherent mapping, barriers/events/queries/binary and timeline consumers | Full applicable allocation/alias/cache/visibility/order/lifetime CTS |
 | Advertised optional features | Scoped storage8/16, Int8 and timeline actuals | Their complete conditional contracts and applicable extension CTS; other optional bits remain truthful |
-| Standard-version obligations beyond compute execution |31 property messages and required graphics-oriented format cells retained | Normative applicability or real implementation; no invented compute-only conformance profile |
+| Standard-version obligations beyond compute execution |15 current property messages, historical31 and required graphics-oriented format cells retained | Normative applicability or real implementation; no invented compute-only conformance profile |
 
 The official pinned CTS is revision
 `5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e`, original binary
@@ -92,17 +91,41 @@ output check failed, and a separate diagnostic captured incorrect raw load bits
 before scaling, rounding or integer conversion. All original oracles remain
 unchanged; the failure is [retained explicitly](results/packed-snorm-failure-0045.json).
 The diagnostic changes compiler lifetimes and cannot reconstruct the earlier
-capture's unobserved state. No packed SNORM qualification is claimed.
+capture's unobserved state. The subsequent signed-descriptor/NIR correction passes the unchanged original oracle and a separate legal RGBA8 endpoint/OOB supplement; see [the fixed result](results/snorm-storage-fixed-0045.json). This remains representative format qualification.
 
 The ETC2/EAC candidate reuses Mesa's block-aware image helpers and FDL5 layout.
 Its independent CPU reference reuses the ISC-licensed
 [detex decoder at the pinned revision](https://github.com/hglm/detex/tree/cab11584d9be140602a66fd9a88ef0b99f08a97a),
-with original notices and a small defined-integer patch retained. Host sanitizer
-checks and the ten-format consumer build pass; GPU qualification is separate.
+with original notices and a small defined-integer patch retained. Host sanitizer checks and the native gate pass. Format0 passes two rounds; format1 sRGB fails its unchanged numerical oracle. A diagnostic shows the four sampled taps exactly average to the filtered GPU value, leaving decode/conversion precision unresolved. [Failure and source provenance](results/etc2-eac-partial-0045.json) remain explicit; no complete family or compression-feature promotion is claimed.
 
-Property source work corrects feature-disabled defaults and implements shared
-input-attachment descriptor objects. Attachment image and mixed-stage push
-increments are separate host candidates. They are not counted as actual CTS
-passes. The normative ledger also includes maxFramebufferLayers: the current
-zero value fails the required minimum256 even though this pinned CTS path does
-not report it. The31 observed messages are not an exhaustive requirement list.
+The integrated ac2a replay of the same original five information cases remains
+four Pass and one Fail, with exactly 16 of the original 31 messages removed and
+15 remaining. The actual query now reports maxFramebufferLayers256, closing a
+normative gap that this older CTS did not flag. [Exact remaining messages and
+source-backed changes](results/official11-integrated-info-0045.json) are retained;
+there is no compute-queue waiver or conformance claim.
+
+The [bounded resource batch](results/compute11-resource-batch-0045.json) passes
+INPUT_ATTACHMENT host descriptor lifetimes, core SNORM endpoints/OOB, mixed-stage
+push constants with timeline operations, and tiny attachment image sampling,
+layout and copy paths. It performs five dispatches under the original controls.
+These host/image checks do not qualify rendering or fragment input execution.
+
+Depth-layout erratum: DEPTH_STENCIL_READ_ONLY_OPTIMAL requires attachment usage
+in the pinned1.1 contract. Earlier sampled-only depth consumers need valid-usage
+requalification for that path. The new depth source/consumer is a later private
+candidate and is not part of the ac2a result.
+
+The [published patch stack](results/compute11-private-source-stack-0045.json)
+reconstructs ac2a exactly. Apply its seven increments after the public1.1 patch,
+in the listed order. `scripts/build-core-compute.py --only packed-storage
+snorm-storage mixed-push attachment descriptor-host etc2` selects the added
+consumers (also supply the existing builder's required build/header paths).
+The ETC source is included with its failed qualification clearly marked.
+
+For the consolidated resource scope, stage builder outputs as `descriptor_host`,
+`core`/`core.spv` (snorm-storage), `mixed`/`mixed.spv`, and
+`attachment`/`attachment.spv`. Use `device-core-resource-batch.py` compile then
+probe with the same immutable payload and matching internal headers. The
+[build and runner reproduction receipt](results/compute11-reproduction-0045.json)
+records actual builder validation and the sole repository-path normalization.

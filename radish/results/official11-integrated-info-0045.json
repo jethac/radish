@@ -1,0 +1,134 @@
+{
+  "status": "4 Pass / 1 Fail; no conformance claim",
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-required-properties-0045/integrated-official-info-review.json",
+      "bytes": 5853,
+      "sha256": "3269091070b086e17290c6430784566ad06fe55972d984bf2bb6bc479ce408dc"
+    },
+    "review": {
+      "status": "independent review complete; official device_properties still fails",
+      "before": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-info/probe/info.qpa",
+        "bytes": 16553,
+        "sha256": "f7504a00ef0fc01b66df2588ed07c8f20660e5522b42cd035ad1b1bc732fe956"
+      },
+      "after": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-integrated-info/probe/info.qpa",
+        "bytes": 15043,
+        "sha256": "d0a6e566908aae3fb5c1c29b4da43073fc433c00fd54ee1516f7bec08de2b8d1"
+      },
+      "run_log": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-integrated-info/probe/run.log",
+        "bytes": 1194,
+        "sha256": "a2859fd3ab37668f5ae47ae05e9498b2f5e27f149e90cd61580592cf3b871fc5"
+      },
+      "cases": [
+        {
+          "case": "dEQP-VK.info.device_features",
+          "status": "Pass",
+          "message": "Query succeeded"
+        },
+        {
+          "case": "dEQP-VK.info.device_memory_properties",
+          "status": "Pass",
+          "message": "Querying memory properties succeeded"
+        },
+        {
+          "case": "dEQP-VK.info.device_properties",
+          "status": "Fail",
+          "message": "deviceProperties - feature limits failed"
+        },
+        {
+          "case": "dEQP-VK.info.device_queue_family_properties",
+          "status": "Pass",
+          "message": "Querying queue properties succeeded"
+        },
+        {
+          "case": "dEQP-VK.info.physical_devices",
+          "status": "Pass",
+          "message": "Pass"
+        }
+      ],
+      "counts": {
+        "original_failure_messages": 31,
+        "remaining_failure_messages": 15,
+        "removed_messages": 16,
+        "info_pass": 4,
+        "info_fail": 1
+      },
+      "removed_messages": [
+        "limit Validation failed maxPerStageDescriptorInputAttachments not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxDescriptorSetInputAttachments not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxDrawIndexedIndexValue not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxDrawIndirectCount not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxViewports not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxViewportDimensions[0] not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxViewportDimensions[1] not valid-limit type MIN - actual is 0",
+        "limit validation failed, viewportBoundsRange[0] not valid-limit type MAX actual is 0",
+        "limit validation failed, viewportBoundsRange[1] not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxFramebufferWidth not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxFramebufferHeight not valid-limit type MIN - actual is 0",
+        "limit validation failed, pointSizeRange[0] not valid-limit type MIN - actual is 0",
+        "limit validation failed, pointSizeRange[1] not valid-limit type MIN - actual is 0",
+        "limit validation failed, lineWidthRange[0] not valid-limit type MIN - actual is 0",
+        "limit validation failed, lineWidthRange[1] not valid-limit type MIN - actual is 0",
+        "limit validation failed, viewportBoundsRange[1] of 0is less than 2*maxViewportDimension[1] of 0"
+      ],
+      "remaining_messages": [
+        "limit Validation failed maxVertexInputAttributes not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxVertexInputBindings not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxVertexInputAttributeOffset not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxVertexInputBindingStride not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxVertexOutputComponents not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxFragmentInputComponents not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxFragmentOutputAttachments not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxFragmentCombinedOutputResources not valid-limit type MIN - actual is 0",
+        "limit Validation failed subPixelPrecisionBits not valid-limit type MIN - actual is 0",
+        "limit validation failed, framebufferColorSampleCounts not valid-limit type bitmask actual is 0",
+        "limit validation failed, framebufferDepthSampleCounts not valid-limit type bitmask actual is 0",
+        "limit validation failed, framebufferStencilSampleCounts not valid-limit type bitmask actual is 0",
+        "limit validation failed, framebufferNoAttachmentsSampleCounts not valid-limit type bitmask actual is 0",
+        "limit Validation failed maxColorAttachments not valid-limit type MIN - actual is 0",
+        "limit Validation failed maxSampleMaskWords not valid-limit type MIN - actual is 0"
+      ],
+      "queried_values": {
+        "maxPerStageDescriptorInputAttachments": "4",
+        "maxDescriptorSetInputAttachments": "4",
+        "maxDrawIndexedIndexValue": "16777215",
+        "maxDrawIndirectCount": "1",
+        "maxViewports": "1",
+        "maxFramebufferWidth": "4096",
+        "maxFramebufferHeight": "4096",
+        "maxFramebufferLayers": "256",
+        "pointSizeRange": [
+          1,
+          1
+        ],
+        "lineWidthRange": [
+          1,
+          1
+        ],
+        "maxViewportDimensions": [
+          4096,
+          4096
+        ],
+        "viewportBoundsRange": [
+          -8192,
+          8191
+        ]
+      },
+      "semantic_accounting": "7 disabled-feature defaults messages,2 input-attachment descriptor messages,7 geometry messages removed exactly as predicted. Actual maxFramebufferLayers256 additionally meets pinned normative minimum though old CTS did not flag0. Host/image functional proof is separate resource batch95866.",
+      "open": "15 retained messages are mandatory unresolved obligations; no graphics waiver or conformance claim. Next private f8ae maxColorAttachments4 source is not included in this ac2a actual.",
+      "postflight": "447ms13.3MiB0swap; CTS process1 correctly reflects casefailure, allQPA preserved, collection clean/servicesactive/faultcheckPASS."
+    }
+  },
+  "driver": {
+    "path": "/run/media/jethac/Shared/radish/compute11-snorm-fix-build-0045/libvulkan_radish.so",
+    "bytes": 49070016,
+    "sha256": "ac2a5bbe108bb972c9628b2e9606f900ba19d5176ca9b42f4ed7e6cafebb8a46"
+  },
+  "source_stack": "compute11-private-source-stack-0045.json",
+  "historical": "official11-cts-info-0045.json",
+  "scope": "Exact unmodified original CTS source5a9cb324/binary0e715f9c and original five cases/controls. Sixteen failure messages removed, fifteen remain. Numeric properties alone do not establish all operational semantics."
+}

@@ -1,0 +1,60 @@
+{
+  "status": "passed finite vendor/license/adapter source review; host execution and expanded known fixtures pending",
+  "release": {
+    "path": "/run/media/jethac/Shared/radish/etc2-eac-resource-reuse-0045/oracle/release.json",
+    "bytes": 4181,
+    "sha256": "db96a8c06bbc81667ed33a290257043d407d2038cf298349894a39a27cc7a158"
+  },
+  "adapter": {
+    "path": "/run/media/jethac/Shared/radish/etc2-eac-resource-reuse-0045/oracle/etc_oracle.c",
+    "bytes": 1943,
+    "sha256": "7c666ff987b994bbe43ab15a5c9c246903eb0c3843d64f6d0fb13adf6f6f91b4"
+  },
+  "vendor_patch": {
+    "path": "/run/media/jethac/Shared/radish/etc2-eac-resource-reuse-0045/oracle/detex-defined-integer.patch",
+    "bytes": 2649,
+    "sha256": "9a46a805f2987663be471b10886c33a37ad59091746b23da0f606fa82f38da5e"
+  },
+  "selftest": {
+    "path": "/run/media/jethac/Shared/radish/etc2-eac-resource-reuse-0045/oracle/selftest.c",
+    "bytes": 2597,
+    "sha256": "a50e02ee30c9fd5676d20a69a2031bb498ad85364ab4f2d3ceaced666cc6e2d4"
+  },
+  "selected": "hglm/detex cab11584d9be140602a66fd9a88ef0b99f08a97a; ISC notices retained in each file",
+  "normative": "https://registry.khronos.org/DataFormat/specs/1.4/dataformat.1.4.html",
+  "known_valid_eac": {
+    "block": "0000000000000000",
+    "parameters": "base0/table0/multiplier0/selector0 for each pixel",
+    "signed_exact_integer": -3,
+    "unsigned_exact_integer": 1,
+    "signed_float": "-3/1023",
+    "unsigned_float": "1/2047"
+  },
+  "reserved_encoding_rule": {
+    "block": "8000000000000000",
+    "basis": "base -128 forbidden for encoder but decoder must substitute -127",
+    "signed_exact_integer": -1019
+  },
+  "representation": [
+    "ETC RGB/punchthrough/alpha outputsRGBA8 mapped to [0,1]",
+    "sRGB transformation applies RGB only; alpha remains linear",
+    "Unsigned EAC inverse replicated16\u219211 bits then /2047",
+    "Signed EAC sign-magnitude inverse replicated16\u219211 bits then /1023; missing channels0/alpha1"
+  ],
+  "source_defects_found": {
+    "etcdec972875": "signed float APIs decode unsigned then reinterpret; valid signed zero block wrong",
+    "SwiftShadercddb5c91": "getSingleChannel adds unsigned +4 in signed EAC branch, giving+1 rather than-3 on valid zero block",
+    "ANGLE09dcbb29": "getSingleEACChannel likewise unconditional+4",
+    "detexcab11584": "genuine signed formula; reserved -128 returnsfalse handled by adapter, negative-left-shift expressions made defined without formula changes"
+  },
+  "other_candidates": {
+    "KTXe0e9868": "external/etcdec per-file Ericsson license has restrictions; not selected as permissive reuse",
+    "etc2comp39422c1": "Apache2 encoder-centered multi-file class API; larger integration than detex for independent block oracle"
+  },
+  "limitations": [
+    "Random finite/domain smoke is not a correctness oracle",
+    "Add explicit nonzero signed multiplier and midlevel sRGB/transparent punchthrough expected fixtures",
+    "Device comparisons must allow specification-permitted EAC fixed-point replication precision",
+    "No decoder added to driver/runtime; no upstream messages or bug filings authorized/performed"
+  ]
+}

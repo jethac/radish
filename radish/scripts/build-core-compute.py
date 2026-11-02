@@ -18,6 +18,7 @@ def main():
     parser.add_argument('mesa_build', type=Path)
     parser.add_argument('output', type=Path)
     parser.add_argument('--gcc-install-dir', type=Path, default=os.environ.get('RADISH_GCC_INSTALL'))
+    parser.add_argument('--only', nargs='+', help='Build only the named probe units.')
     args = parser.parse_args()
     top = Path(__file__).resolve().parents[2]
     build = args.mesa_build.resolve(strict=True)
@@ -50,19 +51,45 @@ def main():
              ('timeline', 'core_timeline.c', 'core-timeline.comp', 'vulkan1.0'),
              ('int8', 'core_int8.c', 'core-int8.comp', 'vulkan1.0'),
              ('public11', 'core_public11_basic.c', 'core-public11-basic.comp', 'vulkan1.1'),
-             ('combined', 'core_combined_resources.c', 'core-combined-resources.comp', 'vulkan1.0')]
+             ('combined', 'core_combined_resources.c', 'core-combined-resources.comp', 'vulkan1.0'),
+             ('packed-storage', 'core_packed_storage.c', 'core-packed-storage.comp', 'vulkan1.0'),
+             ('snorm-storage', 'core_snorm_storage.c', 'core-snorm-storage.comp', 'vulkan1.0'),
+             ('mixed-push', 'core_mixed_push.c', 'core-mixed-push.comp', 'vulkan1.0'),
+             ('attachment', 'core_attachment.c', 'core-attachment.comp', 'vulkan1.0'),
+             ('descriptor-host', 'core_descriptor_host.c', None, None),
+             ('etc2', 'core_etc2.c', 'core-etc2.comp', 'vulkan1.0')]
+    if args.only:
+        unknown = set(args.only) - {unit[0] for unit in units}
+        if unknown:
+            parser.error('Unknown units: ' + ', '.join(sorted(unknown)))
+        units = [unit for unit in units if unit[0] in args.only]
     records = {}
     for name, cfile, glsl, target in units:
         source = top / 'radish/tests' / cfile
-        shader = top / 'radish/tests/shaders' / glsl
-        argv = command + ['-fuse-ld=lld', '--gcc-install-dir=' + str(gcc),
-                  '-I' + str(top / 'radish/tests'), str(source), '-o', str(output / name), '-ldl', '-pthread']
-        commands = [argv, ['glslangValidator', '-V', '--target-env', target, str(shader), '-o', str(output / (name + '.spv'))],
-                    ['spirv-val', '--target-env', target, str(output / (name + '.spv'))]]
+        shader = top / 'radish/tests/shaders' / glsl if glsl else None
+        prefix = command + ['-fuse-ld=lld', '--gcc-install-dir=' + str(gcc),
+                            '-I' + str(top / 'radish/tests')]
+        inputs = [source]
+        if name == 'etc2':
+            oracle = top / 'radish/tests/etc2-oracle'
+            prefix += ['-I' + str(oracle)]
+            inputs += [oracle / path for path in ['etc_oracle.c', 'vendor/decompress-etc.c',
+                                                  'vendor/decompress-eac.c', 'vendor/clamp.c']]
+            objects = [output / ('etc2-%d.o' % i) for i in range(len(inputs))]
+            commands = [prefix + (['-Wno-error=missing-prototypes'] if 'vendor' in path.parts else []) +
+                        ['-c', str(path), '-o', str(obj)] for path, obj in zip(inputs, objects)]
+            commands += [prefix + list(map(str, objects)) + ['-o', str(output / name), '-ldl', '-pthread', '-lm']]
+        else:
+            commands = [prefix + [str(source), '-o', str(output / name), '-ldl', '-pthread']]
+        files = inputs + [output / name]
+        if shader:
+            commands += [['glslangValidator', '-V', '--target-env', target, str(shader), '-o', str(output / (name + '.spv'))],
+                         ['spirv-val', '--target-env', target, str(output / (name + '.spv'))]]
+            files += [shader, output / (name + '.spv')]
         for index, argv in enumerate(commands):
             with (output / (name + '-%d.log' % index)).open('x') as log:
                 subprocess.run(argv, cwd=entry['directory'], stdout=log, stderr=subprocess.STDOUT, check=True)
-        records[name] = {'commands': commands, 'files': {str(path): identity(path) for path in [source, shader, output / name, output / (name + '.spv')]}}
+        records[name] = {'commands': commands, 'files': {str(path): identity(path) for path in files}}
     (output / 'receipt.json').write_text(json.dumps({'units': records, 'scope': 'Host build only; probes require the matching internal driver ABI.'}, indent=2) + '\n')
     print('PASS host build: ' + str(output))
 

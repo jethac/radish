@@ -1,0 +1,20 @@
+--- a/src/freedreno/radish/rd_command.c
++++ b/src/freedreno/radish/rd_command.c
+@@ -170,11 +170,12 @@
+    VkShaderStageFlags stages, uint32_t offset, uint32_t size, const void *values)
+ {
+    VK_FROM_HANDLE(rd_command_buffer, command, handle);
+-   if ((stages & ~VK_SHADER_STAGE_COMPUTE_BIT) || offset > 128 || size > 128 - offset) {
+-      vk_command_buffer_set_error(&command->vk, VK_ERROR_FEATURE_NOT_PRESENT);
+-      return;
+-   }
+-   memcpy((uint8_t *)command->push + offset, values, size);
++   if (offset > 128 || size > 128 - offset) {
++      vk_command_buffer_set_error(&command->vk, VK_ERROR_FEATURE_NOT_PRESENT);
++      return;
++   }
++   if (stages & VK_SHADER_STAGE_COMPUTE_BIT)
++      memcpy((uint8_t *)command->push + offset, values, size);
+ }
+ 
+ static struct rd_dispatch *

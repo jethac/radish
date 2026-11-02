@@ -1,0 +1,28 @@
+--- a/src/freedreno/radish/rd_instance.c
++++ b/src/freedreno/radish/rd_instance.c
+@@ -181,6 +181,7 @@
+       .maxPerStageDescriptorStorageBuffers = 5,
+       .maxPerStageDescriptorSampledImages = 16,
+       .maxPerStageDescriptorStorageImages = 4,
++      .maxPerStageDescriptorInputAttachments = 4,
+       .maxPerStageResources = 128,
+       .maxDescriptorSetSamplers = 96,
+       .maxDescriptorSetUniformBuffers = 72,
+@@ -189,6 +190,7 @@
+       .maxDescriptorSetStorageBuffersDynamic = 4,
+       .maxDescriptorSetSampledImages = 96,
+       .maxDescriptorSetStorageImages = 24,
++      .maxDescriptorSetInputAttachments = 4,
+       .timestampComputeAndGraphics = true,
+       .timestampPeriod = 1000000000.0f / 19200000.0f,
+       .maxStorageBufferRange = 128 * 1024 * 1024,
+--- a/src/freedreno/radish/rd_descriptor.c
++++ b/src/freedreno/radish/rd_descriptor.c
+@@ -15,6 +15,7 @@
+    case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
+    case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
+    case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
++   case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
+       return true;
+    default:
+       return false;

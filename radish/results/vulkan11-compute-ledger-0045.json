@@ -7,18 +7,19 @@
     "status": "frozen"
   },
   "candidate": {
-    "driver": "d6b92001d95017bf560647d58a68b62f5ac5b6c54139eb235c8836ebcf8ad7e8",
-    "status": "bounded public1.1 contract and fiveBASICcases actualPASS; not fullcontract/conformance or selectedinference"
+    "driver": "ac2a5bbe108bb972c9628b2e9606f900ba19d5176ca9b42f4ed7e6cafebb8a46",
+    "status": "private integrated source; representative resource fixes pass; property case still fails; not selected inference/conformance"
   },
   "official_cts": {
     "source_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
     "binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
     "state": "Exact unmodified binary: first5info4Pass/1propertiesFail, then4SPIRVversion+6BASICcompute casesPass. These15executedcases are14Pass/1Fail, not totalrequiredcoverage.",
     "modified_harness": "f85cb13b diagnostics only, never official passes",
-    "remaining_property_failures": 31,
-    "actual_record": "official11-cts-info-0045.json",
+    "remaining_property_failures": 15,
+    "actual_record": "official11-integrated-info-0045.json",
     "shader_record": "official11-cts-shaders-0045.json",
-    "additional_normative_gap": "maxFramebufferLayers currently0 versus required256; pinned info CTS checks0 so its31messages are not an exhaustive obligation list."
+    "additional_normative_gap": "maxFramebufferLayers is now256 in actual query; old CTS did not check required minimum. This closure does not make the failure list exhaustive.",
+    "historical_property_failures": 31
   },
   "categories": [
     {
@@ -31,32 +32,32 @@
     },
     {
       "id": "limits-31",
-      "requirement": "31 retained required-property failure messages",
-      "implementation": "No invented graphics values. Exact failed CTS artifact retained",
-      "evidence": "cts-limit-applicability-0044-11ct63go/sampled-ms-property-review.json",
-      "remaining": "Resolve version/conformance applicability with primary specification and original CTS. Categories are2inputattachment,8vertex/fragment,3draw/raster,6viewport,7framebuffer,1fragmentSampleMask,4point/line. No blanket queue waiver; no standalone normal Compute1.1 profile assumed. Additional maxFramebufferLayers0/minimum256 obligation is tracked despite no CTS failure message. Five disabled-feature defaults and descriptor/attachment source increments are host candidates, not actual property passes.",
+      "requirement": "Historical31 required-property failure messages;15 remain after16 source-backed removals",
+      "implementation": "Feature-disabled defaults, input descriptor host support and image-backed geometry corrected",
+      "evidence": "official11-integrated-info-0045.json and compute11-resource-batch-0045.json",
+      "remaining": "Eight vertex/fragment limits, subPixelPrecisionBits, four framebuffer sample-count masks, maxColorAttachments and maxSampleMaskWords remain. No queue waiver or invented Compute1.1 profile; broader normative/CTS inventory still required.",
       "owner": "resource"
     },
     {
       "id": "format-unconditional",
       "requirement": "47 unconditional required compute-relevant format rows",
-      "implementation": "Private ebc four packed storage-texel admissions built; native compiler gate passes.",
-      "evidence": "packed-snorm-failure-0045.json retains original and diagnostic numerical failures with cleanpostflight.",
-      "remaining": "Fix SNORM typed-load defect and qualify all four packed formats, then applicable complete format CTS.",
+      "implementation": "Four packed admissions plus paired SINT/Mesa NIR SNORM conversion",
+      "evidence": "snorm-storage-fixed-0045.json: unchanged original packed oracle passes; legal coreRGBA8 endpoints/OOB supplement passes.",
+      "remaining": "Complete required format, precision, alias, transfer and filtering CTS; representative four-format checks are not the full matrix.",
       "owner": "resource"
     },
     {
       "id": "format-compression",
       "requirement": "At least one complete BC/ETC2+EAC/ASTC-LDR family required by mandatory-format footer",
       "implementation": "Complete10-format private resource backing host-built d903 using Mesa block/layout/view helpers; compression feature remainsfalse.",
-      "evidence": "ISC detexcab11584 oracle with retained notices/defined-integer patch, known fixtures and40960blocks passes hostASAN/UBSAN; consumer hostpaired028f/e3da.",
-      "remaining": "Actual complete10-format native/numerical/copy/view/filter validation, truthful feature admission and applicable CTS. Host source/oracle success does not qualify GPU behavior.",
+      "evidence": "etc2-eac-partial-0045.json: host decoder/sanitizers and native gate pass; format0 passes, format1 sRGB filtering fails; tap observations retained.",
+      "remaining": "Resolve sampled tap decode/conversion discrepancy without weakening oracle, then complete ten-format and applicable CTS before feature admission.",
       "owner": "resource"
     },
     {
       "id": "format-graphics-properties",
       "requirement": "Required blit/attachment/vertex format feature columns",
-      "implementation": "Not advertised; no CmdBlitImage/graphics execution backing",
+      "implementation": "RGBA8 optimal attachment usage/view/layout/copy resources and host input descriptors now pass representative checks; rendering, blend and broader required cells remain open.",
       "evidence": "Current format query and explicit compute queue; primary required-format table retained",
       "remaining": "Resolve standard conformance versus explicit compute scope, without fake flags or treating table cells as automatically waived. Blit queue applicability is separate from property obligation.",
       "owner": "resource"
@@ -97,7 +98,7 @@
       "id": "descriptor-layout",
       "requirement": "Layouts, immutable samplers, sparse binding numbers, static arrays, templates/copies/dynamic offsets",
       "implementation": "Logical1024 set descriptors with active64 static compaction; sorted bindings; retained layout references and sampler value copies",
-      "evidence": "Existing API5/resource/template actuals and prior lifetime source audit",
+      "evidence": "Existing API5/resource/template actuals and prior lifetime source audit; representative INPUT_ATTACHMENT pool/free/reset/write/copy/template lifecycle actual95866 passes.",
       "remaining": "Original CTS descriptor/pool/copy/consecutive-binding/compatible-layout and allocation-error cases. Optional opaque dynamic indexing remainsfalse, not silently accepted.",
       "owner": "resource"
     },
@@ -121,7 +122,7 @@
       "id": "execution-sync",
       "requirement": "Direct/indirect dispatch, shared/barrier, transfer\u2192shader\u2192host, events/queries/binary fence/semaphore and command order",
       "implementation": "Serialized worker/DRM sync, conservative waits/flushes, runtime sync support, real event/query transfer/compute paths",
-      "evidence": "core_api5/core_events_queries/core_workgroup_barriers/resource producers+consumers and actual guards",
+      "evidence": "core_api5/core_events_queries/core_workgroup_barriers/resource producers+consumers and actual guards; mixed COMPUTE|VERTEX push update and graphics-only poison preserve compute seed in full timeline consumer95866.",
       "remaining": "Original applicable pipeline/memory-model/synchronization/lifetime CTS, cross-submit visibility, alias dependencies and all legal workgroup forms; model output is not substitute.",
       "owner": "resource"
     },
@@ -311,5 +312,6 @@
     "user_intent": "All GPU budget forcompute; CPUhandlesgraphics; no reservedgraphicsheadroom",
     "next": "Resourceauthor sourceprovenancetrace; removeonly actualdocumentedreservation withoutblanketguardrelaxation",
     "system_scope": "No globalgraphics/service/clock/kernelchanges"
-  }
+  },
+  "depth_layout_erratum": "Pinned Vulkan1.1 DEPTH_STENCIL_READ_ONLY_OPTIMAL requires DEPTH_STENCIL_ATTACHMENT usage. Earlier sampled-only depth consumers are implementation observations for that path until valid-usage requalification; no retroactive public qualification."
 }

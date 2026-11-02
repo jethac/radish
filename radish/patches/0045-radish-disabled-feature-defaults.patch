@@ -1,0 +1,14 @@
+--- a/src/freedreno/radish/rd_instance.c
++++ b/src/freedreno/radish/rd_instance.c
+@@ -161,6 +161,11 @@
+       .maxSamplerAllocationCount = 4096,
+       .maxSamplerLodBias = 16.0f,
+       .maxSamplerAnisotropy = 1.0f,
++      .pointSizeRange = {1.0f, 1.0f},
++      .lineWidthRange = {1.0f, 1.0f},
++      .maxViewports = 1,
++      .maxDrawIndirectCount = 1,
++      .maxDrawIndexedIndexValue = (1u << 24) - 1,
+       .minTexelOffset = -8,
+       .maxTexelOffset = 7,
+       .subTexelPrecisionBits = 4,

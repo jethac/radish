@@ -1,0 +1,67 @@
+{
+  "status": "PASS representative host objects, SNORM, mixed push/timeline and attachment resources; no rendering qualification",
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-resource-batch-runner-0045/actual-review.json",
+      "bytes": 2580,
+      "sha256": "be0b0bf35657a0431d9a04ab8c5416a0e86e7d69224e36fcd7c79b5d11b36547"
+    },
+    "review": {
+      "status": "passed",
+      "scope": "Representative public shared-resource qualification; no graphics rendering or full Vulkan conformance claim",
+      "compile": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-resource-batch-v2/compile/run.log",
+        "bytes": 263382,
+        "sha256": "3aa023a670819e376f0a0582add86243f8b647380bfafc25c1dfb53d0c11901c"
+      },
+      "functional": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-resource-batch-v2/probe/run.log",
+        "bytes": 267401,
+        "sha256": "b946ed91cca1791909b376897d64619096952928008493efb2f61d49bd6544e3"
+      },
+      "runner": {
+        "path": "/run/media/jethac/Shared/radish/compute11-resource-batch-runner-0045/device-resource-batch.py",
+        "bytes": 19919,
+        "sha256": "ae3ea8ec5683c4c85eaa881b8d4068c705725291b8a08c68b17fe3f5a4d3dd37"
+      },
+      "compiled": [
+        "PACKED_COMPILED active=5 images=4 buffers=1 native=29",
+        "TIMELINE_COMPILED native=2 full=2 half=0 private=0 physical=32,1,1",
+        "ATTACHMENT_COMPILED active=2 textures=1 buffers=1 native=2 host_input_descriptors=4 before_allocations=1"
+      ],
+      "native": "core29/8F7H/const24 signed SNORM typed path and guarded OOB loads; mixed2/2F0H/private0/local32; attachment2/4F0H/const16 single texture/sample and SSBO. All loops0/no LDP-STP.",
+      "public_results": {
+        "descriptor_host": "Five required disabled-feature defaults, input attachment limits4 and actual layout/pool/free/reset/template/pipeline-layout lifetimes pass.",
+        "core": "272 exact outputs including -128/-127 clamp endpoints and8 OOB words/round;64 stores and full5 allocations.",
+        "mixed": "Mixed COMPUTE|VERTEX and legal separate VERTEX-only push updates retain original32 outputs/full160word allocation. Real enabled KHR timeline initial/query/timeout/ANY/ALL/host-release future64-bit queue wait/signal/fence passes.",
+        "attachment": "Two rounds128 sampled componentwords+64 copiedtexels, full3buffer allocations eachround plus2image outerguards. RGBA8 COLOR|INPUT and INPUT-only views/layouts plus descriptor write/copy/template actual pass. No fragment accesses."
+      },
+      "actual_work": {
+        "dispatches": 5,
+        "image_transfers": 8,
+        "transfer_bytes_each": 64,
+        "result_zero_all": true
+      },
+      "postflight": {
+        "per_helper_fault_checks": 4,
+        "services_active": 2,
+        "collection_errors": [],
+        "service_seconds": 1.221,
+        "memory_peak_MiB_reported": 10.5,
+        "swap": 0
+      },
+      "property_accounting": "16 of original31 CTS messages predicted source-addressed, official info rerun pending. Semantics outside these cases remain open."
+    }
+  },
+  "source_stack": "compute11-private-source-stack-0045.json",
+  "controls": "Four sequential helpers under one original90s/384MiB scope, per-helper fault stop, identical successful compile payload before functional. Five dispatches and eight64-byte image transfers.",
+  "historical_setup_failure": "Initial76872 stopped before GPU work on stale helper physicalAPI==1.0. One-line minimumAPI>=1.0 correction preserves requested1.0+KHR negotiation and all oracles.",
+  "outputs": {
+    "core_snorm": 272,
+    "typed_stores": 64,
+    "mixed_push": 32,
+    "attachment_sample_words": 128,
+    "attachment_copied_texels": 64
+  },
+  "limits": "Input descriptors are host lifecycle checks; sampled attachment images/layout/copy paths do not prove fragment input execution or rendering."
+}

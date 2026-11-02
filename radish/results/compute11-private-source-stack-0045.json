@@ -1,0 +1,99 @@
+{
+  "status": "exact forward reconstruction PASS",
+  "baseline": {
+    "path": "/run/media/jethac/Shared/radish/compute11-public-contract-build-0045/libvulkan_radish.so",
+    "bytes": 49034696,
+    "sha256": "d6b92001d95017bf560647d58a68b62f5ac5b6c54139eb235c8836ebcf8ad7e8"
+  },
+  "target_driver": {
+    "path": "/run/media/jethac/Shared/radish/compute11-snorm-fix-build-0045/libvulkan_radish.so",
+    "bytes": 49070016,
+    "sha256": "ac2a5bbe108bb972c9628b2e9606f900ba19d5176ca9b42f4ed7e6cafebb8a46"
+  },
+  "patch_order": [
+    {
+      "public": "0045-radish-packed-storage-formats.patch",
+      "source": {
+        "path": "/run/media/jethac/Shared/radish/packed-storage-formats-0045/packed-storage-formats.patch",
+        "bytes": 485,
+        "sha256": "ebc0469995ac048bb64e477f73aeb6645c41b1e7a3137a11ebc3fb5d5101b50f"
+      }
+    },
+    {
+      "public": "0045-radish-etc2-eac-private.patch",
+      "source": {
+        "path": "/run/media/jethac/Shared/radish/compute11-public-stack-0045/etc2-after-packed.patch",
+        "bytes": 18260,
+        "sha256": "9d326ef7c9facde5dd1c87cd62b0187ce353bcced2597c4418c8c3781ec3a64c"
+      }
+    },
+    {
+      "public": "0045-radish-disabled-feature-defaults.patch",
+      "source": {
+        "path": "/run/media/jethac/Shared/radish/compute11-required-properties-0045/disabled-feature-defaults.patch",
+        "bytes": 498,
+        "sha256": "2bae49a15c212be222c91edd5fe69aed58cba1a76763263dafb500d19e84da57"
+      }
+    },
+    {
+      "public": "0045-radish-input-attachment-host.patch",
+      "source": {
+        "path": "/run/media/jethac/Shared/radish/compute11-input-attachment-host-0045/input-attachment-host.patch",
+        "bytes": 1130,
+        "sha256": "f196ef649f59307ea33fd6c20ed3cc6d2369d211429aef2496a5879e2c192b74"
+      }
+    },
+    {
+      "public": "0045-radish-attachment-images.patch",
+      "source": {
+        "path": "/run/media/jethac/Shared/radish/compute11-attachment-images-0045/attachment-images.patch",
+        "bytes": 5880,
+        "sha256": "3f781722f676db0f74b01d2d3da6034cb7960cea5a48e9838bd49c242b4d9e41"
+      }
+    },
+    {
+      "public": "0045-radish-mixed-stage-push.patch",
+      "source": {
+        "path": "/run/media/jethac/Shared/radish/compute11-mixed-stage-push-0045/mixed-stage-push.patch",
+        "bytes": 788,
+        "sha256": "75703eb029aaddf8babbdeb3b16fd852a513e17b80e7e87cd83e833d67bb81e2"
+      }
+    },
+    {
+      "public": "0045-radish-snorm-storage.patch",
+      "source": {
+        "path": "/run/media/jethac/Shared/radish/compute11-snorm-storage-fix-0045/snorm-storage.patch",
+        "bytes": 4770,
+        "sha256": "7a4a0b78f343dfe88f4f0c7f8fb74f6658cc7916ca1d7e78feabccd76241b208"
+      }
+    }
+  ],
+  "final_source_sha256": {
+    "src/freedreno/radish/rd_nir_resources.c": "49ba435efd7edaa8bee8563cf3121297bbf06091a79f0e3736cbd4b2111c21b9",
+    "src/freedreno/radish/rd_command.c": "f042130607b3de3d03733f3ea9017621892db3a4f023695f479b9bbbb42aff82",
+    "src/freedreno/radish/rd_transfer.c": "a93968bf54724b1a068d7169940952286b73a0eb08f9fe78ee3ef4e608d5812b",
+    "src/freedreno/radish/rd_image.c.orig": "f786b4ad1dff9140471c8c9d723cd4a18f31290a4f8be9aed6622382597a139c",
+    "src/freedreno/radish/rd_nir_robust.c": "eb7b2f530891fd81fbb5e9d048f2d4c93ad22b10476b0202fb9bca4dda28111c",
+    "src/freedreno/radish/rd_image.h": "6781ec3a4968c07cee9cdc6db0e40991649a37ca55848baf90b15faadef73d10",
+    "src/freedreno/radish/rd_memory.c": "358fdead558a70a164bd7f6c1bd51c7414132ea3b44996b8c23e9f651ba812af",
+    "src/freedreno/radish/rd_pipeline.c.orig": "6999d6548380fd85a9d2dc3444334822b4d4146e8b6562eeab75bd0b4f9485f5",
+    "src/freedreno/radish/rd_sampling.c": "877805f9bf4e681786ff7014ee61bd548b82b58875820508d0283879771165f1",
+    "src/freedreno/radish/rd_query.c": "8f83148f39b51411963dd2b201979f0e7d94f496a3e34b81601278bcdf622978",
+    "src/freedreno/radish/rd_nir_resources.h": "0afa75cc3e1c856496b4b52b6c65eca90ac751cbefaf807e3af1421fbca93599",
+    "src/freedreno/radish/rd_event.c": "324cd260d6cb805d6b8548f9f518df1fba8110dd6bef25ae7f072c7ac17ac49c",
+    "src/freedreno/radish/rd_queue.c.orig": "20a2b87d6d92db15bb3abd0942eba3de535ffb3bb12a7a7dba37b17a09457b6a",
+    "src/freedreno/radish/rd_sampling.h": "541a70b8aca605c0719aa03d551241da16136d6a17ff801bb5d379d7e6d86932",
+    "src/freedreno/radish/rd_queue.c": "da170e7c4d4a1fc9db0da5ded100376fab80b57fb70af2427a4ff81fbbdc4890",
+    "src/freedreno/radish/meson.build": "8b5d6cd1839eb92a2dd9a0038ea3f1c9840935694b7acdfc36a1dd46714d732d",
+    "src/freedreno/radish/rd_instance.c": "9f32cc1ab3f8af798d17c50e6b0b47a9d6e198178c2bedbbdfe2b76d1b22f7df",
+    "src/freedreno/radish/rd_resources.c": "1c2ef719892178591d49fcb9f6623be1e32ade4e489633bde53da2407dd4a157",
+    "src/freedreno/radish/rd_nir_sampling.c": "1a1f55d444fcecc9d4e92a11abc9e38da235646d6075d1a5e00d08d69719b001",
+    "src/freedreno/radish/rd_resources.c.orig": "353d6f9674ac9a4078a47cb2c34569ecf0c8a15ff499f4ed390cda7ba593bbc4",
+    "src/freedreno/radish/rd_image.c": "d2fde01de3ff0f9b86c2579a55144f5d6badd70958e33fe81573fff0677d7edc",
+    "src/freedreno/radish/rd_device.c": "b47a9e92dbdcca9ef58f62066c03d3b10a6ba4cb795a7a737ccfe1c4e67021df",
+    "src/freedreno/radish/rd_private.h": "b4fd0b4017316865f92f740285bf900fb93fe59189f2bba658fb665d5bc91502",
+    "src/freedreno/radish/rd_pipeline.c": "db56340993aeffdf8e945058864f4f7737f350ed990f559f95be66d553bcd599",
+    "src/freedreno/radish/rd_descriptor.c": "b3cd22b2ace3540674a9cb98c55d4a9fcd62c1ffcb90fabe37fa478791ceb147"
+  },
+  "scope": "Exact ac2a private validation source, not conformance promotion or selected inference. ETC source remains partially failed; representative packedSNORM source now passes unchanged originaloracle."
+}

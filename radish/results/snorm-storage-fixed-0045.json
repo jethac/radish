@@ -1,0 +1,76 @@
+{
+  "status": "PASS in stated bounded scopes; no complete format conformance",
+  "driver": {
+    "path": "/run/media/jethac/Shared/radish/compute11-snorm-fix-build-0045/libvulkan_radish.so",
+    "bytes": 49070016,
+    "sha256": "ac2a5bbe108bb972c9628b2e9606f900ba19d5176ca9b42f4ed7e6cafebb8a46"
+  },
+  "patch": {
+    "path": "/home/jethac/Projects/radish/radish/patches/0045-radish-snorm-storage.patch",
+    "bytes": 4770,
+    "sha256": "7a4a0b78f343dfe88f4f0c7f8fb74f6658cc7916ca1d7e78feabccd76241b208"
+  },
+  "source_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-snorm-storage-fix-0045/independent-source-review.json",
+      "bytes": 2094,
+      "sha256": "4322c66ae805efa3a748cfc9da4fe5bbe7676d82a4b190132aa7bc93005be0be"
+    },
+    "review": {
+      "status": "passed",
+      "scope": "Finite independent source review, no device or broader format qualification",
+      "patch": {
+        "path": "/run/media/jethac/Shared/radish/compute11-snorm-storage-fix-0045/snorm-storage.patch",
+        "bytes": 4770,
+        "sha256": "7a4a0b78f343dfe88f4f0c7f8fb74f6658cc7916ca1d7e78feabccd76241b208"
+      },
+      "release": {
+        "path": "/run/media/jethac/Shared/radish/compute11-snorm-storage-fix-0045/release.json",
+        "bytes": 2492,
+        "sha256": "fefc8aa570d6519a76d591034d3a346e7b1515ef9258d176138cd36300218740"
+      },
+      "source_pairs": {
+        "rd_nir_resources.c": {
+          "baseline": "e0f7bb3c9000fa67ed590f5b8e6a5272cfd8e0146b44f69168d9b78bd01ee420",
+          "candidate": "49ba435efd7edaa8bee8563cf3121297bbf06091a79f0e3736cbd4b2111c21b9"
+        },
+        "rd_resources.c": {
+          "baseline": "a2e3bc9df752fa36355dfbbc6d05cea2bf6d9e3f31bc4fad9e5e2e4064957c1d",
+          "candidate": "1c2ef719892178591d49fcb9f6623be1e32ade4e489633bde53da2407dd4a157"
+        }
+      },
+      "checks": [
+        "Six SNORM R/RG/RGBA 8/16-bit formats map one-to-one to SINT only in typed storage descriptor emission. Sampled resource format_word remains unchanged.",
+        "Image load destination and store source type/format match the SINT interface; stores normalize before intrinsic, loads normalize after it. All image accesses retain COHERENT and clear CAN_REORDER.",
+        "Mesa nir_format_snorm_to_float sign converts and clamps at -1; float_to_snorm clamps [-1,1], scales by 127/32767 and rounds even before signed conversion.",
+        "Missing channels pass through raw integer defaults with i2f; later robust lowering can substitute an all-zero load without synthesizing alpha one.",
+        "Image resource rewrite precedes robust-buffer lowering; offset, cpp, dimensions, range, BO references and final residency guard are untouched.",
+        "nir_def_rewrite_uses_after leaves the conversion inputs using the original load while replacing subsequent consumer uses."
+      ],
+      "next_gate": "Exact unchanged original packed source/module/oracle on the changed driver; no source review claim of actual correction."
+    }
+  },
+  "original_actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-snorm-storage-fix-0045/actual-review.json",
+      "bytes": 903,
+      "sha256": "e529f89bff12004ed618589f4a2ad0884e767ab0b064c60c0efefb393d1381bd"
+    },
+    "review": {
+      "status": "passed",
+      "scope": "Representative unchanged four packed storage texel format qualification, not full conformance",
+      "log": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-snorm-fixed-packed/probe/run.log",
+        "bytes": 163228,
+        "sha256": "af7cf00279e9288691c481fab9675341e799e10da7a10f172a4b36948f2dc121"
+      },
+      "original_oracle": "Both rounds128 exact outputwords/32typedstores/fullfive allocations; no tolerance or source changes",
+      "actual_native": "SINT slot2 state80003400 paired with signed LDIB/STIB and explicit normalization; native22/8F5H/const24/loops0, one successful submit per round",
+      "postflight": "467ms service/8.4MiB/0swap, no new fault/recovery marker and successful terminal",
+      "preserved_failures": "Original76299 and diagnostic23507 remain separate failed evidence; this changed-source result closes that specific observed failure."
+    }
+  },
+  "prior_failure": "packed-snorm-failure-0045.json",
+  "core_supplement": "compute11-resource-batch-0045.json",
+  "mechanism": "Typed storage uses signed-integer descriptor and paired Mesa NIR normalization. Original packed data, shaders and full oracles were unchanged for the correction replay. Sampled/uniform texel behavior remains separate."
+}

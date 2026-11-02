@@ -1,0 +1,110 @@
+--- a/src/freedreno/radish/rd_nir_resources.c
++++ b/src/freedreno/radish/rd_nir_resources.c
+@@ -1,5 +1,6 @@
+ #include "rd_nir_resources.h"
+ #include "compiler/nir/nir_builder.h"
++#include "compiler/nir/nir_format_convert.h"
+ #include "util/format/u_format.h"
+ #include <string.h>
+ 
+@@ -182,6 +183,50 @@
+    }
+ }
+ 
++static void
++rd_lower_snorm_storage(nir_builder *b, nir_intrinsic_instr *intr)
++{
++   if (intr->intrinsic != nir_intrinsic_image_load &&
++       intr->intrinsic != nir_intrinsic_image_store)
++      return;
++   enum pipe_format format = nir_intrinsic_format(intr);
++   enum pipe_format integer_format;
++   switch (format) {
++   case PIPE_FORMAT_R8_SNORM: integer_format = PIPE_FORMAT_R8_SINT; break;
++   case PIPE_FORMAT_R8G8_SNORM: integer_format = PIPE_FORMAT_R8G8_SINT; break;
++   case PIPE_FORMAT_R8G8B8A8_SNORM: integer_format = PIPE_FORMAT_R8G8B8A8_SINT; break;
++   case PIPE_FORMAT_R16_SNORM: integer_format = PIPE_FORMAT_R16_SINT; break;
++   case PIPE_FORMAT_R16G16_SNORM: integer_format = PIPE_FORMAT_R16G16_SINT; break;
++   case PIPE_FORMAT_R16G16B16A16_SNORM: integer_format = PIPE_FORMAT_R16G16B16A16_SINT; break;
++   default: return;
++   }
++   const struct util_format_description *desc = util_format_description(format);
++   unsigned channels = desc->nr_channels;
++   unsigned bits[4] = {0};
++   for (unsigned i = 0; i < channels; i++)
++      bits[i] = desc->channel[i].size;
++   nir_intrinsic_set_format(intr, integer_format);
++   if (intr->intrinsic == nir_intrinsic_image_load) {
++      nir_intrinsic_set_dest_type(intr, nir_type_int32);
++      b->cursor = nir_after_instr(&intr->instr);
++      nir_def *value = nir_format_snorm_to_float(b,
++         nir_trim_vector(b, &intr->def, channels), bits);
++      nir_def *components[4];
++      for (unsigned i = 0; i < intr->num_components; i++)
++         components[i] = i < channels ? nir_channel(b, value, i) :
++            nir_i2f32(b, nir_channel(b, &intr->def, i));
++      value = nir_vec(b, components, intr->num_components);
++      nir_def_rewrite_uses_after(&intr->def, value);
++   } else {
++      b->cursor = nir_before_instr(&intr->instr);
++      nir_def *value = nir_format_float_to_snorm(b,
++         nir_trim_vector(b, intr->src[3].ssa, channels), bits);
++      nir_src_rewrite(&intr->src[3],
++         nir_pad_vector_imm_int(b, value, 0, intr->num_components));
++      nir_intrinsic_set_src_type(intr, nir_type_int32);
++   }
++}
++
+ static bool
+ rd_lower_resource(nir_builder *b, nir_instr *instr, void *data)
+ {
+@@ -283,6 +328,7 @@
+          (nir_intrinsic_access(intr) & ~ACCESS_CAN_REORDER) | ACCESS_COHERENT);
+    nir_rewrite_image_intrinsic(intr, nir_imm_int(b, entry->image_slot + element),
+                                nir_image_intrinsic_type_default);
++   rd_lower_snorm_storage(b, intr);
+    return true;
+ }
+ 
+--- a/src/freedreno/radish/rd_resources.c
++++ b/src/freedreno/radish/rd_resources.c
+@@ -407,14 +407,29 @@
+       OUT_RING(ring, 0);
+ }
+ 
++static enum a5xx_tex_fmt
++rd_storage_resource_format(enum a5xx_tex_fmt format)
++{
++   switch (format) {
++   case TFMT5_8_SNORM: return TFMT5_8_SINT;
++   case TFMT5_8_8_SNORM: return TFMT5_8_8_SINT;
++   case TFMT5_8_8_8_8_SNORM: return TFMT5_8_8_8_8_SINT;
++   case TFMT5_16_SNORM: return TFMT5_16_SINT;
++   case TFMT5_16_16_SNORM: return TFMT5_16_16_SINT;
++   case TFMT5_16_16_16_16_SNORM: return TFMT5_16_16_16_16_SINT;
++   default: return format;
++   }
++}
++
+ static void
+ rd_emit_resource_image(struct fd_ringbuffer *ring, uint32_t slot,
+                         const struct rd_resource *resource)
+ {
++   enum a5xx_tex_fmt format = rd_storage_resource_format(resource->format);
+    rd_resource_packet(ring, slot, SB4_CS_SSBO, ST4_CONSTANTS, 1, 2);
+    uint32_t width = resource->buffer ? (1u << 15) : resource->width;
+    uint32_t height = resource->buffer ? resource->height + !!resource->width : resource->height;
+-   OUT_RING(ring, A5XX_SSBO_1_0_FMT(resource->format) |
++   OUT_RING(ring, A5XX_SSBO_1_0_FMT(format) |
+                   A5XX_SSBO_1_0_WIDTH(width));
+    OUT_RING(ring, A5XX_SSBO_1_1_HEIGHT(height) |
+                   A5XX_SSBO_1_1_DEPTH(resource->depth));
+@@ -423,7 +438,7 @@
+       fprintf(stderr, "RADISH_IMAGE_DIAG slot=%u buffer=%u bo=%llx bo_size=%u offset=%llu address=%llx constants=%08x,%08x address_words=%08x,%08x\n",
+          slot, resource->buffer, (unsigned long long)fd_bo_get_iova(resource->bo), fd_bo_size(resource->bo),
+          (unsigned long long)resource->offset, (unsigned long long)address,
+-         A5XX_SSBO_1_0_FMT(resource->format) | A5XX_SSBO_1_0_WIDTH(width),
++         A5XX_SSBO_1_0_FMT(format) | A5XX_SSBO_1_0_WIDTH(width),
+          A5XX_SSBO_1_1_HEIGHT(height) | A5XX_SSBO_1_1_DEPTH(resource->depth),
+          (uint32_t)address, (uint32_t)(address >> 32));
+    }

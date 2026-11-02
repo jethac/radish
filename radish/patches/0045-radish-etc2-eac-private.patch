@@ -1,0 +1,311 @@
+--- a/src/freedreno/radish/rd_resources.c
++++ b/src/freedreno/radish/rd_resources.c
+@@ -147,6 +147,16 @@
+    case VK_FORMAT_B8G8R8A8_SNORM: return TFMT5_8_8_8_8_SNORM;
+    case VK_FORMAT_B8G8R8A8_UINT: return TFMT5_8_8_8_8_UINT;
+    case VK_FORMAT_B8G8R8A8_SINT: return TFMT5_8_8_8_8_SINT;
++   case VK_FORMAT_ETC2_R8G8B8_UNORM_BLOCK: return TFMT5_ETC2_RGB8;
++   case VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK: return TFMT5_ETC2_RGB8;
++   case VK_FORMAT_ETC2_R8G8B8A1_UNORM_BLOCK: return TFMT5_ETC2_RGB8A1;
++   case VK_FORMAT_ETC2_R8G8B8A1_SRGB_BLOCK: return TFMT5_ETC2_RGB8A1;
++   case VK_FORMAT_ETC2_R8G8B8A8_UNORM_BLOCK: return TFMT5_ETC2_RGBA8;
++   case VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK: return TFMT5_ETC2_RGBA8;
++   case VK_FORMAT_EAC_R11_UNORM_BLOCK: return TFMT5_ETC2_R11_UNORM;
++   case VK_FORMAT_EAC_R11_SNORM_BLOCK: return TFMT5_ETC2_R11_SNORM;
++   case VK_FORMAT_EAC_R11G11_UNORM_BLOCK: return TFMT5_ETC2_RG11_UNORM;
++   case VK_FORMAT_EAC_R11G11_SNORM_BLOCK: return TFMT5_ETC2_RG11_SNORM;
+    case VK_FORMAT_D16_UNORM: return TFMT5_16_UNORM;
+    case VK_FORMAT_D32_SFLOAT: return TFMT5_32_FLOAT;
+    case VK_FORMAT_S8_UINT: return TFMT5_8_UINT;
+@@ -163,7 +173,7 @@
+ bool
+ rd_storage_shader_format_supported(VkFormat format)
+ {
+-   if (vk_format_is_depth_or_stencil(format))
++   if (vk_format_is_depth_or_stencil(format) || vk_format_is_compressed(format))
+       return false;
+    switch (format) {
+    case VK_FORMAT_R4G4B4A4_UNORM_PACK16:
+@@ -234,7 +244,7 @@
+       if (!image->memory)
+          return false;
+       const struct rd_image_level *level = &image->levels[view->base_mip_level];
+-      VkExtent3D extent = vk_image_mip_level_extent(&image->vk, view->base_mip_level);
++      VkExtent3D extent = view->extent;
+       out->bo = image->memory->bo;
+       out->offset = image->memory_offset + level->offset +
+                     view->base_array_layer * level->array_pitch;
+--- a/src/freedreno/radish/rd_image.c
++++ b/src/freedreno/radish/rd_image.c
+@@ -71,6 +71,17 @@
+    case VK_FORMAT_B8G8R8A8_UINT:
+    case VK_FORMAT_B8G8R8A8_SINT:
+       return vk_format_get_blocksize(format);
++   case VK_FORMAT_ETC2_R8G8B8_UNORM_BLOCK:
++   case VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK:
++   case VK_FORMAT_ETC2_R8G8B8A1_UNORM_BLOCK:
++   case VK_FORMAT_ETC2_R8G8B8A1_SRGB_BLOCK:
++   case VK_FORMAT_ETC2_R8G8B8A8_UNORM_BLOCK:
++   case VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK:
++   case VK_FORMAT_EAC_R11_UNORM_BLOCK:
++   case VK_FORMAT_EAC_R11_SNORM_BLOCK:
++   case VK_FORMAT_EAC_R11G11_UNORM_BLOCK:
++   case VK_FORMAT_EAC_R11G11_SNORM_BLOCK:
++      return vk_format_get_blocksize(format);
+    case VK_FORMAT_D16_UNORM:
+    case VK_FORMAT_D32_SFLOAT:
+    case VK_FORMAT_S8_UINT:
+@@ -98,6 +109,9 @@
+    if (!rd_image_texel_size(format))
+       return false;
+    if (vk_format_is_depth_or_stencil(format) && type != VK_IMAGE_TYPE_2D)
++      return false;
++   if (vk_format_is_compressed(format) &&
++       (type != VK_IMAGE_TYPE_2D || tiling != VK_IMAGE_TILING_OPTIMAL))
+       return false;
+    VkImageUsageFlags2KHR shader_usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT;
+    VkImageUsageFlags2KHR supported = rd_image_shader_usage(format);
+@@ -109,6 +123,13 @@
+          if (!vk_format_is_depth_or_stencil(class->formats[i]))
+             supported |= rd_image_shader_usage(class->formats[i]);
+       }
++      if ((flags & VK_IMAGE_CREATE_BLOCK_TEXEL_VIEW_COMPATIBLE_BIT) && vk_format_is_compressed(format)) {
++         VkFormat uncompressed = vk_format_get_blocksize(format) == 8 ?
++            VK_FORMAT_R32G32_UINT : VK_FORMAT_R32G32B32A32_UINT;
++         const struct vk_format_class_info *block = vk_format_get_class_info(uncompressed);
++         for (uint32_t i = 0; i < block->format_count; i++)
++            supported |= rd_image_shader_usage(block->formats[i]);
++      }
+    }
+    if (usage & shader_usage & ~supported)
+       return false;
+@@ -118,19 +139,22 @@
+           usage && !(usage & ~(VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | shader_usage)) &&
+           !(flags & ~(VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT | VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT |
+                        VK_IMAGE_CREATE_ALIAS_BIT | VK_IMAGE_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT |
+-                       VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT | VK_IMAGE_CREATE_EXTENDED_USAGE_BIT)) &&
++                       VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT | VK_IMAGE_CREATE_EXTENDED_USAGE_BIT |
++                       VK_IMAGE_CREATE_BLOCK_TEXEL_VIEW_COMPATIBLE_BIT)) &&
+           (!(flags & VK_IMAGE_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT) ||
+            (type == VK_IMAGE_TYPE_2D && tiling == VK_IMAGE_TILING_OPTIMAL)) &&
+           (!(flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) || type == VK_IMAGE_TYPE_2D) &&
++          (!(flags & VK_IMAGE_CREATE_BLOCK_TEXEL_VIEW_COMPATIBLE_BIT) ||
++           (vk_format_is_compressed(format) && (flags & VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT))) &&
+           (!(flags & VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT) || type == VK_IMAGE_TYPE_3D);
+ }
+ 
+ static VkSampleCountFlags
+-rd_image_sample_counts(VkImageType type, VkImageTiling tiling,
++rd_image_sample_counts(VkFormat format, VkImageType type, VkImageTiling tiling,
+                        VkImageUsageFlags2KHR usage, VkImageCreateFlags2KHR flags)
+ {
+    VkSampleCountFlags samples = VK_SAMPLE_COUNT_1_BIT;
+-   if (type == VK_IMAGE_TYPE_2D && tiling == VK_IMAGE_TILING_OPTIMAL &&
++   if (!vk_format_is_compressed(format) && type == VK_IMAGE_TYPE_2D && tiling == VK_IMAGE_TILING_OPTIMAL &&
+        !(usage & VK_IMAGE_USAGE_STORAGE_BIT) &&
+        !(flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT))
+       samples |= VK_SAMPLE_COUNT_4_BIT;
+@@ -149,7 +173,7 @@
+          flags |= VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT;
+       if (rd_image_texel_size(format) && rd_shader_format_filterable(format))
+          flags |= VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT;
+-      if (!vk_format_is_srgb(format) && !vk_format_is_depth_or_stencil(format))
++      if (!vk_format_is_compressed(format) && !vk_format_is_srgb(format) && !vk_format_is_depth_or_stencil(format))
+          buffer |= VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT;
+       if (rd_storage_shader_format_supported(format)) {
+          flags |= VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT;
+@@ -161,7 +185,7 @@
+       }
+    }
+    out->formatProperties = (VkFormatProperties) {
+-      .linearTilingFeatures = flags, .optimalTilingFeatures = flags,
++      .linearTilingFeatures = vk_format_is_compressed(format) ? 0 : flags, .optimalTilingFeatures = flags,
+       .bufferFeatures = buffer,
+    };
+    VkFormatFeatureFlags2 flags2 = flags;
+@@ -170,7 +194,7 @@
+    vk_foreach_struct(sType, next, out->pNext) {
+       if (sType == VK_STRUCTURE_TYPE_FORMAT_PROPERTIES_3) {
+          VkFormatProperties3 *properties = (VkFormatProperties3 *)next;
+-         properties->linearTilingFeatures = flags2;
++         properties->linearTilingFeatures = vk_format_is_compressed(format) ? 0 : flags2;
+          properties->optimalTilingFeatures = flags2;
+          properties->bufferFeatures = buffer;
+       }
+@@ -193,7 +217,7 @@
+                     info->type == VK_IMAGE_TYPE_3D ? side : 1},
+       .maxMipLevels = info->type == VK_IMAGE_TYPE_3D ? 9 : RD_IMAGE_MAX_LEVELS,
+       .maxArrayLayers = info->type == VK_IMAGE_TYPE_3D ? 1 : 256,
+-      .sampleCounts = rd_image_sample_counts(info->type, info->tiling, info->usage, info->flags),
++      .sampleCounts = rd_image_sample_counts(info->format, info->type, info->tiling, info->usage, info->flags),
+       .maxResourceSize = RD_IMAGE_MAX_SIZE,
+    };
+    if (info->flags & VK_IMAGE_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT) {
+@@ -248,8 +272,9 @@
+       VkExtent3D extent = vk_image_mip_level_extent(&image->vk, level);
+       struct rd_image_level *layout = &image->levels[level];
+       layout->offset = size;
+-      layout->row_pitch = align64((uint64_t)extent.width * image->texel_size * image->vk.samples, 64);
+-      layout->depth_pitch = layout->row_pitch * extent.height;
++      VkExtent3D elements = vk_image_extent_to_elements(&image->vk, extent);
++      layout->row_pitch = align64((uint64_t)elements.width * image->texel_size * image->vk.samples, 64);
++      layout->depth_pitch = layout->row_pitch * elements.height;
+       if (shader)
+          layout->depth_pitch = align64(layout->depth_pitch, 4096);
+       layout->array_pitch = layout->depth_pitch * extent.depth;
+@@ -273,7 +298,7 @@
+    if (!rd_image_parameters(info->format, info->imageType, info->tiling,
+                             vk_image_usage_flags(info), flags) ||
+        (info->samples != VK_SAMPLE_COUNT_1_BIT && info->samples != VK_SAMPLE_COUNT_4_BIT) ||
+-       !(info->samples & rd_image_sample_counts(info->imageType, info->tiling,
++       !(info->samples & rd_image_sample_counts(info->format, info->imageType, info->tiling,
+                                                vk_image_usage_flags(info), flags)) ||
+        (info->samples != VK_SAMPLE_COUNT_1_BIT && info->mipLevels != 1) || !info->mipLevels ||
+        info->mipLevels > RD_IMAGE_MAX_LEVELS || !info->arrayLayers ||
+@@ -434,7 +459,10 @@
+    VkImageUsageFlags2KHR view_usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT |
+       VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT;
+    const VkImageSubresourceRange *r = &info->subresourceRange;
+-   bool format_compatible = image && (info->format == image->vk.format ||
++   bool block_view = image && (image->vk.create_flags & VK_IMAGE_CREATE_BLOCK_TEXEL_VIEW_COMPATIBLE_BIT) &&
++      !vk_format_is_compressed(info->format) &&
++      vk_format_get_blocksize(info->format) == vk_format_get_blocksize(image->vk.format);
++   bool format_compatible = image && (block_view || info->format == image->vk.format ||
+       ((image->vk.create_flags & VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT) &&
+        !vk_format_is_depth_or_stencil(image->vk.format) &&
+        !vk_format_is_depth_or_stencil(info->format) &&
+@@ -454,7 +482,8 @@
+    uint32_t layers = r->layerCount == VK_REMAINING_ARRAY_LAYERS ?
+       max_layers - r->baseArrayLayer : r->layerCount;
+    if (!levels || levels > image->vk.mip_levels - r->baseMipLevel || !layers ||
+-       layers > max_layers - r->baseArrayLayer || (slice_view && levels != 1))
++       layers > max_layers - r->baseArrayLayer || (slice_view && levels != 1) ||
++       (block_view && (levels != 1 || layers != 1)))
+       return VK_ERROR_FORMAT_NOT_SUPPORTED;
+    bool compatible = (image->vk.image_type == VK_IMAGE_TYPE_1D &&
+       (info->viewType == VK_IMAGE_VIEW_TYPE_1D || info->viewType == VK_IMAGE_VIEW_TYPE_1D_ARRAY)) ||
+@@ -500,7 +529,7 @@
+    *out = VK_NULL_HANDLE;
+    uint32_t size = vk_format_get_blocksize(info->format);
+    if (!buffer || info->flags || !rd_shader_format_supported(info->format) ||
+-       vk_format_is_srgb(info->format) || vk_format_is_depth_or_stencil(info->format) ||
++       vk_format_is_compressed(info->format) || vk_format_is_srgb(info->format) || vk_format_is_depth_or_stencil(info->format) ||
+        !size || info->offset >= buffer->vk.size ||
+        (info->offset & 31) || !(buffer->vk.usage &
+        (VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT)))
+@@ -622,14 +651,24 @@
+        offset.x < 0 || offset.y < 0 || offset.z < 0 || !extent.width || !extent.height || !extent.depth)
+       return false;
+    VkExtent3D limit = vk_image_mip_level_extent(&image->vk, subresource->mipLevel);
+-   if ((uint32_t)offset.x > limit.width || extent.width > limit.width - offset.x ||
+-       (uint32_t)offset.y > limit.height || extent.height > limit.height - offset.y ||
++   uint32_t bw = vk_format_get_blockwidth(image->vk.format);
++   uint32_t bh = vk_format_get_blockheight(image->vk.format);
++   VkExtent3D elements = vk_image_extent_to_elements(&image->vk, limit);
++   uint32_t width = elements.width * bw;
++   uint32_t height = elements.height * bh;
++   if ((uint32_t)offset.x > width || extent.width > width - offset.x ||
++       (uint32_t)offset.y > height || extent.height > height - offset.y ||
+        (uint32_t)offset.z > limit.depth || extent.depth > limit.depth - offset.z)
+       return false;
++   if (offset.x % bw || offset.y % bh ||
++       (extent.width % bw && extent.width != limit.width - offset.x) ||
++       (extent.height % bh && extent.height != limit.height - offset.y))
++      return false;
++   VkOffset3D element_offset = vk_image_offset_to_elements(&image->vk, offset);
+    const struct rd_image_level *level = &image->levels[subresource->mipLevel];
+    *base = level->offset + subresource->baseArrayLayer * level->array_pitch +
+-           offset.z * level->depth_pitch + offset.y * level->row_pitch +
+-           (uint64_t)offset.x * image->texel_size * image->vk.samples;
++           element_offset.z * level->depth_pitch + element_offset.y * level->row_pitch +
++           (uint64_t)element_offset.x * image->texel_size * image->vk.samples;
+    *row = level->row_pitch;
+    *slice = image->vk.image_type == VK_IMAGE_TYPE_3D ? level->depth_pitch : level->array_pitch;
+    *slices = image->vk.image_type == VK_IMAGE_TYPE_3D ? extent.depth : subresource->layerCount;
+@@ -679,6 +718,9 @@
+          else
+             dst_extent.depth = 1;
+       }
++      VkExtent3D elements = vk_image_extent_to_elements(&src->vk, src_extent);
++      dst_extent.width = elements.width * vk_format_get_blockwidth(dst->vk.format);
++      dst_extent.height = elements.height * vk_format_get_blockheight(dst->vk.format);
+       uint32_t src_slices, dst_slices;
+       if (!rd_image_command_valid(command,
+           rd_image_box(src, &regions[i].srcSubresource, regions[i].srcOffset, src_extent,
+@@ -686,8 +728,8 @@
+           rd_image_box(dst, &regions[i].dstSubresource, regions[i].dstOffset, dst_extent,
+              &transfer.dst_offset, &transfer.dst_row_pitch, &transfer.dst_slice_pitch, &dst_slices) && src_slices == dst_slices))
+          return;
+-      transfer.row_bytes = (uint64_t)regions[i].extent.width * src->texel_size * src->vk.samples;
+-      transfer.rows = regions[i].extent.height;
++      transfer.row_bytes = (uint64_t)elements.width * src->texel_size * src->vk.samples;
++      transfer.rows = elements.height;
+       transfer.slices = src_slices;
+       struct rd_command *recorded = rd_command_append(command, RD_CMD_IMAGE_COPY);
+       if (!recorded)
+@@ -717,15 +759,32 @@
+          return;
+       uint64_t row_length = region->bufferRowLength ? region->bufferRowLength : region->imageExtent.width;
+       uint64_t height = region->bufferImageHeight ? region->bufferImageHeight : region->imageExtent.height;
+-      uint64_t row = row_length * image->texel_size;
++      uint32_t bw = vk_format_get_blockwidth(image->vk.format);
++      uint32_t bh = vk_format_get_blockheight(image->vk.format);
++      uint64_t row = DIV_ROUND_UP(row_length, bw) * image->texel_size;
+       if (!rd_image_command_valid(command, row_length >= region->imageExtent.width &&
+           height >= region->imageExtent.height && row <= RD_IMAGE_MAX_SIZE &&
+-          height <= RD_IMAGE_MAX_SIZE / row && !(region->bufferOffset % image->texel_size) &&
++          (!region->bufferRowLength || !(region->bufferRowLength % bw)) &&
++          (!region->bufferImageHeight || !(region->bufferImageHeight % bh)) &&
++          DIV_ROUND_UP(height, bh) <= RD_IMAGE_MAX_SIZE / row && !(region->bufferOffset % image->texel_size) &&
+           !(region->bufferOffset & 3)))
+          return;
+-      uint64_t slice = row * height;
+-      uint64_t row_bytes = (uint64_t)region->imageExtent.width * image->texel_size;
+-      uint64_t end = slice * (slices - 1) + row * (region->imageExtent.height - 1) + row_bytes;
++      VkBufferImageCopy2 region2 = {
++         .sType = VK_STRUCTURE_TYPE_BUFFER_IMAGE_COPY_2,
++         .bufferOffset = region->bufferOffset,
++         .bufferRowLength = region->bufferRowLength,
++         .bufferImageHeight = region->bufferImageHeight,
++         .imageSubresource = region->imageSubresource,
++         .imageOffset = region->imageOffset,
++         .imageExtent = region->imageExtent,
++      };
++      struct vk_image_buffer_layout buffer_layout = vk_image_buffer_copy_layout(&image->vk, &region2);
++      VkExtent3D elements = vk_image_extent_to_elements(&image->vk, region->imageExtent);
++      row = buffer_layout.row_stride_B;
++      uint64_t slice = buffer_layout.image_stride_B;
++      uint64_t rows = elements.height;
++      uint64_t row_bytes = (uint64_t)elements.width * buffer_layout.element_size_B;
++      uint64_t end = vk_image_buffer_range(&image->vk, &buffer_layout, &elements, &region->imageSubresource);
+       if (!rd_image_command_valid(command, region->bufferOffset <= buffer->vk.size &&
+           end <= buffer->vk.size - region->bufferOffset))
+          return;
+@@ -736,7 +795,7 @@
+          .dst_offset = to_image ? image_offset : region->bufferOffset,
+          .src_row_pitch = to_image ? row : image_row, .dst_row_pitch = to_image ? image_row : row,
+          .src_slice_pitch = to_image ? slice : image_slice, .dst_slice_pitch = to_image ? image_slice : slice,
+-         .row_bytes = row_bytes, .rows = region->imageExtent.height, .slices = slices,
++         .row_bytes = row_bytes, .rows = rows, .slices = slices,
+       };
+       struct rd_command *recorded = rd_command_append(command, RD_CMD_IMAGE_COPY);
+       if (!recorded)
+@@ -768,6 +827,7 @@
+    VK_FROM_HANDLE(rd_command_buffer, command, handle);
+    VK_FROM_HANDLE(rd_image, image, image_handle);
+    if (!rd_image_command_valid(command, image && !vk_format_is_depth_or_stencil(image->vk.format) &&
++       !vk_format_is_compressed(image->vk.format) &&
+        (image->vk.usage & VK_IMAGE_USAGE_TRANSFER_DST_BIT) &&
+        rd_image_copy_layout(layout, false)))
+       return;
+--- a/src/freedreno/radish/rd_sampling.c
++++ b/src/freedreno/radish/rd_sampling.c
+@@ -22,6 +22,8 @@
+          continue;
+       const struct vk_image_view *view = &descriptor->image_view->vk;
+       const struct rd_image *image = container_of(view->image, struct rd_image, vk);
++      if (vk_format_is_compressed(image->vk.format))
++         continue;
+       bool array = view->view_type == VK_IMAGE_VIEW_TYPE_2D_ARRAY;
+       bool cube = view->view_type == VK_IMAGE_VIEW_TYPE_CUBE ||
+                   view->view_type == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY;

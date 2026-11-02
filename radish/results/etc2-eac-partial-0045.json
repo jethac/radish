@@ -1,0 +1,67 @@
+{
+  "status": "FAILED numerical admission; private implementation and oracle published for reproduction",
+  "driver": {
+    "path": "/run/media/jethac/Shared/radish/compute11-etc2-resource-build-0045/libvulkan_radish.so",
+    "bytes": 49050456,
+    "sha256": "d903348c8170e0fd4dcf1d3ec959813e7d93170f2a6aa1fb6bd89ad24065e30d"
+  },
+  "original": {
+    "run.log": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-etc2-family/probe/run.log",
+      "bytes": 86264,
+      "sha256": "981627a6a82e1a5d95d32e793b0e8900143c9de0fad7df5d7bb95059e41b7101"
+    },
+    "failure.json": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-etc2-family/probe/failure.json",
+      "bytes": 263,
+      "sha256": "ce886983fe4a027c70493ec1bf2b3e926ffde05b851e4ad194e137e124d10cd7"
+    }
+  },
+  "taps": {
+    "run.log": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-etc2-taps/probe/run.log",
+      "bytes": 106186,
+      "sha256": "566853bc08485f8dc30a126ba0f885352fafe500eb8ef03792cc71f1a04190aa"
+    },
+    "failure.json": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-etc2-taps/probe/failure.json",
+      "bytes": 261,
+      "sha256": "049cdf3bb5afe0984f50344ddc97eb86d0d44a0717efbe13fe6e4835fc0ffc23"
+    }
+  },
+  "original_failure": {
+    "format": 1,
+    "round": 0,
+    "lane": 35,
+    "field": 5,
+    "actual": 0.675292969,
+    "reference": 0.672837794,
+    "tolerance": 0.002,
+    "completed": "format0 two rounds; format1 fails first round; remaining8 formats not attempted"
+  },
+  "tap_observation": {
+    "green_raw_hex": [
+      "3f278000",
+      "3f208000",
+      "3f6aa000",
+      "3f00e000"
+    ],
+    "green": [
+      0.654296875,
+      0.626953125,
+      0.91650390625,
+      0.50341796875
+    ],
+    "mean": 0.67529296875,
+    "filtered": 0.67529296875,
+    "meaning": "The sampled taps reconcile the GPU half-weight interpolation. Decode/conversion precision remains unresolved; no tolerance relaxation or feature promotion."
+  },
+  "source_review": "e7a511b9; retained private source review",
+  "oracle": {
+    "source": "tests/etc2-oracle",
+    "upstream": "https://github.com/hglm/detex/tree/cab11584d9be140602a66fd9a88ef0b99f08a97a",
+    "license": "ISC; per-file notices and minimal defined-integer patch retained",
+    "validation": "Host ASAN/UBSAN known fixtures and40960 blocks pass; independent reference, not GPU qualification"
+  },
+  "limits": "Compression feature stays false. All10 formats, copy/view/filter and applicable CTS remain unqualified."
+}

@@ -678,3 +678,17 @@ Both feature modes pass the full fixed core; resident51.504783→34.333299 secon
 `0045-radish-five-ssbo.patch` follows Int8 and changes only per-stage SSBO4→5, now backed by the real five-buffer fused Q4 consumer. `0045-ggml-q4-profile-bounded-loop.patch` follows the private KHR profile overlay and changes only the profile outer-loop hint; default behavior remains unchanged. See ../results/asr-q4-five-buffer-0045.json.
 
 `0045-radish-public11-contract.patch` follows the five-SSBO checkpoint. It makes instance/device/manifest version1.1 consistent and supplies truthful unsupported external semaphore/fence capability queries. The separate private candidate passes bounded public negotiation/alias/error checks and five BASIC cases; the exact original CTS now executes five info tests with four Pass and one property Fail. This is not promotion or full conformance. See `../VULKAN11_COMPUTE_STATUS.md`.
+
+## Integrated resource correction checkpoint (0045)
+
+Apply these increments after `0045-radish-public11-contract.patch`, in order:
+
+1. `0045-radish-packed-storage-formats.patch`
+2. `0045-radish-etc2-eac-private.patch`
+3. `0045-radish-disabled-feature-defaults.patch`
+4. `0045-radish-input-attachment-host.patch`
+5. `0045-radish-attachment-images.patch`
+6. `0045-radish-mixed-stage-push.patch`
+7. `0045-radish-snorm-storage.patch`
+
+The exact reconstruction pins are in `../results/compute11-private-source-stack-0045.json`. Original packed SNORM and the core supplement pass after correction; host descriptors, mixed push/timeline and tiny attachment resource paths pass. The original official property case improves31→15 messages but still fails. ETC2/EAC remains private and numerically unqualified: its sRGB case fails; compression features are not promoted. No rendering, full format matrix or conformance claim follows. See `../VULKAN11_COMPUTE_STATUS.md`.

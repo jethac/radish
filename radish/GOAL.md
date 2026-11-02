@@ -280,8 +280,9 @@ and evidence ledger. Implement real defects, then run bounded, applicable,
 unmodified CTS partitions and meaningful independent consumers. Preserve
 failures, legal shader environments, complete numerical/guard oracles and the
 original device, memory, time, disk and service controls. Modified CTS harness
-results remain diagnostics. The 31 retained property failures need normative
-resolution; none is waived by a compute-only queue. The earlier 40-command
+results remain diagnostics. The historical31 property failures are retained; the integrated source removes16
+messages and leaves15 requiring normative/implementation closure. None is waived
+by a compute-only queue. The earlier 40-command
 worklist and bounded resource milestones do not define completion.
 
 After this phase, resume the full intended Straylight inference campaign:
