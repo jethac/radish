@@ -1,0 +1,30 @@
+#version 450
+#extension GL_EXT_shader_16bit_storage : require
+#extension GL_EXT_shader_explicit_arithmetic_types_int16 : require
+#extension GL_EXT_shader_explicit_arithmetic_types_float16 : require
+layout(local_size_x=32,local_size_y=1,local_size_z=1) in;
+struct Item { uint16_t u; int16_t s; float16_t f; };
+layout(set=0,binding=0,std430) writeonly buffer Results { uint words[]; } result;
+layout(set=0,binding=1,std430) readonly buffer Source { Item values[]; } source_data;
+layout(set=0,binding=2,std430) writeonly buffer Target { Item values[]; } target_data;
+layout(set=0,binding=3,std430) coherent buffer Adjacent { uint16_t values[]; } adjacent;
+void main()
+{
+    uint i=gl_LocalInvocationID.x;
+    target_data.values[i].u=source_data.values[i].u;
+    target_data.values[i].s=source_data.values[i].s;
+    target_data.values[i].f=source_data.values[i].f;
+    result.words[i]=uint(source_data.values[i].u);
+    result.words[32u+i]=uint(int(source_data.values[i].s));
+    if (i==0u) {
+        result.words[64]=floatBitsToUint(float(source_data.values[0].f));
+        result.words[65]=uint(source_data.values.length());
+        result.words[66]=uint(target_data.values.length());
+        result.words[67]=uint(adjacent.values.length());
+    }
+    uint slot=(i&15u)*2u+(i>>4u);
+    adjacent.values[slot]=uint16_t(0xa500u+i);
+    memoryBarrierBuffer();
+    barrier();
+    result.words[68u+i]=uint(adjacent.values[i]);
+}

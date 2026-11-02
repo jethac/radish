@@ -1,5 +1,15 @@
 # Radish status
 
+## 2026-11-02: public storage-only 16-bit buffers pass a bounded consumer
+
+A separate driver checkpoint advertises `VK_KHR_16bit_storage` with only `storageBuffer16BitAccess`. The public feature query and ordinary device-enable chain pass; API remains 1.0 and the other 16-bit storage/arithmetic features stay false. The executed Vulkan1.0 module validates with exactly `Shader` and `StorageBuffer16BitAccess` capabilities.
+
+Five 1/2/3/6/192-byte ranges with dynamic bases32–96 pass all 500 output words and complete byte-preserving checks over four allocations in each case. The checks cover signed/float storage transport, adjacent halfword writers, partial ranges, and untouched neighboring bytes. Logical two-byte robustness checks run before aligned U32 load and atomic-AND/OR store lowering. Actual native22 uses8F/7H, no private storage, physical16×2 with the existing barrier; all five one-submit dispatches pass. Service877ms, peak11.5MiB/zero swap, no new faults, both services active.
+
+Apply [the separate incremental source patch](patches/0045-radish-storage16.patch) after the two0045 batching patches; use the existing builder and `--suite storage16` selection with the matching internal headers. [Exact source/module/public-feature/native/guard evidence](results/storage16-public-0045.json) preserves the failed host-only v1 capability selection and validated v2 replacement. The numerical/allocation assertions ran on the tablet; raw allocation snapshots were not separately exported.
+
+This is representative storage-only qualification, not complete ASR compatibility or conformance. The frozen fcd driver remains paired with current inference performance work; its features do not change. Before selecting this new driver for inference, verify explicit FP32 storage/packing/arithmetic options so newly reported support cannot select an unreviewed shader path. ASR's remaining API and capability requirements stay open.
+
 ## 2026-11-02: resident Japanese synthesis beats the matched ncnn CPU run
 
 For the same intended Japanese greeting, resident synthesis is **32.835343 seconds on Vulkan versus 37.262337 seconds on four-thread ncnn CPU**, a 4.426994-second / 11.8806% reduction. Both processes generate the frontend/source and waveform tail anew for each request; only the same-shape neural core stays resident. All eight actual boundary files are byte-identical across all four requests, and every complete core and waveform comparison passes.

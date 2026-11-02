@@ -1,0 +1,341 @@
+{
+  "status": "bounded_public_storage16_passed",
+  "qualified_release": {
+    "status": "bounded public storageBuffer16BitAccess qualification passed",
+    "pins": {
+      "implementation_patch": {
+        "path": "/run/media/jethac/Shared/radish/asr-storage16-private-1cv8ubcf/storage16.patch",
+        "bytes": 5688,
+        "sha256": "e5ae827058d85c3698900b9bb156e7959c4bb3fa7de48ec3b0a92b82efa816d9"
+      },
+      "advertisement_patch": {
+        "path": "/run/media/jethac/Shared/radish/asr-storage16-public-757f8ukg/advertise-storage16.patch",
+        "bytes": 932,
+        "sha256": "82c94c24b382996368b71e02e261d13367af27870626fa82e5f510d503ce4e08"
+      },
+      "consumer_release": {
+        "path": "/run/media/jethac/Shared/radish/asr-storage16-public-757f8ukg/probe-release.json",
+        "bytes": 1795,
+        "sha256": "c3d407f925214b12ee9d39544c29ddc67784b6aabb121afc6a91e0b5a0381613"
+      },
+      "actual_review": {
+        "path": "/run/media/jethac/Shared/radish/asr-storage16-public-757f8ukg/actual-review.json",
+        "bytes": 4654,
+        "sha256": "bccfee11a889585bfedc72f1f66dc95ba0cf19713b5502c0f7a10d6858ad3f2c"
+      },
+      "independent_consumer_review": {
+        "path": "/run/media/jethac/Shared/radish/core-api-resource-consumers-0044-ymiuefnt/stage68-storage16-consumer-v2-review/review.json",
+        "bytes": 3633,
+        "sha256": "c3742be97fb8315ba0ab7812396a9c93910cc965ee24f547f0281bce0f17fc06"
+      },
+      "independent_actual_review": {
+        "path": "/run/media/jethac/Shared/radish/core-api-resource-consumers-0044-ymiuefnt/stage71-storage16-public-actual-review/review.json",
+        "bytes": 4214,
+        "sha256": "26539b131e436a8fc759e2ccc4d4dbb10d9c22a3ad3bc258e983e08826671a2b"
+      }
+    },
+    "driver_sha256": "04bd8a8da119129363da8239c9633f0f07f46b7d238c4f52f867137a46c0276d",
+    "feature_scope": "KHR_16bit_storage/storageBuffer16BitAccess only; other16-bit storage/arithmetic features false; API1.0 unchanged",
+    "preserved_failure": "probe-v1 retained; structurally validated but unsupported Float16/Int16 declarations; no device run. v2 fixes aggregate copy only and retains the full oracle.",
+    "limits": "Representative storage-only legal public test, not conformance or ASR compatibility. Existing fcd Japanese and ASR opt-in releases unchanged; eight-bit/timeline/shader-environment work remains."
+  },
+  "actual_review": {
+    "status": "passed",
+    "scope": "Bounded actual valid public KHR_16bit_storage/storageBuffer16BitAccess qualification; no ASR/API1.2/conformance claim. No unsupported arithmetic capability. All five helper memory oracles were independently source-reviewed; no standalone raw outputs were exported.",
+    "driver": {
+      "bytes": 49033792,
+      "sha256": "04bd8a8da119129363da8239c9633f0f07f46b7d238c4f52f867137a46c0276d"
+    },
+    "helper": {
+      "bytes": 738208,
+      "sha256": "9a25193e680fe3ff9b26b45f960d22042ca7f2eeda3497fb6f32b9d014f2e2bf"
+    },
+    "spirv": {
+      "bytes": 3604,
+      "sha256": "81e840b48c039ddb8c7daf515ee7579329cefa200e82d5f112790e575381c0b8"
+    },
+    "capabilities": [
+      "Shader",
+      "StorageBuffer16BitAccess"
+    ],
+    "run_log": {
+      "bytes": 338174,
+      "sha256": "72d5c6bdf30f277bd9aed8923bd0f9bd791d30f548d4985b015aa690917f73af"
+    },
+    "public_feature_logs": 2,
+    "compiled": "descriptors=4 buffers=4 native=22 full=8 half=7 private=0 shared=0 physical=16,2,1",
+    "native_compile_and_functional_identical": true,
+    "native_sha256": "49892fa122f6b77780d8abb715f8115d66b4374157ea590189731b6ffce0ec67",
+    "native_op_counts": {
+      "ldgb.untyped.4d.u32.1": 7,
+      "stgb.untyped.4d.u32.1": 7,
+      "atomic.s.and.untyped.4d.u32.1": 4,
+      "atomic.s.or.untyped.4d.u32.1": 4,
+      "fence.g.l.r.w": 1,
+      "bar.g.l": 1
+    },
+    "logical_workgroup": [
+      32,
+      1,
+      1
+    ],
+    "physical_workgroup": [
+      16,
+      2,
+      1
+    ],
+    "register_footprint": {
+      "full": 8,
+      "half": 7,
+      "halfvec_per_thread": 23,
+      "resident_threads": 32,
+      "total_halfvec": 736,
+      "limit_unchanged": 4096
+    },
+    "cases": [
+      {
+        "span": 1,
+        "dynamic_offset": 16,
+        "base": 32,
+        "outputs": 100,
+        "complete_allocations": 4,
+        "pass": true
+      },
+      {
+        "span": 2,
+        "dynamic_offset": 32,
+        "base": 48,
+        "outputs": 100,
+        "complete_allocations": 4,
+        "pass": true
+      },
+      {
+        "span": 3,
+        "dynamic_offset": 48,
+        "base": 64,
+        "outputs": 100,
+        "complete_allocations": 4,
+        "pass": true
+      },
+      {
+        "span": 6,
+        "dynamic_offset": 64,
+        "base": 80,
+        "outputs": 100,
+        "complete_allocations": 4,
+        "pass": true
+      },
+      {
+        "span": 192,
+        "dynamic_offset": 80,
+        "base": 96,
+        "outputs": 100,
+        "complete_allocations": 4,
+        "pass": true
+      }
+    ],
+    "profiles": [
+      {
+        "pipeline": "0xaaaaf34257f0",
+        "grid": "1,1,1",
+        "local": "16,2,1",
+        "barrier": "1",
+        "loops": "0",
+        "instrlen": "22",
+        "chunks": "1",
+        "submits": "1",
+        "ns": "3531203",
+        "submit_ns": "3293027",
+        "submit_max_ns": "3293027",
+        "result": "0"
+      },
+      {
+        "pipeline": "0xaaaaf34257f0",
+        "grid": "1,1,1",
+        "local": "16,2,1",
+        "barrier": "1",
+        "loops": "0",
+        "instrlen": "22",
+        "chunks": "1",
+        "submits": "1",
+        "ns": "503022",
+        "submit_ns": "433178",
+        "submit_max_ns": "433178",
+        "result": "0"
+      },
+      {
+        "pipeline": "0xaaaaf34257f0",
+        "grid": "1,1,1",
+        "local": "16,2,1",
+        "barrier": "1",
+        "loops": "0",
+        "instrlen": "22",
+        "chunks": "1",
+        "submits": "1",
+        "ns": "644688",
+        "submit_ns": "575522",
+        "submit_max_ns": "575522",
+        "result": "0"
+      },
+      {
+        "pipeline": "0xaaaaf34257f0",
+        "grid": "1,1,1",
+        "local": "16,2,1",
+        "barrier": "1",
+        "loops": "0",
+        "instrlen": "22",
+        "chunks": "1",
+        "submits": "1",
+        "ns": "817605",
+        "submit_ns": "750991",
+        "submit_max_ns": "750991",
+        "result": "0"
+      },
+      {
+        "pipeline": "0xaaaaf34257f0",
+        "grid": "1,1,1",
+        "local": "16,2,1",
+        "barrier": "1",
+        "loops": "0",
+        "instrlen": "22",
+        "chunks": "1",
+        "submits": "1",
+        "ns": "628751",
+        "submit_ns": "567501",
+        "submit_max_ns": "567501",
+        "result": "0"
+      }
+    ],
+    "source_interpretation": "Actual aligned U32 load is inside size>=2/offset<=size-2 branch; halfword extraction zero fallback and masked atomic AND/OR stores remain. Native source g0,targetg1,resultsg2,adjacentg3 mapping is internal compaction, not public binding number. fence+workgroupbarrier precede neighboring readback. Exact range2 passes without descriptor inflation.",
+    "conditions": {
+      "fault_check": "passed",
+      "services": "both active",
+      "runtime": "877ms",
+      "memory_peak": "11.5MiB",
+      "swap": 0
+    },
+    "remaining": "8-bit storage/Int8 and backend API/shader/timeline requirements remain. This representative consumer does not exhaust storage16 layout/alias scenarios."
+  },
+  "independent_actual_review": {
+    "bytes": 4214,
+    "sha256": "26539b131e436a8fc759e2ccc4d4dbb10d9c22a3ad3bc258e983e08826671a2b"
+  },
+  "driver": {
+    "bytes": 49033792,
+    "sha256": "04bd8a8da119129363da8239c9633f0f07f46b7d238c4f52f867137a46c0276d"
+  },
+  "published_patch": {
+    "bytes": 6621,
+    "sha256": "eff73e88f0ba90af453fd73fc781e34eef296d9626f1da950ef0a03ac27878c1"
+  },
+  "exact_four_file_reconstruction": true,
+  "source_module": {
+    "status": "build_and_spirv_val_passed",
+    "commands": [
+      [
+        "glslangValidator",
+        "-V",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/asr-storage16-public-build-0045/probe-v2/storage16.comp",
+        "-o",
+        "/run/media/jethac/Shared/radish/asr-storage16-public-build-0045/probe-v2/storage16.spv"
+      ],
+      [
+        "spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/asr-storage16-public-build-0045/probe-v2/storage16.spv"
+      ],
+      [
+        "spirv-dis",
+        "/run/media/jethac/Shared/radish/asr-storage16-public-build-0045/probe-v2/storage16.spv",
+        "-o",
+        "/run/media/jethac/Shared/radish/asr-storage16-public-build-0045/probe-v2/storage16.spvasm"
+      ]
+    ],
+    "capabilities": [
+      "Shader",
+      "StorageBuffer16BitAccess"
+    ],
+    "files": {
+      "storage16": {
+        "bytes": 738208,
+        "sha256": "9a25193e680fe3ff9b26b45f960d22042ca7f2eeda3497fb6f32b9d014f2e2bf"
+      },
+      "storage16.c": {
+        "bytes": 14341,
+        "sha256": "9567075d7c83519d383431b045a64e74d9f8c0ae4b467b100077c83bc160b3ff"
+      },
+      "storage16.comp": {
+        "bytes": 1421,
+        "sha256": "bbc30d479e791ac55fb47d30eeb28ffa950fa71f209bb15fcf7a634ded03823c"
+      },
+      "storage16.spv": {
+        "bytes": 3604,
+        "sha256": "81e840b48c039ddb8c7daf515ee7579329cefa200e82d5f112790e575381c0b8"
+      },
+      "test_common.h": {
+        "bytes": 684,
+        "sha256": "4b022481571560cd58577d1303955f8c96e72891a2647947daa607eb5fd93b2b"
+      },
+      "core_resources.c": {
+        "bytes": 35622,
+        "sha256": "a5024c99a2bbc55983659dc2083a3b8d91e73c0c0760fc8509fdc2dc75405378"
+      }
+    },
+    "binary_reuse": "Exact prior C/header build reused; only shader aggregate assignment replaced by scalar copies."
+  },
+  "runner_result": {
+    "status": "passed",
+    "mode": "probe",
+    "exit_code": 0,
+    "payload": {
+      "radish_icd.json": {
+        "bytes": 150,
+        "sha256": "b8c1a8e8a099c24b8414bc16b61e40f52ad887f59432bc9af9581666085fa83e"
+      },
+      "resources": {
+        "bytes": 738208,
+        "sha256": "9a25193e680fe3ff9b26b45f960d22042ca7f2eeda3497fb6f32b9d014f2e2bf"
+      },
+      "resources.spv": {
+        "bytes": 3604,
+        "sha256": "81e840b48c039ddb8c7daf515ee7579329cefa200e82d5f112790e575381c0b8"
+      },
+      "check-gpu-log.py": {
+        "bytes": 1004,
+        "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+      },
+      "libvulkan_radish.so": {
+        "bytes": 49033792,
+        "sha256": "04bd8a8da119129363da8239c9633f0f07f46b7d238c4f52f867137a46c0276d"
+      },
+      "payload.json": {
+        "bytes": 815,
+        "sha256": "1ad1fac7cc9e44b3ac8dc8132fc08f278e9ed2bb32a37d0c03844d8e6ea402f2"
+      }
+    },
+    "run_log": {
+      "bytes": 338174,
+      "sha256": "72d5c6bdf30f277bd9aed8923bd0f9bd791d30f548d4985b015aa690917f73af"
+    },
+    "scope": "Raw ICD assets/services/faults and consolidated assertions passed. This is experimental compute coverage, not Vulkan conformance."
+  },
+  "limits": [
+    "Only storageBuffer16BitAccess is advertised; uniform/push/input-output16 and arithmetic Int16/Float16 remain false, API stays1.0.",
+    "Actual small helper performs full four-allocation byte-preserving checks per case; raw allocation snapshots were not separately exported for host recomputation.",
+    "Frozen fcd remains selected for all current inference comparisons. New storage16 advertisement is not silently introduced into them.",
+    "This closes one storage prerequisite, not ASR compatibility, Vulkan1.2 or conformance. The v1 helper with unsupported Int16/Float16 capabilities is preserved and was never executed."
+  ],
+  "published_reproduction_checks": {
+    "published-probe/build.json": {
+      "bytes": 6458,
+      "sha256": "cb4a1576cd8b839497ac05cae385c201e339c2b0a2d23f244f44b115e72296f8"
+    },
+    "published-hostcheck.json": {
+      "bytes": 1224,
+      "sha256": "876b6f2ff4af334355c7eb15e64a36b79e77250da741565426be917991db3245"
+    }
+  }
+}
