@@ -318,7 +318,7 @@ source and query evidence](results/required-blit-vertex-query-0045.json) contain
 no graphics commands. Full applicable conformance and the 42 strict sRGB
 mismatches remain open. The selected inference stack is unchanged.
 
-The retained result inventory now contains 296 unique original CTS cases with a Pass
+The retained result inventory now contains 368 unique original CTS cases with a Pass
 result, including the corrected single lifetime case. [The deduplicated inventory](results/official11-qualified-case-inventory-0045.json)
 spans separately pinned candidates and preserves the original oracle limitations.
 It is neither a single full conformance run nor a percentage of applicable
@@ -353,3 +353,11 @@ scope](results/official11-function-private-0045.json) shows register/constant
 initialization, with no scratch load/store instructions. Deliberate compiler-spill
 qualification remains open. The aggregate 296-case historical inventory is not a
 single full conformance run or a percentage of applicable requirements.
+
+Seventy-two original nested Function-composite/access-chain cases passed in
+42 integer and 30 float scopes, each retaining the original 90-second cap. Their
+scalar input/output bits match exactly. [Native code and source scope](results/official11-function-composites-0045.json)
+show register optimization with no private load/store operations. These bring
+the retained historical inventory to 368 distinct original passes; they do not
+qualify compiler spills. The separate ScratchSpace core adapter remains subject
+to native resource admission and is not an original DGC CTS pass.

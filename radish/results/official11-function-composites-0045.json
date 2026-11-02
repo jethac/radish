@@ -1,0 +1,2334 @@
+{
+  "status": "72 distinct original Function composite/access-chain cases passed",
+  "driver": {
+    "path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/libvulkan_radish.so",
+    "bytes": 49079616,
+    "sha256": "f222ff480f6c9ef3785c446661f12ccacbc91f119b0e7d405347b949b4dc325d"
+  },
+  "bounds": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-function-composites-next-0045/source-bounds.json",
+      "bytes": 10869,
+      "sha256": "f179cb308c4bdb793ee4d590174aebbd17b7f7e72d35d8d60ea8def1ee9e2998"
+    },
+    "result": {
+      "status": "Source-bounded next original Function composite/access-chain partition; no launch or result",
+      "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+      "case_file": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-function-composites-next-0045/cases.txt",
+        "sha256": "c746c4990673c3d96bbb0504ce9b81264d8966eacedb35088492abfc75a26920"
+      },
+      "count": 72,
+      "cases": [
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.vec_2",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.vec_3",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.vec_4",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_2",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_3",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_4",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_5",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_6",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_7",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_8",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_9",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_10",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_2",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_3",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_4",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_5",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_6",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_7",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_8",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_9",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_10",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.vec_2",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.vec_3",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.vec_4",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_2",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_3",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_4",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_5",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_6",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_7",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_8",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_9",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_10",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_2",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_3",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_4",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_5",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_6",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_7",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_8",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_9",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_10",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.vec_2",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.vec_3",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.vec_4",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_2",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_3",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_4",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_5",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_6",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_7",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_8",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_9",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_10",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_2",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_3",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_4",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_5",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_6",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_7",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_8",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_9",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_10",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_2x2",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_2x3",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_2x4",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_3x2",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_3x3",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_3x4",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_4x2",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_4x3",
+        "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_4x4"
+      ],
+      "source_pins": [
+        {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/vktTestPackage.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-function-private-next-0045/source/vktTestPackage.cpp",
+          "bytes": 67173,
+          "sha256": "272802a91a54f6aade1741c713563936fe01be295ea648bdf85e5cce0e4823d6"
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-function-private-next-0045/source/vktSpvAsmTests.cpp",
+          "bytes": 1761,
+          "sha256": "97cd0a9fc6b7361bbe81c6e64a11d5d428fa439c98098638398969dddb66dd9d"
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmInstructionTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-function-private-next-0045/source/vktSpvAsmInstructionTests.cpp",
+          "bytes": 1042522,
+          "sha256": "d6800ae7655ee7bb2a535d450d01ae998f8439cb7b342ea9e22ec99095d518d8"
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmVariableInitTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-function-private-next-0045/source/vktSpvAsmVariableInitTests.cpp",
+          "bytes": 40744,
+          "sha256": "dd9e504f5303a48a56de8c93b16c1af190b5e2962cc9a208b91e93abf8ff1abf"
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmComputeShaderCase.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-function-private-next-0045/source/vktSpvAsmComputeShaderCase.cpp",
+          "bytes": 45490,
+          "sha256": "29492a513a821b5af613cbf77f03b7bdc954e20043fb7c7e05858324e9150c40"
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmComputeShaderTestUtil.hpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-function-private-next-0045/source/vktSpvAsmComputeShaderTestUtil.hpp",
+          "bytes": 22695,
+          "sha256": "dfd7c2e46d5f603a7bedde13bf9eb208465d64dd855fcdf34ea0ebdcd289ca86"
+        }
+      ],
+      "registration": "Same verified spirv_assembly.instruction.compute parent; vktSpvAsmInstructionTests.cpp21938 createOpInBoundsAccessChainGroup ->20628 opinboundsaccesschain -> int/uint/float -> names generated by createCompositeCases20200-20306.",
+      "cases_per_type": {
+        "int": 21,
+        "uint": 21,
+        "float": 30
+      },
+      "work": "Each exact original case builds one Shader+Matrix SPIR-V1.0 compute pipeline, local1/grid1. Reads one input scalar, inserts into nested Function composite, stores Function variable, addresses it with OpInBoundsAccessChain, loads/extracts and writes same scalar. No loops/shared/images/push/optional features.",
+      "bounds": {
+        "dispatches": 72,
+        "invocations": 72,
+        "input_buffer_bytes_per_case": 4,
+        "output_buffer_bytes_per_case": 4,
+        "ssbo_descriptors": 2,
+        "outer_struct_members_range": [
+          2,
+          8
+        ],
+        "inner_vector_components": [
+          2,
+          4
+        ],
+        "inner_array_or_struct_members": [
+          2,
+          10
+        ],
+        "float_matrix_dimensions": [
+          2,
+          4
+        ],
+        "maximum_function_composite_bytes": 512
+      },
+      "oracle": "Original exact four-byte input/output identity, including float bit pattern. Common poison/compute-to-host dependency/fence/invalidate remains. No custom full-allocation guard claim. All seeded indices fall inside actual component shapes.",
+      "interpretation": "Exercises core composite construction/insertion/extraction, nested Function storage and InBoundsAccessChain semantics across72 original variants. Compiler folding/register optimization allowed; does not prove scratch or actual register spilling.",
+      "controls": "Use original unchanged90s/384MiB/8MiB log+64MiB reserve/per-case fault stop and exact official CTS. No rerun of Function initializer8, distinct cases. Transport stdin derivative may be reused if generated body exceeds argv bound; source and oracle unchanged."
+    }
+  },
+  "partition": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-function-composites-next-0045/owner-partition.json",
+      "bytes": 1342,
+      "sha256": "108bd4c2fc5fb88e2b750d65c64b93c5a5a3be3cead21f353d6a2bd9c9838f34"
+    },
+    "result": {
+      "status": "Exact original72 partitioned42 integer/30float with no omission/repetition",
+      "original": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-function-composites-next-0045/cases.txt",
+        "sha256": "c746c4990673c3d96bbb0504ce9b81264d8966eacedb35088492abfc75a26920",
+        "count": 72
+      },
+      "partitions": [
+        {
+          "group": "integer",
+          "count": 42,
+          "sha256": "d088fbc5da550ac95b74e6d2bf79ace7070e339c9112e5b95960f4824a18eb24",
+          "casefile": "/run/media/jethac/Shared/radish/compute11-official-function-composites-integer-runner-0045/probe/info-cases.txt"
+        },
+        {
+          "group": "float",
+          "count": 30,
+          "sha256": "f904079ad6a495773629af81ebb035ba2134ed18fe3bde1ad1ff8f8609d3599c",
+          "casefile": "/run/media/jethac/Shared/radish/compute11-official-function-composites-float-runner-0045/probe/info-cases.txt"
+        }
+      ],
+      "reason": "Previous8 original Function/Private cases consumed11.116s. A single72-case sequential-process scope could exceed original90s. Two source-aligned groups preserve every approved case within unchanged per-scope90s/384MiB controls and fail-stop. Planning estimate is not a runtime guarantee or benchmark; no cap enlargement.",
+      "source_bounds": "/run/media/jethac/Shared/radish/compute11-official-function-composites-next-0045/source-bounds.json"
+    }
+  },
+  "partition_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-function-composites-next-0045/independent-partition-runner-review.json",
+      "bytes": 1623,
+      "sha256": "d9067437e98e91a99a1e181042512e2941396c238250ba783c076203c7a556cb"
+    },
+    "result": {
+      "status": "PASS finite exact72 partition and unchanged-control stdin runner derivatives",
+      "source_bounds_sha256": "f179cb308c4bdb793ee4d590174aebbd17b7f7e72d35d8d60ea8def1ee9e2998",
+      "cases_sha256": "c746c4990673c3d96bbb0504ce9b81264d8966eacedb35088492abfc75a26920",
+      "baseline_runner_sha256": "566ef7226cd6b9509239a4be23413deb8b338b6e47ba8e30066d6e44a8a090ab",
+      "partitions": [
+        {
+          "group": "integer",
+          "count": 42,
+          "cases_sha256": "d088fbc5da550ac95b74e6d2bf79ace7070e339c9112e5b95960f4824a18eb24",
+          "runner_sha256": "47a010c30548de67896e8cfd7db2c1cd56d318c5fdd43b23329f72d58533398b",
+          "argv_sha256": "d2442161e22b842c652e0061e86e659c98145e0cac918416d1a3d15dbd029ed4"
+        },
+        {
+          "group": "float",
+          "count": 30,
+          "cases_sha256": "f904079ad6a495773629af81ebb035ba2134ed18fe3bde1ad1ff8f8609d3599c",
+          "runner_sha256": "4fe4ce2b075de982b733c5e6f8ebef895459ef14ba52d19a9438d42c07e66eda",
+          "argv_sha256": "6fd61f740dee14ede8333a3054fbfcfc441006722f668eb9a8f3b60f020dd14a"
+        }
+      ],
+      "union": "Exact original ordered72 equals integer42 thenfloat30; disjoint, no omissions/repeats and no initializer8 repeats.",
+      "controls": "Only approved inventory SHA/count deltas from actual188 stdin engine. Each original90s/384MiB/8MiB+64MiB/per-case fault-stop remains; partition avoids increasing caps based on prior8 startup duration, not a promised runtime. Shader/CTS/oracle unchanged.",
+      "scope": "72 single-invocation original Function composite/access-chain tests; exact input/output scalar equality. No scratch/spill or high-register-pressure proof inferred."
+    }
+  },
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-function-composites-next-0045/actual-review.json",
+      "bytes": 48752,
+      "sha256": "f5e77411cb37d792afe3536102fe946cfb1a05b981a8b8140df838411b5d2c61"
+    },
+    "result": {
+      "status": "PASS exact72 original Function composite/access-chain cases across disjoint42/30 scopes",
+      "cases": [
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.vec_2",
+          "status": "Pass",
+          "qpa_sha256": "526fbb2dca06955996160ca73661b0ed227f0666b16ec55da46a01e73365e634",
+          "dispatch": {
+            "pipeline": "0xaaaaf0dd6a20",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3961674",
+            "submit_ns": "3645423",
+            "submit_max_ns": "3645423",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.vec_3",
+          "status": "Pass",
+          "qpa_sha256": "2c17759543afcd5a1ad112b0ae5952dc638e981ce79049ce44123b774f91e94e",
+          "dispatch": {
+            "pipeline": "0xaaaad560f9f0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3596725",
+            "submit_ns": "3279277",
+            "submit_max_ns": "3279277",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.vec_4",
+          "status": "Pass",
+          "qpa_sha256": "5607ef94fca8d57b5359155e9ccbbdc7e29e1ca7060c92a9c30ed07a83fff7f6",
+          "dispatch": {
+            "pipeline": "0xaaab0d7fbe10",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4090008",
+            "submit_ns": "3759121",
+            "submit_max_ns": "3759121",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_2",
+          "status": "Pass",
+          "qpa_sha256": "701024f6c69fb4d0f03dd91407516b3ca76e31c345c5e2aa72d15a71f091cfea",
+          "dispatch": {
+            "pipeline": "0xaaab052cc4e0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4171310",
+            "submit_ns": "3790996",
+            "submit_max_ns": "3790996",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_3",
+          "status": "Pass",
+          "qpa_sha256": "fada1363e942746bc4d17c8e7ea5cef3bece1338e82e5bb7e60d0108025243c6",
+          "dispatch": {
+            "pipeline": "0xaaab07a7ea60",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4089539",
+            "submit_ns": "3808757",
+            "submit_max_ns": "3808757",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_4",
+          "status": "Pass",
+          "qpa_sha256": "2137cd9ce4018d9e4e1d747587960abd6054f556c5c34e34f8fcfe33471da430",
+          "dispatch": {
+            "pipeline": "0xaaaafd59ee10",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3581413",
+            "submit_ns": "3275475",
+            "submit_max_ns": "3275475",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_5",
+          "status": "Pass",
+          "qpa_sha256": "7020f78e68ffdbb85b79f3838f05b1a6187f38e84d3a5c9a3540bbf97c09fa94",
+          "dispatch": {
+            "pipeline": "0xaaaaf0145e30",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3757195",
+            "submit_ns": "3423965",
+            "submit_max_ns": "3423965",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_6",
+          "status": "Pass",
+          "qpa_sha256": "3a8391e6bc218b682d201d53b7e3ad63872d20bda70635f65f627c451b65bf1a",
+          "dispatch": {
+            "pipeline": "0xaaaafeff83c0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4156310",
+            "submit_ns": "3862455",
+            "submit_max_ns": "3862455",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_7",
+          "status": "Pass",
+          "qpa_sha256": "1668578e51f487b40a33e9925d1f34b9e5be9dff54ea7024af67fa3b86eb9753",
+          "dispatch": {
+            "pipeline": "0xaaaaed9a1e30",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4003549",
+            "submit_ns": "3698496",
+            "submit_max_ns": "3698496",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_8",
+          "status": "Pass",
+          "qpa_sha256": "22f6a6ac2d5970aae4c74a066eb6f783050a201322714b9d195f2fd9dbf0bc7c",
+          "dispatch": {
+            "pipeline": "0xaaab1aae1520",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4236414",
+            "submit_ns": "3898393",
+            "submit_max_ns": "3898393",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_9",
+          "status": "Pass",
+          "qpa_sha256": "646d1579d38ac37373e7ac53dba75624ffa0d72142534cfa2ed9786ac743027e",
+          "dispatch": {
+            "pipeline": "0xaaaaf331e4c0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4068497",
+            "submit_ns": "3761413",
+            "submit_max_ns": "3761413",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_10",
+          "status": "Pass",
+          "qpa_sha256": "6160fa8712c164e454977612ef9bfd13894168d37faa74b9a770646db1a27811",
+          "dispatch": {
+            "pipeline": "0xaaaaf1490510",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4194903",
+            "submit_ns": "3825424",
+            "submit_max_ns": "3825424",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_2",
+          "status": "Pass",
+          "qpa_sha256": "bc22f482a9e89f0bd5b8ec4f26b64e16ec647a1ea4ac9ee4a1fafb383702b432",
+          "dispatch": {
+            "pipeline": "0xaaab2dc0be20",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4082351",
+            "submit_ns": "3768393",
+            "submit_max_ns": "3768393",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_3",
+          "status": "Pass",
+          "qpa_sha256": "281723e7083ca3732b282707d83436f57bd3effacff3190689f271f5f50b1bdb",
+          "dispatch": {
+            "pipeline": "0xaaaad30dbaa0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4162872",
+            "submit_ns": "3844538",
+            "submit_max_ns": "3844538",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_4",
+          "status": "Pass",
+          "qpa_sha256": "bb01149920bebe8d1c4509cf6d84ee69f0e5b5edfc7dd1c5f3cbf2acc799a7d2",
+          "dispatch": {
+            "pipeline": "0xaaaaef181fa0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4121675",
+            "submit_ns": "3714277",
+            "submit_max_ns": "3714277",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_5",
+          "status": "Pass",
+          "qpa_sha256": "34ec5571f47e0b8a26e5578c7a928a0958b4e063ed677aca34b7a86b434c0a69",
+          "dispatch": {
+            "pipeline": "0xaaab00668a70",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3889799",
+            "submit_ns": "3513861",
+            "submit_max_ns": "3513861",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_6",
+          "status": "Pass",
+          "qpa_sha256": "65de0a3d1f569f2250c103356daa3ffd0b40628862185b1914c133d6ccefae91",
+          "dispatch": {
+            "pipeline": "0xaaaae95dde50",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4146778",
+            "submit_ns": "3828184",
+            "submit_max_ns": "3828184",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_7",
+          "status": "Pass",
+          "qpa_sha256": "256d775ef4a5da67505523fcac972f1893c6d12fcf9441873f8420c6ae10d325",
+          "dispatch": {
+            "pipeline": "0xaaaadcfa3e50",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4040685",
+            "submit_ns": "3735163",
+            "submit_max_ns": "3735163",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_8",
+          "status": "Pass",
+          "qpa_sha256": "7ef1395b2f538415eba6f3d7e6308fa20e4373c45b0e5f34b9d62304a0fc8cb0",
+          "dispatch": {
+            "pipeline": "0xaaaacd1f93d0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3915684",
+            "submit_ns": "3433079",
+            "submit_max_ns": "3433079",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_9",
+          "status": "Pass",
+          "qpa_sha256": "af65c1aad096f7d8ce73d98839e6dc7a56a0117110809043a67e249adc3cee9e",
+          "dispatch": {
+            "pipeline": "0xaaab2e4ed4b0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4683394",
+            "submit_ns": "4379330",
+            "submit_max_ns": "4379330",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_10",
+          "status": "Pass",
+          "qpa_sha256": "99d218091730ae74bb6ee5d4343b08abe37885e636b216a4b1dd09e5608abf9a",
+          "dispatch": {
+            "pipeline": "0xaaab269b2e70",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3313652",
+            "submit_ns": "3010579",
+            "submit_max_ns": "3010579",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.vec_2",
+          "status": "Pass",
+          "qpa_sha256": "870a317ddbab386f3514ad297b6d37654b9053e8ee913fa906603174062e1c3c",
+          "dispatch": {
+            "pipeline": "0xaaaad4c930a0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4401779",
+            "submit_ns": "4099539",
+            "submit_max_ns": "4099539",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.vec_3",
+          "status": "Pass",
+          "qpa_sha256": "d361aed4e9d1f8ce5f92a12336c0b824dacb3e350e5c7ea712e03210be801c8c",
+          "dispatch": {
+            "pipeline": "0xaaab088c80d0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3884122",
+            "submit_ns": "3582611",
+            "submit_max_ns": "3582611",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.vec_4",
+          "status": "Pass",
+          "qpa_sha256": "ab08698e1a1d1de3cec5f8e435e74e95493a95718582c0f31d8e81525f9b4836",
+          "dispatch": {
+            "pipeline": "0xaaaadcd73e20",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3853236",
+            "submit_ns": "3509121",
+            "submit_max_ns": "3509121",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_2",
+          "status": "Pass",
+          "qpa_sha256": "08c73c6aebf4f60eaf3af412fb9ee8a87fbc567fbed57c37cc23cfc98fd58d8a",
+          "dispatch": {
+            "pipeline": "0xaaaaeec99e50",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3516517",
+            "submit_ns": "3245944",
+            "submit_max_ns": "3245944",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_3",
+          "status": "Pass",
+          "qpa_sha256": "d804ba63d18daa45ddb3f919c6e694b0fe05ec8541f61131ea9bd1229a19613f",
+          "dispatch": {
+            "pipeline": "0xaaaae8face80",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4140684",
+            "submit_ns": "3820007",
+            "submit_max_ns": "3820007",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_4",
+          "status": "Pass",
+          "qpa_sha256": "7a2e745672aa645c7f236c8a60d73c600eead894e7083df13c1b881edd2cadff",
+          "dispatch": {
+            "pipeline": "0xaaab2825d4f0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4035580",
+            "submit_ns": "3581517",
+            "submit_max_ns": "3581517",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_5",
+          "status": "Pass",
+          "qpa_sha256": "0f9f0ba15ddae9133c8b23f4076077bd2c009c2b8bd9a31c309ced1e5f7fceb1",
+          "dispatch": {
+            "pipeline": "0xaaaae7e954e0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3950320",
+            "submit_ns": "3603653",
+            "submit_max_ns": "3603653",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_6",
+          "status": "Pass",
+          "qpa_sha256": "09bea2af2aa8486e7184faa26afdfe57fdf665b76d56adda7db6a18c9f758ca5",
+          "dispatch": {
+            "pipeline": "0xaaaaf6d1a4b0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3971570",
+            "submit_ns": "3658288",
+            "submit_max_ns": "3658288",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_7",
+          "status": "Pass",
+          "qpa_sha256": "30e7d847b31a07e5d0ecb9d78c4c28f6ef5106566e0b3e247dde749bc955a9be",
+          "dispatch": {
+            "pipeline": "0xaaaae74bd510",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4129695",
+            "submit_ns": "3820527",
+            "submit_max_ns": "3820527",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_8",
+          "status": "Pass",
+          "qpa_sha256": "eb4f3e5ddc38ef3973efbd4df200ff4f259b193e9fe0ff3d289044d82a0879df",
+          "dispatch": {
+            "pipeline": "0xaaaaf553ee50",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4184747",
+            "submit_ns": "3867924",
+            "submit_max_ns": "3867924",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_9",
+          "status": "Pass",
+          "qpa_sha256": "a7c233e1772912fba4e4bb2a6de09c1f6c800adb1dd5171d7cd8a19d177b3b8a",
+          "dispatch": {
+            "pipeline": "0xaaab0a3ebe60",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4215581",
+            "submit_ns": "3851257",
+            "submit_max_ns": "3851257",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_10",
+          "status": "Pass",
+          "qpa_sha256": "9398474f26856be7bcddc5a2d13c0cc2c6412e5cb4f9eddf8892750f257e5348",
+          "dispatch": {
+            "pipeline": "0xaaaadc485500",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4277872",
+            "submit_ns": "3878184",
+            "submit_max_ns": "3878184",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_2",
+          "status": "Pass",
+          "qpa_sha256": "bf75110ec02fe75c783a0509c1e00f5d31a31fe873ff7b6199fc045df0258493",
+          "dispatch": {
+            "pipeline": "0xaaaaf7deffa0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3880736",
+            "submit_ns": "3582507",
+            "submit_max_ns": "3582507",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_3",
+          "status": "Pass",
+          "qpa_sha256": "651c36370e218a126eb86b9972c2093c964ef482f79eb615a20b6b51f4d5414e",
+          "dispatch": {
+            "pipeline": "0xaaab28af9a30",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4102611",
+            "submit_ns": "3776726",
+            "submit_max_ns": "3776726",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_4",
+          "status": "Pass",
+          "qpa_sha256": "80aef30ce795d6078eb345fc686d80c1a413553a739124d181a36f2338369563",
+          "dispatch": {
+            "pipeline": "0xaaab209f8e40",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4220164",
+            "submit_ns": "3843861",
+            "submit_max_ns": "3843861",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_5",
+          "status": "Pass",
+          "qpa_sha256": "e625d531ffbd14c8a4ff38687399ad380e86485c7c7e338617e27ad66b0f0a28",
+          "dispatch": {
+            "pipeline": "0xaaab0ff05a30",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4101362",
+            "submit_ns": "3802715",
+            "submit_max_ns": "3802715",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_6",
+          "status": "Pass",
+          "qpa_sha256": "056ca03fde14a780c41eda7b66900439187e8d16e9c121601fff8f9b57f722a4",
+          "dispatch": {
+            "pipeline": "0xaaaae6d58e50",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3708809",
+            "submit_ns": "3345839",
+            "submit_max_ns": "3345839",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_7",
+          "status": "Pass",
+          "qpa_sha256": "3810a691a6f6da21cd21ca074e4e2716e16abd3f77ea729ad524e9e53dda098d",
+          "dispatch": {
+            "pipeline": "0xaaaae5b3f3d0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4479487",
+            "submit_ns": "3983080",
+            "submit_max_ns": "3983080",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_8",
+          "status": "Pass",
+          "qpa_sha256": "306f9228031dc1f3af21a70b76ead4be3b9e2909c78980d307b058744961ed7c",
+          "dispatch": {
+            "pipeline": "0xaaaaf842a4e0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4134434",
+            "submit_ns": "3782820",
+            "submit_max_ns": "3782820",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_9",
+          "status": "Pass",
+          "qpa_sha256": "2dbc946f6608feb9114ea3ff4c1b97b873c800f97e26b0b1f75a36f33b15322c",
+          "dispatch": {
+            "pipeline": "0xaaab01fc9e90",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4272456",
+            "submit_ns": "3873965",
+            "submit_max_ns": "3873965",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_10",
+          "status": "Pass",
+          "qpa_sha256": "8634ed8b3410d7428cb5e8396708b50ca54e79355f9d54165780993fe5f6fcb7",
+          "dispatch": {
+            "pipeline": "0xaaab0bf47e70",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4140893",
+            "submit_ns": "3842924",
+            "submit_max_ns": "3842924",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.vec_2",
+          "status": "Pass",
+          "qpa_sha256": "ee870112f1d0772c7ed6e56a21c9c8b76ed6610e12ef86761fd8f4beb919c485",
+          "dispatch": {
+            "pipeline": "0xaaab066d7a00",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3753341",
+            "submit_ns": "3452089",
+            "submit_max_ns": "3452089",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.vec_3",
+          "status": "Pass",
+          "qpa_sha256": "e6b0b6dedd6c2ebeff3a55d893b3b0d853bd75b0d19211b05ac9e2af11f3110f",
+          "dispatch": {
+            "pipeline": "0xaaab2832a330",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4018392",
+            "submit_ns": "3701674",
+            "submit_max_ns": "3701674",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.vec_4",
+          "status": "Pass",
+          "qpa_sha256": "115ca1a35039db9f771a81bf88fef23ed6d8fcfe05469380d733734a0f1c8075",
+          "dispatch": {
+            "pipeline": "0xaaab0d1a1330",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4050059",
+            "submit_ns": "3727507",
+            "submit_max_ns": "3727507",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_2",
+          "status": "Pass",
+          "qpa_sha256": "48ee768abbca34257f671e19d2e5a1fc0c60204c40bb559a143f8b896c2ba9ac",
+          "dispatch": {
+            "pipeline": "0xaaaac796ce40",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4307768",
+            "submit_ns": "3999903",
+            "submit_max_ns": "3999903",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_3",
+          "status": "Pass",
+          "qpa_sha256": "3c24b158f6b95cf828106b59376066c5fca7137ee44012302e8e5a3d1a71ded8",
+          "dispatch": {
+            "pipeline": "0xaaaaf570b4a0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "6891991",
+            "submit_ns": "6570481",
+            "submit_max_ns": "6570481",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_4",
+          "status": "Pass",
+          "qpa_sha256": "eb44eb9c581c746f3365966f6062d46cdbf340683a6b56a59b98e5c2235bbcd5",
+          "dispatch": {
+            "pipeline": "0xaaaae8ec2500",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3529173",
+            "submit_ns": "3247401",
+            "submit_max_ns": "3247401",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_5",
+          "status": "Pass",
+          "qpa_sha256": "3ac72511cc31b75f58bcc3c79c0a057537ec4173d14f65e24acf05e5d2b9f3f8",
+          "dispatch": {
+            "pipeline": "0xaaaaf1edf500",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4287768",
+            "submit_ns": "3741725",
+            "submit_max_ns": "3741725",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_6",
+          "status": "Pass",
+          "qpa_sha256": "6e4878db1d3e46b82e4131fd29b8a7e817cc29cd1269aa336b17ce7fc33b236a",
+          "dispatch": {
+            "pipeline": "0xaaaaffb31e50",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4231518",
+            "submit_ns": "3864851",
+            "submit_max_ns": "3864851",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_7",
+          "status": "Pass",
+          "qpa_sha256": "48166cee8b1d99e6dbaf3c1ef5084e266093d14843f58f172f7b0b2a9e35f4d2",
+          "dispatch": {
+            "pipeline": "0xaaab00fcde80",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3901935",
+            "submit_ns": "3578912",
+            "submit_max_ns": "3578912",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_8",
+          "status": "Pass",
+          "qpa_sha256": "4fdbb01a2d367825174472ce7a2bd46959def50ceb0cbcec69f1f805575ebf36",
+          "dispatch": {
+            "pipeline": "0xaaaad7f154a0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4532925",
+            "submit_ns": "4179123",
+            "submit_max_ns": "4179123",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_9",
+          "status": "Pass",
+          "qpa_sha256": "940c1a428c6e64ca700e99a1778a5e0b4730b25c559075e11e7203025f7c0fda",
+          "dispatch": {
+            "pipeline": "0xaaaadbf144b0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3954017",
+            "submit_ns": "3652767",
+            "submit_max_ns": "3652767",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_10",
+          "status": "Pass",
+          "qpa_sha256": "55bc8640f05728708b47ce8bbf7cd5eaab2a2ab7ac444037f2abc6e4388d60f3",
+          "dispatch": {
+            "pipeline": "0xaaab0886e4f0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4067716",
+            "submit_ns": "3745997",
+            "submit_max_ns": "3745997",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_2",
+          "status": "Pass",
+          "qpa_sha256": "65a2fbbdd88e8ee3f8055dcf67560b346a51c75ce9de474bbf8572b7ba1dfed6",
+          "dispatch": {
+            "pipeline": "0xaaab0a51c470",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4246987",
+            "submit_ns": "3884955",
+            "submit_max_ns": "3884955",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_3",
+          "status": "Pass",
+          "qpa_sha256": "24bd7ece85eb85c3b9286d80c669f798f61180e7785c9f5dc1edeba39b068973",
+          "dispatch": {
+            "pipeline": "0xaaab0186d630",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4056830",
+            "submit_ns": "3760267",
+            "submit_max_ns": "3760267",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_4",
+          "status": "Pass",
+          "qpa_sha256": "3ba53116831f354b5d2ccf04fa0fd765af48e86a03df9167fbe93ffa1bc4c403",
+          "dispatch": {
+            "pipeline": "0xaaaafb2cda90",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3900476",
+            "submit_ns": "3632194",
+            "submit_max_ns": "3632194",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_5",
+          "status": "Pass",
+          "qpa_sha256": "11dd4fd058bc961e38bf9b9259d7f684a53f73dbfc14ee1250ce5dc9a2c02b9e",
+          "dispatch": {
+            "pipeline": "0xaaaac958ee10",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4323289",
+            "submit_ns": "4012194",
+            "submit_max_ns": "4012194",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_6",
+          "status": "Pass",
+          "qpa_sha256": "c62fa0bc9535f26ade1ce58b25d35d7e1e12bd2f2271627da94d8e7b8f6df515",
+          "dispatch": {
+            "pipeline": "0xaaab014844d0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4063289",
+            "submit_ns": "3768445",
+            "submit_max_ns": "3768445",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_7",
+          "status": "Pass",
+          "qpa_sha256": "f372016301ba8222796d2ec8c7baafee641ba0fa36584c4ffe5c9e02ff1b73d5",
+          "dispatch": {
+            "pipeline": "0xaaaae23094a0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3964695",
+            "submit_ns": "3678027",
+            "submit_max_ns": "3678027",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_8",
+          "status": "Pass",
+          "qpa_sha256": "8311ab9fe0a45d913f2f9ceb1d7459acf7fd4bf8ab0b27e97630514adf489924",
+          "dispatch": {
+            "pipeline": "0xaaaabc60fe50",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3668965",
+            "submit_ns": "3362194",
+            "submit_max_ns": "3362194",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_9",
+          "status": "Pass",
+          "qpa_sha256": "3ef1b7ad3193544fc8c084558e175de90694381d6a3fe3f2dbbafaea40626169",
+          "dispatch": {
+            "pipeline": "0xaaaac31eae30",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3970893",
+            "submit_ns": "3557350",
+            "submit_max_ns": "3557350",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_10",
+          "status": "Pass",
+          "qpa_sha256": "b7a4beae8874066c2167cf28e81fadfef01a1b0b5d9a20a931439f5e2d538ec8",
+          "dispatch": {
+            "pipeline": "0xaaaae801fe40",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4219695",
+            "submit_ns": "3909122",
+            "submit_max_ns": "3909122",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_2x2",
+          "status": "Pass",
+          "qpa_sha256": "875f42e0104428debcdf4aecc2f0f323efe50b8cd067100e47908786127bd99c",
+          "dispatch": {
+            "pipeline": "0xaaaaf5e3c4e0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4004018",
+            "submit_ns": "3616361",
+            "submit_max_ns": "3616361",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_2x3",
+          "status": "Pass",
+          "qpa_sha256": "dfd7d7c766c532500a8b9c3b9741535888ba5cc8a6c01b7c55a376b13df9e610",
+          "dispatch": {
+            "pipeline": "0xaaab1e29ce40",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4601779",
+            "submit_ns": "4113497",
+            "submit_max_ns": "4113497",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_2x4",
+          "status": "Pass",
+          "qpa_sha256": "b8800a7ec82553fc900831a97b9976690b5a6fed5c5e60d67295e83095ae3508",
+          "dispatch": {
+            "pipeline": "0xaaaaff7204b0",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4015320",
+            "submit_ns": "3575684",
+            "submit_max_ns": "3575684",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_3x2",
+          "status": "Pass",
+          "qpa_sha256": "c3983af140e67bafb08c5bfb8d82651e53bb11eb2bffc689036ece4f28d869ee",
+          "dispatch": {
+            "pipeline": "0xaaab0654de40",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4383966",
+            "submit_ns": "4059591",
+            "submit_max_ns": "4059591",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_3x3",
+          "status": "Pass",
+          "qpa_sha256": "16a82554027804a4d3378cc942e769cf4b049e52562708470e8b87d4b56b634f",
+          "dispatch": {
+            "pipeline": "0xaaaaf4363e30",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4035476",
+            "submit_ns": "3736934",
+            "submit_max_ns": "3736934",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_3x4",
+          "status": "Pass",
+          "qpa_sha256": "e5effb6ff80a8e55c9430ab345d69be3bc9f799a4a3d5c744f36541024c5e14f",
+          "dispatch": {
+            "pipeline": "0xaaaac91fce40",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4065736",
+            "submit_ns": "3759330",
+            "submit_max_ns": "3759330",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_4x2",
+          "status": "Pass",
+          "qpa_sha256": "36be3aa2361d3449a1c1b88b86b093b3e2feb34cec240c82a780c151a6b9d977",
+          "dispatch": {
+            "pipeline": "0xaaaae270f490",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "3870736",
+            "submit_ns": "3448079",
+            "submit_max_ns": "3448079",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_4x3",
+          "status": "Pass",
+          "qpa_sha256": "6de6151d2c990e7afc79e25d62bfdf75b046589f3277580d969f7af3df568fd3",
+          "dispatch": {
+            "pipeline": "0xaaaacc866a60",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4453133",
+            "submit_ns": "4155633",
+            "submit_max_ns": "4155633",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_4x4",
+          "status": "Pass",
+          "qpa_sha256": "33b4756c01cb380c23b0a9625b53070cb2386a311ced50e044c28fc1d3f95b43",
+          "dispatch": {
+            "pipeline": "0xaaab01df3e40",
+            "grid": "1,1,1",
+            "local": "1,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "1",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4377403",
+            "submit_ns": "4071986",
+            "submit_max_ns": "4071986",
+            "result": "0"
+          },
+          "full": 1,
+          "half": 0,
+          "native_private_load_store_instructions": 0
+        }
+      ],
+      "source_bounds_sha256": "f179cb308c4bdb793ee4d590174aebbd17b7f7e72d35d8d60ea8def1ee9e2998",
+      "case_file_sha256": "c746c4990673c3d96bbb0504ce9b81264d8966eacedb35088492abfc75a26920",
+      "totals": {
+        "cases": 72,
+        "dispatches": 72,
+        "invocations": 72,
+        "chunks": 72,
+        "submits": 72,
+        "exact_32bit_input_output_oracles": 72,
+        "full_registers": [
+          1
+        ],
+        "half_registers": [
+          0
+        ],
+        "native_units": [
+          1
+        ],
+        "native_private_load_store_instructions": 0
+      },
+      "scope": "Core scalar/vector/array/struct/matrix composite insertion/extraction and nested Function InBoundsAccessChain semantic output identity. Original CTS exact4-byte compare for every scalar including float; no private scratch/spill/high-pressure or custom full-allocation guard claim. Native has no LDP/STP.",
+      "safety": [
+        {
+          "group": "integer",
+          "log_sha256": "cfd67da8bf8655daf8da252ed9ef54c009f5ca85c3613b167775feb075cb41f6",
+          "runtime": "57.826s",
+          "memory": "119.5M (swap: 0B)"
+        },
+        {
+          "group": "float",
+          "log_sha256": "138d5b7f78b8818555177a8f445c3616f6505a9147297fef2d8be187f238c73d",
+          "runtime": "41.411s",
+          "memory": "121.7M (swap: 0B)"
+        }
+      ],
+      "controls": "Original90s384MiB per scope, exact official binary/driver/loader, per-case fault stop and clean collection/services retained. No repeated initializer8 or integer42 in float30."
+    }
+  },
+  "scopes": {
+    "integer": {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-function-composites-integer/probe/runner-result.json",
+        "bytes": 8891,
+        "sha256": "9d497e7247c11d8cdb6041e47d5ab0b18afaac473050fc0c40992e8b8dd6607d"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 176,
+            "sha256": "0085f064cc2e184ac0e979c7d319a6c127ffcfbb0957fa52363ce2d4a8b4dabe"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 3265,
+            "sha256": "d088fbc5da550ac95b74e6d2bf79ace7070e339c9112e5b95960f4824a18eb24"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13622368,
+            "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+          },
+          "payload.json": {
+            "bytes": 979,
+            "sha256": "90279712cc912a1072a81da232a81daced5e0d2cf671b485f2d2c4d26f1f65b8"
+          }
+        },
+        "run_log": {
+          "bytes": 875193,
+          "sha256": "cfd67da8bf8655daf8da252ed9ef54c009f5ca85c3613b167775feb075cb41f6"
+        },
+        "qpa": {
+          "bytes": 74633,
+          "sha256": "b8b8aa6d7854f6e125500725c040a4daaec044efd05086726a4d8452355e2f93"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.vec_2",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.vec_3",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.vec_4",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_2",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_3",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_4",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_5",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_6",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_7",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_8",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_9",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.array_10",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_2",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_3",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_4",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_5",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_6",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_7",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_8",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_9",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.int.struct_10",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.vec_2",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.vec_3",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.vec_4",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_2",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_3",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_4",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_5",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_6",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_7",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_8",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_9",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.array_10",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_2",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_3",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_4",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_5",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_6",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_7",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_8",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_9",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.uint.struct_10",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    },
+    "float": {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-function-composites-float/probe/runner-result.json",
+        "bytes": 6840,
+        "sha256": "a0ce078f237c91be08c4f39bac6a7d28ab86bc3dcc96a12a6b36ff15094e345d"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 174,
+            "sha256": "c92ec33f2d5786d8d69afeaf8dbe74f08c2a099ff6a9b054182a571c4c231883"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 2402,
+            "sha256": "f904079ad6a495773629af81ebb035ba2134ed18fe3bde1ad1ff8f8609d3599c"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13622368,
+            "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+          },
+          "payload.json": {
+            "bytes": 977,
+            "sha256": "b061b15c8571d533ec5a2e0a63f8f7361f54c45d08cbbed039ffd4c0db746237"
+          }
+        },
+        "run_log": {
+          "bytes": 622268,
+          "sha256": "138d5b7f78b8818555177a8f445c3616f6505a9147297fef2d8be187f238c73d"
+        },
+        "qpa": {
+          "bytes": 53336,
+          "sha256": "6c23a98a9a1a09bcb4f1bdac6e65599d78385f431832e0648b428e08f38ff695"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.vec_2",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.vec_3",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.vec_4",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_2",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_3",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_4",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_5",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_6",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_7",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_8",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_9",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_10",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_2",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_3",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_4",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_5",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_6",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_7",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_8",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_9",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.struct_10",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_2x2",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_2x3",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_2x4",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_3x2",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_3x3",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_3x4",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_4x2",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_4x3",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.matrix_4x4",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    }
+  },
+  "scope": "Exact original21 int+21 uint+30 float cases;72 scalar bit-identity oracles and72 single-invocation dispatches. Composite construction/insertion/extraction and nested Function InBoundsAccessChain semantics. Actual native code is1 full register/native1, with no private load/store; not scratch or compiler-spill evidence. Original72 inventory split42/30 based on observed startup/compiler time, preserving all cases, original90s/384MiB/fault-stop controls, no repeats. Actual57.826s/119.5MiB and41.411s/121.7MiB, zero swap/clean."
+}
