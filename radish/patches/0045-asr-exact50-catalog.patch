@@ -1,0 +1,68 @@
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp
+@@ -352,12 +352,59 @@
+ void string_to_spv_func(std::string name, std::string in_path, std::string out_path, std::map<std::string, std::string> defines, bool coopmat, bool dep_file, compile_count_guard slot) {
+     std::string target_env = (name.find("_cm2") != std::string::npos) ? "--target-env=vulkan1.3" : "--target-env=vulkan1.2";
+ #ifdef GGML_VULKAN_KHR_PROFILE
+-    const std::vector<std::string> profile_sources = {"add.comp", "argmax.comp", "concat.comp", "contig_copy.comp", "copy.comp", "copy_transpose.comp", "copy_transpose_02.comp", "dequant_f32.comp", "dequant_q4_k.comp", "dequant_q6_k.comp", "dequant_q8_0.comp", "get_rows.comp", "get_rows_quant.comp", "im2col.comp", "mul.comp", "mul_mat_vec.comp", "mul_mat_vec_p021.comp", "mul_mat_vec_nc.comp", "mul_mat_vec_q4_k.comp", "mul_mat_vec_q6_k.comp", "mul_mm.comp", "mul_mat_split_k_reduce.comp", "norm.comp", "rms_norm.comp", "rope_multi.comp", "rope_neox.comp", "rope_norm.comp", "scale.comp", "soft_max.comp", "swiglu.comp", "unary.comp"};
+-    const std::string profile_source = std::filesystem::path(in_path).filename().string();
+-    const bool profile_base = std::find(profile_sources.begin(), profile_sources.end(), profile_source) != profile_sources.end();
+-    if (profile_base && !coopmat && name.find("_subgroup") == std::string::npos &&
+-        name.find("_cm") == std::string::npos && !defines.count("FLOAT16") &&
+-        !defines.count("MUL_MAT_ID") && !defines.count("MULMAT_QUANT")) {
++    const std::vector<std::string> profile_variants = {
++        "add_f32_f32_f32",
++        "argmax_f32",
++        "concat_i32",
++        "contig_cpy_f16_f16",
++        "contig_cpy_f16_f32",
++        "contig_cpy_f32_f16",
++        "contig_cpy_f32_f32",
++        "cpy_f16_f16",
++        "cpy_f16_f32",
++        "cpy_f32_f16",
++        "cpy_f32_f32",
++        "cpy_transpose_02_16",
++        "cpy_transpose_02_32",
++        "cpy_transpose_16",
++        "cpy_transpose_32",
++        "dequant_f32",
++        "dequant_q4_k",
++        "dequant_q6_k",
++        "dequant_q8_0",
++        "gelu_erf_f32",
++        "get_rows_f16_f32",
++        "get_rows_f32_f32",
++        "get_rows_q4_k_f32",
++        "get_rows_q6_k_f32",
++        "get_rows_q8_0_f32",
++        "im2col_f32",
++        "im2col_f32_f16",
++        "matmul_f16_f32_fp32",
++        "matmul_f16_fp32",
++        "matmul_f32_f16_fp32",
++        "matmul_f32_f32_fp32",
++        "mul_f32_f32_f32",
++        "mul_mat_vec_f16_f32_f32",
++        "mul_mat_vec_f32_f32_f32",
++        "mul_mat_vec_nc_f16_f32",
++        "mul_mat_vec_p021_f16_f32",
++        "mul_mat_vec_q4_k_f32_f32",
++        "mul_mat_vec_q6_k_f32_f32",
++        "mul_mat_vec_q8_0_f32_f32",
++        "norm_f32",
++        "rms_norm_f32",
++        "rope_multi_f32",
++        "rope_neox_f32",
++        "rope_norm_f32",
++        "scale_f32",
++        "silu_f32",
++        "soft_max_f32",
++        "soft_max_f32_f16",
++        "split_k_reduce",
++        "swiglu_f32"
++    };
++    if (std::find(profile_variants.begin(), profile_variants.end(), name) != profile_variants.end()) {
+         target_env = "--target-env=vulkan1.0";
+     }
+ #endif

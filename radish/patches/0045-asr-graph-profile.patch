@@ -1,0 +1,681 @@
+--- a/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -589,6 +589,8 @@
+     GGML_ASSERT(parameter_count > 0);
+     GGML_ASSERT(parameter_count <= MAX_PARAMETER_COUNT);
+     GGML_ASSERT(wg_denoms[0] > 0 && wg_denoms[1] > 0 && wg_denoms[2] > 0); // NOLINT
++
++
+ 
+ #ifdef GGML_VULKAN_KHR_PROFILE
+     if (spv_size < 20 || spv_size % 4 ||
+@@ -1988,8 +1990,28 @@
+     }
+ 
+     auto const &ggml_vk_create_pipeline = [&](vk_device& device, vk_pipeline& base_pipeline, const char *name, size_t spv_size, const void* spv_data, const char *entrypoint,
+-                                              uint32_t parameter_count, uint32_t push_constant_size, std::array<uint32_t, 3> wg_denoms, const std::vector<uint32_t>& specialization_constants,
++                                              uint32_t parameter_count, uint32_t push_constant_size, std::array<uint32_t, 3> wg_denoms, const std::vector<uint32_t>& input_specialization_constants,
+                                               uint32_t align, bool disable_robustness = false, bool require_full_subgroups = false, uint32_t required_subgroup_size = 0) {
++
++        std::vector<uint32_t> specialization_constants = input_specialization_constants;
++#ifdef GGML_VULKAN_KHR_PROFILE
++    const std::string profile_name(name);
++    const std::vector<std::string> unary_ops = {"elu", "gelu", "gelu_erf", "gelu_quick", "silu", "relu", "sqr", "sqrt", "sin", "cos", "clamp", "leaky_relu", "xielu", "neg", "tanh", "sigmoid", "hardsigmoid", "hardswish", "abs", "softplus", "step", "round", "ceil", "floor", "trunc", "sgn", "exp", "expm1"};
++    const bool direct_unary = std::any_of(unary_ops.begin(), unary_ops.end(), [&](const std::string & op) { return profile_name == op + "_f32" || profile_name == op + "_f16"; });
++    const bool direct_copy = profile_name.rfind("cpy_", 0) == 0 && profile_name.find("transpose") == std::string::npos;
++    const bool direct_glu = profile_name.rfind("swiglu", 0) == 0 || profile_name.rfind("reglu", 0) == 0 || profile_name.rfind("geglu", 0) == 0;
++    if ((direct_unary || direct_copy || direct_glu || profile_name.rfind("concat_", 0) == 0) && wg_denoms[0] == 512) {
++        wg_denoms[0] = 128;
++    }
++    if (profile_name.rfind("get_rows_", 0) == 0) {
++        if (wg_denoms[0] == 512) wg_denoms[0] = 128;
++        else if (wg_denoms[0] == 1024) wg_denoms[0] = 256;
++    }
++    if (profile_name.rfind("rope_", 0) == 0 && wg_denoms[1] == 512) wg_denoms[1] = 256;
++    if ((profile_name == "f32_to_f16" || profile_name == "dequant_q8_0") && wg_denoms[0] == 4096) wg_denoms[0] = 2048;
++    if (profile_name == "split_k_reduce" && wg_denoms[0] == 1024) wg_denoms[0] = 512;
++    if (profile_name.rfind("soft_max_", 0) == 0 && !specialization_constants.empty() && specialization_constants[0] == 512) specialization_constants[0] = 128;
++#endif
+ 
+         if (!require_full_subgroups && required_subgroup_size == 0) {
+             required_subgroup_size = get_subgroup_size(name, device->architecture);
+@@ -4973,6 +4995,9 @@
+         device->serialize_submissions = getenv("GGML_VK_SERIALIZE_SUBMISSIONS") != nullptr;
+ 
+         device->disable_fusion = getenv("GGML_VK_DISABLE_FUSION") != nullptr;
++#ifdef GGML_VULKAN_KHR_PROFILE
++        device->disable_fusion = true;
++#endif
+ 
+         device->disable_descriptor_reuse = getenv("GGML_VK_DISABLE_DESCRIPTOR_REUSE") != nullptr;
+ 
+@@ -5278,6 +5303,13 @@
+     ggml_vk_default_dispatcher_instance.init(vkGetInstanceProcAddr);
+ 
+ #ifdef GGML_VULKAN_KHR_PROFILE
++    const char * no_flash = getenv("TRANSCRIBE_NO_FLASH");
++    const char * force_flash = getenv("TRANSCRIBE_FORCE_FLASH");
++    if (!no_flash || !no_flash[0] || no_flash[0] == '0' ||
++        (force_flash && force_flash[0] && force_flash[0] != '0')) {
++        throw std::runtime_error("KHR compute profile requires TRANSCRIBE_NO_FLASH=1 and no TRANSCRIBE_FORCE_FLASH; non-flash attention stays on GPU");
++    }
++    std::cerr << "ggml_vulkan: KHR compute profile: non-flash GPU graph, unfused GPU operations, FP32 arithmetic, physical workgroup limit unchanged" << std::endl;
+     uint32_t api_version = VK_API_VERSION_1_0;
+ #else
+     uint32_t api_version = vk::enumerateInstanceVersion();
+@@ -6074,6 +6106,9 @@
+ 
+ static const std::vector<vk_matmul_pipeline_pair>* ggml_vk_get_mul_mat_mat_pipeline_map(
+         ggml_backend_vk_context * ctx, ggml_type src0_type, ggml_type src1_type, ggml_prec prec, bool mul_mat_id = false) {
++#ifdef GGML_VULKAN_KHR_PROFILE
++    if (ggml_is_quantized(src0_type)) return nullptr;
++#endif
+     bool f16acc = ggml_vk_get_mul_mat_mat_f16acc(ctx, src0_type, src1_type, prec);
+     vk_matmul_pipeline_key key{src0_type, src1_type, mul_mat_id, f16acc};
+     auto it = ctx->device->pipeline_matmul.find(key);
+@@ -6486,6 +6521,11 @@
+     const uint64_t x_sz = !qx_needs_dequant ? qx_sz : sizeof(ggml_fp16_t) * x_ne;
+     const uint64_t y_sz = quantize_y ? (ggml_vk_align_size(y_ne, 128) * ggml_type_size(GGML_TYPE_Q8_1) / ggml_blck_size(GGML_TYPE_Q8_1)) : (y_f32_kernel ? sizeof(float) * y_ne : sizeof(ggml_fp16_t) * y_ne);
+     const uint64_t d_sz = sizeof(float) * d_ne;
++#ifdef GGML_VULKAN_KHR_PROFILE
++    if (qx_needs_dequant && x_sz > ctx->device->properties.limits.maxStorageBufferRange) {
++        throw std::runtime_error("KHR compute profile requires direct quantized matmul or bounded GPU tiling for this weight; full FP16 temporary exceeds actual descriptor range");
++    }
++#endif
+ 
+     vk_pipeline to_fp16_vk_0 = nullptr;
+     vk_pipeline to_fp16_vk_1 = nullptr;
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/add.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/add.comp
+@@ -1,4 +1,7 @@
+ #version 450
++#if defined(GGML_VULKAN_KHR_PROFILE)
++#pragma use_storage_buffer
++#endif
+ 
+ #extension GL_EXT_shader_16bit_storage : require
+ #if ADD_RMS
+@@ -9,7 +12,11 @@
+ #include "types.glsl"
+ #include "generic_binary_head.glsl"
+ 
++#if defined(GGML_VULKAN_KHR_PROFILE)
++const uint num_threads = 128;
++#else
+ const uint num_threads = 256;
++#endif
+ 
+ layout (binding = 3, std430) buffer PartialBuf {float partial_sums[];};
+ 
+@@ -25,7 +32,11 @@
+     uint orig_idx = idx;
+ 
+     // num_threads * num_iter must equal 512, to match the wg_denoms and get_idx calculation
++#if defined(GGML_VULKAN_KHR_PROFILE)
++    const uint num_iter = 4;
++#else
+     const uint num_iter = 2;
++#endif
+ 
+     FLOAT_TYPE sum_sq = 0;
+ 
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/argmax.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/argmax.comp
+@@ -1,4 +1,7 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #include "generic_head.glsl"
+ #include "types.glsl"
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/concat.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/concat.comp
+@@ -1,9 +1,16 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #include "types.glsl"
+ #include "generic_binary_head.glsl"
+ 
++#ifdef GGML_VULKAN_KHR_PROFILE
++layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
++#else
+ layout(local_size_x = 512, local_size_y = 1, local_size_z = 1) in;
++#endif
+ 
+ void main() {
+     const uint idx = gl_GlobalInvocationID.z * 262144 + gl_GlobalInvocationID.y * 512 + gl_GlobalInvocationID.x;
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/contig_copy.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/contig_copy.comp
+@@ -1,4 +1,7 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #include "types.glsl"
+ #include "generic_unary_head.glsl"
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/copy.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/copy.comp
+@@ -1,9 +1,16 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #include "types.glsl"
+ #include "generic_unary_head.glsl"
+ 
++#ifdef GGML_VULKAN_KHR_PROFILE
++layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
++#else
+ layout(local_size_x = 512, local_size_y = 1, local_size_z = 1) in;
++#endif
+ 
+ void main() {
+     const uint idx = get_idx();
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/copy_transpose.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/copy_transpose.comp
+@@ -1,11 +1,19 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #include "types.glsl"
+ #include "generic_unary_head.glsl"
+ 
+ // workgroup does 32x32 tile, but uses 32x8 threads
+ #define TILE_DIM 32
+-layout(local_size_x = 32, local_size_y = 8, local_size_z = 1) in;
++#ifdef GGML_VULKAN_KHR_PROFILE
++#define TILE_ROWS 4
++#else
++#define TILE_ROWS 8
++#endif
++layout(local_size_x = 32, local_size_y = TILE_ROWS, local_size_z = 1) in;
+ 
+ shared uint sh[TILE_DIM][TILE_DIM + 1];
+ 
+@@ -25,24 +33,24 @@
+     // src coords to make memory accesses contiguous, dst has tid.x in i0,
+     // src has tid.x in i01
+ 
+-    [[unroll]] for (uint y = 0; y < 4; ++y) {
+-        const uint i00 = tile_col * TILE_DIM + tid_row + 8 * y;
++    [[unroll]] for (uint y = 0; y < TILE_DIM / TILE_ROWS; ++y) {
++        const uint i00 = tile_col * TILE_DIM + tid_row + TILE_ROWS * y;
+         const uint i01 = tile_row * TILE_DIM + tid_col;
+         if (i00 < p.ne00 && i01 < p.ne01 && i02 < p.ne02 && i03 < p.ne03) {
+             const uint src_idx = i00 * p.nb00 + i01 * p.nb01 + i02 * p.nb02 + i03 * p.nb03;
+-            sh[tid_row + 8 * y][tid_col] = uint(data_a[get_aoffset() + src_idx]);
++            sh[tid_row + TILE_ROWS * y][tid_col] = uint(data_a[get_aoffset() + src_idx]);
+         }
+     }
+ 
+     barrier();
+ 
+-    [[unroll]] for (uint y = 0; y < 4; ++y) {
++    [[unroll]] for (uint y = 0; y < TILE_DIM / TILE_ROWS; ++y) {
+         const uint i0 = tile_col * TILE_DIM + tid_col;
+-        const uint i1 = tile_row * TILE_DIM + tid_row + 8 * y;
++        const uint i1 = tile_row * TILE_DIM + tid_row + TILE_ROWS * y;
+         if (i0 < p.ne10 && i1 < p.ne11 && i2 < p.ne12 && i3 < p.ne13) {
+             const uint dst_idx = i0 * p.nb10 + i1 * p.nb11 + i2 * p.nb12 + i3 * p.nb13;
+             // load transposed
+-            data_d[get_doffset() + dst_idx] = D_TYPE(sh[tid_col][tid_row + 8 * y]);
++            data_d[get_doffset() + dst_idx] = D_TYPE(sh[tid_col][tid_row + TILE_ROWS * y]);
+         }
+     }
+ }
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/copy_transpose_02.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/copy_transpose_02.comp
+@@ -1,11 +1,19 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #include "types.glsl"
+ #include "generic_unary_head.glsl"
+ 
+ // workgroup does 32x32 tile, but uses 32x8 threads
+ #define TILE_DIM 32
+-layout(local_size_x = 32, local_size_y = 8, local_size_z = 1) in;
++#ifdef GGML_VULKAN_KHR_PROFILE
++#define TILE_ROWS 4
++#else
++#define TILE_ROWS 8
++#endif
++layout(local_size_x = 32, local_size_y = TILE_ROWS, local_size_z = 1) in;
+ 
+ // +1 padding avoids shared-memory bank conflicts on the transposed read
+ shared uint sh[TILE_DIM][TILE_DIM + 1];
+@@ -22,23 +30,23 @@
+     const uint i01 = i1;
+     const uint i03 = i3;
+ 
+-    [[unroll]] for (uint y = 0; y < 4; ++y) {
+-        const uint i00 = tile_i0 * TILE_DIM + tid_row + 8 * y;
++    [[unroll]] for (uint y = 0; y < TILE_DIM / TILE_ROWS; ++y) {
++        const uint i00 = tile_i0 * TILE_DIM + tid_row + TILE_ROWS * y;
+         const uint i02 = tile_i2 * TILE_DIM + tid_col;
+         if (i00 < p.ne00 && i01 < p.ne01 && i02 < p.ne02 && i03 < p.ne03) {
+             const uint src_idx = i00 * p.nb00 + i01 * p.nb01 + i02 * p.nb02 + i03 * p.nb03;
+-            sh[tid_row + 8 * y][tid_col] = uint(data_a[get_aoffset() + src_idx]);
++            sh[tid_row + TILE_ROWS * y][tid_col] = uint(data_a[get_aoffset() + src_idx]);
+         }
+     }
+ 
+     barrier();
+ 
+-    [[unroll]] for (uint y = 0; y < 4; ++y) {
++    [[unroll]] for (uint y = 0; y < TILE_DIM / TILE_ROWS; ++y) {
+         const uint i0 = tile_i0 * TILE_DIM + tid_col;
+-        const uint i2 = tile_i2 * TILE_DIM + tid_row + 8 * y;
++        const uint i2 = tile_i2 * TILE_DIM + tid_row + TILE_ROWS * y;
+         if (i0 < p.ne10 && i1 < p.ne11 && i2 < p.ne12 && i3 < p.ne13) {
+             const uint dst_idx = i0 * p.nb10 + i1 * p.nb11 + i2 * p.nb12 + i3 * p.nb13;
+-            data_d[get_doffset() + dst_idx] = D_TYPE(sh[tid_col][tid_row + 8 * y]);
++            data_d[get_doffset() + dst_idx] = D_TYPE(sh[tid_col][tid_row + TILE_ROWS * y]);
+         }
+     }
+ }
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/dequant_f32.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/dequant_f32.comp
+@@ -1,8 +1,15 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #include "dequant_head.glsl"
+ 
++#ifdef GGML_VULKAN_KHR_PROFILE
++layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
++#else
+ layout(local_size_x = 256, local_size_y = 1, local_size_z = 1) in;
++#endif
+ 
+ layout (binding = 0) readonly buffer A {float data_a[];};
+ layout (binding = 1) writeonly buffer D {D_TYPE data_b[];};
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/dequant_q4_k.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/dequant_q4_k.comp
+@@ -11,7 +11,12 @@
+ layout (binding = 1) writeonly buffer D {D_TYPE data_b[];};
+ 
+ void main() {
+-    [[unroll]] for (uint wgy = 0; wgy < 256; wgy++) {
++#if defined(GGML_VULKAN_KHR_PROFILE)
++    [[dont_unroll]]
++#else
++    [[unroll]]
++#endif
++    for (uint wgy = 0; wgy < 256; wgy++) {
+         const uint ib = gl_WorkGroupID.x * 256 + wgy;
+         if (ib >= p.nel / QUANT_K) {
+             return;
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/dequant_q6_k.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/dequant_q6_k.comp
+@@ -1,4 +1,7 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #include "dequant_head.glsl"
+ 
+@@ -8,7 +11,12 @@
+ layout (binding = 1) writeonly buffer D {D_TYPE data_b[];};
+ 
+ void main() {
+-    [[unroll]] for (uint wgy = 0; wgy < 256; wgy++) {
++#ifdef GGML_VULKAN_KHR_PROFILE
++    [[dont_unroll]]
++#else
++    [[unroll]]
++#endif
++    for (uint wgy = 0; wgy < 256; wgy++) {
+         const uint i = gl_WorkGroupID.x * 256 + wgy;
+         if (i >= p.nel / QUANT_K) {
+             return;
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/dequant_q8_0.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/dequant_q8_0.comp
+@@ -1,14 +1,21 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #include "dequant_head.glsl"
+ 
++#ifdef GGML_VULKAN_KHR_PROFILE
++layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
++#else
+ layout(local_size_x = 256, local_size_y = 1, local_size_z = 1) in;
++#endif
+ 
+ layout (binding = 0) readonly buffer A {block_q8_0 data_a[];};
+ layout (binding = 1) writeonly buffer D {D_TYPE data_b[];};
+ 
+ void main() {
+-    const uint i = gl_WorkGroupID.x * 4 + gl_LocalInvocationID.x / 64;
++    const uint i = gl_WorkGroupID.x * (gl_WorkGroupSize.x / 64) + gl_LocalInvocationID.x / 64;
+ 
+     const uint tid = gl_LocalInvocationID.x % 64;
+     const uint il  = tid/32;
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/get_rows.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/get_rows.comp
+@@ -1,9 +1,16 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #include "types.glsl"
+ #include "generic_binary_head.glsl"
+ 
++#ifdef GGML_VULKAN_KHR_PROFILE
++layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
++#else
+ layout(local_size_x = 512, local_size_y = 1, local_size_z = 1) in;
++#endif
+ 
+ void main() {
+     const uint i00 = gl_GlobalInvocationID.x;
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/get_rows_quant.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/get_rows_quant.comp
+@@ -1,4 +1,7 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #extension GL_EXT_control_flow_attributes : enable
+ 
+@@ -6,7 +9,11 @@
+ #include "generic_binary_head.glsl"
+ #include "dequant_funcs.glsl"
+ 
++#ifdef GGML_VULKAN_KHR_PROFILE
++layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
++#else
+ layout(local_size_x = 512, local_size_y = 1, local_size_z = 1) in;
++#endif
+ 
+ void main() {
+     const uint i00 = (gl_GlobalInvocationID.x)*2;
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/glu_head.glsl
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/glu_head.glsl
+@@ -3,7 +3,11 @@
+ #include "utils.glsl"
+ 
+ 
++#ifdef GGML_VULKAN_KHR_PROFILE
++layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
++#else
+ layout(local_size_x = 512, local_size_y = 1, local_size_z = 1) in;
++#endif
+ 
+ layout (binding = 0) readonly buffer A {A_TYPE data_a[];};
+ layout (binding = 1) readonly buffer B {A_TYPE data_b[];};
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/im2col.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/im2col.comp
+@@ -1,4 +1,7 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #extension GL_EXT_shader_16bit_storage : require
+ #extension GL_EXT_control_flow_attributes : require
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/mul.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/mul.comp
+@@ -1,9 +1,16 @@
+ #version 450
++#if defined(GGML_VULKAN_KHR_PROFILE)
++#pragma use_storage_buffer
++#endif
+ 
+ #include "types.glsl"
+ #include "generic_binary_head.glsl"
+ 
++#if defined(GGML_VULKAN_KHR_PROFILE)
++const uint num_threads = 128;
++#else
+ const uint num_threads = 256;
++#endif
+ 
+ layout(local_size_x = num_threads, local_size_y = 1, local_size_z = 1) in;
+ 
+@@ -11,7 +18,11 @@
+     uint idx = get_idx();
+ 
+     // num_threads * num_iter must equal 512, to match the wg_denoms and get_idx calculation
++#if defined(GGML_VULKAN_KHR_PROFILE)
++    const uint num_iter = 4;
++#else
+     const uint num_iter = 2;
++#endif
+ 
+     [[unroll]] for (uint i = 0; i < num_iter; ++i) {
+         if (idx >= p.ne) {
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_split_k_reduce.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_split_k_reduce.comp
+@@ -1,8 +1,15 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #extension GL_EXT_control_flow_attributes : enable
+ 
++#ifdef GGML_VULKAN_KHR_PROFILE
++layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
++#else
+ layout(local_size_x = 256, local_size_y = 1, local_size_z = 1) in;
++#endif
+ 
+ layout (binding = 0) readonly buffer A {float data_a[];};
+ layout (binding = 0) readonly buffer A4 {vec4 data_a4[];};
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vec.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vec.comp
+@@ -1,4 +1,7 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #extension GL_EXT_shader_explicit_arithmetic_types_int32 : require
+ 
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vec_q6_k.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vec_q6_k.comp
+@@ -1,4 +1,7 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #extension GL_EXT_shader_explicit_arithmetic_types_int32 : require
+ 
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/mul_mm.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/mul_mm.comp
+@@ -1,4 +1,7 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #extension GL_EXT_control_flow_attributes : enable
+ #extension GL_EXT_shader_16bit_storage : require
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/norm.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/norm.comp
+@@ -1,10 +1,17 @@
+ #version 450
++#if defined(GGML_VULKAN_KHR_PROFILE)
++#pragma use_storage_buffer
++#endif
+ 
+ #include "types.glsl"
+ #include "generic_unary_head.glsl"
+ 
+ #extension GL_EXT_control_flow_attributes : enable
++#if defined(GGML_VULKAN_KHR_PROFILE)
++#define BLOCK_SIZE 128
++#else
+ #define BLOCK_SIZE 512
++#endif
+ 
+ layout(local_size_x = BLOCK_SIZE, local_size_y = 1, local_size_z = 1) in;
+ 
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/rms_norm.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/rms_norm.comp
+@@ -1,4 +1,7 @@
+ #version 450
++#if defined(GGML_VULKAN_KHR_PROFILE)
++#pragma use_storage_buffer
++#endif
+ 
+ #include "generic_binary_head.glsl"
+ #include "types.glsl"
+@@ -39,7 +42,11 @@
+ #endif
+ 
+ #extension GL_EXT_control_flow_attributes : enable
++#if defined(GGML_VULKAN_KHR_PROFILE)
++#define BLOCK_SIZE 128
++#else
+ #define BLOCK_SIZE 512
++#endif
+ 
+ layout (constant_id = 1) const bool do_multiply = false;
+ #if RMS_NORM_ADD_FUSION
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/rope_head.glsl
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/rope_head.glsl
+@@ -4,7 +4,11 @@
+ 
+ #include "rope_params.glsl"
+ 
++#ifdef GGML_VULKAN_KHR_PROFILE
++layout(local_size_x = 1, local_size_y = 128, local_size_z = 1) in;
++#else
+ layout(local_size_x = 1, local_size_y = 256, local_size_z = 1) in;
++#endif
+ 
+ layout (binding = 0) readonly buffer X {A_TYPE rope_data_a[];};
+ layout (binding = 1) readonly buffer Y {int rope_data_pos[];};
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/rope_multi.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/rope_multi.comp
+@@ -1,4 +1,7 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #include "rope_head.glsl"
+ #include "rope_funcs.glsl"
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/rope_neox.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/rope_neox.comp
+@@ -1,4 +1,7 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #include "rope_head.glsl"
+ #include "rope_funcs.glsl"
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/rope_norm.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/rope_norm.comp
+@@ -1,4 +1,7 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #include "rope_head.glsl"
+ #include "rope_funcs.glsl"
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/scale.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/scale.comp
+@@ -1,4 +1,7 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #include "types.glsl"
+ #include "generic_unary_head.glsl"
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/soft_max.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/soft_max.comp
+@@ -1,4 +1,7 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #extension GL_EXT_control_flow_attributes : enable
+ 
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/swiglu.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/swiglu.comp
+@@ -1,4 +1,7 @@
+ #version 450
++#ifdef GGML_VULKAN_KHR_PROFILE
++#pragma use_storage_buffer
++#endif
+ 
+ #include "glu_head.glsl"
+ 
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/unary.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/unary.comp
+@@ -1,4 +1,7 @@
+ #version 450
++#if defined(GGML_VULKAN_KHR_PROFILE)
++#pragma use_storage_buffer
++#endif
+ 
+ #include "types.glsl"
+ #if defined(UNARY_MUL_FUSION)
+@@ -12,7 +15,12 @@
+ layout(constant_id = 1) const bool op_on_b = false;
+ #endif
+ 
+-#if defined(UNARY_MUL_FUSION)
++#if defined(GGML_VULKAN_KHR_PROFILE)
++layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
++#if defined(UNARY_MUL_FUSION)
++const uint num_threads = 128;
++#endif
++#elif defined(UNARY_MUL_FUSION)
+ layout(local_size_x = 256, local_size_y = 1, local_size_z = 1) in;
+ const uint num_threads = 256;
+ #else
+@@ -175,7 +183,11 @@
+ 
+ #if defined(UNARY_MUL_FUSION)
+     // keep total threads at 512
++#if defined(GGML_VULKAN_KHR_PROFILE)
++    [[unroll]] for (uint iter = 0; iter < 4; ++iter) {
++#else
+     [[unroll]] for (uint iter = 0; iter < 2; ++iter) {
++#endif
+         if (idx >= p.ne) {
+             continue;
+         }
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp
+@@ -350,7 +350,12 @@
+ void string_to_spv_func(std::string name, std::string in_path, std::string out_path, std::map<std::string, std::string> defines, bool coopmat, bool dep_file, compile_count_guard slot) {
+     std::string target_env = (name.find("_cm2") != std::string::npos) ? "--target-env=vulkan1.3" : "--target-env=vulkan1.2";
+ #ifdef GGML_VULKAN_KHR_PROFILE
+-    if (name == "dequant_q4_k" || name == "mul_mat_vec_q4_k_f32_f32") {
++    const std::vector<std::string> profile_sources = {"add.comp", "argmax.comp", "concat.comp", "contig_copy.comp", "copy.comp", "copy_transpose.comp", "copy_transpose_02.comp", "dequant_f32.comp", "dequant_q4_k.comp", "dequant_q6_k.comp", "dequant_q8_0.comp", "get_rows.comp", "get_rows_quant.comp", "im2col.comp", "mul.comp", "mul_mat_vec.comp", "mul_mat_vec_q4_k.comp", "mul_mat_vec_q6_k.comp", "mul_mm.comp", "mul_mat_split_k_reduce.comp", "norm.comp", "rms_norm.comp", "rope_multi.comp", "rope_neox.comp", "rope_norm.comp", "scale.comp", "soft_max.comp", "swiglu.comp", "unary.comp"};
++    const std::string profile_source = std::filesystem::path(in_path).filename().string();
++    const bool profile_base = std::find(profile_sources.begin(), profile_sources.end(), profile_source) != profile_sources.end();
++    if (profile_base && !coopmat && name.find("_subgroup") == std::string::npos &&
++        name.find("_cm") == std::string::npos && !defines.count("FLOAT16") &&
++        !defines.count("MUL_MAT_ID") && !defines.count("MULMAT_QUANT")) {
+         target_env = "--target-env=vulkan1.0";
+     }
+ #endif

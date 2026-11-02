@@ -1,0 +1,51 @@
+--- a/src/arch/qwen3_asr/model.cpp
++++ b/src/arch/qwen3_asr/model.cpp
+@@ -369,7 +369,9 @@
+     // Pre-allocate KV cache at context creation so the first run
+     // doesn't pay the allocation cost inside the decode phase.
+     auto * cm = static_cast<QwenAsrModel *>(model);
+-    {
++    if (khr_gpu_graph_policy(cc.get())) {
++        log_msg(TRANSCRIBE_LOG_LEVEL_INFO, "qwen3_asr KHR profile: KV allocation deferred to request capacity");
++    } else {
+         ggml_type kv_type = GGML_TYPE_F16;
+         if (cc->kv_type == TRANSCRIBE_KV_TYPE_F32) {
+             kv_type = GGML_TYPE_F32;
+@@ -1001,12 +1003,17 @@
+     // hold prompt + decode budget, rounded up to a power of two (the step
+     // graph's flash-attn path wants pow2 attention width). A pre-allocated
+     // smaller cache is freed and re-allocated.
+-    int want_n_ctx = 1024;
++    int want_n_ctx = khr_gpu_graph_policy(cc) ? 1 : 1024;
+     while (want_n_ctx < T_prompt + max_new) {
+         want_n_ctx *= 2;
+     }
+     if (want_n_ctx > ceiling) {
+         want_n_ctx = ceiling;
++    }
++    if (khr_gpu_graph_policy(cc)) {
++        log_msg(TRANSCRIBE_LOG_LEVEL_INFO,
++                "qwen3_asr KHR KV request: prompt=%d decode_budget=%d capacity=%d retained=%d",
++                T_prompt, max_new, want_n_ctx, cc->kv_cache.n_ctx);
+     }
+     // Prompt-prefix cache: rows [0, n_past) of the KV cache already hold this
+     // prompt's first n_past tokens from an earlier run (the chat frame and
+@@ -2359,7 +2366,17 @@
+         return TRANSCRIBE_OK;
+     }
+     if (cc->kv_cache.ctx == nullptr) {
+-        const int n_ctx = std::min(1024, ceiling);
++        int n_ctx = std::min(1024, ceiling);
++        if (khr_gpu_graph_policy(cc)) {
++            const int needed = static_cast<int>(std::min<int64_t>(ceiling,
++                static_cast<int64_t>(ids.size()) + T_enc_min + k_gen_reserve));
++            n_ctx = 1;
++            while (n_ctx < needed) n_ctx *= 2;
++            n_ctx = std::min(n_ctx, ceiling);
++            log_msg(TRANSCRIBE_LOG_LEVEL_INFO,
++                    "qwen3_asr KHR KV prefix: prompt=%zu audio_min=%d reserve=%d capacity=%d",
++                    ids.size(), T_enc_min, k_gen_reserve, n_ctx);
++        }
+         if (prefix_len > n_ctx) {
+             return TRANSCRIBE_OK;  // left to the run, which sizes the cache itself
+         }

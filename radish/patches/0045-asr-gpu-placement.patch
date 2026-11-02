@@ -1,0 +1,154 @@
+--- a/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -5305,6 +5305,10 @@
+     ggml_vk_default_dispatcher_instance.init(vkGetInstanceProcAddr);
+ 
+ #ifdef GGML_VULKAN_KHR_PROFILE
++    const char * profile_policy = getenv("TRANSCRIBE_VULKAN_KHR_PROFILE");
++    if (!profile_policy || strcmp(profile_policy, "1")) {
++        throw std::runtime_error("KHR backend requires explicit TRANSCRIBE_VULKAN_KHR_PROFILE=1 ASR graph-placement policy");
++    }
+     const char * no_flash = getenv("TRANSCRIBE_NO_FLASH");
+     const char * force_flash = getenv("TRANSCRIBE_FORCE_FLASH");
+     if (!no_flash || !no_flash[0] || no_flash[0] == '0' ||
+--- a/src/arch/qwen3_asr/model.cpp
++++ b/src/arch/qwen3_asr/model.cpp
+@@ -41,6 +41,48 @@
+ 
+ extern const Arch arch;
+ 
++static bool khr_gpu_graph_policy(const QwenAsrSession * cc) {
++    const char * policy = std::getenv("TRANSCRIBE_VULKAN_KHR_PROFILE");
++    const auto * cm = static_cast<const QwenAsrModel *>(cc->model);
++    return policy && !std::strcmp(policy, "1") && cm->plan.primary &&
++           cm->plan.primary_kind != BackendKind::Cpu;
++}
++
++static ggml_status compute_qwen_graph(QwenAsrSession * cc, ggml_cgraph * graph) {
++    if (khr_gpu_graph_policy(cc)) {
++        const auto * cm = static_cast<const QwenAsrModel *>(cc->model);
++        const char * primary = ggml_backend_name(cm->plan.primary);
++        if (cm->plan.primary_kind != BackendKind::Vulkan) {
++            log_msg(TRANSCRIBE_LOG_LEVEL_ERROR, "qwen3_asr KHR profile requires Vulkan, got %s", primary);
++            return GGML_STATUS_FAILED;
++        }
++        size_t gpu = 0, metadata = 0, rejected = 0;
++        for (int i = 0; i < ggml_graph_n_nodes(graph); ++i) {
++            ggml_tensor * node = ggml_graph_node(graph, i);
++            if (node->op == GGML_OP_NONE || node->op == GGML_OP_RESHAPE ||
++                node->op == GGML_OP_VIEW || node->op == GGML_OP_TRANSPOSE || node->op == GGML_OP_PERMUTE) {
++                ++metadata;
++                continue;
++            }
++            ggml_backend_t actual = ggml_backend_sched_get_tensor_backend(cc->sched, node);
++            if (actual != cm->plan.primary) {
++                ++rejected;
++                log_msg(TRANSCRIBE_LOG_LEVEL_ERROR,
++                        "qwen3_asr KHR placement rejected before graph compute: node=%d name=%s op=%s backend=%s",
++                        i, node->name, ggml_op_name(node->op), actual ? ggml_backend_name(actual) : "unassigned");
++            } else {
++                ++gpu;
++            }
++        }
++        log_msg(rejected ? TRANSCRIBE_LOG_LEVEL_ERROR : TRANSCRIBE_LOG_LEVEL_INFO,
++                "qwen3_asr KHR placement: compute_gpu=%zu compute_rejected=%zu metadata=%zu policy=no_cpu_fallback",
++                gpu, rejected, metadata);
++        if (rejected) return GGML_STATUS_FAILED;
++    }
++    return ggml_backend_sched_graph_compute(cc->sched, graph);
++}
++
++
+ static_assert(std::is_base_of_v<transcribe_model, QwenAsrModel>);
+ static_assert(std::is_base_of_v<transcribe_session, QwenAsrSession>);
+ 
+@@ -307,6 +349,17 @@
+     cc->encoder_use_flash = true;
+     cc->decoder_use_flash = true;
+     transcribe::flash::apply_env_overrides(cc->encoder_use_flash, cc->decoder_use_flash);
++    if (khr_gpu_graph_policy(cc.get())) {
++        const char * forced = std::getenv("TRANSCRIBE_FORCE_FLASH");
++        if (forced && forced[0] && forced[0] != '0') {
++            log_msg(TRANSCRIBE_LOG_LEVEL_ERROR, "qwen3_asr KHR profile conflicts with TRANSCRIBE_FORCE_FLASH");
++            return TRANSCRIBE_ERR_INVALID_ARG;
++        }
++        cc->encoder_use_flash = false;
++        cc->decoder_use_flash = false;
++        log_msg(TRANSCRIBE_LOG_LEVEL_INFO, "qwen3_asr KHR profile: non-flash GPU graph, no CPU compute fallback");
++    }
++
+ 
+     // Pre-allocate KV cache at context creation so the first run
+     // doesn't pay the allocation cost inside the decode phase.
+@@ -650,7 +703,7 @@
+         transcribe::configure_sched_n_threads(cc->sched, cc->n_threads);
+         for (int c0 = c_begin; c0 < c_end; c0 += pass) {
+             ggml_backend_tensor_set(sb.mel_in, mel + static_cast<size_t>(c0) * in_chunk, 0, ggml_nbytes(sb.mel_in));
+-            if (const ggml_status gs = ggml_backend_sched_graph_compute(cc->sched, sb.graph);
++            if (const ggml_status gs = compute_qwen_graph(cc, sb.graph);
+                 gs != GGML_STATUS_SUCCESS) {
+                 log_msg(TRANSCRIBE_LOG_LEVEL_ERROR, "qwen3_asr run: subsample graph compute failed (%d)",
+                         static_cast<int>(gs));
+@@ -869,7 +922,7 @@
+ 
+     const int64_t t_enc_start = ggml_time_us();
+     t_enc_build_us            = t_enc_start - t_enc_build_start - t_subsample_us;
+-    if (const ggml_status gs = ggml_backend_sched_graph_compute(cc->sched, eb.graph); gs != GGML_STATUS_SUCCESS) {
++    if (const ggml_status gs = compute_qwen_graph(cc, eb.graph); gs != GGML_STATUS_SUCCESS) {
+         log_msg(TRANSCRIBE_LOG_LEVEL_ERROR, "qwen3_asr run: encoder graph compute failed (%d)", static_cast<int>(gs));
+         return TRANSCRIBE_ERR_BACKEND;
+     }
+@@ -1075,7 +1128,7 @@
+ 
+         const int64_t t_prefill_compute_start = ggml_time_us();
+         t_prefill_build_us                    = t_prefill_compute_start - t_prefill_build_start;
+-        if (const ggml_status gs = ggml_backend_sched_graph_compute(cc->sched, pb.graph); gs != GGML_STATUS_SUCCESS) {
++        if (const ggml_status gs = compute_qwen_graph(cc, pb.graph); gs != GGML_STATUS_SUCCESS) {
+             log_msg(TRANSCRIBE_LOG_LEVEL_ERROR, "qwen3_asr run: prefill graph compute failed (%d)", static_cast<int>(gs));
+             return TRANSCRIBE_ERR_BACKEND;
+         }
+@@ -1153,7 +1206,7 @@
+ 
+         const int64_t t_prefill_compute_start = ggml_time_us();
+         t_prefill_build_us                    = t_prefill_compute_start - t_prefill_build_start;
+-        if (const ggml_status gs = ggml_backend_sched_graph_compute(cc->sched, pb.graph); gs != GGML_STATUS_SUCCESS) {
++        if (const ggml_status gs = compute_qwen_graph(cc, pb.graph); gs != GGML_STATUS_SUCCESS) {
+             log_msg(TRANSCRIBE_LOG_LEVEL_ERROR, "qwen3_asr run: prefill graph compute failed (%d)",
+                     static_cast<int>(gs));
+             return TRANSCRIBE_ERR_BACKEND;
+@@ -1267,7 +1320,7 @@
+         const int64_t t_set1 = ggml_time_us();
+         t_step_set_us += t_set1 - t_set0;
+ 
+-        if (const ggml_status gs = ggml_backend_sched_graph_compute(cc->sched, sb.graph); gs != GGML_STATUS_SUCCESS) {
++        if (const ggml_status gs = compute_qwen_graph(cc, sb.graph); gs != GGML_STATUS_SUCCESS) {
+             log_msg(TRANSCRIBE_LOG_LEVEL_ERROR, "qwen3_asr step: graph compute failed (%d)", static_cast<int>(gs));
+             return TRANSCRIBE_ERR_BACKEND;
+         }
+@@ -1640,7 +1693,7 @@
+     apply_sched_threads(cc);
+ 
+     const int64_t t_enc0 = ggml_time_us();
+-    if (ggml_backend_sched_graph_compute(cc->sched, eb.graph) != GGML_STATUS_SUCCESS) {
++    if (compute_qwen_graph(cc, eb.graph) != GGML_STATUS_SUCCESS) {
+         return TRANSCRIBE_ERR_BACKEND;
+     }
+     enc_us += ggml_time_us() - t_enc0;
+@@ -1776,7 +1829,7 @@
+     }
+ 
+     apply_sched_threads(cc);
+-    if (ggml_backend_sched_graph_compute(cc->sched, pb.graph) != GGML_STATUS_SUCCESS) {
++    if (compute_qwen_graph(cc, pb.graph) != GGML_STATUS_SUCCESS) {
+         return TRANSCRIBE_ERR_BACKEND;
+     }
+ 
+@@ -2345,7 +2398,7 @@
+         ggml_backend_tensor_set(pb.kv_idx_in, kv_idx.data(), 0, kv_idx.size() * sizeof(int64_t));
+     }
+     set_chunk_mask(pb, prefix_len, T_chunk, n_past);
+-    if (ggml_backend_sched_graph_compute(cc->sched, pb.graph) != GGML_STATUS_SUCCESS) {
++    if (compute_qwen_graph(cc, pb.graph) != GGML_STATUS_SUCCESS) {
+         return TRANSCRIBE_ERR_BACKEND;
+     }
+     cc->kv_ids.assign(ids.begin(), ids.begin() + prefix_len);

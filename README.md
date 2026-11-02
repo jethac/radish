@@ -241,6 +241,8 @@ same-boundary reference importer and full validator separately for each request
 after capture. Generation alone does not establish accuracy. One-shot defaults
 and `--repeat N` semantics remain unchanged.
 
+The separate ASR profile now has a complete host backend/catalog/listener link with 50 required Vulkan1.0 modules, nine placement checks and lazy KV. Full-model memory and device execution remain unadmitted; see [the handoff](radish/ASR_VULKAN_HANDOFF.txt) and [pinned host result](radish/results/asr-profile-complete-host-link-0045.json).
+
 ## License
 
 Original Radish code and tools are [MIT licensed](LICENSE). Mesa and ncnn

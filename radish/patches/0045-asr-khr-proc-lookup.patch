@@ -1,0 +1,84 @@
+--- a/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -2,8 +2,21 @@
+ #ifdef GGML_VULKAN_KHR_PROFILE
+ #include "ggml-vulkan-khr-profile.hpp"
+ #define getProperties2 getProperties2KHR
+-#define vkGetPhysicalDeviceFeatures2 vkGetPhysicalDeviceFeatures2KHR
+-#define waitSemaphores waitSemaphoresKHR
++
++static void ggml_vk_profile_get_features2(VkPhysicalDevice physical, VkPhysicalDeviceFeatures2 * features) {
++    const auto query = reinterpret_cast<PFN_vkGetPhysicalDeviceFeatures2KHR>(
++        vkGetInstanceProcAddr(static_cast<VkInstance>(vk_instance.instance), "vkGetPhysicalDeviceFeatures2KHR"));
++    if (!query) throw std::runtime_error("KHR profile missing enabled instance entrypoint vkGetPhysicalDeviceFeatures2KHR");
++    query(physical, features);
++}
++
++static vk::Result ggml_vk_profile_wait_semaphores(vk::Device device, const vk::SemaphoreWaitInfo & info, uint64_t timeout) {
++    const auto wait = reinterpret_cast<PFN_vkWaitSemaphoresKHR>(
++        vkGetDeviceProcAddr(static_cast<VkDevice>(device), "vkWaitSemaphoresKHR"));
++    if (!wait) throw std::runtime_error("KHR profile missing enabled device entrypoint vkWaitSemaphoresKHR");
++    return static_cast<vk::Result>(wait(static_cast<VkDevice>(device),
++                                      reinterpret_cast<const VkSemaphoreWaitInfo *>(&info), timeout));
++}
+ #endif
+ 
+ namespace {
+@@ -4545,7 +4558,11 @@
+             device_extensions.push_back("VK_EXT_device_fault");
+         }
+ 
++        #ifdef GGML_VULKAN_KHR_PROFILE
++        ggml_vk_profile_get_features2(device->physical_device, &device_features2);
++#else
+         vkGetPhysicalDeviceFeatures2(device->physical_device, &device_features2);
++#endif
+ #ifdef GGML_VULKAN_KHR_PROFILE
+         khr_features.mirror(vk11_features, vk12_features);
+         if (!khr_features.required_supported()) {
+@@ -5215,7 +5232,11 @@
+     }
+ #endif
+ 
+-    vkGetPhysicalDeviceFeatures2(physical_device, &device_features2);
++    #ifdef GGML_VULKAN_KHR_PROFILE
++        ggml_vk_profile_get_features2(physical_device, &device_features2);
++#else
++        vkGetPhysicalDeviceFeatures2(physical_device, &device_features2);
++#endif
+ #ifdef GGML_VULKAN_KHR_PROFILE
+     khr_features.mirror(vk11_features, vk12_features);
+     if (!khr_features.required_supported()) {
+@@ -5408,6 +5429,11 @@
+ 
+     // See https://github.com/KhronosGroup/Vulkan-Hpp?tab=readme-ov-file#extensions--per-device-function-pointers-
+     VULKAN_HPP_DEFAULT_DISPATCHER.init(vk_instance.instance);
++#ifdef GGML_VULKAN_KHR_PROFILE
++    if (!VULKAN_HPP_DEFAULT_DISPATCHER.vkGetPhysicalDeviceProperties2KHR) {
++        throw std::runtime_error("KHR profile missing enabled instance entrypoint vkGetPhysicalDeviceProperties2KHR");
++    }
++#endif
+ 
+     std::vector<vk::PhysicalDevice> devices = vk_instance.instance.enumeratePhysicalDevices();
+ 
+@@ -16228,7 +16254,11 @@
+         vk::Semaphore sem = vkev->tl_semaphore.s;
+         uint64_t val = vkev->tl_semaphore.value;
+         vk::SemaphoreWaitInfo swi{vk::SemaphoreWaitFlags{}, sem, val};
++#ifdef GGML_VULKAN_KHR_PROFILE
++        VK_CHECK(ggml_vk_profile_wait_semaphores(device->device, swi, UINT64_MAX), "event_synchronize", device);
++#else
+         VK_CHECK(device->device.waitSemaphores(swi, UINT64_MAX), "event_synchronize", device);
++#endif
+ 
+         // Reset and move submitted events
+         for (auto& event : vkev->events_submitted) {
+@@ -16413,7 +16443,7 @@
+     if (!ggml_vk_khr_profile_extensions(vkdev)) return false;
+     ggml_vk_khr_profile_features khr;
+     VkPhysicalDeviceFeatures2KHR core{VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2_KHR, &khr.storage16, {}};
+-    vkGetPhysicalDeviceFeatures2KHR(vkdev, &core);
++    ggml_vk_profile_get_features2(vkdev, &core);
+     return khr.required_supported();
+ #else
+     VkPhysicalDeviceFeatures2 device_features2;

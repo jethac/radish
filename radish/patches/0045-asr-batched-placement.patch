@@ -1,0 +1,46 @@
+--- a/src/arch/qwen3_asr/model.cpp
++++ b/src/arch/qwen3_asr/model.cpp
+@@ -48,13 +48,13 @@
+            cm->plan.primary_kind != BackendKind::Cpu;
+ }
+ 
+-static ggml_status compute_qwen_graph(QwenAsrSession * cc, ggml_cgraph * graph) {
++static bool check_qwen_graph_placement(QwenAsrSession * cc, ggml_cgraph * graph) {
+     if (khr_gpu_graph_policy(cc)) {
+         const auto * cm = static_cast<const QwenAsrModel *>(cc->model);
+         const char * primary = ggml_backend_name(cm->plan.primary);
+         if (cm->plan.primary_kind != BackendKind::Vulkan) {
+             log_msg(TRANSCRIBE_LOG_LEVEL_ERROR, "qwen3_asr KHR profile requires Vulkan, got %s", primary);
+-            return GGML_STATUS_FAILED;
++            return false;
+         }
+         size_t gpu = 0, metadata = 0, rejected = 0;
+         for (int i = 0; i < ggml_graph_n_nodes(graph); ++i) {
+@@ -77,11 +77,16 @@
+         log_msg(rejected ? TRANSCRIBE_LOG_LEVEL_ERROR : TRANSCRIBE_LOG_LEVEL_INFO,
+                 "qwen3_asr KHR placement: compute_gpu=%zu compute_rejected=%zu metadata=%zu policy=no_cpu_fallback",
+                 gpu, rejected, metadata);
+-        if (rejected) return GGML_STATUS_FAILED;
+-    }
++        if (rejected) return false;
++    }
++    return true;
++}
++
++
++static ggml_status compute_qwen_graph(QwenAsrSession * cc, ggml_cgraph * graph) {
++    if (!check_qwen_graph_placement(cc, graph)) return GGML_STATUS_FAILED;
+     return ggml_backend_sched_graph_compute(cc->sched, graph);
+ }
+-
+ 
+ static_assert(std::is_base_of_v<transcribe_model, QwenAsrModel>);
+ static_assert(std::is_base_of_v<transcribe_session, QwenAsrSession>);
+@@ -2102,6 +2107,7 @@
+ 
+     transcribe::causal_lm::StepLoopStats step_stats;
+     std::vector<char>                    truncated;
++    if (!check_qwen_graph_placement(cc, sb.graph)) return TRANSCRIBE_ERR_BACKEND;
+     if (const transcribe_status st = transcribe::causal_lm::run_batched_step_loop(
+             cc, cc->sched, io, n, max_n_kv, eos_id, max_new, step_state, generated, &step_stats, &truncated);
+         st != TRANSCRIBE_OK) {

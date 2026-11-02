@@ -1,0 +1,110 @@
+--- a/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -2003,12 +2003,14 @@
+     if ((direct_unary || direct_copy || direct_glu || profile_name.rfind("concat_", 0) == 0) && wg_denoms[0] == 512) {
+         wg_denoms[0] = 128;
+     }
+-    if (profile_name.rfind("get_rows_", 0) == 0) {
++    if (profile_name == "get_rows_i32") {
++        wg_denoms[0] = 128;
++    } else if (profile_name.rfind("get_rows_", 0) == 0) {
+         if (wg_denoms[0] == 512) wg_denoms[0] = 128;
+         else if (wg_denoms[0] == 1024) wg_denoms[0] = 256;
+     }
+     if (profile_name.rfind("rope_", 0) == 0 && wg_denoms[1] == 512) wg_denoms[1] = 256;
+-    if ((profile_name == "f32_to_f16" || profile_name == "dequant_q8_0") && wg_denoms[0] == 4096) wg_denoms[0] = 2048;
++    if ((profile_name == "f32_to_f16" || (profile_name == "dequant_q8_0" || profile_name == "dequant_q8_0_transpose")) && wg_denoms[0] == 4096) wg_denoms[0] = 2048;
+     if (profile_name == "split_k_reduce" && wg_denoms[0] == 1024) wg_denoms[0] = 512;
+     if (profile_name.rfind("soft_max_", 0) == 0 && !specialization_constants.empty() && specialization_constants[0] == 512) specialization_constants[0] = 128;
+ #endif
+@@ -7383,10 +7385,29 @@
+     // Split_k doesn't work with M splitting.
+     // This only supports batchsize == 1.
+     const size_t nbytes = ggml_nbytes(src0);
+-    const bool needs_split = dst->ne[2] == 1 && dst->ne[3] == 1 && nbytes > ctx->device->properties.limits.maxStorageBufferRange;
++    bool needs_split = dst->ne[2] == 1 && dst->ne[3] == 1 && nbytes > ctx->device->properties.limits.maxStorageBufferRange;
++    size_t split_row_bytes = src0->nb[1];
++#ifdef GGML_VULKAN_KHR_PROFILE
++    const bool direct_matvec = dst->ne[1] == 1 ||
++        (dst->ne[1] <= mul_mat_vec_max_cols && src1->ne[2] * src1->ne[3] == 1);
++    if (!direct_matvec && ggml_is_quantized(src0->type) && dst->ne[2] == 1 && dst->ne[3] == 1) {
++        if (!ggml_vk_dim01_contiguous(src0) || src0->ne[2] != 1 || src0->ne[3] != 1) {
++            throw std::runtime_error("KHR quantized matrix chunks require contiguous unbatched weights");
++        }
++        const uint64_t elements = uint64_t(ggml_nelements(src0));
++        if (elements > SIZE_MAX / sizeof(ggml_fp16_t)) throw std::runtime_error("KHR FP16 storage size overflow");
++        split_row_bytes = sizeof(ggml_fp16_t) * src0->ne[0];
++        needs_split = needs_split || elements * sizeof(ggml_fp16_t) > ctx->device->properties.limits.maxStorageBufferRange;
++    }
++#endif
+     if (needs_split) {
+         // Choose the number of rows that can fit (and divide by two, to allow for any additional offsets)
+-        const uint32_t M_split = ctx->device->properties.limits.maxStorageBufferRange / (2 * src0->nb[1]);
++        uint32_t M_split = ctx->device->properties.limits.maxStorageBufferRange / (2 * split_row_bytes);
++#ifdef GGML_VULKAN_KHR_PROFILE
++        const uint32_t row_alignment = std::max(1u, uint32_t(ctx->device->properties.limits.minStorageBufferOffsetAlignment));
++        M_split -= M_split % row_alignment;
++        if (!M_split) throw std::runtime_error("KHR matrix row cannot fit the bounded aligned GPU temporary");
++#endif
+         uint32_t m_offset = 0;
+         while (m_offset < dst->ne[0]) {
+             const uint32_t cur_M_size = std::min(M_split, (uint32_t)(dst->ne[0] - m_offset));
+@@ -7398,6 +7419,10 @@
+ 
+             dst2.view_offs += m_offset * dst->nb[0];
+             src02.view_offs += m_offset * src0->nb[1];
++#ifdef GGML_VULKAN_KHR_PROFILE
++            src02.data = reinterpret_cast<void *>(reinterpret_cast<uintptr_t>(src0->data) + m_offset * src0->nb[1]);
++            dst2.data = reinterpret_cast<void *>(reinterpret_cast<uintptr_t>(dst->data) + m_offset * dst->nb[0]);
++#endif
+             dst2.ne[0] = cur_M_size;
+             src02.ne[1] = cur_M_size;
+ 
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp
+@@ -42,6 +42,8 @@
+ 
+ std::string GLSLC = "glslc";
+ std::string input_filepath = "";
++std::string selected_shader_name;
++bool selected_shader_seen = false;
+ std::string output_dir = "/tmp";
+ std::string target_hpp = "";
+ std::string target_cpp = "";
+@@ -449,6 +451,7 @@
+ static std::deque<std::future<void>> compiles;
+ void string_to_spv(std::string name, const std::string& source, const std::map<std::string, std::string>& defines, bool fp16 = true, bool coopmat = false, bool coopmat2 = false, bool f16acc = false, const std::string& suffix = "") {
+     name = name + (f16acc ? "_f16acc" : "") + (coopmat ? "_cm1" : "") + (coopmat2 ? "_cm2" : (fp16 ? "" : "_fp32")) + suffix;
++    if (!selected_shader_name.empty() && name != selected_shader_name) return;
+     std::string out_path = join_paths(output_dir, name + ".spv");
+ 
+     if (input_filepath == "") {
+@@ -460,6 +463,7 @@
+         return;
+     }
+ 
++    selected_shader_seen = true;
+     compile_count_guard slot = acquire_compile_slot();
+     compiles.push_back(std::async(
+         string_to_spv_func, name, input_filepath, out_path, defines, coopmat, generate_dep_file, std::move(slot)));
+@@ -1419,6 +1423,9 @@
+     if (args.find("--glslc") != args.end()) {
+         GLSLC = args["--glslc"]; // Path to glslc
+     }
++    if (args.find("--shader-name") != args.end()) {
++        selected_shader_name = args["--shader-name"];
++    }
+     if (args.find("--source") != args.end()) {
+         input_filepath = args["--source"]; // The shader source file to compile
+     }
+@@ -1441,6 +1448,10 @@
+ 
+     process_shaders();
+ 
++    if (!selected_shader_name.empty() && !selected_shader_seen) {
++        std::cerr << "vulkan-shaders-gen: requested shader name/source has no matching variant: " << selected_shader_name << std::endl;
++        return EXIT_FAILURE;
++    }
+     if (compile_failed) {
+         std::cerr << "vulkan-shaders-gen: one or more shaders failed to compile" << std::endl;
+         return EXIT_FAILURE;

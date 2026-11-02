@@ -1,0 +1,663 @@
+{
+  "status": "complete profile backend archives and opt-in native listener host link passed",
+  "libraries": {
+    "libstraylight_asr.a": {
+      "bytes": 60372,
+      "sha256": "90a0d64005902f365a65c7f9381dbb2594606b710532d2b66e4197233f29cc7d"
+    },
+    "libtranscribe.a": {
+      "bytes": 5352502,
+      "sha256": "be1abeadff4cec6b75b465634feb35d52059ce9aae8ba5c0d085725a5b1bfdbd"
+    },
+    "libggml.a": {
+      "bytes": 62748,
+      "sha256": "e3646b7097bb7c95bede201eff197d370323fef4d6b1db8145f362fb7c6cbe95"
+    },
+    "libggml-base.a": {
+      "bytes": 1416520,
+      "sha256": "2667d70865bc2a996824f6dc93db795d016b577450f5e3190cfc7631b47a3b2c"
+    },
+    "libggml-cpu.a": {
+      "bytes": 1882458,
+      "sha256": "fe7e34e1dec4dbdb6c1e21abd4188fe8fb2e344958224d347ee78648b4a6145d"
+    },
+    "libggml-vulkan.a": {
+      "bytes": 48361996,
+      "sha256": "52698185527b5360d7689713e311e7d0e4350b3fb586598c0f832cf3c686245a"
+    }
+  },
+  "library_directory": "/run/media/jethac/Shared/radish/asr-profile-link-build-0045/libs-profile-placement-kv",
+  "listener": {
+    "bytes": 116819640,
+    "sha256": "99806525a40fb2d63c5c907431445247b6abae76fe7339f12bb48c5f9f87427c"
+  },
+  "stamp": "5700f127e38dd53c4735ea23ef743b4b538eacd4 5c8974acefce3dec backend=vulkan config-abi=2 khr-profile=1 graph-bounded=8b4a76b5 attention=c029d58c catalog=5041f38e placement=59421e95 batched=8f00bab0 kv=79d346b8 khr-proc=0a059df7\n",
+  "integrated_sources": {
+    "ggml/src/ggml-vulkan/ggml-vulkan.cpp": {
+      "bytes": 893359,
+      "sha256": "f2bc0b72ccc45d29f2a771793a07f38c85cd6dabae10da78a409f76265e33828"
+    },
+    "src/arch/qwen3_asr/model.cpp": {
+      "bytes": 125667,
+      "sha256": "49f2a3a6701877fbf37c80c2e11ebe4ffebbcb629337fe1db8d6c287f10c92b2"
+    },
+    "ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp": {
+      "bytes": 84761,
+      "sha256": "2a051cb5a0415c2087a823812585a629e3e2982e22bae869fd56c9c088638ac8"
+    }
+  },
+  "scope": "Native host Release C++/dev Rust link only; CPU default retained, explicit Vulkan opt-in/nonflash profile, nine placement checks and lazy KV. No A53/device/fullmodel/memory or performance qualification.",
+  "publication_scope": "Host link checkpoint only; current fcd/d332 selected inference unchanged; no full ASR device, memory, numerical or deployment admission.",
+  "apply_order_after": "patches/0045-ggml-vulkan-khr-profile-private.patch on its pinned transcribe dependency; this graph patch includes the Q4 loop correction, so do not also apply the standalone Q4 correction to that same file.",
+  "incremental_patches": [
+    {
+      "path": "patches/0045-asr-graph-profile.patch",
+      "bytes": 24826,
+      "sha256": "46bc766b2d61199b42537f3d74b395765066579ca46a44db646a6dcd9f8e3f00"
+    },
+    {
+      "path": "patches/0045-asr-bounded-mm.patch",
+      "bytes": 5940,
+      "sha256": "8b4a76b56f219eb7d99e3648b1f3a14b648743c66a7b46f29940cef669fcccb2"
+    },
+    {
+      "path": "patches/0045-asr-attention-profile.patch",
+      "bytes": 2688,
+      "sha256": "c029d58c143cb4a407329bd7533e1f553b10d31ecd2afa27cf06995ded13d0a6"
+    },
+    {
+      "path": "patches/0045-asr-exact50-catalog.patch",
+      "bytes": 3245,
+      "sha256": "5041f38e407b527b5b2189290fe0b352d66dbb43b005e1481f8dd68579877592"
+    },
+    {
+      "path": "patches/0045-asr-gpu-placement.patch",
+      "bytes": 7854,
+      "sha256": "59421e95ea8eaab262173701e2cddacfb9b6c3cb5953d6fe5a3bed0d773e8dcd"
+    },
+    {
+      "path": "patches/0045-asr-batched-placement.patch",
+      "bytes": 2059,
+      "sha256": "8f00bab0a4d149b84a323388792353f3b9501723bced9ee4e4aa50a12d34f32a"
+    },
+    {
+      "path": "patches/0045-asr-lazy-kv.patch",
+      "bytes": 2333,
+      "sha256": "79d346b81513ce5ae814696f3739317db5b0c99f12ba9a7db896e6c0c2a61043"
+    },
+    {
+      "path": "patches/0045-asr-khr-proc-lookup.patch",
+      "bytes": 3837,
+      "sha256": "0a059df746e1d09dcd3e0642b0c3b8b8ec2f84b38178f9275d9fee568b7e2242"
+    }
+  ],
+  "selected_modules": [
+    {
+      "name": "matmul_f32_f32_fp32",
+      "module": {
+        "bytes": 13992,
+        "sha256": "01f15614d7af04052ee5b39667abf4108ce784b7b0ee387f61a6a24cfab6ff36"
+      },
+      "capabilities": [
+        "Shader"
+      ]
+    },
+    {
+      "name": "matmul_f16_f32_fp32",
+      "module": {
+        "bytes": 14152,
+        "sha256": "2e58a7f8ee00179fc38c674cdcf101c50e470642e7160c8bfd711ba15028a63d"
+      },
+      "capabilities": [
+        "Shader",
+        "StorageBuffer16BitAccess"
+      ]
+    },
+    {
+      "name": "matmul_f16_fp32",
+      "module": {
+        "bytes": 14200,
+        "sha256": "0ce001400fd7f5918584324d2ed63285e3eed2c3775900d6664bbe9506714519"
+      },
+      "capabilities": [
+        "Shader",
+        "StorageBuffer16BitAccess"
+      ]
+    },
+    {
+      "name": "matmul_f32_f16_fp32",
+      "module": {
+        "bytes": 14152,
+        "sha256": "c4a4edd782310e75174fc87ddc539cabd95eccfe9aa5e30d17a5014bd3885e66"
+      },
+      "capabilities": [
+        "Shader",
+        "StorageBuffer16BitAccess"
+      ]
+    },
+    {
+      "name": "dequant_f32",
+      "module": {
+        "bytes": 3284,
+        "sha256": "f34027527fb6ade4758b470f37d81dcbd1718adadaedcbb508bc3fecf5a5f10f"
+      },
+      "capabilities": [
+        "Shader",
+        "StorageBuffer16BitAccess"
+      ]
+    },
+    {
+      "name": "dequant_q4_k",
+      "module": {
+        "bytes": 6016,
+        "sha256": "7505eefe3c508ecc4b2c692a58a6e82d9cca10f0819df12b6bc9fc5b94339586"
+      },
+      "capabilities": [
+        "Shader",
+        "Int8",
+        "StorageBuffer16BitAccess",
+        "StorageBuffer8BitAccess"
+      ]
+    },
+    {
+      "name": "dequant_q6_k",
+      "module": {
+        "bytes": 4276,
+        "sha256": "466e881479ab81c743b82b580ab2f95fa3d9f1d35b50066efb582d2c490fe064"
+      },
+      "capabilities": [
+        "Shader",
+        "Int8",
+        "StorageBuffer16BitAccess",
+        "StorageBuffer8BitAccess"
+      ]
+    },
+    {
+      "name": "dequant_q8_0",
+      "module": {
+        "bytes": 4892,
+        "sha256": "682bc8c1601e8968c002a3b76578e1dc10499728c9e02ed72384d96aa5cb05de"
+      },
+      "capabilities": [
+        "Shader",
+        "Int8",
+        "StorageBuffer16BitAccess",
+        "StorageBuffer8BitAccess"
+      ]
+    },
+    {
+      "name": "mul_mat_vec_f32_f32_f32",
+      "module": {
+        "bytes": 33232,
+        "sha256": "1e3cefb39ec24b11ddeb55fed5a01844f827bd95e04c483c8909aeec1fd81437"
+      },
+      "capabilities": [
+        "Shader"
+      ]
+    },
+    {
+      "name": "mul_mat_vec_f16_f32_f32",
+      "module": {
+        "bytes": 34080,
+        "sha256": "a56a29e3eecbf410d1811d08229fc1cb0de4ab9c9a0ba3789c608ca7b50823bd"
+      },
+      "capabilities": [
+        "Shader",
+        "StorageBuffer16BitAccess"
+      ]
+    },
+    {
+      "name": "mul_mat_vec_q8_0_f32_f32",
+      "module": {
+        "bytes": 22896,
+        "sha256": "7b96675ca956851bc315a08858d448c49bde48bdca5c9c24c91222818695b91a"
+      },
+      "capabilities": [
+        "Shader",
+        "Int8",
+        "StorageBuffer16BitAccess",
+        "StorageBuffer8BitAccess"
+      ]
+    },
+    {
+      "name": "mul_mat_vec_q4_k_f32_f32",
+      "module": {
+        "bytes": 18992,
+        "sha256": "2c4b4e98f4f4300710f0d5084e3ae9f6daf066e1e69954193b1b56dcc747bc43"
+      },
+      "capabilities": [
+        "Shader",
+        "Int8",
+        "StorageBuffer16BitAccess",
+        "StorageBuffer8BitAccess"
+      ]
+    },
+    {
+      "name": "mul_mat_vec_q6_k_f32_f32",
+      "module": {
+        "bytes": 26920,
+        "sha256": "d8414ada961e40c2c38993ff37697208953734749feedaf0bbe3eb09c5a00b2b"
+      },
+      "capabilities": [
+        "Shader",
+        "Int8",
+        "StorageBuffer16BitAccess",
+        "StorageBuffer8BitAccess"
+      ]
+    },
+    {
+      "name": "get_rows_f32_f32",
+      "module": {
+        "bytes": 3816,
+        "sha256": "18d21ee49c2d973445cbc15bc7fdd9949d93025a57719baef83ac7bad4943b9c"
+      },
+      "capabilities": [
+        "Shader"
+      ]
+    },
+    {
+      "name": "get_rows_f16_f32",
+      "module": {
+        "bytes": 3896,
+        "sha256": "4bb9ad60e20f31cffa3d6c39fc6768bad01d21f1c166ac372357d980e07d3986"
+      },
+      "capabilities": [
+        "Shader",
+        "StorageBuffer16BitAccess"
+      ]
+    },
+    {
+      "name": "get_rows_q4_k_f32",
+      "module": {
+        "bytes": 6240,
+        "sha256": "62c2cc913208b222d83fe422f6f55b5071fd8bde5479d09ac9913b91eb68e1e7"
+      },
+      "capabilities": [
+        "Shader",
+        "Int8",
+        "StorageBuffer16BitAccess",
+        "StorageBuffer8BitAccess"
+      ]
+    },
+    {
+      "name": "get_rows_q6_k_f32",
+      "module": {
+        "bytes": 5876,
+        "sha256": "3d5c8deb1f5afbdc9cbbb23bb1be2384c829c0cbeeee7e585e0c1e231eb380cb"
+      },
+      "capabilities": [
+        "Shader",
+        "Int8",
+        "StorageBuffer16BitAccess",
+        "StorageBuffer8BitAccess"
+      ]
+    },
+    {
+      "name": "get_rows_q8_0_f32",
+      "module": {
+        "bytes": 4504,
+        "sha256": "0d7c3b4f092db355b9cd0fecd0ffbded9f6a456f9cbc7bf4a4d46003ab81fc9a"
+      },
+      "capabilities": [
+        "Shader",
+        "StorageBuffer16BitAccess",
+        "StorageBuffer8BitAccess"
+      ]
+    },
+    {
+      "name": "cpy_f32_f32",
+      "module": {
+        "bytes": 4724,
+        "sha256": "d16b90705ce66386f9b1ab24d14ace9424f08e4625c4f0e1c2664631246cc364"
+      },
+      "capabilities": [
+        "Shader"
+      ]
+    },
+    {
+      "name": "cpy_f32_f16",
+      "module": {
+        "bytes": 4804,
+        "sha256": "9f97bc6cd4c2d59cd50ac64c680a46890147620f62a63267b6b0115152a806b4"
+      },
+      "capabilities": [
+        "Shader",
+        "StorageBuffer16BitAccess"
+      ]
+    },
+    {
+      "name": "cpy_f16_f32",
+      "module": {
+        "bytes": 4804,
+        "sha256": "a1fd6b1bdcb4b87184e1cdd31eb47d6cbcb40bc1492052e6a157561623949782"
+      },
+      "capabilities": [
+        "Shader",
+        "StorageBuffer16BitAccess"
+      ]
+    },
+    {
+      "name": "cpy_f16_f16",
+      "module": {
+        "bytes": 4772,
+        "sha256": "7a7731fb1f0973623f6511b4b58487f408e07955e882493ef575b2ce51b3c187"
+      },
+      "capabilities": [
+        "Shader",
+        "StorageBuffer16BitAccess"
+      ]
+    },
+    {
+      "name": "contig_cpy_f32_f32",
+      "module": {
+        "bytes": 3148,
+        "sha256": "362b0672e51cdab103f08b34bec88512dad039eebf2cae9d86af4b4e523bb5bf"
+      },
+      "capabilities": [
+        "Shader"
+      ]
+    },
+    {
+      "name": "contig_cpy_f32_f16",
+      "module": {
+        "bytes": 3292,
+        "sha256": "b5dc759b930546c17eea1b298f00ea218a0e0df30e46d32593b33d408db3adac"
+      },
+      "capabilities": [
+        "Shader",
+        "StorageBuffer16BitAccess"
+      ]
+    },
+    {
+      "name": "contig_cpy_f16_f32",
+      "module": {
+        "bytes": 3292,
+        "sha256": "98a97ebca94bc4ed4f6a5d98f54cc19e59a050524e1bb4893b78b810269614c4"
+      },
+      "capabilities": [
+        "Shader",
+        "StorageBuffer16BitAccess"
+      ]
+    },
+    {
+      "name": "contig_cpy_f16_f16",
+      "module": {
+        "bytes": 3196,
+        "sha256": "f248eaf8a768ff7f2ef8d831b9bd585d08c211e401b4575946ab1234534699c9"
+      },
+      "capabilities": [
+        "Shader",
+        "StorageBuffer16BitAccess"
+      ]
+    },
+    {
+      "name": "cpy_transpose_16",
+      "module": {
+        "bytes": 18104,
+        "sha256": "331b1047ee7a3584c3a968dfc61ab7e61a438edeb2be35d03bb58165aeaa1346"
+      },
+      "capabilities": [
+        "Shader",
+        "StorageBuffer16BitAccess"
+      ]
+    },
+    {
+      "name": "cpy_transpose_32",
+      "module": {
+        "bytes": 17796,
+        "sha256": "adf59e2d94aba1c34203f4d95dab63db6972072396fe31288141295b53c53c85"
+      },
+      "capabilities": [
+        "Shader"
+      ]
+    },
+    {
+      "name": "cpy_transpose_02_16",
+      "module": {
+        "bytes": 18104,
+        "sha256": "205222ec8ea9a429ea62fb5c3db7c46f1b89e7fac1d44f5164117a0b147c1d90"
+      },
+      "capabilities": [
+        "Shader",
+        "StorageBuffer16BitAccess"
+      ]
+    },
+    {
+      "name": "cpy_transpose_02_32",
+      "module": {
+        "bytes": 17796,
+        "sha256": "bcf9fb981a1fb1831c9f682dbbb980d4c4038adb40c718f996f11c9968258be2"
+      },
+      "capabilities": [
+        "Shader"
+      ]
+    },
+    {
+      "name": "norm_f32",
+      "module": {
+        "bytes": 6188,
+        "sha256": "8827a4391c8200111df80dc0aabfacc72ed7cfddfa8ec8fceda5e01cde47b189"
+      },
+      "capabilities": [
+        "Shader"
+      ]
+    },
+    {
+      "name": "rms_norm_f32",
+      "module": {
+        "bytes": 67876,
+        "sha256": "36925402fb906d86c41ccfe80e9e828ef33121a4122faa9770ce42fe4db68250"
+      },
+      "capabilities": [
+        "Shader"
+      ]
+    },
+    {
+      "name": "gelu_erf_f32",
+      "module": {
+        "bytes": 5356,
+        "sha256": "91de7dabc086b540a011929f46ba25371a8705b3923bdc4b050e5d7a527316cf"
+      },
+      "capabilities": [
+        "Shader"
+      ]
+    },
+    {
+      "name": "silu_f32",
+      "module": {
+        "bytes": 4820,
+        "sha256": "aa794a1d5358ce5fb30ec428d63e0af7bb694c5fb33ae0c171d0cbbac82d0407"
+      },
+      "capabilities": [
+        "Shader"
+      ]
+    },
+    {
+      "name": "swiglu_f32",
+      "module": {
+        "bytes": 5320,
+        "sha256": "e5c7ab9779837940f050dbfde49dd5c651bc9e990d07b58c2acfafd6a490e6d4"
+      },
+      "capabilities": [
+        "Shader"
+      ]
+    },
+    {
+      "name": "add_f32_f32_f32",
+      "module": {
+        "bytes": 5960,
+        "sha256": "68b98fdbaf36855a47f587db8da035d00b12c8ee0d1919f129cff82e6df8d166"
+      },
+      "capabilities": [
+        "Shader"
+      ]
+    },
+    {
+      "name": "mul_f32_f32_f32",
+      "module": {
+        "bytes": 5960,
+        "sha256": "e52b032a7cb770fad5f5eb3609798b426bcdae76abe1a3c081210db309333d23"
+      },
+      "capabilities": [
+        "Shader"
+      ]
+    },
+    {
+      "name": "scale_f32",
+      "module": {
+        "bytes": 2588,
+        "sha256": "6eb06a964268b34af4bd3e02e23b54b3c299e464fb3c2dea9e080169a5d24bd9"
+      },
+      "capabilities": [
+        "Shader"
+      ]
+    },
+    {
+      "name": "concat_i32",
+      "module": {
+        "bytes": 5496,
+        "sha256": "30ce3db9c8119054bf03938e30d61ebe65bbc8028084ed8fd34a9692f78e32ae"
+      },
+      "capabilities": [
+        "Shader"
+      ]
+    },
+    {
+      "name": "soft_max_f32",
+      "module": {
+        "bytes": 78724,
+        "sha256": "73040815d0133b09049cf6f57c0f87d1703dfd10e9147880d45bcca08a1b3a09"
+      },
+      "capabilities": [
+        "Shader"
+      ]
+    },
+    {
+      "name": "soft_max_f32_f16",
+      "module": {
+        "bytes": 79988,
+        "sha256": "916d906b36fe043de96729413ea3f4a6a8dde17ceece10fa222fa57de1388311"
+      },
+      "capabilities": [
+        "Shader",
+        "StorageBuffer16BitAccess"
+      ]
+    },
+    {
+      "name": "argmax_f32",
+      "module": {
+        "bytes": 3192,
+        "sha256": "bf2205fb317938ab16bfe93b4458477a458d6edc1e69e7609111d2a24eb6c1fe"
+      },
+      "capabilities": [
+        "Shader"
+      ]
+    },
+    {
+      "name": "rope_norm_f32",
+      "module": {
+        "bytes": 13844,
+        "sha256": "56f56d7eba23137d3cda220e1c42f358f755ffa7dfd3a5891f2b734004c3462b"
+      },
+      "capabilities": [
+        "Shader"
+      ]
+    },
+    {
+      "name": "rope_neox_f32",
+      "module": {
+        "bytes": 14480,
+        "sha256": "0f9a4f2263814a72232ffe2028c9f0ba4cfbed9b051f01d8e2bbd730276a07a5"
+      },
+      "capabilities": [
+        "Shader"
+      ]
+    },
+    {
+      "name": "rope_multi_f32",
+      "module": {
+        "bytes": 19000,
+        "sha256": "7a228f2e913d5a6d0af1a00d5bc59c4fb08bd2a1d627651e3e5b0b4f02960c4c"
+      },
+      "capabilities": [
+        "Shader"
+      ]
+    },
+    {
+      "name": "im2col_f32",
+      "module": {
+        "bytes": 5196,
+        "sha256": "02c22f4d16b1d9854b1165aa3c9dcb548a4db2ad3b26deb27af04e32bdc6d582"
+      },
+      "capabilities": [
+        "Shader"
+      ]
+    },
+    {
+      "name": "im2col_f32_f16",
+      "module": {
+        "bytes": 5276,
+        "sha256": "4ba4b1c6e4b35cc5e39305a16289249189141d5437ce13230b549f30c39afa59"
+      },
+      "capabilities": [
+        "Shader",
+        "StorageBuffer16BitAccess"
+      ]
+    },
+    {
+      "name": "split_k_reduce",
+      "module": {
+        "bytes": 2788,
+        "sha256": "247132340fd680c47146207359eeed84f21ca5b7006499023b3c2b3452196fc5"
+      },
+      "capabilities": [
+        "Shader"
+      ]
+    },
+    {
+      "name": "mul_mat_vec_p021_f16_f32",
+      "module": {
+        "bytes": 6888,
+        "sha256": "177fed1f1c604273195a43f00d39b2fcba819197abfd079b103d7f0977549743"
+      },
+      "capabilities": [
+        "Shader",
+        "StorageBuffer16BitAccess"
+      ]
+    },
+    {
+      "name": "mul_mat_vec_nc_f16_f32",
+      "module": {
+        "bytes": 6916,
+        "sha256": "afe79c8e4554f95d62697ac8a61d825dfaefb42fba79bdc472bbe5cda07a64af"
+      },
+      "capabilities": [
+        "Shader",
+        "StorageBuffer16BitAccess"
+      ]
+    }
+  ],
+  "full_catalog50_pairing": {
+    "bytes": 13145,
+    "sha256": "8e249d16a5e5d4264234d61bd70462e08ae47f567ddd3a55b8c09ce895a84cbb"
+  },
+  "failed_history": [
+    "Optional ADD_RMS was initially targeted at Vulkan1.0; exact50 eligibility fixes that source selection while retaining the entire normal catalog.",
+    "Initial listener link exposed static KHR extension imports; actual instance/device proc-address lookup fixes those imports without API promotion."
+  ],
+  "memory_status": "Not admitted. Source-known standard-route subtotal614.060MiB leaves25.940MiB before workspace/process overhead; proposed finer KV and metadata sizing are separate and not in this checkpoint.",
+  "public_defaults": "CPU-default application and generic/default-off backend remain unchanged; profile requires explicit opt-in, nonflash, selected Vulkan device and real queried features.",
+  "independent_link_review": {
+    "bytes": 3648,
+    "sha256": "559cbc0612c08362d91e304e854e7849d0a3c5249df8c1d22d640318eb8d2da6",
+    "catalog_symbols": 1566,
+    "all_actual_archives_and_listener_rehashed": true,
+    "actual_cargo_fresh_library_directory_verified": true,
+    "no_unresolved_direct_khr_extension_imports": true
+  },
+  "incremental_patch_reconstruction": {
+    "status": "passed",
+    "touched_files": 35,
+    "method": "Exact finalsource reverse all8 then forward all8, byte compare every touched file; no rebuild."
+  }
+}
