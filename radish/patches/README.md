@@ -672,3 +672,5 @@ Both feature modes pass the full fixed core; resident51.504783→34.333299 secon
 `0045-ggml-vulkan-khr-profile-private.patch` is a default-OFF backend source overlay on the pinned transcribe.cpp dependency. ON/OFF host objects and two actual Vulkan1.0 Q4 modules pass; real feature checks and actual descriptor limits remain required. Five-buffer device qualification, complete shader/backend coverage and ASR inference remain pending. See ../results/asr-khr-profile-host-only-0045.json and ../ASR_VULKAN_HANDOFF.txt.
 
 `0045-ncnn-packed-dot-unroll4-unselected.patch` is an isolated experiment after the selected mb shift and fixed-tail/private-device stack. Native dependency and full numerical checks pass, but all twelve targeted layers and whole resident time regress in the observed pair; swap differs. It is not part of the selected stack. See ../results/packed-dot-unroll4-unselected-0045.json.
+
+`0045-ncnn-packed-dot-unroll2-unselected.patch` retains native preload and passes exact numerical/recurrence checks, but targeted and whole resident time regress without swap. It remains outside the selected stack; see ../results/packed-dot-unroll2-unselected-0045.json.

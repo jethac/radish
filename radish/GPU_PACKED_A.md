@@ -1,5 +1,13 @@
 # Packed-A convolution experiment
 
+## 2026-11-02: two-step unroll retains preload but remains unselected
+
+The separate two-step inner-dot experiment passes exact native recurrence and full numerical checks. Its three target variants use native length 31, retaining the original BUFFER/preload path, 16F/0H, no spills, local 16×8 and 16 KiB shared memory. All other 176 native bodies remain exact, and all 1,520 command owners/geometries/chunks/submits retain the selected schedule.
+
+It still loses performance in this sequential pair: first **34.700589 → 35.243258 s**, resident **33.952417 → 34.599736 s (+1.91%)**. The twelve targeted commands rise **9.203803 → 10.065042 s (+9.36%)** in the resident iteration. Both runs use zero swap; candidate peak memory is 404.5 MiB. Retaining preload does not recover the target performance, so the earlier fetch-mode threshold is not a sufficient explanation of the unroll4 result. No physical cache or scheduling cause is claimed.
+
+Keep **d332 selected**. The [exact source/native/output/profile evidence](results/packed-dot-unroll2-unselected-0045.json) and [isolated patch](patches/0045-ncnn-packed-dot-unroll2-unselected.patch) preserve the result. No identical retry or further unroll-factor sweep follows.
+
 ## 2026-11-02: four-step packed inner-dot unroll is correct but unselected
 
 The isolated Ci128/Co128/Kw11 inner-dot unroll retains the original B division, exact ordered accumulation, all resource/occupancy guards and the existing submission schedule. Only three native variants change (twelve layer uses); the other 20 packed and 156 ordinary native bodies are exact. The changed variants use native length 35, 16F/0H and no spills, with the same local 16×8, 16 KiB shared memory and 4,096-unit residency footprint. Independent symbolic checking confirms all 32 accumulator dependency trees; nine additional hot MOVs are included in the 172 expanded slots versus 220 for four old bodies.
