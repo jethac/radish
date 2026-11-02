@@ -1,5 +1,5 @@
 {
-  "status": "Retained evidence contains393 unique original CTS Pass cases; not a conformance denominator",
+  "status": "Retained evidence contains427 unique original CTS Pass cases; not a conformance denominator",
   "partitions": {
     "information": 5,
     "SPIR-V versions": 4,
@@ -20,9 +20,10 @@
     "Function/Private initialization": 8,
     "Function composites integer": 42,
     "Function composites float": 30,
-    "Indirect/base dispatch": 25
+    "Indirect/base dispatch": 25,
+    "Promoted core format queries": 34
   },
-  "unique_count": 393,
+  "unique_count": 427,
   "names": [
     "dEQP-VK.api.array.oversized_array.core.get_pipeline_cache_data",
     "dEQP-VK.api.descriptor_pool.out_of_pool_memory",
@@ -81,6 +82,9 @@
     "dEQP-VK.api.info.format_properties.astc_8x8_srgb_block",
     "dEQP-VK.api.info.format_properties.astc_8x8_unorm_block",
     "dEQP-VK.api.info.format_properties.b10g11r11_ufloat_pack32",
+    "dEQP-VK.api.info.format_properties.b10x6g10x6r10x6g10x6_422_unorm_4pack16",
+    "dEQP-VK.api.info.format_properties.b12x4g12x4r12x4g12x4_422_unorm_4pack16",
+    "dEQP-VK.api.info.format_properties.b16g16r16g16_422_unorm",
     "dEQP-VK.api.info.format_properties.b4g4r4a4_unorm_pack16",
     "dEQP-VK.api.info.format_properties.b5g5r5a1_unorm_pack16",
     "dEQP-VK.api.info.format_properties.b5g6r5_unorm_pack16",
@@ -98,6 +102,7 @@
     "dEQP-VK.api.info.format_properties.b8g8r8a8_uint",
     "dEQP-VK.api.info.format_properties.b8g8r8a8_unorm",
     "dEQP-VK.api.info.format_properties.b8g8r8a8_uscaled",
+    "dEQP-VK.api.info.format_properties.b8g8r8g8_422_unorm",
     "dEQP-VK.api.info.format_properties.bc1_rgb_srgb_block",
     "dEQP-VK.api.info.format_properties.bc1_rgb_unorm_block",
     "dEQP-VK.api.info.format_properties.bc1_rgba_srgb_block",
@@ -132,6 +137,36 @@
     "dEQP-VK.api.info.format_properties.etc2_r8g8b8a1_unorm_block",
     "dEQP-VK.api.info.format_properties.etc2_r8g8b8a8_srgb_block",
     "dEQP-VK.api.info.format_properties.etc2_r8g8b8a8_unorm_block",
+    "dEQP-VK.api.info.format_properties.g10x6_b10x6_r10x6_3plane_420_unorm_3pack16",
+    "dEQP-VK.api.info.format_properties.g10x6_b10x6_r10x6_3plane_422_unorm_3pack16",
+    "dEQP-VK.api.info.format_properties.g10x6_b10x6_r10x6_3plane_444_unorm_3pack16",
+    "dEQP-VK.api.info.format_properties.g10x6_b10x6r10x6_2plane_420_unorm_3pack16",
+    "dEQP-VK.api.info.format_properties.g10x6_b10x6r10x6_2plane_422_unorm_3pack16",
+    "dEQP-VK.api.info.format_properties.g10x6b10x6g10x6r10x6_422_unorm_4pack16",
+    "dEQP-VK.api.info.format_properties.g12x4_b12x4_r12x4_3plane_420_unorm_3pack16",
+    "dEQP-VK.api.info.format_properties.g12x4_b12x4_r12x4_3plane_422_unorm_3pack16",
+    "dEQP-VK.api.info.format_properties.g12x4_b12x4_r12x4_3plane_444_unorm_3pack16",
+    "dEQP-VK.api.info.format_properties.g12x4_b12x4r12x4_2plane_420_unorm_3pack16",
+    "dEQP-VK.api.info.format_properties.g12x4_b12x4r12x4_2plane_422_unorm_3pack16",
+    "dEQP-VK.api.info.format_properties.g12x4b12x4g12x4r12x4_422_unorm_4pack16",
+    "dEQP-VK.api.info.format_properties.g16_b16_r16_3plane_420_unorm",
+    "dEQP-VK.api.info.format_properties.g16_b16_r16_3plane_422_unorm",
+    "dEQP-VK.api.info.format_properties.g16_b16_r16_3plane_444_unorm",
+    "dEQP-VK.api.info.format_properties.g16_b16r16_2plane_420_unorm",
+    "dEQP-VK.api.info.format_properties.g16_b16r16_2plane_422_unorm",
+    "dEQP-VK.api.info.format_properties.g16b16g16r16_422_unorm",
+    "dEQP-VK.api.info.format_properties.g8_b8_r8_3plane_420_unorm",
+    "dEQP-VK.api.info.format_properties.g8_b8_r8_3plane_422_unorm",
+    "dEQP-VK.api.info.format_properties.g8_b8_r8_3plane_444_unorm",
+    "dEQP-VK.api.info.format_properties.g8_b8r8_2plane_420_unorm",
+    "dEQP-VK.api.info.format_properties.g8_b8r8_2plane_422_unorm",
+    "dEQP-VK.api.info.format_properties.g8b8g8r8_422_unorm",
+    "dEQP-VK.api.info.format_properties.r10x6_unorm_pack16",
+    "dEQP-VK.api.info.format_properties.r10x6g10x6_unorm_2pack16",
+    "dEQP-VK.api.info.format_properties.r10x6g10x6b10x6a10x6_unorm_4pack16",
+    "dEQP-VK.api.info.format_properties.r12x4_unorm_pack16",
+    "dEQP-VK.api.info.format_properties.r12x4g12x4_unorm_2pack16",
+    "dEQP-VK.api.info.format_properties.r12x4g12x4b12x4a12x4_unorm_4pack16",
     "dEQP-VK.api.info.format_properties.r16_sfloat",
     "dEQP-VK.api.info.format_properties.r16_sint",
     "dEQP-VK.api.info.format_properties.r16_snorm",
@@ -498,12 +533,16 @@
     "Indirect/base dispatch": {
       "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-indirect-dispatch/probe/runner-result.json",
       "sha256": "3772000c8273b0f7e5fd01efc85694054f0fee4ff07739ff08f147556c5ff4e7"
+    },
+    "Promoted core format queries": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-promoted-formats/probe/runner-result.json",
+      "sha256": "8f0c28a59df91c573a301542e6b874c473397cd889698db8c20316eb91480de7"
     }
   },
   "limitations": "Separate historical revisions/candidates, not one full conformance run; original oracle limits preserved. Failed historical info/ETC cases were corrected and later passed; custom42 strict sRGB mismatches remain unresolved. Original mistyped cache case0/0 is not a case or pass.",
   "source_receipt_identity": {
-    "path": "/run/media/jethac/Shared/radish/compute11-verified-case-count-v4-0045.json",
-    "bytes": 34366,
-    "sha256": "56048dff2d56005b1385d525366ba53a3e01e1aae33d4770c97d1a5280409c53"
+    "path": "/run/media/jethac/Shared/radish/compute11-verified-case-count-v5-0045.json",
+    "bytes": 37181,
+    "sha256": "ff78e7276b4cb71693135cb72a9df1902b6d23406c0dd94a842e256cb637c856"
   }
 }

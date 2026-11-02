@@ -1,0 +1,945 @@
+{
+  "status": "34 additional original promoted-format query cases passed",
+  "bounds": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-promoted-format-query-next-0045/source-bounds.json",
+      "bytes": 12719,
+      "sha256": "6e34bde2777dc4e2208a389d1987b57eea024512d5360df97167baf341b31ffd"
+    },
+    "result": {
+      "status": "Source-bounded 34 original promoted Vulkan 1.1 format queries; no execution yet",
+      "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+      "case_file": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-promoted-format-query-next-0045/cases.txt",
+        "sha256": "bf42b4c41de357d105ca548645bcf069e262a3bf77e7ed9ba286602a680cd40e",
+        "count": 34
+      },
+      "cases": [
+        "dEQP-VK.api.info.format_properties.g8b8g8r8_422_unorm",
+        "dEQP-VK.api.info.format_properties.b8g8r8g8_422_unorm",
+        "dEQP-VK.api.info.format_properties.g8_b8_r8_3plane_420_unorm",
+        "dEQP-VK.api.info.format_properties.g8_b8r8_2plane_420_unorm",
+        "dEQP-VK.api.info.format_properties.g8_b8_r8_3plane_422_unorm",
+        "dEQP-VK.api.info.format_properties.g8_b8r8_2plane_422_unorm",
+        "dEQP-VK.api.info.format_properties.g8_b8_r8_3plane_444_unorm",
+        "dEQP-VK.api.info.format_properties.r10x6_unorm_pack16",
+        "dEQP-VK.api.info.format_properties.r10x6g10x6_unorm_2pack16",
+        "dEQP-VK.api.info.format_properties.r10x6g10x6b10x6a10x6_unorm_4pack16",
+        "dEQP-VK.api.info.format_properties.g10x6b10x6g10x6r10x6_422_unorm_4pack16",
+        "dEQP-VK.api.info.format_properties.b10x6g10x6r10x6g10x6_422_unorm_4pack16",
+        "dEQP-VK.api.info.format_properties.g10x6_b10x6_r10x6_3plane_420_unorm_3pack16",
+        "dEQP-VK.api.info.format_properties.g10x6_b10x6r10x6_2plane_420_unorm_3pack16",
+        "dEQP-VK.api.info.format_properties.g10x6_b10x6_r10x6_3plane_422_unorm_3pack16",
+        "dEQP-VK.api.info.format_properties.g10x6_b10x6r10x6_2plane_422_unorm_3pack16",
+        "dEQP-VK.api.info.format_properties.g10x6_b10x6_r10x6_3plane_444_unorm_3pack16",
+        "dEQP-VK.api.info.format_properties.r12x4_unorm_pack16",
+        "dEQP-VK.api.info.format_properties.r12x4g12x4_unorm_2pack16",
+        "dEQP-VK.api.info.format_properties.r12x4g12x4b12x4a12x4_unorm_4pack16",
+        "dEQP-VK.api.info.format_properties.g12x4b12x4g12x4r12x4_422_unorm_4pack16",
+        "dEQP-VK.api.info.format_properties.b12x4g12x4r12x4g12x4_422_unorm_4pack16",
+        "dEQP-VK.api.info.format_properties.g12x4_b12x4_r12x4_3plane_420_unorm_3pack16",
+        "dEQP-VK.api.info.format_properties.g12x4_b12x4r12x4_2plane_420_unorm_3pack16",
+        "dEQP-VK.api.info.format_properties.g12x4_b12x4_r12x4_3plane_422_unorm_3pack16",
+        "dEQP-VK.api.info.format_properties.g12x4_b12x4r12x4_2plane_422_unorm_3pack16",
+        "dEQP-VK.api.info.format_properties.g12x4_b12x4_r12x4_3plane_444_unorm_3pack16",
+        "dEQP-VK.api.info.format_properties.g16b16g16r16_422_unorm",
+        "dEQP-VK.api.info.format_properties.b16g16r16g16_422_unorm",
+        "dEQP-VK.api.info.format_properties.g16_b16_r16_3plane_420_unorm",
+        "dEQP-VK.api.info.format_properties.g16_b16r16_2plane_420_unorm",
+        "dEQP-VK.api.info.format_properties.g16_b16_r16_3plane_422_unorm",
+        "dEQP-VK.api.info.format_properties.g16_b16r16_2plane_422_unorm",
+        "dEQP-VK.api.info.format_properties.g16_b16_r16_3plane_444_unorm"
+      ],
+      "enums": [
+        {
+          "value": 1000156000,
+          "name": "VK_FORMAT_G8B8G8R8_422_UNORM",
+          "case": "dEQP-VK.api.info.format_properties.g8b8g8r8_422_unorm"
+        },
+        {
+          "value": 1000156001,
+          "name": "VK_FORMAT_B8G8R8G8_422_UNORM",
+          "case": "dEQP-VK.api.info.format_properties.b8g8r8g8_422_unorm"
+        },
+        {
+          "value": 1000156002,
+          "name": "VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM",
+          "case": "dEQP-VK.api.info.format_properties.g8_b8_r8_3plane_420_unorm"
+        },
+        {
+          "value": 1000156003,
+          "name": "VK_FORMAT_G8_B8R8_2PLANE_420_UNORM",
+          "case": "dEQP-VK.api.info.format_properties.g8_b8r8_2plane_420_unorm"
+        },
+        {
+          "value": 1000156004,
+          "name": "VK_FORMAT_G8_B8_R8_3PLANE_422_UNORM",
+          "case": "dEQP-VK.api.info.format_properties.g8_b8_r8_3plane_422_unorm"
+        },
+        {
+          "value": 1000156005,
+          "name": "VK_FORMAT_G8_B8R8_2PLANE_422_UNORM",
+          "case": "dEQP-VK.api.info.format_properties.g8_b8r8_2plane_422_unorm"
+        },
+        {
+          "value": 1000156006,
+          "name": "VK_FORMAT_G8_B8_R8_3PLANE_444_UNORM",
+          "case": "dEQP-VK.api.info.format_properties.g8_b8_r8_3plane_444_unorm"
+        },
+        {
+          "value": 1000156007,
+          "name": "VK_FORMAT_R10X6_UNORM_PACK16",
+          "case": "dEQP-VK.api.info.format_properties.r10x6_unorm_pack16"
+        },
+        {
+          "value": 1000156008,
+          "name": "VK_FORMAT_R10X6G10X6_UNORM_2PACK16",
+          "case": "dEQP-VK.api.info.format_properties.r10x6g10x6_unorm_2pack16"
+        },
+        {
+          "value": 1000156009,
+          "name": "VK_FORMAT_R10X6G10X6B10X6A10X6_UNORM_4PACK16",
+          "case": "dEQP-VK.api.info.format_properties.r10x6g10x6b10x6a10x6_unorm_4pack16"
+        },
+        {
+          "value": 1000156010,
+          "name": "VK_FORMAT_G10X6B10X6G10X6R10X6_422_UNORM_4PACK16",
+          "case": "dEQP-VK.api.info.format_properties.g10x6b10x6g10x6r10x6_422_unorm_4pack16"
+        },
+        {
+          "value": 1000156011,
+          "name": "VK_FORMAT_B10X6G10X6R10X6G10X6_422_UNORM_4PACK16",
+          "case": "dEQP-VK.api.info.format_properties.b10x6g10x6r10x6g10x6_422_unorm_4pack16"
+        },
+        {
+          "value": 1000156012,
+          "name": "VK_FORMAT_G10X6_B10X6_R10X6_3PLANE_420_UNORM_3PACK16",
+          "case": "dEQP-VK.api.info.format_properties.g10x6_b10x6_r10x6_3plane_420_unorm_3pack16"
+        },
+        {
+          "value": 1000156013,
+          "name": "VK_FORMAT_G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16",
+          "case": "dEQP-VK.api.info.format_properties.g10x6_b10x6r10x6_2plane_420_unorm_3pack16"
+        },
+        {
+          "value": 1000156014,
+          "name": "VK_FORMAT_G10X6_B10X6_R10X6_3PLANE_422_UNORM_3PACK16",
+          "case": "dEQP-VK.api.info.format_properties.g10x6_b10x6_r10x6_3plane_422_unorm_3pack16"
+        },
+        {
+          "value": 1000156015,
+          "name": "VK_FORMAT_G10X6_B10X6R10X6_2PLANE_422_UNORM_3PACK16",
+          "case": "dEQP-VK.api.info.format_properties.g10x6_b10x6r10x6_2plane_422_unorm_3pack16"
+        },
+        {
+          "value": 1000156016,
+          "name": "VK_FORMAT_G10X6_B10X6_R10X6_3PLANE_444_UNORM_3PACK16",
+          "case": "dEQP-VK.api.info.format_properties.g10x6_b10x6_r10x6_3plane_444_unorm_3pack16"
+        },
+        {
+          "value": 1000156017,
+          "name": "VK_FORMAT_R12X4_UNORM_PACK16",
+          "case": "dEQP-VK.api.info.format_properties.r12x4_unorm_pack16"
+        },
+        {
+          "value": 1000156018,
+          "name": "VK_FORMAT_R12X4G12X4_UNORM_2PACK16",
+          "case": "dEQP-VK.api.info.format_properties.r12x4g12x4_unorm_2pack16"
+        },
+        {
+          "value": 1000156019,
+          "name": "VK_FORMAT_R12X4G12X4B12X4A12X4_UNORM_4PACK16",
+          "case": "dEQP-VK.api.info.format_properties.r12x4g12x4b12x4a12x4_unorm_4pack16"
+        },
+        {
+          "value": 1000156020,
+          "name": "VK_FORMAT_G12X4B12X4G12X4R12X4_422_UNORM_4PACK16",
+          "case": "dEQP-VK.api.info.format_properties.g12x4b12x4g12x4r12x4_422_unorm_4pack16"
+        },
+        {
+          "value": 1000156021,
+          "name": "VK_FORMAT_B12X4G12X4R12X4G12X4_422_UNORM_4PACK16",
+          "case": "dEQP-VK.api.info.format_properties.b12x4g12x4r12x4g12x4_422_unorm_4pack16"
+        },
+        {
+          "value": 1000156022,
+          "name": "VK_FORMAT_G12X4_B12X4_R12X4_3PLANE_420_UNORM_3PACK16",
+          "case": "dEQP-VK.api.info.format_properties.g12x4_b12x4_r12x4_3plane_420_unorm_3pack16"
+        },
+        {
+          "value": 1000156023,
+          "name": "VK_FORMAT_G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16",
+          "case": "dEQP-VK.api.info.format_properties.g12x4_b12x4r12x4_2plane_420_unorm_3pack16"
+        },
+        {
+          "value": 1000156024,
+          "name": "VK_FORMAT_G12X4_B12X4_R12X4_3PLANE_422_UNORM_3PACK16",
+          "case": "dEQP-VK.api.info.format_properties.g12x4_b12x4_r12x4_3plane_422_unorm_3pack16"
+        },
+        {
+          "value": 1000156025,
+          "name": "VK_FORMAT_G12X4_B12X4R12X4_2PLANE_422_UNORM_3PACK16",
+          "case": "dEQP-VK.api.info.format_properties.g12x4_b12x4r12x4_2plane_422_unorm_3pack16"
+        },
+        {
+          "value": 1000156026,
+          "name": "VK_FORMAT_G12X4_B12X4_R12X4_3PLANE_444_UNORM_3PACK16",
+          "case": "dEQP-VK.api.info.format_properties.g12x4_b12x4_r12x4_3plane_444_unorm_3pack16"
+        },
+        {
+          "value": 1000156027,
+          "name": "VK_FORMAT_G16B16G16R16_422_UNORM",
+          "case": "dEQP-VK.api.info.format_properties.g16b16g16r16_422_unorm"
+        },
+        {
+          "value": 1000156028,
+          "name": "VK_FORMAT_B16G16R16G16_422_UNORM",
+          "case": "dEQP-VK.api.info.format_properties.b16g16r16g16_422_unorm"
+        },
+        {
+          "value": 1000156029,
+          "name": "VK_FORMAT_G16_B16_R16_3PLANE_420_UNORM",
+          "case": "dEQP-VK.api.info.format_properties.g16_b16_r16_3plane_420_unorm"
+        },
+        {
+          "value": 1000156030,
+          "name": "VK_FORMAT_G16_B16R16_2PLANE_420_UNORM",
+          "case": "dEQP-VK.api.info.format_properties.g16_b16r16_2plane_420_unorm"
+        },
+        {
+          "value": 1000156031,
+          "name": "VK_FORMAT_G16_B16_R16_3PLANE_422_UNORM",
+          "case": "dEQP-VK.api.info.format_properties.g16_b16_r16_3plane_422_unorm"
+        },
+        {
+          "value": 1000156032,
+          "name": "VK_FORMAT_G16_B16R16_2PLANE_422_UNORM",
+          "case": "dEQP-VK.api.info.format_properties.g16_b16r16_2plane_422_unorm"
+        },
+        {
+          "value": 1000156033,
+          "name": "VK_FORMAT_G16_B16_R16_3PLANE_444_UNORM",
+          "case": "dEQP-VK.api.info.format_properties.g16_b16_r16_3plane_444_unorm"
+        }
+      ],
+      "source_pins": {
+        "vktApiFeatureInfo.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-promoted-format-query-next-0045/source/vktApiFeatureInfo.cpp",
+          "sha256": "7ca9941b18a894895c1ee4c5ac31b3163426de7b55687e641d7643a8f60b854b",
+          "bytes": 510556
+        },
+        "vktApiTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-promoted-format-query-next-0045/source/vktApiTests.cpp",
+          "sha256": "f8448b09583d40bca5e1ea3d3c87a37f13aa665541a553ab2b45a3da39962902",
+          "bytes": 6276
+        },
+        "vktTestPackage.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-promoted-format-query-next-0045/source/vktTestPackage.cpp",
+          "sha256": "272802a91a54f6aade1741c713563936fe01be295ea648bdf85e5cce0e4823d6",
+          "bytes": 67173
+        },
+        "vkDefs.hpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-promoted-format-query-next-0045/source/vkDefs.hpp",
+          "sha256": "f2c3f64de3254014ee7b62bc1063d188ae43529f6dec2b56abcab2dbd601a37c",
+          "bytes": 12428
+        },
+        "vkBasicTypes.inl": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-promoted-format-query-next-0045/source/vkBasicTypes.inl",
+          "sha256": "cf5d4f9d3c60096c349235e36e05e4227efd194615eff207aa9d9472785eec25",
+          "bytes": 456054
+        }
+      },
+      "catalog": {
+        "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/mustpass/main/vk-default/api.txt",
+        "sha256": "79fd922bc74875b73db5e9b6ee7d02422181aa0c9afb4c6ccd1c5b1f9d9e9fdd",
+        "all34_names_present": true
+      },
+      "registration": [
+        "vktTestPackage.cpp1455 api -> vktApiTests.cpp99 createFeatureInfoTests -> vktApiFeatureInfo.cpp9000 info/9002 format_properties",
+        "vktApiFeatureInfo.cpp4872 YCbCr range G8B8G8R8_422_UNORM through G16_B16_R16_3PLANE_444_UNORM inclusive; lowercase enumName substring10"
+      ],
+      "applicability": [
+        "All34 enum values are in the promoted core1.1 domain; no optional conversion execution is invoked.",
+        "checkYcbcrApiSupport at4362 accepts core1.1 promotion without requiring advertised extension.",
+        "isYcbcrConversionSupported at4380 queries individual feature; getRequiredYcbcrFormatFeatures at4390 yields zero required format bits when samplerYcbcrConversion is false. This does not skip formatProperties queries.",
+        "formatProperties4497 compares actual linear/optimal/buffer masks against required/allowed masks and checks chroma reconstruction flag implication. A zero capability result can be correct for unsupported optional formats."
+      ],
+      "bounds": {
+        "physical_format_queries": 34,
+        "application_buffers_images_pipelines_command_buffers_dispatches": 0,
+        "gpu_work": false,
+        "host": "Normal original CTS context can create its ordinary device; selected bodies only physical/feature queries and fixed mask comparisons. No data or shader allocations."
+      },
+      "controls": "Original90s/384MiB/8MiB log plus64MiB reserve, per-case fault stop, unchanged original executable/oracles. Same f222/e699 public1.1 route. No feature enablement, driver source or query value changes.",
+      "excluded": "Four EXT ycbcr_2plane_444 enum cases in same registration are not in this core1.1 partition; applicability separately unresolved, not waived. No optional YCbCr image/conversion sampling claim.",
+      "coverage": "Combined with prior185 individual core0..184 queries, this covers219 individual core1.0/1.1 enumerants only if all34 actually Pass. Three aggregate queries remain separate; query coverage is not functional format conformance."
+    }
+  },
+  "source_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-promoted-format-query-next-0045/independent-source-inventory-review.json",
+      "bytes": 1666,
+      "sha256": "2f602e12d107f5437ffc21c196b3eb81aa1834221d024fffa76acdd26a4a0b75"
+    },
+    "result": {
+      "status": "PASS finite34promotedcore1.1physicalformatquerysource/inventorycounterpart",
+      "bounds": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-promoted-format-query-next-0045/source-bounds.json",
+        "bytes": 12719,
+        "sha256": "6e34bde2777dc4e2208a389d1987b57eea024512d5360df97167baf341b31ffd"
+      },
+      "cases": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-promoted-format-query-next-0045/cases.txt",
+        "bytes": 2285,
+        "sha256": "bf42b4c41de357d105ca548645bcf069e262a3bf77e7ed9ba286602a680cd40e"
+      },
+      "checks": [
+        "All5snapshotpins exactpreviousreviewed188source; rootapi/info/format_propertiesparentunchanged",
+        "34numericenumvalues1000156000..6033 independentlyparsedandnamesrebuilt, exactcasefileandoriginalapi.txtcatalogmembership",
+        "checkYcbcrApiSupport usesisCoreDeviceExtension forKHRsamplerYcbCr; pinned1.1registry confirms promotedtoVK_VERSION_1_1. Falseoptionalconversionfeaturegiveszerorequiredbitswithout testcase skip",
+        "Nooverlap185core0..184individualqueries; union219individualifactualall34PASS; aggregateallFormatsnotreplacement",
+        "Selectedphysicalquerybodies allocate nodata/shader/commands; existingoriginalcontextdeviceallowed, nooptionalconversionexecution"
+      ],
+      "promotion_registry": {
+        "path": "/run/media/jethac/Shared/radish/compute11-core-lookup-independent-0045/vk-v1.1.126.xml",
+        "bytes": 1057090,
+        "sha256": "3fee40627e5377892bd29540955ee65dfd712d8236514a763807175317224a99"
+      },
+      "limits": "ActualQPAcount/names/outcomesrequired; original90s384MiB/fault/oraclesunchanged. No driverfeature/queryvalue mutation/fullformatfunctionalconformanceclaim."
+    }
+  },
+  "runner_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-promoted-format-query-runner-0045/independent-runner-review.json",
+      "bytes": 1261,
+      "sha256": "8953ad642c19a288b948ed120eeb3a830fc34d9981754a83b130478beb2a6a2b"
+    },
+    "result": {
+      "status": "PASS finite two-constant inventory derivative",
+      "runner": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-promoted-format-query-runner-0045/device-official-cts.py",
+        "sha256": "20b908f5a8b75868afd2e04c32f06cd00d11e89213a645e3f8f2ad6ec5be6a29"
+      },
+      "passed_baseline": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-indirect-dispatch-runner-0045/device-official-cts.py",
+        "sha256": "6a6782dd48fd8bab84a8462855c4c335aaca3c57ee5eadca634fbf9fecb2bd2a"
+      },
+      "cases": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-promoted-format-query-next-0045/cases.txt",
+        "sha256": "bf42b4c41de357d105ca548645bcf069e262a3bf77e7ed9ba286602a680cd40e",
+        "count": 34
+      },
+      "source_bounds_sha256": "6e34bde2777dc4e2208a389d1987b57eea024512d5360df97167baf341b31ffd",
+      "checks": [
+        "Exact approved SHA/count only over passed25 engine; controls, stdin transport, QPA reconciliation and per-case faults unchanged",
+        "Payload equals frozen34 source inventory",
+        "All hostcheck immutable asset bytes rehashed, no device actions"
+      ],
+      "scope": "Physical core1.1 format-query outcomes still pending; false optional conversion feature is not a skip and no conversion execution is invoked."
+    }
+  },
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-promoted-format-query-next-0045/actual-review.json",
+      "bytes": 13453,
+      "sha256": "fba5f119820eed70bcde54f79cfa78ca4354c84256edfcf9aaaadba619c2649d"
+    },
+    "result": {
+      "status": "PASS all34 original promoted1.1 individual format queries",
+      "source_bounds_sha256": "6e34bde2777dc4e2208a389d1987b57eea024512d5360df97167baf341b31ffd",
+      "case_file_sha256": "bf42b4c41de357d105ca548645bcf069e262a3bf77e7ed9ba286602a680cd40e",
+      "cases": [
+        {
+          "name": "dEQP-VK.api.info.format_properties.g8b8g8r8_422_unorm",
+          "status": "Pass",
+          "qpa_sha256": "255f96f1a8e8504243f8a9056507f3982128f725d91d8c59578069d3f0910da7",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b8g8r8g8_422_unorm",
+          "status": "Pass",
+          "qpa_sha256": "45c1fad7bc17a20a5d5eb84d31564ea26cd65fb4aa9a4d5ba06862a31be1a507",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g8_b8_r8_3plane_420_unorm",
+          "status": "Pass",
+          "qpa_sha256": "9fc21b7ca3e67eac2dbfa5c660194cef6583e25d73a21034b85ab7cfba849d7f",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g8_b8r8_2plane_420_unorm",
+          "status": "Pass",
+          "qpa_sha256": "49c90c234fd0ad3588b0da22004036eb18e5ecddf09f14a9b0a6cd9be907a880",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g8_b8_r8_3plane_422_unorm",
+          "status": "Pass",
+          "qpa_sha256": "a2df5afa330bf57d98cadb85570579759e21bcab0a92390bf921652f936cab8b",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g8_b8r8_2plane_422_unorm",
+          "status": "Pass",
+          "qpa_sha256": "09f0603d2033539fdfc78518f684943ea2e6e61ad5d3303196ad40396611b43c",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g8_b8_r8_3plane_444_unorm",
+          "status": "Pass",
+          "qpa_sha256": "04a30ce52b0fb538f713d3b3cf8331c5ce271490258807eb0dd4ce2d37f52e95",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r10x6_unorm_pack16",
+          "status": "Pass",
+          "qpa_sha256": "d56d906fa76f7b4eb0263123c61b39615651a08846cad0f71545c994a7ff41a6",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r10x6g10x6_unorm_2pack16",
+          "status": "Pass",
+          "qpa_sha256": "5f3518249e6c6f3709bbb12e268b9432636debbf62bce744566c9717fcdd422f",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r10x6g10x6b10x6a10x6_unorm_4pack16",
+          "status": "Pass",
+          "qpa_sha256": "20f9c82f647c820807855d9fd555c061e5eb9c4159f719c4320746bf20bbd82a",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g10x6b10x6g10x6r10x6_422_unorm_4pack16",
+          "status": "Pass",
+          "qpa_sha256": "b543084a43127763fa4e361a0697e650bac321d87f570ba2334aff6cad4d91a8",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b10x6g10x6r10x6g10x6_422_unorm_4pack16",
+          "status": "Pass",
+          "qpa_sha256": "649e5b95d5a93fca33de2807b8d8f7e96455d30aaccb38dafd2d0eb63025e981",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g10x6_b10x6_r10x6_3plane_420_unorm_3pack16",
+          "status": "Pass",
+          "qpa_sha256": "0437364c0c6c4f13160c73fa52e62397aa790bd8924a063c960d7a649457387a",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g10x6_b10x6r10x6_2plane_420_unorm_3pack16",
+          "status": "Pass",
+          "qpa_sha256": "e117dd9e7b73baf1f17166ef2d0ab218dfaebc9465214f105a2457cfed8e4bd7",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g10x6_b10x6_r10x6_3plane_422_unorm_3pack16",
+          "status": "Pass",
+          "qpa_sha256": "02b151255d7cad5ca898a664b97c5d96d581769b79a338a43885875342fa9d78",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g10x6_b10x6r10x6_2plane_422_unorm_3pack16",
+          "status": "Pass",
+          "qpa_sha256": "c70ada1481a43d296c13f164a50fc5cf46b482ee03b415c6a3c9a0c8edb033a2",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g10x6_b10x6_r10x6_3plane_444_unorm_3pack16",
+          "status": "Pass",
+          "qpa_sha256": "48e5eca4805996155a56fd439c74aa96694e8ccb84bc8d2a7a15d4462c44672c",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r12x4_unorm_pack16",
+          "status": "Pass",
+          "qpa_sha256": "db83abc33d0cfb8fd51d4ee2e3e5c8ead2f62743beb8e8625fb3306e6da7c6ba",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r12x4g12x4_unorm_2pack16",
+          "status": "Pass",
+          "qpa_sha256": "f63b6690caafe08bc1fefa604593fcdbe1aa6ba641855908c629edad540af8f5",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r12x4g12x4b12x4a12x4_unorm_4pack16",
+          "status": "Pass",
+          "qpa_sha256": "896418ec38bf215adabd5d20d708cb533e1a37ed7e3f45d445b582b2cae68ef6",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g12x4b12x4g12x4r12x4_422_unorm_4pack16",
+          "status": "Pass",
+          "qpa_sha256": "b0941c21ca4efce12c8913b98e11031e1f4d37a0a0ca6c4493a5f35def64e3dd",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b12x4g12x4r12x4g12x4_422_unorm_4pack16",
+          "status": "Pass",
+          "qpa_sha256": "6742e7caafad0e1b0e85ebb01ff27a67b030847a0bff491eb47bc0a95d65a2a4",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g12x4_b12x4_r12x4_3plane_420_unorm_3pack16",
+          "status": "Pass",
+          "qpa_sha256": "808bcc632a631cc43706b9c1f35d68cb7314ae7346f81d8ca4f933296c1bd8e8",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g12x4_b12x4r12x4_2plane_420_unorm_3pack16",
+          "status": "Pass",
+          "qpa_sha256": "5551b9bbb22fff7ec278956c747187f8a2fd2b244bed3c5ebdc7877e514958f1",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g12x4_b12x4_r12x4_3plane_422_unorm_3pack16",
+          "status": "Pass",
+          "qpa_sha256": "c59e3a5640346c9d5de387650bb16445d3388c8459f5528fb8f2146fba4bc0a1",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g12x4_b12x4r12x4_2plane_422_unorm_3pack16",
+          "status": "Pass",
+          "qpa_sha256": "dc200902389afe614bdbebc029a37856ae05bd7f5eaa770e43b704fee620516d",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g12x4_b12x4_r12x4_3plane_444_unorm_3pack16",
+          "status": "Pass",
+          "qpa_sha256": "fb1ceec39d9166a5f58a2653f8525701bfdf847de81f0b1e32d76d64185a6d87",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g16b16g16r16_422_unorm",
+          "status": "Pass",
+          "qpa_sha256": "83d3a04fc128d1b43225eb81d614b57431b20f14f65ff2e846efc2d52900f613",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b16g16r16g16_422_unorm",
+          "status": "Pass",
+          "qpa_sha256": "a3bc22c88a82f71727d85a6ef663672b482f2ec41b89d737999657a48ce74c7c",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g16_b16_r16_3plane_420_unorm",
+          "status": "Pass",
+          "qpa_sha256": "571d4112ed52b3e9da694aa44481d1618083851afea67fe521781b6385872dec",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g16_b16r16_2plane_420_unorm",
+          "status": "Pass",
+          "qpa_sha256": "6200dec9b065b5794b7aa54dd93fecf442657810b9cf7353bb1a4cad6e5a04d3",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g16_b16_r16_3plane_422_unorm",
+          "status": "Pass",
+          "qpa_sha256": "9f912ef9552101dd7781f2763684edecd72c6d65b310721cc439c0638998ca07",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g16_b16r16_2plane_422_unorm",
+          "status": "Pass",
+          "qpa_sha256": "1965f8b439c0beab17fc8ec21b2e3d1d73f38d6a2e16ca4f1b5ddaf6c7b3981b",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g16_b16_r16_3plane_444_unorm",
+          "status": "Pass",
+          "qpa_sha256": "c08e77749dfc304fdb1ecee8ebf198e8f642c93f641a637236fa7094401e4655",
+          "reported_format_feature_lists": {
+            "linearTilingFeatures": "",
+            "optimalTilingFeatures": "",
+            "bufferFeatures": ""
+          }
+        }
+      ],
+      "totals": {
+        "cases": 34,
+        "linear_optimal_buffer_masks_checked": 102,
+        "reported_feature_lists_all_empty_zero_flags": true,
+        "shader_programs_dispatches_transfers": 0,
+        "individual_core10_and11_queries_now": 219,
+        "domain_denominator": 219,
+        "query_domain_coverage_percent": 100.0
+      },
+      "scope": "All34 core1.1 enumerants report no format feature bits and original required/allowed checks Pass with optional samplerYcbcrConversion false. This qualifies public query behavior, not optional YCbCr conversion/image execution. Prior185 core0..184 individual cases and3 aggregate cases are distinct; no repeat counted.",
+      "safety": {
+        "runtime": "12.340s",
+        "memory": "19.6M (swap: 0B)",
+        "per_case_fault_checks": 34,
+        "collection": "PASS/errors[]",
+        "services": [
+          "active",
+          "active"
+        ],
+        "log_sha256": "92f2e85a69d9a9362e9e97a695eb922ffc10c642eb1f9c6ddfaab01d7a4bf59c"
+      }
+    }
+  },
+  "scope": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-promoted-formats/probe/runner-result.json",
+      "bytes": 6370,
+      "sha256": "8f0c28a59df91c573a301542e6b874c473397cd889698db8c20316eb91480de7"
+    },
+    "result": {
+      "status": "passed",
+      "mode": "probe",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 165,
+          "sha256": "e696d599fdb76874802265e8facc2477eef7a36ec73bf940ded7ade5148beda6"
+        },
+        "deqp-vk": {
+          "bytes": 97536760,
+          "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+        },
+        "libvulkan.so.1": {
+          "bytes": 703696,
+          "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+        },
+        "info-cases.txt": {
+          "bytes": 2285,
+          "sha256": "bf42b4c41de357d105ca548645bcf069e262a3bf77e7ed9ba286602a680cd40e"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13622368,
+          "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+        },
+        "payload.json": {
+          "bytes": 968,
+          "sha256": "8ba55cdfbced0d23a52535c5b8633ad92d936652ab1e381361de2fa98ff91008"
+        }
+      },
+      "run_log": {
+        "bytes": 23679,
+        "sha256": "92f2e85a69d9a9362e9e97a695eb922ffc10c642eb1f9c6ddfaab01d7a4bf59c"
+      },
+      "qpa": {
+        "bytes": 51011,
+        "sha256": "d6d9ae85ae5b5c792d7701ada54b1e8c856e87788c1938fe6b69d61974948344"
+      },
+      "cases": [
+        {
+          "name": "dEQP-VK.api.info.format_properties.g8b8g8r8_422_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b8g8r8g8_422_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g8_b8_r8_3plane_420_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g8_b8r8_2plane_420_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g8_b8_r8_3plane_422_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g8_b8r8_2plane_422_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g8_b8_r8_3plane_444_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r10x6_unorm_pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r10x6g10x6_unorm_2pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r10x6g10x6b10x6a10x6_unorm_4pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g10x6b10x6g10x6r10x6_422_unorm_4pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b10x6g10x6r10x6g10x6_422_unorm_4pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g10x6_b10x6_r10x6_3plane_420_unorm_3pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g10x6_b10x6r10x6_2plane_420_unorm_3pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g10x6_b10x6_r10x6_3plane_422_unorm_3pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g10x6_b10x6r10x6_2plane_422_unorm_3pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g10x6_b10x6_r10x6_3plane_444_unorm_3pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r12x4_unorm_pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r12x4g12x4_unorm_2pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.r12x4g12x4b12x4a12x4_unorm_4pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g12x4b12x4g12x4r12x4_422_unorm_4pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b12x4g12x4r12x4g12x4_422_unorm_4pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g12x4_b12x4_r12x4_3plane_420_unorm_3pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g12x4_b12x4r12x4_2plane_420_unorm_3pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g12x4_b12x4_r12x4_3plane_422_unorm_3pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g12x4_b12x4r12x4_2plane_422_unorm_3pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g12x4_b12x4_r12x4_3plane_444_unorm_3pack16",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g16b16g16r16_422_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.b16g16r16g16_422_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g16_b16_r16_3plane_420_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g16_b16r16_2plane_420_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g16_b16_r16_3plane_422_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g16_b16r16_2plane_422_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        },
+        {
+          "name": "dEQP-VK.api.info.format_properties.g16_b16_r16_3plane_444_unorm",
+          "status": "Pass",
+          "detail": "Pass"
+        }
+      ],
+      "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+    }
+  },
+  "individual_core_enum_queries": {
+    "passed": 219,
+    "total": 219,
+    "percent": 100
+  },
+  "limitations": "Individual physical format-query checks only:185 prior core enums plus34 promoted enum values. Required/allowed masks are checked; false samplerYcbcrConversion has zero optional required masks without skipping query validity. No optional YCbCr execution, every format-operation combination or full conformance claim."
+}

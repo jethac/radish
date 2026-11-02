@@ -7,6 +7,18 @@ graphics. No graphics headroom reservation should be added. Any removal must
 identify a real source reservation and preserve correctness/resource guards;
 this is not authorization to change OS graphics or services. The separate f222 validation candidate includes representative resource corrections and the source-backed subpixel query fix. It remains separate from selected inference and is not a qualified replacement. See the [machine-readable ledger](results/vulkan11-compute-ledger-0045.json).
 
+Current measured fractions are **219/219 individual core format-query cases**
+and **53/93 applicable cases (57.0%) in the named `dEQP-VK.compute` group**.
+The latter has 40 unrun and 0 unclassified names for the current API, features
+and single compute queue. It is one catalog group, not an overall conformance
+percentage: API, SPIR-V, GLSL, memory, images and other groups also contain
+applicable compute/shared requirements. The exact historical inventory now
+contains 427 distinct original passes across separately pinned scopes.
+[Format queries](results/official11-promoted-format-query-0045.json) and
+[compute-group applicability](results/official11-named-compute-applicability-0045.json)
+retain the definitions and exclusions. Optional YCbCr execution remains false;
+passing its promoted format-query cases does not advertise that feature.
+
 | Area | Evidence | Remaining work |
 | --- | --- | --- |
 | Public 1.1 API, queries and promoted aliases | Real public1.1 negotiation,28core names/23KHR aliases and selected error/query semantics pass | Complete promoted command semantics and applicable API CTS |
@@ -351,8 +363,9 @@ remain separate from image execution or filtering precision claims.
 Eight original Function/Private initialization cases also passed: 203 invocations,
 642 exact words and one original epsilon-tested float. [Their native and oracle
 scope](results/official11-function-private-0045.json) shows register/constant
-initialization, with no scratch load/store instructions. Deliberate compiler-spill
-qualification remains open. The aggregate 296-case historical inventory is not a
+initialization, with no scratch load/store instructions. Those cases do not
+qualify compiler spilling; the separate bounded core adapter described below
+now exercises allocator-generated spill code. Historical counts are not a
 single full conformance run or a percentage of applicable requirements.
 
 Seventy-two original nested Function-composite/access-chain cases passed in
@@ -360,8 +373,9 @@ Seventy-two original nested Function-composite/access-chain cases passed in
 scalar input/output bits match exactly. [Native code and source scope](results/official11-function-composites-0045.json)
 show register optimization with no private load/store operations. These bring
 the retained historical inventory to 368 distinct original passes; they do not
-qualify compiler spills. The separate ScratchSpace core adapter remains subject
-to native resource admission and is not an original DGC CTS pass.
+qualify compiler spills. The subsequent ScratchSpace core adapter passed
+its native and functional gates, as described below, and remains separate
+from the original CTS count.
 
 Twenty-five original indirect/base-dispatch cases passed with uploaded and
 shader-generated command records, offsets, repeated commands and zero-grid
