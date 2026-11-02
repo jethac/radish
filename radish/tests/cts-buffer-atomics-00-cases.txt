@@ -1,0 +1,5 @@
+dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.compex
+dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.iadd
+dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.idec
+dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.iinc
+dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.isub

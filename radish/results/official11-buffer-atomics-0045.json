@@ -1,0 +1,1348 @@
+{
+  "status": "PASS19 exact original core buffer-atomic cases on unchanged f222/e699",
+  "source": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-buffer-atomics-next-0045/source-bounds.json",
+      "bytes": 18787,
+      "sha256": "65f389fcf91819714a0d2747ba5c8a7ea5e53bffc65975b3accf0686cca4b0fb"
+    },
+    "result": {
+      "status": "SOURCE READY original core buffer atomic19; no execution inferred",
+      "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+      "cts_binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
+      "inventory": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-buffer-atomics-next-0045/cases.txt",
+        "sha256": "67c4bbd9d6c4adba21c5c8a7291eef09addd98cec0b2c40404a28ff1eb2a6f23",
+        "count": 19
+      },
+      "partitions": [
+        {
+          "id": "00",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-buffer-atomics-next-0045/cases-00.txt",
+          "sha256": "edd35a910537f22adabfbb83b8e3b548726e860577816226d41de12790e2fb83",
+          "count": 5,
+          "group": "opatomic_return_values",
+          "invocations_per_case": 1024
+        },
+        {
+          "id": "01",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-buffer-atomics-next-0045/cases-01.txt",
+          "sha256": "36059833df5224628e16239536b7756c6db4430bbcb11bdec20e5c5bcb12db0d",
+          "count": 7,
+          "group": "opatomic",
+          "invocations_per_case": 65535
+        },
+        {
+          "id": "02",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-buffer-atomics-next-0045/cases-02.txt",
+          "sha256": "03179989eae23ca7756d1fc4fac6df9a63aac9703c471cecb655e6561e9dcea7",
+          "count": 7,
+          "group": "opatomic_storage_buffer",
+          "invocations_per_case": 65535
+        }
+      ],
+      "catalog": {
+        "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/mustpass/main/vk-default/spirv-assembly.txt",
+        "sha256": "611ba2707ff9c23c958615ff2730d9c0b39eb7b4db771ba1064fccdb61b5ef60",
+        "domain": "Complete opatomic/opatomic_return_values/opatomic_storage_buffer/opatomic_storage_buffer_volatile branches",
+        "registered": 26,
+        "applicable": 19,
+        "excluded": 7,
+        "unclassified": 0
+      },
+      "excluded": [
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer_volatile.compex",
+          "reason": "Original Volatile atomics explicitly require VK_KHR_vulkan_memory_model, VulkanMemoryModelKHR and vulkanMemoryModel=true (SPIRV1.3, queuefamily scope); extension/feature not advertised. Not a mandatory core1.1 memory model."
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer_volatile.iadd",
+          "reason": "Original Volatile atomics explicitly require VK_KHR_vulkan_memory_model, VulkanMemoryModelKHR and vulkanMemoryModel=true (SPIRV1.3, queuefamily scope); extension/feature not advertised. Not a mandatory core1.1 memory model."
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer_volatile.idec",
+          "reason": "Original Volatile atomics explicitly require VK_KHR_vulkan_memory_model, VulkanMemoryModelKHR and vulkanMemoryModel=true (SPIRV1.3, queuefamily scope); extension/feature not advertised. Not a mandatory core1.1 memory model."
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer_volatile.iinc",
+          "reason": "Original Volatile atomics explicitly require VK_KHR_vulkan_memory_model, VulkanMemoryModelKHR and vulkanMemoryModel=true (SPIRV1.3, queuefamily scope); extension/feature not advertised. Not a mandatory core1.1 memory model."
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer_volatile.isub",
+          "reason": "Original Volatile atomics explicitly require VK_KHR_vulkan_memory_model, VulkanMemoryModelKHR and vulkanMemoryModel=true (SPIRV1.3, queuefamily scope); extension/feature not advertised. Not a mandatory core1.1 memory model."
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer_volatile.load",
+          "reason": "Original Volatile atomics explicitly require VK_KHR_vulkan_memory_model, VulkanMemoryModelKHR and vulkanMemoryModel=true (SPIRV1.3, queuefamily scope); extension/feature not advertised. Not a mandatory core1.1 memory model."
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer_volatile.store",
+          "reason": "Original Volatile atomics explicitly require VK_KHR_vulkan_memory_model, VulkanMemoryModelKHR and vulkanMemoryModel=true (SPIRV1.3, queuefamily scope); extension/feature not advertised. Not a mandatory core1.1 memory model."
+        }
+      ],
+      "source_pins": [
+        {
+          "source": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vktSpvAsmInstructionTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-buffer-atomics-next-0045/source/vktSpvAsmInstructionTests.cpp",
+          "sha256": "d6800ae7655ee7bb2a535d450d01ae998f8439cb7b342ea9e22ec99095d518d8"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vktSpvAsmComputeShaderCase.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-buffer-atomics-next-0045/source/vktSpvAsmComputeShaderCase.cpp",
+          "sha256": "29492a513a821b5af613cbf77f03b7bdc954e20043fb7c7e05858324e9150c40"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vktSpvAsmComputeShaderTestUtil.hpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-buffer-atomics-next-0045/source/vktSpvAsmComputeShaderTestUtil.hpp",
+          "sha256": "dfd7c2e46d5f603a7bedde13bf9eb208465d64dd855fcdf34ea0ebdcd289ca86"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vktSpvAsmComputeShaderTestUtil.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-buffer-atomics-next-0045/source/vktSpvAsmComputeShaderTestUtil.cpp",
+          "sha256": "2080fbe1302048f52ce01f175d093054b737165ffc087c5d2a9744262d3e8218"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vktSpvAsmTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-buffer-atomics-next-0045/source/vktSpvAsmTests.cpp",
+          "sha256": "97cd0a9fc6b7361bbe81c6e64a11d5d428fa439c98098638398969dddb66dd9d"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vktTestPackage.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-buffer-atomics-next-0045/source/vktTestPackage.cpp",
+          "sha256": "272802a91a54f6aade1741c713563936fe01be295ea648bdf85e5cce0e4823d6"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/vktTestCase.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-buffer-atomics-next-0045/source/vktTestCase.cpp",
+          "sha256": "093936313a9d8489c2ff08fd493445cc8e4e9235ed559597bcf95bd84c6a97fc"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/compute11-official-control-flow-next-0045/source/rd_instance.c",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-buffer-atomics-next-0045/source/rd_instance.c",
+          "sha256": "c5763ff7a03fed9a13aebf291eeae5c182cfb79eba83c1b839d74d67a0682bac"
+        }
+      ],
+      "registration": [
+        "InstructionTests21885\u201321888 uses defaults65535 for ordinary/StorageBuffer,1024 with verifyReturnValues=true for five return-value cases; volatile separatefalsefeature.",
+        "createOpAtomicGroup1480\u20131695 exact template/data/oracle specialization; ComputeShaderTestUtil.hpp97\u2013310 input/expected/returnchain algorithms."
+      ],
+      "environment": [
+        "Shader-only SPIRV1.0, GLSL450 memory model, Device scope1, Relaxed semantics0. StorageBuffer group uses core1.1 promotedSPV_KHR_storage_buffer_storage_class; no VulkanMemoryModel/Int64/atomicfloat optional features.",
+        "Originaldefault Context and COMPUTE MultiQueueRunner dedup universal0==compute0; RBAfalse unchanged. No customqueue fixture/graphicsobjects/images/samplers/pushconstants.",
+        "Alllocal1; largegrid65535 exactly advertised maxComputeWorkGroupCount.x, not shortened. Sharedbytes0, atmost3SSBO; biggestindividual request262140B."
+      ],
+      "behavior": [
+        "Four arithmetic operations atomically update common sum[0] across all invocations; final result starts0xffffffff and original deterministic inputs are1..100. Bound absolute6,553,501 fits signed32 CPU oracle without overflow.",
+        "Load/store use unique per-invocation addresses. CompareExchange first stores input%2 at owned address, then compare0/value-1; checks successful and unsuccessful CAS outcomes.",
+        "Return variants add binding2 and write each invocation returned old value. Four arithmetic cases verify an execution-order-independent reverse chain using uint32 wrap arithmetic plus exact final output; CAS checks exact old parity values and exact final array."
+      ],
+      "source_bounds": {
+        "cases": 19,
+        "invocations": 922610,
+        "dispatches": 19,
+        "max_invocations_per_case": 65535,
+        "max_buffer_request_bytes": 262140,
+        "max_live_buffers": 3,
+        "max_requested_buffer_payload_bytes_per_case": 524280,
+        "max_original_return_oracle_searches_per_case": 1048576,
+        "no_shader_loops_or_workgroup_barriers": true,
+        "expected_chunking_note": "Current dispatcher may split large grids; preserve exact original65535work and infer actual chunks only from terminalprofiles."
+      },
+      "oracle_totals": {
+        "exact_expected_words": 395270,
+        "return_chain_words": 4096
+      },
+      "cases": [
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.compex",
+          "grid": [
+            1024,
+            1,
+            1
+          ],
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "input_bytes": 4096,
+          "output_bytes": 4096,
+          "return_output_bytes": 4096,
+          "descriptors": 3,
+          "shared_collision": "each invocation owns output[index]",
+          "exact_expected_words": 2048,
+          "return_chain_words": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.iadd",
+          "grid": [
+            1024,
+            1,
+            1
+          ],
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "input_bytes": 4096,
+          "output_bytes": 4,
+          "return_output_bytes": 4096,
+          "descriptors": 3,
+          "shared_collision": "all invocations target sum[0]",
+          "exact_expected_words": 1,
+          "return_chain_words": 1024
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.idec",
+          "grid": [
+            1024,
+            1,
+            1
+          ],
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "input_bytes": 4096,
+          "output_bytes": 4,
+          "return_output_bytes": 4096,
+          "descriptors": 3,
+          "shared_collision": "all invocations target sum[0]",
+          "exact_expected_words": 1,
+          "return_chain_words": 1024
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.iinc",
+          "grid": [
+            1024,
+            1,
+            1
+          ],
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "input_bytes": 4096,
+          "output_bytes": 4,
+          "return_output_bytes": 4096,
+          "descriptors": 3,
+          "shared_collision": "all invocations target sum[0]",
+          "exact_expected_words": 1,
+          "return_chain_words": 1024
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.isub",
+          "grid": [
+            1024,
+            1,
+            1
+          ],
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "input_bytes": 4096,
+          "output_bytes": 4,
+          "return_output_bytes": 4096,
+          "descriptors": 3,
+          "shared_collision": "all invocations target sum[0]",
+          "exact_expected_words": 1,
+          "return_chain_words": 1024
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic.compex",
+          "grid": [
+            65535,
+            1,
+            1
+          ],
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "input_bytes": 262140,
+          "output_bytes": 262140,
+          "return_output_bytes": 0,
+          "descriptors": 2,
+          "shared_collision": "each invocation owns output[index]",
+          "exact_expected_words": 65535,
+          "return_chain_words": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic.iadd",
+          "grid": [
+            65535,
+            1,
+            1
+          ],
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "input_bytes": 262140,
+          "output_bytes": 4,
+          "return_output_bytes": 0,
+          "descriptors": 2,
+          "shared_collision": "all invocations target sum[0]",
+          "exact_expected_words": 1,
+          "return_chain_words": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic.idec",
+          "grid": [
+            65535,
+            1,
+            1
+          ],
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "input_bytes": 262140,
+          "output_bytes": 4,
+          "return_output_bytes": 0,
+          "descriptors": 2,
+          "shared_collision": "all invocations target sum[0]",
+          "exact_expected_words": 1,
+          "return_chain_words": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic.iinc",
+          "grid": [
+            65535,
+            1,
+            1
+          ],
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "input_bytes": 262140,
+          "output_bytes": 4,
+          "return_output_bytes": 0,
+          "descriptors": 2,
+          "shared_collision": "all invocations target sum[0]",
+          "exact_expected_words": 1,
+          "return_chain_words": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic.isub",
+          "grid": [
+            65535,
+            1,
+            1
+          ],
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "input_bytes": 262140,
+          "output_bytes": 4,
+          "return_output_bytes": 0,
+          "descriptors": 2,
+          "shared_collision": "all invocations target sum[0]",
+          "exact_expected_words": 1,
+          "return_chain_words": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic.load",
+          "grid": [
+            65535,
+            1,
+            1
+          ],
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "input_bytes": 262140,
+          "output_bytes": 262140,
+          "return_output_bytes": 0,
+          "descriptors": 2,
+          "shared_collision": "each invocation owns output[index]",
+          "exact_expected_words": 65535,
+          "return_chain_words": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic.store",
+          "grid": [
+            65535,
+            1,
+            1
+          ],
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "input_bytes": 262140,
+          "output_bytes": 262140,
+          "return_output_bytes": 0,
+          "descriptors": 2,
+          "shared_collision": "each invocation owns output[index]",
+          "exact_expected_words": 65535,
+          "return_chain_words": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.compex",
+          "grid": [
+            65535,
+            1,
+            1
+          ],
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "input_bytes": 262140,
+          "output_bytes": 262140,
+          "return_output_bytes": 0,
+          "descriptors": 2,
+          "shared_collision": "each invocation owns output[index]",
+          "exact_expected_words": 65535,
+          "return_chain_words": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.iadd",
+          "grid": [
+            65535,
+            1,
+            1
+          ],
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "input_bytes": 262140,
+          "output_bytes": 4,
+          "return_output_bytes": 0,
+          "descriptors": 2,
+          "shared_collision": "all invocations target sum[0]",
+          "exact_expected_words": 1,
+          "return_chain_words": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.idec",
+          "grid": [
+            65535,
+            1,
+            1
+          ],
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "input_bytes": 262140,
+          "output_bytes": 4,
+          "return_output_bytes": 0,
+          "descriptors": 2,
+          "shared_collision": "all invocations target sum[0]",
+          "exact_expected_words": 1,
+          "return_chain_words": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.iinc",
+          "grid": [
+            65535,
+            1,
+            1
+          ],
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "input_bytes": 262140,
+          "output_bytes": 4,
+          "return_output_bytes": 0,
+          "descriptors": 2,
+          "shared_collision": "all invocations target sum[0]",
+          "exact_expected_words": 1,
+          "return_chain_words": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.isub",
+          "grid": [
+            65535,
+            1,
+            1
+          ],
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "input_bytes": 262140,
+          "output_bytes": 4,
+          "return_output_bytes": 0,
+          "descriptors": 2,
+          "shared_collision": "all invocations target sum[0]",
+          "exact_expected_words": 1,
+          "return_chain_words": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.load",
+          "grid": [
+            65535,
+            1,
+            1
+          ],
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "input_bytes": 262140,
+          "output_bytes": 262140,
+          "return_output_bytes": 0,
+          "descriptors": 2,
+          "shared_collision": "each invocation owns output[index]",
+          "exact_expected_words": 65535,
+          "return_chain_words": 0
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.store",
+          "grid": [
+            65535,
+            1,
+            1
+          ],
+          "local": [
+            1,
+            1,
+            1
+          ],
+          "input_bytes": 262140,
+          "output_bytes": 262140,
+          "return_output_bytes": 0,
+          "descriptors": 2,
+          "shared_collision": "each invocation owns output[index]",
+          "exact_expected_words": 65535,
+          "return_chain_words": 0
+        }
+      ],
+      "limits": [
+        "Original logical output checks only; no customallocationcanaries, explicit acquire/release memory-order or all atomic min/max/bitwise operations.",
+        "Final accumulation tests genuine commonaddress atomics; no guarantee allinvocations physically simultaneous or concurrentqueues.",
+        "Volatile optional7 excluded with explicit featurebasis, not silentlyskipped; complete19 applies onlyselectedthreecorebranches."
+      ],
+      "admission": "Three unchanged original scopes5+7+7 under90s384MiB/8MiBlog/64MiBreserve/per-casefaultstop; first return-value5 before large65535 scopes provides actual timing/native feedback. No shaderwork/oracle/timecap relaxation; realfailure\u2192source/compiler diagnosis."
+    }
+  },
+  "source_counterpart": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-buffer-atomics-next-0045/independent-source-review.json",
+      "bytes": 3035,
+      "sha256": "40f818c93e5c28d87f19f7af1a63e1a08f5c90b0f6c96dd854a58fc6056f0b1d"
+    },
+    "result": {
+      "status": "PASS finite source/name/oracle counterpart; no device execution inferred",
+      "reviewed_utc": "2026-11-02T22:40:45.618966+00:00",
+      "source_bounds_sha256": "65f389fcf91819714a0d2747ba5c8a7ea5e53bffc65975b3accf0686cca4b0fb",
+      "case_inventory_sha256": "67c4bbd9d6c4adba21c5c8a7291eef09addd98cec0b2c40404a28ff1eb2a6f23",
+      "source_pin_count": 8,
+      "inventory": {
+        "catalog": 26,
+        "applicable": 19,
+        "excluded_optional_vulkan_memory_model": 7,
+        "partitions": [
+          5,
+          7,
+          7
+        ],
+        "exact_partition_union": true
+      },
+      "source_checks": [
+        "Rehashed all eight source snapshots and their original source paths plus exact catalog and four inventories. Reconstructed names from createOpAtomicGroup seven operations, return-value branch omitting load/store, and all four parent registrations.",
+        "Shader-only SPIR-V1.0/GLSL450, Device scope and Relaxed semantics; StorageBuffer branch uses promoted storage class extension. Volatile seven explicitly require disabled VulkanMemoryModelKHR; no optional64-bit feature or graphics calls.",
+        "All local1; grids1024 for five returned-value cases,65535 unchanged for fourteen ordinary cases. Up to three SSBOs, max individual262140 bytes, max logical live payload524280 bytes; shared0/no shader loops.",
+        "Input deterministic1..100 and expected accumulation starts signed-1. Absolute host arithmetic bound6553501 fits int32. Add/sub/inc/dec use one common address; CAS/load/store each own output[index]. CAS initial non-atomic parity store precedes own-address atomic compare exchange; no inter-invocation non-atomic race.",
+        "Original return verifier memcmp checks exact final output; CAS also exact1024 parity old values. Arithmetic reconstructs original1024 operation chain backwards with uint32 modular arithmetic. Independent shuffled-order modular sanity checks pass for all four operations; original verifier unchanged.",
+        "Output initialized0xff, descriptor ranges actual logical bytes; compute shader write to host read buffer barriers, queue completion, invalidate before unchanged exact memcmp or return-chain verification. Default Context device and compute MultiQueueRunner retain reviewed dedup queue selection and default RBAfalse."
+      ],
+      "totals": {
+        "invocations": 922610,
+        "dispatches": 19,
+        "exact_expected_words": 395270,
+        "return_chain_words": 4096,
+        "max_return_searches_per_case": 1048576
+      },
+      "admission": "Source gate clear for original five return-value cases then two original seven-case65535 partitions under unchanged90s/384MiB/log/disk/fault-stop controls. Native stats/actual chunks and returned-value correctness still require terminal review.",
+      "limits": [
+        "Exact logical buffers only; no allocation-padding canary proof.",
+        "Relaxed common-address atomic semantics/returned-old chain; no acquire-release visibility, simultaneous physical residency, concurrent queue or min/max/bitwise coverage claim.",
+        "No actual native or runtime pass claimed by this source review."
+      ]
+    }
+  },
+  "runner_counterpart": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-buffer-atomics-next-0045/runner-review.json",
+      "bytes": 2654,
+      "sha256": "b9141166d9a725000d35a952cb51117a822dadc2afbcd24185d722ca237ed8bc"
+    },
+    "result": {
+      "status": "PASS finite original atomic19 runner inventory derivatives",
+      "source_plan_sha256": "65f389fcf91819714a0d2747ba5c8a7ea5e53bffc65975b3accf0686cca4b0fb",
+      "baseline_runner_sha256": "f3a41e53576fa08dc1e421bedb9c7f3a50be51d07d9fd7bd973b3955d53eccae",
+      "runners": [
+        {
+          "runner": "/run/media/jethac/Shared/radish/compute11-official-buffer-atomics-00-runner-0045/device-official-cts.py",
+          "runner_sha256": "57c3f5dbaff7a093514873470922b11d12a6a0c6fd82eecb94cd6d2004a7b790",
+          "inventory_sha256": "edd35a910537f22adabfbb83b8e3b548726e860577816226d41de12790e2fb83",
+          "case_count": 5,
+          "hostcheck_sha256": "99e8fa97d74ddbe38fd7d4f8ca5d65d1396f3fa265dd6bcad4f11ceb5dbbb61d",
+          "argv_sha256": "88cbd0c2e1ebbb678b98c69425498d6f38421db9158974345a7dd9654f980c29"
+        },
+        {
+          "runner": "/run/media/jethac/Shared/radish/compute11-official-buffer-atomics-01-runner-0045/device-official-cts.py",
+          "runner_sha256": "41f0e3b90042df1412bdfbbdddc9b6d8c4ba246c6d196460020359b160d6797c",
+          "inventory_sha256": "36059833df5224628e16239536b7756c6db4430bbcb11bdec20e5c5bcb12db0d",
+          "case_count": 7,
+          "hostcheck_sha256": "65c4f6cc97a9af3650bad35ce45c97e6b4f520afe635c019a578da53cf533c56",
+          "argv_sha256": "302f47e6c03430276340f67fe33028a0807707a980e87748d99209d6b6d3ac40"
+        },
+        {
+          "runner": "/run/media/jethac/Shared/radish/compute11-official-buffer-atomics-02-runner-0045/device-official-cts.py",
+          "runner_sha256": "a374f682f729166e7ef2e7233344d422cce6c40abdb2c0bd0c194dcb5e41be8d",
+          "inventory_sha256": "03179989eae23ca7756d1fc4fac6df9a63aac9703c471cecb655e6561e9dcea7",
+          "case_count": 7,
+          "hostcheck_sha256": "6912c8e047738def20d70e2cf2b31311ff2b26a1800798b5964b5967ea4833cd",
+          "argv_sha256": "0f6101a0c715e1a0459fcc9778bed67469694d2d450f03d3aa7f46dc199fbfb6"
+        }
+      ],
+      "checks": [
+        "Onlyapproved SHA/count differ from passed final-common stdin engine. Staged5+7+7 cases exactly form disjoint ordered original19; no optionalvolatilecases.",
+        "Allhost assets rehashed original0e715/f222-e699/75699. Same90s384MiB/8MiBoutput/64MiBreserve/per-casefaultstop/collection/no-NotSupported-as-Pass.",
+        "No shader/data/oracle/dimension change; large65535 cases retained, with first1024-return5 followed by originaltwo7 scopes."
+      ],
+      "conditions": [
+        "Author independent source/bounds counterpart beforelaunch; first5 native/actual outcomes inform remaining execution without relaxing originalcap.",
+        "Stop on concrete shader/API/oracle/fault failure and diagnose source; no unchanged retry or smaller stress case.",
+        "Noactualresults inferred."
+      ]
+    }
+  },
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-buffer-atomics-next-0045/independent-actual-review.json",
+      "bytes": 27428,
+      "sha256": "607b51e6b8608ca8e38534e00d4ea830076cdbb177dabff5d0f769c1eaafe593"
+    },
+    "result": {
+      "status": "PASS exact19 original buffer atomic cases; original shaders/oracles/work and caps retained",
+      "reviewed_utc": "2026-11-02T22:42:13.208169+00:00",
+      "source_review_sha256": "40f818c93e5c28d87f19f7af1a63e1a08f5c90b0f6c96dd854a58fc6056f0b1d",
+      "first5_review_sha256": "6ae1300cd368b03e821d1da8ead8c619a4f781575639e8b4ac015b9b33a7c1c0",
+      "inventory_sha256": "67c4bbd9d6c4adba21c5c8a7291eef09addd98cec0b2c40404a28ff1eb2a6f23",
+      "rows": [
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.compex",
+          "qpa_sha256": "c636fccf80d41dbcd75216b54f4b806106407dad32d2909badf8c67b83d0208a",
+          "status": "Pass",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaab1e771050 grid=1024,1,1 local=1,1,1 barrier=0 loops=0 instrlen=1 chunks=16 submits=16 ns=6033241 submit_ns=5516416 submit_max_ns=3387193 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 28 instr, 15 nops, 13 non-nops, 4 mov, 0 cov, 40 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 2 full, 16 constlen",
+            "; CL prog 1/1: 16 cat0, 4 cat1, 4 cat2, 0 cat3, 0 cat4, 0 cat5, 4 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 0 (ss), 172 systall, 2 (sy), 0 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "native_atomic_instructions": [
+            "MESA: info: atomic.s.cmpxchg.untyped.4d.u32.1.g r1.z, g[1], r0.y, r0.x, r0.w"
+          ],
+          "native_core_body_sha256": "1f3950f571b1235155f438fc299f3f4155ec90dfe9c3e7484055360b806f595d",
+          "logical_invocations": 1024,
+          "chunks": 16,
+          "submits": 16
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.iadd",
+          "qpa_sha256": "814fbfbbe23e5ba8a52561df8b52305b80fb370a156941bd4161a066343966ba",
+          "status": "Pass",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaaec30e020 grid=1024,1,1 local=1,1,1 barrier=0 loops=0 instrlen=1 chunks=16 submits=16 ns=7630483 submit_ns=7059284 submit_max_ns=3735840 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 20 instr, 8 nops, 12 non-nops, 5 mov, 0 cov, 36 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 2 full, 16 constlen",
+            "; CL prog 1/1: 9 cat0, 5 cat1, 3 cat2, 0 cat3, 0 cat4, 0 cat5, 3 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 0 (ss), 172 systall, 2 (sy), 0 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "native_atomic_instructions": [
+            "MESA: info: (sy)atomic.s.add.untyped.4d.u32.1.g r1.w, g[1], r1.z, r0.y, r0.z"
+          ],
+          "native_core_body_sha256": "a7c1733ebe205758920433a7262186e706e29886f9fcbbe4ab4362df8d028770",
+          "logical_invocations": 1024,
+          "chunks": 16,
+          "submits": 16
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.idec",
+          "qpa_sha256": "4b1ff399552449c1903788e9a736fdeb12229052229a6fbc703ab3f7eb8ffc4f",
+          "status": "Pass",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaac4fb9020 grid=1024,1,1 local=1,1,1 barrier=0 loops=0 instrlen=1 chunks=16 submits=16 ns=6484699 submit_ns=5970793 submit_max_ns=4159279 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 23 instr, 11 nops, 12 non-nops, 6 mov, 0 cov, 40 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 2 full, 16 constlen",
+            "; CL prog 1/1: 12 cat0, 6 cat1, 3 cat2, 0 cat3, 0 cat4, 0 cat5, 2 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 0 (ss), 76 systall, 1 (sy), 0 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "native_atomic_instructions": [
+            "MESA: info: atomic.s.add.untyped.4d.u32.1.g r1.y, g[0], r0.z, r0.y, r0.w"
+          ],
+          "native_core_body_sha256": "36e188c1585593f33f765f11b499b9f244c85a3f9e4c5a2a1c455674c40105ae",
+          "logical_invocations": 1024,
+          "chunks": 16,
+          "submits": 16
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.iinc",
+          "qpa_sha256": "8725b3e57230ce187ef2baa3b5ecfb270e88ba91b987509af6fb083a70b64561",
+          "status": "Pass",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaac768d020 grid=1024,1,1 local=1,1,1 barrier=0 loops=0 instrlen=1 chunks=16 submits=16 ns=8853975 submit_ns=8294860 submit_max_ns=4160737 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 23 instr, 11 nops, 12 non-nops, 6 mov, 0 cov, 40 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 2 full, 16 constlen",
+            "; CL prog 1/1: 12 cat0, 6 cat1, 3 cat2, 0 cat3, 0 cat4, 0 cat5, 2 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 0 (ss), 76 systall, 1 (sy), 0 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "native_atomic_instructions": [
+            "MESA: info: atomic.s.add.untyped.4d.u32.1.g r1.y, g[0], r0.y, r0.z, r0.w"
+          ],
+          "native_core_body_sha256": "3da3a345277b4364430cddd89b1be636fee728e5433174ab157d7ebb8b5733c5",
+          "logical_invocations": 1024,
+          "chunks": 16,
+          "submits": 16
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.isub",
+          "qpa_sha256": "586a8d36b6c0926f904e3cdb1019d989fbdb89e7fd3209a2e2d532c4577a3161",
+          "status": "Pass",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaaf52bf020 grid=1024,1,1 local=1,1,1 barrier=0 loops=0 instrlen=1 chunks=16 submits=16 ns=7062096 submit_ns=6258086 submit_max_ns=3692768 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 27 instr, 14 nops, 13 non-nops, 5 mov, 0 cov, 40 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 2 full, 16 constlen",
+            "; CL prog 1/1: 15 cat0, 5 cat1, 4 cat2, 0 cat3, 0 cat4, 0 cat5, 3 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 0 (ss), 172 systall, 2 (sy), 0 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "native_atomic_instructions": [
+            "MESA: info: atomic.s.add.untyped.4d.u32.1.g r1.w, g[1], r1.z, r0.y, r0.z"
+          ],
+          "native_core_body_sha256": "5a865446b6a3a8b95a9b48f20cedd353920eb54fde922d24dbb3c525e1d47036",
+          "logical_invocations": 1024,
+          "chunks": 16,
+          "submits": 16
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.opatomic.compex",
+          "qpa_sha256": "81475eddb042ca264ee120568bafac0cc4a47e8af45176e63a085252588beb88",
+          "status": "Pass",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaadf939ef0 grid=65535,1,1 local=1,1,1 barrier=0 loops=0 instrlen=1 chunks=1024 submits=1024 ns=145669594 submit_ns=124578530 submit_max_ns=3488392 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 27 instr, 15 nops, 12 non-nops, 4 mov, 0 cov, 38 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 2 full, 16 constlen",
+            "; CL prog 1/1: 16 cat0, 4 cat1, 4 cat2, 0 cat3, 0 cat4, 0 cat5, 3 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 0 (ss), 86 systall, 1 (sy), 0 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "native_atomic_instructions": [
+            "MESA: info: atomic.s.cmpxchg.untyped.4d.u32.1.g r1.z, g[1], r0.y, r0.x, r0.w"
+          ],
+          "native_core_body_sha256": "c6b76c313a668dae13f898cec13d0aaa59f92f63f9da8e3e8c3a7c6bcc2c28b8",
+          "logical_invocations": 65535,
+          "chunks": 1024,
+          "submits": 1024
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.opatomic.iadd",
+          "qpa_sha256": "4eaab81f43275b4100a68937a4f0316d71b13e2d2b2fc014dfd3c14bf85e8c04",
+          "status": "Pass",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaab26286610 grid=65535,1,1 local=1,1,1 barrier=0 loops=0 instrlen=1 chunks=1024 submits=1024 ns=203773817 submit_ns=178683028 submit_max_ns=4170685 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 19 instr, 8 nops, 11 non-nops, 5 mov, 0 cov, 34 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 2 full, 16 constlen",
+            "; CL prog 1/1: 9 cat0, 5 cat1, 3 cat2, 0 cat3, 0 cat4, 0 cat5, 2 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 0 (ss), 86 systall, 1 (sy), 0 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "native_atomic_instructions": [
+            "MESA: info: (sy)atomic.s.add.untyped.4d.u32.1.g r1.w, g[1], r1.z, r0.y, r0.z"
+          ],
+          "native_core_body_sha256": "90051317ab7c9464c0fc3b08a19b7b550a1838aee32d0b95e28e800affa44fee",
+          "logical_invocations": 65535,
+          "chunks": 1024,
+          "submits": 1024
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.opatomic.idec",
+          "qpa_sha256": "517bddfcd8ecf1b160ce2a9cfac66c3481f9a685b22538ec9c4820fdd99d8562",
+          "status": "Pass",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaafbe1af20 grid=65535,1,1 local=1,1,1 barrier=0 loops=0 instrlen=1 chunks=1024 submits=1024 ns=125894453 submit_ns=107532777 submit_max_ns=3488132 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 12 instr, 6 nops, 6 non-nops, 4 mov, 0 cov, 32 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 2 full, 8 constlen",
+            "; CL prog 1/1: 7 cat0, 4 cat1, 0 cat2, 0 cat3, 0 cat4, 0 cat5, 1 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 0 (ss), 0 systall, 0 (sy), 0 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "native_atomic_instructions": [
+            "MESA: info: atomic.s.add.untyped.4d.u32.1.g r1.x, g[0], r0.y, r0.x, r0.z"
+          ],
+          "native_core_body_sha256": "7146fb5e50575a080caba27ae9aa46df45aee54d304e43c48fe697de57d8e140",
+          "logical_invocations": 65535,
+          "chunks": 1024,
+          "submits": 1024
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.opatomic.iinc",
+          "qpa_sha256": "64ee8822132f72e0a0ebc7b7eec4578401840699971f3210d947fee259f17fd5",
+          "status": "Pass",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaab170a8040 grid=65535,1,1 local=1,1,1 barrier=0 loops=0 instrlen=1 chunks=1024 submits=1024 ns=161259987 submit_ns=140532132 submit_max_ns=3733497 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 12 instr, 6 nops, 6 non-nops, 4 mov, 0 cov, 32 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 2 full, 8 constlen",
+            "; CL prog 1/1: 7 cat0, 4 cat1, 0 cat2, 0 cat3, 0 cat4, 0 cat5, 1 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 0 (ss), 0 systall, 0 (sy), 0 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "native_atomic_instructions": [
+            "MESA: info: atomic.s.add.untyped.4d.u32.1.g r1.x, g[0], r0.y, r0.x, r0.z"
+          ],
+          "native_core_body_sha256": "f34a988db55b8b8688a8da238fc4a18d71c567add4ade7286bce52060666e363",
+          "logical_invocations": 65535,
+          "chunks": 1024,
+          "submits": 1024
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.opatomic.isub",
+          "qpa_sha256": "f5a78404cfc898a049ffe1695a6f71ff18231f2fc6748efb20814e8753d7021b",
+          "status": "Pass",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaab192eb680 grid=65535,1,1 local=1,1,1 barrier=0 loops=0 instrlen=1 chunks=1024 submits=1024 ns=131015869 submit_ns=112738850 submit_max_ns=3888132 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 26 instr, 14 nops, 12 non-nops, 5 mov, 0 cov, 38 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 2 full, 16 constlen",
+            "; CL prog 1/1: 15 cat0, 5 cat1, 4 cat2, 0 cat3, 0 cat4, 0 cat5, 2 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 0 (ss), 86 systall, 1 (sy), 0 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "native_atomic_instructions": [
+            "MESA: info: atomic.s.add.untyped.4d.u32.1.g r1.w, g[1], r1.z, r0.y, r0.z"
+          ],
+          "native_core_body_sha256": "26f4f7ba03acfd54d2be61c7227565fff31f9388f26cae432672f6dc7789c2b4",
+          "logical_invocations": 65535,
+          "chunks": 1024,
+          "submits": 1024
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.opatomic.load",
+          "qpa_sha256": "3aed704205695fee73816753e37d6bffec9fa50b4f8ac57949a51f27c2a1185f",
+          "status": "Pass",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaadc363ef0 grid=65535,1,1 local=1,1,1 barrier=0 loops=0 instrlen=1 chunks=1024 submits=1024 ns=134079312 submit_ns=113623738 submit_max_ns=3885528 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 19 instr, 11 nops, 8 non-nops, 2 mov, 0 cov, 32 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 1 full, 16 constlen",
+            "; CL prog 1/1: 12 cat0, 2 cat1, 3 cat2, 0 cat3, 0 cat4, 0 cat5, 2 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 0 (ss), 86 systall, 1 (sy), 0 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "native_atomic_instructions": [],
+          "native_core_body_sha256": "e087bbb98ad7ab9950572aac42ce0bbe96f4434bf5e61454e7f1b1798500fbdf",
+          "logical_invocations": 65535,
+          "chunks": 1024,
+          "submits": 1024
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.opatomic.store",
+          "qpa_sha256": "056207bd4df7ced05cb19cebeafb931ffc4a22f09fdba87ffa59e0c30bb553d7",
+          "status": "Pass",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaadca48070 grid=65535,1,1 local=1,1,1 barrier=0 loops=0 instrlen=1 chunks=1024 submits=1024 ns=122930593 submit_ns=102912494 submit_max_ns=3827715 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 19 instr, 11 nops, 8 non-nops, 2 mov, 0 cov, 32 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 1 full, 16 constlen",
+            "; CL prog 1/1: 12 cat0, 2 cat1, 3 cat2, 0 cat3, 0 cat4, 0 cat5, 2 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 0 (ss), 86 systall, 1 (sy), 0 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "native_atomic_instructions": [],
+          "native_core_body_sha256": "e087bbb98ad7ab9950572aac42ce0bbe96f4434bf5e61454e7f1b1798500fbdf",
+          "logical_invocations": 65535,
+          "chunks": 1024,
+          "submits": 1024
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.compex",
+          "qpa_sha256": "5c5eb5d6413fc84377a169265e274bb9794e588deaf64967b6db86ff7c659d38",
+          "status": "Pass",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaab1b9ab050 grid=65535,1,1 local=1,1,1 barrier=0 loops=0 instrlen=1 chunks=1024 submits=1024 ns=111604895 submit_ns=95023299 submit_max_ns=3827091 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 27 instr, 15 nops, 12 non-nops, 4 mov, 0 cov, 38 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 2 full, 16 constlen",
+            "; CL prog 1/1: 16 cat0, 4 cat1, 4 cat2, 0 cat3, 0 cat4, 0 cat5, 3 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 0 (ss), 86 systall, 1 (sy), 0 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "native_atomic_instructions": [
+            "MESA: info: atomic.s.cmpxchg.untyped.4d.u32.1.g r1.z, g[1], r0.y, r0.x, r0.w"
+          ],
+          "native_core_body_sha256": "c6b76c313a668dae13f898cec13d0aaa59f92f63f9da8e3e8c3a7c6bcc2c28b8",
+          "logical_invocations": 65535,
+          "chunks": 1024,
+          "submits": 1024
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.iadd",
+          "qpa_sha256": "844462f52d8db6b64fd265cef9a6cb9a381917944211644cf8787291f95c114f",
+          "status": "Pass",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaab0092e020 grid=65535,1,1 local=1,1,1 barrier=0 loops=0 instrlen=1 chunks=1024 submits=1024 ns=121336268 submit_ns=103275911 submit_max_ns=3904018 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 19 instr, 8 nops, 11 non-nops, 5 mov, 0 cov, 34 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 2 full, 16 constlen",
+            "; CL prog 1/1: 9 cat0, 5 cat1, 3 cat2, 0 cat3, 0 cat4, 0 cat5, 2 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 0 (ss), 86 systall, 1 (sy), 0 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "native_atomic_instructions": [
+            "MESA: info: (sy)atomic.s.add.untyped.4d.u32.1.g r1.w, g[1], r1.z, r0.y, r0.z"
+          ],
+          "native_core_body_sha256": "90051317ab7c9464c0fc3b08a19b7b550a1838aee32d0b95e28e800affa44fee",
+          "logical_invocations": 65535,
+          "chunks": 1024,
+          "submits": 1024
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.idec",
+          "qpa_sha256": "d732ecc1027a5feaa7c57336e8446dfc2171f1e11c45db011a25187a729470fe",
+          "status": "Pass",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaaf693c020 grid=65535,1,1 local=1,1,1 barrier=0 loops=0 instrlen=1 chunks=1024 submits=1024 ns=121401371 submit_ns=102444349 submit_max_ns=3992507 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 12 instr, 6 nops, 6 non-nops, 4 mov, 0 cov, 32 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 2 full, 8 constlen",
+            "; CL prog 1/1: 7 cat0, 4 cat1, 0 cat2, 0 cat3, 0 cat4, 0 cat5, 1 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 0 (ss), 0 systall, 0 (sy), 0 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "native_atomic_instructions": [
+            "MESA: info: atomic.s.add.untyped.4d.u32.1.g r1.x, g[0], r0.y, r0.x, r0.z"
+          ],
+          "native_core_body_sha256": "7146fb5e50575a080caba27ae9aa46df45aee54d304e43c48fe697de57d8e140",
+          "logical_invocations": 65535,
+          "chunks": 1024,
+          "submits": 1024
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.iinc",
+          "qpa_sha256": "85c3bc40cd3652dd75e9d6b3ff3750f0cc79473712dfd2671148a3c572bb16af",
+          "status": "Pass",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaab01f24020 grid=65535,1,1 local=1,1,1 barrier=0 loops=0 instrlen=1 chunks=1024 submits=1024 ns=116457613 submit_ns=97584454 submit_max_ns=4011258 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 12 instr, 6 nops, 6 non-nops, 4 mov, 0 cov, 32 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 2 full, 8 constlen",
+            "; CL prog 1/1: 7 cat0, 4 cat1, 0 cat2, 0 cat3, 0 cat4, 0 cat5, 1 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 0 (ss), 0 systall, 0 (sy), 0 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "native_atomic_instructions": [
+            "MESA: info: atomic.s.add.untyped.4d.u32.1.g r1.x, g[0], r0.y, r0.x, r0.z"
+          ],
+          "native_core_body_sha256": "f34a988db55b8b8688a8da238fc4a18d71c567add4ade7286bce52060666e363",
+          "logical_invocations": 65535,
+          "chunks": 1024,
+          "submits": 1024
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.isub",
+          "qpa_sha256": "4fe13b8a6b66852e04b0c5632a733a921a754da7b55b327453863b0e08c7c66b",
+          "status": "Pass",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaaee179020 grid=65535,1,1 local=1,1,1 barrier=0 loops=0 instrlen=1 chunks=1024 submits=1024 ns=124108929 submit_ns=106554924 submit_max_ns=3839174 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 26 instr, 14 nops, 12 non-nops, 5 mov, 0 cov, 38 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 2 full, 16 constlen",
+            "; CL prog 1/1: 15 cat0, 5 cat1, 4 cat2, 0 cat3, 0 cat4, 0 cat5, 2 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 0 (ss), 86 systall, 1 (sy), 0 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "native_atomic_instructions": [
+            "MESA: info: atomic.s.add.untyped.4d.u32.1.g r1.w, g[1], r1.z, r0.y, r0.z"
+          ],
+          "native_core_body_sha256": "26f4f7ba03acfd54d2be61c7227565fff31f9388f26cae432672f6dc7789c2b4",
+          "logical_invocations": 65535,
+          "chunks": 1024,
+          "submits": 1024
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.load",
+          "qpa_sha256": "965af1e447edf890fc201bd348528842efd4783a3911c3df5f8edaadd33881c7",
+          "status": "Pass",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaab1105a020 grid=65535,1,1 local=1,1,1 barrier=0 loops=0 instrlen=1 chunks=1024 submits=1024 ns=251088592 submit_ns=224466127 submit_max_ns=3918914 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 19 instr, 11 nops, 8 non-nops, 2 mov, 0 cov, 32 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 1 full, 16 constlen",
+            "; CL prog 1/1: 12 cat0, 2 cat1, 3 cat2, 0 cat3, 0 cat4, 0 cat5, 2 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 0 (ss), 86 systall, 1 (sy), 0 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "native_atomic_instructions": [],
+          "native_core_body_sha256": "e087bbb98ad7ab9950572aac42ce0bbe96f4434bf5e61454e7f1b1798500fbdf",
+          "logical_invocations": 65535,
+          "chunks": 1024,
+          "submits": 1024
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.store",
+          "qpa_sha256": "8551bb6458e141af484b59e7851b249654162f328b2c916cbd96e55192881802",
+          "status": "Pass",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaafc422050 grid=65535,1,1 local=1,1,1 barrier=0 loops=0 instrlen=1 chunks=1024 submits=1024 ns=111544426 submit_ns=93941054 submit_max_ns=3797194 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 19 instr, 11 nops, 8 non-nops, 2 mov, 0 cov, 32 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 1 full, 16 constlen",
+            "; CL prog 1/1: 12 cat0, 2 cat1, 3 cat2, 0 cat3, 0 cat4, 0 cat5, 2 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 0 (ss), 86 systall, 1 (sy), 0 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "native_atomic_instructions": [],
+          "native_core_body_sha256": "e087bbb98ad7ab9950572aac42ce0bbe96f4434bf5e61454e7f1b1798500fbdf",
+          "logical_invocations": 65535,
+          "chunks": 1024,
+          "submits": 1024
+        }
+      ],
+      "scopes": [
+        {
+          "partition": "00",
+          "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-buffer-atomics-00/probe",
+          "cases": 5,
+          "run_log_bytes": 74662,
+          "run_log_sha256": "12eaa9571ac68b0394bae39b3c7de0eb8be19ff77c0831150a1ad16e9de2bda1",
+          "runner_result_sha256": "79edddb3ded79e247c49cbf1405705f9d307a01094aa7460ab3fe253815e0a90",
+          "collection_passed": true,
+          "assets_unchanged": true,
+          "fault_services_passed": true,
+          "service_tail": "it_max_ns=3692768 result=0\n  Pass (Output match with expected)\n\nDONE!\n\nTest run totals:\n  Passed:        1/1 (100.0%)\n  Failed:        0/1 (0.0%)\n  Not supported: 0/1 (0.0%)\n  Warnings:      0/1 (0.0%)\n  Waived:        0/1 (0.0%)\nCTS_CASE_PASS dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.isub\nPASS: no new GPU fault/recovery messages\nCTS_INFO_PASS\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 7.405s\n             CPU time consumed: 7.043s\n                   Memory peak: 119.3M (swap: 0B)\n"
+        },
+        {
+          "partition": "01",
+          "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-buffer-atomics-01/probe",
+          "cases": 7,
+          "run_log_bytes": 85209,
+          "run_log_sha256": "94c7806fc9f0f3c30cd9f93867d51cafcbe48e6fcd06f9067638822bdda6a2c0",
+          "runner_result_sha256": "4ee5830718e02441bf870916e828c8f7fb2d786025cb4a70b19071480a42cbf4",
+          "collection_passed": true,
+          "assets_unchanged": true,
+          "fault_services_passed": true,
+          "service_tail": "2912494 submit_max_ns=3827715 result=0\n  Pass (Output match with expected)\n\nDONE!\n\nTest run totals:\n  Passed:        1/1 (100.0%)\n  Failed:        0/1 (0.0%)\n  Not supported: 0/1 (0.0%)\n  Warnings:      0/1 (0.0%)\n  Waived:        0/1 (0.0%)\nCTS_CASE_PASS dEQP-VK.spirv_assembly.instruction.compute.opatomic.store\nPASS: no new GPU fault/recovery messages\nCTS_INFO_PASS\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 10.745s\n             CPU time consumed: 9.795s\n                   Memory peak: 120.2M (swap: 0B)\n"
+        },
+        {
+          "partition": "02",
+          "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-buffer-atomics-02/probe",
+          "cases": 7,
+          "run_log_bytes": 85521,
+          "run_log_sha256": "2ad489ec974bf707a574a1b0fbce686e8e2d3314428d1735cb3d9cc04cd85a16",
+          "runner_result_sha256": "63da2481c619260290bdd785040a97c770d8c5b09901554dac3bead6053066dd",
+          "collection_passed": true,
+          "assets_unchanged": true,
+          "fault_services_passed": true,
+          "service_tail": "max_ns=3797194 result=0\n  Pass (Output match with expected)\n\nDONE!\n\nTest run totals:\n  Passed:        1/1 (100.0%)\n  Failed:        0/1 (0.0%)\n  Not supported: 0/1 (0.0%)\n  Warnings:      0/1 (0.0%)\n  Waived:        0/1 (0.0%)\nCTS_CASE_PASS dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.store\nPASS: no new GPU fault/recovery messages\nCTS_INFO_PASS\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 10.737s\n             CPU time consumed: 9.791s\n                   Memory peak: 119.9M (swap: 0B)\n"
+        }
+      ],
+      "totals": {
+        "original_cases": 19,
+        "distinct_names": 19,
+        "dispatches": 19,
+        "logical_invocations": 922610,
+        "chunks": 14416,
+        "submits": 14416,
+        "exact_expected_words": 395270,
+        "arithmetic_return_chain_words": 4096
+      },
+      "native_scope": [
+        "Five returned-value shaders retain real native CMPXCHG or ADD plus returned-value store. Fourteen large cases retain full65535 logical invocations each. Common-address arithmetic uses real native global ADD; CAS is real CMPXCHG at per-invocation owned addresses.",
+        "AtomicLoad/AtomicStore original cases have per-invocation unshared addresses and Relaxed semantics; native LDGB/STGB execution is observed, not claimed as contended atomic-load/store evidence.",
+        "Uniform+BufferBlock and StorageBuffer+Block seven-case native ISA/stats are exactly identical per operation; promoted storage-class path is actually exercised.",
+        "Native max28 instructions/40dwords,1 instruction unit, max2F0H/const16/shared0/loops0 and no private memory instructions; no resource/guard changes."
+      ],
+      "oracle_scope": [
+        "395270 exact logical output words checked through unchanged original memcmp, including1024 CAS returned-old parity words. Four additional1024-entry arithmetic old-value arrays pass original backward serial-history reconstruction.",
+        "Exact final common-address add/sub/inc/dec aggregates across65535 invocations provide contention semantics evidence under actual1024 chunks/submits per case; no simultaneous residency or cross-queue proof.",
+        "Original output logical ranges only, no custom padding canary qualification. No acquire/release memory visibility, optional VulkanMemoryModel/64-bit atomics, min/max/bitwise or exhaustive input proof."
+      ],
+      "limits": [
+        "Unchanged original0e715 CTS /f222-e699 driver; modified robustness4295 not used or credited.",
+        "All three scopes clean assets/collection/fault/services and within original90s/384MiB/log/disk caps; no retry, relaxation or driver edit.",
+        "Existing42 strict custom sRGB discrepancies and full compute conformance obligations unaffected."
+      ]
+    }
+  },
+  "original_results": [
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-buffer-atomics-00/probe/runner-result.json",
+        "bytes": 2317,
+        "sha256": "79edddb3ded79e247c49cbf1405705f9d307a01094aa7460ab3fe253815e0a90"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 166,
+            "sha256": "6325afde257ba5bf14bae032b76a24f0ff39657a1b457e838e5e5f840d14a924"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 357,
+            "sha256": "edd35a910537f22adabfbb83b8e3b548726e860577816226d41de12790e2fb83"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13622368,
+            "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+          },
+          "payload.json": {
+            "bytes": 968,
+            "sha256": "85c958d789ec34649dbc66e81aba3decc454208cb0091e82bd536d4ccca23aa3"
+          }
+        },
+        "run_log": {
+          "bytes": 74662,
+          "sha256": "12eaa9571ac68b0394bae39b3c7de0eb8be19ff77c0831150a1ad16e9de2bda1"
+        },
+        "qpa": {
+          "bytes": 8636,
+          "sha256": "0303ce8658c6907c7a715ffa1e4b20ab554fa95464dfe02821733d82afda9895"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.compex",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.iadd",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.idec",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.iinc",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.isub",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    },
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-buffer-atomics-01/probe/runner-result.json",
+        "bytes": 2561,
+        "sha256": "4ee5830718e02441bf870916e828c8f7fb2d786025cb4a70b19071480a42cbf4"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 166,
+            "sha256": "6cbf353d3b4074dd56c30a61c034d435a84a683610eeec510831e95fa11faa3e"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 402,
+            "sha256": "36059833df5224628e16239536b7756c6db4430bbcb11bdec20e5c5bcb12db0d"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13622368,
+            "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+          },
+          "payload.json": {
+            "bytes": 968,
+            "sha256": "cf0d9aa0ac5a797a7d2b12f31dca6d7cd90a1b6acceeda783b426a03f9d187c3"
+          }
+        },
+        "run_log": {
+          "bytes": 85209,
+          "sha256": "94c7806fc9f0f3c30cd9f93867d51cafcbe48e6fcd06f9067638822bdda6a2c0"
+        },
+        "qpa": {
+          "bytes": 11804,
+          "sha256": "19971e8f1cce8a32b8225a64b6a4328bb9fa2a7e8fc3f8412944fca265c1f0bc"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic.compex",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic.iadd",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic.idec",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic.iinc",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic.isub",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic.load",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic.store",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    },
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-buffer-atomics-02/probe/runner-result.json",
+        "bytes": 2666,
+        "sha256": "63da2481c619260290bdd785040a97c770d8c5b09901554dac3bead6053066dd"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 166,
+            "sha256": "57ec73c6854bcee8564f896719c4c7c9be8e019d51d0d40356f42a20642184ed"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 507,
+            "sha256": "03179989eae23ca7756d1fc4fac6df9a63aac9703c471cecb655e6561e9dcea7"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13622368,
+            "sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+          },
+          "payload.json": {
+            "bytes": 968,
+            "sha256": "084df6498ab9e36988c9ba0bb65bef66141a68c6c88da2c31b0a6a85ca8903a7"
+          }
+        },
+        "run_log": {
+          "bytes": 85521,
+          "sha256": "2ad489ec974bf707a574a1b0fbce686e8e2d3314428d1735cb3d9cc04cd85a16"
+        },
+        "qpa": {
+          "bytes": 12119,
+          "sha256": "d72017ab79b92add2ed7ab540d3fe09dd422e7e5b26a5eec286872ab57014506"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.compex",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.iadd",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.idec",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.iinc",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.isub",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.load",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.store",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    }
+  ],
+  "scope": "Five original1024-invocation returned-old-value cases and14 original65535-invocation buffer-atomic cases. Final results, unordered returned-value chains, CAS success/failure and atomic load/store use unchanged original oracles. Native ADD/CMPXCHG are present; unique-address relaxed load/store cases lower to LDGB/STGB and do not qualify contended atomic-load/store semantics. Seven Vulkan-memory-model volatile cases remain excluded by their unadvertised extension/feature, not reshaped. No driver, workload, oracle or guard change."
+}

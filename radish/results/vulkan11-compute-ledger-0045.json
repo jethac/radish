@@ -13,7 +13,7 @@
   "official_cts": {
     "source_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
     "binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
-    "state": "673 distinct original historical CTS Pass names across scoped campaigns, including33 control-flow,11 legacy event/fence and3 Workgroup-memory cases. Named compute93/93 and core format queries219/219 remain separate metrics. Modified robustness132 excluded.",
+    "state": "692 distinct original historical CTS Pass names across scoped campaigns. Includes19 original buffer-atomic cases preserving1024/65535 invocations. Named compute93/93 and individual core format queries219/219 remain separate metrics. Modified robustness132 excluded.",
     "modified_harness": "f85cb13b diagnostics only, never official passes",
     "remaining_property_failures": 0,
     "actual_record": "official11-native-scalars-info-0045.json",
@@ -34,7 +34,7 @@
     "promoted_query_record": "official11-promoted-query-0045.json",
     "cache_lifetime_record": "official11-cache-lifetime-0045.json",
     "qualified_unique_case_inventory": "official11-qualified-case-inventory-0045.json",
-    "qualified_unique_cases": 673,
+    "qualified_unique_cases": 692,
     "inventory_limitation": "Historical passes span separate pinned candidates and exact source-bounded runs. This is neither one complete conformance run nor a percentage of all applicable requirements.",
     "format_query_record": "official11-format-query-0045.json",
     "function_private_record": "official11-function-private-0045.json",
@@ -55,7 +55,8 @@
     "binding_offset_record": "official11-binding-offset-0045.json",
     "control_flow_record": "official11-control-flow-0045.json",
     "event_fence_record": "official11-event-fence-0045.json",
-    "workgroup_memory_record": "official11-workgroup-memory-0045.json"
+    "workgroup_memory_record": "official11-workgroup-memory-0045.json",
+    "buffer_atomics_record": "official11-buffer-atomics-0045.json"
   },
   "categories": [
     {
@@ -271,7 +272,7 @@
       "id": "shader.memory_resources",
       "required": "All required buffer/opaque resource accesses, layouts/decorations/address arithmetic/robustness, shared/SSBO/storageimage atomics and memorysemantics for advertisedtypes.",
       "implementation": "Existing resource/robust/subwordlowerings; shared namespace22 representativeactualpasses",
-      "evidence": "Combined87501 closes one concrete capacity case, not universaldescriptors/formats/barriers",
+      "evidence": "Combined87501 closes one concrete capacity case, not universaldescriptors/formats/barriers; official11-buffer-atomics-0045.json closes19 original core buffer-atomic cases, including returned-old-value chains and original65535-invocation contention.",
       "cts": [
         "dEQP-VK.spirv_assembly.instruction.compute.*",
         "dEQP-VK.robustness.*",
@@ -350,7 +351,7 @@
     "system_scope": "No globalgraphics/service/clock/kernelchanges"
   },
   "depth_layout_erratum": "Pinned Vulkan1.1 DEPTH_STENCIL_READ_ONLY_OPTIMAL requires DEPTH_STENCIL_ATTACHMENT usage. Earlier sampled-only depth consumers are implementation observations for that path until valid-usage requalification; no retroactive public qualification.",
-  "next_private_source": "Nineteen source-bounded original buffer-atomic cases, preserving1024/65535 workgroup counts and original contention/return-chain/CAS/load/store oracles; then remaining applicable Vulkan1.1 compute/shared requirements. Keep difficult valid cases and all resource guards. Strict42 custom sRGB findings and full conformance remain open; no performance tuning.",
+  "next_private_source": "Continue remaining applicable core and advertised Vulkan1.1 compute/shared semantics with source-bounded original CTS. Implement concrete defects before qualification; preserve difficult valid cases, work, oracles and all guards. Strict42 custom sRGB findings and full conformance remain open; performance stays frozen.",
   "required_core_lookup": "core-lookup-public-0045.json: public165GIPA/137GDPA complete afterfiveactualdevicepointer fixes. This is lookup only, not allcommandexecution. DirectICDloaderglobal limitation retained.",
   "deferred_performance_opportunities": {
     "pipeline_cache_population": "Pipeline creation currently does not populate common cache entries; header/object-count serialization is callable behavior only. Real cache population/reuse and measured benefit belong to the later performance phase; no speedup assumed."

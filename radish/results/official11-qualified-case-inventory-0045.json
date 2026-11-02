@@ -1,5 +1,5 @@
 {
-  "status": "673 distinct original historical CTS Pass names; no full conformance denominator. All132 modified robustness outcomes remain excluded.",
+  "status": "692 distinct original historical CTS Pass names; no full conformance denominator. All132 modified robustness outcomes remain excluded.",
   "partitions": {
     "information": 5,
     "SPIR-V versions": 4,
@@ -44,9 +44,12 @@
     "Original control-flow-02": 1,
     "Original control-flow-03": 1,
     "Original event-fence": 11,
-    "Original workgroup-memory": 3
+    "Original workgroup-memory": 3,
+    "Original buffer-atomics-00": 5,
+    "Original buffer-atomics-01": 7,
+    "Original buffer-atomics-02": 7
   },
-  "unique_count": 673,
+  "unique_count": 692,
   "names": [
     "dEQP-VK.api.array.oversized_array.core.get_pipeline_cache_data",
     "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_0_0",
@@ -598,6 +601,25 @@
     "dEQP-VK.spirv_assembly.instruction.compute.loop_control.dont_unroll",
     "dEQP-VK.spirv_assembly.instruction.compute.loop_control.none",
     "dEQP-VK.spirv_assembly.instruction.compute.loop_control.unroll",
+    "dEQP-VK.spirv_assembly.instruction.compute.opatomic.compex",
+    "dEQP-VK.spirv_assembly.instruction.compute.opatomic.iadd",
+    "dEQP-VK.spirv_assembly.instruction.compute.opatomic.idec",
+    "dEQP-VK.spirv_assembly.instruction.compute.opatomic.iinc",
+    "dEQP-VK.spirv_assembly.instruction.compute.opatomic.isub",
+    "dEQP-VK.spirv_assembly.instruction.compute.opatomic.load",
+    "dEQP-VK.spirv_assembly.instruction.compute.opatomic.store",
+    "dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.compex",
+    "dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.iadd",
+    "dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.idec",
+    "dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.iinc",
+    "dEQP-VK.spirv_assembly.instruction.compute.opatomic_return_values.isub",
+    "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.compex",
+    "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.iadd",
+    "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.idec",
+    "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.iinc",
+    "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.isub",
+    "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.load",
+    "dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.store",
     "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_10",
     "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_2",
     "dEQP-VK.spirv_assembly.instruction.compute.opinboundsaccesschain.float.array_3",
@@ -898,12 +920,24 @@
     "Original workgroup-memory": {
       "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-workgroup-memory/probe/runner-result.json",
       "sha256": "f673138f697566dbee1b70a86186d2905ca4236ee1e0dac26f517b5d9950b1c0"
+    },
+    "Original buffer-atomics-00": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-buffer-atomics-00/probe/runner-result.json",
+      "sha256": "79edddb3ded79e247c49cbf1405705f9d307a01094aa7460ab3fe253815e0a90"
+    },
+    "Original buffer-atomics-01": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-buffer-atomics-01/probe/runner-result.json",
+      "sha256": "4ee5830718e02441bf870916e828c8f7fb2d786025cb4a70b19071480a42cbf4"
+    },
+    "Original buffer-atomics-02": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-buffer-atomics-02/probe/runner-result.json",
+      "sha256": "63da2481c619260290bdd785040a97c770d8c5b09901554dac3bead6053066dd"
     }
   },
   "limitations": "Separate historical revisions/candidates, not one full conformance run; original oracle limits preserved. Failed historical info/ETC cases were corrected and later passed; custom42 strict sRGB mismatches remain unresolved. Original mistyped cache case0/0 is not a case or pass.",
   "source_receipt_identity": {
-    "path": "/run/media/jethac/Shared/radish/compute11-verified-case-count-v9-0045.json",
-    "bytes": 62042,
-    "sha256": "eb71accfd21fef32ebf7588a4cb1f73c65d8c76775d304c30611f8d71d81a5e0"
+    "path": "/run/media/jethac/Shared/radish/compute11-verified-case-count-v10-0045.json",
+    "bytes": 64305,
+    "sha256": "2eee302bb72019b243849af2f6045de66abfdd95512a6d87f24405ec1a509048"
   }
 }

@@ -1,0 +1,7 @@
+dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.compex
+dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.iadd
+dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.idec
+dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.iinc
+dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.isub
+dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.load
+dEQP-VK.spirv_assembly.instruction.compute.opatomic_storage_buffer.store

@@ -13,7 +13,7 @@ All 93 compute cases passed on the same f222/e699 candidate, with the original
 CTS executable, work and oracles. The initial 53/93 snapshot is historical.
 The 28 cases previously run on an older driver were confirmed on this candidate;
 current-candidate results were reused. The retained historical inventory now
-contains 673 distinct original passes, including other groups.
+contains 692 distinct original passes, including other groups.
 
 This 100% applies only to the named compute group. API, SPIR-V, GLSL, memory,
 robustness, images and synchronization contain further applicable requirements;
@@ -450,3 +450,16 @@ reversal oracle across a real barrier. The inventory is now 673 names.
 The separate 132 modified-fixture robustness
 outcomes still add zero original CTS passes. Full applicable conformance and
 the strict custom sRGB findings remain open; performance is still frozen.
+
+[The 19 original buffer-atomic cases](results/official11-buffer-atomics-0045.json)
+now pass on unchanged f222/e699. Five cases retain 1,024 invocations and verify
+returned old values as well as final results. Fourteen cases retain all 65,535
+invocations for contention, compare-exchange, atomic load and store behavior.
+The original numerical oracles and all resource limits remain unchanged.
+The relaxed load/store cases use separate addresses and lower to ordinary
+native loads/stores; they do not prove contended atomic-load/store behavior.
+Seven separately registered volatile cases require an unadvertised Vulkan
+memory-model extension and are explicitly excluded from this applicable slice.
+The historical original inventory is now 692 names; this is not an overall
+conformance denominator. Modified robustness132 and strict custom sRGB findings
+remain separate. No driver change or performance experiment was needed.
