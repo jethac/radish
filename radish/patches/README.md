@@ -723,3 +723,16 @@ execution or full-conformance claim is inferred.
 `0045-radish-required-vertex-query.patch` follow 8298. Both change physical format
 traits only. Exact f222 reconstruction and 99 positive/negative queries are in
 `../results/required-blit-vertex-query-0045.json`; no graphics execution claim.
+
+`0045-nir-idiv-reciprocal.patch` follows the complete f222 source stack and
+changes only Mesa's shared `src/compiler/nir/nir_lower_idiv.c`. It is the exact
+292b patch compiled into active conformance candidate5c6d/2d28. The immutable
+f222 build and selected inferencefcd/d332 remain preserved. The source overlay,
+all exact build commands/dependencies and baseline relink proof are in
+`../results/compute11-active-conformance-candidate-0045.json`; the recorded build
+scripts preserve their original local paths and require those pinned inputs.
+`0045-nir-idiv-comment-erratum.patch` is a separate comment-only correction over
+that source and was not applied to the measured binary. Eleven targeted original
+cases pass; this does not transfer all historical qualification to the candidate.
+See `../results/official11-integer-arithmetic-fixed-0045.json` for the retained
+baseline failure, original oracle limits and independent actual evidence.

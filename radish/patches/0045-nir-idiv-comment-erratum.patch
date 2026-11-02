@@ -1,0 +1,11 @@
+--- a/src/compiler/nir/nir_lower_idiv.c
++++ b/src/compiler/nir/nir_lower_idiv.c
+@@ -49,7 +49,7 @@
+     * case, the wrapped negative product has the wrong sign for UNR.
+     * Subtract a rounded-up correction instead, so either path produces
+     * a lower bound.  For s = 2^32 / denom and seed error e, the refined
+-    * error is less than 1 + e^2 / s, retaining the two-step refinement.
++    * error is at most 1 + e^2 / s, retaining the two-step refinement.
+     */
+    rcp = nir_bcsel(bld, over,
+                    nir_isub(bld, rcp, nir_iadd_imm(bld, correction, 1)),

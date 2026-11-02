@@ -1,5 +1,5 @@
 {
-  "status": "732 distinct original historical CTS Pass names; no full conformance denominator. All132 modified robustness outcomes remain excluded.",
+  "status": "743 distinct original historical CTS Pass names across separately pinned candidates; no full conformance denominator. Modified132 outcomes remain excluded.",
   "partitions": {
     "information": 5,
     "SPIR-V versions": 4,
@@ -52,9 +52,12 @@
     "Original precision-01-sub": 8,
     "Original precision-02-mul": 8,
     "Original precision-03-div": 8,
-    "Original precision-04-fma": 8
+    "Original precision-04-fma": 8,
+    "Original idiv-fixed-00": 5,
+    "Original idiv-fixed-01": 4,
+    "Original idiv-positive": 2
   },
-  "unique_count": 732,
+  "unique_count": 743,
   "names": [
     "dEQP-VK.api.array.oversized_array.core.get_pipeline_cache_data",
     "dEQP-VK.api.command_buffers.indirect_compute_dispatch_offsets_0_0",
@@ -641,11 +644,20 @@
     "dEQP-VK.spirv_assembly.instruction.compute.function_control.none",
     "dEQP-VK.spirv_assembly.instruction.compute.function_control.pure",
     "dEQP-VK.spirv_assembly.instruction.compute.function_control.pure_inline_dont_inline",
+    "dEQP-VK.spirv_assembly.instruction.compute.integer_division.sdiv_32bit",
+    "dEQP-VK.spirv_assembly.instruction.compute.integer_division.smod_32bit",
+    "dEQP-VK.spirv_assembly.instruction.compute.integer_division.srem_32bit",
+    "dEQP-VK.spirv_assembly.instruction.compute.integer_division.udiv_32bit",
+    "dEQP-VK.spirv_assembly.instruction.compute.integer_division.umod_32bit",
     "dEQP-VK.spirv_assembly.instruction.compute.loop_control.dependency_infinite",
     "dEQP-VK.spirv_assembly.instruction.compute.loop_control.dependency_length",
     "dEQP-VK.spirv_assembly.instruction.compute.loop_control.dont_unroll",
     "dEQP-VK.spirv_assembly.instruction.compute.loop_control.none",
     "dEQP-VK.spirv_assembly.instruction.compute.loop_control.unroll",
+    "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.signed_32bit",
+    "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.signed_8bit",
+    "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.unsigned_32bit",
+    "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.unsigned_8bit",
     "dEQP-VK.spirv_assembly.instruction.compute.opatomic.compex",
     "dEQP-VK.spirv_assembly.instruction.compute.opatomic.iadd",
     "dEQP-VK.spirv_assembly.instruction.compute.opatomic.idec",
@@ -748,6 +760,8 @@
     "dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_struct",
     "dEQP-VK.spirv_assembly.instruction.compute.opphi.vartype_vec3",
     "dEQP-VK.spirv_assembly.instruction.compute.opphi.wide",
+    "dEQP-VK.spirv_assembly.instruction.compute.opsmod.positive",
+    "dEQP-VK.spirv_assembly.instruction.compute.opsrem.positive",
     "dEQP-VK.spirv_assembly.instruction.compute.opunreachable.all",
     "dEQP-VK.spirv_assembly.instruction.compute.selection_control.dont_flatten",
     "dEQP-VK.spirv_assembly.instruction.compute.selection_control.flatten",
@@ -997,12 +1011,27 @@
     "Original precision-04-fma": {
       "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-precision-04-fma/probe/runner-result.json",
       "sha256": "a1bd65d61ff987a5478e8b6f8a438bdb07949fac897b05204fb75dba117c2a51"
+    },
+    "Original idiv-fixed-00": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-idiv-fixed-00/probe/runner-result.json",
+      "bytes": 3217,
+      "sha256": "959888715116fcf4c4b7554a683561eb6d696a981b477898713959466b2a7547"
+    },
+    "Original idiv-fixed-01": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-idiv-fixed-01/probe/runner-result.json",
+      "bytes": 2855,
+      "sha256": "ad6e8a1190d9c888a4e625e5303fb340f6effcbdbc135a27cc0a0f9ae4ed675d"
+    },
+    "Original idiv-positive": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-idiv-positive/probe/runner-result.json",
+      "bytes": 1781,
+      "sha256": "4d3427560c939f185ddaea40d3766601e19ecd12e8c920f294bfba13e8085cac"
     }
   },
   "limitations": "Separate historical revisions/candidates, not one full conformance run; original oracle limits preserved. Failed historical info/ETC cases were corrected and later passed; custom42 strict sRGB mismatches remain unresolved. Original mistyped cache case0/0 is not a case or pass.",
   "source_receipt_identity": {
-    "path": "/run/media/jethac/Shared/radish/compute11-verified-case-count-v11-0045.json",
-    "bytes": 67910,
-    "sha256": "1e92e3e8a90aee0e9f006d46d0ce8e2077f912b642faa67f483105445410a63c"
+    "path": "/run/media/jethac/Shared/radish/compute11-verified-case-count-v12-0045.json",
+    "bytes": 69650,
+    "sha256": "cd43a3dc6f599fce0e08f869c24368384c911abf987ea1d92a385a94a31b3013"
   }
 }

@@ -7,13 +7,15 @@
     "status": "frozen"
   },
   "candidate": {
-    "driver": "f222ff480f6c9ef3785c446661f12ccacbc91f119b0e7d405347b949b4dc325d",
-    "status": "Separate f222 validation checkpoint adds required native-backed BLIT and VERTEX query traits over8298. Extended block storage and original cache/promoted-query CTS remain pinned to unchanged8298. Full applicable conformance and strict sRGB remain open; selected fcd/d332 unchanged."
+    "driver": "5c6d00c736b07ec0a3879a0e77036c527faecf7202101ebd5b8882e8bb264eab",
+    "strip": "2d28b91a3f30e5c54c321446974fac3383a87048a142b970b29fc2ab2836f270",
+    "source_record": "compute11-active-conformance-candidate-0045.json",
+    "status": "Explicit active isolated shared-NIR correction candidate, qualified by eleven original targeted integer cases. Immutable f222 historical evidence and selected inferencefcd/d332 retained; full conformance and strictsRGB open."
   },
   "official_cts": {
     "source_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
     "binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
-    "state": "732 distinct original historical CTS Pass names across scoped campaigns. Includes40 original floating precision cases. Original signed-integer division has one retained failure and8 unattempted siblings; no pass credit. Named compute93/93 and individual core format queries219/219 remain separate metrics. Modified robustness132 excluded.",
+    "state": "743 distinct original historical Pass names across separately pinned candidates. Eleven new integer cases pass on5c6d/2d28; prior93/93 named compute and219/219 formats retain actualf222/other pins. Modified132 excluded; no complete mustpass claim.",
     "modified_harness": "f85cb13b diagnostics only, never official passes",
     "remaining_property_failures": 0,
     "actual_record": "official11-native-scalars-info-0045.json",
@@ -34,7 +36,7 @@
     "promoted_query_record": "official11-promoted-query-0045.json",
     "cache_lifetime_record": "official11-cache-lifetime-0045.json",
     "qualified_unique_case_inventory": "official11-qualified-case-inventory-0045.json",
-    "qualified_unique_cases": 732,
+    "qualified_unique_cases": 743,
     "inventory_limitation": "Historical passes span separate pinned candidates and exact source-bounded runs. This is neither one complete conformance run nor a percentage of all applicable requirements.",
     "format_query_record": "official11-format-query-0045.json",
     "function_private_record": "official11-function-private-0045.json",
@@ -57,9 +59,11 @@
     "event_fence_record": "official11-event-fence-0045.json",
     "workgroup_memory_record": "official11-workgroup-memory-0045.json",
     "buffer_atomics_record": "official11-buffer-atomics-0045.json",
-    "unresolved_original_failure": "integer_division.sdiv_32bit:12 mismatches, first31 versus14; shared-NIR correction in progress",
+    "unresolved_original_failure": null,
     "precision_arithmetic_record": "official11-precision-arithmetic-0045.json",
-    "integer_arithmetic_failure_record": "official11-integer-division-failure-0045.json"
+    "integer_arithmetic_failure_record": "official11-integer-division-failure-0045.json",
+    "integer_arithmetic_fixed_record": "official11-integer-arithmetic-fixed-0045.json",
+    "resolved_original_failure": "Original f222 sdiv failure retained; unchanged fixture passes on5c6d/2d28. No failure deleted."
   },
   "categories": [
     {
@@ -263,7 +267,7 @@
       "id": "shader.generic_alu_types_control",
       "required": "32bit integer/float arithmetic, conversions, comparisons, extended GLSL math with requiredprecision, composites/matrices, controlflow/phi, calls, constants/specialization and private/workgroup representation.",
       "implementation": "Existing IR3/NIR generic paths; concrete failures mustdrive fixes",
-      "evidence": "Original initialized/composite Function and33 control-flow cases now pass, including retained wide512-way Phi and nested-depth8 shaders. Full applicable arithmetic/type/precision and shader CTS remains open.; official11-precision-arithmetic-0045.json adds40 original interval-based floating cases. Original signed integer division has a retained numerical failure under investigation; wider operations, tuples and precision requirements remain open.",
+      "evidence": "Original initialized/composite Function and33 control-flow cases now pass, including retained wide512-way Phi and nested-depth8 shaders. Full applicable arithmetic/type/precision and shader CTS remains open.; official11-precision-arithmetic-0045.json adds40 original interval-based floating cases. Original signed integer division has a retained numerical failure under investigation; wider operations, tuples and precision requirements remain open.; official11-integer-arithmetic-fixed-0045.json closes the reproduced original signed division defect plus ten unchanged related cases. Baseline failure retained;96 negative remainder lanes have consistency-only meaning under Vulkan1.1.",
       "cts": [
         "dEQP-VK.spirv_assembly.instruction.compute.*",
         "dEQP-VK.spirv_assembly.type.*",
@@ -354,7 +358,7 @@
     "system_scope": "No globalgraphics/service/clock/kernelchanges"
   },
   "depth_layout_erratum": "Pinned Vulkan1.1 DEPTH_STENCIL_READ_ONLY_OPTIMAL requires DEPTH_STENCIL_ATTACHMENT usage. Earlier sampled-only depth consumers are implementation observations for that path until valid-usage requalification; no retroactive public qualification.",
-  "next_private_source": "Fix the reproduced original signed-integer division defect in an isolated shared-NIR candidate, then qualify unchanged original cases. Ready conversion47 remains held; no blind retry or unrelated device work. Strict42 custom sRGB and full conformance remain open.",
+  "next_private_source": "Continue reviewed conversion47 on explicit corrected conformance candidate, then remaining applicable API/shader/precision/resource requirements. Strict42 custom sRGB and broader conformance remain open; selected inference frozen.",
   "required_core_lookup": "core-lookup-public-0045.json: public165GIPA/137GDPA complete afterfiveactualdevicepointer fixes. This is lookup only, not allcommandexecution. DirectICDloaderglobal limitation retained.",
   "deferred_performance_opportunities": {
     "pipeline_cache_population": "Pipeline creation currently does not populate common cache entries; header/object-count serialization is callable behavior only. Real cache population/reuse and measured benefit belong to the later performance phase; no speedup assumed."

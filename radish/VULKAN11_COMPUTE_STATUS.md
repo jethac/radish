@@ -5,7 +5,7 @@ come before further performance experiments. The selected fcd/d332 inference
 stack is frozen. The intended GPU budget is entirely compute; CPU handles
 graphics. No graphics headroom reservation should be added. Any removal must
 identify a real source reservation and preserve correctness/resource guards;
-this is not authorization to change OS graphics or services. The separate f222 validation candidate includes representative resource corrections and the source-backed subpixel query fix. It remains separate from selected inference and is not a qualified replacement. See the [machine-readable ledger](results/vulkan11-compute-ledger-0045.json).
+this is not authorization to change OS graphics or services. The active conformance candidate is the isolated5c6d/2d28 build with a shared-NIR integer division correction over the immutable f222 source. Its exact source overlay and build inputs are [recorded](results/compute11-active-conformance-candidate-0045.json). Historical f222 qualification and selected inference remain separate; neither is silently replaced. See the [machine-readable ledger](results/vulkan11-compute-ledger-0045.json).
 
 Current measured fractions are **219/219 individual core format-query cases**
 and **93/93 applicable cases (100%) in the pinned `dEQP-VK.compute` group**.
@@ -13,7 +13,7 @@ All 93 compute cases passed on the same f222/e699 candidate, with the original
 CTS executable, work and oracles. The initial 53/93 snapshot is historical.
 The 28 cases previously run on an older driver were confirmed on this candidate;
 current-candidate results were reused. The retained historical inventory now
-contains 732 distinct original passes, including other groups.
+contains 743 distinct original passes, including other groups.
 
 This 100% applies only to the named compute group. API, SPIR-V, GLSL, memory,
 robustness, images and synchronization contain further applicable requirements;
@@ -470,12 +470,20 @@ and mediump scalar/vec2/vec3/vec4 forms. All original random attempts, edge
 inputs and interval-based oracles are retained. Their exceptional-value and
 fallback-reference permissions remain part of the result, not exact-bit claims.
 
-[The original signed-integer division test fails](results/official11-integer-division-failure-0045.json):
-703787787 /47721859 returned31 instead of14. The QPA reports12 mismatches;
-only the first mismatch and count were logged. Fail-stop left the other eight
-integer cases unattempted. The fault/service checks were clean. Shared NIR
-integer lowering is being corrected in isolation; no original oracle, input
-or guard is changed. The reciprocal-error mechanism is source-backed and
-reproduced on the host, while actual internal reciprocal bits remain unobserved.
-The historical original inventory is now732 passing names, plus this retained
-failure; full applicable conformance and42 strict custom sRGB findings remain open.
+[The original signed-integer division failure](results/official11-integer-division-failure-0045.json)
+is preserved:703787787 /47721859 returned31 instead of14 on f222. The exact
+same fixture now passes all64 pairs on the corrected shared-NIR candidate.
+[All eleven targeted original cases pass](results/official11-integer-arithmetic-fixed-0045.json):
+five division/remainder cases, four extended-multiply cases and two defined
+positive remainder cases. The original96 negative remainder lanes remain
+consistency observations because Vulkan1.1 leaves their results unspecified.
+The original tests, inputs, thresholds and runtime guards are unchanged.
+
+The correction clamps the reciprocal seed before conversion and adjusts the
+integer refinement downward when the seed overestimates. The exact compiled
+patch is published with its build provenance; a separate comment-only erratum
+is explicitly uncompiled. Raw hardware reciprocal bits were not captured, and
+the finite host stress is not an exhaustive proof of every input or compiler
+consumer. Historical evidence now contains743 distinct original Pass names;
+full applicable conformance and42 strict custom sRGB findings remain open.
+No new inference performance result is claimed.

@@ -1,0 +1,1147 @@
+{
+  "status": "PASS eleven unchanged original integer arithmetic/regression cases on exact shared-NIR correction candidate5c6d/2d28; original baseline failure preserved",
+  "active_candidate_record": "compute11-active-conformance-candidate-0045.json",
+  "public_patch": {
+    "path": "/home/jethac/Projects/radish/radish/patches/0045-nir-idiv-reciprocal.patch",
+    "bytes": 1740,
+    "sha256": "292b4e24aae6092e161c2fb040d2671c18655ea94e97d1f99e18c844348efe20"
+  },
+  "source": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-idiv-reciprocal-fix-0045/source-release.json",
+      "bytes": 1067,
+      "sha256": "2ecb728978f661ed8b07622cdc3a3602ddb94dd3adeb360eeeaa6fd80869d2ff"
+    },
+    "result": {
+      "status": "Private source candidate; host/source/native/actual gates pending",
+      "created_utc": "2026-11-02T22:50:40.836028+00:00",
+      "baseline_source": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/compiler/nir/nir_lower_idiv.c",
+      "baseline_sha256": "4a796454988441e71136507147ab2cf087d2e48165511022b3e6cef25da41a22",
+      "candidate_sha256": "a6d8c67565915cd809d0b151f654f2e8b3f8e6579a34c4711136b9fa230acef1",
+      "patch_sha256": "292b4e24aae6092e161c2fb040d2671c18655ea94e97d1f99e18c844348efe20",
+      "changed_files": [
+        "src/compiler/nir/nir_lower_idiv.c"
+      ],
+      "mechanism": "Clamp scaled seed before f2u; signed-direction integer Newton refinement for reciprocal overshoot. Existing under-path, finaltwo corrections, signed remainder/modulo handling and8/16-bit lowering retained.",
+      "failure": "Originalsdiv35775 first703787787/47721859\u219231 expected14,12differences; raw RCPbit inferred, not directlycaptured.",
+      "scope": "No driver API/feature/limits/guard/inference/fixture/oracle changes. Owner sole isolated build/device lane."
+    }
+  },
+  "diagnosis_proof": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-idiv-reciprocal-fix-0045/diagnosis-and-proof.json",
+      "bytes": 4038,
+      "sha256": "5940393dc1b6833977882eedd3291d93b4ce9a6cecc024a275900d18bb532639"
+    },
+    "result": {
+      "status": "Evidence-based private source correction; actual validation pending",
+      "created_utc": "2026-11-02T22:52:59.509905+00:00",
+      "source_release": "2ecb728978f661ed8b07622cdc3a3602ddb94dd3adeb360eeeaa6fd80869d2ff",
+      "failure": {
+        "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-integer-arithmetic-00/probe",
+        "qpa_sha256": "b9545b783d88fff67c554d7065c112a8cf5537517518893502b908557ee6e422",
+        "run_log_sha256": "8a95f46f97c81d85c2827e7b4e1a6a5176a416805e9345f5e65fe35d04a2bc83",
+        "original_case": "sdiv_32bit",
+        "actual_report": "12 mismatches; first703787787/47721859 gives31 expected14",
+        "defined_domain": "All64 original signed pairs finite nonzero divisors and exclude INT_MIN/-1; all exact refs independently recomputed before execution.",
+        "native": "rcp\u2192mul.f 0x4f7ffffe\u2192f32u32\u2192unsigned UNR addition\u2192two quotient corrections; native8units/183instructions/256dwords/8F1H/const12/loop1,grid1/local1,one dispatch result0.",
+        "limitations": "Only first mismatch and total12 reported; remaining wrong values and raw reciprocal bits not captured. +1ULP model reproduces first31, so internal bit is inference. Native mulhigh defect is not excluded by first QPA alone; original extended-multiply fixture is related qualification."
+      },
+      "algorithm": {
+        "base": 4294967296,
+        "seed": "Clamp pre-f2u to largest representable float32 below2^32. Keep original scaled floating reciprocal to seed integer Newton.",
+        "integer_direction": "Let B=2^32,d>0,s=B/d,r initial uintseed,lo=(r*d)%B. Product-high0 gives under/normalpath r+floor(r*((\u2212lo)%B)/B). Product-high1 gives overshoot r\u2212floor(r*lo/B)\u22121. For near-reciprocal seeds product high is0/1; signedness now explicit instead of interpreting wrapped negative error as positive.",
+        "proof_under": "For0<r*d<B, e=s\u2212r\u22650, correction=floor(r*e/s), gap\u03b4=s\u2212rprime=e\u00b2/s+fractionalpart(r*e/s)<1+e\u00b2/s. Seed0 remains0 and is handled by quotient bound.",
+        "proof_over": "ForB\u2264r*d<2B, e=r\u2212s\u22650, correction=floor(r*e/s), \u03b4=s\u2212(r\u2212correction\u22121)=1\u2212e+floor(e+e\u00b2/s). Hence0<\u03b4\u22641+e\u00b2/s, including equality1 when e=0. Correction+1\u2264r (lo<B), so subtraction cannot underflow.",
+        "quotient": "If0\u2264s\u2212rprime<2, thenq0=floor(n*rprime/B)\u2264floor(n/d) and deficit\u22642 for0\u2264n<B. Thusq0*d\u2264n, no remainder product wrap, and existing two comparisons/subtractions produce exact quotient/remainder. Signed abs/sign and remainder/modulo wrappers unchanged.",
+        "accuracy_premise": "As in original fast lowering, seed must be near reciprocal. For d\u22642^31 use exact sufficient(rd\u2212B)^2<B*d to obtaingap<2; for d>2^31,s<2 and a normal seed0/1/2 corrects to0/1, quotient\u22641. This is an explicit seed-accuracy premise, not a claim that bounded \u00b14ULP host modeling proves all hardware RCP values.",
+        "source_comment_erratum": "Built candidate292b/a6d comment says less-than; exact over-path equality at e=0 requires at-most. Separate comment-only-v2 source61eb7dd5 corrects wording, executable tokens identical. No completed build restart requested."
+      },
+      "scope": {
+        "changed_file": "src/compiler/nir/nir_lower_idiv.c",
+        "shared_callers": "SharedNIR32-bit division/rem/mod all consumers in isolated candidate, not Radish-only.8/16-bit separate lowering and signed postprocessing untouched.",
+        "tradeoff": "Adds integer high-product detection, error-direction select and conservative downward correction forovershoot; potential instruction/registercost. Correctness work, no tuning/performance claim.",
+        "unmodified": "Original CTS binary/modules/input/ref/oracle, API/feature/limit/guardrails and selectedfcd/d332."
+      },
+      "validation": "Independent source/invariant and isolated host build first. Original failedsdiv first, then remaining originaldivision and mulExtended tests under unchangedcaps; preserve any failure, no identical retry or expanded guard."
+    }
+  },
+  "host_stress": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-idiv-reciprocal-fix-0045/independent-review/stress-result.json",
+      "bytes": 386,
+      "sha256": "5ed1c0cd51de2c74ffbc2980cc79540264f26af58dabc7370966caeb83bbd75b"
+    },
+    "result": {
+      "denominator_samples": 1400654,
+      "seed_samples": 12605886,
+      "quotient_remainder_checks": 151270632,
+      "overshoot_seeds": 38335,
+      "old_lowering_failures": 333964,
+      "max_initial_e_squared_over_s": 1.0000004870819437,
+      "max_refined_gap": 1.0006154868874546,
+      "reciprocal_nearest_ulp_perturbations": [
+        -4,
+        -3,
+        -2,
+        -1,
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "status": "PASS finite host stress; not exhaustive32bit or actualnativeRCP measurement"
+    }
+  },
+  "native": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-idiv-reciprocal-fix-0045/independent-native-admission.json",
+      "bytes": 2880,
+      "sha256": "04bd209ee055b2fc87c64ea6075bca41b6d11ed6e8163052688eefcc6d2d198c"
+    },
+    "result": {
+      "status": "PASS candidate sdiv native/resource admission; original failing numerical test now permitted within original scope",
+      "reviewed_utc": "2026-11-02T22:58:15.953907+00:00",
+      "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-idiv-fixed-compile/compile",
+      "run_log_sha256": "ffafa15f979914de50e92d40f4410441c482089dc65fdf55290e1d62fbb25c75",
+      "runner_result_sha256": "824435bf93f654b20880f8ab134efc5a13564d4a8ac206d4080cb19f57c083c7",
+      "module_sha256": "a847838ce8a770479fffbc8c1543648f3e15f7dee24c9d05bee3c69d8081a4de",
+      "driver_strip_sha256": "2d28b91a3f30e5c54c321446974fac3383a87048a142b970b29fc2ab2836f270",
+      "source_patch_sha256": "292b4e24aae6092e161c2fb040d2671c18655ea94e97d1f99e18c844348efe20",
+      "native_body_sha256": "6d11a0108630080d122fd3e22e7ac96592c28794800edc9ed04f3a5064aa3b3a",
+      "native_stats": [
+        "; CL prog 1/1: 227 instr, 133 nops, 94 non-nops, 3 mov, 5 cov, 296 dwords",
+        "; CL prog 1/1: 0 last-baryf, 0 last-helper, 1 half, 8 full, 12 constlen",
+        "; CL prog 1/1: 136 cat0, 8 cat1, 72 cat2, 8 cat3, 1 cat4, 0 cat5, 2 cat6, 0 cat7",
+        "; CL prog 1/1: 10 sstall, 2 (ss), 87 systall, 1 (sy), 1 loops",
+        "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+      ],
+      "compiled_diagnostic": "CONTROL_FLOW_COMPILED active=2 buffers=2 images=0 native=9 full=8 half=1 constlen=12 private_per_fiber=0 private_per_sp=0 private_bo_bytes=0 shader_bo_bytes=4096 shared=0 local=1,1,1 robust_buffer_access=0 before_data_allocations=1 no_spill_inference=1",
+      "checks": [
+        "Candidate finalized NIR retains preconversion fmin(0x4f7fffff), producthigh0/nonzero selection, positive/negative error and subtract(correction+1) selection. Native min.f plus product-high-driven two SELs and negated correction+1 remain; actual compiler did not optimize away correction.",
+        "Same original Shader-only sdiv module/local1/twoSSBO, RBAfalse as original default.9units/227instructions/296dwords1184B fits actual4096B codeBO;8F1H/const12/private0/shared0/one original input loop.32physical threads*(2*8+1)halfregisters=544 within existing4096 guard; no resource inflation or guard change.",
+        "Actual compiled correction/native resource proof only; no data buffers/commands/submit/dispatch in this helper scope. This is not numerical proof or direct capture of reciprocal bits.",
+        "Clean397ms/4.9MiB/0swap/fullcollection/unchangedassets/fault/services under originalcontrols."
+      ],
+      "admission": "Run exact original failedsdiv first, then original division5/mul4 under unchangedcaps; preserve any numerical failure. No same-payload baseline retry.",
+      "limits": [
+        "Negative-operand OpSRem/OpSMod lanes in later originalAmber fixtures are undefined by Vulkan1.1; treat as observed consistency only, per batch erratum. Defined sdiv scope unaffected.",
+        "No rawRCP bit capture or broader compiler/IEEE/conformance claim."
+      ]
+    }
+  },
+  "division5": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-idiv-reciprocal-fix-0045/independent-division5-actual-review.json",
+      "bytes": 8064,
+      "sha256": "7ec3ba5c3316c3803dbaf3713e2295e8ef75b1c8846f9d0604c0c514ce40fe6f"
+    },
+    "result": {
+      "status": "PASS original failedsdiv repaired and original related division5 exact oracles; finite mandatory/undefined-lane scope retained",
+      "reviewed_utc": "2026-11-02T23:01:18.197526+00:00",
+      "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-idiv-fixed-00/probe",
+      "run_log_sha256": "fd7fb3afc0f9b406cde5c7f180a23aa016282cc83025e3fc406c44a43ec30714",
+      "runner_result_sha256": "959888715116fcf4c4b7554a683561eb6d696a981b477898713959466b2a7547",
+      "native_admission_sha256": "04bd209ee055b2fc87c64ea6075bca41b6d11ed6e8163052688eefcc6d2d198c",
+      "source_patch_sha256": "292b4e24aae6092e161c2fb040d2671c18655ea94e97d1f99e18c844348efe20",
+      "rows": [
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.sdiv_32bit",
+          "status": "Pass",
+          "qpa_sha256": "f1ec290be58865054f5e44be7166262c20c6e81ef5f88925c53c6a60071ea496",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaab17a837a0 grid=1,1,1 local=1,1,1 barrier=0 loops=1 instrlen=9 chunks=1 submits=1 ns=4319438 submit_ns=3997980 submit_max_ns=3997980 result=0",
+          "native_body_sha256": "6d11a0108630080d122fd3e22e7ac96592c28794800edc9ed04f3a5064aa3b3a",
+          "native_stats": [
+            "; CL prog 1/1: 227 instr, 133 nops, 94 non-nops, 3 mov, 5 cov, 296 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 1 half, 8 full, 12 constlen",
+            "; CL prog 1/1: 136 cat0, 8 cat1, 72 cat2, 8 cat3, 1 cat4, 0 cat5, 2 cat6, 0 cat7",
+            "; CL prog 1/1: 10 sstall, 2 (ss), 87 systall, 1 (sy), 1 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "exact_original_output_words": 64,
+          "defined_vulkan11_words": 64,
+          "undefined_negative_operand_consistency_words": 0
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.smod_32bit",
+          "status": "Pass",
+          "qpa_sha256": "0fded32bc5308f54eaa385c4f5cccfb8433b38b447bb970c713ad35a53294de6",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaab03f1bcf0 grid=1,1,1 local=1,1,1 barrier=0 loops=1 instrlen=10 chunks=1 submits=1 ns=4493606 submit_ns=4158708 submit_max_ns=4158708 result=0",
+          "native_body_sha256": "59dfe22689d597db0cedcc132f131e3371d95718b4798eb3d188f976dd21ae03",
+          "native_stats": [
+            "; CL prog 1/1: 233 instr, 136 nops, 97 non-nops, 3 mov, 3 cov, 320 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 1 half, 8 full, 12 constlen",
+            "; CL prog 1/1: 139 cat0, 6 cat1, 75 cat2, 10 cat3, 1 cat4, 0 cat5, 2 cat6, 0 cat7",
+            "; CL prog 1/1: 10 sstall, 2 (ss), 87 systall, 1 (sy), 1 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "exact_original_output_words": 64,
+          "defined_vulkan11_words": 16,
+          "undefined_negative_operand_consistency_words": 48
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.srem_32bit",
+          "status": "Pass",
+          "qpa_sha256": "7d951d932c05f2d17c11ab90536254b6dac2b8be7f463696cb409b50f9e10aa7",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaab0cac7b60 grid=1,1,1 local=1,1,1 barrier=0 loops=1 instrlen=9 chunks=1 submits=1 ns=4111729 submit_ns=3761833 submit_max_ns=3761833 result=0",
+          "native_body_sha256": "873df6a8925db756a56bc6f16a1c734a08104888d293acbac4a00f37e8c1bf83",
+          "native_stats": [
+            "; CL prog 1/1: 221 instr, 131 nops, 90 non-nops, 3 mov, 2 cov, 288 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 8 full, 12 constlen",
+            "; CL prog 1/1: 134 cat0, 5 cat1, 70 cat2, 9 cat3, 1 cat4, 0 cat5, 2 cat6, 0 cat7",
+            "; CL prog 1/1: 10 sstall, 2 (ss), 87 systall, 1 (sy), 1 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "exact_original_output_words": 64,
+          "defined_vulkan11_words": 16,
+          "undefined_negative_operand_consistency_words": 48
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.udiv_32bit",
+          "status": "Pass",
+          "qpa_sha256": "b7c94089303a56caf9616cda401a77eef6f823dc3adb1ed7890d115a4d3c4266",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaaeac937a0 grid=1,1,1 local=1,1,1 barrier=0 loops=1 instrlen=9 chunks=1 submits=1 ns=4366053 submit_ns=4054334 submit_max_ns=4054334 result=0",
+          "native_body_sha256": "6310617ce7da367eed8bcc6a851a44102df935471a8a466c38b8ccc6d226011a",
+          "native_stats": [
+            "; CL prog 1/1: 215 instr, 127 nops, 88 non-nops, 3 mov, 5 cov, 288 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 1 half, 8 full, 12 constlen",
+            "; CL prog 1/1: 130 cat0, 8 cat1, 67 cat2, 7 cat3, 1 cat4, 0 cat5, 2 cat6, 0 cat7",
+            "; CL prog 1/1: 10 sstall, 2 (ss), 87 systall, 1 (sy), 1 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "exact_original_output_words": 64,
+          "defined_vulkan11_words": 64,
+          "undefined_negative_operand_consistency_words": 0
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.umod_32bit",
+          "status": "Pass",
+          "qpa_sha256": "6230e2a26456b8fc55a5e66761f2cf58536e92514d98e8071337e25556e7307a",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaab16644ed0 grid=1,1,1 local=1,1,1 barrier=0 loops=1 instrlen=9 chunks=1 submits=1 ns=4213084 submit_ns=3888812 submit_max_ns=3888812 result=0",
+          "native_body_sha256": "43ab7a722b62be036f020120e18c5a5affce5c3b5b3cc85d3695697dfe33bd3c",
+          "native_stats": [
+            "; CL prog 1/1: 209 instr, 124 nops, 85 non-nops, 3 mov, 2 cov, 288 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 8 full, 12 constlen",
+            "; CL prog 1/1: 127 cat0, 5 cat1, 66 cat2, 8 cat3, 1 cat4, 0 cat5, 2 cat6, 0 cat7",
+            "; CL prog 1/1: 10 sstall, 2 (ss), 87 systall, 1 (sy), 1 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "exact_original_output_words": 64,
+          "defined_vulkan11_words": 64,
+          "undefined_negative_operand_consistency_words": 0
+        }
+      ],
+      "totals": {
+        "original_cases": 5,
+        "dispatches": 5,
+        "invocations": 5,
+        "sequential_integer_operations": 320,
+        "original_exact_output_words": 320,
+        "defined_vulkan11_output_words": 224,
+        "undefined_negative_remainder_modulo_consistency_words": 96,
+        "chunks": 5,
+        "submits": 5
+      },
+      "causal_scope": [
+        "Original baseline sdiv35775 had12mismatches/first31expected14. Candidate executes same unmodified original asset/module/oracle and now all64 exact expected words pass; first expected14 is thereby qualified without changing input/oracle. Rawoutput array not separately printed.",
+        "Actual original sdiv native ISA/stats exactly match admitted compile-only correctedmodule; correction present and one original64-iteration loop retained. Related signed/unsigneddivision/remainder lowering also executes with clamp.",
+        "The observed wrong raw reciprocal bit remains inferred; passing corrected source establishes the bounded correction result, not a direct reciprocal-register capture or exhaustive full-domain hardware precision proof."
+      ],
+      "resources": [
+        "Native sdiv9units/227instructions296dwords vs baseline8units183instructions256dwords;8F1H/const12 unchanged, no private/shared/newloops. Other original cases9..10units/209..233instructions/288..320dwords,8F0or1H/const12/loop1/no private. No guard/feature/API/inference change.",
+        "All exactassets, original0e715/candidate2d28 identity, collection/unchangedassets/fault/services pass;7.411s/121.6MiB/0swap and228577B log within originalcaps."
+      ],
+      "limits": [
+        "Vulkan1.1 OpSRem/OpSMod negativeoperand results undefined: each original Amber has16definedpositive+48negative observationlanes; full fixtures/oracles unchanged, negative lanes not counted as mandatory semantics.",
+        "Follow-up original positive remainder2 and mulExtended4 remain separate actual gates; no omnibus delay of this passed failedcase result.",
+        "No allocation-padding or universal arithmetic/conformance proof; strict42sRGB discrepancy untouched."
+      ]
+    }
+  },
+  "multiply4": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-idiv-reciprocal-fix-0045/independent-mul4-actual-review.json",
+      "bytes": 5528,
+      "sha256": "f555275a90f4b21ac38827aeab490ac39633af6b39824e22c60671e49933a023"
+    },
+    "result": {
+      "status": "PASS four original extended multiplication cases on corrected private candidate",
+      "reviewed_utc": "2026-11-02T23:02:08.757430+00:00",
+      "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-idiv-fixed-01/probe",
+      "run_log_sha256": "ad795b13f2fd0203b6251d2b3404b6159ec636373013c147e706541a98f5b818",
+      "runner_result_sha256": "ad6e8a1190d9c888a4e625e5303fb340f6effcbdbc135a27cc0a0f9ae4ed675d",
+      "rows": [
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.signed_32bit",
+          "status": "Pass",
+          "qpa_sha256": "fa4d00ec1cb32a70150a2918700069c484138e9e9da87024cc9cd4a7033f37ca",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaab11c80ab0 grid=1,1,1 local=1,1,1 barrier=0 loops=1 instrlen=3 chunks=1 submits=1 ns=4174438 submit_ns=3730843 submit_max_ns=3730843 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 69 instr, 32 nops, 37 non-nops, 2 mov, 0 cov, 96 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 5 full, 12 constlen",
+            "; CL prog 1/1: 35 cat0, 2 cat1, 22 cat2, 8 cat3, 0 cat4, 0 cat5, 2 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 1 (ss), 87 systall, 1 (sy), 1 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "output_components": 200,
+          "width_bits": 32
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.signed_8bit",
+          "status": "Pass",
+          "qpa_sha256": "f8dc356dc571cdec4b1907d86d5e4faa9536463204e904ca5a6dec86698adc6f",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaab1c242640 grid=1,1,1 local=1,1,1 barrier=0 loops=1 instrlen=4 chunks=1 submits=1 ns=3983344 submit_ns=3687301 submit_max_ns=3687301 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 77 instr, 35 nops, 42 non-nops, 3 mov, 2 cov, 128 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 1 half, 6 full, 12 constlen",
+            "; CL prog 1/1: 38 cat0, 5 cat1, 26 cat2, 2 cat3, 0 cat4, 0 cat5, 6 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 1 (ss), 83 systall, 1 (sy), 1 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "output_components": 200,
+          "width_bits": 8
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.unsigned_32bit",
+          "status": "Pass",
+          "qpa_sha256": "995be0830b0e91e87d88ffa1eb892de5d652147b26216ff72eecbd15cb5b9cf2",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaab0b574bd0 grid=1,1,1 local=1,1,1 barrier=0 loops=1 instrlen=3 chunks=1 submits=1 ns=4159594 submit_ns=3833239 submit_max_ns=3833239 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 68 instr, 37 nops, 31 non-nops, 2 mov, 0 cov, 96 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 4 full, 12 constlen",
+            "; CL prog 1/1: 40 cat0, 2 cat1, 22 cat2, 2 cat3, 0 cat4, 0 cat5, 2 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 1 (ss), 87 systall, 1 (sy), 1 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "output_components": 200,
+          "width_bits": 32
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.unsigned_8bit",
+          "status": "Pass",
+          "qpa_sha256": "b1ed6f48deb481e6d2d3ad66b2c31be91f3593dfcdd2e8053212e13744b8be0f",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaae7f14b90 grid=1,1,1 local=1,1,1 barrier=0 loops=1 instrlen=4 chunks=1 submits=1 ns=4149229 submit_ns=3791572 submit_max_ns=3791572 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 73 instr, 33 nops, 40 non-nops, 3 mov, 0 cov, 128 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 1 half, 6 full, 12 constlen",
+            "; CL prog 1/1: 36 cat0, 3 cat1, 28 cat2, 0 cat3, 0 cat4, 0 cat5, 6 cat6, 0 cat7",
+            "; CL prog 1/1: 0 sstall, 1 (ss), 83 systall, 1 (sy), 1 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "output_components": 200,
+          "width_bits": 8
+        }
+      ],
+      "totals": {
+        "original_cases": 4,
+        "dispatches": 4,
+        "invocations": 4,
+        "sequential_product_pairs": 400,
+        "exact_high_low_components": 800,
+        "mandatory32bit_components": 400,
+        "advertised8bit_components": 400,
+        "exact_output_bytes": 2000,
+        "chunks": 4,
+        "submits": 4
+      },
+      "checks": [
+        "Exact original0e715, candidate2d28, allfour immutableAmber assets and original exactEQ_BUFFER reference retained.100products percase, signed/unsigned32bit+advertised8bit; independently recomputed source references agree with actual originalPASS.",
+        "Native32bit products retain16\u00d716 lower/high multiplication terms and full2component stores.8bit high/low results use existing maskedAND/OR byte-write lowering, no new idiv correction or resource changes required inthese shaders. Singleinvocation loop100; no inter-invocation byte-write concurrency claim.",
+        "Native3..4units/68..77instructions/96..128dwords,4..6F/0or1H/const12/private0/shared0/one original loop; no guardchange.",
+        "Allcollection/assets/fault/services pass;5.629s/119.4MiB/0swap and128924B log within originalcaps."
+      ],
+      "limits": [
+        "These independent full-product fixtures corroborate bounded integer multiply-high correctness, not exhaustivefull32domain or direct rawRCP register capture.",
+        "400mandatory32bit and400optionaladvertised8bit outputcomponents distinguished;16/64arithmetic remainsfalse/excluded.",
+        "No whole-conformance/IEEE/precision/performance claim, original42strictsRGB failures unchanged."
+      ]
+    }
+  },
+  "combined9": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/independent-actual-review.json",
+      "bytes": 1430,
+      "sha256": "2d5041b27c7685c882dc1f62fbcdd57d0db6d7e965ce78a5574ec25de1ff4e9f"
+    },
+    "result": {
+      "status": "PASS all nine original integer arithmetic cases on correctedprivatecandidate",
+      "source_bounds_sha256": "9597f335c106e81e516f91c2062d455f66c4e167cf98a37d7aacd6378fa1ce04",
+      "division5_actual": {
+        "path": "/run/media/jethac/Shared/radish/compute11-idiv-reciprocal-fix-0045/independent-division5-actual-review.json",
+        "sha256": "7ec3ba5c3316c3803dbaf3713e2295e8ef75b1c8846f9d0604c0c514ce40fe6f"
+      },
+      "mul4_actual": {
+        "path": "/run/media/jethac/Shared/radish/compute11-idiv-reciprocal-fix-0045/independent-mul4-actual-review.json",
+        "sha256": "f555275a90f4b21ac38827aeab490ac39633af6b39824e22c60671e49933a023"
+      },
+      "exact_disjoint_inventory_sha256": "2344e68a9014dfe9bae9ab4ab64562dafa76cac3b48f94e31f22a5954a9bf81e",
+      "totals": {
+        "original_cases": 9,
+        "dispatches": 9,
+        "logical_invocations": 9,
+        "sequential_original_operations": 720,
+        "original_exact_output_components": 1120,
+        "defined_mandatory32bit_components": 624,
+        "defined_advertised8bit_components": 400,
+        "negativeVulkan11undefined_rem_mod_observation_components": 96
+      },
+      "scope": "Originalsdiv12bad\u219264exactPASS, all original source/assets/oracles unchanged; newsharedNIR patch292b and isolatedbuild5c6d/sourcecounterpart0cf189ff/native04bd retained. NegativeRemMod lanes observationonly per1e8dd465. Positive2 actual remains separate. No unrelatedf222qualification transfer or fullconformanceclaim."
+    }
+  },
+  "positive_source": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-idiv-positive-remainders-next-0045/source-bounds.json",
+      "bytes": 6481,
+      "sha256": "2ae11111d69fd64f5a05da6874df6639849e55dc711b522b6b36a6d404f21900"
+    },
+    "result": {
+      "status": "SOURCE READY small affected32-bit variable-denominator regression; original tests and exact oracles unchanged",
+      "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+      "cts_binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
+      "case_file": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-idiv-positive-remainders-next-0045/cases.txt",
+        "sha256": "69ffde89d75fc783ac0ddd52c2e7b682d7ae5fa10bdeff7e7ec4edff93f9a0a3",
+        "count": 2
+      },
+      "catalog": {
+        "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/mustpass/main/vk-default/spirv-assembly.txt",
+        "sha256": "611ba2707ff9c23c958615ff2730d9c0b39eb7b4db771ba1064fccdb61b5ef60"
+      },
+      "source_pins": [
+        {
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmInstructionTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-idiv-positive-remainders-next-0045/source/vktSpvAsmInstructionTests.cpp",
+          "sha256": "d6800ae7655ee7bb2a535d450d01ae998f8439cb7b342ea9e22ec99095d518d8"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-idiv-positive-remainders-next-0045/source/vktSpvAsmTests.cpp",
+          "sha256": "97cd0a9fc6b7361bbe81c6e64a11d5d428fa439c98098638398969dddb66dd9d"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/vktTestPackage.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-idiv-positive-remainders-next-0045/source/vktTestPackage.cpp",
+          "sha256": "272802a91a54f6aade1741c713563936fe01be295ea648bdf85e5cce0e4823d6"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/amber/vktAmberHelper.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-idiv-positive-remainders-next-0045/source/vktAmberHelper.cpp",
+          "sha256": "1a3e29001ea8cbb728751b1762873bbd43ecc9f0868b4aef3a9cf7cf6e57b326"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/amber/vktAmberTestCase.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-idiv-positive-remainders-next-0045/source/vktAmberTestCase.cpp",
+          "sha256": "587f5ff9de99d5de9f4be7cd3a145d6af1f270cd068918aba28fe1a5043cc2e0"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/compute11-official-buffer-atomics-next-0045/source/rd_instance.c",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-idiv-positive-remainders-next-0045/source/rd_instance.c",
+          "sha256": "c5763ff7a03fed9a13aebf291eeae5c182cfb79eba83c1b839d74d67a0682bac"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmComputeShaderTestUtil.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-idiv-positive-remainders-next-0045/source/vktSpvAsmComputeShaderTestUtil.cpp",
+          "sha256": "2080fbe1302048f52ce01f175d093054b737165ffc087c5d2a9744262d3e8218"
+        },
+        {
+          "source": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/spirv_assembly/vktSpvAsmComputeShaderTestUtil.hpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-official-idiv-positive-remainders-next-0045/source/vktSpvAsmComputeShaderTestUtil.hpp",
+          "sha256": "dfd7c2e46d5f603a7bedde13bf9eb208465d64dd855fcdf34ea0ebdcd289ca86"
+        }
+      ],
+      "source_derivation": [
+        "vktSpvAsmInstructionTests.cpp2799-2899 createOpSRemComputeGroup and3014-3134 createOpSModComputeGroup, registered21916/21918 with useMaintenance8=false. Positive row has QP_TEST_RESULT_FAIL, original random seed per group and numElements200.",
+        "Inputs int32 numerator0..65536, denominator1..100 via filterNotZero. Both nonnegative so old Vulkan1.1 remainder/modulo defined and exact C% oracle. Each output200int32 words checked by default byte-exact memcmp; failure is FAIL (not all-row Pass override).",
+        "getComputeAsmShaderPreamble emits Shader capability, LogicalGLSL450, GLCompute/local1; common types and UniformBufferBlock map3SSBO binding0,1,2. No optional feature, specialization/push, image/shared/private array/barrier/loop in shader.",
+        "Default harness allocates two input800B buffers and output800B, flushes host writes, dispatches200x1x1, COMPUTE->HOST output barrier, submit/wait/invalidate, compares800 logical bytes. No allocation-padding oracle."
+      ],
+      "bounds": {
+        "cases": 2,
+        "dispatches": 2,
+        "invocations_total": 400,
+        "local_size": [
+          1,
+          1,
+          1
+        ],
+        "grid_each": [
+          200,
+          1,
+          1
+        ],
+        "ssbo_descriptors": 3,
+        "max_buffer_logical_bytes": 800,
+        "live_logical_buffer_bytes": 2400,
+        "output_words_total": 400,
+        "specialization_bytes": 0,
+        "push_constant_bytes": 0,
+        "shared_bytes": 0,
+        "workgroup_barriers": 0,
+        "shader_loops": 0
+      },
+      "candidate": {
+        "full_sha256": "5c6d00c736b07ec0a3879a0e77036c527faecf7202101ebd5b8882e8bb264eab",
+        "strip_sha256": "2d28b91a3f30e5c54c321446974fac3383a87048a142b970b29fc2ab2836f270"
+      },
+      "regression_rationale": "Same changed 32-bit variable reciprocal lowering with two independentlyloaded operands and200 independent invocations, complementing original Amber one-invocation64-iteration stress. Existing original division5/mul4 remain first gates. No unrelatedf222 qualification transfer inferred.",
+      "scope_note": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/vulkan11-remainder-scope-clarification.json",
+        "sha256": "1e8dd465311b7cf174a2f498d41ea87ee3a94f95c620e98d477399f8e8442244"
+      },
+      "exclusions": [
+        "The sibling all cases allow negative-operand mismatches to reportPass under old Vulkan environment; omitted from this meaningful numerical regression rather than counted as mandatory negative semantics.",
+        "Int64 sibling groups remain unsupported shaderInt64=false. No maintenance8/Android extension branches included."
+      ],
+      "controls": "Existing original90s/384MiB/8MiB output+64MiB reserve/per-case faultstop; source/native/actual outcome gates unchanged. No device action by author."
+    }
+  },
+  "positive_source_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-idiv-positive-remainders-next-0045/independent-source-review.json",
+      "bytes": 2289,
+      "sha256": "faddf76d276b4b91f687f9812d44edd03e3ca5fcdb2a32c7f45fcae8a7e13984"
+    },
+    "result": {
+      "status": "PASS two original positive remainder/modulo regression source counterpart",
+      "reviewed_utc": "2026-11-02T22:59:03.809733+00:00",
+      "source_bounds_sha256": "2ae11111d69fd64f5a05da6874df6639849e55dc711b522b6b36a6d404f21900",
+      "case_inventory_sha256": "69ffde89d75fc783ac0ddd52c2e7b682d7ae5fa10bdeff7e7ec4edff93f9a0a3",
+      "names": [
+        "dEQP-VK.spirv_assembly.instruction.compute.opsrem.positive",
+        "dEQP-VK.spirv_assembly.instruction.compute.opsmod.positive"
+      ],
+      "checks": [
+        "Rehashed8source/snapshotpairs/catalog and exact2names/erratum. Registered core createOpSRem/Mod with useMaintenance8false; positive fail status is actual QP_TEST_RESULT_FAIL, not permissive all-operand sibling.",
+        "Original numerator0..65536 and filterNotZero denominator1..100 retain deterministic sampling. All selected operands nonnegative and divisorsnonzero, so Vulkan1.1 signed remainder/modulo outcomes are defined; expected C% matches integer n\u2212floor(n/d)*d.",
+        "Shader-only SPIRV1.0/local1/grid200/three800B SSBOs; direct2loads\u2192one original SRem/SMod\u2192store; nooptionalfeatures/shaderloops/shared/push. Existing original flushedinputs/compute\u2192HOST/fence/invalidate/exact800Bmemcmp retained.",
+        "Same changed32-bit variable-denominator lowering; complements Amber sequential-loop stress with200independent invocations percase. No new driver mutation or shader/input/oracle edits."
+      ],
+      "bounds": {
+        "cases": 2,
+        "dispatches": 2,
+        "invocations_total": 400,
+        "local_size": [
+          1,
+          1,
+          1
+        ],
+        "grid_each": [
+          200,
+          1,
+          1
+        ],
+        "ssbo_descriptors": 3,
+        "max_buffer_logical_bytes": 800,
+        "live_logical_buffer_bytes": 2400,
+        "output_words_total": 400,
+        "specialization_bytes": 0,
+        "push_constant_bytes": 0,
+        "shared_bytes": 0,
+        "workgroup_barriers": 0,
+        "shader_loops": 0
+      },
+      "admission": "Sourcegate clear under original90s384MiB/log/disk/faultstop after ready originaldivision5/mul4 gates. Actualnative/output gate separate.",
+      "limits": [
+        "400exact logical outputwords only; no allocationpadding/concurrency/universaloperand proof.",
+        "Negative-operand Amber remainder/modulo consistency remains explicitly nonmandatory Vulkan1.1 evidence, unchanged fixture."
+      ]
+    }
+  },
+  "positive_actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-idiv-positive-remainders-next-0045/independent-actual-review.json",
+      "bytes": 3522,
+      "sha256": "9ab42abf074f9d10e9208279ff1054d71c34c4d09485b562800306195de99b2f"
+    },
+    "result": {
+      "status": "PASS original positive OpSRem/OpSMod regression on corrected privatecandidate",
+      "reviewed_utc": "2026-11-02T23:02:40.364132+00:00",
+      "source_review_sha256": "faddf76d276b4b91f687f9812d44edd03e3ca5fcdb2a32c7f45fcae8a7e13984",
+      "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-idiv-positive/probe",
+      "run_log_sha256": "ff9ee269abca972f1f8ed3bc2136d03caa2c16950bad992307ce8280e6f5a450",
+      "runner_result_sha256": "4d3427560c939f185ddaea40d3766601e19ecd12e8c920f294bfba13e8085cac",
+      "rows": [
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opsrem.positive",
+          "status": "Pass",
+          "qpa_sha256": "5e8ff0c7948a9a8d507a9df28c5c9466574be41533e14dd65f77d926836f5dd0",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaad9942ff0 grid=200,1,1 local=1,1,1 barrier=0 loops=0 instrlen=9 chunks=4 submits=4 ns=5133085 submit_ns=4605689 submit_max_ns=3620843 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 213 instr, 129 nops, 84 non-nops, 2 mov, 2 cov, 288 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 0 half, 8 full, 16 constlen",
+            "; CL prog 1/1: 130 cat0, 4 cat1, 66 cat2, 9 cat3, 1 cat4, 0 cat5, 3 cat6, 0 cat7",
+            "; CL prog 1/1: 10 sstall, 1 (ss), 86 systall, 1 (sy), 0 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "exact_output_words": 200
+        },
+        {
+          "name": "dEQP-VK.spirv_assembly.instruction.compute.opsmod.positive",
+          "status": "Pass",
+          "qpa_sha256": "5428cb19d208f5768ea36a064e80f1ef0c040ab85088d227e019a7db704d79f3",
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaaddd99ff0 grid=200,1,1 local=1,1,1 barrier=0 loops=0 instrlen=9 chunks=4 submits=4 ns=5571732 submit_ns=5224491 submit_max_ns=3784853 result=0",
+          "native_stats": [
+            "; CL prog 1/1: 225 instr, 134 nops, 91 non-nops, 2 mov, 3 cov, 288 dwords",
+            "; CL prog 1/1: 0 last-baryf, 0 last-helper, 1 half, 8 full, 16 constlen",
+            "; CL prog 1/1: 135 cat0, 5 cat1, 71 cat2, 10 cat3, 1 cat4, 0 cat5, 3 cat6, 0 cat7",
+            "; CL prog 1/1: 10 sstall, 1 (ss), 86 systall, 1 (sy), 0 loops",
+            "; CL prog 1/1: 16 max_waves, 0 double_threadsize"
+          ],
+          "exact_output_words": 200
+        }
+      ],
+      "totals": {
+        "original_cases": 2,
+        "dispatches": 2,
+        "logical_invocations": 400,
+        "exact_defined_output_words": 400,
+        "exact_defined_output_bytes": 1600,
+        "chunks": 8,
+        "submits": 8
+      },
+      "checks": [
+        "Original0e715/exact2case inventory/candidate2d28, actualQPA Pass and original hard-Fail memcmp positiveoracle agree. Numerator0..65536/divisor1..100 source bound makes every tested lane defined in Vulkan1.1; no negativeoperand waiver or altered randominputs.",
+        "Native correction clamp+selection retained in both actualshaders,9units/288dwords/8F0or1H/const16/private0/shared0/loops0.3SSBO/two independentlyloaded operands and200logicalinvocations percase complement sequential64iteration Amber test.",
+        "Exact logical200int outputs/case read after originalCOMPUTE\u2192HOST/fence/invalidation; no new allocation-paddingcanaries.",
+        "Cleanassets/collection/fault/services,3.052s121.2MiB0swap and76762B log under unchangedcontrols."
+      ],
+      "scope": [
+        "Completes narrow original2affected-operation regression after originaldivision5/mul4; no broadold-f222 qualification transfer or fullconformanceclaim.",
+        "DirectrawRCPbits and universalhardwareapproximation accuracy remain unmeasured; no performance claim."
+      ]
+    }
+  },
+  "positive_runner_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-idiv-positive-runner-0045/independent-runner-review.json",
+      "bytes": 1284,
+      "sha256": "1c7679c9b04e0d4ec8e16ffd0ff6ffe5766a59bb68c6dcf2c69c68f3a643ecb1"
+    },
+    "result": {
+      "status": "PASS finite SHA/count-only runner and immutable candidate payload counterpart",
+      "runner_sha256": "71e1f4ce5c25135a8ed875cb8bdd47cad6074bcc6bdabb21405882e7fe39fab7",
+      "baseline_runner_sha256": "4cb3c33d91c3a26f694edec2aa5995f432d77887822a58315fe8a198422ea366",
+      "source_plan_sha256": "2ae11111d69fd64f5a05da6874df6639849e55dc711b522b6b36a6d404f21900",
+      "cases_sha256": "69ffde89d75fc783ac0ddd52c2e7b682d7ae5fa10bdeff7e7ec4edff93f9a0a3",
+      "count": 2,
+      "hostcheck_sha256": "d6aa1d0c0abe135e85d4c670105c7155b6f5225ad285b00b0160a764579f101a",
+      "argv_sha256": "ed47dd2305d80fd1d0283149d0b374e02e97ebb116452b8d618f22b40b7bad07",
+      "checks": [
+        "AST byte-equivalent original single-inventory engine except approved SHA/count; original90s384MiB/8MiB output+64MiB reserve and faultstop unchanged.",
+        "All actual host assets rehashed; original0e715/loader75699, candidate strip2d28, exact2 names. Verified existing candidate deployment reuse path; owner still performs actual fresh precheck.",
+        "Two strict FAIL numerical oracles,400 nonnegative defined output words; source counterpart faddf76d and prior original division admission retained."
+      ],
+      "limits": "No device action or numerical inference from runner/source; actual outcome counterpart required."
+    }
+  },
+  "remainder_scope_erratum": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/vulkan11-remainder-scope-clarification.json",
+      "bytes": 2048,
+      "sha256": "1e8dd465311b7cf174a2f498d41ea87ee3a94f95c620e98d477399f8e8442244"
+    },
+    "result": {
+      "status": "Scope clarification only; preserves all original source, fixtures, reference values, and result status",
+      "prior_review": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/independent-source-runner-review.json",
+        "sha256": "7f0207bfe32182b3f5487c935612c9e6563a60f77899bc997e5c552b7a3ca544"
+      },
+      "primary": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-idiv-positive-remainders-next-0045/source/v1.1.126-spirvenv.txt",
+        "sha256": "62f0dc5bba25793db42aa91e878987bda55c0ced82317ae7b9f541f72e1ea773",
+        "upstream": "https://github.com/KhronosGroup/Vulkan-Docs/blob/v1.1.126/appendices/spirvenv.txt#L1428-L1436"
+      },
+      "correction": "General SPIR-V signed remainder/modulo sign rules alone do not establish Vulkan1.1 negative-operand requirements. Pinned Vulkan environment leaves either-negative OpSRem/OpSMod results undefined; original current CTS non-maintenance8 groups explicitly classify such mismatches as Pass. Original Amber negative-lane numerical success is consistency evidence, not mandatory1.1 proof. All nonnegative lanes and valid signed/unsigned division remain normative. No maintenance8 feature is enabled or inferred.",
+      "cases": [
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.smod_32bit",
+          "input_pairs": 64,
+          "nonnegative_defined_vulkan11": 16,
+          "negative_result_undefined_vulkan11": 48,
+          "asset_sha256": "09a69055df93830409464b4fd529d4092b7cc8e99e26f60c5c16a9b53c19f42b"
+        },
+        {
+          "case": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.srem_32bit",
+          "input_pairs": 64,
+          "nonnegative_defined_vulkan11": 16,
+          "negative_result_undefined_vulkan11": 48,
+          "asset_sha256": "5a1290b8401726e672f5c85f6c840446facf99996b5d509a3d74e62c7ce69873"
+        }
+      ],
+      "unaffected": "The failing first sdiv case has no zero divisor or MIN/-1 and remains defined. The reviewed correction/source/native admission remains applicable. Original9 tests unchanged."
+    }
+  },
+  "original_results": [
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-idiv-fixed-00/probe/runner-result.json",
+        "bytes": 3217,
+        "sha256": "959888715116fcf4c4b7554a683561eb6d696a981b477898713959466b2a7547"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "libvulkan_radish.so": {
+            "bytes": 13622816,
+            "sha256": "2d28b91a3f30e5c54c321446974fac3383a87048a142b970b29fc2ab2836f270"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 355,
+            "sha256": "ebb4eb6e90bc271551397dadb5fa27ccf98364b977bf91a76935997cf2106669"
+          },
+          "vulkan/amber/spirv_assembly/instruction/compute/integer_division/sdiv_32bit.amber": {
+            "bytes": 7614,
+            "sha256": "74fb6b34387aab9c79dd2524a528f289d123a0dca9208866a71c05c00ad86861"
+          },
+          "vulkan/amber/spirv_assembly/instruction/compute/integer_division/smod_32bit.amber": {
+            "bytes": 7942,
+            "sha256": "09a69055df93830409464b4fd529d4092b7cc8e99e26f60c5c16a9b53c19f42b"
+          },
+          "vulkan/amber/spirv_assembly/instruction/compute/integer_division/srem_32bit.amber": {
+            "bytes": 7952,
+            "sha256": "5a1290b8401726e672f5c85f6c840446facf99996b5d509a3d74e62c7ce69873"
+          },
+          "vulkan/amber/spirv_assembly/instruction/compute/integer_division/udiv_32bit.amber": {
+            "bytes": 7063,
+            "sha256": "4bae14aadc0c234f8b04d16087f13a5af1d29a90f3e84d20ecca8c94157a9222"
+          },
+          "vulkan/amber/spirv_assembly/instruction/compute/integer_division/umod_32bit.amber": {
+            "bytes": 7276,
+            "sha256": "d1aeecce4fb0e827094223ec5f914c6aafd1bfaf877fe4a0584d8b5895deb5bd"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "radish_icd.json": {
+            "bytes": 162,
+            "sha256": "fd9c0fb533cca7d79339de01aafe867238a489852f4a09ba930a690e00ad1ee4"
+          },
+          "payload.json": {
+            "bytes": 1974,
+            "sha256": "c39a9efba2dbb906a3ddb415f46f29dad3a4d6a4bdcfe306278ab70dff14f653"
+          }
+        },
+        "run_log": {
+          "bytes": 228577,
+          "sha256": "fd7fb3afc0f9b406cde5c7f180a23aa016282cc83025e3fc406c44a43ec30714"
+        },
+        "qpa": {
+          "bytes": 8620,
+          "sha256": "1826d8a11a0bd465bec0fa77ac0c70e7fe95d4f9ddfd7ecb793f4f207ae9e7e9"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.sdiv_32bit",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.smod_32bit",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.srem_32bit",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.udiv_32bit",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.integer_division.umod_32bit",
+            "status": "Pass",
+            "detail": "Pass"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    },
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-idiv-fixed-01/probe/runner-result.json",
+        "bytes": 2855,
+        "sha256": "ad6e8a1190d9c888a4e625e5303fb340f6effcbdbc135a27cc0a0f9ae4ed675d"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "libvulkan_radish.so": {
+            "bytes": 13622816,
+            "sha256": "2d28b91a3f30e5c54c321446974fac3383a87048a142b970b29fc2ab2836f270"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 278,
+            "sha256": "8b1c4c6e52c83fb31e7ffba07134118a1cb63dfc23c4ee75c55be36126a5f6cb"
+          },
+          "vulkan/amber/spirv_assembly/instruction/compute/mul_extended/signed_32bit.amber": {
+            "bytes": 9173,
+            "sha256": "ff0708d283fa7f97f501c3b040813d86142dbfbdf2d4937e705ed11166c7c2d7"
+          },
+          "vulkan/amber/spirv_assembly/instruction/compute/mul_extended/signed_8bit.amber": {
+            "bytes": 6458,
+            "sha256": "ec1d4443901596fe1bbb111537052a603ae36e671164bd9cb44f2e33d9b96313"
+          },
+          "vulkan/amber/spirv_assembly/instruction/compute/mul_extended/unsigned_32bit.amber": {
+            "bytes": 9147,
+            "sha256": "75439171f2fe7f95d8b70ceaba9cbd59e2f2c121e08ee59bec4802548b078ad5"
+          },
+          "vulkan/amber/spirv_assembly/instruction/compute/mul_extended/unsigned_8bit.amber": {
+            "bytes": 6446,
+            "sha256": "7658202da0bdfbccdb12c32895b4af6515065633d4ae8cdc388aca59d0b69b7b"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "radish_icd.json": {
+            "bytes": 162,
+            "sha256": "7fbc69edb83d9009bd57bd851cd50f874515614dcfba76367c3a37c9536926d1"
+          },
+          "payload.json": {
+            "bytes": 1766,
+            "sha256": "d74c25c38bbf91ddaa1510a9a0d573dc7e009a264bd9976629bca753a292937b"
+          }
+        },
+        "run_log": {
+          "bytes": 128924,
+          "sha256": "ad795b13f2fd0203b6251d2b3404b6159ec636373013c147e706541a98f5b818"
+        },
+        "qpa": {
+          "bytes": 6878,
+          "sha256": "e1d5414b1855fa2bf23997a343e43788e2c7c43aa207d6a9e53443ac46949bf1"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.signed_32bit",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.signed_8bit",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.unsigned_32bit",
+            "status": "Pass",
+            "detail": "Pass"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.unsigned_8bit",
+            "status": "Pass",
+            "detail": "Pass"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    },
+    {
+      "identity": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-idiv-positive/probe/runner-result.json",
+        "bytes": 1781,
+        "sha256": "4d3427560c939f185ddaea40d3766601e19ecd12e8c920f294bfba13e8085cac"
+      },
+      "result": {
+        "status": "passed",
+        "mode": "probe",
+        "exit_code": 0,
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 162,
+            "sha256": "7615c7471614f736c934eb9b723708f2361ab5b30d93bd88fb712c8cf3035d14"
+          },
+          "deqp-vk": {
+            "bytes": 97536760,
+            "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+          },
+          "libvulkan.so.1": {
+            "bytes": 703696,
+            "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+          },
+          "info-cases.txt": {
+            "bytes": 118,
+            "sha256": "69ffde89d75fc783ac0ddd52c2e7b682d7ae5fa10bdeff7e7ec4edff93f9a0a3"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13622816,
+            "sha256": "2d28b91a3f30e5c54c321446974fac3383a87048a142b970b29fc2ab2836f270"
+          },
+          "payload.json": {
+            "bytes": 964,
+            "sha256": "8b8b9c6e3960c63c7e12a0e94c9373dd7e43ec8951fd09d10547c38201f6e32a"
+          }
+        },
+        "run_log": {
+          "bytes": 76762,
+          "sha256": "ff9ee269abca972f1f8ed3bc2136d03caa2c16950bad992307ce8280e6f5a450"
+        },
+        "qpa": {
+          "bytes": 3356,
+          "sha256": "584a363a2c3d59ceaba85edc94bdbcc0318e1249175ce6862c400e19d94c922d"
+        },
+        "cases": [
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opsrem.positive",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          },
+          {
+            "name": "dEQP-VK.spirv_assembly.instruction.compute.opsmod.positive",
+            "status": "Pass",
+            "detail": "Output match with expected"
+          }
+        ],
+        "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+      }
+    }
+  ],
+  "preserved_failure": "official11-integer-division-failure-0045.json",
+  "scope": "Previouslyfailed fullydefined sdiv fixture now64/64 exact. Original9 checks1120 components, including96 negative SRem/SMod lanes whose Vulkan1.1 results are unspecified; these lanes show consistency only. Positive2 adds400 defined exact words across independent invocations. No fixture/threshold/work/guard change. Finite stress and native outcomes do not prove every possible reciprocal input or all shared compiler consumers. No performance benchmark or selected-inference change.",
+  "final_provenance_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-idiv-reciprocal-fix-0045/independent-final-provenance-review.json",
+      "bytes": 10732,
+      "sha256": "93c3587b5a15ff6250563bc71f2cd736108cb654caf70546933842a6109d074d"
+    },
+    "result": {
+      "status": "PASS final frozen source/build/deployment/result pairing for corrected candidate; broader conformance remains open",
+      "reviewed_utc": "2026-11-02T23:03:16.685972+00:00",
+      "actual_build_source": {
+        "path": "/run/media/jethac/Shared/radish/compute11-idiv-isolated-build-0045/source/src/compiler/nir/nir_lower_idiv.c",
+        "bytes": 7600,
+        "sha256": "a6d8c67565915cd809d0b151f654f2e8b3f8e6579a34c4711136b9fa230acef1"
+      },
+      "patch": {
+        "path": "/run/media/jethac/Shared/radish/compute11-idiv-reciprocal-fix-0045/idiv-reciprocal.patch",
+        "bytes": 1740,
+        "sha256": "292b4e24aae6092e161c2fb040d2671c18655ea94e97d1f99e18c844348efe20"
+      },
+      "driver": {
+        "path": "/run/media/jethac/Shared/radish/compute11-idiv-isolated-build-0045/libvulkan_radish.idiv.so",
+        "bytes": 49082944,
+        "sha256": "5c6d00c736b07ec0a3879a0e77036c527faecf7202101ebd5b8882e8bb264eab"
+      },
+      "deployment_derivative": {
+        "path": "/run/media/jethac/Shared/radish/compute11-idiv-isolated-strip-0045/idiv/libvulkan_radish.idiv.so",
+        "sha256": "2d28b91a3f30e5c54c321446974fac3383a87048a142b970b29fc2ab2836f270",
+        "bytes": 13622816
+      },
+      "baseline_driver": {
+        "path": "/run/media/jethac/Shared/radish/compute11-idiv-isolated-build-0045/libvulkan_radish.baseline.so",
+        "bytes": 49079616,
+        "sha256": "f222ff480f6c9ef3785c446661f12ccacbc91f119b0e7d405347b949b4dc325d"
+      },
+      "baseline_source": {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/compiler/nir/nir_lower_idiv.c",
+        "bytes": 6676,
+        "sha256": "4a796454988441e71136507147ab2cf087d2e48165511022b3e6cef25da41a22"
+      },
+      "normal_nir_archive": {
+        "metadata": {
+          "path": "/run/media/jethac/Shared/radish/compute11-idiv-isolated-build-0045/libnir.idiv.a",
+          "bytes": 65770916,
+          "sha256": "5f428db8643a05c46521ae5dafa087a80f7ddc131610bdfb02f1110799db21c9"
+        },
+        "members": 238,
+        "changed_members": [
+          "nir_lower_idiv.c.o"
+        ],
+        "other237_exact_source_gate": {
+          "path": "/run/media/jethac/Shared/radish/compute11-idiv-reciprocal-fix-0045/independent-review/review.json",
+          "sha256": "0cf189ff98fa535ed12a0a55898be4d2b6e589f2131c43024a1c44d453fa2e85",
+          "bytes": 6247
+        }
+      },
+      "comment_erratum": {
+        "metadata": {
+          "path": "/run/media/jethac/Shared/radish/compute11-idiv-reciprocal-fix-0045/candidate-comment-v2/nir_lower_idiv.c",
+          "sha256": "61eb7dd5748155127576b4c6965c6f5d0f219e047bc023863cf125fb841ee21e",
+          "bytes": 7598
+        },
+        "executable_tokens_identical": true,
+        "scope": "Separate source commentary correction only; actual built source remains a6d8 and patch292b. Do not relabel61eb as exact compile input."
+      },
+      "receipts": [
+        {
+          "path": "/run/media/jethac/Shared/radish/compute11-idiv-reciprocal-fix-0045/independent-review/review.json",
+          "sha256": "0cf189ff98fa535ed12a0a55898be4d2b6e589f2131c43024a1c44d453fa2e85",
+          "bytes": 6247
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/compute11-idiv-compile-runner-0045/independent-payload-review.json",
+          "sha256": "552d91fc23ff30067e513f7d33b8ae23ae160e126bf3d02cd12821baf5830f7d",
+          "bytes": 4775
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/compute11-idiv-reciprocal-fix-0045/independent-native-admission.json",
+          "sha256": "04bd209ee055b2fc87c64ea6075bca41b6d11ed6e8163052688eefcc6d2d198c",
+          "bytes": 2880
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/compute11-idiv-reciprocal-fix-0045/independent-division5-actual-review.json",
+          "sha256": "7ec3ba5c3316c3803dbaf3713e2295e8ef75b1c8846f9d0604c0c514ce40fe6f",
+          "bytes": 8064
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/compute11-idiv-reciprocal-fix-0045/independent-mul4-actual-review.json",
+          "sha256": "f555275a90f4b21ac38827aeab490ac39633af6b39824e22c60671e49933a023",
+          "bytes": 5528
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/independent-actual-review.json",
+          "sha256": "2d5041b27c7685c882dc1f62fbcdd57d0db6d7e965ce78a5574ec25de1ff4e9f",
+          "bytes": 1430
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-idiv-positive-remainders-next-0045/independent-actual-review.json",
+          "sha256": "9ab42abf074f9d10e9208279ff1054d71c34c4d09485b562800306195de99b2f",
+          "bytes": 3522
+        }
+      ],
+      "captures": [
+        {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-idiv-fixed-00/probe",
+          "runner_result": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-idiv-fixed-00/probe/runner-result.json",
+            "sha256": "959888715116fcf4c4b7554a683561eb6d696a981b477898713959466b2a7547",
+            "bytes": 3217
+          },
+          "host_before": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-idiv-fixed-00/probe/host-before.json",
+            "sha256": "8cf046e23d5324fe80833213a638bb9d86a50b02641bf3706c1f8b52e49a5d7c",
+            "bytes": 5259
+          },
+          "launch": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-idiv-fixed-00/probe/launch.json",
+            "sha256": "8b161b53562989150abba0474e49b07ad25c488177bcdd0e35711664ee740b57",
+            "bytes": 2580
+          },
+          "cases": [
+            "dEQP-VK.spirv_assembly.instruction.compute.integer_division.sdiv_32bit",
+            "dEQP-VK.spirv_assembly.instruction.compute.integer_division.smod_32bit",
+            "dEQP-VK.spirv_assembly.instruction.compute.integer_division.srem_32bit",
+            "dEQP-VK.spirv_assembly.instruction.compute.integer_division.udiv_32bit",
+            "dEQP-VK.spirv_assembly.instruction.compute.integer_division.umod_32bit"
+          ],
+          "count": 5,
+          "authoritative_original_qpas": true,
+          "driver_sha256": "2d28b91a3f30e5c54c321446974fac3383a87048a142b970b29fc2ab2836f270"
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-idiv-fixed-01/probe",
+          "runner_result": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-idiv-fixed-01/probe/runner-result.json",
+            "sha256": "ad6e8a1190d9c888a4e625e5303fb340f6effcbdbc135a27cc0a0f9ae4ed675d",
+            "bytes": 2855
+          },
+          "host_before": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-idiv-fixed-01/probe/host-before.json",
+            "sha256": "3e710a09a50d373fd8276eb7c34c28fac2983d46c46d8a2d8eb4bf098493f761",
+            "bytes": 4655
+          },
+          "launch": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-idiv-fixed-01/probe/launch.json",
+            "sha256": "6c356d900a495d0d4622a61288c36251cc3ccb59962f75f94a155052be04a402",
+            "bytes": 2372
+          },
+          "cases": [
+            "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.signed_32bit",
+            "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.signed_8bit",
+            "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.unsigned_32bit",
+            "dEQP-VK.spirv_assembly.instruction.compute.mul_extended.unsigned_8bit"
+          ],
+          "count": 4,
+          "authoritative_original_qpas": true,
+          "driver_sha256": "2d28b91a3f30e5c54c321446974fac3383a87048a142b970b29fc2ab2836f270"
+        },
+        {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-idiv-positive/probe",
+          "runner_result": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-idiv-positive/probe/runner-result.json",
+            "sha256": "4d3427560c939f185ddaea40d3766601e19ecd12e8c920f294bfba13e8085cac",
+            "bytes": 1781
+          },
+          "host_before": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-idiv-positive/probe/host-before.json",
+            "sha256": "6606598248ec0ba000697324719d7609d13adbd531c51fefb503bacc448ad290",
+            "bytes": 2328
+          },
+          "launch": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-idiv-positive/probe/launch.json",
+            "sha256": "90dc49bfb0038a760dbbd54c8cba1c13ac7534acbbe50613db22fa2a1e2bf3f0",
+            "bytes": 1569
+          },
+          "cases": [
+            "dEQP-VK.spirv_assembly.instruction.compute.opsrem.positive",
+            "dEQP-VK.spirv_assembly.instruction.compute.opsmod.positive"
+          ],
+          "count": 2,
+          "authoritative_original_qpas": true,
+          "driver_sha256": "2d28b91a3f30e5c54c321446974fac3383a87048a142b970b29fc2ab2836f270"
+        }
+      ],
+      "original_cases_pass": 11,
+      "original_output_components": 1520,
+      "component_scope": {
+        "defined32bit_components": 1024,
+        "advertised8bit_components": 400,
+        "negative_rem_mod_vulkan11_consistency_only": 96
+      },
+      "original_failure_preserved": {
+        "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-integer-arithmetic-00/probe",
+        "qpa": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-integer-arithmetic-00/probe/case-0.qpa",
+          "sha256": "b9545b783d88fff67c554d7065c112a8cf5537517518893502b908557ee6e422",
+          "bytes": 1857
+        },
+        "run_log": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-integer-arithmetic-00/probe/run.log",
+          "sha256": "8a95f46f97c81d85c2827e7b4e1a6a5176a416805e9345f5e65fe35d04a2bc83",
+          "bytes": 40360
+        },
+        "baseline_driver_sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc"
+      },
+      "scope_erratum": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-integer-arithmetic-next-0045/vulkan11-remainder-scope-clarification.json",
+        "sha256": "1e8dd465311b7cf174a2f498d41ea87ee3a94f95c620e98d477399f8e8442244",
+        "bytes": 2048
+      },
+      "conclusion": [
+        "Original defined sdiv failure is repaired on reviewed source/build and exact original input/module/oracle; all11 targeted original tests pass. Author native/numerical receipts retain exact result/resource limitations.",
+        "Actual deployed driver2d28 is the proven debug-only derivative of5c6d. Original0e715 CTS/loader/assets and original safety controls remain pinned; payload verified before/after each terminal scope.",
+        "Source proof uses the existing floating accuracy premise. Raw reciprocal registers were not captured, and finite tests do not prove every32-bit input or everyhardware reciprocal error.",
+        "Historical732 original passes and namedcompute93 remain evidence on their recorded prior builds; they are not silently transferred to5c6d. This candidate is suitable for continued conversion47 qualification, not a fullconformance declaration.",
+        "No numerical oracle, guard, feature, shaderfixture or inference baseline changed. Strict42sRGB findings remain open."
+      ]
+    }
+  }
+}

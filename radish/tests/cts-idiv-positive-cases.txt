@@ -1,0 +1,2 @@
+dEQP-VK.spirv_assembly.instruction.compute.opsrem.positive
+dEQP-VK.spirv_assembly.instruction.compute.opsmod.positive
