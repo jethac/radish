@@ -60,13 +60,13 @@ def main():
     parser.add_argument('--probe-dir', type=Path, required=True)
     parser.add_argument('--lock-fd', type=int, default=9)
     parser.add_argument('--serial', default=os.environ.get('RADISH_SERIAL', 'feb0bd1f028e4cb0'))
-    parser.add_argument('--suite', choices=('all', 'api5', 'resources', 'subgroup', 'storage', 'robust'), default='all', help='Run the consolidated batch or only the existing resource suite.')
+    parser.add_argument('--suite', choices=('all', 'api5', 'resources', 'subgroup', 'storage', 'robust', 'array'), default='all', help='Run the consolidated batch or only the existing resource suite.')
     parser.add_argument('--check-only', action='store_true', help='Check host pins only; no lock or adb.')
     args = parser.parse_args()
     require(re.fullmatch(r'[A-Za-z0-9_-]{1,48}', args.label) is not None, 'invalid run label')
     remote = '/var/tmp/radish/core-compute-' + args.label
     evidence_root = WORK / ('core-compute-' + args.label)
-    suites = ('api5', 'event-query', 'resources', 'subgroup', 'storage', 'robust') if args.suite == 'all' else (args.suite,)
+    suites = ('api5', 'event-query', 'resources', 'subgroup', 'storage', 'robust', 'array') if args.suite == 'all' else (args.suite,)
     sources = {}
     paths = [('libvulkan_radish.so', args.driver, args.driver_sha256)]
     for name in suites:
@@ -242,7 +242,7 @@ def main():
         log = (evidence / 'run.log').read_text()
         require(not re.search(r'vkCreateComputePipelines failed|new_pipeline failed|\bFAIL\b', log), 'failure in process log')
         pass_markers = {'api5': 'PASS API5: two real base-grid executions', 'event-query': 'PASS EVENT_QUERY: two rounds',
-                        'resources': 'PASS RESOURCE: UBO/dynamic offsets', 'subgroup': 'PASS BASIC: partial/multiple subgroup IDs', 'storage': 'PASS STORAGE: pipeline-owned private', 'robust': 'PASS RBA: short/dynamic ranges'}
+                        'resources': 'PASS RESOURCE: UBO/dynamic offsets', 'subgroup': 'PASS BASIC: partial/multiple subgroup IDs', 'storage': 'PASS STORAGE: pipeline-owned private', 'robust': 'PASS RBA: short/dynamic ranges', 'array': 'PASS ARRAY_FETCH:'}
         for marker in (pass_markers[name] for name in suites):
             require(marker in log, 'missing functional pass: ' + marker)
         write_json(evidence / 'runner-result.json', dict(status='passed', mode=args.mode, exit_code=0,

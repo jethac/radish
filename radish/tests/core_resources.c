@@ -369,46 +369,8 @@ int main(int argc,char **argv)
       .level=VK_COMMAND_BUFFER_LEVEL_PRIMARY,.commandBufferCount=1}; VkCommandBuffer command;
    SUCCESS(d->AllocateCommandBuffers(device,&ca,&command));
    VkCommandBufferBeginInfo begin={.sType=VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
-   SUCCESS(d->BeginCommandBuffer(command,&begin));
-   VkImageMemoryBarrier initial[3];
-   for (unsigned i=0;i<3;i++) initial[i]=(VkImageMemoryBarrier){.sType=VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
-      .dstAccessMask=VK_ACCESS_TRANSFER_WRITE_BIT,.oldLayout=VK_IMAGE_LAYOUT_UNDEFINED,.newLayout=VK_IMAGE_LAYOUT_GENERAL,
-      .srcQueueFamilyIndex=VK_QUEUE_FAMILY_IGNORED,.dstQueueFamilyIndex=VK_QUEUE_FAMILY_IGNORED,
-      .image=images[i].image,.subresourceRange={VK_IMAGE_ASPECT_COLOR_BIT,0,1,0,1}};
-   d->CmdPipelineBarrier(command,VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,VK_PIPELINE_STAGE_TRANSFER_BIT,0,0,NULL,0,NULL,3,initial);
-   VkClearColorValue clear={.uint32={0x013579bdu,0,0,0}};
-   VkImageSubresourceRange clear_range={VK_IMAGE_ASPECT_COLOR_BIT,0,1,0,1};
-   d->CmdClearColorImage(command,images[2].image,VK_IMAGE_LAYOUT_GENERAL,&clear,1,&clear_range);
-   for (unsigned i=0;i<2;i++) {
-      VkBufferImageCopy copy={.bufferOffset=GUARD*4,.imageSubresource={VK_IMAGE_ASPECT_COLOR_BIT,0,0,1},
-         .imageExtent={images[i].width,images[i].height,1}};
-      d->CmdCopyBufferToImage(command,stores[i?SAMPLE_UPLOAD:IMAGE_UPLOAD].buffer,images[i].image,VK_IMAGE_LAYOUT_GENERAL,1,&copy);
-   }
-   barriers(d,command,images,true);
-   d->CmdBindPipeline(command,VK_PIPELINE_BIND_POINT_COMPUTE,pipeline);
-   uint32_t dynamic[2]={16,16};
-   d->CmdBindDescriptorSets(command,VK_PIPELINE_BIND_POINT_COMPUTE,layouts[1],1,1,&set,2,dynamic);
-   d->CmdDispatch(command,NX,NY,1);
-   barriers(d,command,images,false);
-   VkBufferImageCopy copy={.bufferOffset=GUARD*4,.imageSubresource={VK_IMAGE_ASPECT_COLOR_BIT,0,0,1},.imageExtent={NX,NY,1}};
-   d->CmdCopyImageToBuffer(command,images[0].image,VK_IMAGE_LAYOUT_GENERAL,stores[IMAGE_READBACK].buffer,1,&copy);
-   VkMemoryBarrier transfer={.sType=VK_STRUCTURE_TYPE_MEMORY_BARRIER,
-      .srcAccessMask=VK_ACCESS_TRANSFER_WRITE_BIT,.dstAccessMask=VK_ACCESS_TRANSFER_READ_BIT|VK_ACCESS_TRANSFER_WRITE_BIT};
-   d->CmdPipelineBarrier(command,VK_PIPELINE_STAGE_TRANSFER_BIT,VK_PIPELINE_STAGE_TRANSFER_BIT,
-      0,1,&transfer,0,NULL,0,NULL);
-   VkImageCopy image_copy={.srcSubresource={VK_IMAGE_ASPECT_COLOR_BIT,0,0,1},.srcOffset={2,1,0},
-      .dstSubresource={VK_IMAGE_ASPECT_COLOR_BIT,0,0,1},.dstOffset={3,1,0},.extent={11,3,1}};
-   d->CmdCopyImage(command,images[0].image,VK_IMAGE_LAYOUT_GENERAL,images[2].image,VK_IMAGE_LAYOUT_GENERAL,1,&image_copy);
-   d->CmdPipelineBarrier(command,VK_PIPELINE_STAGE_TRANSFER_BIT,VK_PIPELINE_STAGE_TRANSFER_BIT,
-      0,1,&transfer,0,NULL,0,NULL);
-   d->CmdCopyImageToBuffer(command,images[2].image,VK_IMAGE_LAYOUT_GENERAL,stores[COPY_READBACK].buffer,1,&copy);
-   VkMemoryBarrier host={.sType=VK_STRUCTURE_TYPE_MEMORY_BARRIER,
-      .srcAccessMask=VK_ACCESS_SHADER_WRITE_BIT|VK_ACCESS_TRANSFER_WRITE_BIT,.dstAccessMask=VK_ACCESS_HOST_READ_BIT};
-   d->CmdPipelineBarrier(command,VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT|VK_PIPELINE_STAGE_TRANSFER_BIT,
-      VK_PIPELINE_STAGE_HOST_BIT,0,1,&host,0,NULL,0,NULL);
-   SUCCESS(d->EndCommandBuffer(command));
-   d->DestroyPipelineLayout(device,layouts[1],NULL); layouts[1]=VK_NULL_HANDLE;
-   d->DestroyDescriptorSetLayout(device,sl[2],NULL); sl[2]=VK_NULL_HANDLE;
+
+
    VkQueue queue; d->GetDeviceQueue(device,0,0,&queue);
    VkFenceCreateInfo fi={.sType=VK_STRUCTURE_TYPE_FENCE_CREATE_INFO}; VkFence fence;
    SUCCESS(d->CreateFence(device,&fi,NULL,&fence));
@@ -466,11 +428,58 @@ int main(int argc,char **argv)
       for (unsigned i=0;i<16;i++) stores[SAMPLE_UPLOAD].map[stores[SAMPLE_UPLOAD].binding_words+GUARD+i]=float_word(sample_value(i%4,i/4));
       for (unsigned s=0;s<BUFFER_COUNT;s++) memcpy(stores[s].saved,stores[s].map,stores[s].words*4);
       SUCCESS(d->FlushMappedMemoryRanges(device,BUFFER_COUNT+3,ranges));
+      SUCCESS(d->ResetCommandPool(device,command_pool,0));
       descriptor_buffers(d,device,set,stores,round,false);
+      if (!layouts[1]) {
+         VkDescriptorSetLayout compatible_sets[2]={sl[0],sl[1]};
+         VkPipelineLayoutCreateInfo compatible_layout={.sType=VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
+            .setLayoutCount=2,.pSetLayouts=compatible_sets};
+         SUCCESS(d->CreatePipelineLayout(device,&compatible_layout,NULL,&layouts[1]));
+      }
+      SUCCESS(d->BeginCommandBuffer(command,&begin));
+      VkImageMemoryBarrier initial[3];
+      for (unsigned i=0;i<3;i++) initial[i]=(VkImageMemoryBarrier){.sType=VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+         .dstAccessMask=VK_ACCESS_TRANSFER_WRITE_BIT,.oldLayout=VK_IMAGE_LAYOUT_UNDEFINED,.newLayout=VK_IMAGE_LAYOUT_GENERAL,
+         .srcQueueFamilyIndex=VK_QUEUE_FAMILY_IGNORED,.dstQueueFamilyIndex=VK_QUEUE_FAMILY_IGNORED,
+         .image=images[i].image,.subresourceRange={VK_IMAGE_ASPECT_COLOR_BIT,0,1,0,1}};
+      d->CmdPipelineBarrier(command,VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,VK_PIPELINE_STAGE_TRANSFER_BIT,0,0,NULL,0,NULL,3,initial);
+      VkClearColorValue clear={.uint32={0x013579bdu,0,0,0}};
+      VkImageSubresourceRange clear_range={VK_IMAGE_ASPECT_COLOR_BIT,0,1,0,1};
+      d->CmdClearColorImage(command,images[2].image,VK_IMAGE_LAYOUT_GENERAL,&clear,1,&clear_range);
+      for (unsigned i=0;i<2;i++) {
+         VkBufferImageCopy copy={.bufferOffset=GUARD*4,.imageSubresource={VK_IMAGE_ASPECT_COLOR_BIT,0,0,1},
+            .imageExtent={images[i].width,images[i].height,1}};
+         d->CmdCopyBufferToImage(command,stores[i?SAMPLE_UPLOAD:IMAGE_UPLOAD].buffer,images[i].image,VK_IMAGE_LAYOUT_GENERAL,1,&copy);
+      }
+      barriers(d,command,images,true);
+      d->CmdBindPipeline(command,VK_PIPELINE_BIND_POINT_COMPUTE,pipeline);
+      uint32_t dynamic[2]={16,16};
+      d->CmdBindDescriptorSets(command,VK_PIPELINE_BIND_POINT_COMPUTE,layouts[1],1,1,&set,2,dynamic);
+      d->CmdDispatch(command,NX,NY,1);
+      barriers(d,command,images,false);
+      VkBufferImageCopy copy={.bufferOffset=GUARD*4,.imageSubresource={VK_IMAGE_ASPECT_COLOR_BIT,0,0,1},.imageExtent={NX,NY,1}};
+      d->CmdCopyImageToBuffer(command,images[0].image,VK_IMAGE_LAYOUT_GENERAL,stores[IMAGE_READBACK].buffer,1,&copy);
+      VkMemoryBarrier transfer={.sType=VK_STRUCTURE_TYPE_MEMORY_BARRIER,
+         .srcAccessMask=VK_ACCESS_TRANSFER_WRITE_BIT,.dstAccessMask=VK_ACCESS_TRANSFER_READ_BIT|VK_ACCESS_TRANSFER_WRITE_BIT};
+      d->CmdPipelineBarrier(command,VK_PIPELINE_STAGE_TRANSFER_BIT,VK_PIPELINE_STAGE_TRANSFER_BIT,
+         0,1,&transfer,0,NULL,0,NULL);
+      VkImageCopy image_copy={.srcSubresource={VK_IMAGE_ASPECT_COLOR_BIT,0,0,1},.srcOffset={2,1,0},
+         .dstSubresource={VK_IMAGE_ASPECT_COLOR_BIT,0,0,1},.dstOffset={3,1,0},.extent={11,3,1}};
+      d->CmdCopyImage(command,images[0].image,VK_IMAGE_LAYOUT_GENERAL,images[2].image,VK_IMAGE_LAYOUT_GENERAL,1,&image_copy);
+      d->CmdPipelineBarrier(command,VK_PIPELINE_STAGE_TRANSFER_BIT,VK_PIPELINE_STAGE_TRANSFER_BIT,
+         0,1,&transfer,0,NULL,0,NULL);
+      d->CmdCopyImageToBuffer(command,images[2].image,VK_IMAGE_LAYOUT_GENERAL,stores[COPY_READBACK].buffer,1,&copy);
+      VkMemoryBarrier host={.sType=VK_STRUCTURE_TYPE_MEMORY_BARRIER,
+         .srcAccessMask=VK_ACCESS_SHADER_WRITE_BIT|VK_ACCESS_TRANSFER_WRITE_BIT,.dstAccessMask=VK_ACCESS_HOST_READ_BIT};
+      d->CmdPipelineBarrier(command,VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT|VK_PIPELINE_STAGE_TRANSFER_BIT,
+         VK_PIPELINE_STAGE_HOST_BIT,0,1,&host,0,NULL,0,NULL);
+      SUCCESS(d->EndCommandBuffer(command));
+      d->DestroyPipelineLayout(device,layouts[1],NULL); layouts[1]=VK_NULL_HANDLE;
+      if (sl[2]) { d->DestroyDescriptorSetLayout(device,sl[2],NULL); sl[2]=VK_NULL_HANDLE; }
       SUCCESS(d->ResetFences(device,1,&fence));
       VkSubmitInfo submit={.sType=VK_STRUCTURE_TYPE_SUBMIT_INFO,.commandBufferCount=1,.pCommandBuffers=&command};
       uint64_t before=inside->submit_count;
-      printf("RESOURCE_ROUND_BEGIN round=%u grid=%u,%u late_updates=1 dynamic=16,16\n",round,NX,NY); fflush(stdout);
+      printf("RESOURCE_ROUND_BEGIN round=%u grid=%u,%u updates_before_bind=1 rerecord=1 dynamic=16,16\n",round,NX,NY); fflush(stdout);
       SUCCESS(d->QueueSubmit(queue,1,&submit,fence));
       SUCCESS(d->WaitForFences(device,1,&fence,VK_TRUE,5000000000ull));
       SUCCESS(d->InvalidateMappedMemoryRanges(device,BUFFER_COUNT+3,ranges));
@@ -496,6 +505,6 @@ int main(int argc,char **argv)
    d->DestroyDevice(device,NULL); DestroyInstance(instance,NULL); dlclose(lib);
    puts("PASS DEPTH: D16/D32 sampling/comparison, host PREINITIALIZED sources and D32 depth-image copy, all allocation guards");
    puts("PASS IMAGE_GROUP: full singleton split copy/clear/readback and mutable R32_SFLOAT-to-UINT storage view");
-   puts("PASS RESOURCE: UBO/dynamic offsets/late updates/compatible layouts/typed texels/images/nearest+linear/image copy+clear exact/guards");
+   puts("PASS RESOURCE: UBO/dynamic offsets/updates before recording/compatible layouts/typed texels/images/nearest+linear/image copy+clear exact/guards");
    return 0;
 }

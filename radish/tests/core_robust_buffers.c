@@ -136,15 +136,7 @@ int main(int argc,char **argv)
       .level=VK_COMMAND_BUFFER_LEVEL_PRIMARY,.commandBufferCount=1}; VkCommandBuffer command;
    SUCCESS(d->AllocateCommandBuffers(device,&ca,&command));
    VkCommandBufferBeginInfo begin={.sType=VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
-   SUCCESS(d->BeginCommandBuffer(command,&begin));
-   d->CmdBindPipeline(command,VK_PIPELINE_BIND_POINT_COMPUTE,pipeline);
-   uint32_t dynamic[3]={16,16,16};
-   d->CmdBindDescriptorSets(command,VK_PIPELINE_BIND_POINT_COMPUTE,layout,0,1,&set,3,dynamic);
-   d->CmdDispatch(command,1,1,1);
-   VkMemoryBarrier host={.sType=VK_STRUCTURE_TYPE_MEMORY_BARRIER,.srcAccessMask=VK_ACCESS_SHADER_WRITE_BIT,
-      .dstAccessMask=VK_ACCESS_HOST_READ_BIT};
-   d->CmdPipelineBarrier(command,VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,VK_PIPELINE_STAGE_HOST_BIT,0,1,&host,0,NULL,0,NULL);
-   SUCCESS(d->EndCommandBuffer(command));
+
    VkQueue queue; d->GetDeviceQueue(device,0,0,&queue);
    VkFenceCreateInfo fi={.sType=VK_STRUCTURE_TYPE_FENCE_CREATE_INFO}; VkFence fence;
    SUCCESS(d->CreateFence(device,&fi,NULL,&fence));
@@ -164,11 +156,21 @@ int main(int argc,char **argv)
       }
       for (unsigned s=0;s<RBA_STORES;s++) memcpy(stores[s].saved,stores[s].map,stores[s].words*4);
       SUCCESS(d->FlushMappedMemoryRanges(device,RBA_STORES,ranges));
+      SUCCESS(d->ResetCommandPool(device,command_pool,0));
       for (unsigned i=1;i<4;i++) initial[i].range=spans[test];
       d->UpdateDescriptorSets(device,3,&writes[1],0,NULL);
+      SUCCESS(d->BeginCommandBuffer(command,&begin));
+      d->CmdBindPipeline(command,VK_PIPELINE_BIND_POINT_COMPUTE,pipeline);
+      uint32_t dynamic[3]={16,16,16};
+      d->CmdBindDescriptorSets(command,VK_PIPELINE_BIND_POINT_COMPUTE,layout,0,1,&set,3,dynamic);
+      d->CmdDispatch(command,1,1,1);
+      VkMemoryBarrier host={.sType=VK_STRUCTURE_TYPE_MEMORY_BARRIER,.srcAccessMask=VK_ACCESS_SHADER_WRITE_BIT,
+         .dstAccessMask=VK_ACCESS_HOST_READ_BIT};
+      d->CmdPipelineBarrier(command,VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,VK_PIPELINE_STAGE_HOST_BIT,0,1,&host,0,NULL,0,NULL);
+      SUCCESS(d->EndCommandBuffer(command));
       SUCCESS(d->ResetFences(device,1,&fence));
       VkSubmitInfo submit={.sType=VK_STRUCTURE_TYPE_SUBMIT_INFO,.commandBufferCount=1,.pCommandBuffers=&command};
-      printf("RBA_CASE_BEGIN case=%u descriptor_span=%u dynamic_base=32 texels=%u\n",test,spans[test],RBA_COUNT); fflush(stdout);
+      printf("RBA_CASE_BEGIN case=%u descriptor_span=%u dynamic_base=32 texels=%u updates_before_bind=1 rerecord=1\n",test,spans[test],RBA_COUNT); fflush(stdout);
       SUCCESS(d->QueueSubmit(queue,1,&submit,fence));
       SUCCESS(d->WaitForFences(device,1,&fence,VK_TRUE,5000000000ull));
       SUCCESS(d->InvalidateMappedMemoryRanges(device,RBA_STORES,ranges));

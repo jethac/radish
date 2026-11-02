@@ -1,0 +1,458 @@
+--- a/src/freedreno/radish/meson.build
++++ b/src/freedreno/radish/meson.build
+@@ -11,7 +11,7 @@
+ libvulkan_radish = shared_library(
+   'vulkan_radish',
+   ['rd_instance.c', 'rd_device.c', 'rd_memory.c', 'rd_descriptor.c', 'rd_pipeline.c',
+-   'rd_command.c', 'rd_nir_resources.c', 'rd_nir_robust.c', 'rd_resources.c', 'rd_transfer.c', 'rd_image.c',
++   'rd_command.c', 'rd_sampling.c', 'rd_nir_sampling.c', 'rd_nir_resources.c', 'rd_nir_robust.c', 'rd_resources.c', 'rd_transfer.c', 'rd_image.c',
+    'rd_event.c', 'rd_query.c', 'rd_queue.c', rd_entrypoints, freedreno_xml_header_files],
+   include_directories : [inc_freedreno, inc_include, inc_src],
+   link_with : [libfreedreno_drm, libfreedreno_ir3, libfreedreno_layout],
+--- /dev/null
++++ b/src/freedreno/radish/rd_nir_sampling.c
+@@ -0,0 +1,113 @@
++#include "rd_sampling.h"
++#include "compiler/nir/nir_builder.h"
++#include "compiler/nir/nir_format_convert.h"
++#include "vk_format.h"
++
++struct rd_fetch_state { const struct rd_sampling_key *key; uint32_t buffer; bool failed; };
++
++static nir_def *
++rd_level_value(nir_builder *b, nir_def *lod, const struct rd_sampling_view *view,
++                unsigned member)
++{
++   nir_def *value = nir_imm_int(b, 0);
++   for (unsigned i = 0; i < view->levels; i++) {
++      const struct rd_sampling_level *level = &view->level[i];
++      const uint32_t fields[] = {level->offset, level->row_pitch, level->array_pitch,
++                                 level->width, level->height};
++      value = nir_bcsel(b, nir_ieq_imm(b, lod, i), nir_imm_int(b, fields[member]), value);
++   }
++   return value;
++}
++
++static nir_def *
++rd_fetch_swizzle(nir_builder *b, nir_def *rgba, VkComponentMapping swizzle,
++                  enum pipe_format format)
++{
++   VkComponentSwizzle components[] = {swizzle.r, swizzle.g, swizzle.b, swizzle.a};
++   nir_def *result[4];
++   for (unsigned i = 0; i < 4; i++) {
++      VkComponentSwizzle s = components[i];
++      if (s == VK_COMPONENT_SWIZZLE_IDENTITY)
++         result[i] = nir_channel(b, rgba, i);
++      else if (s >= VK_COMPONENT_SWIZZLE_R && s <= VK_COMPONENT_SWIZZLE_A)
++         result[i] = nir_channel(b, rgba, s - VK_COMPONENT_SWIZZLE_R);
++      else if (s == VK_COMPONENT_SWIZZLE_ONE)
++         result[i] = util_format_is_pure_integer(format) ? nir_imm_int(b, 1) : nir_imm_float(b, 1);
++      else
++         result[i] = nir_imm_int(b, 0);
++   }
++   return nir_vec(b, result, 4);
++}
++
++static bool
++rd_lower_fetch(nir_builder *b, nir_instr *instr, void *data)
++{
++   struct rd_fetch_state *state = data;
++   if (state->failed || instr->type != nir_instr_type_tex)
++      return false;
++   nir_tex_instr *tex = nir_instr_as_tex(instr);
++   if (tex->texture_index >= 16 || !(state->key->mask & (1u << tex->texture_index)))
++      return false;
++   if (tex->op == nir_texop_txs || tex->op == nir_texop_query_levels)
++      return false;
++   if (tex->op != nir_texop_txf || tex->sampler_dim != GLSL_SAMPLER_DIM_2D ||
++       !tex->is_array || tex->is_shadow || tex->def.bit_size != 32) {
++      state->failed = true;
++      return false;
++   }
++   const struct rd_sampling_view *view = &state->key->views[tex->texture_index];
++   int ci = nir_tex_instr_src_index(tex, nir_tex_src_coord);
++   int li = nir_tex_instr_src_index(tex, nir_tex_src_lod);
++   int oi = nir_tex_instr_src_index(tex, nir_tex_src_offset);
++   if (ci < 0 || tex->src[ci].src.ssa->num_components != 3 ||
++       tex->src[ci].src.ssa->bit_size != 32) {
++      state->failed = true;
++      return false;
++   }
++   b->cursor = nir_before_instr(instr);
++   nir_def *coord = tex->src[ci].src.ssa;
++   nir_def *x = nir_channel(b, coord, 0), *y = nir_channel(b, coord, 1);
++   nir_def *layer = nir_channel(b, coord, 2);
++   if (oi >= 0) {
++      x = nir_iadd(b, x, nir_channel(b, tex->src[oi].src.ssa, 0));
++      y = nir_iadd(b, y, nir_channel(b, tex->src[oi].src.ssa, 1));
++   }
++   nir_def *lod = li >= 0 ? tex->src[li].src.ssa : nir_imm_int(b, 0);
++   nir_def *width = rd_level_value(b, lod, view, 3);
++   nir_def *height = rd_level_value(b, lod, view, 4);
++   nir_def *valid = nir_iand(b, nir_ult_imm(b, lod, view->levels),
++      nir_iand(b, nir_ult_imm(b, layer, view->layers),
++         nir_iand(b, nir_ult(b, x, width), nir_ult(b, y, height))));
++   nir_def *zero = nir_imm_zero(b, tex->def.num_components, 32);
++   nir_push_if(b, valid);
++   nir_def *pair = nir_load_ssbo(b, 2, 32, nir_imm_int(b, state->buffer),
++      nir_imm_int(b, tex->texture_index * 8), .align_mul = 8);
++   nir_def *base = nir_pack_64_2x32(b, pair);
++   nir_def *offset = nir_iadd(b, rd_level_value(b, lod, view, 0),
++      nir_iadd(b, nir_imul(b, layer, rd_level_value(b, lod, view, 2)),
++         nir_iadd(b, nir_imul(b, y, rd_level_value(b, lod, view, 1)),
++            nir_imul_imm(b, x, view->cpp))));
++   nir_def *aligned = nir_iand_imm(b, offset, ~3u);
++   nir_def *address = nir_iadd(b, base, nir_u2u64(b, aligned));
++   unsigned words = MAX2(view->cpp, 4) / 4;
++   nir_def *packed = nir_load_global(b, words, 32, address, .align_mul = 4);
++   if (view->cpp < 4)
++      packed = nir_ushr(b, packed, nir_imul_imm(b, nir_iand_imm(b, offset, 3), 8));
++   enum pipe_format format = view->format == VK_FORMAT_D16_UNORM ? PIPE_FORMAT_R16_UNORM :
++      view->format == VK_FORMAT_D32_SFLOAT ? PIPE_FORMAT_R32_FLOAT : vk_format_to_pipe_format(view->format);
++   nir_def *rgba = nir_format_unpack_rgba(b, packed, format);
++   rgba = rd_fetch_swizzle(b, rgba, view->swizzle, format);
++   rgba = nir_trim_vector(b, rgba, tex->def.num_components);
++   nir_pop_if(b, NULL);
++   nir_def_replace(&tex->def, nir_if_phi(b, rgba, zero));
++   return true;
++}
++
++bool
++rd_nir_lower_array_fetch(nir_shader *nir, const struct rd_sampling_key *key,
++                          uint32_t metadata_buffer)
++{
++   struct rd_fetch_state state = {.key = key, .buffer = metadata_buffer};
++   nir_shader_instructions_pass(nir, rd_lower_fetch, nir_metadata_none, &state);
++   return !state.failed;
++}
+--- a/src/freedreno/radish/rd_pipeline.c
++++ b/src/freedreno/radish/rd_pipeline.c
+@@ -217,6 +217,9 @@
+    return true;
+ }
+ 
++static VkResult rd_build_nir_pipeline(struct rd_device *device, struct rd_pipeline *pipeline,
++                                      nir_shader *nir, VkPipelineCreateFlags flags);
++
+ VkResult
+ rd_compile_pipeline(struct rd_device *device, struct rd_pipeline *pipeline,
+                      const VkPipelineShaderStageCreateInfo *stage, VkPipelineCreateFlags flags)
+@@ -304,6 +307,30 @@
+    }
+    ir3_nir_lower_io_vars_to_temporaries(nir);
+    ir3_nir_lower_io(nir);
++   pipeline->compile_flags = flags;
++   nir_foreach_function_impl(impl, nir) {
++      nir_foreach_block(block, impl) {
++         nir_foreach_instr(instr, block) {
++            if (instr->type == nir_instr_type_tex) {
++               const nir_tex_instr *tex = nir_instr_as_tex(instr);
++               if (tex->is_array || tex->sampler_dim == GLSL_SAMPLER_DIM_CUBE) {
++                  pipeline->sampling_nir = nir_shader_clone(NULL, nir);
++                  goto saved_sampling_nir;
++               }
++            }
++         }
++      }
++   }
++saved_sampling_nir:
++   return rd_build_nir_pipeline(device, pipeline, nir, flags);
++}
++
++static VkResult
++rd_build_nir_pipeline(struct rd_device *device, struct rd_pipeline *pipeline,
++                       nir_shader *nir, VkPipelineCreateFlags flags)
++{
++   uint32_t local_count = pipeline->logical_local_size[0] * pipeline->logical_local_size[1] *
++                          pipeline->logical_local_size[2];
+    struct ir3_shader_options options = {
+       .nir_options.robust_modes = device->vk.enabled_features.robustBufferAccess ? nir_var_mem_ssbo : 0,
+       .nir_options.a5xx_image_buffer_2d = true,
+@@ -405,6 +432,13 @@
+ rd_destroy_pipeline(struct rd_device *device, struct rd_pipeline *pipeline,
+                      const VkAllocationCallbacks *allocator)
+ {
++   while (pipeline->sampling_variants) {
++      struct rd_sampling_entry *entry = pipeline->sampling_variants;
++      pipeline->sampling_variants = entry->next;
++      rd_destroy_pipeline(device, entry->pipeline, NULL);
++      vk_free(&device->vk.alloc, entry);
++   }
++   ralloc_free(pipeline->sampling_nir);
+    if (pipeline->bo)
+       fd_bo_del(pipeline->bo);
+    if (pipeline->private_bo)
+@@ -413,6 +447,72 @@
+       ralloc_free(pipeline->variant);
+    vk_pipeline_layout_unref(&device->vk, pipeline->layout);
+    vk_object_free(&device->vk, allocator, pipeline);
++}
++
++VkResult
++rd_sampling_compile(struct rd_device *device, struct rd_pipeline *source,
++                      const struct rd_sampling_key *key, struct rd_pipeline **out)
++{
++   if (!source->sampling_nir || source->buffer_count >= 32)
++      return VK_ERROR_FEATURE_NOT_PRESENT;
++   for (struct rd_sampling_entry *entry = source->sampling_variants; entry; entry = entry->next) {
++      if (!memcmp(&entry->key, key, sizeof(*key))) {
++         *out = entry->pipeline;
++         return VK_SUCCESS;
++      }
++   }
++   struct rd_sampling_entry *entry = vk_zalloc(&device->vk.alloc, sizeof(*entry), 8,
++                                               VK_SYSTEM_ALLOCATION_SCOPE_OBJECT);
++   struct rd_pipeline *pipeline = vk_object_zalloc(&device->vk, NULL,
++      sizeof(*pipeline), VK_OBJECT_TYPE_PIPELINE);
++   if (!entry || !pipeline) {
++      vk_free(&device->vk.alloc, entry);
++      if (pipeline) vk_object_free(&device->vk, NULL, pipeline);
++      return VK_ERROR_OUT_OF_HOST_MEMORY;
++   }
++   struct vk_object_base base = pipeline->base;
++   *pipeline = *source;
++   pipeline->base = base;
++   pipeline->layout = vk_pipeline_layout_ref(source->layout);
++   pipeline->variant = NULL;
++   pipeline->bo = pipeline->private_bo = NULL;
++   pipeline->private_per_sp = 0;
++   pipeline->sampling_nir = NULL;
++   pipeline->sampling_variants = NULL;
++   pipeline->sampling_mask = key->mask;
++   pipeline->sampling_buffer = pipeline->buffer_count++;
++   pipeline->buffer_descriptors[pipeline->sampling_buffer] = UINT32_MAX;
++   nir_shader *nir = nir_shader_clone(NULL, source->sampling_nir);
++   if (!rd_nir_lower_array_fetch(nir, key, pipeline->sampling_buffer)) {
++      ralloc_free(nir);
++      rd_destroy_pipeline(device, pipeline, NULL);
++      vk_free(&device->vk.alloc, entry);
++      return VK_ERROR_FEATURE_NOT_PRESENT;
++   }
++   nir->info.num_ssbos = pipeline->buffer_count;
++   VkResult result = rd_build_nir_pipeline(device, pipeline, nir, source->compile_flags);
++   if (result != VK_SUCCESS) {
++      rd_destroy_pipeline(device, pipeline, NULL);
++      vk_free(&device->vk.alloc, entry);
++      return result;
++   }
++   entry->key = *key;
++   entry->pipeline = pipeline;
++   entry->next = source->sampling_variants;
++   source->sampling_variants = entry;
++   struct rd_sampling_entry **tail = &source->sampling_variants;
++   for (unsigned count = 0; *tail; count++) {
++      if (count >= 16) {
++         struct rd_sampling_entry *discard = *tail;
++         *tail = discard->next;
++         rd_destroy_pipeline(device, discard->pipeline, NULL);
++         vk_free(&device->vk.alloc, discard);
++      } else {
++         tail = &(*tail)->next;
++      }
++   }
++   *out = pipeline;
++   return VK_SUCCESS;
+ }
+ 
+ VKAPI_ATTR VkResult VKAPI_CALL
+--- a/src/freedreno/radish/rd_private.h
++++ b/src/freedreno/radish/rd_private.h
+@@ -6,6 +6,7 @@
+ #include "vk_buffer.h"
+ #include "rd_image.h"
+ #include "rd_nir_resources.h"
++#include "rd_sampling.h"
+ #include "vk_device.h"
+ #include "vk_device_memory.h"
+ #include "vk_drm_syncobj.h"
+@@ -112,6 +113,10 @@
+    uint32_t logical_local_size[3];
+    bool linear_subgroups;
+    bool packed_1d_barrier;
++   VkPipelineCreateFlags compile_flags;
++   struct nir_shader *sampling_nir;
++   struct rd_sampling_entry *sampling_variants;
++   uint32_t sampling_mask, sampling_buffer;
+    struct rd_nir_resource_binding resources[RD_MAX_ACTIVE_RESOURCES];
+    uint32_t resource_count;
+    struct rd_nir_resource_usage resource_usage;
+@@ -121,6 +126,7 @@
+ struct rd_dispatch {
+    struct rd_pipeline *pipeline;
+    struct rd_buffer *indirect;
++   struct fd_bo *sampling_addresses, *sampling_bos[16];
+    VkDeviceSize indirect_offset;
+    struct rd_descriptor descriptors[RD_MAX_ACTIVE_RESOURCES];
+    struct rd_descriptor_set *sets[RD_MAX_SETS];
+--- a/src/freedreno/radish/rd_queue.c
++++ b/src/freedreno/radish/rd_queue.c
+@@ -354,8 +354,10 @@
+    OUT_RING(ring, CP_LOAD_STATE4_1_STATE_TYPE(ST4_CONSTANTS));
+    OUT_RING(ring, 0);
+    for (unsigned i = 0; i < count; i++) {
+-      const struct rd_descriptor *desc = &dispatch->descriptors[dispatch->pipeline->buffer_descriptors[i]];
+-      uint32_t bytes = desc->buffer ? desc->range : 0;
++      bool metadata = dispatch->sampling_addresses && i == dispatch->pipeline->sampling_buffer;
++      const struct rd_descriptor *desc = metadata ? NULL :
++         &dispatch->descriptors[dispatch->pipeline->buffer_descriptors[i]];
++      uint32_t bytes = metadata ? 128 : desc->buffer ? desc->range : 0;
+       OUT_RING(ring, A5XX_SSBO_1_0_WIDTH(bytes));
+       OUT_RING(ring, A5XX_SSBO_1_1_HEIGHT(bytes >> 16));
+    }
+@@ -365,8 +367,15 @@
+    OUT_RING(ring, CP_LOAD_STATE4_1_STATE_TYPE(ST4_UBO));
+    OUT_RING(ring, 0);
+    for (unsigned i = 0; i < count; i++) {
+-      const struct rd_descriptor *desc = &dispatch->descriptors[dispatch->pipeline->buffer_descriptors[i]];
+-      if (desc->buffer && desc->buffer->memory)
++      bool metadata = dispatch->sampling_addresses && i == dispatch->pipeline->sampling_buffer;
++      const struct rd_descriptor *desc = metadata ? NULL :
++         &dispatch->descriptors[dispatch->pipeline->buffer_descriptors[i]];
++      if (metadata) {
++         OUT_RELOC(ring, dispatch->sampling_addresses, 0, 0, 0);
++         for (unsigned j = 0; j < 16; j++)
++            if (dispatch->sampling_bos[j])
++               fd_ringbuffer_attach_bo(ring, dispatch->sampling_bos[j]);
++      } else if (desc->buffer && desc->buffer->memory)
+          OUT_RELOC(ring, desc->buffer->memory->bo,
+                     desc->buffer->offset + desc->offset, 0, 0);
+       else
+@@ -916,10 +925,14 @@
+             if (dispatch->indirect)
+                result = rd_resolve_indirect(device, &indirect);
+             if (result == VK_SUCCESS)
++               result = rd_prepare_sampling(device, &indirect);
++            if (result == VK_SUCCESS)
+                result = rd_execute_dispatch(device, dispatch,
+                                             profile ? &submit_profile : NULL);
+             if (result == VK_SUCCESS)
+                rd_query_account_dispatch(device, dispatch);
++            if (indirect.sampling_addresses)
++               fd_bo_del(indirect.sampling_addresses);
+          } else if (recorded->type == RD_CMD_IMAGE_COPY || recorded->type == RD_CMD_IMAGE_CLEAR) {
+             result = rd_execute_image_transfer(device, &recorded->image_transfer,
+                                                 recorded->type == RD_CMD_IMAGE_CLEAR);
+--- a/src/freedreno/radish/rd_resources.c
++++ b/src/freedreno/radish/rd_resources.c
+@@ -454,8 +454,11 @@
+          continue;
+       struct rd_resource resource;
+       if (rd_make_resource(&dispatch->descriptors[pipeline->texture_descriptors[i]],
+-                            &resource))
++                            &resource)) {
++         if (pipeline->sampling_mask & (1u << i))
++            resource.image_size_only = true;
+          rd_emit_resource_texture(ring, i, &resource);
++      }
+    }
+    for (uint32_t i = 0; i < usage->image_count; i++) {
+       if (!(usage->images & (1u << i)))
+--- /dev/null
++++ b/src/freedreno/radish/rd_sampling.c
+@@ -0,0 +1,73 @@
++#include "rd_private.h"
++#include "rd_sampling.h"
++#include "vk_format.h"
++#include "util/u_debug.h"
++
++VkResult
++rd_prepare_sampling(struct rd_device *device, struct rd_dispatch *dispatch)
++{
++   struct rd_pipeline *source = dispatch->pipeline;
++   if (!source->sampling_nir)
++      return VK_SUCCESS;
++   struct rd_sampling_key key = {0};
++   struct fd_bo *bos[16] = {0};
++   uint64_t addresses[16] = {0};
++   bool force = debug_get_bool_option("RADISH_SW_TEXEL_FETCH", false);
++   for (unsigned i = 0; i < source->resource_usage.texture_count; i++) {
++      if (!(source->resource_usage.textures & (1u << i)))
++         continue;
++      const struct rd_descriptor *descriptor = &dispatch->descriptors[source->texture_descriptors[i]];
++      if (!descriptor->image_view)
++         continue;
++      const struct vk_image_view *view = &descriptor->image_view->vk;
++      const struct rd_image *image = container_of(view->image, struct rd_image, vk);
++      bool array = view->view_type == VK_IMAGE_VIEW_TYPE_2D_ARRAY;
++      bool cube = view->view_type == VK_IMAGE_VIEW_TYPE_CUBE ||
++                  view->view_type == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY;
++      if ((!array && !cube) || (!force && image->levels[view->base_mip_level].array_pitch <=
++                                           (0x3fffull << 12)))
++         continue;
++      if (!image->memory || view->level_count > RD_IMAGE_MAX_LEVELS)
++         return VK_ERROR_UNKNOWN;
++      key.mask |= 1u << i;
++      struct rd_sampling_view *target = &key.views[i];
++      target->format = view->format;
++      target->swizzle = view->swizzle;
++      target->levels = view->level_count;
++      target->layers = view->layer_count;
++      target->cpp = image->texel_size;
++      for (unsigned l = 0; l < view->level_count; l++) {
++         unsigned level = view->base_mip_level + l;
++         const struct rd_image_level *layout = &image->levels[level];
++         VkExtent3D extent = vk_image_mip_level_extent(&image->vk, level);
++         VkDeviceSize offset = layout->offset + view->base_array_layer * layout->array_pitch;
++         if (offset > UINT32_MAX || layout->row_pitch > UINT32_MAX || layout->array_pitch > UINT32_MAX)
++            return VK_ERROR_OUT_OF_DEVICE_MEMORY;
++         target->level[l] = (struct rd_sampling_level) {
++            .offset = offset, .row_pitch = layout->row_pitch, .array_pitch = layout->array_pitch,
++            .width = extent.width, .height = extent.height,
++         };
++      }
++      bos[i] = image->memory->bo;
++      addresses[i] = fd_bo_get_iova(bos[i]) + image->memory_offset;
++   }
++   if (!key.mask)
++      return VK_SUCCESS;
++   struct rd_pipeline *pipeline;
++   VkResult result = rd_sampling_compile(device, source, &key, &pipeline);
++   if (result != VK_SUCCESS)
++      return result;
++   struct fd_bo *metadata = fd_bo_new(device->fd, 4096, FD_BO_GPUREADONLY, "radish-sampling-addresses");
++   if (!metadata)
++      return VK_ERROR_OUT_OF_DEVICE_MEMORY;
++   void *map = fd_bo_map(metadata);
++   if (!map) {
++      fd_bo_del(metadata);
++      return VK_ERROR_MEMORY_MAP_FAILED;
++   }
++   memcpy(map, addresses, sizeof(addresses));
++   dispatch->sampling_addresses = metadata;
++   memcpy(dispatch->sampling_bos, bos, sizeof(bos));
++   dispatch->pipeline = pipeline;
++   return VK_SUCCESS;
++}
+--- /dev/null
++++ b/src/freedreno/radish/rd_sampling.h
+@@ -0,0 +1,30 @@
++#ifndef RD_SAMPLING_H
++#define RD_SAMPLING_H
++#include "rd_image.h"
++#include "util/format/u_format.h"
++struct nir_shader;
++struct rd_device;
++struct rd_dispatch;
++struct rd_pipeline;
++struct rd_sampling_level { uint32_t offset, row_pitch, array_pitch, width, height; };
++struct rd_sampling_view {
++   VkFormat format;
++   VkComponentMapping swizzle;
++   uint32_t levels, layers, cpp;
++   struct rd_sampling_level level[RD_IMAGE_MAX_LEVELS];
++};
++struct rd_sampling_key {
++   uint32_t mask;
++   struct rd_sampling_view views[16];
++};
++struct rd_sampling_entry {
++   struct rd_sampling_entry *next;
++   struct rd_sampling_key key;
++   struct rd_pipeline *pipeline;
++};
++bool rd_nir_lower_array_fetch(struct nir_shader *nir, const struct rd_sampling_key *key,
++                              uint32_t metadata_buffer);
++VkResult rd_sampling_compile(struct rd_device *device, struct rd_pipeline *source,
++                             const struct rd_sampling_key *key, struct rd_pipeline **out);
++VkResult rd_prepare_sampling(struct rd_device *device, struct rd_dispatch *dispatch);
++#endif

@@ -1,0 +1,92 @@
+{
+  "status": "passed",
+  "driver": {
+    "bytes": 48898568,
+    "sha256": "48ffa7ce99839446e95f232eaa570d2147fdca3ba1893439bb6db30412bd4532"
+  },
+  "source_snapshot": "checkpoint-array-fetch-source",
+  "public_patch": {
+    "bytes": 20002,
+    "sha256": "b624cd870252d32654bcd1eeb21f473c84740f6aab46d078fd397ec03306ea63"
+  },
+  "capture": "WORK/core-compute-0044-valid-descriptor-order/probe",
+  "run_log": {
+    "bytes": 5245,
+    "sha256": "66ffa98de4c1655e625cfaa9aa00c5de239687c7c209ef08b862c6fa819c32e0"
+  },
+  "payload": {
+    "radish_icd.json": {
+      "bytes": 156,
+      "sha256": "ede3be8d44f8051058702033ff85e319efe97d186ff3af4ddf5d0858c4d1beb2"
+    },
+    "robust": {
+      "bytes": 733640,
+      "sha256": "145e712294f40397d191994e53848e64d9f2b04c8a7fc5ab08890192e87d343c"
+    },
+    "resources": {
+      "bytes": 708624,
+      "sha256": "ddaef8a10d5f06a6a4c7e840f589d037f2bec3efd9bd0cfa7fc6ccf6fb095709"
+    },
+    "resources.spv": {
+      "bytes": 9276,
+      "sha256": "c8d7bdd50cb5c1f9a9a62f4ed4009eeacfdef5ed3d1f9a308cbd29648c8c7b48"
+    },
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "robust.spv": {
+      "bytes": 6492,
+      "sha256": "080526d997f35eb5992519f281f21c52c2eafb8997f3708c58b83652fa2d8160"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 48898568,
+      "sha256": "48ffa7ce99839446e95f232eaa570d2147fdca3ba1893439bb6db30412bd4532"
+    },
+    "payload.json": {
+      "bytes": 1081,
+      "sha256": "3eb5f4915e3328f0b85bf4c011c41cfd838fd7351ae26b7ca7b7e16e9cdbd40b"
+    }
+  },
+  "descriptor_order": "previous fence complete; reset command pool; update descriptors; Begin/Bind/record/End; submit/wait; no update-after-bind flags/features",
+  "resources": {
+    "rounds": 2,
+    "records_per_round": 85,
+    "fields_per_record": 22,
+    "all_output_words": 3740,
+    "all_image_allocations": 8,
+    "all_buffer_allocations": 9,
+    "guards_exact": true,
+    "scope": [
+      "UBO/dynamic offsets and compatible layout lifetime",
+      "Mutable and singleton fullsplit images",
+      "Color copy/clear/readback",
+      "D16/D32 nearest samples and LESS_OR_EQUAL comparison; depth-image copy",
+      "R32_UINT2D-array texel fetch: two mips/two layers, changed BO between recordings, same cached child, exact default alpha"
+    ],
+    "array_path": "Private RADISH_SW_TEXEL_FETCH=1 forces the bounded LDG fallback; not general filtered/cube/large-allocation support"
+  },
+  "robustness": {
+    "public_supported_feature": true,
+    "ordinary_CreateDevice_enablement": true,
+    "spans": [
+      1,
+      3,
+      12,
+      16
+    ],
+    "outputs_per_case": 40,
+    "all_five_allocations_exact": true,
+    "texel_elements": 40001,
+    "scope": "Short ranges/vector tails/stores/add/CAS/negative and large offsets; coreRBA only"
+  },
+  "conditions": {
+    "service_seconds": 1.528,
+    "peak_mib": 13.8,
+    "swap_mib": 0,
+    "new_gpu_faults": false,
+    "services_active": true
+  },
+  "history": "Replaces qualification for the affected invalid-order resource/RBA captures; their raw observations and errata remain. Independent API5/event/query/BASIC/privateconstant/historical reduction ordering was unaffected.",
+  "limits": "Focused valid-use qualification; full Vulkan1.1/CTS conformance is not claimed. Larger-array creation guard and filtered/cube fallback remain incomplete."
+}

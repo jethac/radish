@@ -1,5 +1,13 @@
 # Core compute implementation: checkpoint 0044
 
+## 2026-11-02: corrected descriptor ordering passes
+
+The replacement run on ICD48ffa7ce uses completed fence → command-pool reset → descriptor update → fresh record/bind → submit/wait. Both85-record resource rounds pass all22 fields (3740 words) and full8 image/9 buffer allocation guards. The unchanged tests cover dynamic buffers, compatible layout lifetime, mutable/fullsplit images, color clear/copy, D16/D32 sampling/comparison and depth copy. Four robust-buffer spans1/3/12/16 each pass40 output words and all five allocation guards through the ordinary public robustBufferAccess feature request. Service1.528s,13.8MiB,zero swap; no new GPU faults and both services active. [Exact replacement result](results/core-api-0044-valid-order.json).
+
+The resource run also qualifies the bounded private array-fetch path: two mips/two layers, a different image BO between recordings, reuse of the same specialized child and exact integer/default-alpha outputs. It forces `RADISH_SW_TEXEL_FETCH=1`; filtered/cube fallback and oversized image creation remain incomplete. The eleventh increment `0044-radish-array-fetch-wip.patch` adds this real LDG-consuming path. Native compile-only checks the base pipeline; descriptor-specialized code compiles lazily before first dispatch. Build success alone does not qualify every later specialization.
+
+The published resource and RBA helpers now use the corrected order. The existing builder also produces `array`, selected with `device-core-compute.py ... --suite array`; `--suite robust` selects public coreRBA. The40-command ledger again has representative valid-use evidence across the retained independent suites and these corrected resource paths, not complete command semantics or conformance. Historical invalid-order captures and the erratum below remain; only replacement coverage is restored. API5/templates, events/queries, BASIC, private/constant and historical reduction were independently checked as unaffected.
+
 ## 2026-11-02: descriptor-order qualification correction
 
 The resource and robust-buffer helpers updated ordinary descriptor sets after recording command buffers and before submission. Without update-after-bind binding flags, those updates invalidate the command buffers. Their passing outputs and guard checks remain recorded as implementation observations, but the affected executions do not establish valid Vulkan-use qualification. This includes the resource/depth/mutable/fullsplit and robust-buffer claims below. Corrected helpers will update descriptors before recording, then reset/re-record after each completed round while retaining all numerical and allocation checks. No optional binding feature is being enabled to bypass the rule.
@@ -101,7 +109,7 @@ budget. It does not solve the earlier legal-workgroup/shared-memory failures.
 
 ## Consolidated reproduction
 
-Apply the ten0044 incremental patches in order to the documented0042 Mesa
+Apply the eleven0044 incremental patches in order to the documented0042 Mesa
 stack and build the isolated driver. Build probes against its matching internal
 ABI:
 
