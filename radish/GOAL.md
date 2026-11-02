@@ -375,3 +375,8 @@ objects. The original five information cases also pass after source-backed
 scalar corrections, closing their observed 31-message history. This is a bounded
 query milestone: strict sRGB precision and complete applicable compute/shared
 validation remain open, and the later inference campaign is unchanged.
+
+The next bounded evidence adds eighteen original query lifecycle cases and the
+required native-backed blend format-query traits. Their source/oracle limitations
+remain explicit; the full required behavior/precision/CTS work remains active.
+No performance experiment or inference-selection change follows from these passes.

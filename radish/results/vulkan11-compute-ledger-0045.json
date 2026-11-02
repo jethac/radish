@@ -7,13 +7,13 @@
     "status": "frozen"
   },
   "candidate": {
-    "driver": "1f5c27b8f67bc72f8198c00f7397b57eeeb7f2c5cc155d98549091b39dfc996d",
-    "status": "Separate1f5c validation checkpoint: valid image/query/layout resources and allfive original info casesPASS. Full applicable conformance/strictsRGB remainopen; selectedfcd/d332 unchanged."
+    "driver": "8298f0892597d288d130715975fe08d38c618b69dfd82c6cc9b62aa045b8c640",
+    "status": "Separate8298 validation checkpoint adds native-backed requiredBLEND query traits over1f5c. Eighteen original query lifecycle cases passed on immutable1f. Full applicable conformance/strictsRGB remainopen; selectedfcd/d332 unchanged."
   },
   "official_cts": {
     "source_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
     "binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
-    "state": "Pinned original binary: allfive info cases nowPASS, observed property messages31 to15 to9 to0. Teninitialshader,fourshared,twocommandbarrier,22buffer,seven descriptor andtenETCcompute casesPASS. This remains partial applicable coverage.",
+    "state": "Pinned original binary: allfive info cases nowPASS, observed property messages31 to15 to9 to0. Teninitialshader,fourshared,twocommandbarrier,22buffer,seven descriptor andtenETCcompute casesPASS. This remains partial applicable coverage. Eight advertised-statistics andten coretimestamp casesPASS with documented originaloracle limits.",
     "modified_harness": "f85cb13b diagnostics only, never official passes",
     "remaining_property_failures": 0,
     "actual_record": "official11-native-scalars-info-0045.json",
@@ -29,7 +29,8 @@
       31,
       15,
       9
-    ]
+    ],
+    "query_record": "official11-query-lifecycle-0045.json"
   },
   "categories": [
     {
@@ -67,8 +68,8 @@
     {
       "id": "format-graphics-properties",
       "requirement": "Required blit/attachment/vertex format feature columns",
-      "implementation": "51FD5-backed color-format query admissions and seven sampled-only negatives; dense transient attachment allocation/view/layout support. No graphics queue/engine or rendering claim.",
-      "evidence": "Current format query and explicit compute queue; primary required-format table retained; exact command-applicability review permits native compressed BLIT_SRC querytrait; tenactualqueries pass, no graphics-only blit executed.; native-attachment-resources-0045.json validv3 excludes graphics-only hostcalls and checks58queries/80imagesviews/192barriers16fences.",
+      "implementation": "51FD5-backed color-format query admissions and seven sampled-only negatives; dense transient attachment allocation/view/layout support. No graphics queue/engine or rendering claim. Fourteen required native-backed BLEND query traits added; pure query coverage does not claim graphics execution.",
+      "evidence": "Current format query and explicit compute queue; primary required-format table retained; exact command-applicability review permits native compressed BLIT_SRC querytrait; tenactualqueries pass, no graphics-only blit executed.; native-attachment-resources-0045.json validv3 excludes graphics-only hostcalls and checks58queries/80imagesviews/192barriers16fences.; required-blend-query-0045.json all14positive+4negative querycontrolsPASS, legacy/core2 agree.",
       "remaining": "Resolve standard conformance versus explicit compute scope, without fake flags or treating table cells as automatically waived. Blit queue applicability is separate from property obligation.",
       "owner": "resource"
     },
@@ -132,7 +133,7 @@
       "id": "execution-sync",
       "requirement": "Direct/indirect dispatch, shared/barrier, transfer\u2192shader\u2192host, events/queries/binary fence/semaphore and command order",
       "implementation": "Serialized worker/DRM sync, conservative waits/flushes, runtime sync support, real event/query transfer/compute paths",
-      "evidence": "core_api5/core_events_queries/core_workgroup_barriers/resource producers+consumers and actual guards; mixed COMPUTE|VERTEX push update and graphics-only poison preserve compute seed in full timeline consumer95866.; four original shared_var and two ssbo_cmd_barrier CTS cases pass exact numerical oracles.",
+      "evidence": "core_api5/core_events_queries/core_workgroup_barriers/resource producers+consumers and actual guards; mixed COMPUTE|VERTEX push update and graphics-only poison preserve compute seed in full timeline consumer95866.; four original shared_var and two ssbo_cmd_barrier CTS cases pass exact numerical oracles.; official11-query-lifecycle-0045.json eight advertisedstatistics/ten coretimestamp casesPASS, reset/copy/offset/secondary and32/64consistency scope, original weakavailability/ordering limits explicit.",
       "remaining": "Original applicable pipeline/memory-model/synchronization/lifetime CTS, cross-submit visibility, alias dependencies and all legal workgroup forms; model output is not substitute.",
       "owner": "resource"
     },
@@ -324,6 +325,6 @@
     "system_scope": "No globalgraphics/service/clock/kernelchanges"
   },
   "depth_layout_erratum": "Pinned Vulkan1.1 DEPTH_STENCIL_READ_ONLY_OPTIMAL requires DEPTH_STENCIL_ATTACHMENT usage. Earlier sampled-only depth consumers are implementation observations for that path until valid-usage requalification; no retroactive public qualification.",
-  "next_private_source": "Next bounded mandatory compute/shared CTS partition targets advertised pipeline statistics and command/query lifetimes. Full format/precision, memory/sync/shader/API conditional coverage remains; no performance tuning or fullconformance claim.",
+  "next_private_source": "Existing block-compatible EXTENDED_USAGE image/view path has source support; bounded storage-view consumer next without speculative driver change. Original pipeline-cache/derivative/lifetime CTS source partition is being bounded. Full shader/memory/resource/API/precision coverage remains; no performance tuning.",
   "required_core_lookup": "core-lookup-public-0045.json: public165GIPA/137GDPA complete afterfiveactualdevicepointer fixes. This is lookup only, not allcommandexecution. DirectICDloaderglobal limitation retained."
 }

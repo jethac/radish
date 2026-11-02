@@ -5,7 +5,7 @@ come before further performance experiments. The selected fcd/d332 inference
 stack is frozen. The intended GPU budget is entirely compute; CPU handles
 graphics. No graphics headroom reservation should be added. Any removal must
 identify a real source reservation and preserve correctness/resource guards;
-this is not authorization to change OS graphics or services. The separate 1f5c validation candidate includes representative resource corrections and the source-backed subpixel query fix. It remains separate from selected inference and is not a qualified replacement. See the [machine-readable ledger](results/vulkan11-compute-ledger-0045.json).
+this is not authorization to change OS graphics or services. The separate 8298 validation candidate includes representative resource corrections and the source-backed subpixel query fix. It remains separate from selected inference and is not a qualified replacement. See the [machine-readable ledger](results/vulkan11-compute-ledger-0045.json).
 
 | Area | Evidence | Remaining work |
 | --- | --- | --- |
@@ -269,3 +269,21 @@ This closes the observed information-query failures. It does not close the
 complete normative matrix, shader/resource/memory/synchronization CTS or the 42
 strict custom sRGB mismatches. Selected inference and all original device limits
 remain unchanged; conformance still precedes performance work.
+
+## Query lifetimes and required format traits
+
+Eighteen further original CTS cases pass: eight for the advertised optional
+pipeline-statistics feature and ten core timestamp cases. The statistics group
+checks query values and 1,203 SSBO words across 22 dispatches, including copy,
+offset, secondary-command and reset paths. Timestamp cases check the original
+reset and 32/64-bit consistency conditions. Some original availability/ordering
+checks are weak or vacuous, and their workload SSBO is not numerically checked.
+[The exact cases, source bounds and results](results/official11-query-lifecycle-0045.json)
+retain those limitations; these runs are correctness checks, not benchmarks.
+
+The separate 8298 candidate adds 14 required native-backed BLEND format-query
+traits. All 14 positive and 4 nonblend controls pass through both legacy and core2
+queries. [The source and actual query evidence](results/required-blend-query-0045.json)
+include no device creation, graphics host objects or blending execution. Broader
+format, precision, memory and shader conformance remains open, including the 42
+strict sRGB mismatches. The selected inference stack remains unchanged.

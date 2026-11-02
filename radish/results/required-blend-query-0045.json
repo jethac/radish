@@ -1,0 +1,755 @@
+{
+  "status": "Fourteen required blend query traits and four negative controls PASS; no blending execution claim",
+  "prior": "official11-native-scalars-info-0045.json",
+  "driver": {
+    "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/libvulkan_radish.so",
+    "bytes": 49078792,
+    "sha256": "8298f0892597d288d130715975fe08d38c618b69dfd82c6cc9b62aa045b8c640"
+  },
+  "reconstruction": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-required-blend-public-stack-0045/reconstruction.json",
+      "bytes": 6213,
+      "sha256": "67d45c5307d067cbd2487d9003cec6cc8e8b594648875be3d4dc155535fbd0e5"
+    },
+    "result": {
+      "status": "Exact8298 source reconstruction PASS",
+      "sources": {
+        "src/freedreno/radish/rd_nir_resources.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/source/src/freedreno/radish/rd_nir_resources.c",
+          "bytes": 14792,
+          "sha256": "49ba435efd7edaa8bee8563cf3121297bbf06091a79f0e3736cbd4b2111c21b9"
+        },
+        "src/freedreno/radish/rd_command.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/source/src/freedreno/radish/rd_command.c",
+          "bytes": 13873,
+          "sha256": "9d8186e6219d989daaad17aaeb04347219295f913301df38dd97a6d3680a2498"
+        },
+        "src/freedreno/radish/rd_transfer.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/source/src/freedreno/radish/rd_transfer.c",
+          "bytes": 2992,
+          "sha256": "a93968bf54724b1a068d7169940952286b73a0eb08f9fe78ee3ef4e608d5812b"
+        },
+        "src/freedreno/radish/rd_nir_robust.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/source/src/freedreno/radish/rd_nir_robust.c",
+          "bytes": 9502,
+          "sha256": "eb7b2f530891fd81fbb5e9d048f2d4c93ad22b10476b0202fb9bca4dda28111c"
+        },
+        "src/freedreno/radish/rd_image.h": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/source/src/freedreno/radish/rd_image.h",
+          "bytes": 1793,
+          "sha256": "6c0847bb62fd18eef4e4398a7efc89afde57fbed64d64ab152586078d9555747"
+        },
+        "src/freedreno/radish/rd_memory.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/source/src/freedreno/radish/rd_memory.c",
+          "bytes": 6238,
+          "sha256": "210d76aecc691fefb8765c60fa677f273a4c4d8f6aac4aa2239ed0f78b8cc9f8"
+        },
+        "src/freedreno/radish/rd_sampling.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/source/src/freedreno/radish/rd_sampling.c",
+          "bytes": 6391,
+          "sha256": "2e1832d37ce206d98d7d8c778c231e19565c0d810b133c56ed46af107b360599"
+        },
+        "src/freedreno/radish/rd_query.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/source/src/freedreno/radish/rd_query.c",
+          "bytes": 14017,
+          "sha256": "8f83148f39b51411963dd2b201979f0e7d94f496a3e34b81601278bcdf622978"
+        },
+        "src/freedreno/radish/rd_nir_resources.h": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/source/src/freedreno/radish/rd_nir_resources.h",
+          "bytes": 953,
+          "sha256": "0afa75cc3e1c856496b4b52b6c65eca90ac751cbefaf807e3af1421fbca93599"
+        },
+        "src/freedreno/radish/rd_event.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/source/src/freedreno/radish/rd_event.c",
+          "bytes": 4999,
+          "sha256": "324cd260d6cb805d6b8548f9f518df1fba8110dd6bef25ae7f072c7ac17ac49c"
+        },
+        "src/freedreno/radish/rd_sampling.h": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/source/src/freedreno/radish/rd_sampling.h",
+          "bytes": 1096,
+          "sha256": "541a70b8aca605c0719aa03d551241da16136d6a17ff801bb5d379d7e6d86932"
+        },
+        "src/freedreno/radish/rd_queue.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/source/src/freedreno/radish/rd_queue.c",
+          "bytes": 45229,
+          "sha256": "da170e7c4d4a1fc9db0da5ded100376fab80b57fb70af2427a4ff81fbbdc4890"
+        },
+        "src/freedreno/radish/meson.build": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/source/src/freedreno/radish/meson.build",
+          "bytes": 1777,
+          "sha256": "8b5d6cd1839eb92a2dd9a0038ea3f1c9840935694b7acdfc36a1dd46714d732d"
+        },
+        "src/freedreno/radish/rd_instance.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/source/src/freedreno/radish/rd_instance.c",
+          "bytes": 13859,
+          "sha256": "c5763ff7a03fed9a13aebf291eeae5c182cfb79eba83c1b839d74d67a0682bac"
+        },
+        "src/freedreno/radish/rd_resources.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/source/src/freedreno/radish/rd_resources.c",
+          "bytes": 27624,
+          "sha256": "8c2c129bcc6129d910fd992a2563de1feae7e675619dc0fa571bd664fb380e3b"
+        },
+        "src/freedreno/radish/rd_nir_sampling.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/source/src/freedreno/radish/rd_nir_sampling.c",
+          "bytes": 23572,
+          "sha256": "64bed3318324ec74b2dde5bd2fb3d9b8dc996eb4077d2d09daf1dc2aec6c0b7a"
+        },
+        "src/freedreno/radish/rd_image.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/source/src/freedreno/radish/rd_image.c",
+          "bytes": 53639,
+          "sha256": "f9e2f1450640ea3610ff8fc0d9ca284524d51183d60413659d943767a8966f54"
+        },
+        "src/freedreno/radish/rd_device.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/source/src/freedreno/radish/rd_device.c",
+          "bytes": 6266,
+          "sha256": "b47a9e92dbdcca9ef58f62066c03d3b10a6ba4cb795a7a737ccfe1c4e67021df"
+        },
+        "src/freedreno/radish/rd_private.h": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/source/src/freedreno/radish/rd_private.h",
+          "bytes": 8794,
+          "sha256": "b4fd0b4017316865f92f740285bf900fb93fe59189f2bba658fb665d5bc91502"
+        },
+        "src/freedreno/radish/rd_pipeline.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/source/src/freedreno/radish/rd_pipeline.c",
+          "bytes": 25832,
+          "sha256": "20b6542536c5c34b3e36799f8caf4ee5f3bb52ce5557a0ee1fa260182b2d97e7"
+        },
+        "src/freedreno/radish/rd_descriptor.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/source/src/freedreno/radish/rd_descriptor.c",
+          "bytes": 17524,
+          "sha256": "b3cd22b2ace3540674a9cb98c55d4a9fcd62c1ffcb90fabe37fa478791ceb147"
+        }
+      },
+      "patch": {
+        "path": "/home/jethac/Projects/radish/radish/patches/0045-radish-required-blend-query.patch",
+        "bytes": 1456,
+        "sha256": "2ba99e803f8fc4b63011699406133f7e079cca936307c3d2d69fdcb7a56f4a51"
+      }
+    }
+  },
+  "source": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-required-blend-query-0045/release.json",
+      "bytes": 7164,
+      "sha256": "5bec06d6f1204c737fdf9ecc901e3bb05da9080ea8264248053b4b604293b942"
+    },
+    "result": {
+      "status": "private required-query trait candidate; independent source/host/public query gates pending",
+      "patch": {
+        "path": "/run/media/jethac/Shared/radish/compute11-required-blend-query-0045/required-blend-query.patch",
+        "bytes": 1456,
+        "sha256": "2ba99e803f8fc4b63011699406133f7e079cca936307c3d2d69fdcb7a56f4a51"
+      },
+      "baseline": {
+        "path": "/run/media/jethac/Shared/radish/compute11-required-blend-query-0045/baseline/rd_image.c",
+        "bytes": 52872,
+        "sha256": "d5cf72bedf83eb4ca1ee52ccfac25d093e1df0408ab46ee1412dc2c04d1ba58c"
+      },
+      "candidate": {
+        "path": "/run/media/jethac/Shared/radish/compute11-required-blend-query-0045/candidate/rd_image.c",
+        "bytes": 53639,
+        "sha256": "f9e2f1450640ea3610ff8fc0d9ca284524d51183d60413659d943767a8966f54"
+      },
+      "probe_sources": {
+        "test_common.h": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-query-0045/probe/test_common.h",
+          "bytes": 684,
+          "sha256": "4b022481571560cd58577d1303955f8c96e72891a2647947daa607eb5fd93b2b"
+        },
+        "blend_query.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-query-0045/probe/blend_query.c",
+          "bytes": 3223,
+          "sha256": "58df3a2e1d2dc976ce19bd22e8c6aea33a25d7e33014af0d5b0ad1742b779d30"
+        }
+      },
+      "required_table": {
+        "path": "/run/media/jethac/Shared/radish/compute11-framebuffer-samples-0045/v1.1.126-formats.txt",
+        "bytes": 186297,
+        "sha256": "5c18a9811018f3ad99067523a120e1e6d8aeae90a53688f5d44b195d56ddedba"
+      },
+      "format_rows": [
+        {
+          "vk_format": "VK_FORMAT_R5G6B5_UNORM_PACK16",
+          "pipe_format": "B5G6R5_UNORM",
+          "native_texture": "5_6_5_UNORM",
+          "native_color": "R5G6B5_UNORM",
+          "native_swap": "WXYZ"
+        },
+        {
+          "vk_format": "VK_FORMAT_A1R5G5B5_UNORM_PACK16",
+          "pipe_format": "B5G5R5A1_UNORM",
+          "native_texture": "5_5_5_1_UNORM",
+          "native_color": "R5G5B5A1_UNORM",
+          "native_swap": "WXYZ"
+        },
+        {
+          "vk_format": "VK_FORMAT_R8_UNORM",
+          "pipe_format": "R8_UNORM",
+          "native_texture": "8_UNORM",
+          "native_color": "R8_UNORM",
+          "native_swap": "WZYX"
+        },
+        {
+          "vk_format": "VK_FORMAT_R8G8_UNORM",
+          "pipe_format": "R8G8_UNORM",
+          "native_texture": "8_8_UNORM",
+          "native_color": "R8G8_UNORM",
+          "native_swap": "WZYX"
+        },
+        {
+          "vk_format": "VK_FORMAT_R8G8B8A8_UNORM",
+          "pipe_format": "R8G8B8A8_UNORM",
+          "native_texture": "8_8_8_8_UNORM",
+          "native_color": "R8G8B8A8_UNORM",
+          "native_swap": "WZYX"
+        },
+        {
+          "vk_format": "VK_FORMAT_R8G8B8A8_SRGB",
+          "pipe_format": "R8G8B8A8_SRGB",
+          "native_texture": "8_8_8_8_UNORM",
+          "native_color": "R8G8B8A8_UNORM",
+          "native_swap": "WZYX"
+        },
+        {
+          "vk_format": "VK_FORMAT_B8G8R8A8_UNORM",
+          "pipe_format": "B8G8R8A8_UNORM",
+          "native_texture": "8_8_8_8_UNORM",
+          "native_color": "R8G8B8A8_UNORM",
+          "native_swap": "WXYZ"
+        },
+        {
+          "vk_format": "VK_FORMAT_B8G8R8A8_SRGB",
+          "pipe_format": "B8G8R8A8_SRGB",
+          "native_texture": "8_8_8_8_UNORM",
+          "native_color": "R8G8B8A8_UNORM",
+          "native_swap": "WXYZ"
+        },
+        {
+          "vk_format": "VK_FORMAT_A8B8G8R8_UNORM_PACK32",
+          "pipe_format": "R8G8B8A8_UNORM",
+          "native_texture": "8_8_8_8_UNORM",
+          "native_color": "R8G8B8A8_UNORM",
+          "native_swap": "WZYX"
+        },
+        {
+          "vk_format": "VK_FORMAT_A8B8G8R8_SRGB_PACK32",
+          "pipe_format": "R8G8B8A8_SRGB",
+          "native_texture": "8_8_8_8_UNORM",
+          "native_color": "R8G8B8A8_UNORM",
+          "native_swap": "WZYX"
+        },
+        {
+          "vk_format": "VK_FORMAT_A2B10G10R10_UNORM_PACK32",
+          "pipe_format": "R10G10B10A2_UNORM",
+          "native_texture": "10_10_10_2_UNORM",
+          "native_color": "R10G10B10A2_UNORM",
+          "native_swap": "WZYX"
+        },
+        {
+          "vk_format": "VK_FORMAT_R16_SFLOAT",
+          "pipe_format": "R16_FLOAT",
+          "native_texture": "16_FLOAT",
+          "native_color": "R16_FLOAT",
+          "native_swap": "WZYX"
+        },
+        {
+          "vk_format": "VK_FORMAT_R16G16_SFLOAT",
+          "pipe_format": "R16G16_FLOAT",
+          "native_texture": "16_16_FLOAT",
+          "native_color": "R16G16_FLOAT",
+          "native_swap": "WZYX"
+        },
+        {
+          "vk_format": "VK_FORMAT_R16G16B16A16_SFLOAT",
+          "pipe_format": "R16G16B16A16_FLOAT",
+          "native_texture": "16_16_16_16_FLOAT",
+          "native_color": "R16G16B16A16_FLOAT",
+          "native_swap": "WZYX"
+        }
+      ],
+      "implementation": [
+        "Adds optimal COLOR_ATTACHMENT_BLEND query trait for exactly14 unconditional pinned requiredblend rows, onlyinsideexistingnativeCOLOR_ATTACHMENT branch. All14 proven noninteger normalized/SRGB/FP16 nativeFD5 renderableformats; no speculative32bitfloat extras.",
+        "Legacy/core2/flags2 source shareattachmentflagpath. Linear/imageusage/creation/view/layout/allocator/shader/descriptor/sampling/guards unchanged. No BLEND int/depth/compressed support.",
+        "MatchedFD5 blendstate implementsrequiredADD/SUB/REVERSE_SUB/MIN/MAX and independentRGB/alphafactors; emitter disablesblendforpureintegers andhandlesmissingalpha. fd5_gmem setsnativeSRGB colorformatbits. ExactnativeRB formats/swaps alreadyreviewedby4b86 source.",
+        "No graphicsqueue/pipeline/hostobjects/renderingengine or executedblendqualification. Requiredformatquerytrait remainsindependent ofemptyvalidgraphicscall domain."
+      ],
+      "public_probe": "18 formatqueries (14positive+4integer/DS/compressednegative), compareslegacy/core2properties, noVkDevice/memory/commands/graphicsconstructors. API1.1+actualCOMPUTE-onlyqueuepropertieschecked; existingrawICD querypattern/test_common4b02 reused.",
+      "conformance_limits": "Exactmandatoryquerycoverage only, notallformat/precision/blendingexecution orfullconformance. Allstrict42SRGBfailures untouched, no tolerancechange.",
+      "provenance": {
+        "fd5_blend.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-query-0045/provenance/fd5_blend.c",
+          "bytes": 3717,
+          "sha256": "e8d391a88e4f4e7712c08436aba26b641eff25bcb1953268f878ab6b884d09c9"
+        },
+        "fd5_gmem.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-query-0045/provenance/fd5_gmem.c",
+          "bytes": 27559,
+          "sha256": "bd5d0417c8f70c386e1c4e04df6a0b12326535093f32bdc6416049eae1205f0a"
+        },
+        "fd5_emit.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-required-blend-query-0045/provenance/fd5_emit.c",
+          "bytes": 44105,
+          "sha256": "3e005c0b2d9408b6935ae990d57683d766c7a23295fd6bd7ef1289a82743f48e"
+        }
+      },
+      "licenses": "MatchedMesa FD5 sourceprovenance preservesoriginalMITSPDX/copyright headers. Predicate/formatfacts derivedwithattribution; no newexternalruntime dependency.",
+      "primary_links": [
+        "https://github.com/KhronosGroup/Vulkan-Docs/blob/v1.1.126/chapters/formats.txt",
+        "https://github.com/chaotic-cx/mesa-mirror/blob/bd830ce2eead03d775486234902fe22215e334b8/src/gallium/drivers/freedreno/a5xx/fd5_blend.c"
+      ],
+      "composition": "Oneadditivequery-onlyrd_image hunk overdenseTransient29915 finald5cf; scalar0f5c/3d99 rd_instance/rd_pipeline disjoint. New6c08ABIunchanged; publicprobehasnoprivateheaders."
+    }
+  },
+  "source_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-required-blend-query-0045/independent-source-consumer-review.json",
+      "bytes": 1739,
+      "sha256": "3835c1c70953ef8a3b6f7c94bb927cbf81a37fa9ef1d4746ac277bf6feddad89"
+    },
+    "result": {
+      "status": "PASS finite required blend query source/consumer counterpart",
+      "patch_sha256": "2ba99e803f8fc4b63011699406133f7e079cca936307c3d2d69fdcb7a56f4a51",
+      "required_table_BLEND_eighth_feature_column_unconditional_rows": [
+        "VK_FORMAT_A1R5G5B5_UNORM_PACK16",
+        "VK_FORMAT_A2B10G10R10_UNORM_PACK32",
+        "VK_FORMAT_A8B8G8R8_SRGB_PACK32",
+        "VK_FORMAT_A8B8G8R8_UNORM_PACK32",
+        "VK_FORMAT_B8G8R8A8_SRGB",
+        "VK_FORMAT_B8G8R8A8_UNORM",
+        "VK_FORMAT_R16G16B16A16_SFLOAT",
+        "VK_FORMAT_R16G16_SFLOAT",
+        "VK_FORMAT_R16_SFLOAT",
+        "VK_FORMAT_R5G6B5_UNORM_PACK16",
+        "VK_FORMAT_R8G8B8A8_SRGB",
+        "VK_FORMAT_R8G8B8A8_UNORM",
+        "VK_FORMAT_R8G8_UNORM",
+        "VK_FORMAT_R8_UNORM"
+      ],
+      "exact_source_diff": true,
+      "all14_native_mappings_match_independently_reviewed51_table": true,
+      "query_source": "OnlyoptimalCOLOR_ATTACHMENT path gainsBLEND for14explicitnonintegerformats; linear/buffer/queryflags2sharing andimage/transfer/view/shaderpaths unchanged.",
+      "native_source": "MatchedFD5 blend ADD/SUB/REVERSE_SUB/MIN/MAX+separateRGB/alpha factor routing; nativeRB formats,integerblenddisable/missingalphahandling andSRGBattachmentbits retained. This isquerytrait/nativecapabilityevidence, notRadishgraphicsengine or executedblendqualification.",
+      "consumer_sha256": "58df3a2e1d2dc976ce19bd22e8c6aea33a25d7e33014af0d5b0ad1742b779d30",
+      "consumer_scope": "18legalformatqueries throughdirectICD entrypoints,legacy/core2equality,actualAPI1.1 andCOMPUTE-onlyphysicalqueue. NoVkDevice/graphicsconstructors/commands/allocations. DirectICDroute doesnotclaimpublicloaderglobalcoverage.",
+      "device_actions": 0,
+      "open": "Actualquery gatepending;42strictsRGBprecisionmismatches unchanged;fullconformance notclaimed."
+    }
+  },
+  "host_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-required-blend-query-0045/independent-host-build-review.json",
+      "bytes": 1607,
+      "sha256": "8979b25c2566da630bff228c987c3d625f0e8b055f7385dd6db826241cf70261"
+    },
+    "result": {
+      "status": "PASS: finite source/build pairing; actual query remains separate",
+      "driver": {
+        "path": "/run/media/jethac/Shared/radish/compute11-required-blend-build-0045/libvulkan_radish.so",
+        "bytes": 49078792,
+        "sha256": "8298f0892597d288d130715975fe08d38c618b69dfd82c6cc9b62aa045b8c640"
+      },
+      "helper": {
+        "path": "/run/media/jethac/Shared/radish/compute11-required-blend-helper-build-0045/probe/blend_query",
+        "bytes": 153736,
+        "sha256": "f52126122b7e5eb9c4e473ecd0a2a755bfdf434182df949a16fb664aa1ffd319"
+      },
+      "patch": {
+        "path": "/run/media/jethac/Shared/radish/compute11-required-blend-query-0045/required-blend-query.patch",
+        "bytes": 1456,
+        "sha256": "2ba99e803f8fc4b63011699406133f7e079cca936307c3d2d69fdcb7a56f4a51"
+      },
+      "source_changes": [
+        "src/freedreno/radish/rd_image.c"
+      ],
+      "checked_source_records": 25,
+      "checks": [
+        "Source snapshot rehashed; exact inverse restores d5cf, only image query hunk differs",
+        "Helper58df and utility4b02 bytes exact; dependency contains no private Radish headers",
+        "Both ELF AArch64 machine183; driver8298/helperf521 exact results",
+        "No shader, descriptor, image admission, allocation, or guard changes; public query-only scope"
+      ],
+      "independent_source_review": {
+        "path": "/run/media/jethac/Shared/radish/compute11-required-blend-query-0045/independent-source-consumer-review.json",
+        "bytes": 1739,
+        "sha256": "3835c1c70953ef8a3b6f7c94bb927cbf81a37fa9ef1d4746ac277bf6feddad89"
+      },
+      "limitations": "No executed blend or full conformance claim; original42 strict sRGB failures unchanged"
+    }
+  },
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-required-blend-query-0045/independent-actual-review.json",
+      "bytes": 2022,
+      "sha256": "5a14d1cd1a1ad37e1053d61a21edb1da709741f7970f1b15aa0730e495ea2931"
+    },
+    "result": {
+      "status": "PASS: public physical-query-only actual",
+      "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-required-blend-query/probe",
+      "log": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-required-blend-query/probe/run.log",
+        "bytes": 2311,
+        "sha256": "7d1ee19e736d21678addd244e557c2aac8dc46754f206d5b7ccd813438a792ec"
+      },
+      "rows": [
+        [
+          "required",
+          "0",
+          "4",
+          "0000d181"
+        ],
+        [
+          "required",
+          "1",
+          "8",
+          "0000d181"
+        ],
+        [
+          "required",
+          "2",
+          "9",
+          "0000d183"
+        ],
+        [
+          "required",
+          "3",
+          "16",
+          "0000d183"
+        ],
+        [
+          "required",
+          "4",
+          "37",
+          "0000d183"
+        ],
+        [
+          "required",
+          "5",
+          "43",
+          "0000d181"
+        ],
+        [
+          "required",
+          "6",
+          "44",
+          "0000d181"
+        ],
+        [
+          "required",
+          "7",
+          "50",
+          "0000d181"
+        ],
+        [
+          "required",
+          "8",
+          "51",
+          "0000d183"
+        ],
+        [
+          "required",
+          "9",
+          "57",
+          "0000d181"
+        ],
+        [
+          "required",
+          "10",
+          "64",
+          "0000d183"
+        ],
+        [
+          "required",
+          "11",
+          "76",
+          "0000d183"
+        ],
+        [
+          "required",
+          "12",
+          "83",
+          "0000d183"
+        ],
+        [
+          "required",
+          "13",
+          "97",
+          "0000d183"
+        ],
+        [
+          "negative",
+          "0",
+          "98",
+          "0000c087"
+        ],
+        [
+          "negative",
+          "1",
+          "99",
+          "0000c087"
+        ],
+        [
+          "negative",
+          "2",
+          "129",
+          "0000c201"
+        ],
+        [
+          "negative",
+          "3",
+          "147",
+          "0000d401"
+        ]
+      ],
+      "results": "All14 required COLOR|BLEND and4 nonblend controls; legacy/core2 equal. No VkDevice, memory, commands, graphics objects or blending execution.",
+      "postflight": "Unit exit0,331ms,2.4MiB,0swap; fault check PASS",
+      "limitations": "Only exact query domain. Original42 strict sRGB numerical failures preserved; no full-conformance claim."
+    }
+  },
+  "runner": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-required-blend-query/probe/runner-result.json",
+      "bytes": 1025,
+      "sha256": "de0098b67ea23feb9bdc387c0a8c9818d7016d63923ac714d4c8af8a6e77b9b6"
+    },
+    "result": {
+      "status": "passed",
+      "mode": "probe",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 158,
+          "sha256": "1f9e068d95f34caeb85f41e89596ce834dddaa61b839dceea8aa37dd791180a4"
+        },
+        "resources": {
+          "bytes": 153736,
+          "sha256": "f52126122b7e5eb9c4e473ecd0a2a755bfdf434182df949a16fb664aa1ffd319"
+        },
+        "check-gpu-log.py": {
+          "bytes": 1004,
+          "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 13621840,
+          "sha256": "e7a01d22ba1d45f194344614ec978180c65a5f9951f282921d9fd4f3e9efc31e"
+        },
+        "payload.json": {
+          "bytes": 689,
+          "sha256": "82a69bb28b6fe94cea4efb42fc38077c57b7afb6c33875b8081e71a46c778b36"
+        }
+      },
+      "run_log": {
+        "bytes": 2311,
+        "sha256": "7d1ee19e736d21678addd244e557c2aac8dc46754f206d5b7ccd813438a792ec"
+      },
+      "scope": "Raw ICD assets/services/faults and consolidated assertions passed. This is experimental compute coverage, not Vulkan conformance."
+    }
+  },
+  "public_builder": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-public-blend-query-builder-check-0045/receipt.json",
+      "bytes": 7194,
+      "sha256": "d44ed1a51941eaec149523073c581d490a57bed2d1d3491f76676ba9c47ddd13"
+    },
+    "result": {
+      "units": {
+        "blend-query": {
+          "commands": [
+            [
+              "clang",
+              "--target=aarch64-linux-gnu",
+              "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+              "-mcpu=cortex-a53",
+              "-Isrc/freedreno/radish/libvulkan_radish.so.p",
+              "-Isrc/freedreno/radish",
+              "-I../mesa/src/freedreno/radish",
+              "-Isrc/freedreno",
+              "-I../mesa/src/freedreno",
+              "-Isrc/freedreno/registers",
+              "-I../mesa/src/freedreno/registers",
+              "-Isrc/freedreno/registers/adreno",
+              "-I../mesa/src/freedreno/registers/adreno",
+              "-Isrc/freedreno/common",
+              "-I../mesa/src/freedreno/common",
+              "-Iinclude",
+              "-I../mesa/include",
+              "-Isrc",
+              "-I../mesa/src",
+              "-Isrc/vulkan/util",
+              "-I../mesa/src/vulkan/util",
+              "-Isrc/vulkan/runtime",
+              "-I../mesa/src/vulkan/runtime",
+              "-I../mesa/src/vulkan/runtime/bvh",
+              "-Isrc/compiler/nir",
+              "-I../mesa/src/compiler/nir",
+              "-Isrc/compiler",
+              "-I../mesa/src/compiler",
+              "-Isrc/util",
+              "-Isrc/util/format",
+              "-Isrc/compiler/spirv",
+              "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include",
+              "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include/libdrm",
+              "-fvisibility=hidden",
+              "-fdiagnostics-color=always",
+              "-D_FILE_OFFSET_BITS=64",
+              "-Wall",
+              "-Winvalid-pch",
+              "-std=c11",
+              "-O2",
+              "-g",
+              "-D__STDC_CONSTANT_MACROS",
+              "-D__STDC_FORMAT_MACROS",
+              "-D__STDC_LIMIT_MACROS",
+              "-DPACKAGE_VERSION=\"27.0.0-devel\"",
+              "-DHAVE_OPENGL=0",
+              "-DHAVE_OPENGL_ES_1=0",
+              "-DHAVE_OPENGL_ES_2=0",
+              "-DMESA_SYSTEM_HAS_KMS_DRM=1",
+              "-DVIDEO_CODEC_VC1DEC=0",
+              "-DVIDEO_CODEC_H264DEC=0",
+              "-DVIDEO_CODEC_H264ENC=0",
+              "-DVIDEO_CODEC_H265DEC=0",
+              "-DVIDEO_CODEC_H265ENC=0",
+              "-DVIDEO_CODEC_AV1DEC=0",
+              "-DVIDEO_CODEC_AV1ENC=0",
+              "-DVIDEO_CODEC_VP9DEC=0",
+              "-DVIDEO_CODEC_MPEG12DEC=0",
+              "-DVIDEO_CODEC_JPEGDEC=0",
+              "-DUSE_LIBGLVND=0",
+              "-DHAVE_LIBDRM",
+              "-DHAVE_GFX_COMPUTE",
+              "-DGLAPI_EXPORT_PROTO_ENTRY_POINTS=1",
+              "-DALLOW_KCMP",
+              "-DMESA_DEBUG=0",
+              "-DENABLE_SHADER_CACHE",
+              "-DHAVE___BUILTIN_BSWAP32",
+              "-DHAVE___BUILTIN_BSWAP64",
+              "-DHAVE___BUILTIN_CLZ",
+              "-DHAVE___BUILTIN_CLZLL",
+              "-DHAVE___BUILTIN_CTZ",
+              "-DHAVE___BUILTIN_EXPECT",
+              "-DHAVE___BUILTIN_FFS",
+              "-DHAVE___BUILTIN_FFSLL",
+              "-DHAVE___BUILTIN_POPCOUNT",
+              "-DHAVE___BUILTIN_POPCOUNTLL",
+              "-DHAVE___BUILTIN_UNREACHABLE",
+              "-DHAVE___BUILTIN_TYPES_COMPATIBLE_P",
+              "-DHAVE___BUILTIN_ADD_OVERFLOW",
+              "-DHAVE_FUNC_ATTRIBUTE_CONST",
+              "-DHAVE_FUNC_ATTRIBUTE_FLATTEN",
+              "-DHAVE_FUNC_ATTRIBUTE_MALLOC",
+              "-DHAVE_FUNC_ATTRIBUTE_PURE",
+              "-DHAVE_FUNC_ATTRIBUTE_UNUSED",
+              "-DHAVE_FUNC_ATTRIBUTE_WARN_UNUSED_RESULT",
+              "-DHAVE_FUNC_ATTRIBUTE_WEAK",
+              "-DHAVE_FUNC_ATTRIBUTE_FORMAT",
+              "-DHAVE_FUNC_ATTRIBUTE_PACKED",
+              "-DHAVE_FUNC_ATTRIBUTE_RETURNS_NONNULL",
+              "-DHAVE_FUNC_ATTRIBUTE_ALIAS",
+              "-DHAVE_FUNC_ATTRIBUTE_NORETURN",
+              "-DHAVE_FUNC_ATTRIBUTE_COLD",
+              "-DHAVE_FUNC_ATTRIBUTE_VISIBILITY",
+              "-DHAVE_UINT128",
+              "-DHAVE_REALLOCARRAY",
+              "-DHAVE_FMEMOPEN",
+              "-DHAVE_MALLINFO2",
+              "-D_GNU_SOURCE",
+              "-DUSE_GCC_ATOMIC_BUILTINS",
+              "-DMAJOR_IN_SYSMACROS",
+              "-DHAS_SCHED_H",
+              "-DHAS_SCHED_GETAFFINITY",
+              "-DHAVE_LINUX_FUTEX_H",
+              "-DHAVE_ENDIAN_H",
+              "-DHAVE_DLFCN_H",
+              "-DHAVE_SYS_SHM_H",
+              "-DHAVE_CET_H",
+              "-DHAVE_POLL_H",
+              "-DHAVE_SYS_INOTIFY_H",
+              "-DHAVE_LINUX_UDMABUF_H",
+              "-DHAVE_STRTOF",
+              "-DHAVE_MKOSTEMP",
+              "-DHAVE_MEMFD_CREATE",
+              "-DHAVE_RANDOM_R",
+              "-DHAVE_FLOCK",
+              "-DHAVE_STRTOK_R",
+              "-DHAVE_GETRANDOM",
+              "-DHAVE_POSIX_FALLOCATE",
+              "-DHAVE_SECURE_GETENV",
+              "-DHAVE_SYSCONF",
+              "-DHAVE_SC_PHYS_PAGES",
+              "-DHAVE_GNU_QSORT_R",
+              "-DHAVE_STRUCT_TIMESPEC",
+              "-DHAVE_PROGRAM_INVOCATION_NAME",
+              "-DHAVE_ISSIGNALING",
+              "-DHAVE_POSIX_MEMALIGN",
+              "-DHAVE_DIRENT_D_TYPE",
+              "-DHAVE_STRTOD_L",
+              "-DHAVE_DLADDR",
+              "-DHAVE_DL_ITERATE_PHDR",
+              "-DHAVE_ZLIB",
+              "-DHAVE_COMPRESSION",
+              "-DHAVE_PTHREAD",
+              "-DHAVE_PTHREAD_SETAFFINITY",
+              "-DDRAW_LLVM_AVAILABLE=0",
+              "-DAMD_LLVM_AVAILABLE=0",
+              "-DGALLIVM_USE_ORCJIT=0",
+              "-DTHREAD_SANITIZER=0",
+              "-DHAVE_DRI2",
+              "-DHAVE_RENDERDOC_INTEGRATION=1",
+              "-Werror=implicit-function-declaration",
+              "-Werror=missing-prototypes",
+              "-Werror=return-type",
+              "-Werror=empty-body",
+              "-Werror=incompatible-pointer-types",
+              "-Werror=int-conversion",
+              "-Wimplicit-fallthrough",
+              "-Wmisleading-indentation",
+              "-Wno-missing-field-initializers",
+              "-Wno-format-truncation",
+              "-fno-math-errno",
+              "-fno-trapping-math",
+              "-Qunused-arguments",
+              "-fno-common",
+              "-Wno-unknown-pragmas",
+              "-Wno-microsoft-enum-value",
+              "-Wno-unused-function",
+              "-Werror=format",
+              "-Wformat-security",
+              "-Werror=thread-safety",
+              "-ffunction-sections",
+              "-fdata-sections",
+              "-Wno-unused-command-line-argument",
+              "-fPIC",
+              "-DVK_USE_PLATFORM_DISPLAY_KHR",
+              "-pthread",
+              "-DXXH_FORCE_ALIGN_CHECK=0",
+              "-DXXH_FORCE_MEMORY_ACCESS=0",
+              "-Wno-override-init",
+              "-Wno-initializer-overrides",
+              "-fuse-ld=lld",
+              "--gcc-install-dir=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+              "-I/home/jethac/Projects/radish/radish/tests",
+              "/home/jethac/Projects/radish/radish/tests/core_blend_query.c",
+              "-o",
+              "/run/media/jethac/Shared/radish/compute11-public-blend-query-builder-check-0045/blend-query",
+              "-ldl",
+              "-pthread"
+            ]
+          ],
+          "files": {
+            "/home/jethac/Projects/radish/radish/tests/core_blend_query.c": {
+              "sha256": "58df3a2e1d2dc976ce19bd22e8c6aea33a25d7e33014af0d5b0ad1742b779d30",
+              "bytes": 3223
+            },
+            "/run/media/jethac/Shared/radish/compute11-public-blend-query-builder-check-0045/blend-query": {
+              "sha256": "cd548038842537eda05ea26865a1548670bbb5e05e66e241626f8e8902f5936a",
+              "bytes": 153544
+            }
+          }
+        }
+      },
+      "scope": "Host build only; probes require the matching internal driver ABI."
+    }
+  },
+  "limits": "Physical format query traits backed by matched FD5 native formats/blend hardware. Legacy/core2 results agree. No logical device, graphics host objects, shader, commands, blending execution, new queue or fullconformance claim. Original1f info/statistics/timestamp records stay separately pinned;8298 adds only rd_image query predicate. Strict42sRGB failures and selectedfcd/d332 unchanged."
+}

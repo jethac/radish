@@ -713,3 +713,8 @@ and all five original information-query passes are in
 `../results/official11-native-scalars-info-0045.json`. The valid image consumer
 ran on the intermediate46a86 source and excludes graphics-only host objects.
 No graphics queue, initialized rendering or full-conformance claim is added.
+
+`0045-radish-required-blend-query.patch` follows1f5c and changes only native-backed
+physical format-query traits. Exact8298 reconstruction and 14 positive / 4 negative
+query results are in `../results/required-blend-query-0045.json`; no graphics
+execution or full-conformance claim is inferred.

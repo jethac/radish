@@ -1,0 +1,850 @@
+{
+  "status": "Eighteen original cases PASS; finite oracle limits retained",
+  "driver": {
+    "path": "/run/media/jethac/Shared/radish/compute11-native-scalars-build-0045/libvulkan_radish.so",
+    "bytes": 49078336,
+    "sha256": "1f5c27b8f67bc72f8198c00f7397b57eeeb7f2c5cc155d98549091b39dfc996d"
+  },
+  "partitions": {
+    "query-statistics": {
+      "bounds": {
+        "identity": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-query-statistics-next-0045/source-bounds.json",
+          "bytes": 10318,
+          "sha256": "b9c53a38e936d68253fcc3dea71dedfa02465eba183d9eb25e0d1e19f0a287a0"
+        },
+        "result": {
+          "status": "Source-bounded unchanged original query lifecycle/advertised pipeline-statistics partition; no device action",
+          "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+          "sources": {
+            "external/vulkancts/modules/vulkan/query_pool/vktQueryPoolStatisticsTests.cpp": {
+              "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/query_pool/vktQueryPoolStatisticsTests.cpp",
+              "bytes": 536037,
+              "sha256": "7919618e30ec4fc4666df84ed14bd584dc7d3f0b418681a624fc91bb1e57e0e7"
+            },
+            "external/vulkancts/modules/vulkan/query_pool/vktQueryPoolTests.cpp": {
+              "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/query_pool/vktQueryPoolTests.cpp",
+              "bytes": 2141,
+              "sha256": "f3a306791dd0267e3fb3c48e51269edec75e7ef0d7ae708313d118401082783f"
+            },
+            "external/vulkancts/modules/vulkan/vktTestPackage.cpp": {
+              "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/vktTestPackage.cpp",
+              "bytes": 67173,
+              "sha256": "272802a91a54f6aade1741c713563936fe01be295ea648bdf85e5cce0e4823d6"
+            },
+            "external/vulkancts/modules/vulkan/vktContextManager.hpp": {
+              "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/vktContextManager.hpp",
+              "bytes": 27859,
+              "sha256": "bc4671b02bdefaff187def2f9ffc1a99687ba69507dc274fdb702326af6f0ca2"
+            },
+            "external/vulkancts/modules/vulkan/vktContextManager.cpp": {
+              "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/vktContextManager.cpp",
+              "bytes": 58099,
+              "sha256": "77f745821c0c7fdb397edeb10b83e86202a0320d6b6a4bdd3b3143514f00bcd0"
+            }
+          },
+          "case_file": {
+            "path": "/run/media/jethac/Shared/radish/compute11-official-query-statistics-next-0045/cases.txt",
+            "sha256": "5793840668c483f36eb67206e1e945806247e29f5560b32f56ee9fc33267e7aa",
+            "bytes": 847
+          },
+          "cases": [
+            {
+              "case": "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.32bits_primary_cq",
+              "reset": "normal",
+              "copy": "GET",
+              "query_bits": 32,
+              "destination_offset": false,
+              "zero_stride_for_one_query": false,
+              "command_buffer": "primary",
+              "dispatches_on_current_one_queue": 3,
+              "query_expected": [
+                64,
+                63,
+                63
+              ],
+              "oracle": "Query exact64,63,63 and190 totalSSBOwords equalindex across three independentlycleared dispatches; copiedreadback survivesreset forafter_copy."
+            },
+            {
+              "case": "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.64bits_primary_cq",
+              "reset": "normal",
+              "copy": "GET",
+              "query_bits": 64,
+              "destination_offset": false,
+              "zero_stride_for_one_query": false,
+              "command_buffer": "primary",
+              "dispatches_on_current_one_queue": 3,
+              "query_expected": [
+                64,
+                63,
+                63
+              ],
+              "oracle": "Query exact64,63,63 and190 totalSSBOwords equalindex across three independentlycleared dispatches; copiedreadback survivesreset forafter_copy."
+            },
+            {
+              "case": "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.32bits_cmdcopyquerypoolresults_primary_cq",
+              "reset": "normal",
+              "copy": "CMD",
+              "query_bits": 32,
+              "destination_offset": false,
+              "zero_stride_for_one_query": false,
+              "command_buffer": "primary",
+              "dispatches_on_current_one_queue": 3,
+              "query_expected": [
+                64,
+                63,
+                63
+              ],
+              "oracle": "Query exact64,63,63 and190 totalSSBOwords equalindex across three independentlycleared dispatches; copiedreadback survivesreset forafter_copy."
+            },
+            {
+              "case": "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.64bits_dstoffset_cmdcopyquerypoolresults_primary_cq",
+              "reset": "normal",
+              "copy": "CMD",
+              "query_bits": 64,
+              "destination_offset": true,
+              "zero_stride_for_one_query": false,
+              "command_buffer": "primary",
+              "dispatches_on_current_one_queue": 3,
+              "query_expected": [
+                64,
+                63,
+                63
+              ],
+              "oracle": "Query exact64,63,63 and190 totalSSBOwords equalindex across three independentlycleared dispatches; copiedreadback survivesreset forafter_copy."
+            },
+            {
+              "case": "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.64bits_cmdcopyquerypoolresults_stride_zero_primary_cq",
+              "reset": "normal",
+              "copy": "CMD",
+              "query_bits": 64,
+              "destination_offset": false,
+              "zero_stride_for_one_query": true,
+              "command_buffer": "primary",
+              "dispatches_on_current_one_queue": 3,
+              "query_expected": [
+                64,
+                63,
+                63
+              ],
+              "oracle": "Query exact64,63,63 and190 totalSSBOwords equalindex across three independentlycleared dispatches; copiedreadback survivesreset forafter_copy."
+            },
+            {
+              "case": "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.64bits_secondary_cq",
+              "reset": "normal",
+              "copy": "GET",
+              "query_bits": 64,
+              "destination_offset": false,
+              "zero_stride_for_one_query": false,
+              "command_buffer": "secondary",
+              "dispatches_on_current_one_queue": 3,
+              "query_expected": [
+                190
+              ],
+              "oracle": "Secondaryquery total190 and63 sharedrange words equal3*index, with orderedCOMPUTEbarriers."
+            },
+            {
+              "case": "dEQP-VK.query_pool.statistics_query.reset_before_copy.compute_shader_invocations.64bits_dstoffset_cmdcopyquerypoolresults_primary_cq",
+              "reset": "reset_before_copy",
+              "copy": "CMD",
+              "query_bits": 64,
+              "destination_offset": true,
+              "zero_stride_for_one_query": false,
+              "command_buffer": "primary",
+              "dispatches_on_current_one_queue": 1,
+              "query_expected": [
+                64
+              ],
+              "oracle": "Availability zero and untouched16-byte offset prefix; originalprimary code returnsPass immediately throughupdateStatus after firstshape, so no SSBOvalue-oracleclaim here."
+            },
+            {
+              "case": "dEQP-VK.query_pool.statistics_query.reset_after_copy.compute_shader_invocations.64bits_dstoffset_cmdcopyquerypoolresults_primary_cq",
+              "reset": "reset_after_copy",
+              "copy": "CMD",
+              "query_bits": 64,
+              "destination_offset": true,
+              "zero_stride_for_one_query": false,
+              "command_buffer": "primary",
+              "dispatches_on_current_one_queue": 3,
+              "query_expected": [
+                64,
+                63,
+                63
+              ],
+              "oracle": "Query exact64,63,63 and190 totalSSBOwords equalindex across three independentlycleared dispatches; copiedreadback survivesreset forafter_copy."
+            }
+          ],
+          "scope_distinction": "pipelineStatisticsQuery is optional in Vulkan and currently advertisedtrue in Radish. This group tests the enabled-feature obligation and common query reset/result/copy semantics, not proof of mandatorytimestamp coverage. No NotSupported counts as actualimplemented behavior.",
+          "enabled_path": "StatisticsTests commonCheckSupport506-521 requires actualdevice pipelineStatisticsQuery. QueryPoolComputeStatsTest4073-4085 requestscomputequeue and adds pipelineStatisticsQuery feature to realdevicecapabilities. No host_query_reset, inheritedquery, deviceaddress, graphics oroptional arithmetic case selected.",
+          "interface_bounds": {
+            "shapes": [
+              {
+                "local": [
+                  2,
+                  2,
+                  2
+                ],
+                "grid": [
+                  2,
+                  2,
+                  2
+                ],
+                "invocations": 64
+              },
+              {
+                "local": [
+                  1,
+                  1,
+                  1
+                ],
+                "grid": [
+                  3,
+                  7,
+                  3
+                ],
+                "invocations": 63
+              },
+              {
+                "local": [
+                  3,
+                  7,
+                  3
+                ],
+                "grid": [
+                  1,
+                  1,
+                  1
+                ],
+                "invocations": 63
+              }
+            ],
+            "max_local_invocations": 63,
+            "max_workgroups": 63,
+            "max_storage_buffer_bytes": 256,
+            "max_query_copy_buffer_bytes": 32,
+            "logical_buffer_bytes_total_peak": 288,
+            "max_live_query_pools": 1,
+            "queries_per_pool": 1,
+            "max_live_compute_pipelines": 3,
+            "storage_descriptors": 1,
+            "shared_memory_bytes": 0,
+            "shader_loops": 0,
+            "images": 0,
+            "push_constant_bytes": 0,
+            "dispatches_on_current_one_queue": 22,
+            "total_invocations_on_current_one_queue": 1394,
+            "source_oracle_ssbo_words": 1203,
+            "raw_host_device_allocation_caveat": "Logical buffers only; allocator/object/compiler/CTS RSS remains controlled by original384MiB. Noncoherentalignment64 fromcurrentdevice. Allqueues advertisedone and runtimecouldenumeratequeues; currentactualone preservesbounds."
+          },
+          "registration": "QueryPoolTests parentquery_pool,StatisticsTests6222name statistics_query;groups6324/6366/6387;registrations6410-6526;groupattachment9322/9352/9363/9365/9376. Names generatedwith32/64bits_,dstoffset_,cmdcopyquerypoolresults_,stride_zero_,primary/secondary_cq.",
+          "source_behavior": "WIDTH64line73. Primary663-962 allocatesone256BSSBO+16/32Bquerycopybuffer, reset/begin/dispatch/end,querycopyflags/offset/stride andTRANSFER/HOSTbarriers, fencebeforeCPUchecks. Secondary983-1231 recordsall3dispatchesone secondarywithCOMPUTEdependencies, executesonceunderprimary, no activequeryinprimary/no inheritedQueries requirement. Original resetbeforecopy updateStatus throwsPass at936 afterfirstshape, explicitlyboundedratherthan claimingall3.",
+          "oracle_counts_explained": "Six primarycomplete cases? Actualselected normalprimary5 plusreset_after1 =6*190=1140 CPUwords, secondary63 =>1203; resetbeforecopychecksavailability/prefixonly. Totalinvocations6*190+190+64=1394.",
+          "controls": "Reuseexistingfixed-inventorygroupedoriginalCTSrunner. Eightfreshsinglecaseprocesses, oneoriginal90s/384MiB scope,8MiBlog+64MiBreserve, percasefault/service stop, terminateonfirstfailure/device-loss. Do not changeCTS/shader/oracles/thresholds. No conformance/fullquerycoverageclaim.",
+          "primary_links": [
+            "https://docs.vulkan.org/refpages/latest/refpages/source/VkPhysicalDeviceFeatures.html",
+            "https://docs.vulkan.org/refpages/latest/refpages/source/vkCmdCopyQueryPoolResults.html",
+            "https://docs.vulkan.org/refpages/latest/refpages/source/vkGetQueryPoolResults.html"
+          ]
+        }
+      },
+      "actual": {
+        "identity": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-query-statistics-next-0045/actual-review.json",
+          "bytes": 4209,
+          "sha256": "139a819c245be756e580c32d9cf6d73bb1e1de0fc2d284c53c707b1069d606ec"
+        },
+        "result": {
+          "status": "PASS finite actual eight original advertised-feature query cases",
+          "cases": [
+            {
+              "case": "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.32bits_primary_cq",
+              "status": "Pass",
+              "qpa_sha256": "3870a84dadc6182cd67c5d04a0ff14a7823803d7c92a616683e955a824f49bfb"
+            },
+            {
+              "case": "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.64bits_primary_cq",
+              "status": "Pass",
+              "qpa_sha256": "2d0304854d9fae66a959c9dcf2daf815d110791dbf932fc8154b1d7cf6ea702f"
+            },
+            {
+              "case": "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.32bits_cmdcopyquerypoolresults_primary_cq",
+              "status": "Pass",
+              "qpa_sha256": "67532dac1fd12b9986605d897e77069288962eae9de35741622321e858eec16a"
+            },
+            {
+              "case": "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.64bits_dstoffset_cmdcopyquerypoolresults_primary_cq",
+              "status": "Pass",
+              "qpa_sha256": "82ada91044da9fec678b1aabbd8a87c907a3173a035820afef84d3edabc9170f"
+            },
+            {
+              "case": "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.64bits_cmdcopyquerypoolresults_stride_zero_primary_cq",
+              "status": "Pass",
+              "qpa_sha256": "9590754f063ad40d9f3dda79372f35e3e2f0be28a0de59cc2abf028568adbccf"
+            },
+            {
+              "case": "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.64bits_secondary_cq",
+              "status": "Pass",
+              "qpa_sha256": "9a0183639141df1136f6897500b75a729fdba7d18b3abd59062c2fc456c3cce7"
+            },
+            {
+              "case": "dEQP-VK.query_pool.statistics_query.reset_before_copy.compute_shader_invocations.64bits_dstoffset_cmdcopyquerypoolresults_primary_cq",
+              "status": "Pass",
+              "qpa_sha256": "ccbc76d16623861df93b0cb8a7ff2f3142f74129d3907d892d2b24df91660cdf"
+            },
+            {
+              "case": "dEQP-VK.query_pool.statistics_query.reset_after_copy.compute_shader_invocations.64bits_dstoffset_cmdcopyquerypoolresults_primary_cq",
+              "status": "Pass",
+              "qpa_sha256": "31777781a499937d6b51ff7cf8460afe27f895ac84b00077353163ad56c8b42a"
+            }
+          ],
+          "source_bounds_sha256": "b9c53a38e936d68253fcc3dea71dedfa02465eba183d9eb25e0d1e19f0a287a0",
+          "payload": {
+            "radish_icd.json": {
+              "bytes": 165,
+              "sha256": "12c81b74173f70d5aa10c77c971556311764f631eb3c8ccc0c6bd39a30cf07b4"
+            },
+            "deqp-vk": {
+              "bytes": 97536760,
+              "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+            },
+            "libvulkan.so.1": {
+              "bytes": 703696,
+              "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+            },
+            "info-cases.txt": {
+              "bytes": 847,
+              "sha256": "5793840668c483f36eb67206e1e945806247e29f5560b32f56ee9fc33267e7aa"
+            },
+            "check-gpu-log.py": {
+              "bytes": 1004,
+              "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+            },
+            "libvulkan_radish.so": {
+              "bytes": 13621560,
+              "sha256": "ce32d3f08a52b8f659f721f87c66a2c92bd76c8f34ea6dc9364ac903efb60f84"
+            },
+            "payload.json": {
+              "bytes": 967,
+              "sha256": "101213e0e6f218d454d9c526ed7ae72b9c7953cd8b275514e66425a22cc0ebf5"
+            }
+          },
+          "actual_dispatches": 22,
+          "chunks": 22,
+          "submits": 22,
+          "logical_invocations": 1394,
+          "geometry_counts": [
+            {
+              "grid": "2,2,2",
+              "local": "2,2,2",
+              "count": 8
+            },
+            {
+              "grid": "3,7,3",
+              "local": "1,1,1",
+              "count": 7
+            },
+            {
+              "grid": "1,1,1",
+              "local": "3,7,3",
+              "count": 7
+            }
+          ],
+          "native": "22 programs,2or3instructiongroups,<=6full/0half,0loops/barriers;originalAPI/query/SSBOoraclesallPass.",
+          "oracle_scope": "Sixcompleteprimarycases:3shapeseach,query64/63/63+190SSBOwords. Secondary:total190query+63sharedrange3*indexwords. Resetbeforecopy:onlyfirstshape64 executes,availabilityzero+offsetprefixoracle;noextraSSBOoracleclaimed. Total1203SSBOwords sourcechecked byoriginalCTS.",
+          "contract": "pipelineStatisticsQuery optionalbutadvertisedandenabled;thisisrealPass,notNotSupported. Sharedreset/get/copy/offset/stride/secondarysemantics exercised;mandatorytimestamp andallquerycoverage notimplied.",
+          "postflight": "8.667s wall79.3MiB0swap;cleanfault/services/collection;originalcapsretained."
+        }
+      },
+      "runner": {
+        "identity": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-query-statistics/probe/runner-result.json",
+          "bytes": 2930,
+          "sha256": "6dfc4a0f83648fbee67de198741ded15da12050aba3fad8d937e86b503ad2f7a"
+        },
+        "result": {
+          "status": "passed",
+          "mode": "probe",
+          "exit_code": 0,
+          "payload": {
+            "radish_icd.json": {
+              "bytes": 165,
+              "sha256": "12c81b74173f70d5aa10c77c971556311764f631eb3c8ccc0c6bd39a30cf07b4"
+            },
+            "deqp-vk": {
+              "bytes": 97536760,
+              "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+            },
+            "libvulkan.so.1": {
+              "bytes": 703696,
+              "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+            },
+            "info-cases.txt": {
+              "bytes": 847,
+              "sha256": "5793840668c483f36eb67206e1e945806247e29f5560b32f56ee9fc33267e7aa"
+            },
+            "check-gpu-log.py": {
+              "bytes": 1004,
+              "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+            },
+            "libvulkan_radish.so": {
+              "bytes": 13621560,
+              "sha256": "ce32d3f08a52b8f659f721f87c66a2c92bd76c8f34ea6dc9364ac903efb60f84"
+            },
+            "payload.json": {
+              "bytes": 967,
+              "sha256": "101213e0e6f218d454d9c526ed7ae72b9c7953cd8b275514e66425a22cc0ebf5"
+            }
+          },
+          "run_log": {
+            "bytes": 440288,
+            "sha256": "134560648cfb3d13e9a889ccdbd89ba9d19fe78a930e04b06351dfb242cb388c"
+          },
+          "qpa": {
+            "bytes": 24158,
+            "sha256": "4ab061ee614d2c2d6ca8ed20dfea89fd388ddb15843534d96c2be146bca28ce4"
+          },
+          "cases": [
+            {
+              "name": "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.32bits_primary_cq",
+              "status": "Pass",
+              "detail": "Pass"
+            },
+            {
+              "name": "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.64bits_primary_cq",
+              "status": "Pass",
+              "detail": "Pass"
+            },
+            {
+              "name": "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.32bits_cmdcopyquerypoolresults_primary_cq",
+              "status": "Pass",
+              "detail": "Pass"
+            },
+            {
+              "name": "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.64bits_dstoffset_cmdcopyquerypoolresults_primary_cq",
+              "status": "Pass",
+              "detail": "Pass"
+            },
+            {
+              "name": "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.64bits_cmdcopyquerypoolresults_stride_zero_primary_cq",
+              "status": "Pass",
+              "detail": "Pass"
+            },
+            {
+              "name": "dEQP-VK.query_pool.statistics_query.compute_shader_invocations.64bits_secondary_cq",
+              "status": "Pass",
+              "detail": "Pass"
+            },
+            {
+              "name": "dEQP-VK.query_pool.statistics_query.reset_before_copy.compute_shader_invocations.64bits_dstoffset_cmdcopyquerypoolresults_primary_cq",
+              "status": "Pass",
+              "detail": "Pass"
+            },
+            {
+              "name": "dEQP-VK.query_pool.statistics_query.reset_after_copy.compute_shader_invocations.64bits_dstoffset_cmdcopyquerypoolresults_primary_cq",
+              "status": "Pass",
+              "detail": "Pass"
+            }
+          ],
+          "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+        }
+      }
+    },
+    "timestamps": {
+      "bounds": {
+        "identity": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-timestamps-next-0045/source-bounds.json",
+          "bytes": 7557,
+          "sha256": "54d299573ca096450b467a61a27c20195652f3186815849317b5e78a3ce29c93"
+        },
+        "result": {
+          "status": "Source-bounded original core timestamp/query partition; no device action",
+          "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+          "sources": {
+            "external/vulkancts/modules/vulkan/pipeline/vktPipelineTimestampTests.cpp": {
+              "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/pipeline/vktPipelineTimestampTests.cpp",
+              "bytes": 220061,
+              "sha256": "c345eb845f610ee9fb20f1a70041d9756a88ad45aeb53957a8186590cd6bba19"
+            },
+            "external/vulkancts/modules/vulkan/pipeline/vktPipelineTests.cpp": {
+              "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/pipeline/vktPipelineTests.cpp",
+              "bytes": 13622,
+              "sha256": "c83244fe0e083db02f4bd4caa84e673ef3909e2e74f38fefe95f3132139e3a38"
+            }
+          },
+          "case_file": {
+            "path": "/run/media/jethac/Shared/radish/compute11-official-timestamps-next-0045/cases.txt",
+            "bytes": 882,
+            "sha256": "0bf3ecef4f086ba475945266132ccdd59dacba97ae5c5959b15892c3212b29a1"
+          },
+          "cases": [
+            {
+              "case": "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.check_timestamp_compute_and_graphics",
+              "submits": 0,
+              "timestamp_writes": 0,
+              "logical_buffers_bytes": 0,
+              "dispatches": 0,
+              "source_oracle": "Queries allqueuefamilies; timestampComputeAndGraphics true implies eachCOMPUTE/GRAPHICSfamily validbits>=36. No command."
+            },
+            {
+              "case": "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.timestamp_only",
+              "submits": 1,
+              "timestamp_writes": 1,
+              "logical_buffers_bytes": 0,
+              "dispatches": 0,
+              "source_oracle": "Successful64bitWAIT get ofsingleTOP timestamp aftercommandreset/fence; originalsingle-stage comparisonloop isvacuous, notmonotonicityproof."
+            },
+            {
+              "case": "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.timestamp_only_with_availability_bit",
+              "submits": 1,
+              "timestamp_writes": 1,
+              "logical_buffers_bytes": 0,
+              "dispatches": 0,
+              "source_oracle": "Successful64bitWAIT+availability retrieval. Originalsingle-stage verifierdoesnotindependentlyassertavailability, so do notoverclaim thatcheck."
+            },
+            {
+              "case": "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.reset_query_before_copy",
+              "submits": 1,
+              "timestamp_writes": 1,
+              "logical_buffers_bytes": 16,
+              "dispatches": 0,
+              "source_oracle": "TOPtimestamp resetbeforecopy;64bitavailabilitymustzeroafterfence. Timestampvalueundefinedandnotcompared."
+            },
+            {
+              "case": "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.fill_buffer_before_copy",
+              "submits": 1,
+              "timestamp_writes": 1,
+              "logical_buffers_bytes": 16,
+              "dispatches": 0,
+              "source_oracle": "16Bzero fill+TRANSFERdependency,TOPtimestamp thennonWAITcopy; ifavailabilitynonzero timestampmustnonzero. Availabilityzeroisallowed byoriginaloracle."
+            },
+            {
+              "case": "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.consistent_results",
+              "submits": 1,
+              "timestamp_writes": 1,
+              "logical_buffers_bytes": 12,
+              "dispatches": 0,
+              "source_oracle": "32/64bitcopy andhostget resultsmustmatch;32bitwraporsaturateacceptedperoldcorecontract,64bitscheckedagainstvalidmask. No maintenance7requirement."
+            },
+            {
+              "case": "dEQP-VK.pipeline.monolithic.timestamp.basic_compute_tests.compute_shader_stage_out_of_render_pass",
+              "submits": 1,
+              "timestamp_writes": 2,
+              "logical_buffers_bytes": 524288,
+              "dispatches": 1,
+              "source_oracle": "Original64bitWAIT retrieval after16384invocationFP32square workload andtwo timestampwrites. No SSBOoutputnumericcomparison inthisCTScase. OriginalverifyTimestamp comparisonconditions do not compare thisTOP\u2192differentstagepair; no strict elapsed/ordering proof."
+            },
+            {
+              "case": "dEQP-VK.pipeline.monolithic.timestamp.basic_compute_tests.compute_shader_stage_out_of_render_pass_with_availability_bit",
+              "submits": 1,
+              "timestamp_writes": 2,
+              "logical_buffers_bytes": 524288,
+              "dispatches": 1,
+              "source_oracle": "Original64bitWAIT retrieval after16384invocationFP32square workload andtwo timestampwrites. No SSBOoutputnumericcomparison inthisCTScase. OriginalverifyTimestamp comparisonconditions do not compare thisTOP\u2192differentstagepair; no strict elapsed/ordering proof."
+            },
+            {
+              "case": "dEQP-VK.pipeline.monolithic.timestamp.basic_compute_tests.all_commands_stage_out_of_render_pass",
+              "submits": 1,
+              "timestamp_writes": 2,
+              "logical_buffers_bytes": 524288,
+              "dispatches": 1,
+              "source_oracle": "Original64bitWAIT retrieval after16384invocationFP32square workload andtwo timestampwrites. No SSBOoutputnumericcomparison inthisCTScase. OriginalverifyTimestamp comparisonconditions do not compare thisTOP\u2192differentstagepair; no strict elapsed/ordering proof."
+            },
+            {
+              "case": "dEQP-VK.pipeline.monolithic.timestamp.basic_compute_tests.all_commands_stage_out_of_render_pass_with_availability_bit",
+              "submits": 1,
+              "timestamp_writes": 2,
+              "logical_buffers_bytes": 524288,
+              "dispatches": 1,
+              "source_oracle": "Original64bitWAIT retrieval after16384invocationFP32square workload andtwo timestampwrites. No SSBOoutputnumericcomparison inthisCTScase. OriginalverifyTimestamp comparisonconditions do not compare thisTOP\u2192differentstagepair; no strict elapsed/ordering proof."
+            }
+          ],
+          "scope_distinction": "Core timestamp/query behavior on actualCOMPUTEqueue advertises timestampValidBits64 andtimestampComputeAndGraphics=true; independentofoptionalpipelineStatisticsQuery. No hostqueryresetextension orgraphicscommand. NotSupported isnotqualification. Do notgeneralize timestamp availability tounsupportedqueues.",
+          "source_lines": {
+            "registry": "4262-4275;4363-4391;4460-4543",
+            "timestamp_base": "477ENTRY_COUNT8;551-763 support/create/reset/get/verify",
+            "basic_compute": "2123-2286 twoSSBOsize262144each;local128/grid128;FP32square,no loops/images/shared",
+            "reset": "2962-3037",
+            "fill": "2695-2789",
+            "consistency": "3267-3413",
+            "property": "3440-3468"
+          },
+          "bounds": {
+            "max_live_query_pools": 1,
+            "max_queries_per_pool": 8,
+            "logical_buffer_bytes_peak": 524288,
+            "compute_pipeline_peak": 1,
+            "storage_descriptors_peak": 2,
+            "max_local": [
+              128,
+              1,
+              1
+            ],
+            "max_grid": [
+              128,
+              1,
+              1
+            ],
+            "dispatches": 4,
+            "logical_invocations_total": 65536,
+            "submits": 9,
+            "timestamp_writes": 13,
+            "no_shader_cases": 6,
+            "shader_loops": 0,
+            "shared_bytes": 0,
+            "images": 0
+          },
+          "legal_domain": "SelectedcmdstagesTOP/COMPUTE/ALL_COMMANDS/TRANSFER/HOST arecomputequeue-compatible. OriginalTwoCmdBuffers timestamp tests hardcodeALL_GRAPHICS in3135/3170 and areexcluded, notsilentlyrunoncomputequeue. Allselectedcasesuseexistinguniversalcontext whoseactualsinglequeueisCOMPUTE; no graphicsconstructors,rendering ortransfersrequiringGRAPHICS.",
+          "controls": "Existingfixed-inventory originalCTSgroupedrunner;10sequentialprocesses withoriginal90s384MiB/8MiBlog+64MiBreserve/percasefaultstop. No CTS/source/shader/tolerancechanges. Logicalbufferbounds donotpretendboundcompiler/CTS RSS;originalruntimecap remains.",
+          "exclusions": "No fulltimestampqueryconformanceclaim;originaloraclelimitationslistedpercase. No hostreset,inheritedquery,calibratedtimestamp,sync2,graphics,maintenance7 tests. Timestamp-only single-stage noorderingclaim; numericalSSBOshaderoutputs are workloadonly inthisCTStest."
+        }
+      },
+      "actual": {
+        "identity": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-timestamps-next-0045/actual-review.json",
+          "bytes": 6754,
+          "sha256": "338183182c0c24ec207d17d347c8abbc9e5456133c3a092e0edaa34e3b04c78a"
+        },
+        "result": {
+          "status": "PASS finite actual ten original core timestamp/query cases",
+          "cases": [
+            {
+              "name": "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.check_timestamp_compute_and_graphics",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "20262e50696f739c46b8dd85cef0ca3becf62545cb867d70fcbd79d2fdbfb2d6"
+            },
+            {
+              "name": "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.timestamp_only",
+              "status": "Pass",
+              "detail": "Timestamp increases steadily",
+              "qpa_sha256": "352b6f2b3c2be4dc30d91242028b82c579914fc8956b8d6a5325fbc3642e9e3f"
+            },
+            {
+              "name": "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.timestamp_only_with_availability_bit",
+              "status": "Pass",
+              "detail": "Timestamp increases steadily",
+              "qpa_sha256": "9b80d8cd37b274e4d52273ba1fe1fb7012f107717eb71e3b5ef1db94a3028145"
+            },
+            {
+              "name": "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.reset_query_before_copy",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "a626b2c48883ca0ef5bf2a1e5b2465458ffca8c86a2fb3fb0cd9f093711ae325"
+            },
+            {
+              "name": "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.fill_buffer_before_copy",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "d479969c8b404484f92c6b7a2cb3a6c274672b9f72a2d05b8cd0a269f659b873"
+            },
+            {
+              "name": "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.consistent_results",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "2bda54a99d3434141763abe91e07f4bf66835d33eb4d7509c396b47f3ce746c9"
+            },
+            {
+              "name": "dEQP-VK.pipeline.monolithic.timestamp.basic_compute_tests.compute_shader_stage_out_of_render_pass",
+              "status": "Pass",
+              "detail": "Timestamp increases steadily",
+              "qpa_sha256": "dda9ab19ac40057f0a11a31a1c5f874a1e0b50cb1edde22fa9b94e904d7e94b3"
+            },
+            {
+              "name": "dEQP-VK.pipeline.monolithic.timestamp.basic_compute_tests.compute_shader_stage_out_of_render_pass_with_availability_bit",
+              "status": "Pass",
+              "detail": "Timestamp increases steadily",
+              "qpa_sha256": "2b070fb3228e0e94fda93cae525860564065a686199ae536bc843d1c842dfd02"
+            },
+            {
+              "name": "dEQP-VK.pipeline.monolithic.timestamp.basic_compute_tests.all_commands_stage_out_of_render_pass",
+              "status": "Pass",
+              "detail": "Timestamp increases steadily",
+              "qpa_sha256": "0a98d0361326efc7c9ce7559d705b51ddb334e1b3dd9da88d4e3f4894f2b4177"
+            },
+            {
+              "name": "dEQP-VK.pipeline.monolithic.timestamp.basic_compute_tests.all_commands_stage_out_of_render_pass_with_availability_bit",
+              "status": "Pass",
+              "detail": "Timestamp increases steadily",
+              "qpa_sha256": "9cec79ad1f394e1391c272d30c650bdc1b1c85857c91a2042bffd6c5a8699fc2"
+            }
+          ],
+          "source_bounds_sha256": "54d299573ca096450b467a61a27c20195652f3186815849317b5e78a3ce29c93",
+          "payload": {
+            "radish_icd.json": {
+              "bytes": 159,
+              "sha256": "f149fffd1c55541a6446ba4b60111444ffa1fd08cb9b6d777736dfd5b4412809"
+            },
+            "deqp-vk": {
+              "bytes": 97536760,
+              "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+            },
+            "libvulkan.so.1": {
+              "bytes": 703696,
+              "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+            },
+            "info-cases.txt": {
+              "bytes": 882,
+              "sha256": "0bf3ecef4f086ba475945266132ccdd59dacba97ae5c5959b15892c3212b29a1"
+            },
+            "check-gpu-log.py": {
+              "bytes": 1004,
+              "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+            },
+            "libvulkan_radish.so": {
+              "bytes": 13621560,
+              "sha256": "ce32d3f08a52b8f659f721f87c66a2c92bd76c8f34ea6dc9364ac903efb60f84"
+            },
+            "payload.json": {
+              "bytes": 961,
+              "sha256": "a15e3b4c9ceca92d0014959cfa55f92212e15d114634f318debbf8a8d6861461"
+            }
+          },
+          "actual": {
+            "dispatches": 4,
+            "grid": [
+              128,
+              1,
+              1
+            ],
+            "local": [
+              128,
+              1,
+              1
+            ],
+            "logical_invocations": 65536,
+            "dispatch_chunks": 8,
+            "dispatch_submits": 8,
+            "timestamp_commands": 13,
+            "query_resets": 10,
+            "query_result_copies": 4,
+            "fill_transfer_records": 1,
+            "all_results_zero": true
+          },
+          "scope": "ActualsupportedCOMPUTEqueue timestampValidBits64/timestampComputeAndGraphics true. No pipelineStatisticsfeaturedependency, graphics/hostreset/sync2commands. NoNotSupported counted.",
+          "oracle_limitations": [
+            "Queries allqueuefamilies; timestampComputeAndGraphics true implies eachCOMPUTE/GRAPHICSfamily validbits>=36. No command.",
+            "Successful64bitWAIT get ofsingleTOP timestamp aftercommandreset/fence; originalsingle-stage comparisonloop isvacuous, notmonotonicityproof.",
+            "Successful64bitWAIT+availability retrieval. Originalsingle-stage verifierdoesnotindependentlyassertavailability, so do notoverclaim thatcheck.",
+            "TOPtimestamp resetbeforecopy;64bitavailabilitymustzeroafterfence. Timestampvalueundefinedandnotcompared.",
+            "16Bzero fill+TRANSFERdependency,TOPtimestamp thennonWAITcopy; ifavailabilitynonzero timestampmustnonzero. Availabilityzeroisallowed byoriginaloracle.",
+            "32/64bitcopy andhostget resultsmustmatch;32bitwraporsaturateacceptedperoldcorecontract,64bitscheckedagainstvalidmask. No maintenance7requirement.",
+            "Original64bitWAIT retrieval after16384invocationFP32square workload andtwo timestampwrites. No SSBOoutputnumericcomparison inthisCTScase. OriginalverifyTimestamp comparisonconditions do not compare thisTOP\u2192differentstagepair; no strict elapsed/ordering proof.",
+            "Original64bitWAIT retrieval after16384invocationFP32square workload andtwo timestampwrites. No SSBOoutputnumericcomparison inthisCTScase. OriginalverifyTimestamp comparisonconditions do not compare thisTOP\u2192differentstagepair; no strict elapsed/ordering proof.",
+            "Original64bitWAIT retrieval after16384invocationFP32square workload andtwo timestampwrites. No SSBOoutputnumericcomparison inthisCTScase. OriginalverifyTimestamp comparisonconditions do not compare thisTOP\u2192differentstagepair; no strict elapsed/ordering proof.",
+            "Original64bitWAIT retrieval after16384invocationFP32square workload andtwo timestampwrites. No SSBOoutputnumericcomparison inthisCTScase. OriginalverifyTimestamp comparisonconditions do not compare thisTOP\u2192differentstagepair; no strict elapsed/ordering proof."
+          ],
+          "interpretation": "Reset-unavailable and32/64get/copyconsistency have originalspecificoracles. Timestamp-only andbasiccompute verifierlimitations remain: no strict elapsed/ordering/fullavailability proof andno numericalSSBOoutputoracle. Greenoriginalcasesarenotgeneralconformance.",
+          "postflight": "22.604s wall176.3MiB0swap,cleanfault/services/collection;original90s384MiB retained."
+        }
+      },
+      "runner": {
+        "identity": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-timestamps/probe/runner-result.json",
+          "bytes": 3262,
+          "sha256": "ba4ffe9e119303b3530867eb42d660e720157a43eb59bd2a15adba8bd8d2c397"
+        },
+        "result": {
+          "status": "passed",
+          "mode": "probe",
+          "exit_code": 0,
+          "payload": {
+            "radish_icd.json": {
+              "bytes": 159,
+              "sha256": "f149fffd1c55541a6446ba4b60111444ffa1fd08cb9b6d777736dfd5b4412809"
+            },
+            "deqp-vk": {
+              "bytes": 97536760,
+              "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+            },
+            "libvulkan.so.1": {
+              "bytes": 703696,
+              "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+            },
+            "info-cases.txt": {
+              "bytes": 882,
+              "sha256": "0bf3ecef4f086ba475945266132ccdd59dacba97ae5c5959b15892c3212b29a1"
+            },
+            "check-gpu-log.py": {
+              "bytes": 1004,
+              "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+            },
+            "libvulkan_radish.so": {
+              "bytes": 13621560,
+              "sha256": "ce32d3f08a52b8f659f721f87c66a2c92bd76c8f34ea6dc9364ac903efb60f84"
+            },
+            "payload.json": {
+              "bytes": 961,
+              "sha256": "a15e3b4c9ceca92d0014959cfa55f92212e15d114634f318debbf8a8d6861461"
+            }
+          },
+          "run_log": {
+            "bytes": 74105,
+            "sha256": "36bdfa5f33604839aa3eb1b1501c6bae175d5a40a5701d08e2f84b15de22830f"
+          },
+          "qpa": {
+            "bytes": 16592,
+            "sha256": "89b2d14ac31561df8db1cf5f5e64b4a145eca08b6bec1a3b8c7a4a3cfc881802"
+          },
+          "cases": [
+            {
+              "name": "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.check_timestamp_compute_and_graphics",
+              "status": "Pass",
+              "detail": "Pass"
+            },
+            {
+              "name": "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.timestamp_only",
+              "status": "Pass",
+              "detail": "Timestamp increases steadily"
+            },
+            {
+              "name": "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.timestamp_only_with_availability_bit",
+              "status": "Pass",
+              "detail": "Timestamp increases steadily"
+            },
+            {
+              "name": "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.reset_query_before_copy",
+              "status": "Pass",
+              "detail": "Pass"
+            },
+            {
+              "name": "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.fill_buffer_before_copy",
+              "status": "Pass",
+              "detail": "Pass"
+            },
+            {
+              "name": "dEQP-VK.pipeline.monolithic.timestamp.misc_tests.consistent_results",
+              "status": "Pass",
+              "detail": "Pass"
+            },
+            {
+              "name": "dEQP-VK.pipeline.monolithic.timestamp.basic_compute_tests.compute_shader_stage_out_of_render_pass",
+              "status": "Pass",
+              "detail": "Timestamp increases steadily"
+            },
+            {
+              "name": "dEQP-VK.pipeline.monolithic.timestamp.basic_compute_tests.compute_shader_stage_out_of_render_pass_with_availability_bit",
+              "status": "Pass",
+              "detail": "Timestamp increases steadily"
+            },
+            {
+              "name": "dEQP-VK.pipeline.monolithic.timestamp.basic_compute_tests.all_commands_stage_out_of_render_pass",
+              "status": "Pass",
+              "detail": "Timestamp increases steadily"
+            },
+            {
+              "name": "dEQP-VK.pipeline.monolithic.timestamp.basic_compute_tests.all_commands_stage_out_of_render_pass_with_availability_bit",
+              "status": "Pass",
+              "detail": "Timestamp increases steadily"
+            }
+          ],
+          "scope": "Exact unmodified pinned CTS binary; case status is authoritative. Successful harness completion is not all-case pass or conformance. All original controls retained."
+        }
+      }
+    }
+  },
+  "scope": [
+    "Eight advertised optional pipelineStatisticsQuery cases:32/64get/copy, destination offset, zero stride for one query, secondary commands, reset before/after copy;22 dispatches and1203CPU-checked SSBO words plus query outputs. Reset-before original scope exits after first shape. This is not a mandatory feature claim.",
+    "Ten core timestamp cases: four workloads and query/reset/copy/availability/32-64consistency. Original single-stage ordering loop is vacuous in some cases; availability is not always asserted, and workload SSBO output is not numerically checked. Preserve these exact limits despite CTS success text.",
+    "Original source/binary/thresholds and90s384MiB/8MiB logs/64MiB reserve/per-case faultstop remain unchanged. These are correctness cases, not performance benchmarks or full conformance."
+  ]
+}
