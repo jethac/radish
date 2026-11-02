@@ -1,0 +1,258 @@
+--- a/ncnn/src/layer/vulkan/convolution1d_vulkan.cpp
++++ b/ncnn/src/layer/vulkan/convolution1d_vulkan.cpp
+@@ -7,6 +7,7 @@
+ #include <stdint.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <stdio.h>
+ #include <new>
+ #include <cmath>
+ 
+@@ -126,6 +127,73 @@
+     return 0;
+ }
+ 
++static uint16_t radish_weight_half_rte(float value)
++{
++    uint32_t bits;
++    memcpy(&bits, &value, sizeof(bits));
++    const uint32_t sign = (bits >> 16) & 0x8000u;
++    const uint32_t exponent = (bits >> 23) & 255u;
++    const uint32_t fraction = bits & 0x7fffffu;
++    if (exponent < 102)
++        return (uint16_t)sign;
++    if (exponent < 113)
++    {
++        const uint32_t mantissa = fraction | 0x800000u;
++        const unsigned shift = 126 - exponent;
++        uint32_t rounded = mantissa >> shift;
++        const uint32_t remainder = mantissa & ((1u << shift) - 1u);
++        const uint32_t midpoint = 1u << (shift - 1);
++        rounded += remainder > midpoint || (remainder == midpoint && (rounded & 1u));
++        return (uint16_t)(sign | rounded);
++    }
++    if (exponent > 142)
++        return (uint16_t)(sign | 0x7c00u);
++    uint32_t rounded = ((exponent - 112) << 10) | (fraction >> 13);
++    const uint32_t remainder = fraction & 8191u;
++    rounded += remainder > 4096u || (remainder == 4096u && (rounded & 1u));
++    return (uint16_t)(sign | rounded);
++}
++
++static int radish_direct_pack_half_weights(Mat& packed, int dilation)
++{
++    const int count = 128 * 128 * 11;
++    if (packed.empty() || packed.dims != 1 || packed.n != 1 || packed.w != count
++        || packed.elemsize != 4u || packed.elempack != 1 || packed.total() < (size_t)count)
++        return -1;
++    Mat words(count / 2, (size_t)4u, 1);
++    if (words.empty())
++        return -100;
++    const float* source = packed;
++    uint32_t* destination = words;
++    double row_norm[128] = {};
++    double row_error[128] = {};
++    for (int i = 0; i < count; i += 2)
++    {
++        uint16_t encoded[2];
++        for (int j = 0; j < 2; j++)
++        {
++            uint32_t raw;
++            memcpy(&raw, source + i + j, sizeof(raw));
++            if ((raw & 0x7f800000u) == 0x7f800000u)
++                return 0;
++            encoded[j] = radish_weight_half_rte(source[i + j]);
++            if ((encoded[j] & 0x7c00u) == 0x7c00u)
++                return 0;
++            const float decoded = float16_to_float32(encoded[j]);
++            const int co = (i + j) & 127;
++            row_norm[co] += std::fabs((double)source[i + j]);
++            row_error[co] += std::fabs((double)source[i + j] - (double)decoded);
++        }
++        destination[i / 2] = (uint32_t)encoded[0] | ((uint32_t)encoded[1] << 16);
++    }
++    for (int co = 0; co < 128; co++)
++        if (row_error[co] > row_norm[co] / 4096.0 + (128 * 11) / 33554432.0)
++            return 0;
++    packed = words;
++    fprintf(stderr, "RADISH_CONV_PRECISION channels=128 kernel=11 dilation=%d weights=fp16-rte activations=fp32 shared=fp32 accumulation=fp32 bias=fp32 output=fp32 normalization=fp32\n", dilation);
++    return 1;
++}
++
+ static bool radish_pad_channels_tuple(int input, int output)
+ {
+     return (input == 514 && output == 1024)
+@@ -164,6 +232,7 @@
+     radish_planar = false;
+     radish_pad_channels = false;
+     radish_direct_window = false;
++    radish_direct_weight_half = false;
+ 
+     use_cooperative_matrix = false;
+     coopmat_M = 0;
+@@ -376,6 +445,15 @@
+             const int pack_ret = radish_planar_pack_weights(weight_data, weight_data_packed, num_input, num_input, num_output, kernel_w, weight_data_size, vkdev);
+             if (pack_ret != 0)
+                 return pack_ret;
++            if (radish_direct_window)
++            {
++                const int half_ret = radish_direct_pack_half_weights(weight_data_packed, dilation_w);
++                if (half_ret < 0)
++                    return half_ret;
++                radish_direct_weight_half = half_ret == 1;
++                if (!radish_direct_weight_half)
++                    fprintf(stderr, "RADISH_CONV_PRECISION channels=128 kernel=11 dilation=%d weights=fp32 activations=fp32 shared=fp32 accumulation=fp32 bias=fp32 output=fp32 normalization=fp32\n", dilation_w);
++            }
+         }
+         else
+         {
+@@ -400,7 +478,7 @@
+             || pipeline_convolution1d_gemm->local_size_z() != 1)
+             return -1;
+ 
+-        const int shader_type = radish_direct_window ? LayerShaderType::convolution1d_radish_direct_window
++        const int shader_type = radish_direct_window ? (radish_direct_weight_half ? LayerShaderType::convolution1d_radish_direct_window_fp16w : LayerShaderType::convolution1d_radish_direct_window)
+                                   : radish_planar ? (requested_packed_a ? LayerShaderType::convolution1d_radish_planar_packed_a : LayerShaderType::convolution1d_radish_planar)
+                                                  : radish_tiled32 ? LayerShaderType::convolution1d_radish_tiled32 : LayerShaderType::convolution1d_radish_tiled;
+         const int ret = pipeline_convolution1d_gemm->create(shader_type, opt, specializations);
+@@ -1010,6 +1088,7 @@
+     radish_planar = false;
+     radish_pad_channels = false;
+     radish_direct_window = false;
++    radish_direct_weight_half = false;
+ 
+     use_cooperative_matrix = false;
+     coopmat_M = 0;
+@@ -1078,7 +1157,7 @@
+             || limits.maxComputeWorkGroupCount[1] < 2 || !limits.maxComputeWorkGroupCount[2]
+             || rounded / 64 > INT_MAX / 16
+             || !radish_planar_buffer(bottom_blob, (size_t)input_bytes, vkdev)
+-            || !radish_planar_buffer(weight_data_gpu, (size_t)weight_data_size * 4, vkdev)
++            || !radish_planar_buffer(weight_data_gpu, (size_t)weight_data_size * (radish_direct_weight_half ? 2u : 4u), vkdev)
+             || !radish_planar_buffer(bias_data_gpu, 128 * 4, vkdev))
+             return -1;
+         const int outw = (int)outw64;
+--- a/ncnn/src/layer/vulkan/convolution1d_vulkan.h
++++ b/ncnn/src/layer/vulkan/convolution1d_vulkan.h
+@@ -41,6 +41,7 @@
+     bool radish_planar;
+     bool radish_pad_channels;
+     bool radish_direct_window;
++    bool radish_direct_weight_half;
+ 
+     // cooperative matrix
+     bool use_cooperative_matrix;
+--- a/ncnn/src/layer/vulkan/shader/convolution1d_radish_direct_window_fp16w.comp
++++ b/ncnn/src/layer/vulkan/shader/convolution1d_radish_direct_window_fp16w.comp
+@@ -0,0 +1,111 @@
++#version 450
++#extension GL_EXT_control_flow_attributes : require
++
++layout(constant_id = 0) const int kernel_w = 11;
++layout(constant_id = 1) const int num_input = 128;
++layout(constant_id = 2) const int num_output = 128;
++layout(constant_id = 3) const int bias_term = 1;
++layout(constant_id = 4) const int dilation_w = 1;
++
++layout(binding = 0) readonly buffer weights { uvec2 weight_data[]; };
++layout(binding = 1) readonly buffer bottom_blob { vec4 bottom_blob_data[]; };
++layout(binding = 2) writeonly buffer top_blob { vec4 top_blob_data[]; };
++layout(binding = 3) readonly buffer bias_blob { float bias_data[]; };
++
++layout(push_constant) uniform parameter
++{
++    int w;
++    int outw;
++    int left;
++} p;
++
++shared float sa[32][64];
++shared float window[4][128];
++
++void main()
++{
++    const int tx = int(gl_LocalInvocationID.x);
++    const int ty = int(gl_LocalInvocationID.y);
++    const int tid = ty * 16 + tx;
++    const int mb = int(gl_WorkGroupID.y) * 64;
++    const int nb = int(gl_WorkGroupID.x) * 64;
++    const int K = num_input * kernel_w;
++    vec4 acc[8];
++    for (int r = 0; r < 8; r++)
++    {
++        const int co = mb + ty * 8 + r;
++        acc[r] = vec4(bias_term != 0 && co < num_output ? bias_data[co] : 0.f);
++    }
++
++    for (int k0 = 0; k0 < K; k0 += 32)
++    {
++        for (int i = tid; i < 32 * 16; i += 128)
++        {
++            const int r = i >> 4;
++            const int q = i & 15;
++            const uvec2 packed_weight = weight_data[(k0 + r) * (num_output / 4) + (mb >> 2) + q];
++            vec4 a = vec4(unpackHalf2x16(packed_weight.x), unpackHalf2x16(packed_weight.y));
++            sa[r][q * 4] = a.x;
++            sa[r][q * 4 + 1] = a.y;
++            sa[r][q * 4 + 2] = a.z;
++            sa[r][q * 4 + 3] = a.w;
++        }
++        const int first_channel = int(uint(k0) / uint(kernel_w));
++        const int shift = first_channel & 3;
++        const int pack = first_channel >> 2;
++        const int sx = nb + tid - p.left;
++        vec4 a = vec4(0.f);
++        vec4 b = vec4(0.f);
++        if (tid < 64 + (kernel_w - 1) * dilation_w && sx >= 0 && sx < p.w)
++        {
++            a = bottom_blob_data[pack * p.w + sx];
++            if (shift != 0 && pack + 1 < num_input / 4)
++                b = bottom_blob_data[(pack + 1) * p.w + sx];
++        }
++        vec4 v = a;
++        if (shift == 1) v = vec4(a.yzw, b.x);
++        if (shift == 2) v = vec4(a.zw, b.xy);
++        if (shift == 3) v = vec4(a.w, b.xyz);
++        window[0][tid] = v.x;
++        window[1][tid] = v.y;
++        window[2][tid] = v.z;
++        window[3][tid] = v.w;
++        barrier();
++
++        int channel = 0;
++        int tap = k0 - first_channel * kernel_w;
++        [[dont_unroll]] for (int k = 0; k < 32; k++)
++        {
++            const int ix = tap * dilation_w + tx * 4;
++            vec4 bv = vec4(window[channel][ix], window[channel][ix + 1],
++                           window[channel][ix + 2], window[channel][ix + 3]);
++            for (int r = 0; r < 8; r++)
++            {
++                float av = sa[k][ty * 8 + r];
++                acc[r] += av * bv;
++            }
++            tap++;
++            if (tap == kernel_w)
++            {
++                tap = 0;
++                channel++;
++            }
++        }
++        barrier();
++    }
++
++    const int x = nb + tx * 4;
++    for (int r = 0; r < 8; r += 4)
++    {
++        const int co = mb + ty * 8 + r;
++        const int base = (co >> 2) * p.outw + x;
++        if (x < p.outw)
++            top_blob_data[base] = vec4(acc[r].x, acc[r + 1].x, acc[r + 2].x, acc[r + 3].x);
++        if (x + 1 < p.outw)
++            top_blob_data[base + 1] = vec4(acc[r].y, acc[r + 1].y, acc[r + 2].y, acc[r + 3].y);
++        if (x + 2 < p.outw)
++            top_blob_data[base + 2] = vec4(acc[r].z, acc[r + 1].z, acc[r + 2].z, acc[r + 3].z);
++        if (x + 3 < p.outw)
++            top_blob_data[base + 3] = vec4(acc[r].w, acc[r + 1].w, acc[r + 2].w, acc[r + 3].w);
++    }
++}

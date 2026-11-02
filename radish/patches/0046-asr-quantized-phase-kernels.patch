@@ -1,0 +1,245 @@
+--- a/ggml/src/ggml-vulkan/ggml-vulkan-types.h
++++ b/ggml/src/ggml-vulkan/ggml-vulkan-types.h
+@@ -813,6 +813,9 @@
+     vk_pipeline pipeline_dequant[GGML_TYPE_COUNT];
+     vk_pipeline pipeline_dequant_transpose[GGML_TYPE_COUNT]; // fused dequant+transpose for FA quant-KV
+     vk_pipeline pipeline_dequant_mul_mat_vec_f32_f32[DMMV_WG_SIZE_COUNT][GGML_TYPE_COUNT][mul_mat_vec_max_cols];
++#ifdef GGML_VULKAN_KHR_PROFILE
++    vk_pipeline pipeline_khr_quant[3][2];
++#endif
+     vk_pipeline pipeline_dequant_mul_mat_vec_f16_f32[DMMV_WG_SIZE_COUNT][GGML_TYPE_COUNT][mul_mat_vec_max_cols];
+     vk_pipeline pipeline_dequant_mul_mat_vec_id_f32[DMMV_WG_SIZE_COUNT][GGML_TYPE_COUNT];
+ 
+--- a/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -2883,6 +2883,21 @@
+         }
+     }
+ 
++#ifdef GGML_VULKAN_KHR_PROFILE
++#define KHR_QUANT_PIPELINE(I, TYPE, PHASE, MODE, X, Y) \
++    ggml_vk_create_pipeline(device, device->pipeline_khr_quant[I][MODE], \
++        "khr_quant_" #TYPE "_" #PHASE, khr_quant_##TYPE##_##PHASE##_len, \
++        khr_quant_##TYPE##_##PHASE##_data, "main", 3, sizeof(vk_mat_mat_push_constants), \
++        {X, Y, 1}, {}, 1);
++    KHR_QUANT_PIPELINE(0, q4_k, mm, 0, 16, 16)
++    KHR_QUANT_PIPELINE(0, q4_k, mv, 1, 4, 1)
++    KHR_QUANT_PIPELINE(1, q6_k, mm, 0, 16, 16)
++    KHR_QUANT_PIPELINE(1, q6_k, mv, 1, 4, 1)
++    KHR_QUANT_PIPELINE(2, q8_0, mm, 0, 16, 16)
++    KHR_QUANT_PIPELINE(2, q8_0, mv, 1, 4, 1)
++#undef KHR_QUANT_PIPELINE
++#endif
++
+     // Set up tile selector functions
+     if (device->coopmat2) {
+         device->matmul_tile_selector = [](uint32_t m, uint32_t n, uint32_t /*k*/, uint32_t shader_core_count,
+@@ -7415,11 +7430,57 @@
+     ggml_vk_dispatch_pipeline(ctx, subctx, pipeline, { x_buf, r_buf, p_buf, c_buf, d_buf }, pc, { n_embd, n_tokens, 1 });
+ }
+ 
++#ifdef GGML_VULKAN_KHR_PROFILE
++static bool ggml_vk_mul_mat_khr_quant(ggml_backend_vk_context * ctx, vk_context & subctx,
++                                      const ggml_tensor * src0, const ggml_tensor * src1,
++                                      const ggml_tensor * dst) {
++    int type;
++    switch (src0->type) {
++        case GGML_TYPE_Q4_K: type = 0; break;
++        case GGML_TYPE_Q6_K: type = 1; break;
++        case GGML_TYPE_Q8_0: type = 2; break;
++        default: return false;
++    }
++    if (ctx->num_additional_fused_ops || src1->type != GGML_TYPE_F32 || dst->type != GGML_TYPE_F32 ||
++        !ggml_vk_dim01_contiguous(src0) || !ggml_vk_dim01_contiguous(src1) ||
++        dst->nb[0] != sizeof(float) || src0->ne[0] % ggml_blck_size(src0->type) != 0)
++        return false;
++    const auto & limits = ctx->device->properties.limits;
++    if (ggml_nbytes(src0) > limits.maxStorageBufferRange ||
++        ggml_nbytes(src1) > limits.maxStorageBufferRange ||
++        ggml_nbytes(dst) > limits.maxStorageBufferRange)
++        return false;
++    const bool gemv = dst->ne[1] <= mul_mat_vec_max_cols;
++    const uint64_t rows_per_group = gemv ? 4 : 16;
++    const uint64_t cols_per_group = gemv ? 1 : 16;
++    if (uint64_t(dst->ne[0]) > rows_per_group * limits.maxComputeWorkGroupCount[0] ||
++        uint64_t(dst->ne[1]) > cols_per_group * limits.maxComputeWorkGroupCount[1] ||
++        uint64_t(dst->ne[2]) * dst->ne[3] > UINT32_MAX)
++        return false;
++    vk_pipeline pipeline = ctx->device->pipeline_khr_quant[type][gemv ? 1 : 0];
++    vk_subbuffer a = ggml_vk_tensor_subbuffer(ctx, src0);
++    vk_subbuffer b = ggml_vk_tensor_subbuffer(ctx, src1);
++    vk_subbuffer d = ggml_vk_tensor_subbuffer(ctx, dst);
++    ggml_vk_matmul(ctx, subctx, pipeline, std::move(a), std::move(b), std::move(d),
++        {nullptr, 0, 0}, dst->ne[0], dst->ne[1], src0->ne[0],
++        src0->nb[1] / ggml_type_size(src0->type) * ggml_blck_size(src0->type),
++        src1->nb[1] / sizeof(float), dst->nb[1] / sizeof(float),
++        ggml_vk_batch_stride(src0), ggml_vk_batch_stride(src1), ggml_vk_batch_stride(dst),
++        1, dst->ne[2] * dst->ne[3], src0->ne[2], src1->ne[2],
++        src1->ne[2] / src0->ne[2], src1->ne[3] / src0->ne[3], dst->ne[1]);
++    return true;
++}
++#endif
++
+ void ggml_vk_mul_mat(ggml_backend_vk_context * ctx, vk_context& subctx, const struct ggml_cgraph * cgraph, int node_idx) {
+     ggml_tensor * dst = cgraph->nodes[node_idx];
+     ggml_tensor * src0 = dst->src[0];
+     ggml_tensor * src1 = dst->src[1];
+     VK_LOG_DEBUG("ggml_vk_mul_mat(" << src0 << ", " << src1 << ", " << dst << ")");
++
++#ifdef GGML_VULKAN_KHR_PROFILE
++    if (ggml_vk_mul_mat_khr_quant(ctx, subctx, src0, src1, dst)) return;
++#endif
+ 
+     // Handle huge A matrix by splitting the M dimensions. This works well for convolution use cases
+     // where the M dimension is very large.
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp
+@@ -353,6 +353,9 @@
+     std::string target_env = (name.find("_cm2") != std::string::npos) ? "--target-env=vulkan1.3" : "--target-env=vulkan1.2";
+ #ifdef GGML_VULKAN_KHR_PROFILE
+     const std::vector<std::string> profile_variants = {
++        "khr_quant_q4_k_mm", "khr_quant_q4_k_mv",
++        "khr_quant_q6_k_mm", "khr_quant_q6_k_mv",
++        "khr_quant_q8_0_mm", "khr_quant_q8_0_mv",
+         "repeat_i16",
+         "set_rows_f32_f16_i64",
+         "add_f32_f32_f32",
+@@ -746,6 +749,20 @@
+ }
+ 
+ void process_shaders() {
++#ifdef GGML_VULKAN_KHR_PROFILE
++    for (const std::string & type : {"q4_k", "q6_k", "q8_0"}) {
++        for (bool gemv : {false, true}) {
++            std::map<std::string, std::string> defs = {
++                {"DATA_A_" + to_uppercase(type), "1"},
++                {"FLOAT_TYPE", "float"}, {"FLOAT_TYPEV2", "vec2"},
++                {"FLOAT_TYPEV4", "vec4"}, {"LOAD_VEC_A", "1"}
++            };
++            if (gemv) defs["KHR_GEMV"] = "1";
++            string_to_spv("khr_quant_" + type + (gemv ? "_mv" : "_mm"),
++                          "mul_mm_khr_quant.comp", defs);
++        }
++    }
++#endif
+     // matmul
+     for (const MatMulIdType& matmul_id_type : {MatMulIdType::NONE, MatMulIdType::DEFAULT, MatMulIdType::SUBGROUP}) {
+         // No coopmats
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/mul_mm_khr_quant.comp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/mul_mm_khr_quant.comp
+@@ -0,0 +1,115 @@
++#version 450
++#pragma use_storage_buffer
++#extension GL_EXT_control_flow_attributes : enable
++#extension GL_EXT_shader_16bit_storage : require
++#extension GL_EXT_shader_8bit_storage : require
++
++#include "types.glsl"
++
++layout(binding = 0) readonly buffer A { A_TYPE data_a[]; };
++#if defined(A_TYPE_PACKED16)
++layout(binding = 0) readonly buffer A16 { A_TYPE_PACKED16 data_a_packed16[]; };
++#endif
++layout(binding = 1) readonly buffer B { float data_b[]; };
++layout(binding = 2) writeonly buffer D { float data_d[]; };
++
++#include "dequant_funcs.glsl"
++
++layout(push_constant) uniform parameter {
++    uint M; uint N; uint K;
++    uint stride_a; uint stride_b; uint stride_d;
++    uint batch_stride_a; uint batch_stride_b; uint batch_stride_d;
++    uint base_work_group_z; uint num_batches; uint k_split;
++    uint ne02; uint ne12; uint broadcast2; uint broadcast3;
++    uint padded_n;
++} p;
++
++vec2 weight_pair(uint element) {
++    const uint block = element / QUANT_K;
++    vec2 value = dequantize(block, element % QUANT_K, 0);
++#if defined(DATA_A_Q8_0)
++    value *= float(data_a[block].d);
++#endif
++    return value;
++}
++
++void batch_offsets(out uint a, out uint b, out uint d) {
++    const uint batch = gl_WorkGroupID.z + p.base_work_group_z;
++    const uint a_batch = (batch % p.ne12) / p.broadcast2 +
++                        (batch / p.ne12) / p.broadcast3 * p.ne02;
++    a = a_batch * p.batch_stride_a;
++    b = batch * p.batch_stride_b;
++    d = batch * p.batch_stride_d;
++}
++
++#ifdef KHR_GEMV
++layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
++shared float partial[128];
++
++void main() {
++    uint a, b, d;
++    batch_offsets(a, b, d);
++    const uint row = gl_WorkGroupID.x * 4 + (gl_LocalInvocationID.x >> 5);
++    const uint col = gl_WorkGroupID.y;
++    const uint lane = gl_LocalInvocationID.x & 31;
++    const uint lane_base = gl_LocalInvocationID.x & ~31u;
++    float sum = 0.0;
++    [[dont_unroll]] for (uint k = lane * 2; k < p.K; k += 64) {
++        const vec2 w = row < p.M ? weight_pair(a + row * p.stride_a + k) : vec2(0.0);
++        sum = fma(w.x, data_b[b + col * p.stride_b + k], sum);
++        sum = fma(w.y, data_b[b + col * p.stride_b + k + 1], sum);
++    }
++    partial[lane_base + lane] = sum;
++    barrier();
++    [[dont_unroll]] for (uint width = 16; width != 0; width >>= 1) {
++        if (lane < width) partial[lane_base + lane] += partial[lane_base + lane + width];
++        barrier();
++    }
++    if (lane == 0 && row < p.M) data_d[d + col * p.stride_d + row] = partial[lane_base];
++}
++#else
++layout(local_size_x = 64, local_size_y = 1, local_size_z = 1) in;
++shared float tile_a[16][32];
++shared float tile_b[16][32];
++
++void main() {
++    uint a, b, d;
++    batch_offsets(a, b, d);
++    const uint lane = gl_LocalInvocationID.x;
++    const uint row0 = gl_WorkGroupID.x * 16;
++    const uint col0 = gl_WorkGroupID.y * 16;
++    const uint row = (lane & 7) * 2;
++    const uint col = (lane >> 3) * 2;
++    vec4 sum = vec4(0.0);
++    [[dont_unroll]] for (uint base = 0; base < p.K; base += 32) {
++        [[dont_unroll]] for (uint i = lane; i < 256; i += 64) {
++            const uint r = i >> 4;
++            const uint k = (i & 15) * 2;
++            vec2 w = vec2(0.0);
++            if (row0 + r < p.M && base + k < p.K)
++                w = weight_pair(a + (row0 + r) * p.stride_a + base + k);
++            tile_a[r][k] = w.x;
++            tile_a[r][k + 1] = w.y;
++            tile_b[r][k] = col0 + r < p.N && base + k < p.K ?
++                data_b[b + (col0 + r) * p.stride_b + base + k] : 0.0;
++            tile_b[r][k + 1] = col0 + r < p.N && base + k + 1 < p.K ?
++                data_b[b + (col0 + r) * p.stride_b + base + k + 1] : 0.0;
++        }
++        barrier();
++        [[dont_unroll]] for (uint k = 0; k < 32; ++k) {
++            const vec2 av = vec2(tile_a[row][k], tile_a[row + 1][k]);
++            const vec2 bv = vec2(tile_b[col][k], tile_b[col + 1][k]);
++            sum = fma(av.xyxy, bv.xxyy, sum);
++        }
++        barrier();
++    }
++    if (col0 + col < p.N) {
++        if (row0 + row < p.M) data_d[d + (col0 + col) * p.stride_d + row0 + row] = sum.x;
++        if (row0 + row + 1 < p.M) data_d[d + (col0 + col) * p.stride_d + row0 + row + 1] = sum.y;
++    }
++    if (col0 + col + 1 < p.N) {
++        if (row0 + row < p.M) data_d[d + (col0 + col + 1) * p.stride_d + row0 + row] = sum.z;
++        if (row0 + row + 1 < p.M) data_d[d + (col0 + col + 1) * p.stride_d + row0 + row + 1] = sum.w;
++    }
++}
++#endif

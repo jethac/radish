@@ -1,0 +1,121 @@
+--- a/src/arch/qwen3_asr/model.cpp
++++ b/src/arch/qwen3_asr/model.cpp
+@@ -957,6 +957,27 @@
+         return TRANSCRIBE_ERR_GGUF;
+     }
+ 
++    std::unique_ptr<ggml_backend_buffer, decltype(&transcribe::safe_buffer_free)> encoder_handoff(
++        nullptr, &transcribe::safe_buffer_free);
++    if (khr_gpu_graph_policy(cc)) {
++        if (eb.out->view_src || !ggml_is_contiguous(eb.out) || eb.out->type != GGML_TYPE_F32)
++            return TRANSCRIBE_ERR_BACKEND;
++        const auto buft = ggml_backend_get_default_buffer_type(cm->plan.primary);
++        const size_t bytes = ggml_backend_buft_get_alloc_size(buft, eb.out);
++        encoder_handoff.reset(ggml_backend_alloc_buffer(cm->plan.primary, bytes));
++        if (!encoder_handoff) return TRANSCRIBE_ERR_OOM;
++        if (ggml_backend_tensor_alloc(encoder_handoff.get(), eb.out,
++                                     ggml_backend_buffer_get_base(encoder_handoff.get())) != GGML_STATUS_SUCCESS)
++            return TRANSCRIBE_ERR_BACKEND;
++    }
++    const auto bind_encoder_input = [&](ggml_tensor * input) {
++        if (!encoder_handoff) return true;
++        if (!input || input->view_src || !ggml_are_same_shape(input, eb.out) ||
++            input->type != eb.out->type || !ggml_is_contiguous(input)) return false;
++        return ggml_backend_tensor_alloc(encoder_handoff.get(), input,
++                   ggml_backend_buffer_get_base(encoder_handoff.get())) == GGML_STATUS_SUCCESS;
++    };
++
+     // Allocate + compute encoder graph.
+     ggml_backend_sched_reset(cc->sched);
+     if (!TRANSCRIBE_ALLOC_SCHED_GRAPH(cc->sched, eb.graph, "qwen3_asr")) {
+@@ -966,6 +987,7 @@
+     }
+ 
+     ggml_backend_tensor_set(eb.subsample_in, subsample_host.data(), 0, subsample_host.size() * sizeof(float));
++    if (khr_gpu_graph_policy(cc)) std::vector<float>().swap(subsample_host);
+ 
+     // Positional embedding.
+     {
+@@ -1000,16 +1022,20 @@
+     try_dump("enc.ln_post.out", eb.dumps.ln_post_out, "enc.ln_post");
+     try_dump("enc.proj.out", eb.dumps.proj_out, "enc.proj");
+ 
+-    // Read encoder output to host for the LM prefill. The graph already
++    // Preserve encoder output across the encoder/prefill scheduler reset. The graph already
+     // dropped the aftercnn pad rows (see encoder.cpp), so eb.out is exactly
+     // [d_enc, T_enc] — the reference's `padded_embed[padded_mask_after_cnn]`
+     // shape.
+     const int d_enc = static_cast<int>(eb.out->ne[0]);
+     const int T_enc = static_cast<int>(eb.out->ne[1]);
+-    cc->enc_host.resize(static_cast<size_t>(d_enc) * static_cast<size_t>(T_enc));
+-    const int64_t t_d2h_start = ggml_time_us();
+-    ggml_backend_tensor_get(eb.out, cc->enc_host.data(), 0, cc->enc_host.size() * sizeof(float));
+-    t_enc_d2h_us = ggml_time_us() - t_d2h_start;
++    if (encoder_handoff) {
++        std::vector<float>().swap(cc->enc_host);
++    } else {
++        cc->enc_host.resize(static_cast<size_t>(d_enc) * static_cast<size_t>(T_enc));
++        const int64_t t_d2h_start = ggml_time_us();
++        ggml_backend_tensor_get(eb.out, cc->enc_host.data(), 0, cc->enc_host.size() * sizeof(float));
++        t_enc_d2h_us = ggml_time_us() - t_d2h_start;
++    }
+ 
+     // Decode phase begins. t_dec_start covers prompt + KV init + prefill
+     // build/compute + step loop (prefill is part of "decode" to users).
+@@ -1155,6 +1181,7 @@
+         }
+ 
+         // Allocate + compute prefill on the same scheduler.
++        if (!bind_encoder_input(pb.enc_out_in)) return TRANSCRIBE_ERR_BACKEND;
+         ggml_backend_sched_reset(cc->sched);
+         if (!TRANSCRIBE_ALLOC_SCHED_GRAPH(cc->sched, pb.graph, "qwen3_asr")) {
+             transcribe::log_msg(TRANSCRIBE_LOG_LEVEL_ERROR,
+@@ -1167,7 +1194,8 @@
+ 
+         // Upload prefill inputs.
+         ggml_backend_tensor_set(pb.input_ids_in, prompt_ids.data(), 0, prompt_ids.size() * sizeof(int32_t));
+-        ggml_backend_tensor_set(pb.enc_out_in, cc->enc_host.data(), 0, cc->enc_host.size() * sizeof(float));
++        if (!encoder_handoff)
++            ggml_backend_tensor_set(pb.enc_out_in, cc->enc_host.data(), 0, cc->enc_host.size() * sizeof(float));
+ 
+         {
+             std::vector<int32_t> positions(T_prompt);
+@@ -1243,6 +1271,7 @@
+         if (pb.graph == nullptr || pb.out == nullptr) {
+             return TRANSCRIBE_ERR_GGUF;
+         }
++        if (!bind_encoder_input(pb.enc_out_in)) return TRANSCRIBE_ERR_BACKEND;
+         ggml_backend_sched_reset(cc->sched);
+         if (!TRANSCRIBE_ALLOC_SCHED_GRAPH(cc->sched, pb.graph, "qwen3_asr")) {
+             transcribe::log_msg(TRANSCRIBE_LOG_LEVEL_ERROR,
+@@ -1256,7 +1285,8 @@
+             ggml_backend_tensor_set(pb.input_ids_in, full_ids.data() + n_past, 0,
+                                     static_cast<size_t>(T_chunk) * sizeof(int32_t));
+         }
+-        ggml_backend_tensor_set(pb.enc_out_in, cc->enc_host.data(), 0, cc->enc_host.size() * sizeof(float));
++        if (!encoder_handoff)
++            ggml_backend_tensor_set(pb.enc_out_in, cc->enc_host.data(), 0, cc->enc_host.size() * sizeof(float));
+         {
+             std::vector<int32_t> positions(T_chunk);
+             std::vector<int64_t> kv_idx(T_chunk);
+@@ -1297,6 +1327,7 @@
+         cc->kv_cache.head = T_prompt + n_accepted;
+         cc->draft_ok      = n_accepted;
+     }
++    encoder_handoff.reset();
+     if (reuse) {
+         cc->kv_ids.assign(prompt_ids.begin(), prompt_ids.begin() + prefix_len);
+         cc->kv_tiled.assign(static_cast<size_t>(prefix_len), ref_tiled ? 1 : 0);
+--- a/src/transcribe-load-common.cpp
++++ b/src/transcribe-load-common.cpp
+@@ -729,7 +729,9 @@
+     // Vulkan grows a per-device staging buffer, kept for the life of the
+     // process, to the largest single write (243 MiB for Qwen3-ASR-1.7B's token
+     // embedding), on top of ours.
+-    constexpr size_t k_stage_chunk = size_t(16) << 20;
++    const char * khr_profile = std::getenv("TRANSCRIBE_VULKAN_KHR_PROFILE");
++    const size_t k_stage_chunk = khr_profile && !std::strcmp(khr_profile, "1") ?
++                                    size_t(1) << 20 : size_t(16) << 20;
+ 
+     const size_t         data_offset = gguf_get_data_offset(gguf_data);
+     std::vector<uint8_t> staging;

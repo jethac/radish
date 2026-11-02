@@ -748,3 +748,10 @@ that source and was not applied to the measured binary. Eleven targeted original
 cases pass; this does not transfer all historical qualification to the candidate.
 See `../results/official11-integer-arithmetic-fixed-0045.json` for the retained
 baseline failure, original oracle limits and independent actual evidence.
+
+The additional `0046` ASR patches compose in GQA, quantized phase kernels,
+phase memory, then unit-axis order. The ncnn weight-only precision patch follows
+the FP32 direct-window patch; the direct-window queue predicate follows queue
+state reuse. Target cache, multi-chunk queue and exhaustive half-decode results
+are recorded separately. These do not open the performance-measurement gate;
+full TTS/ASR and retained-session memory/output checks remain pending.

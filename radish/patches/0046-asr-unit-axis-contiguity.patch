@@ -1,0 +1,11 @@
+--- a/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -6209,7 +6209,7 @@
+ bool ggml_vk_dim01_contiguous(const ggml_tensor * tensor) {
+     return
+         tensor->nb[0] == ggml_type_size(tensor->type) &&
+-        tensor->nb[1] == (tensor->nb[0]*tensor->ne[0])/ggml_blck_size(tensor->type) &&
++        (tensor->ne[1] == 1 || tensor->nb[1] == (tensor->nb[0]*tensor->ne[0])/ggml_blck_size(tensor->type)) &&
+         (tensor->ne[3] == 1 || tensor->nb[3] == tensor->nb[2]*tensor->ne[2]);
+ }
+ 

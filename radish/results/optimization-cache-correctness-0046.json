@@ -1,0 +1,26 @@
+{
+  "status": "PASS populated cache serialization/merge/import/key separation and guarded actual output; no timing",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-cache/probe",
+  "log": "583b19aabb2363cf8b7ada1c0dc1186eeec296cdaaf806333e7aab29bda77b9f",
+  "native_review": "580b06a88ae0598e1be9a28bf56ada35acff90397a95a767bb3b0cf9c4a29b8d",
+  "helper_review": "1201c60ade14314ad302be4c58d00da00308ac550c3a7eae0ecb54965b44541a",
+  "same_payload_and_MESA_native_as_compile": true,
+  "observed": {
+    "source_objects_each": 1,
+    "merged_imported_objects": 3,
+    "serialized_bytes": 21084,
+    "restored_variant_id": 0,
+    "native_bytes_equal": 256,
+    "specialization_miss_and_hit": true,
+    "layout_miss": true,
+    "robustness_miss": true,
+    "exact_result_words": 32,
+    "full_allocation_words": 160,
+    "executing_pipeline_retained": true,
+    "caches_modules_layout_destroyed_before_submission": true
+  },
+  "limitations": [
+    "One simple storage-buffer kernel. Sampled NIR restore and broader layout/specialization graph use remain model correctness gates.",
+    "No timing or speedup measurement; no queue multi-chunk claim."
+  ]
+}

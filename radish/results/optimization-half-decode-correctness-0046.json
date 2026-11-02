@@ -1,0 +1,52 @@
+{
+  "verdict": "PASS actualexhaustiveGPUbinary16\u2192F32decode/samepayload/native/full2BOoracle",
+  "runner_result": "87f280227f22a8de71ad76a4ed809014ebd9c9807a1bedc070add2455331363f",
+  "run_log": "07b64e038ffa6df3b2e09a5e5ae8aec4b02997cde812455d96f052874f477a53",
+  "admitted_native_review": "ade3406f53dfbe056634a19637a56f1a2ff1547bed91e5853e2a620693e85669",
+  "payload": {
+    "radish_icd.json": {
+      "bytes": 148,
+      "sha256": "2265c2970aa9a309f53f86bb67301765fca8e294a671364c553a1f51772c6133"
+    },
+    "resources": {
+      "bytes": 729432,
+      "sha256": "ee3169ad373a098294a6ad99026f6e466bd70587b34ed44f3777a7ab98c2317a"
+    },
+    "resources.spv": {
+      "bytes": 1460,
+      "sha256": "7f2cd88dfa4847b5ce4b746e1f392ab3e175dada9b14c2ace19bdded6c78d4eb"
+    },
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 13629760,
+      "sha256": "9f640904b0f4399cf0a034020d6c1e7f0041e7ce60db481b1c8255d855e59954"
+    },
+    "payload.json": {
+      "bytes": 813,
+      "sha256": "6ea090d2a29498357f63b76eba6ea15d770f1e0f2fcbaa26f2f240e167d4d9f8"
+    }
+  },
+  "outputs": {
+    "all_patterns": 65536,
+    "finite_exact_bits": 63488,
+    "signed_subnormals_included": 2046,
+    "signed_zero_included": 2,
+    "infinity_exact_bits": 2,
+    "NaN_class_only": 2046
+  },
+  "allocations": {
+    "input_words": 32832,
+    "output_words": 65600,
+    "whole_input_unchanged": true,
+    "whole_output_expected_plus_guards": true
+  },
+  "observed": "Twoactualcov.f16f32 operations, exactadmitted4unit/5F2H/private0/shared0/local32 class retained. Fullinput/outputallocationchecks includeeveryfinitepattern andguards. Cleanfault/services/postflight. No timings.",
+  "limits": [
+    "GPUhalfdecodeprovedonly; notFP16arithmetic orH2Fthroughotherinstructions",
+    "Weightquantization rowpolicy/actualhalfbufferselection andfullmodel/waveform originalaccuracy remainseparatependinggates",
+    "NaNpayload/signnotbitqualified; arbitraryNaNclassonly matchesoracleintention"
+  ]
+}

@@ -10,28 +10,28 @@
     {
       "area": 1,
       "implementation": "Persistent frontend/harmonic ORT session pair retained across runtime requests, dynamic-shape validation, owned outputs and bounded session count; activation arena/pattern retention disabled",
-      "evidence": "AArch64 runtime cross-build; host exact fresh-vs-persistent outputs at1/4threads for T78,213,168,78 with style change; no Random nodes; target memory/correctness pending",
+      "evidence": "Host bit-exact checks and AArch64 untimed target helper paired. Target four-request sequences at1/4threads currently running under original runtime guards; combined production memory/correctness remains pending.",
       "graph_policy": "Original ORT_DISABLE_ALL retained. Generic BASIC changed F0 and harmonic phase under strict oracle; rejected, not tolerance-adjusted."
     },
     {
       "area": 2,
       "implementation": "Direct-window C128/K11/d1,3,5 convolution kernel reading original packed input and fusing padding; removes planar intermediate and conversion dispatch",
-      "evidence": "FP32 source independently reviewed; AArch64 model links,260 unchanged archive members and2 replaced; native/full-output checks pending"
+      "evidence": "FP32 and weight-only-half untimed models cross-built and independently paired; exact2archive members changed/260unchanged. Original fixedT213 load-only/native then full562342output and waveform checks pending."
     },
     {
       "area": 3,
       "implementation": "Reuse invariant program/resource/static state within bounded chunks of one dispatch; keep per-chunk base/NDRANGE and WFI, flush/wait at existing batch end; direct-window graph intermediate elimination",
-      "evidence": "Queue source independently reviewed and AArch64 linked; multi-chunk/dependency correctness pending"
+      "evidence": "Queue target correctness independently passed:66,688 exact outputs/full2allocation guards, two changed-data/reversed-descriptor rounds; each18chunks\u21924submits/4flushes exercises full8+partial1. Application fullmodel still pending."
     },
     {
       "area": 4,
       "implementation": "GQA native broadcast removes repeated K/V tensors and redundant copies. Phase-specific quantized kernels and encoder-to-prefill device-buffer handoff are authored and building separately",
-      "evidence": "GQA source reviewed. Preliminary host-only build used incorrect capability-profile option and is unadmitted; corrected combined build active. No GPU/full-model/memory result yet"
+      "evidence": "Combined AArch64 c506 build with capability profile ON is paired. Six new quantized modules pass native admission; functional runner has passed, independent numerical review pending. Fresh GQA graphs/ratio2 metadata constructed. Additive unit-axis final link and full-model memory/transcript checks pending."
     },
     {
       "area": 5,
       "implementation": "Real compiled Vulkan cache entries using Mesa cache import/export/merge and IR3 native serializer, including sampling NIR and resource metadata; selective weight-only precision source is being integrated",
-      "evidence": "Cache source cross-builds and independent review in progress. Populated roundtrip/hit/code-resource/output checks pending; precision native/quality checks pending"
+      "evidence": "Real compiled-cache target key/lifetime/merge/import/native-resource/full32output correctness independently passed; sampled-image variants not exercised. Exhaustive65,536 GPU half decoding patterns independently passed, including all signed subnormals/zeros. Weight-only ncnn variant cross-build paired; model numerical/waveform/native quality gates pending."
     }
   ],
   "measurement_policy": "No new performance results. Timers disabled in the frontend correctness helper; driver PROFILE/GPU_ELAPSED disabled in forthcoming correctness scopes. Required timeout/memory/fault/service telemetry remains.",
@@ -39,8 +39,24 @@
     "0046-radish-compiled-pipeline-cache.patch": "3676b04a9f71b2f0ac676bb327693059193797218621e141706f91b09bf754af",
     "0046-radish-queue-state-reuse.patch": "e2df8c5915b011b20d67b41352f4d126be922d0bfbf0989d9d3b0bc43e7fc728",
     "0046-asr-gqa-broadcast.patch": "fc9d80c19ed82f6cb9ccc8deb28c5aac42ad8101e6ee820c8e61bf44952dbf59",
-    "0046-ncnn-direct-window.patch": "191e323377c006072d3a142bafaea58ab211897eceee389d1077126d3bd4542a"
+    "0046-ncnn-direct-window.patch": "191e323377c006072d3a142bafaea58ab211897eceee389d1077126d3bd4542a",
+    "0046-asr-quantized-phase-kernels.patch": "7137c5ee9ed835e79aa3818d18305abe29c60b3faa596cd66ba0c0ae75b41bd2",
+    "0046-asr-phase-memory.patch": "c54aef91c40b2a99fc39e63e68a36eb58b390954c43c2aa1e0e9cc6f1087dc69",
+    "0046-asr-unit-axis-contiguity.patch": "aa445f5a6fd72174152bca2347e2447392798b0789ac694fbef3889e2d5b3967",
+    "0046-radish-direct-window-batching.patch": "6bbca30b2ddfc4431ab0b1cee4980783a9b1e7f7111d9ca5e95ad18403fc3d92",
+    "0046-ncnn-weight-only-precision.patch": "4578d54d34c41374ec92f697393448c67c72af134ea7b6bb65a84f8ed58bafb1"
   },
   "existing_results": "Original743 CTS cases and modified132 robustness outcomes remain historical pinned evidence; no conformance count or selected performance change.",
-  "completion_gate": "All five areas must have integrated working code and relevant source/build/native/resource/numerical/lifetime evidence before measuring performance. Full-model output/waveform and process memory gates remain."
+  "completion_gate": "All five areas must have integrated working code and relevant source/build/native/resource/numerical/lifetime evidence before measuring performance. Full-model output/waveform and process memory gates remain.",
+  "as_of_utc": "2026-11-02 23:49:57 UTC",
+  "correctness_receipts": {
+    "optimization-cache-correctness-0046.json": "0af98f899b26429971ef61df554e2cf4a4fe340019353f9ed7491869ab59b1f5",
+    "optimization-queue-correctness-0046.json": "98c9f0d64a5ef1076462930effb6fd3e22c48de75cad78e87f7e68eaa6636b0e",
+    "optimization-half-decode-correctness-0046.json": "49749d9800e6ba420215dae3da000f5e1c70660f8c1194fc4a5e2667f8af1caa"
+  },
+  "drivers": {
+    "bounded_cache_queue_half": "61e8/9f64 exact integrated cache+queue+corrected idiv",
+    "tts_candidate": "1ed3df79c0fc425b88dddd3790f91610c95286603f62f41a4c2a74b37358a774 / 5eedfeeba72984333fb867ea7ee162ad1e9eff64a3a626eb366c142f9e0ff997; adds source-qualified direct-window batching, target model pending"
+  },
+  "preserved_failure": "First quantized native helper compared logical64/128 against physical32x2/64x2 and failed before data. V2 checks exact existing logical and physical mappings; no shader, oracle or guard changed."
 }

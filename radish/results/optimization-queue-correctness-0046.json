@@ -1,0 +1,50 @@
+{
+  "status": "PASS exact untimed two-round full and partial queue-batch correctness",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-queue-reuse/probe",
+  "run_log": "95c143a6645df01b298ac10dd9020497b800b55799cfc423233936ac64eaaf69",
+  "payload": {
+    "radish_icd.json": {
+      "bytes": 148,
+      "sha256": "39fc3124f2372ea941e9f58f5c8f9f5114ef2a0423a9a4f743730d42f12586ce"
+    },
+    "resources": {
+      "bytes": 735896,
+      "sha256": "c7e4a3b6ac1130142f582d2417f882f8d7c55565a2a12042da9351e558c810dd"
+    },
+    "resources.spv": {
+      "bytes": 1072,
+      "sha256": "b24abc64579f58ba8838922d69c862cf19436b3ca15d013f6ce09b4190c706a7"
+    },
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 13629760,
+      "sha256": "9f640904b0f4399cf0a034020d6c1e7f0041e7ce60db481b1c8255d855e59954"
+    },
+    "payload.json": {
+      "bytes": 813,
+      "sha256": "48fcb614c8f91f080b47007cff6e917be123968ba83e8182f22716d5dceeff06"
+    }
+  },
+  "native_identical_to_admitted": true,
+  "rounds": 2,
+  "outputs_per_round": 33344,
+  "total_checked_outputs": 66688,
+  "full_allocation_guards": 2,
+  "per_round": {
+    "dispatches": 2,
+    "logical_chunks": 18,
+    "full_batches": 2,
+    "partial_batches": 2,
+    "actual_submits": 4,
+    "actual_flushes": 4
+  },
+  "scope": [
+    "Two descriptors/buffers and changed push seeds, reversed order in second round; original simple shader and full-allocation oracle.",
+    "Actual submit_count and flush seqno deltas establish full8+partial1 batching for each dispatch under original group/resource limits.",
+    "Distinct outputs do not establish arbitrary cross-dispatch dependency elimination; no such elimination introduced.",
+    "No performance collection or speed claim; diagnostic native text matches admitted compilation."
+  ]
+}
