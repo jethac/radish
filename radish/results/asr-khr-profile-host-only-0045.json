@@ -577,5 +577,198 @@
     "Only two Q4 modules have been legally rebuilt at Vulkan1.0; remaining actual ASR modules need their own environment/capability/resource admission.",
     "The five-buffer matvec requires a separately prepared driver capacity change and actual bounded resource qualification, not merely host compilation.",
     "Runtime/device/profile linkage, numerical ASR work, memory/headroom/service coexistence and end-to-end performance remain pending."
-  ]
+  ],
+  "independent_host_pairing_review": {
+    "status": "passed",
+    "scope": "Independent retained host object/module/source pairing only; no backend link, A53 execution, full ASR or inference qualification.",
+    "receipts": [
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/result.json",
+        "bytes": 2045,
+        "sha256": "7a4510d34c0e8e659bd18cc3a307adb66776d96c4db7b4d8d5a4a2edc43fd919"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-khr-profile-five-build-0045/result.json",
+        "bytes": 1046,
+        "sha256": "75952d38302261d935e6362a253a277007afff5b1b81325f361ad1510474c6ec"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-ssbo-five-build-0045/q4-numeric/result.json",
+        "bytes": 7020,
+        "sha256": "b0254fd5cb02fd7815b06d62220adc506385d35c758001e7c1a9f72543f64235"
+      }
+    ],
+    "checked_artifacts": [
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/backend-on.o",
+        "bytes": 3115696,
+        "sha256": "9e16ee3b5db110c8050e35f458d3045c7bbe0b842b34366af6a442554cb07761"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/backend-off.o",
+        "bytes": 3073344,
+        "sha256": "9b3bd8e04f9afcff27c61f8dd18d38b7d0b1f1419a1d46ce6775b8f218b4178d"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/vulkan-shaders-gen",
+        "bytes": 401568,
+        "sha256": "879f5cfdb864b3740a7f0139d4c3c408cf0defb0e25f54cc3a1be52d22c8365d"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-khr-profile-five-build-0045/backend-on.o",
+        "bytes": 3085800,
+        "sha256": "841b19aa8f1971a5888e6ec0cfdef39b3acaeeb9340b55fede85693ec0f4e2fa"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-khr-profile-five-build-0045/backend-off.o",
+        "bytes": 3073376,
+        "sha256": "cbd41b7e3cc748b518b6701161f99bbfbe2f1e0662ce1329742dbaa1d4f06163"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-khr-profile-five-build-0045/source/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+        "bytes": 887182,
+        "sha256": "f88aee0eb38125d57762de78227f5338a088ef52cfec0c05385864bd18b7c3da"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-ssbo-five-build-0045/q4-numeric/core_resources.c",
+        "bytes": 35622,
+        "sha256": "a5024c99a2bbc55983659dc2083a3b8d91e73c0c0760fc8509fdc2dc75405378"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-ssbo-five-build-0045/q4-numeric/mul_mat_vec_q4_k_f32_f32.spv",
+        "bytes": 18992,
+        "sha256": "2c4b4e98f4f4300710f0d5084e3ae9f6daf066e1e69954193b1b56dcc747bc43"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-ssbo-five-build-0045/q4-numeric/test_common.h",
+        "bytes": 684,
+        "sha256": "4b022481571560cd58577d1303955f8c96e72891a2647947daa607eb5fd93b2b"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-ssbo-five-build-0045/q4-numeric/q4-numeric",
+        "bytes": 743096,
+        "sha256": "7f0a822d7b240a48638de3343321e0b89a0eaafa52a37a5116ff07212333be2a"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-ssbo-five-build-0045/q4-numeric/dequant_q4_k.spv",
+        "bytes": 6016,
+        "sha256": "43cc6c1e47746c7b5f0d33c520be0114d6dab25b0ae4ac068cac5ed2534b154e"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-ssbo-five-build-0045/q4-numeric/q4_numeric.c",
+        "bytes": 17036,
+        "sha256": "0b098a5988ee73e0e5c23d10f6317323f8b83c40c82a135dcfe8877136d6fc96"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/dequant_q4_k.spv",
+        "bytes": 6016,
+        "sha256": "43cc6c1e47746c7b5f0d33c520be0114d6dab25b0ae4ac068cac5ed2534b154e"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/mul_mat_vec_q4_k_f32_f32.spv",
+        "bytes": 18992,
+        "sha256": "2c4b4e98f4f4300710f0d5084e3ae9f6daf066e1e69954193b1b56dcc747bc43"
+      }
+    ],
+    "checked_overlay_sources": [
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/source/ggml/src/ggml-vulkan/ggml-vulkan-khr-profile.hpp",
+        "bytes": 3053,
+        "sha256": "06258ff688d0c2e1583a07b937a634efe2cb23d8168146b6f33b1aa59a7ecfe6"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/source/ggml/src/ggml-vulkan/CMakeLists.txt",
+        "bytes": 11071,
+        "sha256": "5cfa439348ce075d2d60ecfc4a0a46f2588e64da35aa75182afb89f5396de1b1"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/source/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+        "bytes": 886632,
+        "sha256": "ef02ab643c676c5261f565518c9cf160089bdcad7d5ce36d1d9de1eca051f936"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/source/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp",
+        "bytes": 82771,
+        "sha256": "4ae1c2d8b6e9f1ad1fc40bbc59e22005ba11527cc45470116bd282dd323c30b4"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/source/ggml/src/ggml-vulkan/vulkan-shaders/dequant_q4_k.comp",
+        "bytes": 2740,
+        "sha256": "6d30e99b44bf171074711efab9a54897476fa549039fb8cbea0b655a32ab2df1"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/source/ggml/src/ggml-vulkan/vulkan-shaders/CMakeLists.txt",
+        "bytes": 1787,
+        "sha256": "37a35f9cc57e6de03c351e885d114cbcc5d11f2919f6a633b11d49ceab26ff4d"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/source/ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vec_q4_k.comp",
+        "bytes": 6569,
+        "sha256": "74eb2cd3212aef18b8c165cb735627a1a4a8cad27cbcb1269d1b2b2bff12b78b"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-khr-profile-five-build-0045/source/ggml/src/ggml-vulkan/ggml-vulkan-khr-profile.hpp",
+        "bytes": 3509,
+        "sha256": "0d3c251b966ec556957f6c9db2706a6d11ec6353dd821e946662a6425de9360b"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-khr-profile-five-build-0045/source/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+        "bytes": 887182,
+        "sha256": "f88aee0eb38125d57762de78227f5338a088ef52cfec0c05385864bd18b7c3da"
+      }
+    ],
+    "modules": {
+      "dequant_q4_k": {
+        "pin": {
+          "path": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/dequant_q4_k.spv",
+          "bytes": 6016,
+          "sha256": "43cc6c1e47746c7b5f0d33c520be0114d6dab25b0ae4ac068cac5ed2534b154e"
+        },
+        "capabilities": [
+          "Shader",
+          "Int8",
+          "StorageBuffer16BitAccess",
+          "StorageBuffer8BitAccess"
+        ],
+        "version": "SPIR-V 1.0",
+        "validation": "Retained spirv-val --target-env vulkan1.0 command returned zero"
+      },
+      "mul_mat_vec_q4_k_f32_f32": {
+        "pin": {
+          "path": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/mul_mat_vec_q4_k_f32_f32.spv",
+          "bytes": 18992,
+          "sha256": "2c4b4e98f4f4300710f0d5084e3ae9f6daf066e1e69954193b1b56dcc747bc43"
+        },
+        "capabilities": [
+          "Shader",
+          "Int8",
+          "StorageBuffer16BitAccess",
+          "StorageBuffer8BitAccess"
+        ],
+        "version": "SPIR-V 1.0",
+        "validation": "Retained spirv-val --target-env vulkan1.0 command returned zero"
+      }
+    },
+    "commands": [
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-khr-profile-build-0045/commands.json",
+        "bytes": 6960,
+        "sha256": "f3627a89dbd946f5444278ba50ba701650feebb94e2c5091edc37a8b8c84a716"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/asr-khr-profile-five-build-0045/commands.json",
+        "bytes": 3688,
+        "sha256": "30ac25555613975901143abf6bf91b63456c3136cf4ee96bb87320130a524e2c"
+      }
+    ],
+    "checks": [
+      "ON/OFF object commands differ only expected feature macro and output/dependency names; B2 follows identical commands with private source/output directory changed.",
+      "Nine retained base build/validator statuses zero. Both exact modules are Vulkan1.0 and declare only Shader, Int8 and storage8/16 capabilities.",
+      "Capacity-only build retains all shader source bytes. Q4 helper/module hashes match frozen source and current five-SSBO build receipt."
+    ],
+    "limitations": [
+      "Host C++ backend objects are not an executable or a complete ASR shader-profile closure.",
+      "Q4 helper is A53 cross-built but neither Q4 kernel has yet been device compiled or numerically executed."
+    ]
+  }
 }

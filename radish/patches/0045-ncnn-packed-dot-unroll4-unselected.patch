@@ -1,0 +1,62 @@
+--- a/src/layer/vulkan/shader/convolution1d_radish_planar_packed_a.comp
++++ b/src/layer/vulkan/shader/convolution1d_radish_planar_packed_a.comp
+@@ -68,13 +68,54 @@
+         }
+         barrier();
+ 
+-        for (int k = 0; k < 32; k++)
++        if (num_input == 128 && num_output == 128 && kernel_w == 11)
+         {
+-            vec4 b = sb[k][tx];
+-            for (int r = 0; r < 8; r++)
++            for (int k = 0; k < 32; k += 4)
+             {
+-                float a = sa[k][ty * 8 + r];
+-                acc[r] += a * b;
++                {
++                    vec4 b = sb[k][tx];
++                    for (int r = 0; r < 8; r++)
++                    {
++                        float a = sa[k][ty * 8 + r];
++                        acc[r] += a * b;
++                    }
++                }
++                {
++                    vec4 b = sb[k + 1][tx];
++                    for (int r = 0; r < 8; r++)
++                    {
++                        float a = sa[k + 1][ty * 8 + r];
++                        acc[r] += a * b;
++                    }
++                }
++                {
++                    vec4 b = sb[k + 2][tx];
++                    for (int r = 0; r < 8; r++)
++                    {
++                        float a = sa[k + 2][ty * 8 + r];
++                        acc[r] += a * b;
++                    }
++                }
++                {
++                    vec4 b = sb[k + 3][tx];
++                    for (int r = 0; r < 8; r++)
++                    {
++                        float a = sa[k + 3][ty * 8 + r];
++                        acc[r] += a * b;
++                    }
++                }
++            }
++        }
++        else
++        {
++            for (int k = 0; k < 32; k++)
++            {
++                vec4 b = sb[k][tx];
++                for (int r = 0; r < 8; r++)
++                {
++                    float a = sa[k][ty * 8 + r];
++                    acc[r] += a * b;
++                }
+             }
+         }
+         barrier();

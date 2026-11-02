@@ -1,5 +1,15 @@
 # Radish status
 
+## 2026-11-02: four-step packed inner-dot unroll is correct but unselected
+
+The isolated Ci128/Co128/Kw11 inner-dot unroll retains the original B division, exact ordered accumulation, all resource/occupancy guards and the existing submission schedule. Only three native variants change (twelve layer uses); the other 20 packed and 156 ordinary native bodies are exact. The changed variants use native length 35, 16F/0H and no spills, with the same local 16×8, 16 KiB shared memory and 4,096-unit residency footprint. Independent symbolic checking confirms all 32 accumulator dependency trees; nine additional hot MOVs are included in the 172 expanded slots versus 220 for four old bodies.
+
+Both complete model reference comparisons and retained final accepted bytes pass. Performance does **not** improve: first extraction **34.700589 → 35.267072 s (+1.63%)**, resident **33.952417 → 35.671223 s (+5.06%)**. All twelve targeted layers are slower in both iterations; their resident command-wall sum rises **9.203803 → 10.278842 s (+11.68%)**. All 1,520 ordered owners/geometries/chunks/submits remain unchanged apart from the twelve intended native lengths.
+
+The candidate uses 405.3 MiB plus 23.9 MiB swap versus the selected baseline's 406.2 MiB with no swap. This sequential comparison and variation in other commands limit attribution. The matched driver sets hardware instruction length to zero and disables BUFFER/preload when native length exceeds 32: the candidate length 35 crosses that boundary, while selected lengths 27/28 retain preload. This proves a fetch-mode change; cache misses or timing causality are not established. Timestamped frequency residency is not an active-utilization measurement.
+
+Keep **d332 selected**. The [source/native/full-output/profile evidence](results/packed-dot-unroll4-unselected-0045.json) and [isolated patch](patches/0045-ncnn-packed-dot-unroll4-unselected.patch) preserve this correct but unselected experiment. No identical-candidate retry or selected-branch/default change follows from the arithmetic calibration result.
+
 ## 2026-11-02: public Int8 arithmetic passes generic shared/private checks
 
 An isolated checkpoint now enables `shaderInt8` through `VK_KHR_shader_float16_int8`; Float16 arithmetic remains false and API stays 1.0. The public consumer queries and enables Int8 while leaving Float16, Int16, storage8 and storage16 disabled. Its validated Vulkan 1.0 module has exactly `Shader` and `Int8` capabilities and uses ordinary U32 buffer interfaces.
