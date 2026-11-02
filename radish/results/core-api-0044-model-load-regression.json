@@ -1,0 +1,85 @@
+{
+  "session": 3425,
+  "status": "model-load-pipeline-creation-failed",
+  "mode": "compile/load-only",
+  "driver": {
+    "bytes": 49006248,
+    "sha256": "33ec9c03544ef1ae95207b73782fdf88689f89382bd5e27e596696c2a140ad0c"
+  },
+  "source_snapshot": "checkpoint-barrier-oversized-source",
+  "runner": {
+    "bytes": 16896,
+    "sha256": "3a8f1faf03606b048450ea69a1f34c6474c003322dd1cf64f98e5983b04ac8ab"
+  },
+  "configuration": {
+    "bytes": 5543,
+    "sha256": "4c53f2dd1962131c0448b0ca3ed8ad008cc69f7fef8e1eda92fc1c95897d6cc0"
+  },
+  "model": {
+    "bytes": 11129352,
+    "sha256": "0b2f39fa6d7263026f1d12a4b03a10a0a531788451db9e774927acfffa03c664"
+  },
+  "capture": "/run/media/jethac/Shared/radish/full-model-replay-0044-qlwep9no/evidence-core0044-correctness-first/compile",
+  "capture_pins": {
+    "run.log": {
+      "bytes": 9598452,
+      "sha256": "154529f8f22804bcd9873a9b72577a086bbdf7aac71eaf77256b6e86b4de69d4"
+    },
+    "result.json": {
+      "bytes": 684,
+      "sha256": "21aca30257a40a92aa28799f44378d12f98106f5d61399d4d1c604bb995e4b9c"
+    },
+    "fault-check.txt": {
+      "bytes": 41,
+      "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+    },
+    "services-before.txt": {
+      "bytes": 14,
+      "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+    },
+    "services-after.txt": {
+      "bytes": 14,
+      "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+    },
+    "drain-000.txt": {
+      "bytes": 55,
+      "sha256": "899a8a5a73232d4a07b56824413da1c88dc2dc685e89886ca2bc05f89923b9f6"
+    },
+    "assets-before.txt": {
+      "bytes": 3333,
+      "sha256": "6fe1174c0ea2f8a51652e114f7ad89474d502f9bdcdf26585662b29f45e8f4c4"
+    }
+  },
+  "failure_verbatim": [
+    "vkCreateComputePipelines failed -8",
+    "new_pipeline failed",
+    "layer create_pipeline 201 conv1d_19 failed",
+    "FAIL line 343: net.load_model((dir+\"/decoder.ncnn.bin\").c_str())==0"
+  ],
+  "last_compiled_program": {
+    "id": "52/1",
+    "registers_full_half": [
+      16,
+      21
+    ],
+    "loops": 4,
+    "native_dwords": 2080,
+    "max_waves": 8,
+    "double_threadsize": false
+  },
+  "conditions": {
+    "service_seconds": 6.44,
+    "peak_mib": 76.5,
+    "swap_bytes": 0,
+    "new_gpu_faults": false,
+    "services_active": true,
+    "own_unit_drained": true
+  },
+  "scope": [
+    "Original accepted runner, model, fixtures and reference oracle unchanged.",
+    "Preflight, loader/device creation and preceding shader compilation completed; model load did not complete.",
+    "Full repeat2 inference and all numerical/output comparisons were unattempted. No GPU/CPU layer-execution counts or completed cold/resident request timings are claimed.",
+    "Source diagnosis is pending; no resource guard, advertised limit, feature or oracle has been relaxed.",
+    "Service time describes this failed partial load, not a performance comparison against the accepted0042 workload."
+  ]
+}

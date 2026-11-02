@@ -1,5 +1,11 @@
 # Core compute implementation: checkpoint 0044
 
+## 2026-11-02: unchanged full-model replay finds a pipeline regression
+
+The first full-model load/compile replay on ICD `33ec9c03` fails at layer201, `conv1d_19`: `vkCreateComputePipelines failed -8`. The accepted0042 runner, model, fixture and reference oracle are unchanged. Model load does not complete, so inference, numerical comparisons and cold/resident request timings are unattempted. [Exact failure and payload](results/core-api-0044-model-load-regression.json).
+
+This is a current driver pipeline-creation regression, not a preflight or loader setup failure. The failed service lasts6.440s, peaks at76.5MiB with zero swap, and leaves both services active with no new GPU faults. The log is retained verbatim while the resource guard and robustness lowering are investigated. No validation, advertised limit or oracle is reduced to admit the model. Earlier focused API results remain valid within their scope; the previous inference measurements below belong to the accepted0042 stack, not this WIP driver.
+
 ## 2026-11-02: irregular barriers and a real large array image pass
 
 The ordinary workgroup-barrier consumer passes logical32×1×1,33×1×1 and3×5×3 shapes across two workgroups each, with3,520 exact record words and full output/exchange guards. The driver preserves logical IDs while using physical16×2×1,33×1×1 and45×1×1 respectively, including conservative residency accounting for the irregular shapes. This extends the reproduced barrier coverage without claiming every legal resource/workgroup combination.
