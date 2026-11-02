@@ -48,7 +48,9 @@ def main():
              ('storage16', 'core_storage16.c', 'core-storage16.comp', 'vulkan1.0'),
              ('storage8', 'core_storage8.c', 'core-storage8.comp', 'vulkan1.0'),
              ('timeline', 'core_timeline.c', 'core-timeline.comp', 'vulkan1.0'),
-             ('int8', 'core_int8.c', 'core-int8.comp', 'vulkan1.0')]
+             ('int8', 'core_int8.c', 'core-int8.comp', 'vulkan1.0'),
+             ('public11', 'core_public11_basic.c', 'core-public11-basic.comp', 'vulkan1.1'),
+             ('combined', 'core_combined_resources.c', 'core-combined-resources.comp', 'vulkan1.0')]
     records = {}
     for name, cfile, glsl, target in units:
         source = top / 'radish/tests' / cfile

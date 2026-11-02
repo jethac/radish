@@ -1,0 +1,312 @@
+{
+  "status": "INCOMPLETE; no Vulkan1.1 conformance or promotion claim",
+  "priority": "Conformant applicable Vulkan1.1 compute/shared first, full Straylight performance afterward",
+  "selected_inference": {
+    "driver": "fcd47b1f",
+    "model": "d33222d4",
+    "status": "frozen"
+  },
+  "candidate": {
+    "driver": "d6b92001d95017bf560647d58a68b62f5ac5b6c54139eb235c8836ebcf8ad7e8",
+    "status": "bounded public1.1 contract and fiveBASICcases actualPASS; not fullcontract/conformance or selectedinference"
+  },
+  "official_cts": {
+    "source_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+    "binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
+    "state": "Exact originalbinary actualcompleted5info:4Pass/1propertiesFail with31messages; startupresolved. Allotherapplicablepartitions open.",
+    "modified_harness": "f85cb13b diagnostics only, never official passes",
+    "remaining_property_failures": 31,
+    "actual_record": "official11-cts-info-0045.json"
+  },
+  "categories": [
+    {
+      "id": "limits-core",
+      "requirement": "Required compute/buffer/image/descriptor/numerical precision limits and truthful allocation/address bounds",
+      "implementation": "Current properties cover 128 invocations,16KiB shared,128/128/64 dimensions,65535 grid,12UBO/5SSBO/4images/16sampled,128MiB SSBO range; explicit checked4GiB-native allocation ceiling",
+      "evidence": "Current rd_instance.c,rd_memory.c,rd_image.c; representative actual core consumers",
+      "remaining": "Run original applicable CTS limits and compute cases on exact private1.1 candidate. Numeric reporting alone does not qualify every valid shape/resource combination.",
+      "owner": "resource"
+    },
+    {
+      "id": "limits-31",
+      "requirement": "31 retained required-property failure messages",
+      "implementation": "No invented graphics values. Exact failed CTS artifact retained",
+      "evidence": "cts-limit-applicability-0044-11ct63go/sampled-ms-property-review.json",
+      "remaining": "Resolve version/conformance applicability with primary specification and original CTS. Categories are2inputattachment,8vertex/fragment,3draw/raster,6viewport,7framebuffer,1fragmentSampleMask,4point/line. No blanket queue waiver; no standalone normal Compute1.1 profile assumed.",
+      "owner": "resource"
+    },
+    {
+      "id": "format-unconditional",
+      "requirement": "47 unconditional required compute-relevant format rows",
+      "implementation": "43 source admissions present; four packed A8 storage texel rows corrected in private ebc04699",
+      "evidence": "required-format-admission.json; ordinary resource/cube/subword/depth actuals cover representative formats",
+      "remaining": "Packed four-format consumer source pending source/module/native/actual gates; execute applicable CTS full format families, not all closed by static switches.",
+      "owner": "resource"
+    },
+    {
+      "id": "format-compression",
+      "requirement": "At least one complete BC/ETC2+EAC/ASTC-LDR family required by mandatory-format footer",
+      "implementation": "MISSING: current image/native format switches support no complete compressed family",
+      "evidence": "Primary formats-v1.1.126.txt compressed table footers; native FD5 ETC2/EAC TFMT backing exists",
+      "remaining": "Implement complete ETC2/EAC10-format family, block-aware layout/copy, same-class/block-compatible views, truthful public feature, native numerical/filter/transfer gates. Keep ordinary sampling fast path;4KiB\u00b2 layer chains fit native pitch.",
+      "owner": "resource"
+    },
+    {
+      "id": "format-graphics-properties",
+      "requirement": "Required blit/attachment/vertex format feature columns",
+      "implementation": "Not advertised; no CmdBlitImage/graphics execution backing",
+      "evidence": "Current format query and explicit compute queue; primary required-format table retained",
+      "remaining": "Resolve standard conformance versus explicit compute scope, without fake flags or treating table cells as automatically waived. Blit queue applicability is separate from property obligation.",
+      "owner": "resource"
+    },
+    {
+      "id": "images",
+      "requirement": "Required image types, mips/layers/cube/views, copies, clear and sampled/storage/atomics",
+      "implementation": "Native single/MS sampling plus software oversized-array/cube path; mutable/alias/extended/split-instance and2D-of3D view creation; storageCube face layers",
+      "evidence": "core_resources/core_array_resources/core_subword_resources/core_multisample/core_ms_lanes/core_oversized_image/core_oversized_ms/core_storage_cube; paired actual results",
+      "remaining": "Full required-format/type/filter/mip/view/transfer CTS, all valid flag combinations, precision and alias cases remain. Optional cubeArray/multisampled storage/anisotropy/extended-format feature bits may remainfalse.",
+      "owner": "resource"
+    },
+    {
+      "id": "buffers-robust",
+      "requirement": "Exact UBO/SSBO/texel ranges, dynamic offsets,32bit load/store/atomics and robust access",
+      "implementation": "Exact current descriptor size constants; logical RBA before memory widening; no inflated ranges",
+      "evidence": "Valid v4 large-SSBO consumer spans160004/65540/65536/131072 plus original40 outputs/full5BOs; large40001 texel add/CAS actuals",
+      "remaining": "Original invalid constant-negative-index module evidence remains erratum; only corrected legal-SPV actuals count. Broader scalar/vector/array/alias/atomic CTS still required.",
+      "owner": "resource"
+    },
+    {
+      "id": "subword-extra",
+      "requirement": "Advertised storage16/storage8/Int8 extras",
+      "implementation": "RBA checks original2/1byte components; U32 masked atomic RMW for subword storage; existing byte ALU/private/shared lowering",
+      "evidence": "Public legal storage-only16/8 and generic Int8 consumers independently passed full outputs/guards",
+      "remaining": "Feature combinations/parallel memory-model CTS not exhaustive. Float16/Int16 arithmetic and unrelated storage bits remainfalse.",
+      "owner": "resource"
+    },
+    {
+      "id": "simultaneous",
+      "requirement": "Coexisting public descriptor maxima and hidden compiler resources",
+      "implementation": "FD5 shared24-slot namespace;12UBO+5SSBO+4images+hiddenmetadata=22 exact slots",
+      "evidence": "Five-buffer real Q4 actual;16sampled+4query capacity actual. Combined helper73c2/modulef93b legal hostbuild reviewed; combined87501 independently actualPASSd3ee4259, typednative and emitted imagebanks18..21 +metadata17,560results/full21smallallocations+196sparsebigwords perround.; combined compile49457/function87501 and independentd3ee4259 now PASS",
+      "remaining": "The exact mixed12UBO+5SSBO+4image+hiddenmetadata case passes actual slots17/18..21 and all outputs/guards. Remaining applicable combinations/CTS are open.",
+      "owner": "resource"
+    },
+    {
+      "id": "descriptor-layout",
+      "requirement": "Layouts, immutable samplers, sparse binding numbers, static arrays, templates/copies/dynamic offsets",
+      "implementation": "Logical1024 set descriptors with active64 static compaction; sorted bindings; retained layout references and sampler value copies",
+      "evidence": "Existing API5/resource/template actuals and prior lifetime source audit",
+      "remaining": "Original CTS descriptor/pool/copy/consecutive-binding/compatible-layout and allocation-error cases. Optional opaque dynamic indexing remainsfalse, not silently accepted.",
+      "owner": "resource"
+    },
+    {
+      "id": "lifetime-reuse",
+      "requirement": "Shader/module/layout/set/resource lifetime and recorded command reuse",
+      "implementation": "Pipeline retains layout\u2192setlayout; descriptor set retains setlayout; sampler copied; synchronous shader compilation; command pools/reset/secondary state runtime",
+      "evidence": "Prior source lifetime audit; valid-order two-round reuse checks and API5primary/secondary/template checks",
+      "remaining": "Target destroyed shader/layout/sampler-after-creation semantics and invalidation/re-record behavior through original CTS; do not use invalid late-update historical observations.",
+      "owner": "resource"
+    },
+    {
+      "id": "memory",
+      "requirement": "Allocation, mapping, suballocation, non-overlap/alias, dedicated requirements and host visibility",
+      "implementation": "Single coherent host-visible memory type;64byte requirements/granularity; checked addresses/binding/size; no required dedicated allocation",
+      "evidence": "Buffer/resource full guards, suballoc/view base offsets, huge public image sparse guards",
+      "remaining": "Full applicable allocation/map/alias/copy/OOH/OOM CTS and actual coherent cache semantics. Shared source sum is not full memory conformance.",
+      "owner": "resource"
+    },
+    {
+      "id": "execution-sync",
+      "requirement": "Direct/indirect dispatch, shared/barrier, transfer\u2192shader\u2192host, events/queries/binary fence/semaphore and command order",
+      "implementation": "Serialized worker/DRM sync, conservative waits/flushes, runtime sync support, real event/query transfer/compute paths",
+      "evidence": "core_api5/core_events_queries/core_workgroup_barriers/resource producers+consumers and actual guards",
+      "remaining": "Original applicable pipeline/memory-model/synchronization/lifetime CTS, cross-submit visibility, alias dependencies and all legal workgroup forms; model output is not substitute.",
+      "owner": "resource"
+    },
+    {
+      "id": "timeline-extra",
+      "requirement": "Advertised KHR timeline semaphore extension",
+      "implementation": "Conditional actual DRM assisted timeline; hostwait/signal/counter and worker queued wait",
+      "evidence": "Public KHR consumer30553:64bit queued wait released by host, real dispatch+queued signal+host readback",
+      "remaining": "Original timeline CTS extension coverage beyond one bounded consumer. Timeline is not mandatory solely for1.1.",
+      "owner": "resource"
+    },
+    {
+      "id": "groups-external",
+      "requirement": "Core1.1 singleton groups and external capability contracts",
+      "implementation": "SingletonDeviceIndex0/mask1/fullsplit bind; external memory/fence/semaphore platform handles unsupported",
+      "evidence": "Group API5/resource fullsplit actual; source explicit external queries",
+      "remaining": "Public1.1+KHR alias/query validity via batch. No platform import/export promise inferred from DRM syncobj. Historical singleton fullsplit validity under VUID01421 is newly under independent review; do not use that part as public qualification until resolved.",
+      "owner": "resource"
+    },
+    {
+      "id": "optional11",
+      "requirement": "Protected memory/variable pointers/YCbCr/optional subgroup operations",
+      "implementation": "May remainfalse with feature-conditioned behavior;16storage true already has backing",
+      "evidence": "Batch primary reviewd557d7e8 plus current feature chain",
+      "remaining": "Validate feature/query/error/entrypoint contracts for required promotions; no optional feature enabled just to satisfy API name. Batch owns contract.",
+      "owner": "batch"
+    },
+    {
+      "id": "shader11",
+      "requirement": "Public1.1 SPIR-V1.0\u20131.3 and COMPUTE+BASIC subgroup semantics",
+      "implementation": "Private1.1 contract source candidate; existing generic NIR/IR3",
+      "evidence": "Historical BASIC private/API1.0-invalid-environment scope retained as erratum",
+      "remaining": "Batch owns validpublic1.1 BASIC/module environment/full applicable shader CTS, not closed by command list.",
+      "owner": "batch"
+    }
+  ],
+  "coverage_rule": "Each row separates implementation, representative hardware evidence and remaining applicable CTS/functional obligations. These categories are a live ledger, not an exhaustive case enumeration or percentage; registry/spec and CTS inventory are being reconciled. False optional feature bits require truthful contracts. Application-specific prerequisites remain separate.",
+  "sources": {
+    "resource_matrix_sha256": "2e3cd30702d979e6bad09a96c739020cf2141e6f79375df3880a79750438c8a5",
+    "normative_version": "Vulkan1.1.126 pinned primary tables; links and source pins in the resource matrix",
+    "resource_matrix": {
+      "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_instance.c": "aada1afea35362c0ab0a296e60324898326c8bd594aafd57ddd55e93c1712010",
+      "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_image.c": "0ddbe8ddad40a5b8090ac020029c1ec052895a9efec5d139a6b92316d15bef07",
+      "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_memory.c": "358fdead558a70a164bd7f6c1bd51c7414132ea3b44996b8c23e9f651ba812af",
+      "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_descriptor.c": "b17f24bd0fddc4cc18ba301c5a5981006baae510737d311b38e8ff7d26fa2653",
+      "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_resources.c": "d1764b1d4b77c4fb9bd88cf54c0f62c81f6f15b76bfd90c7f90fa77e030e277f",
+      "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_queue.c": "da170e7c4d4a1fc9db0da5ded100376fab80b57fb70af2427a4ff81fbbdc4890",
+      "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_sampling.c": "71e51adb3c797230f20307a204b9f9cacca3764b14041bff898fbae8b1a10fde"
+    }
+  },
+  "contract_shader_categories": [
+    {
+      "id": "contract.version_lookup",
+      "required": "Instance/device version negotiation, all28 core1.1 names and advertisedKHR aliases; core and extension availability rules.",
+      "implementation": "d468 privatecandidate/Mesa common runtime",
+      "evidence": "Source+host review only; actual contract helper pending",
+      "cts": [
+        "dEQP-VK.api.version_check.*",
+        "dEQP-VK.api.get_device_proc_addr.*",
+        "dEQP-VK.api.info.*"
+      ]
+    },
+    {
+      "id": "contract.query_features_errors",
+      "required": "Individual1.1 properties/features, feature support versus enablement, unsupportedfeature/extension errors, zero external handles when unsupported.",
+      "implementation": "Common generated property/feature copy and validation, explicit externalzero callbacks",
+      "evidence": "Newhelper supports individualchains/errors; fullpromotedsemantic qualification incomplete",
+      "cts": [
+        "dEQP-VK.api.info.*",
+        "dEQP-VK.api.object_management.*"
+      ]
+    },
+    {
+      "id": "contract.promoted_semantics",
+      "required": "Bind2/requirements2/dedicatedalloc, singleton devicegroups/base dispatch/mask, descriptor templates/layoutsupport, commandpooltrim/queue2; all legal lifetimes/errors.",
+      "implementation": "Existing Radish/common handlers; sourceowner resource/sync lane",
+      "evidence": "Representative0044passes; exact historical split-region validity being checked, not automatically retained",
+      "cts": [
+        "dEQP-VK.api.*",
+        "dEQP-VK.binding_model.*",
+        "dEQP-VK.memory.*",
+        "dEQP-VK.synchronization.*"
+      ]
+    },
+    {
+      "id": "shader.spirv_environment",
+      "required": "All legal SPIR-V1.0/1.1/1.2/1.3 compute modules and GLSL.std.4501.0 under feature-conditioned capabilities, not only currentmodelmodules.",
+      "implementation": "MesaSPIRV\u2192NIR\u2192IR3; existing importers not a complete executionproof",
+      "evidence": "Required full environment open; existing BASIC1.3 internalcapture remainserratum; newpublic1.1helper pending",
+      "cts": [
+        "dEQP-VK.spirv_assembly.instruction.compute.spirv_version.1_0_compute",
+        "dEQP-VK.spirv_assembly.instruction.compute.spirv_version.1_1_compute",
+        "dEQP-VK.spirv_assembly.instruction.compute.spirv_version.1_2_compute",
+        "dEQP-VK.spirv_assembly.instruction.compute.spirv_version.1_3_compute"
+      ]
+    },
+    {
+      "id": "shader.generic_alu_types_control",
+      "required": "32bit integer/float arithmetic, conversions, comparisons, extended GLSL math with requiredprecision, composites/matrices, controlflow/phi, calls, constants/specialization and private/workgroup representation.",
+      "implementation": "Existing IR3/NIR generic paths; concrete failures mustdrive fixes",
+      "evidence": "Representativekernels only; complete applicableCTS open",
+      "cts": [
+        "dEQP-VK.spirv_assembly.instruction.compute.*",
+        "dEQP-VK.spirv_assembly.type.*",
+        "dEQP-VK.spirv_assembly.constant_data.*",
+        "dEQP-VK.glsl.*"
+      ]
+    },
+    {
+      "id": "shader.memory_resources",
+      "required": "All required buffer/opaque resource accesses, layouts/decorations/address arithmetic/robustness, shared/SSBO/storageimage atomics and memorysemantics for advertisedtypes.",
+      "implementation": "Existing resource/robust/subwordlowerings; shared namespace22 representativeactualpasses",
+      "evidence": "Combined87501 closes one concrete capacity case, not universaldescriptors/formats/barriers",
+      "cts": [
+        "dEQP-VK.spirv_assembly.instruction.compute.*",
+        "dEQP-VK.robustness.*",
+        "dEQP-VK.binding_model.*",
+        "dEQP-VK.compute.*"
+      ]
+    },
+    {
+      "id": "shader.required_basic",
+      "required": "BASIC+COMPUTE, nonzero poweroftwo subgroupSize; Elect, executionbarrier and memorybarrier generic/buffer/shared/image; builtins, partial/multiple/divergent subgroups and all legalworkgroups.",
+      "implementation": "Radishlinear subgroup geometry+IR3; newlegal1.1public consumer",
+      "evidence": "Prior5case1.0/SPV1.3 invalidenvironment scope retained. Legal1.1fullconsumer pending; sixrequiredCTS ops open.",
+      "cts": [
+        "dEQP-VK.subgroups.basic.compute.subgroupelect",
+        "dEQP-VK.subgroups.basic.compute.subgroupbarrier",
+        "dEQP-VK.subgroups.basic.compute.subgroupmemorybarrier",
+        "dEQP-VK.subgroups.basic.compute.subgroupmemorybarrierbuffer",
+        "dEQP-VK.subgroups.basic.compute.subgroupmemorybarriershared",
+        "dEQP-VK.subgroups.basic.compute.subgroupmemorybarrierimage"
+      ]
+    },
+    {
+      "id": "shader.dispatch_barrier_geometry",
+      "required": "All legal local/workgroup/shared-memory configurations, dispatch/base/indirect IDs, barrier convergence and memoryordering under required resource ceilings.",
+      "implementation": "Existinglogicalreconstruction/residentaccounting/strictfinalguards",
+      "evidence": "Representativeodd/3D/historical/modelpasses; arbitrarylegalshaders mustnotberejected solely due incompletelowering or allocation",
+      "cts": [
+        "dEQP-VK.compute.*",
+        "dEQP-VK.spirv_assembly.instruction.compute.*",
+        "dEQP-VK.subgroups.basic.compute.*"
+      ]
+    },
+    {
+      "id": "optional.advertised_extensions",
+      "required": "Advertised storage16/storage8/Int8/timeline and pipelineStatisticsQuery/robustBufferAccess mustmeet theirfulladvertisedsemantics, despite notallbeing1.1mandatory.",
+      "implementation": "Existingqualifiedsmallslices/commonruntime",
+      "evidence": "Focusedpublicpasses, applicableCTS stillrequired",
+      "cts": [
+        "dEQP-VK.spirv_assembly.instruction.compute.*",
+        "dEQP-VK.query_pool.*",
+        "dEQP-VK.synchronization.*"
+      ]
+    },
+    {
+      "id": "optional.disabled",
+      "required": "Do not infer requirements for false Float16/Int16/Int64, variablePointers, YCbCr, protectedmemory, subgroupvote/arithmetic/ballot/shuffle/quad, sparse, opaque dynamic indexing solelyfrompromotion.",
+      "implementation": "Bits remainfalse; onlyfeature-supportedcases legal",
+      "evidence": "Capability/feature checks mustretain false values and propererrorbehavior",
+      "cts": [
+        "Keep native supportedCheck/NotSupported outcomes; distinguish optionaldisabled from missingmandatory."
+      ]
+    }
+  ],
+  "cts_initial_shader_cases": {
+    "version_cases": 4,
+    "basic_operations": 6,
+    "total_initialshadercases": 10,
+    "meaning": "Exactsource-registered initialpartition only; not totalmandatorycoverage"
+  },
+  "representative_public11": {
+    "record": "public11-basic-0045.json",
+    "five_cases": 5,
+    "records": 302,
+    "record_words": 4832,
+    "all_guards": "passed"
+  },
+  "combined_capacity": {
+    "record": "combined-resource-namespace-0045.json",
+    "driver": "1559",
+    "result": "passed representative exact22banks; broadercombinations remainopen"
+  },
+  "allocation_policy": {
+    "user_intent": "All GPU budget forcompute; CPUhandlesgraphics; no reservedgraphicsheadroom",
+    "next": "Resourceauthor sourceprovenancetrace; removeonly actualdocumentedreservation withoutblanketguardrelaxation",
+    "system_scope": "No globalgraphics/service/clock/kernelchanges"
+  }
+}

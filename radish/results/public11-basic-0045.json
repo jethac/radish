@@ -1,0 +1,537 @@
+{
+  "status": "bounded actualPASS; not fullconformance",
+  "source_reviews": {
+    "release.json": {
+      "pin": {
+        "bytes": 2949,
+        "sha256": "fb3d01efaf70217f658c128d912d7d781724db18932837d6ad8df27cd325bd95"
+      },
+      "data": {
+        "status": "private API1.1 validation candidate; not conformance or default promotion",
+        "files": [
+          {
+            "path": "src/freedreno/radish/rd_instance.c",
+            "baseline": {
+              "path": "/run/media/jethac/Shared/radish/compute11-public-contract-_g6j46fe/baseline/src/freedreno/radish/rd_instance.c",
+              "bytes": 11803,
+              "sha256": "aada1afea35362c0ab0a296e60324898326c8bd594aafd57ddd55e93c1712010"
+            },
+            "candidate": {
+              "path": "/run/media/jethac/Shared/radish/compute11-public-contract-_g6j46fe/candidate/src/freedreno/radish/rd_instance.c",
+              "bytes": 12565,
+              "sha256": "1d016af68ffc545b304482332975322ce6b41b0b08a666498aacdb3519080189"
+            }
+          },
+          {
+            "path": "src/freedreno/radish/meson.build",
+            "baseline": {
+              "path": "/run/media/jethac/Shared/radish/compute11-public-contract-_g6j46fe/baseline/src/freedreno/radish/meson.build",
+              "bytes": 1777,
+              "sha256": "ad2a2e00948647b3c4d7a186d2c6562bc44f2838e597bb0f2e68bb5a856ad450"
+            },
+            "candidate": {
+              "path": "/run/media/jethac/Shared/radish/compute11-public-contract-_g6j46fe/candidate/src/freedreno/radish/meson.build",
+              "bytes": 1777,
+              "sha256": "8b5d6cd1839eb92a2dd9a0038ea3f1c9840935694b7acdfc36a1dd46714d732d"
+            }
+          }
+        ],
+        "patch": {
+          "path": "/run/media/jethac/Shared/radish/compute11-public-contract-_g6j46fe/public-contract.patch",
+          "bytes": 2268,
+          "sha256": "d468fcb1136cdc268253f8bba401e750677655cac6b8bd092399b8f0cf21aaa8"
+        },
+        "changes": [
+          "Instance version, device version and generated ICD manifest consistently1.1; Mesa common instance negotiation accepts future request versions as required rather than rejecting merely because above1.1.",
+          "Expose KHR external fence/semaphore capability query aliases with explicit unsupported zero properties. Do not expose platform import/export extensions; avoid inherited DRM syncobj callbacks reporting capability unsupported by the published external-handle contract.",
+          "All existing features/subgroup properties, limits and shader/resource/residency guards unchanged; individual1.1 feature/property structs use existing runtime. No Vulkan1.2 aggregate structs are required."
+        ],
+        "validation_pending": [
+          "All28 core1.1 commands resolve through real GIPA/GDPA and supported KHR aliases; actual optional feature/error behavior.",
+          "Public instance1.1 BASIC module1.3 without internal property mutation; original five full oracle cases.",
+          "SPIRV1.0/1.1/1.2/1.3 generic legal shader semantics and compute applicability CTS remain open; initial candidate is a platform for tests."
+        ],
+        "references": [
+          "https://docs.vulkan.org/refpages/latest/refpages/source/VK_VERSION_1_1.html",
+          "https://docs.vulkan.org/refpages/latest/refpages/source/vkGetDeviceProcAddr.html",
+          "https://docs.vulkan.org/refpages/latest/refpages/source/VkPhysicalDeviceSubgroupProperties.html"
+        ]
+      }
+    },
+    "host-pairing-review.json": {
+      "pin": {
+        "bytes": 2081,
+        "sha256": "9f3e469b996ee4e9648e482460507580a184eaa7b5d34f394142379d7986f6eb"
+      },
+      "data": {
+        "status": "passed exact host/module/source pairing; no actual native or functionality claim",
+        "driver": {
+          "path": "/run/media/jethac/Shared/radish/compute11-public-contract-build-0045/libvulkan_radish.so",
+          "bytes": 49034696,
+          "sha256": "d6b92001d95017bf560647d58a68b62f5ac5b6c54139eb235c8836ebcf8ad7e8"
+        },
+        "helper": {
+          "path": "/run/media/jethac/Shared/radish/compute11-basic-build-0045/basic-public",
+          "bytes": 677696,
+          "sha256": "270fe628f3f317fc99176deff71795965c506e2d3be78010a8d6d4fd04e67da7"
+        },
+        "module": {
+          "path": "/run/media/jethac/Shared/radish/compute11-basic-build-0045/basic.spv",
+          "bytes": 5380,
+          "sha256": "19226d99d5986c0e92258ddeccf7809112d8e77e16f83a03320e186ce382459d"
+        },
+        "source_release": {
+          "path": "/run/media/jethac/Shared/radish/compute11-public-contract-_g6j46fe/release.json",
+          "bytes": 2949,
+          "sha256": "fb3d01efaf70217f658c128d912d7d781724db18932837d6ad8df27cd325bd95"
+        },
+        "helper_release": {
+          "path": "/run/media/jethac/Shared/radish/compute11-public-contract-_g6j46fe/probe/release.json",
+          "bytes": 3192,
+          "sha256": "e3e446fd983b70f2e85013268800387efd06973b9493fcf4f2dbe1d725c7f4da"
+        },
+        "build_receipts": [
+          {
+            "path": "/run/media/jethac/Shared/radish/compute11-public-contract-build-0045/result.json",
+            "bytes": 4906,
+            "sha256": "ab3bfa9f6e6141d57bafbcbd743b58979b74e7b35476347c9bc02be4e7e8742e"
+          },
+          {
+            "path": "/run/media/jethac/Shared/radish/compute11-basic-build-0045/result.json",
+            "bytes": 988,
+            "sha256": "868754fd3fe61ef5bbd16e267121094ff8f2185b916a12bea97e059d12a88ba3"
+          }
+        ],
+        "only_source_changes": [
+          "src/freedreno/radish/meson.build",
+          "src/freedreno/radish/rd_instance.c"
+        ],
+        "module_version": "SPIR-V1.3",
+        "module_capabilities": [
+          "Shader",
+          "GroupNonUniform"
+        ],
+        "validation_environment": "Vulkan1.1",
+        "source_optional_bits_unchanged": true,
+        "remaining": "Original bounded contract/public BASIC compile-first and functional scopes; unmodified CTS partitions/general environment still open."
+      }
+    },
+    "runner-strip-review.json": {
+      "pin": {
+        "bytes": 1716,
+        "sha256": "756cae845c4cd0ee49793734119c2b614f2843599ca895e71408ab9fbf39b317"
+      },
+      "data": {
+        "status": "passed finite split-runner and debug-only runtime pairing",
+        "runner": {
+          "path": "/run/media/jethac/Shared/radish/compute11-basic-runner-0045/device-basic-public.py",
+          "bytes": 18211,
+          "sha256": "57a532f179d712dfa82facac12421c8bd10bf6413fdc8d7075f00b033ca84ce6"
+        },
+        "baseline": {
+          "path": "/run/media/jethac/Shared/radish/combined-resource-namespace-split-0045/device-combined.py",
+          "bytes": 17562,
+          "sha256": "f40f7808a32ecb622d8e46d6a709a5af5a23d4f103a173c2916f4a942d412080"
+        },
+        "diff": {
+          "path": "/run/media/jethac/Shared/radish/compute11-public-contract-_g6j46fe/runner.diff",
+          "bytes": 4435,
+          "sha256": "02c9eb1226557ae4795b6f7220527208cf83c15383a096ae6f11a4b68aef5839"
+        },
+        "original": {
+          "path": "/run/media/jethac/Shared/radish/compute11-public-contract-build-0045/libvulkan_radish.so",
+          "bytes": 49034696,
+          "sha256": "d6b92001d95017bf560647d58a68b62f5ac5b6c54139eb235c8836ebcf8ad7e8"
+        },
+        "stripped": {
+          "path": "/run/media/jethac/Shared/radish/compute11-public-contract-strip-0045/public11-d6b92001/libvulkan_radish.so",
+          "bytes": 13607648,
+          "sha256": "415cc1cacd4598b8fcfb209fe279229cfee0c98b0a1076c074745a4f799ef64e"
+        },
+        "findings": [
+          "Only compactmanifest1.1 and matching publiccontract/fiveorderedcompiled/fivecase/fivedispatch gates differ from reviewed combinedsplit; original payloadidentity/compile-before-functional/limits/reserve/fault/drain remain.",
+          "All ELF programheaders byteexact; allocated section metadata and data byteexact; PT_LOAD bytes exact except sectiontable locator/headerfields.",
+          "Native and numerical functionality pending; no conformance or fullBASICenvironment coverage inferred."
+        ]
+      }
+    },
+    "compile-actual-review.json": {
+      "pin": {
+        "bytes": 3255,
+        "sha256": "64007f456ef9374a3eef4ed048902bb8d597df1ace513c268ccf717cec5f96a0"
+      },
+      "data": {
+        "status": "passed finite public 1.1 contract and five-pipeline native admission",
+        "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-public11-basic/compile",
+        "run_log": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-public11-basic/compile/run.log",
+          "bytes": 451462,
+          "sha256": "f0b51e9717b9d5f579c997aedd102c5e38b6b11c1773dbd99d7f831437163f5e"
+        },
+        "result": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-public11-basic/compile/runner-result.json",
+          "bytes": 1163,
+          "sha256": "b59102773b1a79b3e11e841a4b0d9dd525e6bbd53b8540c200d31b38e3013461"
+        },
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 152,
+            "sha256": "05adfd30b6beb9394e8c85fa3abf31cb998d8a2b00cd4996797b32e681543287"
+          },
+          "resources": {
+            "bytes": 677696,
+            "sha256": "270fe628f3f317fc99176deff71795965c506e2d3be78010a8d6d4fd04e67da7"
+          },
+          "resources.spv": {
+            "bytes": 5380,
+            "sha256": "19226d99d5986c0e92258ddeccf7809112d8e77e16f83a03320e186ce382459d"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13607648,
+            "sha256": "415cc1cacd4598b8fcfb209fe279229cfee0c98b0a1076c074745a4f799ef64e"
+          },
+          "payload.json": {
+            "bytes": 817,
+            "sha256": "bf9c009ca9bc5087b83d5a542338c2ec6baaf29c1394d9f9cf6b8596fae5494c"
+          }
+        },
+        "contract_markers": [
+          "CONTRACT PASS negotiation=0,1.0,1.1,1.2 instance_extension_error=1 khr_instance_aliases=11 khr_device_aliases=12",
+          "BASIC PUBLIC api=1.1 subgroup=16 stages=20 operations=1 storage16=1 protected=0 variable=0 ycbcr=0 external_fence=0 external_semaphore=0",
+          "CONTRACT PASS core11_names=28 individual_features=1 unsupported_feature_error=1 device_extension_error=1"
+        ],
+        "compiled_cases": [
+          [
+            0,
+            32,
+            1,
+            1,
+            64,
+            8,
+            1,
+            7,
+            0
+          ],
+          [
+            1,
+            33,
+            1,
+            1,
+            64,
+            8,
+            1,
+            8,
+            0
+          ],
+          [
+            2,
+            64,
+            1,
+            1,
+            64,
+            8,
+            1,
+            7,
+            0
+          ],
+          [
+            3,
+            128,
+            1,
+            1,
+            64,
+            8,
+            1,
+            7,
+            0
+          ],
+          [
+            4,
+            45,
+            1,
+            1,
+            64,
+            8,
+            1,
+            9,
+            0
+          ]
+        ],
+        "native": {
+          "programs": 5,
+          "full_registers": 8,
+          "half_registers": 1,
+          "hardware_barrier": false,
+          "loops": 0,
+          "private_bytes": 0,
+          "shared_bytes": 64,
+          "physical_shapes": "32/33/64/128/45 x 1 x 1",
+          "logical_shapes": [
+            "32x1x1",
+            "33x1x1",
+            "8x8x1",
+            "128x1x1",
+            "3x5x3"
+          ],
+          "private_geometry_uav_and_no_spill_checks": "unchanged helper assertions passed"
+        },
+        "execution": "zero dispatch or image transfer; functional qualification pending",
+        "limitations": [
+          "Private 1.1 validation candidate; no conformance claim",
+          "Representative alias/query checks do not replace all promoted semantics",
+          "Five BASIC variants do not close all required shader, shape, memory or subgroup cases"
+        ],
+        "fault_check": "PASS: no new GPU fault/recovery messages",
+        "services_after": [
+          "active",
+          "active"
+        ]
+      }
+    },
+    "functional-actual-review.json": {
+      "pin": {
+        "bytes": 3574,
+        "sha256": "d3e88201e1d7fbded4e6afac18c9970521e419049cda82fd9134e8ce7c9288a2"
+      },
+      "data": {
+        "status": "passed representative legal-public-Vulkan1.1 BASIC execution",
+        "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-public11-basic/probe",
+        "log": {
+          "path": "/run/media/jethac/Shared/radish/core-compute-core0045-public11-basic/probe/run.log",
+          "bytes": 453044,
+          "sha256": "edbf3979050563edd6d7bf5cb7681559b43e310aba27c0717c71e013e4654615"
+        },
+        "payload_identical_to_compile": true,
+        "native_info_identical_to_compile": true,
+        "cases": [
+          [
+            0,
+            32,
+            1,
+            1,
+            32,
+            2,
+            1,
+            1
+          ],
+          [
+            1,
+            33,
+            1,
+            1,
+            33,
+            3,
+            1,
+            1
+          ],
+          [
+            2,
+            8,
+            8,
+            1,
+            64,
+            4,
+            1,
+            1
+          ],
+          [
+            3,
+            128,
+            1,
+            1,
+            128,
+            8,
+            1,
+            1
+          ],
+          [
+            4,
+            3,
+            5,
+            3,
+            45,
+            3,
+            1,
+            1
+          ]
+        ],
+        "records": 302,
+        "exact_record_words": 4832,
+        "guards": "complete output and exchange allocation comparisons in every case",
+        "profiles": [
+          {
+            "pipeline": "0xaaaadf7848d0",
+            "grid": "1,1,1",
+            "local": "32,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "7",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "4087980",
+            "submit_ns": "3729958",
+            "submit_max_ns": "3729958",
+            "result": "0"
+          },
+          {
+            "pipeline": "0xaaaadf85b000",
+            "grid": "1,1,1",
+            "local": "33,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "8",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "680471",
+            "submit_ns": "605782",
+            "submit_max_ns": "605782",
+            "result": "0"
+          },
+          {
+            "pipeline": "0xaaaadf813dc0",
+            "grid": "1,1,1",
+            "local": "64,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "7",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "504637",
+            "submit_ns": "407449",
+            "submit_max_ns": "407449",
+            "result": "0"
+          },
+          {
+            "pipeline": "0xaaaadf7b3580",
+            "grid": "1,1,1",
+            "local": "128,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "7",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "447658",
+            "submit_ns": "391928",
+            "submit_max_ns": "391928",
+            "result": "0"
+          },
+          {
+            "pipeline": "0xaaaadf85dab0",
+            "grid": "1,1,1",
+            "local": "45,1,1",
+            "barrier": "0",
+            "loops": "0",
+            "instrlen": "9",
+            "chunks": "1",
+            "submits": "1",
+            "ns": "541460",
+            "submit_ns": "481303",
+            "submit_max_ns": "481303",
+            "result": "0"
+          }
+        ],
+        "contract": [
+          "CONTRACT PASS negotiation=0,1.0,1.1,1.2 instance_extension_error=1 khr_instance_aliases=11 khr_device_aliases=12",
+          "BASIC PUBLIC api=1.1 subgroup=16 stages=20 operations=1 storage16=1 protected=0 variable=0 ycbcr=0 external_fence=0 external_semaphore=0",
+          "CONTRACT PASS core11_names=28 individual_features=1 unsupported_feature_error=1 device_extension_error=1"
+        ],
+        "fault": "PASS: no new GPU fault/recovery messages",
+        "services": [
+          "active",
+          "active"
+        ],
+        "limits": [
+          "Five legal shapes cover representative partial/multiple subgroup IDs, converged/divergent elect, shared and buffer barriers/atomics",
+          "This does not close all BASIC operations, notably image memory barrier, or generic SPIR-V/GLSL semantics",
+          "API1.0 historical SPIR-V1.3 captures remain internal evidence; this new API1.1 run does not reclassify them",
+          "No Vulkan conformance or production/default version promotion claim"
+        ]
+      }
+    },
+    "public-basic-independent-actual.json": {
+      "pin": {
+        "bytes": 2165,
+        "sha256": "e217fb21ffc038719e6ef553aec0a6eac43ab89cfc561dfbaa900bb0875dd6a4"
+      },
+      "data": {
+        "status": "PASS bounded valid-public1.1 BASIC+contract actual",
+        "log_sha256": "edbf3979050563edd6d7bf5cb7681559b43e310aba27c0717c71e013e4654615",
+        "payload": {
+          "radish_icd.json": {
+            "bytes": 152,
+            "sha256": "05adfd30b6beb9394e8c85fa3abf31cb998d8a2b00cd4996797b32e681543287"
+          },
+          "resources": {
+            "bytes": 677696,
+            "sha256": "270fe628f3f317fc99176deff71795965c506e2d3be78010a8d6d4fd04e67da7"
+          },
+          "resources.spv": {
+            "bytes": 5380,
+            "sha256": "19226d99d5986c0e92258ddeccf7809112d8e77e16f83a03320e186ce382459d"
+          },
+          "check-gpu-log.py": {
+            "bytes": 1004,
+            "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+          },
+          "libvulkan_radish.so": {
+            "bytes": 13607648,
+            "sha256": "415cc1cacd4598b8fcfb209fe279229cfee0c98b0a1076c074745a4f799ef64e"
+          },
+          "payload.json": {
+            "bytes": 817,
+            "sha256": "bf9c009ca9bc5087b83d5a542338c2ec6baaf29c1394d9f9cf6b8596fae5494c"
+          }
+        },
+        "cases": [
+          [
+            "0",
+            "32,1,1",
+            "32",
+            "2"
+          ],
+          [
+            "1",
+            "33,1,1",
+            "33",
+            "3"
+          ],
+          [
+            "2",
+            "8,8,1",
+            "64",
+            "4"
+          ],
+          [
+            "3",
+            "128,1,1",
+            "128",
+            "8"
+          ],
+          [
+            "4",
+            "3,5,3",
+            "45",
+            "3"
+          ]
+        ],
+        "record_words": 4832,
+        "actual_public": "Real1.1instance+device query, SPIRV1.3 Shader+GroupNonUniform legalenvironment; no privatefeature mutation.40executeddeviceAPIs acquiredGDPA.",
+        "contract": "Negotiation0/1.0/1.1/1.2;28core1.1names and11instance+12deviceKHRaliases; queriedindividualfeatures; absentfeature/extension errors; zero unsupported externalplatformcapabilities.",
+        "native": "Fivephysicallinear32/33/64/128/45;64Bshared;8F1H/native7/8/7/7/9/no private per sourceassertions;original302records/fullguards.",
+        "service": {
+          "seconds": 0.589,
+          "peak_reported_mib": 7,
+          "swap": 0
+        },
+        "not_claimed": [
+          "OriginalAPI1.0/privateoverrideBASICcaptures remain internalobservations anderratum; thisnewrun is separate validqualification.",
+          "BroaderallSPIRV1.0\u20131.3/subgroup/memorymodel/CTSconformance remainopen."
+        ]
+      }
+    }
+  }
+}

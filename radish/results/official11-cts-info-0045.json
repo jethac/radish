@@ -1,0 +1,108 @@
+{
+  "status": "official CTS completed; fourPass oneFail",
+  "binary": {
+    "bytes": 97536760,
+    "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+  },
+  "source_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+  "driver": {
+    "bytes": 13607648,
+    "sha256": "415cc1cacd4598b8fcfb209fe279229cfee0c98b0a1076c074745a4f799ef64e"
+  },
+  "cases": [
+    {
+      "name": "dEQP-VK.info.device_features",
+      "status": "Pass",
+      "detail": "Query succeeded"
+    },
+    {
+      "name": "dEQP-VK.info.device_memory_properties",
+      "status": "Pass",
+      "detail": "Querying memory properties succeeded"
+    },
+    {
+      "name": "dEQP-VK.info.device_properties",
+      "status": "Fail",
+      "detail": "deviceProperties - feature limits failed"
+    },
+    {
+      "name": "dEQP-VK.info.device_queue_family_properties",
+      "status": "Pass",
+      "detail": "Querying queue properties succeeded"
+    },
+    {
+      "name": "dEQP-VK.info.physical_devices",
+      "status": "Pass",
+      "detail": "Pass"
+    }
+  ],
+  "property_failure_messages": [
+    "limit Validation failed maxPerStageDescriptorInputAttachments not valid-limit type MIN - actual is 0",
+    "limit Validation failed maxDescriptorSetInputAttachments not valid-limit type MIN - actual is 0",
+    "limit Validation failed maxVertexInputAttributes not valid-limit type MIN - actual is 0",
+    "limit Validation failed maxVertexInputBindings not valid-limit type MIN - actual is 0",
+    "limit Validation failed maxVertexInputAttributeOffset not valid-limit type MIN - actual is 0",
+    "limit Validation failed maxVertexInputBindingStride not valid-limit type MIN - actual is 0",
+    "limit Validation failed maxVertexOutputComponents not valid-limit type MIN - actual is 0",
+    "limit Validation failed maxFragmentInputComponents not valid-limit type MIN - actual is 0",
+    "limit Validation failed maxFragmentOutputAttachments not valid-limit type MIN - actual is 0",
+    "limit Validation failed maxFragmentCombinedOutputResources not valid-limit type MIN - actual is 0",
+    "limit Validation failed subPixelPrecisionBits not valid-limit type MIN - actual is 0",
+    "limit Validation failed maxDrawIndexedIndexValue not valid-limit type MIN - actual is 0",
+    "limit Validation failed maxDrawIndirectCount not valid-limit type MIN - actual is 0",
+    "limit Validation failed maxViewports not valid-limit type MIN - actual is 0",
+    "limit Validation failed maxViewportDimensions[0] not valid-limit type MIN - actual is 0",
+    "limit Validation failed maxViewportDimensions[1] not valid-limit type MIN - actual is 0",
+    "limit validation failed, viewportBoundsRange[0] not valid-limit type MAX actual is 0",
+    "limit validation failed, viewportBoundsRange[1] not valid-limit type MIN - actual is 0",
+    "limit Validation failed maxFramebufferWidth not valid-limit type MIN - actual is 0",
+    "limit Validation failed maxFramebufferHeight not valid-limit type MIN - actual is 0",
+    "limit validation failed, framebufferColorSampleCounts not valid-limit type bitmask actual is 0",
+    "limit validation failed, framebufferDepthSampleCounts not valid-limit type bitmask actual is 0",
+    "limit validation failed, framebufferStencilSampleCounts not valid-limit type bitmask actual is 0",
+    "limit validation failed, framebufferNoAttachmentsSampleCounts not valid-limit type bitmask actual is 0",
+    "limit Validation failed maxColorAttachments not valid-limit type MIN - actual is 0",
+    "limit Validation failed maxSampleMaskWords not valid-limit type MIN - actual is 0",
+    "limit validation failed, pointSizeRange[0] not valid-limit type MIN - actual is 0",
+    "limit validation failed, pointSizeRange[1] not valid-limit type MIN - actual is 0",
+    "limit validation failed, lineWidthRange[0] not valid-limit type MIN - actual is 0",
+    "limit validation failed, lineWidthRange[1] not valid-limit type MIN - actual is 0",
+    "limit validation failed, viewportBoundsRange[1] of 0is less than 2*maxViewportDimension[1] of 0"
+  ],
+  "files": {
+    "run.log": {
+      "bytes": 1183,
+      "sha256": "4793cfd6b88298d0107cd90e096929aea102b0f91f60983085983ef224bf5442"
+    },
+    "info.qpa": {
+      "bytes": 16553,
+      "sha256": "f7504a00ef0fc01b66df2588ed07c8f20660e5522b42cd035ad1b1bc732fe956"
+    },
+    "failure.json": {
+      "bytes": 267,
+      "sha256": "307e896741dfb75eab86a91777ea576dacf49e8b64b81bc2dc657f324ce352d3"
+    },
+    "collection.json": {
+      "bytes": 37,
+      "sha256": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e"
+    },
+    "fault-check.txt": {
+      "bytes": 41,
+      "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+    },
+    "services-after.txt": {
+      "bytes": 14,
+      "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+    },
+    "drain-000.txt": {
+      "bytes": 55,
+      "sha256": "899a8a5a73232d4a07b56824413da1c88dc2dc685e89886ca2bc05f89923b9f6"
+    }
+  },
+  "postterminal_assets": {
+    "bytes": 510,
+    "sha256": "abb48c25ab692782448f6b82cd8cdbd696876755a5eeb3ebc928cb875993c1d8"
+  },
+  "interpretation": "Exact unmodified original CTS now starts on actualpublic1.1 candidate and completes allfive cases. No startupSIGSEGV. Onepropertycase fails31retainedmessages, no waiver. Original runner process1 branch prevented its QPA summary, so this receipt reads retained QPA aftercleanpostflight; failure unchanged. Source-backed previous alias mismatch remains inferred rather than recordedPC.",
+  "scope": "Five information tests only; not fullVulkan1.1conformance."
+}

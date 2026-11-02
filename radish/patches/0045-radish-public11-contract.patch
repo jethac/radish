@@ -1,0 +1,64 @@
+--- a/src/freedreno/radish/rd_instance.c
++++ b/src/freedreno/radish/rd_instance.c
+@@ -21,10 +21,32 @@
+    };
+ }
+ 
++VKAPI_ATTR void VKAPI_CALL
++rd_GetPhysicalDeviceExternalFenceProperties(VkPhysicalDevice handle,
++   const VkPhysicalDeviceExternalFenceInfo *info,
++   VkExternalFenceProperties *properties)
++{
++   properties->exportFromImportedHandleTypes = 0;
++   properties->compatibleHandleTypes = 0;
++   properties->externalFenceFeatures = 0;
++}
++
++VKAPI_ATTR void VKAPI_CALL
++rd_GetPhysicalDeviceExternalSemaphoreProperties(VkPhysicalDevice handle,
++   const VkPhysicalDeviceExternalSemaphoreInfo *info,
++   VkExternalSemaphoreProperties *properties)
++{
++   properties->exportFromImportedHandleTypes = 0;
++   properties->compatibleHandleTypes = 0;
++   properties->externalSemaphoreFeatures = 0;
++}
++
+ static const struct vk_instance_extension_table rd_instance_extensions = {
+    .KHR_get_physical_device_properties2 = true,
+    .KHR_device_group_creation = true,
+    .KHR_external_memory_capabilities = true,
++   .KHR_external_fence_capabilities = true,
++   .KHR_external_semaphore_capabilities = true,
+ };
+ 
+ static const struct vk_device_extension_table rd_device_extensions = {
+@@ -43,7 +65,7 @@
+ VKAPI_ATTR VkResult VKAPI_CALL
+ rd_EnumerateInstanceVersion(uint32_t *version)
+ {
+-   *version = VK_API_VERSION_1_0;
++   *version = VK_API_VERSION_1_1;
+    return VK_SUCCESS;
+ }
+ 
+@@ -114,7 +136,7 @@
+    vk_physical_device_dispatch_table_from_entrypoints(&dispatch,
+       &rd_physical_device_entrypoints, true);
+    struct vk_properties properties = {
+-      .apiVersion = VK_API_VERSION_1_0,
++      .apiVersion = VK_API_VERSION_1_1,
+       .driverVersion = 1,
+       .vendorID = 0x5143,
+       .deviceID = 506,
+--- a/src/freedreno/radish/meson.build
++++ b/src/freedreno/radish/meson.build
+@@ -29,7 +29,7 @@
+   'radish_icd',
+   input : [vk_icd_gen, vk_api_xml],
+   output : 'radish_icd.' + vulkan_manifest_suffix,
+-  command : [prog_python, '@INPUT0@', '--api-version', '1.0', '--xml', '@INPUT1@',
++  command : [prog_python, '@INPUT0@', '--api-version', '1.1', '--xml', '@INPUT1@',
+              '--sizeof-pointer', sizeof_pointer,
+              '--icd-lib-path', vulkan_icd_lib_path,
+              '--icd-filename', 'libvulkan_radish.so', '--out', '@OUTPUT@'],

@@ -4,9 +4,10 @@
 
 Build an experimental, compute-first Vulkan driver for Adreno 5xx within Mesa's
 Freedreno project, starting with the Adreno 506 in the Lenovo ThinkSmart View.
-Run useful, existing Vulkan inference workloads correctly and improve measured
-speech-inference performance on this device. Continue optimizing beyond a CPU
-win to make full use of the GPU's attainable performance on these workloads.
+First complete the applicable Vulkan 1.1 compute and shared-infrastructure
+requirements and conformance evidence. Then run useful existing inference
+workloads correctly and improve measured speech-inference performance. Continue
+optimizing beyond a CPU win to use the attainable GPU performance.
 
 Radish is a separate hardware driver sharing Mesa infrastructure, not a wrapper
 around GLES and not a renamed Turnip. Vulkan is a route to existing inference
@@ -26,8 +27,13 @@ The AC8 branches and working checkout must remain usable independently.
   before implementation is planned around it.
 - GPU results agree with a CPU reference using stated, precision-appropriate
   tolerances. Quantized operations also have model-level accuracy checks.
-- Relevant compute, memory, descriptor and synchronization tests pass. Every
-  unsupported or failing case is recorded; no broad conformance claim is made.
+- All applicable Vulkan 1.1 compute and shared requirements are implemented and
+  validated, including unmodified applicable CTS. The requirements/evidence
+  ledger records mandatory, conditional, optional, unimplemented and untested
+  behavior. Selected application success is not conformance evidence. Any
+  standard-version/property obligations outside compute execution remain
+  unresolved until a normative applicability basis or implementation closes them.
+  No conformance claim precedes that evidence.
 - The selected model fits beside the live appliance services within the device's
   memory budget, including transient allocations, shader compilation and zram.
 - For the target inference workload, warm end-to-end latency improves over the
@@ -57,10 +63,14 @@ convolution, reductions, activation functions and data conversion. Begin with
 FP32 correctness; prioritize FP16 arithmetic and storage once independently
 validated. Quantized kernels follow the selected backend's actual needs.
 
-Initial non-goals: presentation, swapchains, graphics pipelines, render passes,
-ray tracing, Android/KGSL integration, and a full Vulkan conformance claim.
-Do not expose graphics queue capability. A compute-only experimental ICD does
-not establish conformance to a standard Vulkan version or profile.
+The initial experimental scope excluded a full conformance claim. The current
+user priority supersedes that limit: finish applicable conformant Vulkan 1.1
+compute and shared behavior before performance experiments. Presentation, ray
+tracing and Android/KGSL remain outside the intended workload. Do not invent a
+compute-only standard profile or waive required properties, format capabilities
+or commands solely because graphics queues are absent. Keep unresolved
+standard-version obligations visible and report any scope conflict explicitly.
+Do not expose graphics queue capability without implementation and validation.
 
 Do not promise descriptor indexing, arbitrary device-pointer operations,
 subgroup features, cooperative matrices or modern Vulkan versions before an
@@ -253,43 +263,38 @@ model-wide defect rate.
 
 ## Immediate next step
 
-The user confirmed the campaign order: “finish the compute and shared infra,
-then make the models we want to run for straylight scream on the GPU.” Complete
-compute correctness and the shared infrastructure first, then validate the
-existing full inference path and pursue end-to-end Straylight GPU performance.
-Graphics remains outside this campaign. The original accuracy, memory, service
-coexistence and material-headroom requirements remain unchanged; a CPU crossover
-or an isolated kernel win is not the completion boundary.
+The latest user instruction is: “once we have conformance, the full vulkan1.1
+compute feature set, we will make it scream.” Conformance comes first. Freeze
+performance artifacts and run no new performance experiments while closing
+applicable compute/shared requirements. The user assigns the GPU budget entirely to compute and CPU work to graphics;
+reserve no GPU headroom for graphics. Remove an actual reservation only after
+tracing its source and units. This does not authorize global graphics/service
+changes or relaxing residency, safety or correctness guards.
 
-The user's earlier 2026-11-02 direction paused performance experiments to fill
-compute behavior required by Vulkan 1.0 and 1.1 for the fleet. Graphics remains
-outside scope. The 40 missing, broken or blocked command paths in the audit
-(33 Vulkan 1.0 paths and seven Vulkan 1.1 additions) are one tracked worklist,
-not the completion boundary.
+The selected fcd/d332 inference stack
+stays unchanged; a separate Vulkan 1.1 candidate is not promoted by an API string,
+entrypoint count, native compilation or a few passing consumers.
 
-Give execution holes, descriptor/resource gaps and Vulkan 1.1 compute
-requirements equal priority. Track legal workgroup and shared-memory behavior,
-UBOs and dynamic resources, descriptor update and lifetime semantics, subgroup
-BASIC, required SPIR-V behavior, synchronization, limits and features alongside
-the command inventory. Implement the real resource consumers and dependencies;
-entrypoint stubs or metadata-only objects do not close a functional path.
+[VULKAN11_COMPUTE_STATUS.md](VULKAN11_COMPUTE_STATUS.md) is the current requirement
+and evidence ledger. Implement real defects, then run bounded, applicable,
+unmodified CTS partitions and meaningful independent consumers. Preserve
+failures, legal shader environments, complete numerical/guard oracles and the
+original device, memory, time, disk and service controls. Modified CTS harness
+results remain diagnostics. The 31 retained property failures need normative
+resolution; none is waived by a compute-only queue. The earlier 40-command
+worklist and bounded resource milestones do not define completion.
 
-Keep source implementation, public availability and hardware evidence separate.
-Use applicable existing CTS cases and focused independent checks where they
-catch real gaps. Conditional commands do not all impose mandatory feature
-requirements. No API-version, profile or conformance claim follows from symbol
-counts or selected passing tests. Keep unsupported capabilities honestly
-reported while implementing the remaining required compute behavior.
+After this phase, resume the full intended Straylight inference campaign:
+accuracy, safe memory headroom, service coexistence, sustained behavior,
+end-to-end deployment and material GPU efficiency all remain required. A CPU
+crossover does not complete that later phase. Implementation, integration,
+validation and publication remain delegated; root coordinates user priorities.
 
-All implementation, integration, builds, device validation and publication are
-delegated to subagents; the root agent coordinates the campaign and user
-conversation. The bounded compute/shared transition gate is now satisfied: the
-concrete resource closeout and unchanged full-model correctness checks pass,
-with full conformance limits and failed CTS evidence retained. The user has
-authorized the Straylight performance phase, starting with safe batching on
-the same correct kernels and original numerical/resource guards. Keep cold,
-resident, fixed-core and end-to-end results distinct. The original performance
-and GPU-efficiency goals remain in force; no CPU-crossover shortcut applies.
+## Historical milestone chronology
+
+The following entries preserve earlier phases and their evidence. Any earlier
+instruction to continue performance or exclude formal conformance is superseded
+by the current priority above.
 
 The first performance recovery, 0045, preserves exact model outputs and reduces resident fixed-core time by 22.0028% through existing safe math batching. The candidate still takes 52.746539 seconds versus the historical 34.303633-second fixed-core result. Continue normalization/submission recovery and end-to-end Straylight optimization; this result is not campaign completion. See BATCHING_RECOVERY.md.
 

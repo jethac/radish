@@ -1,3 +1,5 @@
+> Historical initial CTS snapshot. Current requirements, official-harness status and preserved failure scope are in [VULKAN11_COMPUTE_STATUS.md](VULKAN11_COMPUTE_STATUS.md). Modified-harness results never count as official passes.
+
 # Pinned CTS diagnostic subset
 
 Source audit: 2026-11-01, Khronos VK-GL-CTS

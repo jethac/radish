@@ -1,5 +1,13 @@
 # Core compute implementation: checkpoint 0044
 
+## 2026-11-02: conformance-first public1.1 and mixed-resource checkpoints
+
+The user priority is now complete applicable Vulkan1.1 compute/shared requirements before performance experiments. The new [requirement/evidence ledger](VULKAN11_COMPUTE_STATUS.md) records remaining obligations and official CTS status; selectedfcd/d332 remains frozen.
+
+A separate actual public1.1 driver/consumer passes28core and23KHR lookups, selected version/feature/error contracts, and the original five BASIC cases with302fullrecords/4832words plus all guards. This legal SPIR-V1.3 environment closes a bounded gap; the historical API1.0/internaloverride probe remains an erratum. All BASIC operations and full shader semantics still require applicable CTS.
+
+On the frozen1559 driver, the mixed-resource consumer independently passes12UBO+5SSBO+4storageimages plus hidden raw-array metadata. The emitted child uses metadata17 and real imagebanks18–21;560total output words,21full small allocations and196sparse image words per round pass. Public128MiB image input, robust access, no forced mode, same cached child/currentBO and clean services/faults are retained. This is one concrete simultaneous namespace case, not all resource combinations. [Exact receipts](results/combined-resource-namespace-0045.json) and sources accompany the public1.1 ledger.
+
 ## 2026-11-02: public Int8 arithmetic passes generic shared/private checks
 
 An isolated checkpoint now enables `shaderInt8` through `VK_KHR_shader_float16_int8`; Float16 arithmetic remains false and API stays 1.0. The public consumer queries and enables Int8 while leaving Float16, Int16, storage8 and storage16 disabled. Its validated Vulkan 1.0 module has exactly `Shader` and `Int8` capabilities and uses ordinary U32 buffer interfaces.
