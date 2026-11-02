@@ -1,5 +1,11 @@
 # Core compute implementation: checkpoint 0044
 
+## 2026-11-02: cube experiment faults; qualification paused
+
+The private cube consumer failed its first round and generated ten GPU memory faults. A separate build containing only the reviewed sampler-count correction reproduced the same output mismatch and fault addresses. The corrected run retained the full native trace; it completed cleanup in 2.082 seconds, used 15.4 MiB with no swap, and left both services active. Subword execution was not attempted. [Exact payloads, failure evidence and limits](results/core-api-0044-cube-fault.json).
+
+The sampler-count error is real, but fixing it did not resolve the fault. Cube and count-correction candidates remain unqualified. Commit `7a8b4bf` remains the last qualified source checkpoint, including the sampled-MS results below. Further GPU qualification, large-image admission and the full inference regression are held while source diagnosis continues. Performance work remains paused.
+
 ## 2026-11-02: sampled multisample paths execute
 
 ICDa7d6f917 passes two 120-record rounds with 18 exact words each (4,320 total), seven image allocation guards and the output allocation guard. R32_UINT/R16_UNORM images exercise per-layer clear, offset copy, native fetch at all four sample indices, and size/count queries across two layers. D16/D32/S8 checks cover creation and size/count only. Cleared samples have equal values, so this does not prove distinct sample-address selection or depth/stencil sample values. Service630ms,5.8MiB,zero swap; no new GPU faults and both services active. [Exact source, consumer and limits](results/core-api-0044-sampled-ms.json).

@@ -1,0 +1,90 @@
+{
+  "status": "failed; all GPU qualification held",
+  "last_qualified_source_commit": "7a8b4bfadf94b661efaa53eae32f49d480dd9926",
+  "qualified_source_unchanged": true,
+  "initial_cube": {
+    "session": 69261,
+    "capture": "core-compute-0044-cube-subword-v2/probe",
+    "driver_sha256": "507ad1faa3f2e69167e3dcfe7257b647cc4efbce6d66fb1014fcba4bccba929d",
+    "run_log": {
+      "bytes": 2700,
+      "sha256": "6314115e640cd2c6f71b6a3d93f7ee612cedc27267783fb5e3639a2b7be9aa9f"
+    },
+    "result": "Native compile passed; first execution failed round0 buffer0 word35, actual00000000 expected45000000, with ten new GPU faults. Subword unattempted."
+  },
+  "count_only_experiment": {
+    "session": 75124,
+    "exit_code": 1,
+    "driver_sha256": "798a0a6f7ccfe56882af99f7790f0ede7c649b16244013e5ee9f4d3f57b5ea7a",
+    "source_snapshot": "checkpoint-sampler-count-source",
+    "delta_from_failed507": "Only sampler count uses application sampler_count rather than IR3 texture-alias count.",
+    "cube_compile": "passed",
+    "cube_execution": "failed round0 buffer0 word35: actual00000000 expected45000000",
+    "subword": "unattempted; stopped after cube fault check",
+    "child": {
+      "native_units": 207,
+      "full_registers": 21,
+      "half_registers": 45,
+      "constlen": 24,
+      "loops": 0
+    },
+    "new_fault_iovas": [
+      "000000000243e000",
+      "000000000243e040",
+      "000000000243e400",
+      "000000000243e0c0",
+      "000000000243e100",
+      "000000000243e440",
+      "000000000243e180",
+      "000000000243e000",
+      "000000000243e040",
+      "000000000243e400"
+    ],
+    "own_unit_drained": "LoadState=not-found\nActiveState=inactive\nSubState=dead\n",
+    "services_after": [
+      "active",
+      "active"
+    ],
+    "service_runtime_seconds": 2.082,
+    "memory_peak_MiB": 15.4,
+    "swap_bytes": 0,
+    "conclusion": "Sampler-count source correction is insufficient to resolve the cube fault. No further GPU execution until concrete source diagnosis and a separately reviewed changed-source scope.",
+    "hold": [
+      "subword",
+      "irregular-barrier",
+      "large-image-admission",
+      "full-model"
+    ],
+    "artifacts": {
+      "run.log": "672223015cc5ca231fb3c3de7a1519b6938815345d112afc2c60cc2b6369e0d9",
+      "fault-check.txt": "7e50b352da9c3bd1975b3d91301b12ee6ce4de59cfe7be6c898a71e71e8d3d0f",
+      "failure.json": "10d1e37db0e5d61d4c5d12cd34245b5ef092c77342662175f3b119e539db6bcc",
+      "collection.json": "be400cd7e1278531d1d27fe09a238615e57dfa843df419395e9540020cc10779",
+      "launch.json": "064afd24a9c26e9549775696c580a81cfcbef3a6aa7613613e64cbba79ca7bab",
+      "host-before.json": "9a2d305628c52e98583a899bad5178f51138ecf1f667163f575709f47566906f",
+      "dmesg-before.txt": "b60795c146549956723bf6711d4b35a689a164b35636fc2a641e1d2032589193",
+      "dmesg-after.txt": "8f86099297132890821125f913eaf40740c8b81c727d2dd14465970347d0094e"
+    }
+  },
+  "unchanged_helpers": {
+    "resources": {
+      "bytes": 747488,
+      "sha256": "2422d3e962c3683553d1ed03b6c0826e51a19e26464894380ec35fd5773669d2"
+    },
+    "resources.spv": {
+      "bytes": 14748,
+      "sha256": "02096c573c08fa6c8eb10820bf62f26b91c135edee80d12c9a9a2ad2a8b032c4"
+    },
+    "subword": {
+      "bytes": 728408,
+      "sha256": "acca955ddca5b5f22986eed5aa11317258344a9685487903257b1adace280afd"
+    },
+    "subword.spv": {
+      "bytes": 12632,
+      "sha256": "83eb550949f3954485226dd49203e289a469043567c8a558de02f83e322e0ef7"
+    }
+  },
+  "count_fix_patch_sha256": "b4fa546d0a442fee25c3d34068568d150673eaa2c60a069b58d208441b7f14bd",
+  "source_review": "IR3 texture alias count was incorrectly used to emit sampler states. The one-line application sampler-count correction matches FD5 emission, but did not resolve the fault. This is not evidence that the count error caused the fault.",
+  "scope": "Private cube and sampler-count candidates are unqualified. Previously qualified sampled-MS source and earlier valid-use evidence are unchanged. No kernel, system ICD, clock, or service configuration changes. Full inference, subword, large-image admission and irregular-barrier GPU qualification remain held pending source diagnosis."
+}
