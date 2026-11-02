@@ -1,0 +1,103 @@
+{
+  "status": "compile_timeout_no_gpu_execution",
+  "evidence": {
+    "status": "compile_timeout_before_native",
+    "limit_seconds": 90,
+    "service_seconds": 90.088,
+    "cpu_seconds": 89.247,
+    "peak_mib": 61.1,
+    "swap_bytes": 0,
+    "pipeline_order": [
+      "dequant_q4_k",
+      "mul_mat_vec_q4_k_f32_f32"
+    ],
+    "last_phase": "MESA shader NIR print; no completed dequant pipeline/native marker",
+    "gpu_dispatches": 0,
+    "drain": "LoadState=not-found\nActiveState=inactive\nSubState=dead\n",
+    "postflight": {
+      "passed": true,
+      "errors": []
+    },
+    "log_sha256": "aa338fc03897b702f0775a7e7a6a62fd24f06c1aa101719e08e576a8e597c526",
+    "scope": "Unchanged original bounded compile; functional phase unattempted. No cap extension or same-source retry."
+  },
+  "payload": {
+    "assets": {
+      "check-gpu-log.py": {
+        "bytes": 1004,
+        "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+      },
+      "libvulkan_radish.so": {
+        "bytes": 49034176,
+        "sha256": "1559ed97317b081a82742c0f524c9427e992815c7f08f2e27f637c4ad7157220"
+      },
+      "matvec.spv": {
+        "bytes": 18992,
+        "sha256": "2c4b4e98f4f4300710f0d5084e3ae9f6daf066e1e69954193b1b56dcc747bc43"
+      },
+      "radish_icd.json": {
+        "bytes": 148,
+        "sha256": "259e1f11adf3beec5d182e50fff2d1a711f09408e08b4313a1981e2cd0eab4f7"
+      },
+      "resources": {
+        "bytes": 743096,
+        "sha256": "7f0a822d7b240a48638de3343321e0b89a0eaafa52a37a5116ff07212333be2a"
+      },
+      "resources.spv": {
+        "bytes": 6016,
+        "sha256": "43cc6c1e47746c7b5f0d33c520be0114d6dab25b0ae4ac068cac5ed2534b154e"
+      }
+    },
+    "format": "radish-core-compute-payload-v1",
+    "remote": "/var/tmp/radish/core-compute-q4-five-buffer-0045"
+  },
+  "pins": [
+    {
+      "path": "/run/media/jethac/Shared/radish/core-compute-q4-five-buffer-0045/compile/run.log",
+      "bytes": 95923,
+      "sha256": "aa338fc03897b702f0775a7e7a6a62fd24f06c1aa101719e08e576a8e597c526"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/core-compute-q4-five-buffer-0045/compile/run-command.txt",
+      "bytes": 1852,
+      "sha256": "503dcdd064ca61860b253573b783fd456e2c16b54199830390039a1921f64c4a"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/core-compute-q4-five-buffer-0045/compile/failure.json",
+      "bytes": 264,
+      "sha256": "be005fd039dcab898a5aa15ee3b57111573878df637ada0e580bf4ad1f34fc55"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/core-compute-q4-five-buffer-0045/compile/drain-000.txt",
+      "bytes": 55,
+      "sha256": "899a8a5a73232d4a07b56824413da1c88dc2dc685e89886ca2bc05f89923b9f6"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/core-compute-q4-five-buffer-0045/compile/collection.json",
+      "bytes": 37,
+      "sha256": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/core-compute-q4-five-buffer-0045/compile/fault-check.txt",
+      "bytes": 41,
+      "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+    },
+    {
+      "path": "/run/media/jethac/Shared/radish/core-compute-q4-five-buffer-0045/compile/services-after.txt",
+      "bytes": 14,
+      "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+    }
+  ],
+  "host_result": {
+    "path": "/run/media/jethac/Shared/radish/asr-ssbo-five-build-0045/q4-numeric/result.json",
+    "bytes": 7020,
+    "sha256": "b0254fd5cb02fd7815b06d62220adc506385d35c758001e7c1a9f72543f64235"
+  },
+  "source_release": {
+    "path": "/run/media/jethac/Shared/radish/asr-shader-int8-private-b1hzh1le/q4-numeric-release.json",
+    "bytes": 3191,
+    "sha256": "841a1be3c0a5bae20f2c4de75707fed8ddab4bf7160eeca43aae44a95666c83b"
+  },
+  "qualification": "The legal real dequant module did not finish pipeline compilation within the unchanged90s scope. No native/resource admission or numerical Q4 result exists. The five-SSBO property candidate remains unqualified; selected fcd/d332 and public source remain unchanged.",
+  "next": "Source diagnosis of initial ir3_finalize_nir optimization; no cap extension or unchanged retry."
+}

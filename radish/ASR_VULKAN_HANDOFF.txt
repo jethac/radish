@@ -47,3 +47,5 @@ See results/asr-khr-profile-host-only-0045.json and the exact private source
 patch patches/0045-ggml-vulkan-khr-profile-private.patch. Apply to the pinned
 transcribe.cpp dependency snapshot from the original host-only ASR handoff.
 CPU/default behavior is unchanged; this is not permission to deploy a service.
+
+2026-11-02 Q4 device compile gate: the first real dequant pipeline reached the initial lowered NIR dump but did not finish within the unchanged 90-second limit (90.088 seconds wall, 89.247 CPU, 61.1 MiB, zero swap). No native code or GPU dispatch was admitted; matvec was not reached. Own-unit drain, fault check and both service checks passed. The five-SSBO candidate is still unqualified. See results/asr-q4-compile-timeout-0045.json. Source diagnosis proceeds without cap expansion or an unchanged retry; fcd/d332 remains selected.
