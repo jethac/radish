@@ -1,5 +1,11 @@
 # Core compute implementation: checkpoint 0044
 
+## 2026-11-02: three property-limit failures corrected
+
+The same locally modified CTS harness reran only its failed device-properties case on ICD3bc37c79. Exactly three failures disappear: minimum/maximum texture offsets and discrete queue priorities;37 failure messages become34 with no additions. The full test still fails and its report is retained unchanged. Service451ms,14.7MiB,zero swap; no new GPU faults and both services active. [Comparison and full failed report](results/core-api-0044-compute-properties.json).
+
+The twelfth increment `0044-radish-compute-properties-wip.patch` reports the existing native−8/+7 texture-offset range and retains two logical application priority hints for the sole queue. Both hints keep the same default kernel priority; this makes no cross-device scheduling or global-priority claim. The earlier direct mapping to global MSM priorities was rejected before execution/publication because it could starve another device. Sampled-image multisample/stencil behavior and other compute gaps remain; graphics-specific requirements are outside this campaign, not silently removed from CTS results.
+
 ## 2026-11-02: corrected descriptor ordering passes
 
 The replacement run on ICD48ffa7ce uses completed fence → command-pool reset → descriptor update → fresh record/bind → submit/wait. Both85-record resource rounds pass all22 fields (3740 words) and full8 image/9 buffer allocation guards. The unchanged tests cover dynamic buffers, compatible layout lifetime, mutable/fullsplit images, color clear/copy, D16/D32 sampling/comparison and depth copy. Four robust-buffer spans1/3/12/16 each pass40 output words and all five allocation guards through the ordinary public robustBufferAccess feature request. Service1.528s,13.8MiB,zero swap; no new GPU faults and both services active. [Exact replacement result](results/core-api-0044-valid-order.json).
@@ -109,7 +115,7 @@ budget. It does not solve the earlier legal-workgroup/shared-memory failures.
 
 ## Consolidated reproduction
 
-Apply the eleven0044 incremental patches in order to the documented0042 Mesa
+Apply the twelve0044 incremental patches in order to the documented0042 Mesa
 stack and build the isolated driver. Build probes against its matching internal
 ABI:
 

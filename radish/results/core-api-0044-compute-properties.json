@@ -1,0 +1,85 @@
+{
+  "status": "failed",
+  "harness": "Same locally modified CTS instance-extension selection; unchanged device_properties test/oracle only",
+  "driver": {
+    "bytes": 48898816,
+    "sha256": "3bc37c79807f6286cb0cf76539ad74c50a0383328482e424f324198376bce6d5"
+  },
+  "source_snapshot": "checkpoint-priority-hints-source",
+  "public_patch": {
+    "bytes": 1454,
+    "sha256": "6c8fd883062c423cfc797778c91a4e77f43bcf2bc61e5ebb9f434ea65ec16e3a"
+  },
+  "capture": "WORK/core-compute-0044-cts-properties-corrected/probe",
+  "run_log": {
+    "bytes": 857,
+    "sha256": "fe569d960c066781a551b996b78b815f360bcf11a1423b706747578554303eb1"
+  },
+  "full_qpa": {
+    "file": "core-api-0044-cts-properties-corrected.qpa",
+    "bytes": 12702,
+    "sha256": "d11e483f44183bb5585f96764ab521e0ccc3de13e364df9c7be32d805e6c29b0"
+  },
+  "comparison": {
+    "previous": 37,
+    "current": 34,
+    "removed": [
+      "limit validation failed, minTexelOffset not valid-limit type MAX actual is 0",
+      "limit Validation failed maxTexelOffset not valid-limit type MIN - actual is 0",
+      "limit Validation failed discreteQueuePriorities not valid-limit type MIN - actual is 1"
+    ],
+    "added": [],
+    "remaining": [
+      "limit Validation failed maxPerStageDescriptorInputAttachments not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxDescriptorSetInputAttachments not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxVertexInputAttributes not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxVertexInputBindings not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxVertexInputAttributeOffset not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxVertexInputBindingStride not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxVertexOutputComponents not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxFragmentInputComponents not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxFragmentOutputAttachments not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxFragmentCombinedOutputResources not valid-limit type MIN - actual is 0",
+      "limit Validation failed subPixelPrecisionBits not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxDrawIndexedIndexValue not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxDrawIndirectCount not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxViewports not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxViewportDimensions[0] not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxViewportDimensions[1] not valid-limit type MIN - actual is 0",
+      "limit validation failed, viewportBoundsRange[0] not valid-limit type MAX actual is 0",
+      "limit validation failed, viewportBoundsRange[1] not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxFramebufferWidth not valid-limit type MIN - actual is 0",
+      "limit Validation failed maxFramebufferHeight not valid-limit type MIN - actual is 0",
+      "limit validation failed, framebufferColorSampleCounts not valid-limit type bitmask actual is 0",
+      "limit validation failed, framebufferDepthSampleCounts not valid-limit type bitmask actual is 0",
+      "limit validation failed, framebufferStencilSampleCounts not valid-limit type bitmask actual is 0",
+      "limit validation failed, framebufferNoAttachmentsSampleCounts not valid-limit type bitmask actual is 0",
+      "limit Validation failed maxColorAttachments not valid-limit type MIN - actual is 0",
+      "limit validation failed, sampledImageColorSampleCounts not valid-limit type bitmask actual is 1",
+      "limit validation failed, sampledImageDepthSampleCounts not valid-limit type bitmask actual is 1",
+      "limit validation failed, sampledImageStencilSampleCounts not valid-limit type bitmask actual is 0",
+      "limit Validation failed maxSampleMaskWords not valid-limit type MIN - actual is 0",
+      "limit validation failed, pointSizeRange[0] not valid-limit type MIN - actual is 0",
+      "limit validation failed, pointSizeRange[1] not valid-limit type MIN - actual is 0",
+      "limit validation failed, lineWidthRange[0] not valid-limit type MIN - actual is 0",
+      "limit validation failed, lineWidthRange[1] not valid-limit type MIN - actual is 0",
+      "limit validation failed, viewportBoundsRange[1] of 0is less than 2*maxViewportDimension[1] of 0"
+    ]
+  },
+  "source_semantics": {
+    "texel_offsets": [
+      -8,
+      7
+    ],
+    "queue_priorities": "Two logical application hint levels for the sole queue; existing default kernel priority unchanged. No cross-device scheduling advantage or global-priority capability."
+  },
+  "rejected_source": "Earlier mapping ordinary hints into global MSM priorities was rejected before execution/publication because it can starve another VkDevice.",
+  "conditions": {
+    "service_seconds": 0.451,
+    "peak_mib": 14.7,
+    "swap_mib": 0,
+    "new_gpu_faults": false,
+    "services_active": true
+  },
+  "limits": "Full property case remains failed. Sampled image color/depth/stencil sample-count gaps remain compute work; graphics applicability is tracked separately without altering the failed report. No conformance claim."
+}

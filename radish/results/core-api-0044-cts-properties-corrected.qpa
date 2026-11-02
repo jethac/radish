@@ -1,0 +1,303 @@
+#sessionInfo releaseName 5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e
+#sessionInfo releaseId 0x5a9cb324
+#sessionInfo targetName "Vulkan Headless"
+#sessionInfo logFormatVersion "0.3.4"
+#sessionInfo vendorID 0x5143
+#sessionInfo deviceID 0x1fa
+#sessionInfo deviceName Radish Adreno 506 (experimental compute)
+#sessionInfo commandLineParameters "--deqp-vk-library-path=/var/tmp/radish/core-compute-0044-cts-properties-corrected/libvulkan.so.1 --deqp-caselist-file=/var/tmp/radish/core-compute-0044-cts-properties-corrected/info-cases.txt --deqp-log-filename=/var/tmp/radish/core-compute-0044-cts-properties-corrected/info.qpa --deqp-log-images=disable --deqp-log-shader-sources=disable --deqp-shadercache=disable --deqp-watchdog=enable --deqp-terminate-on-fail=disable --deqp-terminate-on-device-lost=enable --deqp-archive-dir=/var/tmp/radish/core-compute-0044-cts-properties-corrected"
+
+#beginSession
+
+#beginTestCaseResult dEQP-VK.info.device_properties
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseResult CasePath="dEQP-VK.info.device_properties" Version="0.3.4" CaseType="SelfValidate">
+ <Text>device = 0xaaaae7c86860</Text>
+ <Text>VkPhysicalDeviceProperties = {
+	apiVersion = 4194304
+	driverVersion = 1
+	vendorID = 20803
+	deviceID = 506
+	deviceType = VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU
+	deviceName = Radish Adreno 506 (experimental compute)
+	pipelineCacheUUID = 
+{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }
+	limits = VkPhysicalDeviceLimits = {
+	maxImageDimension1D = 1000
+	maxImageDimension2D = 1000
+	maxImageDimension3D = 100
+	maxImageDimensionCube = 1000
+	maxImageArrayLayers = 100
+	maxTexelBufferElements = 8000000
+	maxUniformBufferRange = 4000
+	maxStorageBufferRange = 8000000
+	maxPushConstantsSize = 80
+	maxMemoryAllocationCount = 1000
+	maxSamplerAllocationCount = 1000
+	bufferImageGranularity = 40
+	sparseAddressSpaceSize = 0
+	maxBoundDescriptorSets = 4
+	maxPerStageDescriptorSamplers = 10
+	maxPerStageDescriptorUniformBuffers = c
+	maxPerStageDescriptorStorageBuffers = 4
+	maxPerStageDescriptorSampledImages = 10
+	maxPerStageDescriptorStorageImages = 4
+	maxPerStageDescriptorInputAttachments = 0
+	maxPerStageResources = 80
+	maxDescriptorSetSamplers = 60
+	maxDescriptorSetUniformBuffers = 48
+	maxDescriptorSetUniformBuffersDynamic = 8
+	maxDescriptorSetStorageBuffers = 18
+	maxDescriptorSetStorageBuffersDynamic = 4
+	maxDescriptorSetSampledImages = 60
+	maxDescriptorSetStorageImages = 18
+	maxDescriptorSetInputAttachments = 0
+	maxVertexInputAttributes = 0
+	maxVertexInputBindings = 0
+	maxVertexInputAttributeOffset = 0
+	maxVertexInputBindingStride = 0
+	maxVertexOutputComponents = 0
+	maxTessellationGenerationLevel = 0
+	maxTessellationPatchSize = 0
+	maxTessellationControlPerVertexInputComponents = 0
+	maxTessellationControlPerVertexOutputComponents = 0
+	maxTessellationControlPerPatchOutputComponents = 0
+	maxTessellationControlTotalOutputComponents = 0
+	maxTessellationEvaluationInputComponents = 0
+	maxTessellationEvaluationOutputComponents = 0
+	maxGeometryShaderInvocations = 0
+	maxGeometryInputComponents = 0
+	maxGeometryOutputComponents = 0
+	maxGeometryOutputVertices = 0
+	maxGeometryTotalOutputComponents = 0
+	maxFragmentInputComponents = 0
+	maxFragmentOutputAttachments = 0
+	maxFragmentDualSrcAttachments = 0
+	maxFragmentCombinedOutputResources = 0
+	maxComputeSharedMemorySize = 4000
+	maxComputeWorkGroupCount = 
+{ ffff, ffff, ffff }
+	maxComputeWorkGroupInvocations = 80
+	maxComputeWorkGroupSize = 
+{ 80, 80, 40 }
+	subPixelPrecisionBits = 0
+	subTexelPrecisionBits = 4
+	mipmapPrecisionBits = 8
+	maxDrawIndexedIndexValue = 0
+	maxDrawIndirectCount = 0
+	maxSamplerLodBias = 16
+	maxSamplerAnisotropy = 1
+	maxViewports = 0
+	maxViewportDimensions = 
+{ 0, 0 }
+	viewportBoundsRange = 
+{ 0, 0 }
+	viewportSubPixelBits = 0
+	minMemoryMapAlignment = 40
+	minTexelBufferOffsetAlignment = 20
+	minUniformBufferOffsetAlignment = 10
+	minStorageBufferOffsetAlignment = 10
+	minTexelOffset = fffffff8
+	maxTexelOffset = 7
+	minTexelGatherOffset = 0
+	maxTexelGatherOffset = 0
+	minInterpolationOffset = 0
+	maxInterpolationOffset = 0
+	subPixelInterpolationOffsetBits = 0
+	maxFramebufferWidth = 0
+	maxFramebufferHeight = 0
+	maxFramebufferLayers = 0
+	framebufferColorSampleCounts = 
+	framebufferDepthSampleCounts = 
+	framebufferStencilSampleCounts = 
+	framebufferNoAttachmentsSampleCounts = 
+	maxColorAttachments = 0
+	sampledImageColorSampleCounts = VK_SAMPLE_COUNT_1_BIT
+	sampledImageIntegerSampleCounts = VK_SAMPLE_COUNT_1_BIT
+	sampledImageDepthSampleCounts = VK_SAMPLE_COUNT_1_BIT
+	sampledImageStencilSampleCounts = 
+	storageImageSampleCounts = VK_SAMPLE_COUNT_1_BIT
+	maxSampleMaskWords = 0
+	timestampComputeAndGraphics = 1
+	timestampPeriod = 52.0833
+	maxClipDistances = 0
+	maxCullDistances = 0
+	maxCombinedClipAndCullDistances = 0
+	discreteQueuePriorities = 2
+	pointSizeRange = 
+{ 0, 0 }
+	lineWidthRange = 
+{ 0, 0 }
+	pointSizeGranularity = 0
+	lineWidthGranularity = 0
+	strictLines = 0
+	standardSampleLocations = 0
+	optimalBufferCopyOffsetAlignment = 1
+	optimalBufferCopyRowPitchAlignment = 1
+	nonCoherentAtomSize = 40
+}
+	sparseProperties = VkPhysicalDeviceSparseProperties = {
+	residencyStandard2DBlockShape = 0
+	residencyStandard2DMultisampleBlockShape = 0
+	residencyStandard3DBlockShape = 0
+	residencyAlignedMipSize = 0
+	residencyNonResidentStrict = 0
+}
+}</Text>
+ <Text>VkPhysicalDeviceLimits = {
+	maxImageDimension1D = 4096
+	maxImageDimension2D = 4096
+	maxImageDimension3D = 256
+	maxImageDimensionCube = 4096
+	maxImageArrayLayers = 256
+	maxTexelBufferElements = 134217728
+	maxUniformBufferRange = 16384
+	maxStorageBufferRange = 134217728
+	maxPushConstantsSize = 128
+	maxMemoryAllocationCount = 4096
+	maxSamplerAllocationCount = 4096
+	bufferImageGranularity = 64
+	sparseAddressSpaceSize = 0
+	maxBoundDescriptorSets = 4
+	maxPerStageDescriptorSamplers = 16
+	maxPerStageDescriptorUniformBuffers = 12
+	maxPerStageDescriptorStorageBuffers = 4
+	maxPerStageDescriptorSampledImages = 16
+	maxPerStageDescriptorStorageImages = 4
+	maxPerStageDescriptorInputAttachments = 0
+	maxPerStageResources = 128
+	maxDescriptorSetSamplers = 96
+	maxDescriptorSetUniformBuffers = 72
+	maxDescriptorSetUniformBuffersDynamic = 8
+	maxDescriptorSetStorageBuffers = 24
+	maxDescriptorSetStorageBuffersDynamic = 4
+	maxDescriptorSetSampledImages = 96
+	maxDescriptorSetStorageImages = 24
+	maxDescriptorSetInputAttachments = 0
+	maxVertexInputAttributes = 0
+	maxVertexInputBindings = 0
+	maxVertexInputAttributeOffset = 0
+	maxVertexInputBindingStride = 0
+	maxVertexOutputComponents = 0
+	maxTessellationGenerationLevel = 0
+	maxTessellationPatchSize = 0
+	maxTessellationControlPerVertexInputComponents = 0
+	maxTessellationControlPerVertexOutputComponents = 0
+	maxTessellationControlPerPatchOutputComponents = 0
+	maxTessellationControlTotalOutputComponents = 0
+	maxTessellationEvaluationInputComponents = 0
+	maxTessellationEvaluationOutputComponents = 0
+	maxGeometryShaderInvocations = 0
+	maxGeometryInputComponents = 0
+	maxGeometryOutputComponents = 0
+	maxGeometryOutputVertices = 0
+	maxGeometryTotalOutputComponents = 0
+	maxFragmentInputComponents = 0
+	maxFragmentOutputAttachments = 0
+	maxFragmentDualSrcAttachments = 0
+	maxFragmentCombinedOutputResources = 0
+	maxComputeSharedMemorySize = 16384
+	maxComputeWorkGroupCount = 
+{ 65535, 65535, 65535 }
+	maxComputeWorkGroupInvocations = 128
+	maxComputeWorkGroupSize = 
+{ 128, 128, 64 }
+	subPixelPrecisionBits = 0
+	subTexelPrecisionBits = 4
+	mipmapPrecisionBits = 8
+	maxDrawIndexedIndexValue = 0
+	maxDrawIndirectCount = 0
+	maxSamplerLodBias = 16
+	maxSamplerAnisotropy = 1
+	maxViewports = 0
+	maxViewportDimensions = 
+{ 0, 0 }
+	viewportBoundsRange = 
+{ 0, 0 }
+	viewportSubPixelBits = 0
+	minMemoryMapAlignment = 64
+	minTexelBufferOffsetAlignment = 32
+	minUniformBufferOffsetAlignment = 16
+	minStorageBufferOffsetAlignment = 16
+	minTexelOffset = -8
+	maxTexelOffset = 7
+	minTexelGatherOffset = 0
+	maxTexelGatherOffset = 0
+	minInterpolationOffset = 0
+	maxInterpolationOffset = 0
+	subPixelInterpolationOffsetBits = 0
+	maxFramebufferWidth = 0
+	maxFramebufferHeight = 0
+	maxFramebufferLayers = 0
+	framebufferColorSampleCounts = 
+	framebufferDepthSampleCounts = 
+	framebufferStencilSampleCounts = 
+	framebufferNoAttachmentsSampleCounts = 
+	maxColorAttachments = 0
+	sampledImageColorSampleCounts = VK_SAMPLE_COUNT_1_BIT
+	sampledImageIntegerSampleCounts = VK_SAMPLE_COUNT_1_BIT
+	sampledImageDepthSampleCounts = VK_SAMPLE_COUNT_1_BIT
+	sampledImageStencilSampleCounts = 
+	storageImageSampleCounts = VK_SAMPLE_COUNT_1_BIT
+	maxSampleMaskWords = 0
+	timestampComputeAndGraphics = 1
+	timestampPeriod = 52.0833
+	maxClipDistances = 0
+	maxCullDistances = 0
+	maxCombinedClipAndCullDistances = 0
+	discreteQueuePriorities = 2
+	pointSizeRange = 
+{ 0, 0 }
+	lineWidthRange = 
+{ 0, 0 }
+	pointSizeGranularity = 0
+	lineWidthGranularity = 0
+	strictLines = 0
+	standardSampleLocations = 0
+	optimalBufferCopyOffsetAlignment = 1
+	optimalBufferCopyRowPitchAlignment = 1
+	nonCoherentAtomSize = 64
+}</Text>
+ <Text>limit Validation failed maxPerStageDescriptorInputAttachments not valid-limit type MIN - actual is 0</Text>
+ <Text>limit Validation failed maxDescriptorSetInputAttachments not valid-limit type MIN - actual is 0</Text>
+ <Text>limit Validation failed maxVertexInputAttributes not valid-limit type MIN - actual is 0</Text>
+ <Text>limit Validation failed maxVertexInputBindings not valid-limit type MIN - actual is 0</Text>
+ <Text>limit Validation failed maxVertexInputAttributeOffset not valid-limit type MIN - actual is 0</Text>
+ <Text>limit Validation failed maxVertexInputBindingStride not valid-limit type MIN - actual is 0</Text>
+ <Text>limit Validation failed maxVertexOutputComponents not valid-limit type MIN - actual is 0</Text>
+ <Text>limit Validation failed maxFragmentInputComponents not valid-limit type MIN - actual is 0</Text>
+ <Text>limit Validation failed maxFragmentOutputAttachments not valid-limit type MIN - actual is 0</Text>
+ <Text>limit Validation failed maxFragmentCombinedOutputResources not valid-limit type MIN - actual is 0</Text>
+ <Text>limit Validation failed subPixelPrecisionBits not valid-limit type MIN - actual is 0</Text>
+ <Text>limit Validation failed maxDrawIndexedIndexValue not valid-limit type MIN - actual is 0</Text>
+ <Text>limit Validation failed maxDrawIndirectCount not valid-limit type MIN - actual is 0</Text>
+ <Text>limit Validation failed maxViewports not valid-limit type MIN - actual is 0</Text>
+ <Text>limit Validation failed maxViewportDimensions[0] not valid-limit type MIN - actual is 0</Text>
+ <Text>limit Validation failed maxViewportDimensions[1] not valid-limit type MIN - actual is 0</Text>
+ <Text>limit validation failed, viewportBoundsRange[0] not valid-limit type MAX actual is 0</Text>
+ <Text>limit validation failed, viewportBoundsRange[1] not valid-limit type MIN - actual is 0</Text>
+ <Text>limit Validation failed maxFramebufferWidth not valid-limit type MIN - actual is 0</Text>
+ <Text>limit Validation failed maxFramebufferHeight not valid-limit type MIN - actual is 0</Text>
+ <Text>limit validation failed, framebufferColorSampleCounts not valid-limit type bitmask actual is 0</Text>
+ <Text>limit validation failed, framebufferDepthSampleCounts not valid-limit type bitmask actual is 0</Text>
+ <Text>limit validation failed, framebufferStencilSampleCounts not valid-limit type bitmask actual is 0</Text>
+ <Text>limit validation failed, framebufferNoAttachmentsSampleCounts not valid-limit type bitmask actual is 0</Text>
+ <Text>limit Validation failed maxColorAttachments not valid-limit type MIN - actual is 0</Text>
+ <Text>limit validation failed, sampledImageColorSampleCounts not valid-limit type bitmask actual is 1</Text>
+ <Text>limit validation failed, sampledImageDepthSampleCounts not valid-limit type bitmask actual is 1</Text>
+ <Text>limit validation failed, sampledImageStencilSampleCounts not valid-limit type bitmask actual is 0</Text>
+ <Text>limit Validation failed maxSampleMaskWords not valid-limit type MIN - actual is 0</Text>
+ <Text>limit validation failed, pointSizeRange[0] not valid-limit type MIN - actual is 0</Text>
+ <Text>limit validation failed, pointSizeRange[1] not valid-limit type MIN - actual is 0</Text>
+ <Text>limit validation failed, lineWidthRange[0] not valid-limit type MIN - actual is 0</Text>
+ <Text>limit validation failed, lineWidthRange[1] not valid-limit type MIN - actual is 0</Text>
+ <Text>limit validation failed, viewportBoundsRange[1] of 0is less than 2*maxViewportDimension[1] of 0</Text>
+ <Number Name="TestDuration" Description="Test case duration in microseconds" Tag="Time" Unit="us">1112</Number>
+ <Result StatusCode="Fail">deviceProperties - feature limits failed</Result>
+</TestCaseResult>
+
+#endTestCaseResult
+
+Run took 0.09 seconds
+
+#endSession

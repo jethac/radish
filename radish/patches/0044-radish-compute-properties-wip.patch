@@ -1,0 +1,41 @@
+--- a/src/freedreno/radish/rd_device.c
++++ b/src/freedreno/radish/rd_device.c
+@@ -87,6 +87,8 @@
+       vk_free2(&physical->vk.instance->alloc, allocator, device);
+       return result;
+    }
++   device->queue_priority =
++      info->pQueueCreateInfos[0].pQueuePriorities[0] >= 0.5f;
+    device->fd = fd_device_ref(physical->fd);
+    device->pipe = fd_pipe_new(device->fd, FD_PIPE_3D);
+    if (!device->pipe) {
+--- a/src/freedreno/radish/rd_instance.c
++++ b/src/freedreno/radish/rd_instance.c
+@@ -121,7 +121,7 @@
+       .subgroupSupportedOperations = VK_SUBGROUP_FEATURE_BASIC_BIT,
+       .maxMemoryAllocationCount = 4096,
+       .bufferImageGranularity = 64,
+-      .discreteQueuePriorities = 1,
++      .discreteQueuePriorities = 2,
+       .optimalBufferCopyOffsetAlignment = 1,
+       .optimalBufferCopyRowPitchAlignment = 1,
+       .maxPerSetDescriptors = 1024,
+@@ -136,6 +136,8 @@
+       .maxSamplerAllocationCount = 4096,
+       .maxSamplerLodBias = 16.0f,
+       .maxSamplerAnisotropy = 1.0f,
++      .minTexelOffset = -8,
++      .maxTexelOffset = 7,
+       .subTexelPrecisionBits = 4,
+       .mipmapPrecisionBits = 8,
+       .sampledImageColorSampleCounts = VK_SAMPLE_COUNT_1_BIT,
+--- a/src/freedreno/radish/rd_private.h
++++ b/src/freedreno/radish/rd_private.h
+@@ -50,6 +50,7 @@
+    uint64_t submit_count;
+    uint64_t faults;
+    struct list_head active_queries;
++   uint32_t queue_priority;
+ };
+ struct rd_memory {
+    struct vk_device_memory vk;
