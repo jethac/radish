@@ -1,5 +1,15 @@
 # Core compute implementation: checkpoint 0044
 
+## 2026-11-02: normalization submission recovery passes
+
+With math batching fixed at eight, the next queue-only change reduces resident fixed-core time from **52.746539 to 51.440372 seconds (2.4763%)**. First extraction falls from 52.666168 to 51.590609 seconds. Both complete 562,342-value reference checks pass and the saved outputs retain the accepted bytes. All 589 layers execute on the GPU.
+
+Only 225 normalization submission counts change among 1,520 ordered command signatures: 3,518→797, saving 2,721 submissions. Math remains 3,294; total submissions fall 13,530→10,809 with all 71,750 chunks unchanged. The new class requires exactly two ordinary SSBOs, fixed local 16×1×4, no loops/barriers/shared/private/texture resources, bounded expanded instruction/memory work and the existing register bound. No shader, geometry, per-chunk synchronization or math policy changes. The maximum observed normalization submission grows from 2.308 to 3.574 ms in the resident extraction; the overall candidate maximum stays below 113 ms.
+
+This is one sequential comparison. Baseline peak swap was 23.6 MiB; candidate peak was 408.3 MiB RAM with zero swap. No new faults occurred and both services stayed active. The candidate remains 49.96% slower than the historical 0042 fixed-core result; end-to-end speech performance is still separate. [Exact source, profiles and limits](results/normalization-batching-0045.json).
+
+The first load attempt exposed a manifest-formatting dependency in ncnn: pretty JSON selected direct ICD loading and a subgroup-size fallback, causing the exact pad-layout guard to reject the pipeline. A fresh capture restores the accepted compact manifest/private-loader route, and live process maps confirm the selected libraries. Host staging now checks that route. A separate output-space preflight rejection is preserved; the original disk reserve was maintained by archiving only a verified completed private executable. Neither failure is counted as inference evidence.
+
 ## 2026-11-02: shared-resource batching recovers 22% of fixed-core time
 
 A same-binary batch1→8 pair reduces resident extraction from 67.626229 to 52.746539 seconds (22.0028%). Both repeat2 processes pass every full reference comparison and retain the accepted output bytes, all 589 GPU layers and unchanged shaders/geometry. Only 58 packed-math submission counts change: 26,256→3,294; all 1,462 other command signatures/submissions remain identical. Total submissions fall 36,492→13,530.

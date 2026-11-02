@@ -1,0 +1,48 @@
+--- a/src/freedreno/radish/rd_queue.c
++++ b/src/freedreno/radish/rd_queue.c
+@@ -589,6 +589,35 @@
+    return resident_threads * ir3_shader_halfregs(v) <= 4096;
+ }
+ 
++static bool
++rd_short_buffer_batch_resources(struct rd_device *device,
++                                 const struct rd_pipeline *pipeline)
++{
++   const struct ir3_shader_variant *v = pipeline->variant;
++   const unsigned short_instruction_slots = 32 * 32 / 2;
++   if (fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) != 506 ||
++       v->local_size[0] != 16 || v->local_size[1] != 1 || v->local_size[2] != 4 ||
++       v->loops || v->has_barrier || v->shared_size || v->pvtmem_size ||
++       v->constant_data_size || v->info.double_threadsize || v->info.preamble_instrs_count ||
++       !v->info.instrs_count || v->info.instrs_count > short_instruction_slots * 8 ||
++       v->info.instrs_per_cat[6] > short_instruction_slots ||
++       pipeline->resource_count != 2 || pipeline->descriptor_count != 2 ||
++       pipeline->buffer_count != 2 || pipeline->used_descriptors != UINT64_C(3) ||
++       pipeline->resource_usage.texture_count || pipeline->resource_usage.sampler_count ||
++       pipeline->resource_usage.image_count || pipeline->sampling_mask ||
++       v->image_mapping.num_tex || v->num_ssbos != 2 ||
++       pipeline->linear_subgroups || pipeline->linear_barriers || pipeline->packed_1d_barrier ||
++       v->shader_options.workgroup_resident_threads ||
++       !v->shader_options.nir_options.a5xx_ssbo_size_consts)
++      return false;
++   for (unsigned i = 0; i < 2; i++) {
++      if (pipeline->resources[i].type != VK_DESCRIPTOR_TYPE_STORAGE_BUFFER ||
++          pipeline->resources[i].buffer_slot != i || pipeline->buffer_descriptors[i] != i)
++         return false;
++   }
++   return (uint64_t)device->info.threadsize_base * ir3_shader_halfregs(v) <= 4096;
++}
++
+ static VkResult
+ rd_execute_dispatch(struct rd_device *device, const struct rd_dispatch *dispatch,
+                     struct rd_submit_profile *profile)
+@@ -627,7 +656,8 @@
+    }
+    int64_t requested_chunks = debug_get_num_option("RADISH_BATCH_CHUNKS", 1);
+    unsigned max_chunks = 1;
+-   if (!v->loops && !v->has_barrier && v->instrlen <= 32 &&
++   if (!v->loops && !v->has_barrier &&
++       (v->instrlen <= 32 || rd_short_buffer_batch_resources(device, dispatch->pipeline)) &&
+        ((requested_chunks >= 1 && requested_chunks <= 4) || requested_chunks == 8))
+       max_chunks = requested_chunks;
+    int64_t tiled_chunks = debug_get_num_option("RADISH_TILED_BATCH_CHUNKS", 1);

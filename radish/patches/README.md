@@ -642,3 +642,5 @@ d468a7b2dcadda77b4e06a286eba806aac28c6222f0f3ec9e8330cddf8dba657  0035-ncnn-inst
 | `0044-radish-storage-cube-multisample-wip.patch` | After exact-buffer-size0044 | Six-face storageCube, tiny internal distinct MS lanes and public128MiB automatic MS array fetch pass bounded outputs/guards. Full conformance and all resource permutations remain unclaimed. |
 
 | `0045-radish-shared-resource-batching.patch` | After complete 0044 storage-Cube/multisample stack | Resource-based eligibility preserves guards and native code; same-binary tiled1→8 resident fixed-core time falls22.0028%, exact outputs. Sequential pair, candidate23.6MiB swap and remaining53.76% historical regression explicit. |
+
+| `0045-radish-short-buffer-batching.patch` | After shared-resource batching0045 | Bounded two-SSBO loop-free class; only225 normalization submit counts change,2,721 fewer, resident fixed-core2.4763% lower with exact outputs. Shader/math/geometry/guards unchanged; sequential conditions explicit. |

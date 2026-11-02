@@ -292,3 +292,5 @@ resident, fixed-core and end-to-end results distinct. The original performance
 and GPU-efficiency goals remain in force; no CPU-crossover shortcut applies.
 
 The first performance recovery, 0045, preserves exact model outputs and reduces resident fixed-core time by 22.0028% through existing safe math batching. The candidate still takes 52.746539 seconds versus the historical 34.303633-second fixed-core result. Continue normalization/submission recovery and end-to-end Straylight optimization; this result is not campaign completion. See BATCHING_RECOVERY.md.
+
+The separate normalization batching recovery preserves exact outputs and reduces resident fixed-core time another 2.4763% to 51.440372 seconds. The remaining historical gap and end-to-end Straylight goals remain open. App-selected robustness is a separate reviewed opt-in experiment; the driver keeps complete requested robustness, and unsafe shader tails must be fixed before robustness-off execution.

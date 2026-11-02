@@ -1,5 +1,17 @@
 # Shared-resource batching recovery: 0045
 
+## 2026-11-02: normalization submission recovery passes
+
+With math batching fixed at eight, the next queue-only change reduces resident fixed-core time from **52.746539 to 51.440372 seconds (2.4763%)**. First extraction falls from 52.666168 to 51.590609 seconds. Both complete 562,342-value reference checks pass and the saved outputs retain the accepted bytes. All 589 layers execute on the GPU.
+
+Only 225 normalization submission counts change among 1,520 ordered command signatures: 3,518→797, saving 2,721 submissions. Math remains 3,294; total submissions fall 13,530→10,809 with all 71,750 chunks unchanged. The new class requires exactly two ordinary SSBOs, fixed local 16×1×4, no loops/barriers/shared/private/texture resources, bounded expanded instruction/memory work and the existing register bound. No shader, geometry, per-chunk synchronization or math policy changes. The maximum observed normalization submission grows from 2.308 to 3.574 ms in the resident extraction; the overall candidate maximum stays below 113 ms.
+
+This is one sequential comparison. Baseline peak swap was 23.6 MiB; candidate peak was 408.3 MiB RAM with zero swap. No new faults occurred and both services stayed active. The candidate remains 49.96% slower than the historical 0042 fixed-core result; end-to-end speech performance is still separate. [Exact source, profiles and limits](results/normalization-batching-0045.json).
+
+The first load attempt exposed a manifest-formatting dependency in ncnn: pretty JSON selected direct ICD loading and a subgroup-size fallback, causing the exact pad-layout guard to reject the pipeline. A fresh capture restores the accepted compact manifest/private-loader route, and live process maps confirm the selected libraries. Host staging now checks that route. A separate output-space preflight rejection is preserved; the original disk reserve was maintained by archiving only a verified completed private executable. Neither failure is counted as inference evidence.
+
+Apply `0045-radish-short-buffer-batching.patch` after the shared-resource batching patch. Keep `RADISH_BATCH_CHUNKS=8` and `RADISH_TILED_BATCH_CHUNKS=8` fixed for this comparison; toggling generic batching would change unrelated commands. The original repeat-2 runner, references and bounds remain. The following section preserves the first recovery's separate pair.
+
 The same driver and model reduce resident fixed-core time from **67.626229 to 52.746539 seconds (22.0028%)** when the existing tiled batch limit changes from one to eight chunks. Both processes perform two complete extractions; all 562,342-value reference comparisons pass, and their saved outputs match the accepted GPU bytes exactly. Every extraction retains 589 GPU layers and no CPU fallback.
 
 | Measurement | Batch 1 | Batch 8 |
