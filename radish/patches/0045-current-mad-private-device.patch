@@ -1,0 +1,111 @@
+--- a/gpu_mad_unroll_probe.cpp
++++ b/gpu_mad_unroll_probe.cpp
+@@ -10,6 +10,9 @@
+ #include <cstring>
+ #include <limits>
+ #include <set>
++#include <memory>
++#include <dlfcn.h>
++#include <limits.h>
+ #include <string>
+ #include <vector>
+ #include <fcntl.h>
+@@ -351,8 +354,21 @@
+     for(size_t i=0;i<sizeof(keys)/sizeof(keys[0]);++i) { const char* v=std::getenv(keys[i]);if(!v || std::strcmp(v,values[i])) { std::fprintf(stderr,"FAIL require %s=%s\n",keys[i],values[i]);return 2; } }
+     Environment environment;CHECK(setenv("RADISH_GPU_ELAPSED","0",1)==0);CHECK(unsetenv("RADISH_GPU_ELAPSED_CALIBRATION")==0);
+     OutputDirectory destination;if(!compile_only) CHECK(destination.create(argv[1])==0);
+-    CHECK(ncnn::create_gpu_instance()==0);InstanceLifetime instance;
+-    CHECK(ncnn::get_gpu_count()==1);const ncnn::VulkanDevice* device=ncnn::get_gpu_device(0);
++    const char* loader=std::getenv("RADISH_MAD_DIAG_LOADER");
++    char requested_loader[PATH_MAX]={0};
++    struct stat loader_stat={};
++    CHECK(loader && loader[0]=='/' && realpath(loader,requested_loader));
++    CHECK(stat(requested_loader,&loader_stat)==0 && S_ISREG(loader_stat.st_mode));
++    CHECK(ncnn::create_gpu_instance(requested_loader)==0);InstanceLifetime instance;
++    Dl_info loaded_info={};char loaded_loader[PATH_MAX]={0};
++    CHECK(dladdr(reinterpret_cast<void*>(ncnn::vkGetInstanceProcAddr),&loaded_info)!=0);
++    CHECK(loaded_info.dli_fname && realpath(loaded_info.dli_fname,loaded_loader));
++    CHECK(std::strcmp(requested_loader,loaded_loader)==0);
++    CHECK(ncnn::get_gpu_count()==1);
++    std::unique_ptr<ncnn::VulkanDevice> owned_device(new ncnn::VulkanDevice(0,false));
++    const ncnn::VulkanDevice* device=owned_device.get();
++    CHECK(device && device->is_valid() && !device->enabled_robust_buffer_access());
++    std::printf("GPU_MAD_UNROLL_DEVICE_POLICY requested=0 enabled=0 owned=1 loader=%s\n",loaded_loader);std::fflush(stdout);
+     CHECK(device && device->is_valid() && device->info.vendor_id()==0x5143 && device->info.device_id()==506);
+     CHECK(!std::strcmp(device->info.device_name(),"Radish Adreno 506 (experimental compute)"));
+     ncnn::Option opt;opt.num_threads=1;opt.vulkan_device_index=0;
+--- a/device-gpu-mad-unroll.py
++++ b/device-gpu-mad-unroll.py
+@@ -16,10 +16,10 @@
+ import sys
+ import time
+ 
+-TOP = Path(__file__).resolve().parents[2]
++TOP = Path('/home/jethac/Projects/lenovo-8')
+ WORK = Path(os.environ.get('RADISH_WORK', '/run/media/jethac/Shared/radish')).expanduser().resolve()
+ LOCK = Path(os.environ.get('RADISH_DEVICE_LOCK', str(TOP / '.device.lock'))).expanduser().resolve()
+-HELPER_SHA = '3bf41ad9fcbbb52d1e735a1d3c9f97df3a36efcea88dda3cb98e7226636d7b5e'
++HELPER_SHA = '29905e00692ebc7afef62489bfaa302218dc73e9afe3d2bdac2580bbbbde5111'
+ LOADER_SHA = '75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a'
+ THERMAL = 'for z in /sys/class/thermal/thermal_zone*; do for n in type temp; do if test -r "$z/$n"; then printf "%s=" "$z/$n"; cat "$z/$n"; fi; done; done'
+ ENV = dict(RADISH_NCNN_PIPELINE_CACHE='1', RADISH_TILED_GROUPS_X='1',
+@@ -101,7 +101,10 @@
+     (frozen / 'radish_icd.json').write_text(json.dumps({'file_format_version': '1.0.0', 'ICD': {
+         'library_path': remote + '/libvulkan_radish.so', 'api_version': '1.0.0'}}, separators=(',', ':')) + '\n')
+     assets = {path.name: identity(path) for path in frozen.iterdir()}
+-    write_json(frozen / 'payload.json', dict(format='radish-gpu-mad-unroll-payload-v1', remote=remote, assets=assets))
++    with (frozen / 'payload.json').open('x') as stream:
++        json.dump(dict(format='radish-gpu-mad-unroll-payload-v1', remote=remote, assets=assets),
++                  stream, indent=2, allow_nan=False, sort_keys=True)
++        stream.write('\n')
+     assets['payload.json'] = identity(frozen / 'payload.json')
+     verify = verify_script(assets, remote)
+     (evidence / 'verify-payload.sh').write_text(verify)
+@@ -216,7 +219,8 @@
+         call(['shell', 'sh -s'], 'assets-before.txt', input_text=verify)
+         remote_output = remote + '/probe-output'
+         call(['shell', 'test ! -e ' + shlex.quote(remote_output) + ' && test ! -L ' + shlex.quote(remote_output)], 'output-absent.txt')
+-        environment = dict(ENV, LD_LIBRARY_PATH=remote, VK_DRIVER_FILES=remote + '/radish_icd.json')
++        environment = dict(ENV, LD_LIBRARY_PATH=remote, VK_DRIVER_FILES=remote + '/radish_icd.json',
++                           RADISH_MAD_DIAG_LOADER=remote + '/libvulkan.so.1')
+         if args.mode == 'compile':
+             environment['IR3_SHADER_DEBUG'] = 'disasm'
+         command = ['systemd-run', '--unit=' + unit, '--wait', '--pipe', '--collect',
+@@ -239,6 +243,8 @@
+         require(identity(checker) == checker_pin, 'fault checker changed')
+         collect()
+         log = (evidence / 'run.log').read_text()
++        expected_policy = 'GPU_MAD_UNROLL_DEVICE_POLICY requested=0 enabled=0 owned=1 loader=' + remote + '/libvulkan.so.1'
++        require(log.splitlines().count(expected_policy) == 1, 'wrong explicit loader/device policy')
+         require(not re.search(r'vkCreateComputePipelines failed|new_pipeline failed|\bFAIL\b', log), 'failure in process log')
+         raw_pins = {}
+         if args.mode == 'compile':
+--- a/analyze-gpu-mad-unroll.py
++++ b/analyze-gpu-mad-unroll.py
+@@ -10,6 +10,8 @@
+ sha = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
+ t = a.log.read_text()
+ lines = t.splitlines()
++policy_lines = [line for line in lines if line.startswith('GPU_MAD_UNROLL_DEVICE_POLICY ')]
++assert len(policy_lines) == 1 and re.fullmatch(r'GPU_MAD_UNROLL_DEVICE_POLICY requested=0 enabled=0 owned=1 loader=/var/tmp/radish/gpu-mad-unroll-[A-Za-z0-9_-]{1,48}/libvulkan\.so\.1', policy_lines[0])
+ result_path = a.raw / 'result.json'
+ assert result_path.is_file() and not result_path.is_symlink()
+ metadata = json.loads(result_path.read_text())
+@@ -172,6 +174,7 @@
+                         ('whole_call_s', [r['whole_call_s'] for r in group]),
+                         ('achieved_GFLOP_s', [r['achieved_GFLOP_s'] for r in group])]:
+         summary[key] = dict(values=values, mean=statistics.mean(values), median=statistics.median(values), minimum=min(values), maximum=max(values))
++    summary['fixed_work_over_mean_gpu_interval_GFLOP_s'] = 268435456 / summary['gpu_ns']['mean']
+     summaries[kind] = summary
+ pairs = []
+ for first in [4, 6, 8, 10]:
+@@ -188,7 +191,8 @@
+                   balanced_pairs=pairs, prospective_gate='At least 5 percent mean GPU interval reduction and all four balanced adjacent pairs faster.',
+                   material_calibration_gain=gain >= 5 and all(p['candidate_faster'] for p in pairs))
+ report = dict(status='PASS', timing_scope=metadata['timing_scope'], log=str(a.log), log_sha256=sha(a.log), analyzer_sha256=sha(Path(__file__)),
+-              expected_native_instrlen=expected_native,
++              expected_native_instrlen=expected_native, device_policy=policy_lines[0],
++              diagnostic_scope='Current bounded arithmetic/dispatch throughput; historical 5-percent comparison field is descriptive and is not a prerequisite for valid current throughput.',
+               compiler_admission='Separate actual native/resource review required; profile lengths alone do not establish register/private-memory/dataflow safety.',
+               result_json_sha256=sha(result_path), profile_totals=dict(dispatches=12, chunks=12, submits=12, samples=12),
+               numerical=dict(independent_raw_oracles=True, mad_output_values=393216, output_guard_values=48,

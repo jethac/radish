@@ -1,5 +1,13 @@
 # A506 MAD loop unrolling calibration
 
+## Current selected-stack diagnostic, 2026-11-02
+
+The unchanged balanced arithmetic workload now passes on the selected fcd driver and fa947 ncnn archive with an explicit verified loader and an owned, workload-scoped robustness-disabled device. Both native selectors remain exact: 8/12 native units, 16 full/zero half registers, one loop, no private/shared storage, and 268,435,456 FP32 operations per dispatch. All 393,216 output values, 48 guard values, input readbacks and 16 raw files pass independently.
+
+Across the original four measured calls per program, mean GPU timestamp intervals are **12.631185 ms → 11.916458 ms**, a **5.6584% reduction**, with all four balanced adjacent pairs faster. Fixed work divided by the mean interval gives **21.2518 → 22.5264 GFLOP/s**. These are elapsed dispatch intervals including setup and queued work; they do not isolate ALU-active time, occupancy or peak throughput. No model shader, model performance result or selected inference payload changes.
+
+[Exact source/build/native/raw/timestamp evidence](results/current-mad-diagnostic-0045.json) preserves the setup-only metadata-order failure and the later canonical serialization correction. The [private source overlay](patches/0045-current-mad-private-device.patch) leaves the original GLSL, work, oracle, native selectors and device bounds unchanged. Its measured workspace paths/helper pin are explicit; the original 0040 reproduction below remains historical and unchanged.
+
 Checkpoint 0040 adds one default-off elapsed diagnostic class to 0037. It
 compares the unchanged arithmetic calibration with four updates per loop
 iteration. Both execute the same 268,435,456 FP32 operations and preserve the

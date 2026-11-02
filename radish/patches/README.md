@@ -664,3 +664,5 @@ Both feature modes pass the full fixed core; resident51.504783→34.333299 secon
 `0045-ncnn-b-reciprocal-unselected.patch` is an optional isolated experiment after0045 packed-A mb shift, not part of the selected stack. The bounded address transformation and full numerical checks pass, but first/resident and targeted-layer wall times regress in the sequential comparison. Keep d332 selected; see ../results/packed-b-reciprocal-unselected-0045.json.
 
 `0045-radish-storage8-timeline.patch` follows 0045 storage16. It adds logical byte-storage lowering and conditional real-kernel timeline exposure, qualified by separate public 8-bit storage and KHR timeline consumers. API remains 1.0; current inference stays frozen fcd and ASR is not yet qualified. See ../results/storage8-timeline-public-0045.json.
+
+`0045-current-mad-private-device.patch` is the exact measured private three-file overlay for the current arithmetic diagnostic: explicit loader/device policy, pinned helper, canonical payload metadata and elapsed-rate reporting. It preserves both GLSL programs and all original controls. See ../GPU_MAD_UNROLL.md; this changes no selected model shader or driver policy.

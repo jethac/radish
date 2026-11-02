@@ -1,0 +1,1555 @@
+{
+  "status": "current_selected_stack_balanced_arithmetic_diagnostic_passed",
+  "scope": "Fixed arithmetic calibration, not a model performance change or pure ALU-active/peak claim. Selected inference remains fcd/d332.",
+  "source_patch": {
+    "path": "/home/jethac/Projects/radish/radish/patches/0045-current-mad-private-device.patch",
+    "bytes": 7544,
+    "sha256": "981eb628c8950ae6d0678d10e679fd6e779feea3e15d419884a293083393b986"
+  },
+  "exact_patch_reconstruction": true,
+  "source_release": {
+    "status": "Private source ready; integrator hostbuild then exacthelperSHA pin required; no author build/device",
+    "patch": {
+      "path": "/run/media/jethac/Shared/radish/current-mad-diagnostic-private-4dz3vagl/current-device-mad.patch",
+      "bytes": 6666,
+      "sha256": "3eaaaddf135ef131d74f6b5d0e4eb518c8e46b29389ba3ef1a4ce0bb4969c48f"
+    },
+    "pairs": [
+      {
+        "baseline": {
+          "path": "/run/media/jethac/Shared/radish/current-mad-diagnostic-private-4dz3vagl/baseline/gpu_mad_unroll_probe.cpp",
+          "bytes": 22746,
+          "sha256": "e7ba38f16c0602a08ef7e7ad9484227c54c5802c5ab4d2e48c6eb7d935873401"
+        },
+        "candidate": {
+          "path": "/run/media/jethac/Shared/radish/current-mad-diagnostic-private-4dz3vagl/candidate/gpu_mad_unroll_probe.cpp",
+          "bytes": 23699,
+          "sha256": "0d40a5acb67fec7cdd674f0601a6a3825c43b9d23e1ad2f0f48a6c0180034cf8"
+        }
+      },
+      {
+        "baseline": {
+          "path": "/run/media/jethac/Shared/radish/current-mad-diagnostic-private-4dz3vagl/baseline/device-gpu-mad-unroll.py",
+          "bytes": 21137,
+          "sha256": "05775f7ccb8d8c59305e22cd27c2710fb2638b4a1122a29838aabf3da47ba6f5"
+        },
+        "candidate": {
+          "path": "/run/media/jethac/Shared/radish/current-mad-diagnostic-private-4dz3vagl/candidate/device-gpu-mad-unroll.py",
+          "bytes": 21408,
+          "sha256": "fffcda9bfcad3c851d31ffcf39578ef819a66975a4359f169e65c93b74aaa21b"
+        }
+      },
+      {
+        "baseline": {
+          "path": "/run/media/jethac/Shared/radish/current-mad-diagnostic-private-4dz3vagl/baseline/analyze-gpu-mad-unroll.py",
+          "bytes": 13602,
+          "sha256": "74734d7ed0fd425bd2d6f985feec783ff5ed153a8dd0b8da01070405bf86c24e"
+        },
+        "candidate": {
+          "path": "/run/media/jethac/Shared/radish/current-mad-diagnostic-private-4dz3vagl/candidate/analyze-gpu-mad-unroll.py",
+          "bytes": 14215,
+          "sha256": "e1840b7a8863d33cdfa2ec5ff4135b29071c759541881bddc85945ae506c9637"
+        }
+      }
+    ],
+    "build_inputs": [
+      {
+        "path": "/run/media/jethac/Shared/radish/packed-a-shift-resumed-build-0045/libncnn.a",
+        "bytes": 11454002,
+        "sha256": "fa947ecb928ca0349b64ea20bc685abe70990d09c15325934c05f6aafcc60152"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/ncnn-robust-device-build-0045/include/gpu.h",
+        "bytes": 27887,
+        "sha256": "05c69187920f67f8a5f58835226701d3b747d2fb8995e45064cf1db41f8a07b7"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/normalization-batching-0045/built/libvulkan_radish.so",
+        "bytes": 49025280,
+        "sha256": "fcd47b1fdc6f0b1ab52bb71ea1d1331ec0c9b98dbe5da050c7e27b4f0f2b6389"
+      }
+    ],
+    "preserved": [
+      "BothembeddedGLSLstrings byteexact, execute/run/reference/rawcapture/schedule unchanged.268435456FLOP perdispatch/4warm8balanced/12samples/16rawfiles/full393216valueoracle andguards.",
+      "Alltimingselectors/native8or12/16F0H/loop1/private0/local16x8/grid4x2/nohotloopmemory andduration/resource/fault/lock/reserve guards remain unchanged. No driver edits.",
+      "Owneddevice created afterinstance and beforepipelines; C++reverse destruction releasespipelines/allocators beforedevice beforeinstance. Exactloader realpath/dladdr checked beforedevice.",
+      "FP32 optionfields unchanged; source/direct arithmeticor address/layout untouched. Analyzer adds explicitpolicy and workdividedbymeanGPUtime, keepsall original numerical/timing/native/samplegates."
+    ],
+    "build_handoff": "Compile privatecandidate gpu_mad_unroll_probe.cpp with matching privategpu.h first and selectedfa947 ncnnarchive/platform0/glslang/libs, same existinghelper targetflags. Onlyhelpernewobject/link needed. Driver fcd unchanged. SetrunnerHELPER_SHA onlyafterbuiltbinary rehash, preservingprepin runnercopy/diff. Runhost--check-only thencompile-only. Independentactualnative/resource admission mustprove originaltimerselectors beforeprobe.",
+    "runner_note": "Private TOP explicitly points existingrepository forfaultchecker and canonicalabsolute.device.lock default; originalinheritedfd inode/flock behavior retained. Not a portablepublicationrelocation.",
+    "pending": [
+      "Hostbuild andhelperSHA pin",
+      "Batchindependent sourcereview",
+      "Compile/native exactselectors andactualclock/source/device matching",
+      "Onlyafterallgates reviewed may integratorrequestboundedmeasurement; current source does not authorizeGPUbyreviewer."
+    ]
+  },
+  "host_build": {
+    "status": "host build passed; no device execution",
+    "commands": [
+      [
+        "/usr/bin/clang++",
+        "-I/run/media/jethac/Shared/radish/ncnn-robust-device-build-0045/include",
+        "-I/run/media/jethac/Shared/radish/packed-a-implementation-0042-a6naaxsx/ncnn/src/layer",
+        "-I/run/media/jethac/Shared/radish/packed-a-implementation-0042-a6naaxsx/ncnn/src",
+        "-I/run/media/jethac/Shared/radish/packed-a-implementation-0042-a6naaxsx/build/radish_helpers/ncnn/src",
+        "--target=aarch64-linux-gnu",
+        "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+        "-mcpu=cortex-a53",
+        "--gcc-install-dir=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+        "-O3",
+        "-DNDEBUG",
+        "-std=gnu++11",
+        "-fPIE",
+        "-MD",
+        "-MT",
+        "/run/media/jethac/Shared/radish/current-mad-diagnostic-build-0045/gpu_mad_unroll_probe.cpp.o",
+        "-MF",
+        "/run/media/jethac/Shared/radish/current-mad-diagnostic-build-0045/gpu_mad_unroll_probe.cpp.d",
+        "-o",
+        "/run/media/jethac/Shared/radish/current-mad-diagnostic-build-0045/gpu_mad_unroll_probe.cpp.o",
+        "-c",
+        "/run/media/jethac/Shared/radish/current-mad-diagnostic-build-0045/gpu_mad_unroll_probe.cpp",
+        "-ffp-contract=off",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      [
+        "/usr/bin/clang++",
+        "--target=aarch64-linux-gnu",
+        "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+        "-mcpu=cortex-a53",
+        "--gcc-install-dir=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+        "-O3",
+        "-DNDEBUG",
+        "-fuse-ld=lld",
+        "--rtlib=libgcc",
+        "-L/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib",
+        "-Wl,-rpath-link,/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib",
+        "-Xlinker",
+        "--dependency-file=/run/media/jethac/Shared/radish/current-mad-diagnostic-build-0045/link.d",
+        "/run/media/jethac/Shared/radish/current-mad-diagnostic-build-0045/gpu_mad_unroll_probe.cpp.o",
+        "-o",
+        "/run/media/jethac/Shared/radish/current-mad-diagnostic-build-0045/gpu-calibration-probe",
+        "/run/media/jethac/Shared/radish/packed-a-shift-resumed-build-0045/libncnn.a",
+        "-ldl",
+        "/run/media/jethac/Shared/radish/packed-a-implementation-0042-a6naaxsx/build/radish_helpers/ncnn/glslang/SPIRV/libSPIRV.a",
+        "/run/media/jethac/Shared/radish/packed-a-implementation-0042-a6naaxsx/build/radish_helpers/ncnn/glslang/glslang/libglslang.a"
+      ]
+    ],
+    "cwd": "/run/media/jethac/Shared/radish/packed-a-implementation-0042-a6naaxsx/build/radish_helpers",
+    "files": {
+      "/run/media/jethac/Shared/radish/current-mad-diagnostic-build-0045/gpu_mad_unroll_probe.cpp": {
+        "bytes": 23699,
+        "sha256": "0d40a5acb67fec7cdd674f0601a6a3825c43b9d23e1ad2f0f48a6c0180034cf8"
+      },
+      "/run/media/jethac/Shared/radish/current-mad-diagnostic-build-0045/gpu_mad_unroll_probe.cpp.o": {
+        "bytes": 71096,
+        "sha256": "c8d1b5d6c0575819274e57d4ba534352c135dae78887f27051400665fdbf7796"
+      },
+      "/run/media/jethac/Shared/radish/current-mad-diagnostic-build-0045/gpu-calibration-probe": {
+        "bytes": 10967856,
+        "sha256": "29905e00692ebc7afef62489bfaa302218dc73e9afe3d2bdac2580bbbbde5111"
+      },
+      "/run/media/jethac/Shared/radish/packed-a-shift-resumed-build-0045/libncnn.a": {
+        "bytes": 11454002,
+        "sha256": "fa947ecb928ca0349b64ea20bc685abe70990d09c15325934c05f6aafcc60152"
+      },
+      "/run/media/jethac/Shared/radish/ncnn-robust-device-build-0045/include/gpu.h": {
+        "bytes": 27887,
+        "sha256": "05c69187920f67f8a5f58835226701d3b747d2fb8995e45064cf1db41f8a07b7"
+      },
+      "/run/media/jethac/Shared/radish/packed-a-implementation-0042-a6naaxsx/build/radish_helpers/ncnn/src/platform.h": {
+        "bytes": 12498,
+        "sha256": "f1b1ad2cef3be751fc2653df76474154d1539ab373e809499b536bea416c05a1"
+      }
+    },
+    "source_release": {
+      "bytes": 4402,
+      "sha256": "616ccc61b7355af18689f497edf0c50f543afbdea4f275adcdcf95b85fa54b59"
+    }
+  },
+  "native_review": {
+    "verdict": "PASS original currentMAD native/timer source admission; no tensor or measurement yet",
+    "log_sha256": "c40ce615db5877458fbe44e9587887dfc24555f84413b268f5f6e67e676b5f39",
+    "variants": [
+      {
+        "kind": "mad",
+        "native": 8,
+        "padded_dwords": 256,
+        "encoded_through_end": 117,
+        "full": 16,
+        "half": 0,
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "loops": 1,
+        "shared": 0,
+        "private_operations": [],
+        "scalar_MADs_per_loop": 32,
+        "runtime_iterations": 4096,
+        "operations_per_dispatch": 268435456,
+        "hot_loop_memory_operations": false,
+        "native_sha256": "f41f42576acdcfad8f874d4aa07ccc02634a955ec36a23fbc3683f839dea2a7a"
+      },
+      {
+        "kind": "mad-unroll4",
+        "native": 12,
+        "padded_dwords": 384,
+        "encoded_through_end": 178,
+        "full": 16,
+        "half": 0,
+        "local": [
+          16,
+          8,
+          1
+        ],
+        "loops": 1,
+        "shared": 0,
+        "private_operations": [],
+        "scalar_MADs_per_loop": 128,
+        "runtime_iterations": 1024,
+        "operations_per_dispatch": 268435456,
+        "hot_loop_memory_operations": false,
+        "native_sha256": "ddbeabb913dd162e3bbec5d935dafad0a1555b03e4a0e3e9d55996d2c59a3bd7"
+      }
+    ],
+    "timer_gate": "Originalmad8/unroll12/16full0half/no-private/shared0/singlethreadsize/loop1/threeSSBO/local16x8 selectors match actualnative plus frozenexact grid4x2 helperdispatch andunchanged max_chunks1/tile4x2 policy. No selector or hardware limit widened.",
+    "pending": "Integrator canonical metadata serialization derivative only mustpreserve exacthelper/driver/loader; originalbalanced raw/timer/output/fault gates remainbeforethroughputclaim."
+  },
+  "actual_review": {
+    "verdict": "PASS independently rerun full raw/timestamp analyzer plus source/payload/control review",
+    "files": [
+      {
+        "path": "/run/media/jethac/Shared/radish/gpu-mad-unroll-current-v3-0045/probe/run.log",
+        "bytes": 14474,
+        "sha256": "b94530e83f7d8c3478f13f797f223a0d7f173f7556dd8294536e343ebc78b376"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/gpu-mad-unroll-current-v3-0045/probe/runner-result.json",
+        "bytes": 3352,
+        "sha256": "74e443e71037e5cc029f4f0d60c3674caa4a209671121664fe3236ecef930638"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/gpu-mad-unroll-current-v3-0045/probe/fault-check.txt",
+        "bytes": 41,
+        "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/gpu-mad-unroll-current-v3-0045/probe/services-after.txt",
+        "bytes": 14,
+        "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-resource-consumers-0044-ymiuefnt/stage81-current-mad-native-review/independent-analysis.json",
+        "bytes": 25071,
+        "sha256": "5fe04e26e4dd09537bd5bb491c897563248ab415beb1dd3df45b5d12a041f775"
+      }
+    ],
+    "payload": {
+      "radish_icd.json": {
+        "bytes": 146,
+        "sha256": "99402d9c6cdd8dcf76d6ab53337d45870da96bf55901360c8ce330f7fae198f1"
+      },
+      "libvulkan.so.1": {
+        "bytes": 703696,
+        "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+      },
+      "gpu-mad-unroll-probe": {
+        "bytes": 10967856,
+        "sha256": "29905e00692ebc7afef62489bfaa302218dc73e9afe3d2bdac2580bbbbde5111"
+      },
+      "libvulkan_radish.so": {
+        "bytes": 49025280,
+        "sha256": "fcd47b1fdc6f0b1ab52bb71ea1d1331ec0c9b98dbe5da050c7e27b4f0f2b6389"
+      },
+      "payload.json": {
+        "bytes": 692,
+        "sha256": "b7e113c615fa0fa15a09772028b2c04cf87c3e1a2938a08dfb6923a5078df2f6"
+      }
+    },
+    "actual": {
+      "runs": 12,
+      "warmups": 4,
+      "measured": 8,
+      "operations_per_dispatch": 268435456,
+      "raw_files": 16,
+      "raw_bytes": 1835296,
+      "full_output_values": 393216,
+      "guards": 48,
+      "timer_samples": 12,
+      "chunks": 12,
+      "submits": 12
+    },
+    "mean_elapsed_ms": {
+      "mad": 12.63118475,
+      "mad-unroll4": 11.91645775
+    },
+    "fixed_work_div_mean_elapsed_GFLOP_s": {
+      "mad": 21.251803477896242,
+      "mad-unroll4": 22.526447173448
+    },
+    "mean_host_submit_ms": {
+      "mad": 13.495718,
+      "mad-unroll4": 12.80605475
+    },
+    "comparison": {
+      "mean_gpu_reduction_percent": 5.658432001004498,
+      "mean_host_submit_reduction_percent": 5.1102375583129405,
+      "mean_whole_call_reduction_percent": 5.349065028414874,
+      "balanced_pairs": [
+        {
+          "indices": [
+            4,
+            5
+          ],
+          "order": [
+            "mad",
+            "mad-unroll4"
+          ],
+          "baseline_gpu_ns": 12659375,
+          "candidate_gpu_ns": 11913541,
+          "candidate_faster": true,
+          "gpu_reduction_percent": 5.891554677857319
+        },
+        {
+          "indices": [
+            6,
+            7
+          ],
+          "order": [
+            "mad-unroll4",
+            "mad"
+          ],
+          "baseline_gpu_ns": 12487604,
+          "candidate_gpu_ns": 11917604,
+          "candidate_faster": true,
+          "gpu_reduction_percent": 4.564526549688796
+        },
+        {
+          "indices": [
+            8,
+            9
+          ],
+          "order": [
+            "mad",
+            "mad-unroll4"
+          ],
+          "baseline_gpu_ns": 12680781,
+          "candidate_gpu_ns": 11915989,
+          "candidate_faster": true,
+          "gpu_reduction_percent": 6.031111175250168
+        },
+        {
+          "indices": [
+            10,
+            11
+          ],
+          "order": [
+            "mad-unroll4",
+            "mad"
+          ],
+          "baseline_gpu_ns": 12696979,
+          "candidate_gpu_ns": 11918697,
+          "candidate_faster": true,
+          "gpu_reduction_percent": 6.129662811917701
+        }
+      ],
+      "prospective_gate": "At least 5 percent mean GPU interval reduction and all four balanced adjacent pairs faster.",
+      "material_calibration_gain": true
+    },
+    "scope": [
+      "Current selected fa947 ncnnarchive/fcdICD with explicitownedrobustfalse and exactprivate loader; no shader/work/oracle changes or modelpayloadswitch.",
+      "Alltimestampsvalid19.2MHztickconversion,guardedslots/order/boundedhostinterval anddeterministicsample/submit/pipelineIDs; per-streamstdout/stderrordercorrelation maintained without falsecrosspipebracketing.",
+      "GPU elapsed dispatch interval includesstate setup and queuedwork, not isolatedALUactivecycles/occupancy or theoreticalpeak. Hostsubmit includesblockingwaitandkernelwork.",
+      "Short balanced diagnostic establishes attained arithmetic/dispatch rate at this checkpoint; no sustainedceiling/fullmodelthroughput/ALUutilization or bandwidthclaim.",
+      "Canonicalmetadataonlyv3derivative retainedpriorfailedsetup/compilecaptures; exactthreebinarypins/currentnativeidentity established separately.",
+      "No reviewer device/build; retaineddataanalysis only."
+    ]
+  },
+  "analysis": {
+    "status": "PASS",
+    "timing_scope": "Record, submit and wait only; all twelve output downloads are deferred until after the timed sequence. CPU uploads, poison, reference and file writes excluded. Actual native admission and timestamp/profile qualification are separate.",
+    "log": "/run/media/jethac/Shared/radish/gpu-mad-unroll-current-v3-0045/probe/run.log",
+    "log_sha256": "b94530e83f7d8c3478f13f797f223a0d7f173f7556dd8294536e343ebc78b376",
+    "analyzer_sha256": "e1840b7a8863d33cdfa2ec5ff4135b29071c759541881bddc85945ae506c9637",
+    "expected_native_instrlen": {
+      "mad": 8,
+      "mad-unroll4": 12
+    },
+    "device_policy": "GPU_MAD_UNROLL_DEVICE_POLICY requested=0 enabled=0 owned=1 loader=/var/tmp/radish/gpu-mad-unroll-current-v3-0045/libvulkan.so.1",
+    "diagnostic_scope": "Current bounded arithmetic/dispatch throughput; historical 5-percent comparison field is descriptive and is not a prerequisite for valid current throughput.",
+    "compiler_admission": "Separate actual native/resource review required; profile lengths alone do not establish register/private-memory/dataflow safety.",
+    "result_json_sha256": "2b27d7993d3be6341085eea5da8e9ac572f15036a25b38f751269161f3286251",
+    "profile_totals": {
+      "dispatches": 12,
+      "chunks": 12,
+      "submits": 12,
+      "samples": 12
+    },
+    "numerical": {
+      "independent_raw_oracles": true,
+      "mad_output_values": 393216,
+      "output_guard_values": 48,
+      "all_output_payloads_bit_identical": true,
+      "source_bytes_unchanged": true,
+      "raw_files": 16,
+      "raw_bytes": 1835296
+    },
+    "raw_pins": {
+      "run-00.f32": {
+        "bytes": 131088,
+        "sha256": "2f45c7070bfb1ce7e4673f5e243908abf273754fde1d23761625530a0205f612"
+      },
+      "run-01.f32": {
+        "bytes": 131088,
+        "sha256": "5c7cc1b6f77c91baf6be6110786bc3da6d06d11ead1b89c73466444b8855e3d6"
+      },
+      "run-02.f32": {
+        "bytes": 131088,
+        "sha256": "14e3cf903a6e7dbe17d98be28daab07311ec671a6a2f43f376391ad4ed09eecc"
+      },
+      "run-03.f32": {
+        "bytes": 131088,
+        "sha256": "523e9d07fe4ac40cd8ea919d3aec529d48bbe2e35a535b6e7ee11fe32489cc25"
+      },
+      "run-04.f32": {
+        "bytes": 131088,
+        "sha256": "7d2d2d6c9d32df202401a2bac25c12c1ca3d6e545c0a3a8aafc8ebc18941c431"
+      },
+      "run-05.f32": {
+        "bytes": 131088,
+        "sha256": "e54f8bf12a64a78b1fd4f54894eae3ad94cda7056be2d1d2559a28d562ac9195"
+      },
+      "run-06.f32": {
+        "bytes": 131088,
+        "sha256": "33c7effd8f941ccf5ccb7004d92fab34913262f7a5d399ca4f5cdb3dbf7ccdf9"
+      },
+      "run-07.f32": {
+        "bytes": 131088,
+        "sha256": "72c845332fae3db6e0b0f56546d0164e6e9dc786121802945ed8112e68cf524e"
+      },
+      "run-08.f32": {
+        "bytes": 131088,
+        "sha256": "9a5060906643e0a1cd2cd8a7d2b20023bbd5c6bed140f90d9e58a3c99bb88040"
+      },
+      "run-09.f32": {
+        "bytes": 131088,
+        "sha256": "782efd551dc8c4cd50b0ad0bcaad5c92d70aa28276690a4fa55591915e3e93b3"
+      },
+      "run-10.f32": {
+        "bytes": 131088,
+        "sha256": "d9dcff573f224edcea39706f39c2afec833281280ff22f9646b9519d538bd0d2"
+      },
+      "run-11.f32": {
+        "bytes": 131088,
+        "sha256": "637b94647ae5eea5bc075ee9d467e9a24a385e3654edadcb280ae70ebd9d455a"
+      },
+      "seeds-before.f32": {
+        "bytes": 131088,
+        "sha256": "da9dabd7f1c391bec848ac0efabe9526792dbb36ad7da71c09cab8ad0748aea7"
+      },
+      "seeds-after.f32": {
+        "bytes": 131088,
+        "sha256": "da9dabd7f1c391bec848ac0efabe9526792dbb36ad7da71c09cab8ad0748aea7"
+      },
+      "coeff-before.f32": {
+        "bytes": 32,
+        "sha256": "05c85a21480215675fe9eacbb37ad02d652686f860b9d5ebf363b677ca658c97"
+      },
+      "coeff-after.f32": {
+        "bytes": 32,
+        "sha256": "05c85a21480215675fe9eacbb37ad02d652686f860b9d5ebf363b677ca658c97"
+      }
+    },
+    "runs": [
+      {
+        "kind": "mad",
+        "index": 0,
+        "phase": "warmup",
+        "unroll": 1,
+        "iterations": 4096,
+        "profile": {
+          "pipeline": "0xaaab103430d0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "barrier": 0,
+          "loops": 1,
+          "instrlen": 8,
+          "chunks": 1,
+          "submits": 1,
+          "ns": 18372139,
+          "submit_ns": 17870471,
+          "submit_max_ns": 17870471,
+          "result": 0
+        },
+        "sample": {
+          "version": 1,
+          "sample": 0,
+          "valid": 1,
+          "reason": "ok",
+          "pipeline": "0xaaab103430d0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "instrlen": 8,
+          "chunks": 1,
+          "submits": 1,
+          "submit_id": 1,
+          "start_ticks": 37900,
+          "stop_ticks": 280990,
+          "delta_ticks": 243090,
+          "gpu_ns": 12660937,
+          "host_start_ns": 210704673624980,
+          "host_done_ns": 210704691495451,
+          "submit_ns": 17870471,
+          "result": 0,
+          "calibration": "mad"
+        },
+        "whole_call_s": 0.018698911,
+        "achieved_GFLOP_s": 21.201863337602898,
+        "gpu_fraction_of_host_submit": 0.7084836767872542,
+        "host_submit_minus_gpu_ns": 5209534
+      },
+      {
+        "kind": "mad-unroll4",
+        "index": 1,
+        "phase": "warmup",
+        "unroll": 4,
+        "iterations": 1024,
+        "profile": {
+          "pipeline": "0xaaab10343da0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "barrier": 0,
+          "loops": 1,
+          "instrlen": 12,
+          "chunks": 1,
+          "submits": 1,
+          "ns": 12767435,
+          "submit_ns": 12605820,
+          "submit_max_ns": 12605820,
+          "result": 0
+        },
+        "sample": {
+          "version": 1,
+          "sample": 1,
+          "valid": 1,
+          "reason": "ok",
+          "pipeline": "0xaaab10343da0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "instrlen": 12,
+          "chunks": 1,
+          "submits": 1,
+          "submit_id": 2,
+          "start_ticks": 307940,
+          "stop_ticks": 536720,
+          "delta_ticks": 228780,
+          "gpu_ns": 11915625,
+          "host_start_ns": 210704692214672,
+          "host_done_ns": 210704704820492,
+          "submit_ns": 12605820,
+          "result": 0,
+          "calibration": "mad-unroll4"
+        },
+        "whole_call_s": 0.013175092,
+        "achieved_GFLOP_s": 22.528021484395488,
+        "gpu_fraction_of_host_submit": 0.945247909299038,
+        "host_submit_minus_gpu_ns": 690195
+      },
+      {
+        "kind": "mad-unroll4",
+        "index": 2,
+        "phase": "warmup",
+        "unroll": 4,
+        "iterations": 1024,
+        "profile": {
+          "pipeline": "0xaaab10343da0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "barrier": 0,
+          "loops": 1,
+          "instrlen": 12,
+          "chunks": 1,
+          "submits": 1,
+          "ns": 12770403,
+          "submit_ns": 12605820,
+          "submit_max_ns": 12605820,
+          "result": 0
+        },
+        "sample": {
+          "version": 1,
+          "sample": 2,
+          "valid": 1,
+          "reason": "ok",
+          "pipeline": "0xaaab10343da0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "instrlen": 12,
+          "chunks": 1,
+          "submits": 1,
+          "submit_id": 3,
+          "start_ticks": 562537,
+          "stop_ticks": 791393,
+          "delta_ticks": 228856,
+          "gpu_ns": 11919583,
+          "host_start_ns": 210704705519921,
+          "host_done_ns": 210704718125741,
+          "submit_ns": 12605820,
+          "result": 0,
+          "calibration": "mad-unroll4"
+        },
+        "whole_call_s": 0.013164988,
+        "achieved_GFLOP_s": 22.520540861202946,
+        "gpu_fraction_of_host_submit": 0.9455618912534052,
+        "host_submit_minus_gpu_ns": 686237
+      },
+      {
+        "kind": "mad",
+        "index": 3,
+        "phase": "warmup",
+        "unroll": 1,
+        "iterations": 4096,
+        "profile": {
+          "pipeline": "0xaaab103430d0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "barrier": 0,
+          "loops": 1,
+          "instrlen": 8,
+          "chunks": 1,
+          "submits": 1,
+          "ns": 13303478,
+          "submit_ns": 13135561,
+          "submit_max_ns": 13135561,
+          "result": 0
+        },
+        "sample": {
+          "version": 1,
+          "sample": 3,
+          "valid": 1,
+          "reason": "ok",
+          "pipeline": "0xaaab103430d0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "instrlen": 8,
+          "chunks": 1,
+          "submits": 1,
+          "submit_id": 4,
+          "start_ticks": 819203,
+          "stop_ticks": 1060125,
+          "delta_ticks": 240922,
+          "gpu_ns": 12548020,
+          "host_start_ns": 210704718827774,
+          "host_done_ns": 210704731963335,
+          "submit_ns": 13135561,
+          "result": 0,
+          "calibration": "mad"
+        },
+        "whole_call_s": 0.013833844,
+        "achieved_GFLOP_s": 21.39265445863172,
+        "gpu_fraction_of_host_submit": 0.9552709625420642,
+        "host_submit_minus_gpu_ns": 587541
+      },
+      {
+        "kind": "mad",
+        "index": 4,
+        "phase": "measured",
+        "unroll": 1,
+        "iterations": 4096,
+        "profile": {
+          "pipeline": "0xaaab103430d0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "barrier": 0,
+          "loops": 1,
+          "instrlen": 8,
+          "chunks": 1,
+          "submits": 1,
+          "ns": 13888532,
+          "submit_ns": 13652385,
+          "submit_max_ns": 13652385,
+          "result": 0
+        },
+        "sample": {
+          "version": 1,
+          "sample": 4,
+          "valid": 1,
+          "reason": "ok",
+          "pipeline": "0xaaab103430d0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "instrlen": 8,
+          "chunks": 1,
+          "submits": 1,
+          "submit_id": 5,
+          "start_ticks": 1088596,
+          "stop_ticks": 1331656,
+          "delta_ticks": 243060,
+          "gpu_ns": 12659375,
+          "host_start_ns": 210704732841984,
+          "host_done_ns": 210704746494369,
+          "submit_ns": 13652385,
+          "result": 0,
+          "calibration": "mad"
+        },
+        "whole_call_s": 0.014286293,
+        "achieved_GFLOP_s": 21.20447936805727,
+        "gpu_fraction_of_host_submit": 0.9272647233432108,
+        "host_submit_minus_gpu_ns": 993010
+      },
+      {
+        "kind": "mad-unroll4",
+        "index": 5,
+        "phase": "measured",
+        "unroll": 4,
+        "iterations": 1024,
+        "profile": {
+          "pipeline": "0xaaab10343da0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "barrier": 0,
+          "loops": 1,
+          "instrlen": 12,
+          "chunks": 1,
+          "submits": 1,
+          "ns": 13098269,
+          "submit_ns": 12831654,
+          "submit_max_ns": 12831654,
+          "result": 0
+        },
+        "sample": {
+          "version": 1,
+          "sample": 5,
+          "valid": 1,
+          "reason": "ok",
+          "pipeline": "0xaaab10343da0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "instrlen": 12,
+          "chunks": 1,
+          "submits": 1,
+          "submit_id": 6,
+          "start_ticks": 1362168,
+          "stop_ticks": 1590908,
+          "delta_ticks": 228740,
+          "gpu_ns": 11913541,
+          "host_start_ns": 210704747105881,
+          "host_done_ns": 210704759937535,
+          "submit_ns": 12831654,
+          "result": 0,
+          "calibration": "mad-unroll4"
+        },
+        "whole_call_s": 0.013313895,
+        "achieved_GFLOP_s": 22.531962243635206,
+        "gpu_fraction_of_host_submit": 0.9284493643609779,
+        "host_submit_minus_gpu_ns": 918113
+      },
+      {
+        "kind": "mad-unroll4",
+        "index": 6,
+        "phase": "measured",
+        "unroll": 4,
+        "iterations": 1024,
+        "profile": {
+          "pipeline": "0xaaab10343da0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "barrier": 0,
+          "loops": 1,
+          "instrlen": 12,
+          "chunks": 1,
+          "submits": 1,
+          "ns": 12891237,
+          "submit_ns": 12665768,
+          "submit_max_ns": 12665768,
+          "result": 0
+        },
+        "sample": {
+          "version": 1,
+          "sample": 6,
+          "valid": 1,
+          "reason": "ok",
+          "pipeline": "0xaaab10343da0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "instrlen": 12,
+          "chunks": 1,
+          "submits": 1,
+          "submit_id": 7,
+          "start_ticks": 1622415,
+          "stop_ticks": 1851233,
+          "delta_ticks": 228818,
+          "gpu_ns": 11917604,
+          "host_start_ns": 210704760733162,
+          "host_done_ns": 210704773398930,
+          "submit_ns": 12665768,
+          "result": 0,
+          "calibration": "mad-unroll4"
+        },
+        "whole_call_s": 0.013460718,
+        "achieved_GFLOP_s": 22.524280551694787,
+        "gpu_fraction_of_host_submit": 0.9409302302079116,
+        "host_submit_minus_gpu_ns": 748164
+      },
+      {
+        "kind": "mad",
+        "index": 7,
+        "phase": "measured",
+        "unroll": 1,
+        "iterations": 4096,
+        "profile": {
+          "pipeline": "0xaaab103430d0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "barrier": 0,
+          "loops": 1,
+          "instrlen": 8,
+          "chunks": 1,
+          "submits": 1,
+          "ns": 13258113,
+          "submit_ns": 13091029,
+          "submit_max_ns": 13091029,
+          "result": 0
+        },
+        "sample": {
+          "version": 1,
+          "sample": 7,
+          "valid": 1,
+          "reason": "ok",
+          "pipeline": "0xaaab103430d0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "instrlen": 8,
+          "chunks": 1,
+          "submits": 1,
+          "submit_id": 8,
+          "start_ticks": 1884344,
+          "stop_ticks": 2124106,
+          "delta_ticks": 239762,
+          "gpu_ns": 12487604,
+          "host_start_ns": 210704774267006,
+          "host_done_ns": 210704787358035,
+          "submit_ns": 13091029,
+          "result": 0,
+          "calibration": "mad"
+        },
+        "whole_call_s": 0.013675927,
+        "achieved_GFLOP_s": 21.496153785786287,
+        "gpu_fraction_of_host_submit": 0.9539054569354326,
+        "host_submit_minus_gpu_ns": 603425
+      },
+      {
+        "kind": "mad",
+        "index": 8,
+        "phase": "measured",
+        "unroll": 1,
+        "iterations": 4096,
+        "profile": {
+          "pipeline": "0xaaab103430d0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "barrier": 0,
+          "loops": 1,
+          "instrlen": 8,
+          "chunks": 1,
+          "submits": 1,
+          "ns": 13918532,
+          "submit_ns": 13663427,
+          "submit_max_ns": 13663427,
+          "result": 0
+        },
+        "sample": {
+          "version": 1,
+          "sample": 8,
+          "valid": 1,
+          "reason": "ok",
+          "pipeline": "0xaaab103430d0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "instrlen": 8,
+          "chunks": 1,
+          "submits": 1,
+          "submit_id": 9,
+          "start_ticks": 2160748,
+          "stop_ticks": 2404219,
+          "delta_ticks": 243471,
+          "gpu_ns": 12680781,
+          "host_start_ns": 210704788651893,
+          "host_done_ns": 210704802315320,
+          "submit_ns": 13663427,
+          "result": 0,
+          "calibration": "mad"
+        },
+        "whole_call_s": 0.014747493,
+        "achieved_GFLOP_s": 21.168684799461484,
+        "gpu_fraction_of_host_submit": 0.928082025102487,
+        "host_submit_minus_gpu_ns": 982646
+      },
+      {
+        "kind": "mad-unroll4",
+        "index": 9,
+        "phase": "measured",
+        "unroll": 4,
+        "iterations": 1024,
+        "profile": {
+          "pipeline": "0xaaab10343da0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "barrier": 0,
+          "loops": 1,
+          "instrlen": 12,
+          "chunks": 1,
+          "submits": 1,
+          "ns": 13112696,
+          "submit_ns": 12854258,
+          "submit_max_ns": 12854258,
+          "result": 0
+        },
+        "sample": {
+          "version": 1,
+          "sample": 9,
+          "valid": 1,
+          "reason": "ok",
+          "pipeline": "0xaaab10343da0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "instrlen": 12,
+          "chunks": 1,
+          "submits": 1,
+          "submit_id": 10,
+          "start_ticks": 2437247,
+          "stop_ticks": 2666034,
+          "delta_ticks": 228787,
+          "gpu_ns": 11915989,
+          "host_start_ns": 210704803017666,
+          "host_done_ns": 210704815871924,
+          "submit_ns": 12854258,
+          "result": 0,
+          "calibration": "mad-unroll4"
+        },
+        "whole_call_s": 0.013615041,
+        "achieved_GFLOP_s": 22.52733331660511,
+        "gpu_fraction_of_host_submit": 0.9270071442474548,
+        "host_submit_minus_gpu_ns": 938269
+      },
+      {
+        "kind": "mad-unroll4",
+        "index": 10,
+        "phase": "measured",
+        "unroll": 4,
+        "iterations": 1024,
+        "profile": {
+          "pipeline": "0xaaab10343da0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "barrier": 0,
+          "loops": 1,
+          "instrlen": 12,
+          "chunks": 1,
+          "submits": 1,
+          "ns": 13116290,
+          "submit_ns": 12872539,
+          "submit_max_ns": 12872539,
+          "result": 0
+        },
+        "sample": {
+          "version": 1,
+          "sample": 10,
+          "valid": 1,
+          "reason": "ok",
+          "pipeline": "0xaaab10343da0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "instrlen": 12,
+          "chunks": 1,
+          "submits": 1,
+          "submit_id": 11,
+          "start_ticks": 2701688,
+          "stop_ticks": 2930527,
+          "delta_ticks": 228839,
+          "gpu_ns": 11918697,
+          "host_start_ns": 210704816886250,
+          "host_done_ns": 210704829758789,
+          "submit_ns": 12872539,
+          "result": 0,
+          "calibration": "mad-unroll4"
+        },
+        "whole_call_s": 0.013530978,
+        "achieved_GFLOP_s": 22.522214970310934,
+        "gpu_fraction_of_host_submit": 0.925901020769873,
+        "host_submit_minus_gpu_ns": 953842
+      },
+      {
+        "kind": "mad",
+        "index": 11,
+        "phase": "measured",
+        "unroll": 1,
+        "iterations": 4096,
+        "profile": {
+          "pipeline": "0xaaab103430d0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "barrier": 0,
+          "loops": 1,
+          "instrlen": 8,
+          "chunks": 1,
+          "submits": 1,
+          "ns": 13947438,
+          "submit_ns": 13576031,
+          "submit_max_ns": 13576031,
+          "result": 0
+        },
+        "sample": {
+          "version": 1,
+          "sample": 11,
+          "valid": 1,
+          "reason": "ok",
+          "pipeline": "0xaaab103430d0",
+          "grid": [
+            4,
+            2,
+            1
+          ],
+          "local": [
+            16,
+            8,
+            1
+          ],
+          "instrlen": 8,
+          "chunks": 1,
+          "submits": 1,
+          "submit_id": 12,
+          "start_ticks": 2962042,
+          "stop_ticks": 3205824,
+          "delta_ticks": 243782,
+          "gpu_ns": 12696979,
+          "host_start_ns": 210704830385041,
+          "host_done_ns": 210704843961072,
+          "submit_ns": 13576031,
+          "result": 0,
+          "calibration": "mad"
+        },
+        "whole_call_s": 0.014258168,
+        "achieved_GFLOP_s": 21.14167913485562,
+        "gpu_fraction_of_host_submit": 0.9352497058971064,
+        "host_submit_minus_gpu_ns": 879052
+      }
+    ],
+    "summaries": {
+      "mad": {
+        "gpu_ns": {
+          "values": [
+            12659375,
+            12487604,
+            12680781,
+            12696979
+          ],
+          "mean": 12631184.75,
+          "median": 12670078.0,
+          "minimum": 12487604,
+          "maximum": 12696979
+        },
+        "host_submit_ns": {
+          "values": [
+            13652385,
+            13091029,
+            13663427,
+            13576031
+          ],
+          "mean": 13495718,
+          "median": 13614208.0,
+          "minimum": 13091029,
+          "maximum": 13663427
+        },
+        "whole_call_s": {
+          "values": [
+            0.014286293,
+            0.013675927,
+            0.014747493,
+            0.014258168
+          ],
+          "mean": 0.01424197025,
+          "median": 0.0142722305,
+          "minimum": 0.013675927,
+          "maximum": 0.014747493
+        },
+        "achieved_GFLOP_s": {
+          "values": [
+            21.20447936805727,
+            21.496153785786287,
+            21.168684799461484,
+            21.14167913485562
+          ],
+          "mean": 21.252749272040166,
+          "median": 21.186582083759376,
+          "minimum": 21.14167913485562,
+          "maximum": 21.496153785786287
+        },
+        "fixed_work_over_mean_gpu_interval_GFLOP_s": 21.251803477896242
+      },
+      "mad-unroll4": {
+        "gpu_ns": {
+          "values": [
+            11913541,
+            11917604,
+            11915989,
+            11918697
+          ],
+          "mean": 11916457.75,
+          "median": 11916796.5,
+          "minimum": 11913541,
+          "maximum": 11918697
+        },
+        "host_submit_ns": {
+          "values": [
+            12831654,
+            12665768,
+            12854258,
+            12872539
+          ],
+          "mean": 12806054.75,
+          "median": 12842956.0,
+          "minimum": 12665768,
+          "maximum": 12872539
+        },
+        "whole_call_s": {
+          "values": [
+            0.013313895,
+            0.013460718,
+            0.013615041,
+            0.013530978
+          ],
+          "mean": 0.013480157999999999,
+          "median": 0.013495848000000001,
+          "minimum": 0.013313895,
+          "maximum": 0.013615041
+        },
+        "achieved_GFLOP_s": {
+          "values": [
+            22.531962243635206,
+            22.524280551694787,
+            22.52733331660511,
+            22.522214970310934
+          ],
+          "mean": 22.52644777056151,
+          "median": 22.525806934149948,
+          "minimum": 22.522214970310934,
+          "maximum": 22.531962243635206
+        },
+        "fixed_work_over_mean_gpu_interval_GFLOP_s": 22.526447173448
+      }
+    },
+    "comparison": {
+      "mean_gpu_reduction_percent": 5.658432001004498,
+      "mean_host_submit_reduction_percent": 5.1102375583129405,
+      "mean_whole_call_reduction_percent": 5.349065028414874,
+      "balanced_pairs": [
+        {
+          "indices": [
+            4,
+            5
+          ],
+          "order": [
+            "mad",
+            "mad-unroll4"
+          ],
+          "baseline_gpu_ns": 12659375,
+          "candidate_gpu_ns": 11913541,
+          "candidate_faster": true,
+          "gpu_reduction_percent": 5.891554677857319
+        },
+        {
+          "indices": [
+            6,
+            7
+          ],
+          "order": [
+            "mad-unroll4",
+            "mad"
+          ],
+          "baseline_gpu_ns": 12487604,
+          "candidate_gpu_ns": 11917604,
+          "candidate_faster": true,
+          "gpu_reduction_percent": 4.564526549688796
+        },
+        {
+          "indices": [
+            8,
+            9
+          ],
+          "order": [
+            "mad",
+            "mad-unroll4"
+          ],
+          "baseline_gpu_ns": 12680781,
+          "candidate_gpu_ns": 11915989,
+          "candidate_faster": true,
+          "gpu_reduction_percent": 6.031111175250168
+        },
+        {
+          "indices": [
+            10,
+            11
+          ],
+          "order": [
+            "mad-unroll4",
+            "mad"
+          ],
+          "baseline_gpu_ns": 12696979,
+          "candidate_gpu_ns": 11918697,
+          "candidate_faster": true,
+          "gpu_reduction_percent": 6.129662811917701
+        }
+      ],
+      "prospective_gate": "At least 5 percent mean GPU interval reduction and all four balanced adjacent pairs faster.",
+      "material_calibration_gain": true
+    },
+    "limitations": [
+      "Rates are achieved calibration lower bounds, not hardware ceilings, convolution speedups, or measured occupancy.",
+      "GPU intervals include retained command work and may include scheduling; host whole calls exclude all deferred CPU clone readback.",
+      "Four warmups and eight balanced measured values are all retained; no fastest-only or statistical confidence claim.",
+      "Source/binary pins, services, faults, temperature and whole-window clock records require separate runner audit."
+    ]
+  },
+  "runner_receipts": {
+    "compile": {
+      "status": "passed",
+      "mode": "compile",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 146,
+          "sha256": "99402d9c6cdd8dcf76d6ab53337d45870da96bf55901360c8ce330f7fae198f1"
+        },
+        "libvulkan.so.1": {
+          "bytes": 703696,
+          "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+        },
+        "gpu-mad-unroll-probe": {
+          "bytes": 10967856,
+          "sha256": "29905e00692ebc7afef62489bfaa302218dc73e9afe3d2bdac2580bbbbde5111"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 49025280,
+          "sha256": "fcd47b1fdc6f0b1ab52bb71ea1d1331ec0c9b98dbe5da050c7e27b4f0f2b6389"
+        },
+        "payload.json": {
+          "bytes": 692,
+          "sha256": "b7e113c615fa0fa15a09772028b2c04cf87c3e1a2938a08dfb6923a5078df2f6"
+        }
+      },
+      "raw_files": {},
+      "run_log": {
+        "bytes": 283624,
+        "sha256": "ab609cd6b690556f94a9afe634b286ccf22c13e0ea2250da26aa584b92cee55b"
+      },
+      "scope": "Execution/assets/services/faults/raw captures passed. Compiler admission and diagnostic timing interpretation require separate root/reviewer audit."
+    },
+    "probe": {
+      "status": "passed",
+      "mode": "probe",
+      "exit_code": 0,
+      "payload": {
+        "radish_icd.json": {
+          "bytes": 146,
+          "sha256": "99402d9c6cdd8dcf76d6ab53337d45870da96bf55901360c8ce330f7fae198f1"
+        },
+        "libvulkan.so.1": {
+          "bytes": 703696,
+          "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+        },
+        "gpu-mad-unroll-probe": {
+          "bytes": 10967856,
+          "sha256": "29905e00692ebc7afef62489bfaa302218dc73e9afe3d2bdac2580bbbbde5111"
+        },
+        "libvulkan_radish.so": {
+          "bytes": 49025280,
+          "sha256": "fcd47b1fdc6f0b1ab52bb71ea1d1331ec0c9b98dbe5da050c7e27b4f0f2b6389"
+        },
+        "payload.json": {
+          "bytes": 692,
+          "sha256": "b7e113c615fa0fa15a09772028b2c04cf87c3e1a2938a08dfb6923a5078df2f6"
+        }
+      },
+      "raw_files": {
+        "run-00.f32": {
+          "bytes": 131088,
+          "sha256": "2f45c7070bfb1ce7e4673f5e243908abf273754fde1d23761625530a0205f612"
+        },
+        "run-01.f32": {
+          "bytes": 131088,
+          "sha256": "5c7cc1b6f77c91baf6be6110786bc3da6d06d11ead1b89c73466444b8855e3d6"
+        },
+        "run-02.f32": {
+          "bytes": 131088,
+          "sha256": "14e3cf903a6e7dbe17d98be28daab07311ec671a6a2f43f376391ad4ed09eecc"
+        },
+        "run-03.f32": {
+          "bytes": 131088,
+          "sha256": "523e9d07fe4ac40cd8ea919d3aec529d48bbe2e35a535b6e7ee11fe32489cc25"
+        },
+        "run-04.f32": {
+          "bytes": 131088,
+          "sha256": "7d2d2d6c9d32df202401a2bac25c12c1ca3d6e545c0a3a8aafc8ebc18941c431"
+        },
+        "run-05.f32": {
+          "bytes": 131088,
+          "sha256": "e54f8bf12a64a78b1fd4f54894eae3ad94cda7056be2d1d2559a28d562ac9195"
+        },
+        "run-06.f32": {
+          "bytes": 131088,
+          "sha256": "33c7effd8f941ccf5ccb7004d92fab34913262f7a5d399ca4f5cdb3dbf7ccdf9"
+        },
+        "run-07.f32": {
+          "bytes": 131088,
+          "sha256": "72c845332fae3db6e0b0f56546d0164e6e9dc786121802945ed8112e68cf524e"
+        },
+        "run-08.f32": {
+          "bytes": 131088,
+          "sha256": "9a5060906643e0a1cd2cd8a7d2b20023bbd5c6bed140f90d9e58a3c99bb88040"
+        },
+        "run-09.f32": {
+          "bytes": 131088,
+          "sha256": "782efd551dc8c4cd50b0ad0bcaad5c92d70aa28276690a4fa55591915e3e93b3"
+        },
+        "run-10.f32": {
+          "bytes": 131088,
+          "sha256": "d9dcff573f224edcea39706f39c2afec833281280ff22f9646b9519d538bd0d2"
+        },
+        "run-11.f32": {
+          "bytes": 131088,
+          "sha256": "637b94647ae5eea5bc075ee9d467e9a24a385e3654edadcb280ae70ebd9d455a"
+        },
+        "seeds-before.f32": {
+          "bytes": 131088,
+          "sha256": "da9dabd7f1c391bec848ac0efabe9526792dbb36ad7da71c09cab8ad0748aea7"
+        },
+        "seeds-after.f32": {
+          "bytes": 131088,
+          "sha256": "da9dabd7f1c391bec848ac0efabe9526792dbb36ad7da71c09cab8ad0748aea7"
+        },
+        "coeff-before.f32": {
+          "bytes": 32,
+          "sha256": "05c85a21480215675fe9eacbb37ad02d652686f860b9d5ebf363b677ca658c97"
+        },
+        "coeff-after.f32": {
+          "bytes": 32,
+          "sha256": "05c85a21480215675fe9eacbb37ad02d652686f860b9d5ebf363b677ca658c97"
+        },
+        "result.json": {
+          "bytes": 2640,
+          "sha256": "2b27d7993d3be6341085eea5da8e9ac572f15036a25b38f751269161f3286251"
+        }
+      },
+      "run_log": {
+        "bytes": 14474,
+        "sha256": "b94530e83f7d8c3478f13f797f223a0d7f173f7556dd8294536e343ebc78b376"
+      },
+      "scope": "Execution/assets/services/faults/raw captures passed. Compiler admission and diagnostic timing interpretation require separate root/reviewer audit."
+    }
+  },
+  "canonical_native_identity": {
+    "status": "exact compiler/native evidence identity",
+    "prior_compile": "/run/media/jethac/Shared/radish/gpu-mad-unroll-current-v2-0045/compile",
+    "current_compile": "/run/media/jethac/Shared/radish/gpu-mad-unroll-current-v3-0045/compile",
+    "mesa_bytes": 282064,
+    "mesa_sha256": "8dee1e8aa062d8e009347b8205fe5e3eddbc26fa2c3230bf3a06841197d6ddc8",
+    "binary_pins_identical": true,
+    "prior_native_review": "4dde9ff6a007ed93bb3e0edaccba25280874d0772f8b9055e902ec88204e8ee3",
+    "metadata_only": "Current runner canonicalizes payload JSON; compact ICD route and all binary bytes/compilation settings remain exact."
+  },
+  "history": {
+    "initial_setup_failure": "/run/media/jethac/Shared/radish/gpu-mad-unroll-current-0045/compile/failure.json",
+    "observed_order_compile": "/run/media/jethac/Shared/radish/gpu-mad-unroll-current-v2-0045/compile",
+    "correction": "Payload metadata uses recursive sorted keys on producer and verifier. Compact ICD serialization, all per-asset identity checks, original workload/selectors/oracles and controls remain unchanged."
+  },
+  "reproduction": "Private overlay against the three exact prior-source baselines pinned in release; requires the published explicit-device ncnn API and selected fa947 archive. The private runner records measured absolute workspace paths and helper hash. Existing original0040 public diagnostic remains unchanged."
+}

@@ -1,5 +1,13 @@
 # Radish status
 
+## Current selected-stack diagnostic, 2026-11-02
+
+The unchanged balanced arithmetic workload now passes on the selected fcd driver and fa947 ncnn archive with an explicit verified loader and an owned, workload-scoped robustness-disabled device. Both native selectors remain exact: 8/12 native units, 16 full/zero half registers, one loop, no private/shared storage, and 268,435,456 FP32 operations per dispatch. All 393,216 output values, 48 guard values, input readbacks and 16 raw files pass independently.
+
+Across the original four measured calls per program, mean GPU timestamp intervals are **12.631185 ms → 11.916458 ms**, a **5.6584% reduction**, with all four balanced adjacent pairs faster. Fixed work divided by the mean interval gives **21.2518 → 22.5264 GFLOP/s**. These are elapsed dispatch intervals including setup and queued work; they do not isolate ALU-active time, occupancy or peak throughput. No model shader, model performance result or selected inference payload changes.
+
+[Exact source/build/native/raw/timestamp evidence](results/current-mad-diagnostic-0045.json) preserves the setup-only metadata-order failure and the later canonical serialization correction. The [private source overlay](patches/0045-current-mad-private-device.patch) leaves the original GLSL, work, oracle, native selectors and device bounds unchanged. Its measured workspace paths/helper pin are explicit; the original 0040 reproduction below remains historical and unchanged.
+
 ## 2026-11-02: public byte storage and timeline semaphores pass separate consumers
 
 The next isolated checkpoint enables only `storageBuffer8BitAccess` under `VK_KHR_8bit_storage`; other 8-bit storage/arithmetic features remain false. A Vulkan 1.0 module with exactly `Shader` and `StorageBuffer8BitAccess` passes five ranges of 1/2/3/5/64 bytes, dynamic bases 32–96, all 500 output words and complete four-allocation checks per case. Four writers targeting separate bytes of one word preserve their neighbors. Actual native 17 uses 8F/7H, aligned U32 loads/atomic mask stores and the existing workgroup barrier. The scope takes 818 ms, 10.3 MiB, zero swap.
