@@ -1,5 +1,5 @@
 {
-  "status": "Retained evidence contains482 distinct original CTS Pass cases; not a full conformance denominator",
+  "status": "Retained evidence contains538 distinct original CTS Pass names; not a full conformance denominator. Modified queue-dedup robustness outcomes excluded.",
   "partitions": {
     "information": 5,
     "SPIR-V versions": 4,
@@ -29,9 +29,13 @@
     "Compute images large read": 1,
     "Compute images large write": 1,
     "Compute builtins and singleton groups": 13,
-    "Compute Amber": 7
+    "Compute Amber": 7,
+    "Core memory binding partition00": 14,
+    "Core memory binding partition01": 14,
+    "Core memory binding partition02": 14,
+    "Core memory binding partition03": 14
   },
-  "unique_count": 482,
+  "unique_count": 538,
   "names": [
     "dEQP-VK.api.array.oversized_array.core.get_pipeline_cache_data",
     "dEQP-VK.api.descriptor_pool.out_of_pool_memory",
@@ -391,6 +395,62 @@
     "dEQP-VK.info.device_properties",
     "dEQP-VK.info.device_queue_family_properties",
     "dEQP-VK.info.physical_devices",
+    "dEQP-VK.memory.binding.aliasing.suballocated.buffer_1048577",
+    "dEQP-VK.memory.binding.aliasing.suballocated.buffer_257",
+    "dEQP-VK.memory.binding.aliasing.suballocated.buffer_33",
+    "dEQP-VK.memory.binding.aliasing.suballocated.buffer_4087",
+    "dEQP-VK.memory.binding.aliasing.suballocated.buffer_8095",
+    "dEQP-VK.memory.binding.aliasing.suballocated.image_257_257",
+    "dEQP-VK.memory.binding.aliasing.suballocated.image_257_33",
+    "dEQP-VK.memory.binding.aliasing.suballocated.image_257_8",
+    "dEQP-VK.memory.binding.aliasing.suballocated.image_33_257",
+    "dEQP-VK.memory.binding.aliasing.suballocated.image_33_33",
+    "dEQP-VK.memory.binding.aliasing.suballocated.image_33_8",
+    "dEQP-VK.memory.binding.aliasing.suballocated.image_8_257",
+    "dEQP-VK.memory.binding.aliasing.suballocated.image_8_33",
+    "dEQP-VK.memory.binding.aliasing.suballocated.image_8_8",
+    "dEQP-VK.memory.binding.regular.dedicated.buffer_1048577",
+    "dEQP-VK.memory.binding.regular.dedicated.buffer_257",
+    "dEQP-VK.memory.binding.regular.dedicated.buffer_33",
+    "dEQP-VK.memory.binding.regular.dedicated.buffer_4087",
+    "dEQP-VK.memory.binding.regular.dedicated.buffer_8095",
+    "dEQP-VK.memory.binding.regular.dedicated.image_257_257",
+    "dEQP-VK.memory.binding.regular.dedicated.image_257_33",
+    "dEQP-VK.memory.binding.regular.dedicated.image_257_8",
+    "dEQP-VK.memory.binding.regular.dedicated.image_33_257",
+    "dEQP-VK.memory.binding.regular.dedicated.image_33_33",
+    "dEQP-VK.memory.binding.regular.dedicated.image_33_8",
+    "dEQP-VK.memory.binding.regular.dedicated.image_8_257",
+    "dEQP-VK.memory.binding.regular.dedicated.image_8_33",
+    "dEQP-VK.memory.binding.regular.dedicated.image_8_8",
+    "dEQP-VK.memory.binding.regular.overallocated.buffer_1048577",
+    "dEQP-VK.memory.binding.regular.overallocated.buffer_257",
+    "dEQP-VK.memory.binding.regular.overallocated.buffer_33",
+    "dEQP-VK.memory.binding.regular.overallocated.buffer_4087",
+    "dEQP-VK.memory.binding.regular.overallocated.buffer_8095",
+    "dEQP-VK.memory.binding.regular.overallocated.image_257_257",
+    "dEQP-VK.memory.binding.regular.overallocated.image_257_33",
+    "dEQP-VK.memory.binding.regular.overallocated.image_257_8",
+    "dEQP-VK.memory.binding.regular.overallocated.image_33_257",
+    "dEQP-VK.memory.binding.regular.overallocated.image_33_33",
+    "dEQP-VK.memory.binding.regular.overallocated.image_33_8",
+    "dEQP-VK.memory.binding.regular.overallocated.image_8_257",
+    "dEQP-VK.memory.binding.regular.overallocated.image_8_33",
+    "dEQP-VK.memory.binding.regular.overallocated.image_8_8",
+    "dEQP-VK.memory.binding.regular.suballocated.buffer_1048577",
+    "dEQP-VK.memory.binding.regular.suballocated.buffer_257",
+    "dEQP-VK.memory.binding.regular.suballocated.buffer_33",
+    "dEQP-VK.memory.binding.regular.suballocated.buffer_4087",
+    "dEQP-VK.memory.binding.regular.suballocated.buffer_8095",
+    "dEQP-VK.memory.binding.regular.suballocated.image_257_257",
+    "dEQP-VK.memory.binding.regular.suballocated.image_257_33",
+    "dEQP-VK.memory.binding.regular.suballocated.image_257_8",
+    "dEQP-VK.memory.binding.regular.suballocated.image_33_257",
+    "dEQP-VK.memory.binding.regular.suballocated.image_33_33",
+    "dEQP-VK.memory.binding.regular.suballocated.image_33_8",
+    "dEQP-VK.memory.binding.regular.suballocated.image_8_257",
+    "dEQP-VK.memory.binding.regular.suballocated.image_8_33",
+    "dEQP-VK.memory.binding.regular.suballocated.image_8_8",
     "dEQP-VK.pipeline.monolithic.cache.compute_tests.compute_stage",
     "dEQP-VK.pipeline.monolithic.derivative.compute.derivative_by_handle",
     "dEQP-VK.pipeline.monolithic.derivative.compute.derivative_by_index",
@@ -632,12 +692,28 @@
     "Compute Amber": {
       "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-basic-amber/probe/runner-result.json",
       "sha256": "03da4262db5951ec9729f9ea9a7ddbff0b402abfe36b39aa801381b255c93956"
+    },
+    "Core memory binding partition00": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-memory-binding-00/probe/runner-result.json",
+      "sha256": "7b9971c180648b128cda3dc1ad6ca9459f15bfbe82e914412ac725fe95a367ca"
+    },
+    "Core memory binding partition01": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-memory-binding-01/probe/runner-result.json",
+      "sha256": "7aba46b3ce9d6a232fb2170f0926dee003873426e7a3c67c158341ab81aec7d7"
+    },
+    "Core memory binding partition02": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-memory-binding-02/probe/runner-result.json",
+      "sha256": "20e78a53dd72fe8ebe3e77a719b2667b7c7998ce153a6bc8805d7e7552b1f9c9"
+    },
+    "Core memory binding partition03": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-memory-binding-03/probe/runner-result.json",
+      "sha256": "39317bbe9914d56e0a0c9ae0049d97b78e88ece088c85592274262b2f455ea4e"
     }
   },
   "limitations": "Separate historical revisions/candidates, not one full conformance run; original oracle limits preserved. Failed historical info/ETC cases were corrected and later passed; custom42 strict sRGB mismatches remain unresolved. Original mistyped cache case0/0 is not a case or pass.",
   "source_receipt_identity": {
-    "path": "/run/media/jethac/Shared/radish/compute11-verified-case-count-v6-0045.json",
-    "bytes": 43406,
-    "sha256": "7b0e675a0c141a23bae0e0ca35e308986b382bedf64fc616df94f79a5c9b15d8"
+    "path": "/run/media/jethac/Shared/radish/compute11-verified-case-count-v7-0045.json",
+    "bytes": 48168,
+    "sha256": "b926b7a76ac61271bd82833f9bfaa7cf92be57e46f4e8636ab7e25b295704160"
   }
 }

@@ -1,0 +1,57 @@
+{
+  "status": "Private modified-CTS host fixture correction only, not a driver change or originalCTS result",
+  "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+  "patch": {
+    "path": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-0045/queue-dedup.patch",
+    "sha256": "64a3b07ba08b52ae8e7b82b9e444802c288530813f06c3948278b6184b7501fc"
+  },
+  "preimage": {
+    "path": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-0045/source/vktRobustnessUtil.cpp",
+    "sha256": "149ab81ab08e91ebc7480a4bbd2c4419b5a7c6d21c1a8bd4164e28598773f312"
+  },
+  "candidate": {
+    "path": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-0045/candidate/vktRobustnessUtil.cpp",
+    "sha256": "8e1c263c23dbe83d85326f50719cceaff50bfd2c4040cd2b319c1f7e78f41406"
+  },
+  "source_pins": {
+    "context": {
+      "original": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/vktTestCase.cpp",
+      "snapshot": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-0045/source/vktTestCase.cpp",
+      "sha256": "093936313a9d8489c2ff08fd493445cc8e4e9235ed559597bcf95bd84c6a97fc"
+    },
+    "tests": {
+      "original": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/robustness/vktRobustnessBufferAccessTests.cpp",
+      "snapshot": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-0045/source/vktRobustnessBufferAccessTests.cpp",
+      "sha256": "d4f33643ca06c5e00f3066c0572297b35e324b4034802ff73fc34b0c1c6b5066"
+    },
+    "driver_device": {
+      "original": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_device.c",
+      "snapshot": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-0045/source/rd_device.c",
+      "sha256": "b47a9e92dbdcca9ef58f62066c03d3b10a6ba4cb795a7a737ccfe1c4e67021df"
+    },
+    "driver_instance": {
+      "original": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_instance.c",
+      "snapshot": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-0045/source/rd_instance.c",
+      "sha256": "c5763ff7a03fed9a13aebf291eeae5c182cfb79eba83c1b839d74d67a0682bac"
+    },
+    "spirv_grammar": {
+      "original": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/compiler/spirv/spirv.core.grammar.json",
+      "snapshot": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-0045/source/spirv.core.grammar.json",
+      "sha256": "db8581272b63d232268094a47b68d18a0464fc911e06004d57419924fe660ba4"
+    }
+  },
+  "diagnosis": [
+    "Original Context first prefers GRAPHICS|COMPUTE but falls back to COMPUTE; sole compute-only family0 therefore becomes universal0.",
+    "Original Context separately finds COMPUTE excludingGRAPHICS, also family0.",
+    "Original helper adds universal info then appends dedicated-compute info whenever index!=-1; on this device both queueFamilyIndex0/flags0 are duplicated.",
+    "VUID02802 requires (queueFamilyIndex,flags) pair uniqueness; rd_CreateDevice correctly rejects infoCount2 on actual single-family/queue device."
+  ],
+  "change": "Append compute queue only when present and different from universal index. Short-circuit protects -1 unsigned conversion; graphics+separate-compute behavior unchanged.",
+  "preserved": [
+    "All original tests, shaders, source options, input values, descriptor ranges, reference oracles, dispatch32x32x1/local1, barriers and90s384MiB/log/fault/reserve controls.",
+    "OriginalCTS source and binary0e715 remain immutable; build corrected source in isolated clone/sibling.",
+    "Modified-harness outcomes must be labeled and excluded from originalCTS uniquePass counts."
+  ],
+  "format_gate": "Corecompute registration204 names;66Int64 names require unavailable feature/extension. SixA2B10G10R10_UNORM texel names generate writeonly imageBuffer rgb10_a2, which requires StorageImageExtendedFormats per exact grammar; false optionalbit does not become legal merely because per-format bufferFeatures are advertised. These6 excluded before final legal132 shader-domain plan.",
+  "validation": "Source/host-only handoff; owner builds and batch reviews before bounded native/functional scope. No invalid original device run requested."
+}

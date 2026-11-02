@@ -1,0 +1,250 @@
+{
+  "status": "PASS isolated modified host-fixture source/build; device results separate",
+  "source": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-0045/release.json",
+      "bytes": 4306,
+      "sha256": "401207abdc59e6f2b4f0a0aabaa2ecc80e4cefb7292ceed0bdd265eebf6ef666"
+    },
+    "result": {
+      "status": "Private modified-CTS host fixture correction only, not a driver change or originalCTS result",
+      "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+      "patch": {
+        "path": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-0045/queue-dedup.patch",
+        "sha256": "64a3b07ba08b52ae8e7b82b9e444802c288530813f06c3948278b6184b7501fc"
+      },
+      "preimage": {
+        "path": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-0045/source/vktRobustnessUtil.cpp",
+        "sha256": "149ab81ab08e91ebc7480a4bbd2c4419b5a7c6d21c1a8bd4164e28598773f312"
+      },
+      "candidate": {
+        "path": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-0045/candidate/vktRobustnessUtil.cpp",
+        "sha256": "8e1c263c23dbe83d85326f50719cceaff50bfd2c4040cd2b319c1f7e78f41406"
+      },
+      "source_pins": {
+        "context": {
+          "original": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/vktTestCase.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-0045/source/vktTestCase.cpp",
+          "sha256": "093936313a9d8489c2ff08fd493445cc8e4e9235ed559597bcf95bd84c6a97fc"
+        },
+        "tests": {
+          "original": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/robustness/vktRobustnessBufferAccessTests.cpp",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-0045/source/vktRobustnessBufferAccessTests.cpp",
+          "sha256": "d4f33643ca06c5e00f3066c0572297b35e324b4034802ff73fc34b0c1c6b5066"
+        },
+        "driver_device": {
+          "original": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_device.c",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-0045/source/rd_device.c",
+          "sha256": "b47a9e92dbdcca9ef58f62066c03d3b10a6ba4cb795a7a737ccfe1c4e67021df"
+        },
+        "driver_instance": {
+          "original": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_instance.c",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-0045/source/rd_instance.c",
+          "sha256": "c5763ff7a03fed9a13aebf291eeae5c182cfb79eba83c1b839d74d67a0682bac"
+        },
+        "spirv_grammar": {
+          "original": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/compiler/spirv/spirv.core.grammar.json",
+          "snapshot": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-0045/source/spirv.core.grammar.json",
+          "sha256": "db8581272b63d232268094a47b68d18a0464fc911e06004d57419924fe660ba4"
+        }
+      },
+      "diagnosis": [
+        "Original Context first prefers GRAPHICS|COMPUTE but falls back to COMPUTE; sole compute-only family0 therefore becomes universal0.",
+        "Original Context separately finds COMPUTE excludingGRAPHICS, also family0.",
+        "Original helper adds universal info then appends dedicated-compute info whenever index!=-1; on this device both queueFamilyIndex0/flags0 are duplicated.",
+        "VUID02802 requires (queueFamilyIndex,flags) pair uniqueness; rd_CreateDevice correctly rejects infoCount2 on actual single-family/queue device."
+      ],
+      "change": "Append compute queue only when present and different from universal index. Short-circuit protects -1 unsigned conversion; graphics+separate-compute behavior unchanged.",
+      "preserved": [
+        "All original tests, shaders, source options, input values, descriptor ranges, reference oracles, dispatch32x32x1/local1, barriers and90s384MiB/log/fault/reserve controls.",
+        "OriginalCTS source and binary0e715 remain immutable; build corrected source in isolated clone/sibling.",
+        "Modified-harness outcomes must be labeled and excluded from originalCTS uniquePass counts."
+      ],
+      "format_gate": "Corecompute registration204 names;66Int64 names require unavailable feature/extension. SixA2B10G10R10_UNORM texel names generate writeonly imageBuffer rgb10_a2, which requires StorageImageExtendedFormats per exact grammar; false optionalbit does not become legal merely because per-format bufferFeatures are advertised. These6 excluded before final legal132 shader-domain plan.",
+      "validation": "Source/host-only handoff; owner builds and batch reviews before bounded native/functional scope. No invalid original device run requested."
+    }
+  },
+  "build": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-build-0045/result.json",
+      "bytes": 2689,
+      "sha256": "6e0b942de57be78e90fe9bbb9d6842cad3f08dab87439a9b03b456bc45e9bd24"
+    },
+    "result": {
+      "status": "PASS isolated AArch64 modified-harness host build; no device qualification",
+      "original_binary": {
+        "path": "/run/media/jethac/Shared/radish/build-cts/external/vulkancts/modules/vulkan/deqp-vk",
+        "bytes": 97536760,
+        "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+      },
+      "baseline_relink": {
+        "path": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-build-0045/deqp-vk-baseline",
+        "bytes": 97536760,
+        "sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660"
+      },
+      "modified_binary": {
+        "path": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-build-0045/deqp-vk-queue-dedup",
+        "bytes": 97536728,
+        "sha256": "4295d5062027bcf6b1d39376e9cd2ac9b685dbe74da3f359d30ee3816d352eb9"
+      },
+      "candidate_source": {
+        "path": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-build-0045/vktRobustnessUtil.cpp",
+        "bytes": 39029,
+        "sha256": "8e1c263c23dbe83d85326f50719cceaff50bfd2c4040cd2b319c1f7e78f41406"
+      },
+      "patch": {
+        "path": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-0045/queue-dedup.patch",
+        "bytes": 678,
+        "sha256": "64a3b07ba08b52ae8e7b82b9e444802c288530813f06c3948278b6184b7501fc"
+      },
+      "old_archive": {
+        "path": "/run/media/jethac/Shared/radish/build-cts/external/vulkancts/modules/vulkan/robustness/libdeqp-vk-robustness.a",
+        "bytes": 1439244,
+        "sha256": "7cc5ba1a2c40fd84972494cf45f9a289eb8a51500b372395f01bd83edc55a78e"
+      },
+      "new_archive": {
+        "path": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-build-0045/libdeqp-vk-robustness.a",
+        "bytes": 1439316,
+        "sha256": "419ce6c5c236fcb9c91eff10da8197f0a2fc8fdd3da456a21c83720a1ec5c2cb"
+      },
+      "changed_archive_members": [
+        "vktRobustnessUtil.cpp.o"
+      ],
+      "unchanged_members": 9,
+      "original_link_inputs": {
+        "path": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-build-0045/original-link-inputs.json",
+        "bytes": 28772,
+        "sha256": "829c5c844067aa2bbbad0f6a1238e5d54dfc576b0cc06fdcd2b9ddbf803d1170"
+      },
+      "dependencies": {
+        "path": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-build-0045/dependencies.json",
+        "bytes": 157680,
+        "sha256": "72bec1d7c73601ee4c3bb803d1316e5d5cabdf0b224ca03b0b81b4436d01857b"
+      },
+      "scope": "Exact original0e715 baseline reproduced from retained link inputs; only reviewed queue-dedup object replaced in isolated archive. All original archives/source/executable remain unchanged. Shaders/oracles/data unmodified. This is a modified CTS harness and its outcomes must not enter originalCTS counts. Driverf222/e699 unchanged."
+    }
+  },
+  "independent": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-0045/independent-source-host-review.json",
+      "bytes": 5478,
+      "sha256": "f569503d02ec9c35c5f33fbe21e51f64c9f65a070b84469eeec80c81cb82df01"
+    },
+    "result": {
+      "status": "PASS finite source and isolated host pairing; no device qualification",
+      "source_release_sha256": "401207abdc59e6f2b4f0a0aabaa2ecc80e4cefb7292ceed0bdd265eebf6ef666",
+      "build_result_sha256": "6e0b942de57be78e90fe9bbb9d6842cad3f08dab87439a9b03b456bc45e9bd24",
+      "patch_sha256": "64a3b07ba08b52ae8e7b82b9e444802c288530813f06c3948278b6184b7501fc",
+      "candidate_sha256": "8e1c263c23dbe83d85326f50719cceaff50bfd2c4040cd2b319c1f7e78f41406",
+      "checks": [
+        "Candidate exactly reconstructs one condition change from preserved baseline. Short-circuit leaves -1 absent; same-family singleton becomes one entry; distinct compute family retains two entries and original priorities/flags.",
+        "All five source provenance pins, original input archives and candidate compiler dependencies rehashed.",
+        "Baseline relink is byte-identical original0e715; modified4295 is AArch64. Candidate link differs only output/dependency paths and exact isolated robustness archive.",
+        "All ten archive members independently compared: only vktRobustnessUtil.cpp.o changed, nine exact. Embedded replacement object equals compiled candidate object.",
+        "Original test/shader/oracle source is unchanged. No driver source or resource/timeout guard changed."
+      ],
+      "member_comparison": [
+        {
+          "name": "vktRobustnessTests.cpp.o",
+          "old_sha256": "ac2e2eba33a37e34b84ff0f392ff4ae2ed6e38df1bbadbfeb7b027c398c5c0ee",
+          "new_sha256": "ac2e2eba33a37e34b84ff0f392ff4ae2ed6e38df1bbadbfeb7b027c398c5c0ee",
+          "equal": true
+        },
+        {
+          "name": "vktRobustnessBufferAccessTests.cpp.o",
+          "old_sha256": "3debabc0fa14e0c48222e33f664daeaf83de86eda0b07698f4372348dc37cd31",
+          "new_sha256": "3debabc0fa14e0c48222e33f664daeaf83de86eda0b07698f4372348dc37cd31",
+          "equal": true
+        },
+        {
+          "name": "vktRobustBufferAccessWithVariablePointersTests.cpp.o",
+          "old_sha256": "0bb94d2b9e4bc872c47801e80a9b9a9c16e10976b18f6c048190c1ba0bc4c04c",
+          "new_sha256": "0bb94d2b9e4bc872c47801e80a9b9a9c16e10976b18f6c048190c1ba0bc4c04c",
+          "equal": true
+        },
+        {
+          "name": "vktRobustnessUtil.cpp.o",
+          "old_sha256": "374420486d44256a5b6e808e01f59a4868d78cbcafbc5089148710cf714b6341",
+          "new_sha256": "74d78f9a438e854def9a53109133f413509bceed283d6be673c4d81e7b517f90",
+          "equal": false
+        },
+        {
+          "name": "vktRobustnessVertexAccessTests.cpp.o",
+          "old_sha256": "db176981fb1f26d63b72d5ec7700887b8ceaed10b5c419882dfca2f8c67a9b1a",
+          "new_sha256": "db176981fb1f26d63b72d5ec7700887b8ceaed10b5c419882dfca2f8c67a9b1a",
+          "equal": true
+        },
+        {
+          "name": "vktRobustnessIndexAccessTests.cpp.o",
+          "old_sha256": "21705826863e9022e24850bce9ccdac4521b6e2b865efc08275bfa125d536868",
+          "new_sha256": "21705826863e9022e24850bce9ccdac4521b6e2b865efc08275bfa125d536868",
+          "equal": true
+        },
+        {
+          "name": "vktNonRobustBufferAccessTests.cpp.o",
+          "old_sha256": "98186111233cf091990f54f2f4a3a3c5c62b87b0edcfb78b658e3a00ec9bb826",
+          "new_sha256": "98186111233cf091990f54f2f4a3a3c5c62b87b0edcfb78b658e3a00ec9bb826",
+          "equal": true
+        },
+        {
+          "name": "vktRobustnessExtsTests.cpp.o",
+          "old_sha256": "fa702889e3d7205c3b1e329518d739033e63c53a0703486e697e8cf61b12b0da",
+          "new_sha256": "fa702889e3d7205c3b1e329518d739033e63c53a0703486e697e8cf61b12b0da",
+          "equal": true
+        },
+        {
+          "name": "vktRobustness1VertexAccessTests.cpp.o",
+          "old_sha256": "1c4190a9a089b00185d377471aa29618192e9bc4c3cd3c7653ee61723188e9a6",
+          "new_sha256": "1c4190a9a089b00185d377471aa29618192e9bc4c3cd3c7653ee61723188e9a6",
+          "equal": true
+        },
+        {
+          "name": "vktRobustnessOOBAccessTests.cpp.o",
+          "old_sha256": "34ffad2038b533933e730abd973efa776f43b24e22bdfb2cb3d0ff8c211c408a",
+          "new_sha256": "34ffad2038b533933e730abd973efa776f43b24e22bdfb2cb3d0ff8c211c408a",
+          "equal": true
+        }
+      ],
+      "link_deltas": [
+        [
+          23,
+          "--dependency-file=/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-build-0045/deqp-vk-baseline.d",
+          "--dependency-file=/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-build-0045/deqp-vk-queue-dedup.d"
+        ],
+        [
+          27,
+          "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-build-0045/deqp-vk-baseline",
+          "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-build-0045/deqp-vk-queue-dedup"
+        ],
+        [
+          55,
+          "/run/media/jethac/Shared/radish/build-cts/external/vulkancts/modules/vulkan/robustness/libdeqp-vk-robustness.a",
+          "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-build-0045/libdeqp-vk-robustness.a"
+        ]
+      ],
+      "binary": {
+        "path": "/run/media/jethac/Shared/radish/compute11-robustness-queue-dedup-build-0045/deqp-vk-queue-dedup",
+        "bytes": 97536728,
+        "sha256": "4295d5062027bcf6b1d39376e9cd2ac9b685dbe74da3f359d30ee3816d352eb9"
+      },
+      "elf": {
+        "original_binary": {
+          "ELF64": true,
+          "machine": 183
+        },
+        "modified_binary": {
+          "ELF64": true,
+          "machine": 183
+        }
+      },
+      "limitations": [
+        "Modified CTS HOST fixture outcomes must remain separate from unmodified original CTS counts.",
+        "No claim of official submission acceptance: test bugfix needs accepted upstream merge or approved waiver before formal submission. No upstream communication performed.",
+        "First legal shader partition still needs its source/runner admission and terminal native/actual evidence."
+      ]
+    }
+  },
+  "original_binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
+  "modified_binary_sha256": "4295d5062027bcf6b1d39376e9cd2ac9b685dbe74da3f359d30ee3816d352eb9",
+  "scope": "Modified CTS host fixture only. Never original CTS pass counts or official conformance. Driver f222/e699 unchanged."
+}

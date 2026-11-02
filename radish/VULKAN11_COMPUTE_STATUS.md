@@ -13,7 +13,7 @@ All 93 compute cases passed on the same f222/e699 candidate, with the original
 CTS executable, work and oracles. The initial 53/93 snapshot is historical.
 The 28 cases previously run on an older driver were confirmed on this candidate;
 current-candidate results were reused. The retained historical inventory now
-contains 482 distinct original passes, including other groups.
+contains 538 distinct original passes, including other groups.
 
 This 100% applies only to the named compute group. API, SPIR-V, GLSL, memory,
 robustness, images and synchronization contain further applicable requirements;
@@ -403,3 +403,18 @@ The CTS source's incorrect Pass status for the opposite branch remains recorded.
 provide completion evidence only. [Twelve LINEAR clear cases](results/official11-linear-clear-0045.json)
 retain their original conversion, mip, array-range and readback thresholds
 without calling graphics-only constructors.
+
+[The 56 original default memory-binding cases](results/official11-memory-binding-0045.json)
+now pass on the same f222/e699 driver, including regular, dedicated, larger
+dedicated-image and aliasing paths. The original logical-byte checks use the
+existing mapped CPU copy paths; this is public Vulkan memory behavior, not
+GPU copy-engine qualification. Offset-zero and padding limitations are retained.
+
+A [separate modified robustness harness](results/modified-cts-robustness-host-build-0045.json)
+corrects one duplicate queue-family setup condition. It preserves the original
+shader/data/oracles and original binary, and all its results are excluded from
+unmodified CTS counts and official conformance. The driver is unchanged.
+
+The first [12 modified-harness robustness cases](results/modified-cts-robust-buffer-0045.json)
+pass native/resource and original allowed-value checks. The remaining 120
+selected cases continue separately; these 12 add zero original CTS passes.

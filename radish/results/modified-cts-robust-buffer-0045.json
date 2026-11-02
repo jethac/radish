@@ -1,0 +1,836 @@
+{
+  "status": "PASS12/132 source-selected legal robustness cases; remaining120 not yet qualified in this checkpoint",
+  "harness": "MODIFIED CTS HOST FIXTURE4295; excluded from all original CTS counts and official conformance",
+  "first_partition": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/independent-actual-00-review.json",
+      "bytes": 14191,
+      "sha256": "8301468b5c7d6085b387a8f35a2aa0fc7c7bf9a22b724d38a62da30e2a333370"
+    },
+    "result": {
+      "status": "PASS modified CTS host fixture partition00; not originalCTS count",
+      "partition": 0,
+      "capture": "/run/media/jethac/Shared/radish/core-compute-core0045-modified-robustness-00/probe",
+      "source_bounds_v2": {
+        "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/source-bounds-v2.json",
+        "bytes": 17807,
+        "sha256": "e6333997da68b90fccf2fa2d6d6269c634bc7d9b0eba62ccb4b1ec0391b53d85"
+      },
+      "casefile": {
+        "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/cases-00-scalar_copy-r32_uint.txt",
+        "bytes": 1120,
+        "sha256": "5d0dcd56ec83fb9d62424c0ffae0fbee847486b1283cdbe493f0966db2696b30"
+      },
+      "log": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-modified-robustness-00/probe/run.log",
+        "bytes": 4211821,
+        "sha256": "97e909717d54b55bd2b0908924bb0aabd03d24febe48f4cf7c86f528f39519a3"
+      },
+      "result": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-core0045-modified-robustness-00/probe/runner-result.json",
+        "bytes": 3729,
+        "sha256": "9d3e9e0a0b0598629ddfe525c7fa9829e06d00b8da48ae6a01c14b3d8f5e96e0"
+      },
+      "actual": {
+        "cases": 12,
+        "ordered_distinct_qpa": "all Pass/All values OK",
+        "dispatches": 12,
+        "logical_invocations": 12288,
+        "chunks": 192,
+        "submits": 192,
+        "native_programs": 12,
+        "native_units_each": 52,
+        "disassembly_dwords_each": 1664,
+        "code_bytes_each": 6656,
+        "registers_each": "8F9H",
+        "constlen_each": 12,
+        "loops": 0,
+        "shared": 0,
+        "private_instructions": 0,
+        "scalar_output_entries_checked": 192,
+        "log_bytes": 4211821,
+        "service_seconds": 11.4,
+        "peak_MiB": 36.6,
+        "swap": 0
+      },
+      "scope": [
+        "Exact original scalaruint shaders/inputs/ranges1,3,4,32 and permissive core robust1 verifyResult unchanged. All source case invocations and native records match.",
+        "Actual64B input/output allocations, exact descriptor-access ranges and original16 scalar output entries per case independently parsed. Original verifier allows permitted zero/in-bound/OOB write outcomes; this is not robust2 exact-zero qualification.",
+        "Queue-dedup-only modified binary4295 and original f222/e699 used; all outcomes excluded from originalCTS uniquePass counts.",
+        "No driver gap or new source mutation indicated. Assets stable, clean collection/fault/services and original90s384MiB/8MiB logs retained."
+      ],
+      "rows": [
+        {
+          "case": "dEQP-VK.robustness.buffer_access.compute.scalar_copy.r32_uint.oob_storage_read.range_1_byte",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-modified-robustness-00/probe/case-0.qpa",
+            "bytes": 2613,
+            "sha256": "afe9ae69fd7b6c20ad77fbce53c7222857cbd7155efba543137d5b0346ce1785"
+          },
+          "facts": {
+            "inBufferAllocSize": 64,
+            "inBufferMaxAccessRange": 1,
+            "outBufferAllocSize": 64,
+            "outBufferMaxAccessRange": 64,
+            "inIndex": 0,
+            "outIndex": 0
+          },
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaaf697a4a0 grid=32,32,1 local=1,1,1 barrier=0 loops=0 instrlen=52 chunks=16 submits=16 ns=13843879 submit_ns=13282369 submit_max_ns=4056779 result=0",
+          "instructions": 1765,
+          "dwords": 1664,
+          "native_units": 52,
+          "full": 8,
+          "half": 9,
+          "constlen": 12,
+          "reported_scalar_results": 16
+        },
+        {
+          "case": "dEQP-VK.robustness.buffer_access.compute.scalar_copy.r32_uint.oob_storage_read.range_32_bytes",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-modified-robustness-00/probe/case-1.qpa",
+            "bytes": 2497,
+            "sha256": "1ad46d954cb83467552853935fa17d623f6f09256f4c0105c8cd0f0469d79bf6"
+          },
+          "facts": {
+            "inBufferAllocSize": 64,
+            "inBufferMaxAccessRange": 32,
+            "outBufferAllocSize": 64,
+            "outBufferMaxAccessRange": 64,
+            "inIndex": 0,
+            "outIndex": 0
+          },
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaabedb8520 grid=32,32,1 local=1,1,1 barrier=0 loops=0 instrlen=52 chunks=16 submits=16 ns=13873047 submit_ns=13345233 submit_max_ns=3456256 result=0",
+          "instructions": 1765,
+          "dwords": 1664,
+          "native_units": 52,
+          "full": 8,
+          "half": 9,
+          "constlen": 12,
+          "reported_scalar_results": 16
+        },
+        {
+          "case": "dEQP-VK.robustness.buffer_access.compute.scalar_copy.r32_uint.oob_storage_read.range_3_bytes",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-modified-robustness-00/probe/case-2.qpa",
+            "bytes": 2616,
+            "sha256": "ab6ecb6713e94b7f262fecf2454ccda10aa99c8a9fcfa46b279aff8536617c67"
+          },
+          "facts": {
+            "inBufferAllocSize": 64,
+            "inBufferMaxAccessRange": 3,
+            "outBufferAllocSize": 64,
+            "outBufferMaxAccessRange": 64,
+            "inIndex": 0,
+            "outIndex": 0
+          },
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaae30b0520 grid=32,32,1 local=1,1,1 barrier=0 loops=0 instrlen=52 chunks=16 submits=16 ns=14282370 submit_ns=13779973 submit_max_ns=3676934 result=0",
+          "instructions": 1765,
+          "dwords": 1664,
+          "native_units": 52,
+          "full": 8,
+          "half": 9,
+          "constlen": 12,
+          "reported_scalar_results": 16
+        },
+        {
+          "case": "dEQP-VK.robustness.buffer_access.compute.scalar_copy.r32_uint.oob_storage_read.range_4_bytes",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-modified-robustness-00/probe/case-3.qpa",
+            "bytes": 2577,
+            "sha256": "f88ed13dd42bedf26e61109b6889e26c8233d2f1ed1bceaccc6dde14eb8c3577"
+          },
+          "facts": {
+            "inBufferAllocSize": 64,
+            "inBufferMaxAccessRange": 4,
+            "outBufferAllocSize": 64,
+            "outBufferMaxAccessRange": 64,
+            "inIndex": 0,
+            "outIndex": 0
+          },
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaaff574520 grid=32,32,1 local=1,1,1 barrier=0 loops=0 instrlen=52 chunks=16 submits=16 ns=14462944 submit_ns=13911224 submit_max_ns=4416102 result=0",
+          "instructions": 1765,
+          "dwords": 1664,
+          "native_units": 52,
+          "full": 8,
+          "half": 9,
+          "constlen": 12,
+          "reported_scalar_results": 16
+        },
+        {
+          "case": "dEQP-VK.robustness.buffer_access.compute.scalar_copy.r32_uint.oob_storage_write.range_1_byte",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-modified-robustness-00/probe/case-4.qpa",
+            "bytes": 2776,
+            "sha256": "f04d38d2e3183e79da5145df3d0159d0a9c72b5556da5c10bd1da944bbc64e76"
+          },
+          "facts": {
+            "inBufferAllocSize": 64,
+            "inBufferMaxAccessRange": 64,
+            "outBufferAllocSize": 64,
+            "outBufferMaxAccessRange": 1,
+            "inIndex": 0,
+            "outIndex": 0
+          },
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaaf3184b50 grid=32,32,1 local=1,1,1 barrier=0 loops=0 instrlen=52 chunks=16 submits=16 ns=14295131 submit_ns=13759452 submit_max_ns=4019227 result=0",
+          "instructions": 1765,
+          "dwords": 1664,
+          "native_units": 52,
+          "full": 8,
+          "half": 9,
+          "constlen": 12,
+          "reported_scalar_results": 16
+        },
+        {
+          "case": "dEQP-VK.robustness.buffer_access.compute.scalar_copy.r32_uint.oob_storage_write.range_32_bytes",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-modified-robustness-00/probe/case-5.qpa",
+            "bytes": 2812,
+            "sha256": "9fc47417e818d1d40cf521e9ccc2b5f555dc794e146794add2886f9dd60fc769"
+          },
+          "facts": {
+            "inBufferAllocSize": 64,
+            "inBufferMaxAccessRange": 64,
+            "outBufferAllocSize": 64,
+            "outBufferMaxAccessRange": 32,
+            "inIndex": 0,
+            "outIndex": 0
+          },
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaac71d2b50 grid=32,32,1 local=1,1,1 barrier=0 loops=0 instrlen=52 chunks=16 submits=16 ns=13396015 submit_ns=12793878 submit_max_ns=3514850 result=0",
+          "instructions": 1765,
+          "dwords": 1664,
+          "native_units": 52,
+          "full": 8,
+          "half": 9,
+          "constlen": 12,
+          "reported_scalar_results": 16
+        },
+        {
+          "case": "dEQP-VK.robustness.buffer_access.compute.scalar_copy.r32_uint.oob_storage_write.range_3_bytes",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-modified-robustness-00/probe/case-6.qpa",
+            "bytes": 2779,
+            "sha256": "b36906891e2584e5644b5655826b64b25c5170b5caf4b7cfdff029f1e17edc3d"
+          },
+          "facts": {
+            "inBufferAllocSize": 64,
+            "inBufferMaxAccessRange": 64,
+            "outBufferAllocSize": 64,
+            "outBufferMaxAccessRange": 3,
+            "inIndex": 0,
+            "outIndex": 0
+          },
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaaf99e98e0 grid=32,32,1 local=1,1,1 barrier=0 loops=0 instrlen=52 chunks=16 submits=16 ns=15167371 submit_ns=14613673 submit_max_ns=3801673 result=0",
+          "instructions": 1765,
+          "dwords": 1664,
+          "native_units": 52,
+          "full": 8,
+          "half": 9,
+          "constlen": 12,
+          "reported_scalar_results": 16
+        },
+        {
+          "case": "dEQP-VK.robustness.buffer_access.compute.scalar_copy.r32_uint.oob_storage_write.range_4_bytes",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-modified-robustness-00/probe/case-7.qpa",
+            "bytes": 2788,
+            "sha256": "0e3d3465d3960cd07dc7abc73bc879d31e46d3000e9014feaeaa07f0fecb6d51"
+          },
+          "facts": {
+            "inBufferAllocSize": 64,
+            "inBufferMaxAccessRange": 64,
+            "outBufferAllocSize": 64,
+            "outBufferMaxAccessRange": 4,
+            "inIndex": 0,
+            "outIndex": 0
+          },
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaac33e18e0 grid=32,32,1 local=1,1,1 barrier=0 loops=0 instrlen=52 chunks=16 submits=16 ns=15596331 submit_ns=14767474 submit_max_ns=3891257 result=0",
+          "instructions": 1765,
+          "dwords": 1664,
+          "native_units": 52,
+          "full": 8,
+          "half": 9,
+          "constlen": 12,
+          "reported_scalar_results": 16
+        },
+        {
+          "case": "dEQP-VK.robustness.buffer_access.compute.scalar_copy.r32_uint.oob_uniform_read.range_1_byte",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-modified-robustness-00/probe/case-8.qpa",
+            "bytes": 2613,
+            "sha256": "1eaeb4bdb4c845767f35b1053d4d90b32d47298eccc4a2417c5b293f6df8b501"
+          },
+          "facts": {
+            "inBufferAllocSize": 64,
+            "inBufferMaxAccessRange": 1,
+            "outBufferAllocSize": 64,
+            "outBufferMaxAccessRange": 64,
+            "inIndex": 0,
+            "outIndex": 0
+          },
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaaec5d8860 grid=32,32,1 local=1,1,1 barrier=0 loops=0 instrlen=52 chunks=16 submits=16 ns=14154766 submit_ns=13518566 submit_max_ns=4053913 result=0",
+          "instructions": 1765,
+          "dwords": 1664,
+          "native_units": 52,
+          "full": 8,
+          "half": 9,
+          "constlen": 12,
+          "reported_scalar_results": 16
+        },
+        {
+          "case": "dEQP-VK.robustness.buffer_access.compute.scalar_copy.r32_uint.oob_uniform_read.range_32_bytes",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-modified-robustness-00/probe/case-9.qpa",
+            "bytes": 2497,
+            "sha256": "b38a8623c7b626ac084aa0f924492674e063b29ba3b3ba047681262560e91804"
+          },
+          "facts": {
+            "inBufferAllocSize": 64,
+            "inBufferMaxAccessRange": 32,
+            "outBufferAllocSize": 64,
+            "outBufferMaxAccessRange": 64,
+            "inIndex": 0,
+            "outIndex": 0
+          },
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaaf98b9b50 grid=32,32,1 local=1,1,1 barrier=0 loops=0 instrlen=52 chunks=16 submits=16 ns=16884041 submit_ns=15955863 submit_max_ns=4200893 result=0",
+          "instructions": 1765,
+          "dwords": 1664,
+          "native_units": 52,
+          "full": 8,
+          "half": 9,
+          "constlen": 12,
+          "reported_scalar_results": 16
+        },
+        {
+          "case": "dEQP-VK.robustness.buffer_access.compute.scalar_copy.r32_uint.oob_uniform_read.range_3_bytes",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-modified-robustness-00/probe/case-10.qpa",
+            "bytes": 2617,
+            "sha256": "789ece8f8b4088852c97f3aa3a4f69ee1f930a095fe377199dac0a215da3a349"
+          },
+          "facts": {
+            "inBufferAllocSize": 64,
+            "inBufferMaxAccessRange": 3,
+            "outBufferAllocSize": 64,
+            "outBufferMaxAccessRange": 64,
+            "inIndex": 0,
+            "outIndex": 0
+          },
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaae830db60 grid=32,32,1 local=1,1,1 barrier=0 loops=0 instrlen=52 chunks=16 submits=16 ns=14552683 submit_ns=14046898 submit_max_ns=4014747 result=0",
+          "instructions": 1765,
+          "dwords": 1664,
+          "native_units": 52,
+          "full": 8,
+          "half": 9,
+          "constlen": 12,
+          "reported_scalar_results": 16
+        },
+        {
+          "case": "dEQP-VK.robustness.buffer_access.compute.scalar_copy.r32_uint.oob_uniform_read.range_4_bytes",
+          "status": "Pass",
+          "qpa": {
+            "path": "/run/media/jethac/Shared/radish/core-compute-core0045-modified-robustness-00/probe/case-11.qpa",
+            "bytes": 2578,
+            "sha256": "8a5ba0f854ff73edc27ee0d67d32376d26b1f0b5fdf17879a4e64960d216108d"
+          },
+          "facts": {
+            "inBufferAllocSize": 64,
+            "inBufferMaxAccessRange": 4,
+            "outBufferAllocSize": 64,
+            "outBufferMaxAccessRange": 64,
+            "inIndex": 0,
+            "outIndex": 0
+          },
+          "profile": "RADISH_PROFILE dispatch pipeline=0xaaaac5ba6b60 grid=32,32,1 local=1,1,1 barrier=0 loops=0 instrlen=52 chunks=16 submits=16 ns=15894248 submit_ns=15175131 submit_max_ns=4184226 result=0",
+          "instructions": 1765,
+          "dwords": 1664,
+          "native_units": 52,
+          "full": 8,
+          "half": 9,
+          "constlen": 12,
+          "reported_scalar_results": 16
+        }
+      ]
+    }
+  },
+  "source_plan": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/source-bounds-v2.json",
+      "bytes": 17807,
+      "sha256": "e6333997da68b90fccf2fa2d6d6269c634bc7d9b0eba62ccb4b1ec0391b53d85"
+    },
+    "result": {
+      "status": "Source-bounded 132 legal shader/oracle cases requiring the reviewed modified CTS queue-dedup harness; not original-CTS pass counts",
+      "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+      "driver": "f222ff480f6c9ef3785c446661f12ccacbc91f119b0e7d405347b949b4dc325d / e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc",
+      "catalog": {
+        "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/mustpass/main/vk-default/robustness.txt",
+        "bytes": 13239083,
+        "sha256": "ce915152f8a00dcb8e84857bc6bdcd74e3cd2dc8906a36cc795226a1bd7e269e"
+      },
+      "all_cases": {
+        "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/cases-all-132.txt",
+        "bytes": 12455,
+        "sha256": "85e6ed5057369332e58e4668179c15d4761f5b494ff3d20d75e3e06f256221df"
+      },
+      "counts": {
+        "registered_core_compute": 204,
+        "unavailable_int64": 66,
+        "requires_disabled_storage_image_extended_formats": 6,
+        "legal_shader_oracle_domain": 132,
+        "partitions": 13
+      },
+      "excluded_int64": {
+        "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/excluded-int64-66.txt",
+        "bytes": 6196,
+        "sha256": "0553067fab144f61c08c939d772d67ff6ffd7198d2b01a84495ce673da1cc319"
+      },
+      "excluded_extended": {
+        "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/excluded-storage-image-extended-6.txt",
+        "bytes": 653,
+        "sha256": "023568fa4f57ae80924c7ee3aaf69a9691a31be667646696bafb2864eb38b17c"
+      },
+      "source_pins": {
+        "cts_registration": {
+          "original": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/robustness/vktRobustnessTests.cpp",
+          "snapshot": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/source/vktRobustnessTests.cpp",
+            "bytes": 3606,
+            "sha256": "f77525315e468c01388337bbc08708dd31b2454a8124327195390f06c986e863"
+          }
+        },
+        "cts_buffer_tests": {
+          "original": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/robustness/vktRobustnessBufferAccessTests.cpp",
+          "snapshot": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/source/vktRobustnessBufferAccessTests.cpp",
+            "bytes": 92168,
+            "sha256": "d4f33643ca06c5e00f3066c0572297b35e324b4034802ff73fc34b0c1c6b5066"
+          }
+        },
+        "cts_utility_original": {
+          "original": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/robustness/vktRobustnessUtil.cpp",
+          "snapshot": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/source/vktRobustnessUtil.cpp",
+            "bytes": 38916,
+            "sha256": "149ab81ab08e91ebc7480a4bbd2c4419b5a7c6d21c1a8bd4164e28598773f312"
+          }
+        },
+        "catalog": {
+          "original": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/mustpass/main/vk-default/robustness.txt",
+          "snapshot": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/source/robustness.txt",
+            "bytes": 13239083,
+            "sha256": "ce915152f8a00dcb8e84857bc6bdcd74e3cd2dc8906a36cc795226a1bd7e269e"
+          }
+        },
+        "rd_nir_robust": {
+          "original": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_nir_robust.c",
+          "snapshot": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/source/rd_nir_robust.c",
+            "bytes": 9502,
+            "sha256": "eb7b2f530891fd81fbb5e9d048f2d4c93ad22b10476b0202fb9bca4dda28111c"
+          }
+        },
+        "rd_pipeline": {
+          "original": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_pipeline.c",
+          "snapshot": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/source/rd_pipeline.c",
+            "bytes": 25832,
+            "sha256": "20b6542536c5c34b3e36799f8caf4ee5f3bb52ce5557a0ee1fa260182b2d97e7"
+          }
+        },
+        "rd_descriptor": {
+          "original": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_descriptor.c",
+          "snapshot": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/source/rd_descriptor.c",
+            "bytes": 17524,
+            "sha256": "b3cd22b2ace3540674a9cb98c55d4a9fcd62c1ffcb90fabe37fa478791ceb147"
+          }
+        },
+        "rd_resources": {
+          "original": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_resources.c",
+          "snapshot": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/source/rd_resources.c",
+            "bytes": 27624,
+            "sha256": "8c2c129bcc6129d910fd992a2563de1feae7e675619dc0fa571bd664fb380e3b"
+          }
+        },
+        "rd_memory": {
+          "original": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_memory.c",
+          "snapshot": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/source/rd_memory.c",
+            "bytes": 6238,
+            "sha256": "210d76aecc691fefb8765c60fa677f273a4c4d8f6aac4aa2239ed0f78b8cc9f8"
+          }
+        },
+        "rd_instance": {
+          "original": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_instance.c",
+          "snapshot": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/source/rd_instance.c",
+            "bytes": 13859,
+            "sha256": "c5763ff7a03fed9a13aebf291eeae5c182cfb79eba83c1b839d74d67a0682bac"
+          }
+        },
+        "vk_buffer": {
+          "original": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/vulkan/runtime/vk_buffer.c",
+          "snapshot": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/source/vk_buffer.c",
+            "bytes": 5900,
+            "sha256": "bfe167ad31ca72802b51e0955a767ab9b7184271d793cb310df23882e89146de"
+          }
+        },
+        "spirv_grammar": {
+          "original": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/compiler/spirv/spirv.core.grammar.json",
+          "snapshot": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/source/spirv.core.grammar.json",
+            "bytes": 612052,
+            "sha256": "db8581272b63d232268094a47b68d18a0464fc911e06004d57419924fe660ba4"
+          }
+        }
+      },
+      "partitions": [
+        {
+          "id": 0,
+          "kind": "scalar_copy",
+          "format": "r32_uint",
+          "case_file": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/cases-00-scalar_copy-r32_uint.txt",
+            "bytes": 1120,
+            "sha256": "5d0dcd56ec83fb9d62424c0ffae0fbee847486b1283cdbe493f0966db2696b30"
+          },
+          "count": 12,
+          "dispatches": 12,
+          "logical_invocations": 12288
+        },
+        {
+          "id": 1,
+          "kind": "scalar_copy",
+          "format": "r32_sint",
+          "case_file": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/cases-01-scalar_copy-r32_sint.txt",
+            "bytes": 1120,
+            "sha256": "6c3283a9f4522ea0421ecf25ebef2f5eab32d1adb13257bba8a6b5dcf1358a10"
+          },
+          "count": 12,
+          "dispatches": 12,
+          "logical_invocations": 12288
+        },
+        {
+          "id": 2,
+          "kind": "scalar_copy",
+          "format": "r32_sfloat",
+          "case_file": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/cases-02-scalar_copy-r32_sfloat.txt",
+            "bytes": 1144,
+            "sha256": "4a46d42ddcabd0c5703c51a27a0a596efc38a8f84242f52dd182f29871e83659"
+          },
+          "count": 12,
+          "dispatches": 12,
+          "logical_invocations": 12288
+        },
+        {
+          "id": 3,
+          "kind": "vec4_copy",
+          "format": "r32_uint",
+          "case_file": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/cases-03-vec4_copy-r32_uint.txt",
+            "bytes": 1096,
+            "sha256": "f0d6d938af90925510244ab0f7cc9ecee20651345c9944f9f2ab11a0d2193a5b"
+          },
+          "count": 12,
+          "dispatches": 12,
+          "logical_invocations": 12288
+        },
+        {
+          "id": 4,
+          "kind": "vec4_copy",
+          "format": "r32_sint",
+          "case_file": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/cases-04-vec4_copy-r32_sint.txt",
+            "bytes": 1096,
+            "sha256": "62e3ea789e307438c5ddbfd1357e39cb700080ad33f20c6234647786a2090542"
+          },
+          "count": 12,
+          "dispatches": 12,
+          "logical_invocations": 12288
+        },
+        {
+          "id": 5,
+          "kind": "vec4_copy",
+          "format": "r32_sfloat",
+          "case_file": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/cases-05-vec4_copy-r32_sfloat.txt",
+            "bytes": 1120,
+            "sha256": "e9a7b02e7d5c270d4ff881d8d925318a56e6824ad5796884c72ecdd8e5d194eb"
+          },
+          "count": 12,
+          "dispatches": 12,
+          "logical_invocations": 12288
+        },
+        {
+          "id": 6,
+          "kind": "vec4_member_copy",
+          "format": "r32_uint",
+          "case_file": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/cases-06-vec4_member_copy-r32_uint.txt",
+            "bytes": 882,
+            "sha256": "ced15e07a4c0639fd9a0376fbae83df97885f4f813a2a9eff9717c00d281e726"
+          },
+          "count": 9,
+          "dispatches": 9,
+          "logical_invocations": 9216
+        },
+        {
+          "id": 7,
+          "kind": "vec4_member_copy",
+          "format": "r32_sint",
+          "case_file": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/cases-07-vec4_member_copy-r32_sint.txt",
+            "bytes": 882,
+            "sha256": "e27a1c348a533b1cf2f9eed65cb5d73e304d3e15561532d76b2ce75029e0ed65"
+          },
+          "count": 9,
+          "dispatches": 9,
+          "logical_invocations": 9216
+        },
+        {
+          "id": 8,
+          "kind": "vec4_member_copy",
+          "format": "r32_sfloat",
+          "case_file": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/cases-08-vec4_member_copy-r32_sfloat.txt",
+            "bytes": 900,
+            "sha256": "688b272657d8c884f4673fb5e64335c465958e65786caba1197c2acc1d08ed42"
+          },
+          "count": 9,
+          "dispatches": 9,
+          "logical_invocations": 9216
+        },
+        {
+          "id": 9,
+          "kind": "texel_copy",
+          "format": "r32g32b32a32_uint",
+          "case_file": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/cases-09-texel_copy-r32g32b32a32_uint.txt",
+            "bytes": 611,
+            "sha256": "cb9acfb1ea8ce52e5b38c9e64f9d3c14a53323186e1c6868d22dab2fc5bd7127"
+          },
+          "count": 6,
+          "dispatches": 6,
+          "logical_invocations": 6144
+        },
+        {
+          "id": 10,
+          "kind": "texel_copy",
+          "format": "r32g32b32a32_sint",
+          "case_file": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/cases-10-texel_copy-r32g32b32a32_sint.txt",
+            "bytes": 611,
+            "sha256": "142f9ecb4469b8fd29abc828851f38edb21202985b246990c9b418b8ad07b082"
+          },
+          "count": 6,
+          "dispatches": 6,
+          "logical_invocations": 6144
+        },
+        {
+          "id": 11,
+          "kind": "texel_copy",
+          "format": "r32g32b32a32_sfloat",
+          "case_file": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/cases-11-texel_copy-r32g32b32a32_sfloat.txt",
+            "bytes": 623,
+            "sha256": "828e822c17bdd9a600775a6bed04ddcbfb02f21a0201bd425c5ebbc4ff83daf0"
+          },
+          "count": 6,
+          "dispatches": 6,
+          "logical_invocations": 6144
+        },
+        {
+          "id": 12,
+          "kind": "all5 shader types out_of_alloc",
+          "case_file": {
+            "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/cases-12-out-of-alloc.txt",
+            "bytes": 1250,
+            "sha256": "3d37540400f2c14b1a76d3e8a8642ba5df40ccb8197e61361e600fe916cee817"
+          },
+          "count": 15,
+          "dispatches": 15,
+          "logical_invocations": 15360
+        }
+      ],
+      "first_ready_partition": {
+        "id": 0,
+        "kind": "scalar_copy",
+        "format": "r32_uint",
+        "case_file": {
+          "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/cases-00-scalar_copy-r32_uint.txt",
+          "bytes": 1120,
+          "sha256": "5d0dcd56ec83fb9d62424c0ffae0fbee847486b1283cdbe493f0966db2696b30"
+        },
+        "count": 12,
+        "dispatches": 12,
+        "logical_invocations": 12288
+      },
+      "host_validity": {
+        "problem": "The original custom device helper duplicates queueFamilyIndex0/flags0 when Context universal and dedicated-compute selections coincide. VUID02802. Do not execute this invalid setup or relax driver checks.",
+        "required_harness_patch": "compute11-robustness-queue-dedup-0045/queue-dedup.patch SHA64a3b07ba08b52ae8e7b82b9e444802c288530813f06c3948278b6184b7501fc",
+        "reporting": "Freeze original binary0e715. Isolate patch/build and label every outcome MODIFIED CTS HOST FIXTURE; exclude from original CTS unique Pass count. All test shaders, inputs, options and original oracles remain unchanged."
+      },
+      "format_legality": "All6 A2B10G10R10_UNORM texel cases generate rgb10_a2 output imageStore, requiring StorageImageExtendedFormats even for uniform input. Exact pinned SPIR-V ImageFormat grammar requires capability; current feature bit false. Per-format storage texel admission does not enable shader capability. Exclude6 without feature inflation. Core rgba32f/i/ui texel shaders use mandatory SampledBuffer/ImageBuffer capabilities as appropriate; they do not require StorageImageExtendedFormats. Native uniform/storage texel traits are present. First12 non-texel scalar cases use Shader only. All66 R64 cases excluded by original shaderInt64/atomic-image64 guards.",
+      "geometry": {
+        "local": [
+          1,
+          1,
+          1
+        ],
+        "grid": [
+          32,
+          32,
+          1
+        ],
+        "invocations_per_case": 1024,
+        "dispatches_per_case": 1,
+        "pipeline_creations_per_case": 1,
+        "max_active_descriptors": 3,
+        "max_sampled_texel_buffers": 1,
+        "max_storage_texel_buffers": 2,
+        "max_ubos": 2,
+        "max_ssbos": 2,
+        "push_constants": 0,
+        "shared_bytes": 0,
+        "buffer_request_max_bytes": 64,
+        "buffer_memory_requirement_current_max_bytes": 64,
+        "buffers_per_case": 3,
+        "max_live_data_memory_requirement_bytes": 192,
+        "array_declaration_bytes": 8192,
+        "index_ubo_bytes": 8
+      },
+      "ranges": "Byte ranges1/3/4/32 (vec4_member excludes32); input/output operand64B except member16B; texel ranges1/3 \u00d716B. Current buffer requirements round to64B. out_of_alloc accesses index127 for matrix/vector/scalar/texel or3 for vec4_member, beyond backing but inside original declared128-element arrays except deliberate dynamic member accesses. Original tests retain all accesses.",
+      "oracle": "Original verifyResult walks entire output allocation in4B pieces. It deliberately accepts robust1 allowed results from bound buffer allocation or zero, unchanged/allowed in-bounds values for OOB writes and permitted [0,0,0,x] vectors. Partially OOB words checked by byte spans. In-bounds reads exact except original float helper epsilon0.001. Preserve these broad core robust1 expectations; do not substitute robust2 exact-zero behavior, change thresholds, or claim exact full poison guards.",
+      "implementation_trace": [
+        "rd_descriptor materializes exact vk_buffer_range; no rounded descriptor range. Resource constants emit exact descriptor.range and bufferView.elements.",
+        "rd_pipeline converts UBO load into SSBO load before robust pass; byte offset32 is checked component-by-component for complete1/2/4B in-range access with size>=bytes and offset<=size-bytes. Component offset unsigned wrap is separately excluded.",
+        "RBA invalid scalar reads become zero and invalid stores/atomics are skipped. Storage texel buffer accesses test unsigned coordinate<logical image size. Uniform texel txf uses safe0 coordinate and selects zero for invalid coordinates.",
+        "Subword widening follows original logical byte bounds, compiler robust_modes remains enabled. Actual core slice uses32-bit only. No source-proven driver gap presently found."
+      ],
+      "admission": "Build modified host fixture first and obtain independent patch/plan/runner review. Start partition00 uint scalar12, original90s384MiB plus8MiB log/fault/reserve controls, all source work unchanged. Review native/resource/code/oracles and retained log size before further source-bounded partitions; do not enlarge guards or repeat a failure unchanged. Each partition<=15 cases, largest allocation192B in current driver plus normal runtime/compiler. No aggregate132 invocation admitted as one90s scope.",
+      "limits": [
+        "These132 are the legal buffer_access.compute shader/oracle domain under current feature bits, NOT complete robustness CTS or full Vulkan compute. VariablePointers, robust2, descriptor heaps and pipeline robustness remain false and outside this slice.",
+        "1024 invocations intentionally execute the same original access pattern; this slice is not a new cross-invocation memory synchronization proof.",
+        "No shader/native/runtime/device result from source inspection. Source-backed host fix is the only authored change."
+      ],
+      "metadata_revision": {
+        "preserves": {
+          "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/source-bounds.json",
+          "sha256": "cf97d6999e400be08bf1bfc58103aad7d5c9f4e81c08424ce6bc7b98655e12f2"
+        },
+        "change": "Correct full-texel module capability wording only. All132 names, source hashes, partition00, geometry, shaders and original oracles unchanged.",
+        "review_scope": "bc734c37 remains first12 source/partition gate; unchanged first12 Shader-only. This correction does not admit an extra feature or device scope."
+      }
+    }
+  },
+  "source_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/independent-source-inventory-review.json",
+      "bytes": 3520,
+      "sha256": "bc734c378cf63346ce47442bf357018dca9a658e245a3bdd66c959c30b5f793c"
+    },
+    "result": {
+      "status": "PASS finite source/registration/oracle counterpart; first12 admission only, no device outcome",
+      "plan_sha256": "cf97d6999e400be08bf1bfc58103aad7d5c9f4e81c08424ce6bc7b98655e12f2",
+      "counts": {
+        "registered_core_compute": 204,
+        "excluded_int64": 66,
+        "excluded_extended_image_format": 6,
+        "legal_shader_domain": 132,
+        "disjoint_partitions": 13,
+        "first_partition": 12
+      },
+      "first_inventory": {
+        "path": "/run/media/jethac/Shared/radish/compute11-robust-buffer-core-next-0045/cases-00-scalar_copy-r32_uint.txt",
+        "bytes": 1120,
+        "sha256": "5d0dcd56ec83fb9d62424c0ffae0fbee847486b1283cdbe493f0966db2696b30"
+      },
+      "checks": [
+        "Independently reconstructed exact204 registered names and matched pinned mustpass catalog; exact66 Int64 and6 rgb10_a2 exclusions; disjoint132 union.",
+        "First12 exactly scalar uint UBO read/SSBO read/write crossed with ranges1/3/4/32 bytes; compute core path uses robustBufferAccess=true and no optional shader capability.",
+        "Original shader copies16 scalar uint values, local1/grid32x32x1, one pipeline and one dispatch per case;3 descriptor bindings, indices8B, input/output requests<=64B. All1024 invocations repeat the original pattern; no cross-invocation synchronization claim.",
+        "Actual f222 source pins equal retained implementation trace. Descriptor ranges stay exact logical ranges; current memory requirement64B per buffer is not descriptor enlargement or a12KiB BO footprint claim.",
+        "Original verifier examines full output allocation in4B steps, preserves core robust1 permissible values/partial-byte and unchanged-write options. It is not robust2 zero-only or custom guard qualification.",
+        "Host flush, fence, invalidate and original result status preserved; queue-dedup candidate64a3 source/build independently reviewed f569503d, no shader/oracle edits."
+      ],
+      "native_gate": "First12 actual module/native resources, dispatch count and per-case oracles still required; no aggregate132 scope or unreviewed later partition launched by this receipt. Original90s384MiB plus per-case fault stop.",
+      "trace": {
+        "rd_nir_robust.c": {
+          "sha256": "eb7b2f530891fd81fbb5e9d048f2d4c93ad22b10476b0202fb9bca4dda28111c",
+          "same_as_f222_source": true
+        },
+        "rd_pipeline.c": {
+          "sha256": "20b6542536c5c34b3e36799f8caf4ee5f3bb52ce5557a0ee1fa260182b2d97e7",
+          "same_as_f222_source": true
+        },
+        "rd_descriptor.c": {
+          "sha256": "b3cd22b2ace3540674a9cb98c55d4a9fcd62c1ffcb90fabe37fa478791ceb147",
+          "same_as_f222_source": true
+        },
+        "rd_resources.c": {
+          "sha256": "8c2c129bcc6129d910fd992a2563de1feae7e675619dc0fa571bd664fb380e3b",
+          "same_as_f222_source": true
+        },
+        "rd_memory.c": {
+          "sha256": "210d76aecc691fefb8765c60fa677f273a4c4d8f6aac4aa2239ed0f78b8cc9f8",
+          "same_as_f222_source": true
+        },
+        "rd_instance.c": {
+          "sha256": "c5763ff7a03fed9a13aebf291eeae5c182cfb79eba83c1b839d74d67a0682bac",
+          "same_as_f222_source": true
+        }
+      },
+      "scope_limits": [
+        "All modified harness outcomes excluded from unmodified original CTS counts.",
+        "Current source registration breaks at first nonfloat for regular mat4 variants: only3 out_of_alloc mat4 siblings exist; no invented missing regular matrix cases.",
+        "StorageImageExtendedFormats remains false; the6 rgb10_a2 shaders are excluded despite advertised format traits.",
+        "No complete robustness conformance or true allocation-overrun safety conclusion from source bounds alone."
+      ]
+    }
+  },
+  "runner_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-modified-robustness-00-runner-0045/independent-runner-review.json",
+      "bytes": 1506,
+      "sha256": "4281b16dc2e51ff67560fd797962f5669a2cb5f35485bcefb56c15194bb0592e"
+    },
+    "result": {
+      "status": "PASS finite first12 modified-host runner derivative",
+      "runner": {
+        "path": "/run/media/jethac/Shared/radish/compute11-modified-robustness-00-runner-0045/device-modified-cts.py",
+        "sha256": "ffc771519cdce7615608ac8b9ac96a628bc3a00746a19d51c0b58c22e3c3d431"
+      },
+      "baseline": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-final-common-runner-0045/device-official-cts.py",
+        "sha256": "f3a41e53576fa08dc1e421bedb9c7f3a50be51d07d9fd7bd973b3955d53eccae"
+      },
+      "source_plan_counterpart_sha256": "bc734c378cf63346ce47442bf357018dca9a658e245a3bdd66c959c30b5f793c",
+      "fixture_source_host_pairing_sha256": "f569503d02ec9c35c5f33fbe21e51f64c9f65a070b84469eeec80c81cb82df01",
+      "checks": [
+        "Exact runner reconstruction from passed final-common: two inventory constants, modified binary pin/help/result wording only.",
+        "Exact12 inventory and all host assets rehashed. Source4295 fixture binary independently paired; no original0e715 reuse path in first invocation.",
+        "Original f222/e699 driver,75699 loader,90s384MiB128MiB swap,8MiB output/64MiB reserve, per-case fault-stop, QPA status reconciliation and original transport intact.",
+        "Every outcome labeled MODIFIED CTS HOST FIXTURE; excluded from unmodified originalCTS counts and official submission qualification."
+      ],
+      "admission": "Only first12 scalar uint32 original shaders/oracles after owner sequential memory scopes and complete fresh staging/headroom. Native/actual outcome not inferred."
+    }
+  },
+  "driver": "f222/e699 unchanged",
+  "scope": "Original broad robustBufferAccess1 allowed-value oracles, not robust2 zero semantics or exhaustive robustness. No driver defect/fix indicated by this first scope. Later132 selection remains feature-conditioned and separately partitioned."
+}

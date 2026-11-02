@@ -1,0 +1,984 @@
+{
+  "status": "PASS56/56 exact original default core memory.binding cases on f222/e699",
+  "source": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-memory-binding-next-0045/source-bounds.json",
+      "bytes": 9560,
+      "sha256": "81ddad20a13415baf3f8a3cdfd69d5337d22b0300774e7db43044ba794e250c9"
+    },
+    "result": {
+      "status": "SOURCE_BOUNDED_READY_FOR_INDEPENDENT_REVIEW",
+      "scope": "Original default core memory.binding only; 42 regular plus 14 aliasing. No driver or CTS modifications.",
+      "cts_revision": "5a9cb32498158eb60774cf8a3d4e0b8c68f7fe9e",
+      "cts_binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
+      "candidate_driver_sha256": "f222ff480f6c9ef3785c446661f12ccacbc91f119b0e7d405347b949b4dc325d",
+      "catalog": {
+        "path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/mustpass/main/vk-default/memory.txt",
+        "sha256": "2018e76484d15f413e597149d2a75d40a884d4e7ba0853127017fe2d514833d2"
+      },
+      "inventory": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-memory-binding-next-0045/cases.txt",
+        "sha256": "544066efcb49f5d00852d8033a10e2dde6665d81b9dcbc73f5b7934dd469cecb",
+        "count": 56
+      },
+      "partitions": [
+        {
+          "branch": "regular.suballocated",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-memory-binding-next-0045/cases-00-regular-suballocated.txt",
+          "sha256": "0b113cc36d8e9661dec75e2c2f4da015762fe692f67e5b438e765afe2ed1c34b",
+          "count": 14,
+          "copy_commands": 280,
+          "queue_submissions": 280,
+          "dispatches": 0,
+          "logical_bytes_compared": 14162650
+        },
+        {
+          "branch": "regular.dedicated",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-memory-binding-next-0045/cases-01-regular-dedicated.txt",
+          "sha256": "4f3e1b53bd3f646141945f4b64885050702ce0ae79a74e11db3a57113c830fb0",
+          "count": 14,
+          "copy_commands": 280,
+          "queue_submissions": 280,
+          "dispatches": 0,
+          "logical_bytes_compared": 14162650
+        },
+        {
+          "branch": "regular.overallocated",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-memory-binding-next-0045/cases-02-regular-overallocated.txt",
+          "sha256": "a97c7d6ef6aff78eb40df23159a4d2ed8833e2f0a935c4312f2530ad46b1cd4b",
+          "count": 14,
+          "copy_commands": 280,
+          "queue_submissions": 280,
+          "dispatches": 0,
+          "logical_bytes_compared": 14162650
+        },
+        {
+          "branch": "aliasing.suballocated",
+          "path": "/run/media/jethac/Shared/radish/compute11-official-memory-binding-next-0045/cases-03-aliasing-suballocated.txt",
+          "sha256": "d44ce0a6dd664419146ca7cbac2c6dd9cfba62104f85496e2f28b228abe1e899",
+          "count": 14,
+          "copy_commands": 280,
+          "queue_submissions": 370,
+          "dispatches": 0,
+          "logical_bytes_compared": 14162650
+        }
+      ],
+      "source_pins": {
+        "vktMemoryBindingTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-memory-binding-next-0045/source/vktMemoryBindingTests.cpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/memory/vktMemoryBindingTests.cpp",
+          "sha256": "61e0ab63adac08382228723ce105447bc8ede702f5cc43474578b103da379239"
+        },
+        "vktMemoryTests.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-memory-binding-next-0045/source/vktMemoryTests.cpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/memory/vktMemoryTests.cpp",
+          "sha256": "e3318e1b6c4b07bc35df00d5a694e62ab5d0e8dfeab4957bb4cbf1a5e88862cd"
+        },
+        "vktCustomInstancesDevices.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-memory-binding-next-0045/source/vktCustomInstancesDevices.cpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/modules/vulkan/vktCustomInstancesDevices.cpp",
+          "sha256": "32ae2ab0a48c8163418a41f7a6f4fd891ee0ec84969c5ca21c9ff29fd2989b8d"
+        },
+        "vkImageUtil.cpp": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-memory-binding-next-0045/source/vkImageUtil.cpp",
+          "source_path": "/run/media/jethac/Shared/radish/downloads/vk-gl-cts/external/vulkancts/framework/vulkan/vkImageUtil.cpp",
+          "sha256": "f31aad20348b787d626c5c80ab26c07b0a0b771463c9af5f00e9bd86ff6ead66"
+        },
+        "rd_memory.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-memory-binding-next-0045/source/rd_memory.c",
+          "source_path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_memory.c",
+          "sha256": "210d76aecc691fefb8765c60fa677f273a4c4d8f6aac4aa2239ed0f78b8cc9f8"
+        },
+        "rd_image.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-memory-binding-next-0045/source/rd_image.c",
+          "source_path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_image.c",
+          "sha256": "d37a73a0af9dab8a092f107bebaeb34fc7ac819070469639215e6b2f21814211"
+        },
+        "rd_command.c": {
+          "path": "/run/media/jethac/Shared/radish/compute11-official-memory-binding-next-0045/source/rd_command.c",
+          "source_path": "/run/media/jethac/Shared/radish/compute11-required-vertex-build-0045/source/src/freedreno/radish/rd_command.c",
+          "sha256": "9d8186e6219d989daaad17aaeb04347219295f913301df38dd97a6d3680a2498"
+        }
+      },
+      "selection": {
+        "root_registration": "vktMemoryTests.cpp -> createMemoryBindingTests; binding source lines 1132-1240",
+        "priority_mode": "PRIORITY_MODE_DEFAULT",
+        "individual_bind_results": false,
+        "excluded": "priority, priority_dynamic and maintenance6 siblings require unadvertised extensions/features; not waived for other profiles."
+      },
+      "valid_domain": [
+        "VK_KHR_bind_memory2 and dedicated allocation promoted to core 1.1. Default InstanceWrapper/DeviceWrapper use existing Context device: no new queue-create list or duplicate family request.",
+        "All command pools specify family 0, matching the current single COMPUTE queue family 0. Buffer/image copies and HOST/TRANSFER stage barriers are legal on it.",
+        "RGBA8_UINT LINEAR 2D images have one mip, one layer, one sample, TRANSFER_SRC|TRANSFER_DST only. No attachment, graphics constructor, shader, pipeline, draw or dispatch.",
+        "Alias images have identical creation parameters and ALIAS bit; both objects bind same memory at offset zero. Alias 1 transitions UNDEFINED before alias 0 is filled; no later discard transition after writes."
+      ],
+      "dedicated_size_rule": {
+        "historical": "Pinned v1.1.126 VUID image-01433/buffer-01435 requires exact allocationSize equality. Do not describe larger dedicated image allocations as valid under that historical wording.",
+        "current": "Current unconditional core 1.1/KHR dedicated-allocation valid usage requires allocationSize >= memoryRequirements.size (02964/02965). No new API/feature condition was introduced.",
+        "primary_commit": "https://github.com/KhronosGroup/Vulkan-Docs/commit/d2893929769fe6e3a7d9ef96672da551c35d4cd9",
+        "current_reference": "https://docs.vulkan.org/refpages/latest/refpages/source/VkMemoryDedicatedAllocateInfo.html",
+        "affected_original_cases": 9,
+        "meaning": "The nine original overallocated image cases are admitted using the current correction of the core rule; the other 47 use exact required sizes. Local primary before/after and commit provenance retained."
+      },
+      "bounds": {
+        "targets_per_case": 10,
+        "max_resource_objects_live": 22,
+        "max_device_memory_allocations_live": 12,
+        "max_buffer_request_bytes": 1048577,
+        "max_image_extent": [
+          257,
+          257,
+          1
+        ],
+        "format": "VK_FORMAT_R8G8B8A8_UINT",
+        "max_image_overallocation_factor": 3.0,
+        "max_buffer_case_bo_bytes": 12632064,
+        "conservative_max_image_case_bo_bytes": 8929280,
+        "all_case_app_bo_bytes_under": 16777216,
+        "host_mapping_bytes_per_case_under": 2097152,
+        "shader_modules": 0,
+        "pipelines": 0,
+        "dispatches": 0,
+        "copy_commands_total": 1120,
+        "queue_submissions_total": 1210,
+        "original_byte_comparisons_total": 56650600,
+        "copied_bytes_total": 113301200
+      },
+      "oracle": "Original deterministic uint32 xorshift byte stream; seed 1 regular, seed 2 alias. Every one of ten targets is copied back and checked over logical bufferSize bytes. Explicit host map flush/invalidate and per-submit fence wait retained.",
+      "coverage_limits": [
+        "Suballocated names bind a separate allocation per resource at offset zero; they do not establish nonzero binding offsets or mixed-resource suballocation.",
+        "Original overallocated buffer specialization ignores overallocationFactor and allocates exact memReqs.size; only the nine image cases establish larger dedicated allocations.",
+        "The original oracle checks logical bytes, not allocation padding or custom outer canaries. This is not exhaustive aliasing, visibility or lifetime evidence.",
+        "Source maxima admit original bounded execution, not actual PASS. Do not infer device outcome before terminal QPAs."
+      ],
+      "execution_controls": "Four disjoint 14-case partitions, each under unchanged original 90 s / 384 MiB unit, 128 MiB swap cap, 64 MiB disk reserve, 8 MiB output allowance and per-case fault-stop. No larger timeout or altered cases.",
+      "primary_pins": {
+        "after-memory.adoc": "11b9508c6544ad4003ab978003f772cc0a072a9bfb88ea225e3738da111b90a2",
+        "before-memory.adoc": "9a18da193fd13144c2377e70872f93e864c4f8a07f26607f38f33572939a48b1",
+        "dedicated-size-commit.json": "73c6c53beff3feeabd6a20a2c3f146f402bb44183ef6af4996bdfe697be4956e",
+        "dedicated-size.diff": "1a66d5209a5788ee968d1893e54a5a994335f213fbec8cf4771466efbda2f47c",
+        "v1.1.126-memory.txt": "c9ef3ba97da1a75fc017cde864a0ea73ef11d60cf993b950a14b9c4980c5b3f9"
+      }
+    }
+  },
+  "independent_source": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-memory-binding-next-0045/independent-source-review.json",
+      "bytes": 2798,
+      "sha256": "420fbe2b08984c30a9ca3c2425e681f3ecf92e51c4624c23f8ea0a662f2c5bbd"
+    },
+    "result": {
+      "status": "PASS finite original memory56 source/name/validity/resource counterpart",
+      "source_bounds_sha256": "81ddad20a13415baf3f8a3cdfd69d5337d22b0300774e7db43044ba794e250c9",
+      "inventory_sha256": "544066efcb49f5d00852d8033a10e2dde6665d81b9dcbc73f5b7934dd469cecb",
+      "partitions": [
+        {
+          "branch": "regular.suballocated",
+          "case_sha256": "0b113cc36d8e9661dec75e2c2f4da015762fe692f67e5b438e765afe2ed1c34b",
+          "count": 14
+        },
+        {
+          "branch": "regular.dedicated",
+          "case_sha256": "4f3e1b53bd3f646141945f4b64885050702ce0ae79a74e11db3a57113c830fb0",
+          "count": 14
+        },
+        {
+          "branch": "regular.overallocated",
+          "case_sha256": "a97c7d6ef6aff78eb40df23159a4d2ed8833e2f0a935c4312f2530ad46b1cd4b",
+          "count": 14
+        },
+        {
+          "branch": "aliasing.suballocated",
+          "case_sha256": "d44ce0a6dd664419146ca7cbac2c6dd9cfba62104f85496e2f28b228abe1e899",
+          "count": 14
+        }
+      ],
+      "checks": [
+        "Independently regenerated 4x14 exact names from5 buffer sizes and3x3 image dimensions; disjoint union56 equals catalog and manifest.",
+        "All seven source snapshots match their frozen original preimages; all five primary artifacts rehashed.",
+        "Default priority/no individual status path retains Context DeviceWrapper; dynamic custom-device branch not selected, so no robustness duplicate-queue setup.",
+        "LINEAR RGBA8_UINT transfer-only single-mip/layer/sample images and buffer copies use compute-valid HOST/TRANSFER barriers/fences and no graphics constructor or shader.",
+        "Identical alias images share memory; second alias transitions before first write; preserved physical-memory aliasing and layout ordering.",
+        "Current unconditional dedicated-size correction permits greater-than-or-equal allocation size, primary d2893929 explicitly changes both image/buffer VUs. Historical1.1.126 exact-size wording retained as caveat. Only9 overallocated image cases actually allocate larger memory; buffer specialization still exact.",
+        "Recomputed per-partition14162650 logical bytes compared,56 total56650600;1120 copy commands and1210 submissions source-derived.",
+        "Recomputed worst bufferBO12632064 B and conservative imageBO8929280 B using actual64-byte requirements/rowpitch and4096 BO rounding; <16MiB scope."
+      ],
+      "oracle_limits": [
+        "Original xorshift seed1/2 bytes checked over logical bufferSize for ten targets; allocation padding is not checked.",
+        "Suballocated names allocate one memory object per target and bind at zero; no nonzero suballocation-offset proof.",
+        "Source gate only; actual QPAs and original90s384MiB/fault/service/reserve controls remain owner gates.",
+        "No driver or CTS mutation; these are original CTS cases, distinct from forthcoming modified robustness-host outcomes."
+      ]
+    }
+  },
+  "runner_review": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-memory-binding-next-0045/runner-review.json",
+      "bytes": 2516,
+      "sha256": "11a5fa06f674ec277e6f73090ef51fe5dda1c5b574f4aa8c859855f592a493f0"
+    },
+    "result": {
+      "status": "PASS finite inventory-only runner derivatives",
+      "baseline": {
+        "path": "/run/media/jethac/Shared/radish/compute11-official-final-common-runner-0045/device-official-cts.py",
+        "sha256": "f3a41e53576fa08dc1e421bedb9c7f3a50be51d07d9fd7bd973b3955d53eccae"
+      },
+      "source_plan_sha256": "81ddad20a13415baf3f8a3cdfd69d5337d22b0300774e7db43044ba794e250c9",
+      "source_counterpart_sha256": "420fbe2b08984c30a9ca3c2425e681f3ecf92e51c4624c23f8ea0a662f2c5bbd",
+      "runners": [
+        {
+          "runner": "/run/media/jethac/Shared/radish/compute11-official-memory-binding-00-runner-0045/device-official-cts.py",
+          "sha256": "1f8eba2d09c79afa15596ec5f4fece7bf2c39af804fae39f58cf728b13db040a",
+          "inventory_sha256": "0b113cc36d8e9661dec75e2c2f4da015762fe692f67e5b438e765afe2ed1c34b",
+          "count": 14
+        },
+        {
+          "runner": "/run/media/jethac/Shared/radish/compute11-official-memory-binding-01-runner-0045/device-official-cts.py",
+          "sha256": "9943d9719f4a12c1bccd751feba0be834293aaecf69bef830eaf40c7ff770bf2",
+          "inventory_sha256": "4f3e1b53bd3f646141945f4b64885050702ce0ae79a74e11db3a57113c830fb0",
+          "count": 14
+        },
+        {
+          "runner": "/run/media/jethac/Shared/radish/compute11-official-memory-binding-02-runner-0045/device-official-cts.py",
+          "sha256": "6ebee039f9db38603ca228cc0cafa6b33d4d66002919cc9cc6f811abb5855a1f",
+          "inventory_sha256": "a97c7d6ef6aff78eb40df23159a4d2ed8833e2f0a935c4312f2530ad46b1cd4b",
+          "count": 14
+        },
+        {
+          "runner": "/run/media/jethac/Shared/radish/compute11-official-memory-binding-03-runner-0045/device-official-cts.py",
+          "sha256": "d2518143f9e2a8ddb9744f85f06a1c1a24a5e3c4fe9da5c9f79512580e32f0ed",
+          "inventory_sha256": "d44ce0a6dd664419146ca7cbac2c6dd9cfba62104f85496e2f28b228abe1e899",
+          "count": 14
+        }
+      ],
+      "checks": [
+        "All four runner bodies byte-identical to passed final-common engine after normalizing only two approved SHA/count constants.",
+        "All exact source-bound case inventories and host-pinned assets independently rehashed. Four partitions are disjoint14 and union56.",
+        "Original CTS0e715, driver e699, loader75699 and original90s384MiB controls/per-case faults/8MiB log plus64MiB reserve unchanged.",
+        "Actual source/driver/CTS paths from invocation match hostcheck pins; no device action performed by review."
+      ],
+      "scope": "Original memory binding execution only; source limits and current dedicated-size clarification retained. No numerical outcome until terminal QPA."
+    }
+  },
+  "actual": {
+    "identity": {
+      "path": "/run/media/jethac/Shared/radish/compute11-official-memory-binding-next-0045/actual-review.json",
+      "bytes": 29961,
+      "sha256": "da2a1b26beac54caa00ef2224fe625c95ab0db0de6ba0fc714f963875cb7e892"
+    },
+    "result": {
+      "status": "PASS independent original memory.binding56 actual review",
+      "source_plan_sha256": "81ddad20a13415baf3f8a3cdfd69d5337d22b0300774e7db43044ba794e250c9",
+      "source_counterpart_sha256": "420fbe2b08984c30a9ca3c2425e681f3ecf92e51c4624c23f8ea0a662f2c5bbd",
+      "runner_counterpart_sha256": "11a5fa06f674ec277e6f73090ef51fe5dda1c5b574f4aa8c859855f592a493f0",
+      "cts_binary_sha256": "0e715f9c53ec1dfd742d93a7a45740cbf4a8caa9193fe761e71dd6347c2a6660",
+      "deployment_driver_sha256": "e69927cea0ee251bf7dbd542c1a898fa1476f5e54b1098c12e61e55ef0996bdc",
+      "fraction": {
+        "passed": 56,
+        "applicable_selected_core_binding": 56,
+        "percentage": 100.0,
+        "scope": "These exact default core binding registrations, not all memory tests or overall Vulkan conformance."
+      },
+      "totals": {
+        "unique_qpa_pass": 56,
+        "copy_profiles": 1120,
+        "copied_bytes": 113301200,
+        "original_logical_byte_comparisons": 56650600,
+        "api_queue_submit_calls_source_inferred": 1210,
+        "shader_dispatches": 0,
+        "native_shader_programs": 0,
+        "nonzero_transfer_results": 0
+      },
+      "scopes": [
+        {
+          "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-memory-binding-00/probe",
+          "runner_result_sha256": "7b9971c180648b128cda3dc1ad6ca9459f15bfbe82e914412ac725fe95a367ca",
+          "run_log_sha256": "2c19fed3994342f4f5a26428cd4ea8f2704918c962b1ab2a3740594431b00e58",
+          "aggregate_qpa_sha256": "9b66a5e574479ae798939d994c75f025e9fc6f25831ccbd0cd320fa5fe3daa5e",
+          "count": 14,
+          "service_seconds": 7.504,
+          "peak_mib_reported": 30.8,
+          "swap_bytes": 0,
+          "clean_services_faults_collection": true,
+          "cases": [
+            {
+              "name": "dEQP-VK.memory.binding.regular.suballocated.buffer_1048577",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "73e8abbddb69b7a494e6646c5196032a3ccf25d995d6122b9b94c77fb69aa54e",
+              "copy_profiles": 20,
+              "bytes_per_copy": 1048577,
+              "checked_logical_bytes": 10485770,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.suballocated.buffer_257",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "e5687dcbba23dfb5b148fa5d6828cd3cc30cc096fb8dc5aef15cf7ae3cb988b8",
+              "copy_profiles": 20,
+              "bytes_per_copy": 257,
+              "checked_logical_bytes": 2570,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.suballocated.buffer_33",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "98a7a56cc1291076fb6ba39da574fcc39ccf96d79b540af8c4b8f19dffc20bb7",
+              "copy_profiles": 20,
+              "bytes_per_copy": 33,
+              "checked_logical_bytes": 330,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.suballocated.buffer_4087",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "e23350884488ad76f433b436f97a9370eb852ce2eb5ff26ad2f9556079b9529d",
+              "copy_profiles": 20,
+              "bytes_per_copy": 4087,
+              "checked_logical_bytes": 40870,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.suballocated.buffer_8095",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "1e022c185226bc10990a90c2251fe3b74e5a74948c3e0554a7876eada956727c",
+              "copy_profiles": 20,
+              "bytes_per_copy": 8095,
+              "checked_logical_bytes": 80950,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.suballocated.image_257_257",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "16d0ad1c512c1641ea1f9901b90d3e81f46b55dd491c33a3eb0bbb10bd968d44",
+              "copy_profiles": 20,
+              "bytes_per_copy": 264196,
+              "checked_logical_bytes": 2641960,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.suballocated.image_257_33",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "9b210cbc9860b1c0277c155a2136c5d0823b388eb5d2972dbf350066ccc9b355",
+              "copy_profiles": 20,
+              "bytes_per_copy": 33924,
+              "checked_logical_bytes": 339240,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.suballocated.image_257_8",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "822aa1e6757376b3eb386502db6802418b208e9ceaa9e87b76c0c779ef7f0bf5",
+              "copy_profiles": 20,
+              "bytes_per_copy": 8224,
+              "checked_logical_bytes": 82240,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.suballocated.image_33_257",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "d3c7f76e9ac3bf0370ac8785f75f4749609c9a3948f144b61f99a6a95071a328",
+              "copy_profiles": 20,
+              "bytes_per_copy": 33924,
+              "checked_logical_bytes": 339240,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.suballocated.image_33_33",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "4d788253b31d9179c3915bf25b56729ef76b902bad734a4910a55e32b2c9247e",
+              "copy_profiles": 20,
+              "bytes_per_copy": 4356,
+              "checked_logical_bytes": 43560,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.suballocated.image_33_8",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "e41dddc2b78f445313814ea9b9a882f6fb93154555cd2c3df390b246c6e2bf7c",
+              "copy_profiles": 20,
+              "bytes_per_copy": 1056,
+              "checked_logical_bytes": 10560,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.suballocated.image_8_257",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "63dd6d8f599446f7f06d731e6efe74c7c2ce1453ed151d0cbf0f12a467115901",
+              "copy_profiles": 20,
+              "bytes_per_copy": 8224,
+              "checked_logical_bytes": 82240,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.suballocated.image_8_33",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "8906b9d74273ed474b22c7f748720757c0efeca771fbbfe56da0dd2b2122b7c8",
+              "copy_profiles": 20,
+              "bytes_per_copy": 1056,
+              "checked_logical_bytes": 10560,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.suballocated.image_8_8",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "29531a323962819edc434f898d24a20b8f4271dcb5b666f22d004d2818cf6519",
+              "copy_profiles": 20,
+              "bytes_per_copy": 256,
+              "checked_logical_bytes": 2560,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            }
+          ]
+        },
+        {
+          "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-memory-binding-01/probe",
+          "runner_result_sha256": "7aba46b3ce9d6a232fb2170f0926dee003873426e7a3c67c158341ab81aec7d7",
+          "run_log_sha256": "9489e344b6bbc20cd589427d398e1cffce0f53f18d5f86553beaa1ef10bf7545",
+          "aggregate_qpa_sha256": "1605796fec5717a72a9ddbdec6de89491f8e5609380b862ce85db42efa26785b",
+          "count": 14,
+          "service_seconds": 7.472,
+          "peak_mib_reported": 31.7,
+          "swap_bytes": 0,
+          "clean_services_faults_collection": true,
+          "cases": [
+            {
+              "name": "dEQP-VK.memory.binding.regular.dedicated.buffer_1048577",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "65bd0031178203c6f40d8dc3af4c65390b6696cdd50a609e6c7ff59e78a056d1",
+              "copy_profiles": 20,
+              "bytes_per_copy": 1048577,
+              "checked_logical_bytes": 10485770,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.dedicated.buffer_257",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "d5e349cc344a13177a1bd23b9223afc3c91c3008a77f34a1f876d646720835da",
+              "copy_profiles": 20,
+              "bytes_per_copy": 257,
+              "checked_logical_bytes": 2570,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.dedicated.buffer_33",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "a94c3efbd939bab48213fa59575b5ac25d3394ae6b2b830c8c1ebd0105e7a78d",
+              "copy_profiles": 20,
+              "bytes_per_copy": 33,
+              "checked_logical_bytes": 330,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.dedicated.buffer_4087",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "327e7893e5b8788f4ce0ace3f2bf3d7976b8ce65dd816eb9d3757aeaea4eaebc",
+              "copy_profiles": 20,
+              "bytes_per_copy": 4087,
+              "checked_logical_bytes": 40870,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.dedicated.buffer_8095",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "08d66f515b5a3343b80bd82611ce34df207432a88b61b0e7492d8a4bc22013f6",
+              "copy_profiles": 20,
+              "bytes_per_copy": 8095,
+              "checked_logical_bytes": 80950,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.dedicated.image_257_257",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "8a241822d923d15bcc1c521c02beeebe9d43f103e97253c864033b540c00db70",
+              "copy_profiles": 20,
+              "bytes_per_copy": 264196,
+              "checked_logical_bytes": 2641960,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.dedicated.image_257_33",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "b191c96a89bcdf8c35d10b8998e809d66ac29cad03ae1192be6f218d1c1549f1",
+              "copy_profiles": 20,
+              "bytes_per_copy": 33924,
+              "checked_logical_bytes": 339240,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.dedicated.image_257_8",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "106c14bada14fb0c7ef722c6aa81049a7097d9fd4d1f28d2a43c7a225f2c0189",
+              "copy_profiles": 20,
+              "bytes_per_copy": 8224,
+              "checked_logical_bytes": 82240,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.dedicated.image_33_257",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "0ba6f5653ef39ea2a879b14c9db9a4ed6c94c7919083c5121a882d5f27b857c3",
+              "copy_profiles": 20,
+              "bytes_per_copy": 33924,
+              "checked_logical_bytes": 339240,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.dedicated.image_33_33",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "9293ffd7eab5362167f93b75d32f400df37b92658fb838579047120450364825",
+              "copy_profiles": 20,
+              "bytes_per_copy": 4356,
+              "checked_logical_bytes": 43560,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.dedicated.image_33_8",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "67afe9ffe172a9713297e69702802a05850bfc18ce875e038a5e1b5e917fec08",
+              "copy_profiles": 20,
+              "bytes_per_copy": 1056,
+              "checked_logical_bytes": 10560,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.dedicated.image_8_257",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "1b8479450182a01df831cc4c9c0b91843673bf58c25186643bfb45e734539b21",
+              "copy_profiles": 20,
+              "bytes_per_copy": 8224,
+              "checked_logical_bytes": 82240,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.dedicated.image_8_33",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "61b0bbb01315c3c1cb08dbc26e0b2356d31232c007edbeb7bb4ba1718051c611",
+              "copy_profiles": 20,
+              "bytes_per_copy": 1056,
+              "checked_logical_bytes": 10560,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.dedicated.image_8_8",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "31aa7553a554fd23aef721d5427d3aca314ac20f903bd57a68ddd132a44894d4",
+              "copy_profiles": 20,
+              "bytes_per_copy": 256,
+              "checked_logical_bytes": 2560,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            }
+          ]
+        },
+        {
+          "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-memory-binding-02/probe",
+          "runner_result_sha256": "20e78a53dd72fe8ebe3e77a719b2667b7c7998ce153a6bc8805d7e7552b1f9c9",
+          "run_log_sha256": "21c1aca9d3ae694c662dc270615c37a1740cec677353074777a33e36741011bd",
+          "aggregate_qpa_sha256": "7af0777e978a3b8284edda222707ccb4291c289be5275cc1d55f503207650fe0",
+          "count": 14,
+          "service_seconds": 7.481,
+          "peak_mib_reported": 31.4,
+          "swap_bytes": 0,
+          "clean_services_faults_collection": true,
+          "cases": [
+            {
+              "name": "dEQP-VK.memory.binding.regular.overallocated.buffer_1048577",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "fe556a8ff6de9810646839eb5e65eab3cf5156162e53b25f949943c7837a8a0c",
+              "copy_profiles": 20,
+              "bytes_per_copy": 1048577,
+              "checked_logical_bytes": 10485770,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.overallocated.buffer_257",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "cf1066879bf763ae6406ca63d74671a803e53000615e7adfa03702e32af80733",
+              "copy_profiles": 20,
+              "bytes_per_copy": 257,
+              "checked_logical_bytes": 2570,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.overallocated.buffer_33",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "a0c5cc4773aba6c3876961e503985c9fd8bdb500424e20a8e2a9fc29ed3ad25f",
+              "copy_profiles": 20,
+              "bytes_per_copy": 33,
+              "checked_logical_bytes": 330,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.overallocated.buffer_4087",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "9510c6bafc29d2ec1b55da8841ba9cf185ad7d6d63589a2558b8ac13621ba65d",
+              "copy_profiles": 20,
+              "bytes_per_copy": 4087,
+              "checked_logical_bytes": 40870,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.overallocated.buffer_8095",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "145c079a7b21510e632f62dc498dee564bd0ba09a6d19680a645c16fec9b04eb",
+              "copy_profiles": 20,
+              "bytes_per_copy": 8095,
+              "checked_logical_bytes": 80950,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.overallocated.image_257_257",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "59e6484ad7e129eee4dc5b16a8b21013e1117aa79e50b90ca970e88f66af390d",
+              "copy_profiles": 20,
+              "bytes_per_copy": 264196,
+              "checked_logical_bytes": 2641960,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.overallocated.image_257_33",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "244fdd0ac7ed2de73cb2045337a7ead105ce3ba3afb14b827230bd9455e2c3bc",
+              "copy_profiles": 20,
+              "bytes_per_copy": 33924,
+              "checked_logical_bytes": 339240,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.overallocated.image_257_8",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "2b3eb76c465e590f694092d00f60bf4cd8e580093d3ffa583922741dd4b76efe",
+              "copy_profiles": 20,
+              "bytes_per_copy": 8224,
+              "checked_logical_bytes": 82240,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.overallocated.image_33_257",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "278dbf7daf0f6554bd0497850d7c5a3a27773aa23ee4488d0c8f1556334d64f5",
+              "copy_profiles": 20,
+              "bytes_per_copy": 33924,
+              "checked_logical_bytes": 339240,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.overallocated.image_33_33",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "77cb55f0d1000e10b8bf94070086f785354cb13ead63502969ef70999e380689",
+              "copy_profiles": 20,
+              "bytes_per_copy": 4356,
+              "checked_logical_bytes": 43560,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.overallocated.image_33_8",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "4605013d324a60346011eb274c7637908bef5aa75b189056776dee699c0325da",
+              "copy_profiles": 20,
+              "bytes_per_copy": 1056,
+              "checked_logical_bytes": 10560,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.overallocated.image_8_257",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "725ce1f479bcdde0bc4c4ebfb47af435fa68eed18b669c0317938493aa5b3f3f",
+              "copy_profiles": 20,
+              "bytes_per_copy": 8224,
+              "checked_logical_bytes": 82240,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.overallocated.image_8_33",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "7b2039ca3db37fd1a9247cd142bde1a2b6fd99f1fc116ae0354bd369f20656e2",
+              "copy_profiles": 20,
+              "bytes_per_copy": 1056,
+              "checked_logical_bytes": 10560,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.regular.overallocated.image_8_8",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "57633f94d772cdf5bdc5ae117b8180a02c7db6babb6ae4d19b0222f5a1a95c31",
+              "copy_profiles": 20,
+              "bytes_per_copy": 256,
+              "checked_logical_bytes": 2560,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            }
+          ]
+        },
+        {
+          "evidence": "/run/media/jethac/Shared/radish/core-compute-core0045-official11-memory-binding-03/probe",
+          "runner_result_sha256": "39317bbe9914d56e0a0c9ae0049d97b78e88ece088c85592274262b2f455ea4e",
+          "run_log_sha256": "b99afd0e71b626b7db19364b027054aeee3e90ee14d5f70ebab90c8c80cf695a",
+          "aggregate_qpa_sha256": "fc665570fa9d78ed04372f62e2fb67f1761d8dacb1f5aad8f3b5c442faf234c5",
+          "count": 14,
+          "service_seconds": 7.467,
+          "peak_mib_reported": 32.2,
+          "swap_bytes": 0,
+          "clean_services_faults_collection": true,
+          "cases": [
+            {
+              "name": "dEQP-VK.memory.binding.aliasing.suballocated.buffer_1048577",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "c7550681d17d7588b70223f956f0413a5428eacf6c74db724ba0a00bd08a42a2",
+              "copy_profiles": 20,
+              "bytes_per_copy": 1048577,
+              "checked_logical_bytes": 10485770,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.aliasing.suballocated.buffer_257",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "274ab93554e938944d7c00cbc6d4c8ea5a0159a6ffa790c0fb10a47831084801",
+              "copy_profiles": 20,
+              "bytes_per_copy": 257,
+              "checked_logical_bytes": 2570,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.aliasing.suballocated.buffer_33",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "0d5d6aa1860cf4a1f375dd632947a961748c758e246455e8e432b604b9538497",
+              "copy_profiles": 20,
+              "bytes_per_copy": 33,
+              "checked_logical_bytes": 330,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.aliasing.suballocated.buffer_4087",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "579af0dffbaf25cf94ad9aba16099a309332f587341bbdd7698d4bb75b17f0b5",
+              "copy_profiles": 20,
+              "bytes_per_copy": 4087,
+              "checked_logical_bytes": 40870,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.aliasing.suballocated.buffer_8095",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "8ba12b564bc274cc965277b850b1ab32997883694d02646f0ad60fbd8cf2c962",
+              "copy_profiles": 20,
+              "bytes_per_copy": 8095,
+              "checked_logical_bytes": 80950,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 20
+            },
+            {
+              "name": "dEQP-VK.memory.binding.aliasing.suballocated.image_257_257",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "5448658b4b26e4569d5e38c48812cd38b604d665b446e10bf3332ead2a673401",
+              "copy_profiles": 20,
+              "bytes_per_copy": 264196,
+              "checked_logical_bytes": 2641960,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 30
+            },
+            {
+              "name": "dEQP-VK.memory.binding.aliasing.suballocated.image_257_33",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "b8fa448ae95203ac06535ef1d8ed49401cee594b43a1c92ca82015e04a644315",
+              "copy_profiles": 20,
+              "bytes_per_copy": 33924,
+              "checked_logical_bytes": 339240,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 30
+            },
+            {
+              "name": "dEQP-VK.memory.binding.aliasing.suballocated.image_257_8",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "54d3c0c63adb0448e5248c511c28b90e121f84e05cb63aa59d8c1045528538bf",
+              "copy_profiles": 20,
+              "bytes_per_copy": 8224,
+              "checked_logical_bytes": 82240,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 30
+            },
+            {
+              "name": "dEQP-VK.memory.binding.aliasing.suballocated.image_33_257",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "2411d5428d14f57d6025fd5595ddf1ee1ba19fa7de62da0272e0c05f7a685188",
+              "copy_profiles": 20,
+              "bytes_per_copy": 33924,
+              "checked_logical_bytes": 339240,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 30
+            },
+            {
+              "name": "dEQP-VK.memory.binding.aliasing.suballocated.image_33_33",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "614a57b43f9f3b6f8abdb779e00c37cf4eb897ce42802bd1c0733aa414440eea",
+              "copy_profiles": 20,
+              "bytes_per_copy": 4356,
+              "checked_logical_bytes": 43560,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 30
+            },
+            {
+              "name": "dEQP-VK.memory.binding.aliasing.suballocated.image_33_8",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "91ed99c43dfaec96c41af53fbade4dbe2e9a392c3e95709192edfa55e3993e80",
+              "copy_profiles": 20,
+              "bytes_per_copy": 1056,
+              "checked_logical_bytes": 10560,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 30
+            },
+            {
+              "name": "dEQP-VK.memory.binding.aliasing.suballocated.image_8_257",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "2a4722c7e16f0f65fc37be98d81c884d3a05b8ff53ea402b15499f413e803c88",
+              "copy_profiles": 20,
+              "bytes_per_copy": 8224,
+              "checked_logical_bytes": 82240,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 30
+            },
+            {
+              "name": "dEQP-VK.memory.binding.aliasing.suballocated.image_8_33",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "58bc1e805591d068e61bbd362c890ad90e596a962e179fbcea0f30f40731e176",
+              "copy_profiles": 20,
+              "bytes_per_copy": 1056,
+              "checked_logical_bytes": 10560,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 30
+            },
+            {
+              "name": "dEQP-VK.memory.binding.aliasing.suballocated.image_8_8",
+              "status": "Pass",
+              "detail": "Pass",
+              "qpa_sha256": "65a8c97baaa2b3d6301b90f373ff19a55ea9177874d41af6265f211543d959d4",
+              "copy_profiles": 20,
+              "bytes_per_copy": 256,
+              "checked_logical_bytes": 2560,
+              "profile_results_zero": true,
+              "queue_submit_calls_from_source": 30
+            }
+          ]
+        }
+      ],
+      "transfer_execution_path": {
+        "source": "/run/media/jethac/Shared/radish/compute11-official-memory-binding-next-0045/source/rd_queue-actual-path.c",
+        "sha256": "da170e7c4d4a1fc9db0da5ded100376fab80b57fb70af2427a4ff81fbbdc4890",
+        "meaning": "All five buffer sizes are not divisible by4; actual400 buffer-copy profiles report chunks0/submits0, matching existing fd_bo_cpu_prep/map/memmove fallback at rd_queue848-872. The720 image transfers use existing mapped CPU copy path in rd_image1213+. This validates public binding/alias/transfer semantics; it is not GPU shader or DMA execution evidence. The1210 queue-submit count derives from original source calls, not physical GPU submits."
+      },
+      "coverage_limits": [
+        "Suballocated names bind a separate allocation per resource at offset zero; they do not establish nonzero binding offsets or mixed-resource suballocation.",
+        "Original overallocated buffer specialization ignores overallocationFactor and allocates exact memReqs.size; only the nine image cases establish larger dedicated allocations.",
+        "The original oracle checks logical bytes, not allocation padding or custom outer canaries. This is not exhaustive aliasing, visibility or lifetime evidence.",
+        "Source maxima admit original bounded execution, not actual PASS. Do not infer device outcome before terminal QPAs.",
+        "No new driver source or test fix was needed for this56. Nine overallocated-image successes use current unconditional >= dedicated-size rule; historical equal text is not rewritten.",
+        "Results cover logical bytes only; no claim of allocation padding canaries, nonzero binding offsets, concurrent aliases or full memory model."
+      ],
+      "safety": "All56 per-case fault checks and four postflights clean; servicesactive/active, all payload assets exact, no swap, original caps/reserve unchanged."
+    }
+  },
+  "limits": [
+    "42 regular plus14 aliasing original cases; current unconditional dedicated allocationSize>= requirement used for nine larger image allocations, historical exact-size wording retained.",
+    "Original logical bytes only, not padding canaries. Suballocated-named cases bind offsetzero and do not prove nonzero offsets. Overallocated buffers actually request exact required sizes.",
+    "All copies use existing mapped CPU paths in this capture. Public Vulkan binding/alias/copy semantics, not GPU DMA or shader execution.",
+    "No driver change. Original0e715 CTS, data, oracles, 90s384MiB caps and fault/service checks retained."
+  ]
+}

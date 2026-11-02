@@ -1,0 +1,12 @@
+--- a/external/vulkancts/modules/vulkan/robustness/vktRobustnessUtil.cpp
++++ b/external/vulkancts/modules/vulkan/robustness/vktRobustnessUtil.cpp
+@@ -66,7 +66,8 @@
+         1u,                                         // uint32_t queueCount;
+         &queuePriority                              // const float* pQueuePriorities;
+     };
+-    if (context.getComputeQueueFamilyIndex() != -1)
++    if (context.getComputeQueueFamilyIndex() != -1 &&
++        static_cast<uint32_t>(context.getComputeQueueFamilyIndex()) != context.getUniversalQueueFamilyIndex())
+     {
+         queueParams[1] = {
+             VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,     // VkStructureType sType;
