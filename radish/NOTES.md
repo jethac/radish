@@ -1,5 +1,26 @@
 # Radish status
 
+## Approved 900-second ASR result — 2026-11-03
+
+The cold correctness run17350 reached the approved process watchdog without a
+requested transcript. Both production warm modes completed their real decoder
+step and synchronized cleanup. The real request passed prefix, audio encoding
+and prefill, then completed decoder graphs through the recorded KV90 boundary.
+The 64-pair diagnostic cap explains the later absence of ownership snapshots;
+placement messages continued. Postflight found no new GPU fault or reported OOM.
+The memory peak was640MiB with63.4MiB swap; both services remained active and the
+owned unit drained. The conditional cache replay has not run.
+
+Source review identified a prefix-state defect: successful fresh prefix writes
+do not update the valid KV-row count before growth, allowing zero rows to be
+copied while cached prefix IDs are reused. A production bookkeeping correction
+and a regression through the real streaming API are being prepared. This is a
+correctness diagnosis, not a performance result or justification for another
+watchdog increase. [Independent terminal evidence](results/optimization-asr-900s-terminal-17350-0046.json)
+and the [completion ledger](results/optimization-five-completion-ledger-0046.json)
+retain the qualified scopes and remaining model/cache gates.
+
+
 ## Approved untimed ASR watchdog exception — 2026-11-03
 
 The user approved the reviewed two-scope correctness proposal. Only the process

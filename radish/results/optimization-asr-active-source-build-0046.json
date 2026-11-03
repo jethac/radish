@@ -1,5 +1,5 @@
 {
-  "status": "Current application db872 and revised matrix-fence driver0f721 retain the qualified primitive evidence. Full82231 ended at the original300s watchdog without transcript. The user approved two scoped900s untimed correctness runs; cold17350 is running, and cache replay remains conditional on its independent PASS. FullASR/cache and all-five closure remain open; performance collection is forbidden.",
+  "status": "Current db872 application and0f721 matrix-fence driver retain the qualified primitive evidence. Approved900s cold17350 completed both warm modes and progressed into real decoding but ended at the process watchdog without a transcript. FullASR/cache remain unqualified; conditional import is held and performance collection forbidden.",
   "application": "Frozen ASR source with previously published GQA, quantized phase, memory-liveness and unit-axis overlays",
   "ordered_additive_patches": [
     {

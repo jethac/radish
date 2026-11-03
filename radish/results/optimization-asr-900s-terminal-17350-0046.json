@@ -1,0 +1,1224 @@
+{
+  "status": "FAIL retained: authorized900s cold correctness run timed out before requested transcript; finite terminal reconciliation complete",
+  "handle": 17350,
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-full-matrix-fence-900/probe",
+  "pins": {
+    "run.log": "287d8b90664613351bc25268c33d5ab77718fbeb213866d6f0ff0043a4b5362d",
+    "failure.json": "aeb6cdd60b2434673dd3cc72c5d865499e5b7814d5877ad3f92bbe65128e97d2",
+    "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+    "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+    "drain-000.txt": "899a8a5a73232d4a07b56824413da1c88dc2dc685e89886ca2bc05f89923b9f6",
+    "launch.json": "c1d3754da12ad376199bd8b1e2846e37e62b7fa1430b2095957fbd21ad07c351",
+    "service.txt": "3cc6b13f0ef5d6b90a9ba9608d632779fcc2be9a3e662ecbab20748a6e60cc6d",
+    "services-before.txt": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce",
+    "services-after.txt": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce",
+    "dmesg-before.txt": "ad50a82c88fe6fce42a4c3e2c646aadc986c0848e4d0e95a871f6042de98f188",
+    "dmesg-after.txt": "5e41615667ad941338a21d3a9ce820b8349852524250100d468deca5268288c2",
+    "run-command.txt": "916bb9a5617b1858cb6f1ba3b684e2772309d519f2431fa72deec951e96dcbfe"
+  },
+  "references": {
+    "/run/media/jethac/Shared/radish/optimization-five-asr-correctness-900s-proposal-0046/proposal.json": "6a08d8e2748e7d70c6a306b1aedab49e272f089d2f6045d66bdc09329665ac00",
+    "/run/media/jethac/Shared/radish/optimization-five-asr-correctness-900s-proposal-0046/independent-proposal-review.json": "2866d91f817dbbd988d8f52851a13bb7e06c8491790a76fca367511a8af5dc69",
+    "/run/media/jethac/Shared/radish/optimization-five-asr-correctness-900s-proposal-0046/authorization.json": "9757cffe4c7f152296f24a95621671dacea09e3792210c61ab97beb9be140532",
+    "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/token-stop-source-audit/review.json": "f55db0edb063670664a61fb34a7a0d5d70f8a2d81b5170579c49d24acc434602",
+    "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/matrix-exec-fence/independent-terminal-82231-review.json": "2d3c161625a42bf9b4f297575efddf46da50af7446908ad66b3f0da443303d79"
+  },
+  "candidate": {
+    "resources": {
+      "bytes": 103642144,
+      "sha256": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 13640376,
+      "sha256": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e"
+    },
+    "input.wav": {
+      "bytes": 89164,
+      "sha256": "0a66f7817c57252c814b0ecb645c76fdb40a043d1d24ae8468f10c0342c60aee"
+    },
+    "libvulkan.so.1": {
+      "bytes": 703696,
+      "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+    }
+  },
+  "terminal": {
+    "result": "timeout",
+    "termination": "SIGTERM15",
+    "wrapper_returncode": 1,
+    "whole_process_guard_seconds": 900,
+    "authorization": "Explicit scoped user exception9757cffe; no change to kernel500ms hangcheck or other controls.",
+    "memory_peak": "640MiB",
+    "swap_peak": "63.4MiB",
+    "limits_interpretation": "Guard telemetry only; no latency/throughput claim. No OOM result or new GPU fault is reported.",
+    "bookkeeping": "Preserved failure.json terminal=false is wrapper bookkeeping; systemd result and inactive/dead/not-found drain establish terminal state."
+  },
+  "phase": "Both warm modes complete actual step1 and synchronized temporary-session cleanup. Real prefix1151, all three subsample36, encoder697 and prefill1157 complete. Real decoder1126 graph samples progress from KV45/cap64 through KV90/cap128; all64 sampled graph pairs complete. Later decoder placements continue after graph sample cap; no requested transcript/result row recorded.",
+  "request_prompt": {
+    "T_prompt": 45,
+    "decode_budget": 256,
+    "initial_capacity": 64,
+    "ceiling": 304,
+    "matches_historical_prompt45": true
+  },
+  "sampled_real_decoder_steps": {
+    "completed_graph_pairs": 45,
+    "KV_n_values": [
+      45,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87,
+      88,
+      89,
+      90
+    ],
+    "counter_caveat": "n/head convention is one ahead after a step; these are graph-boundary counters, not a token-ID sequence. Graph end precedes host token readback.",
+    "post_cap_step_placement_markers": 16,
+    "no_completion_assumption_for_last_placement": true
+  },
+  "all_graph_sequence": [
+    [
+      "graph_begin",
+      "warm_offline",
+      "36",
+      "0",
+      "0",
+      "0"
+    ],
+    [
+      "graph_end",
+      "warm_offline",
+      "36",
+      "0",
+      "0",
+      "0"
+    ],
+    [
+      "graph_begin",
+      "warm_offline",
+      "36",
+      "0",
+      "0",
+      "0"
+    ],
+    [
+      "graph_end",
+      "warm_offline",
+      "36",
+      "0",
+      "0",
+      "0"
+    ],
+    [
+      "graph_begin",
+      "warm_offline",
+      "36",
+      "0",
+      "0",
+      "0"
+    ],
+    [
+      "graph_end",
+      "warm_offline",
+      "36",
+      "0",
+      "0",
+      "0"
+    ],
+    [
+      "graph_begin",
+      "warm_offline",
+      "697",
+      "0",
+      "0",
+      "0"
+    ],
+    [
+      "graph_end",
+      "warm_offline",
+      "697",
+      "0",
+      "0",
+      "0"
+    ],
+    [
+      "graph_begin",
+      "warm_offline",
+      "1105",
+      "0",
+      "0",
+      "64"
+    ],
+    [
+      "graph_end",
+      "warm_offline",
+      "1105",
+      "0",
+      "0",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "warm_offline",
+      "1126",
+      "49",
+      "49",
+      "64"
+    ],
+    [
+      "graph_end",
+      "warm_offline",
+      "1126",
+      "49",
+      "49",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "warm_streaming",
+      "1151",
+      "0",
+      "0",
+      "16"
+    ],
+    [
+      "graph_end",
+      "warm_streaming",
+      "1151",
+      "0",
+      "0",
+      "16"
+    ],
+    [
+      "graph_begin",
+      "warm_streaming",
+      "36",
+      "0",
+      "0",
+      "16"
+    ],
+    [
+      "graph_end",
+      "warm_streaming",
+      "36",
+      "0",
+      "0",
+      "16"
+    ],
+    [
+      "graph_begin",
+      "warm_streaming",
+      "36",
+      "0",
+      "0",
+      "16"
+    ],
+    [
+      "graph_end",
+      "warm_streaming",
+      "36",
+      "0",
+      "0",
+      "16"
+    ],
+    [
+      "graph_begin",
+      "warm_streaming",
+      "36",
+      "0",
+      "0",
+      "16"
+    ],
+    [
+      "graph_end",
+      "warm_streaming",
+      "36",
+      "0",
+      "0",
+      "16"
+    ],
+    [
+      "graph_begin",
+      "warm_streaming",
+      "697",
+      "0",
+      "0",
+      "16"
+    ],
+    [
+      "graph_end",
+      "warm_streaming",
+      "697",
+      "0",
+      "0",
+      "16"
+    ],
+    [
+      "graph_begin",
+      "warm_streaming",
+      "1157",
+      "0",
+      "0",
+      "64"
+    ],
+    [
+      "graph_end",
+      "warm_streaming",
+      "1157",
+      "0",
+      "0",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "warm_streaming",
+      "1126",
+      "49",
+      "49",
+      "64"
+    ],
+    [
+      "graph_end",
+      "warm_streaming",
+      "1126",
+      "49",
+      "49",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1151",
+      "0",
+      "0",
+      "16"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1151",
+      "0",
+      "0",
+      "16"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "36",
+      "0",
+      "0",
+      "16"
+    ],
+    [
+      "graph_end",
+      "request",
+      "36",
+      "0",
+      "0",
+      "16"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "36",
+      "0",
+      "0",
+      "16"
+    ],
+    [
+      "graph_end",
+      "request",
+      "36",
+      "0",
+      "0",
+      "16"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "36",
+      "0",
+      "0",
+      "16"
+    ],
+    [
+      "graph_end",
+      "request",
+      "36",
+      "0",
+      "0",
+      "16"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "697",
+      "0",
+      "0",
+      "16"
+    ],
+    [
+      "graph_end",
+      "request",
+      "697",
+      "0",
+      "0",
+      "16"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1157",
+      "0",
+      "0",
+      "64"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1157",
+      "0",
+      "0",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "45",
+      "45",
+      "64"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "45",
+      "45",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "47",
+      "47",
+      "64"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "47",
+      "47",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "48",
+      "48",
+      "64"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "48",
+      "48",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "49",
+      "49",
+      "64"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "49",
+      "49",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "50",
+      "50",
+      "64"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "50",
+      "50",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "51",
+      "51",
+      "64"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "51",
+      "51",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "52",
+      "52",
+      "64"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "52",
+      "52",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "53",
+      "53",
+      "64"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "53",
+      "53",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "54",
+      "54",
+      "64"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "54",
+      "54",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "55",
+      "55",
+      "64"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "55",
+      "55",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "56",
+      "56",
+      "64"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "56",
+      "56",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "57",
+      "57",
+      "64"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "57",
+      "57",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "58",
+      "58",
+      "64"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "58",
+      "58",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "59",
+      "59",
+      "64"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "59",
+      "59",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "60",
+      "60",
+      "64"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "60",
+      "60",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "61",
+      "61",
+      "64"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "61",
+      "61",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "62",
+      "62",
+      "64"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "62",
+      "62",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "63",
+      "63",
+      "64"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "63",
+      "63",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "64",
+      "64",
+      "64"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "64",
+      "64",
+      "64"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "65",
+      "65",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "65",
+      "65",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "66",
+      "66",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "66",
+      "66",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "67",
+      "67",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "67",
+      "67",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "68",
+      "68",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "68",
+      "68",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "69",
+      "69",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "69",
+      "69",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "70",
+      "70",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "70",
+      "70",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "71",
+      "71",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "71",
+      "71",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "72",
+      "72",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "72",
+      "72",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "73",
+      "73",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "73",
+      "73",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "74",
+      "74",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "74",
+      "74",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "75",
+      "75",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "75",
+      "75",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "76",
+      "76",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "76",
+      "76",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "77",
+      "77",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "77",
+      "77",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "78",
+      "78",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "78",
+      "78",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "79",
+      "79",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "79",
+      "79",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "80",
+      "80",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "80",
+      "80",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "81",
+      "81",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "81",
+      "81",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "82",
+      "82",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "82",
+      "82",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "83",
+      "83",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "83",
+      "83",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "84",
+      "84",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "84",
+      "84",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "85",
+      "85",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "85",
+      "85",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "86",
+      "86",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "86",
+      "86",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "87",
+      "87",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "87",
+      "87",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "88",
+      "88",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "88",
+      "88",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "89",
+      "89",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "89",
+      "89",
+      "128"
+    ],
+    [
+      "graph_begin",
+      "request",
+      "1126",
+      "90",
+      "90",
+      "128"
+    ],
+    [
+      "graph_end",
+      "request",
+      "1126",
+      "90",
+      "90",
+      "128"
+    ]
+  ],
+  "placements": [
+    {
+      "compute_gpu": 19,
+      "compute_rejected": 0,
+      "metadata": 17,
+      "occurrences": 9
+    },
+    {
+      "compute_gpu": 533,
+      "compute_rejected": 0,
+      "metadata": 164,
+      "occurrences": 3
+    },
+    {
+      "compute_gpu": 793,
+      "compute_rejected": 0,
+      "metadata": 312,
+      "occurrences": 1
+    },
+    {
+      "compute_gpu": 761,
+      "compute_rejected": 0,
+      "metadata": 365,
+      "occurrences": 63
+    },
+    {
+      "compute_gpu": 786,
+      "compute_rejected": 0,
+      "metadata": 365,
+      "occurrences": 2
+    },
+    {
+      "compute_gpu": 791,
+      "compute_rejected": 0,
+      "metadata": 366,
+      "occurrences": 2
+    }
+  ],
+  "KV_lines": [
+    "qwen3_asr KHR KV request: prompt=49 decode_budget=256 capacity=64 limit=320 retained=0ggml_vulkan memory: ggml_backend_vk_buffer_type_alloc_buffer(7340032)",
+    "qwen3_asr KHR KV request: prompt=49 decode_budget=256 capacity=64 limit=320 retained=16ggml_vulkan memory: ggml_backend_vk_buffer_type_alloc_buffer(7340032)",
+    "qwen3_asr KHR KV grow: old_capacity=16 capacity=64 rows=0 head=0ggml_vulkan memory: ggml_backend_vk_buffer_free_buffer()",
+    "qwen3_asr KHR KV request: prompt=45 decode_budget=256 capacity=64 limit=304 retained=16ggml_vulkan memory: ggml_backend_vk_buffer_type_alloc_buffer(7340032)",
+    "qwen3_asr KHR KV grow: old_capacity=16 capacity=64 rows=0 head=0ggml_vulkan memory: ggml_backend_vk_buffer_free_buffer()",
+    "qwen3_asr KHR KV grow: old_capacity=64 capacity=128 rows=65 head=65straylight-listen: asr: qwen3_asr KHR metadata: bytes=3062224 tensor_slots=7424 encoder=0 decoder_graph=8192 conv_chunks=0straylight-listen: asr: qwen3_asr KHR placement: compute_gpu=761 compute_rejected=0 metadata=365 policy=no_cpu_fallbackASR_OWNERSHIP phase=graph_begin label=mode=request nodes=1126 kv_n=65 kv_head=65 kv_capacity=128 heap_arena_bytes=128376832 heap_used_bytes=80576432 heap_free_bytes=47800400 heap_mmap_bytes=330964992 heap_mmap_regions=1 heap_top_free_bytes=42464"
+  ],
+  "last_sampled_cgroup": {
+    "available": 1,
+    "current_bytes": 652091392,
+    "swap_bytes": 35995648,
+    "anon_bytes": 44654592,
+    "file_bytes": 596344832,
+    "shmem_bytes": 588713984,
+    "kernel_bytes": 3588096,
+    "pagetables_bytes": 1671168,
+    "unevictable_bytes": 588595200
+  },
+  "memory_scope": "Last sample is at KV90 graph end, not terminal peak; file includes shmem. Resource sample cap prevents assigning the later path to a memory stall.",
+  "diagnostics": {
+    "dispatch_pairs": 4096,
+    "dispatch_cap_reached": true,
+    "recorded_dispatch_results_all_zero": true,
+    "compile_pairs": 34,
+    "graph_pairs": 64,
+    "graph_cap_reached": true,
+    "later_placement_markers_present": true,
+    "no_stall_from_capped_silence": true
+  },
+  "token_flow_finding": "Pinned EOS151645 and real stop conditions are source-consistent, but source audit has identified a separate prefix-liveness defect: fresh prefill_prompt_prefix writes prefix K/V without updating cache.n/head; actual16->64 grow reports rows0/head0 and retains kv_ids. Detailed independent confirmation/correction is separate; this receipt does not relabel the failed run or claim unique cause of all decoding behavior.",
+  "controls": {
+    "collection": true,
+    "new_GPU_faults": false,
+    "admitted_services": "active/active before and after",
+    "unit": "not-found/inactive/dead",
+    "timing_collected": false
+  },
+  "pending": [
+    "No accepted transcript or populated-cache replay qualification.",
+    "Conditional import held; no new execution authorized by this receipt.",
+    "Concrete prefix-liveness source correction and independent review, then only explicitly admitted next correctness scope."
+  ],
+  "performance_collection": false
+}
