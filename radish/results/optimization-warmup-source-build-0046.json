@@ -229,5 +229,6 @@
     "timing_collected": false
   },
   "scope": "Actual full40000 synthetic audio in both offline and streaming; private fresh borrowed-model sessions perform one real decoder step then synchronized cleanup. Shared loaded weights/backend/pipelines persist. Real two clips/full256-token budget unchanged. No shader/backend/driver change and no benchmark.",
-  "performance_measurement": false
+  "performance_measurement": false,
+  "full_model_fixture_scope": "Two requests of the same pinned 2.785-second English clip, exact transcript and language, explicit Vulkan placement and resource controls. Not two distinct clips or broad ASR accuracy."
 }

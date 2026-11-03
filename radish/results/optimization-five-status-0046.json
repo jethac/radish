@@ -98,5 +98,6 @@
     "Quant-batched29537: actual native44 batch8/grid56x3 completes with21 submits; latest pipeline begin soft_max_f32 has no matching end before640MiB OOM/swap71.3. No output, no unchanged retry.",
     "47504: original300s timeout/TERM during normal streaming warmup after offlinewarmupstatus0. Softmaxcompilesfinish; no requested clip transcript. Guardpeak640MiB/swap62.5MiB; notOOM or performanceexperiment."
   ],
-  "runtime_cache": "Actual ncnn missing-cache cold process exports populated cache; second process accepts and re-exports identical178 keyed compiled objects and correct outputs. No hit-count or acceleration inference. On coherent91a1, copied old-UUID cache is rejected and repopulates48SPV/178native objects with the new build UUID; both complete T78 outputs remain byte-identical accepted baseline."
+  "runtime_cache": "Actual ncnn missing-cache cold process exports populated cache; second process accepts and re-exports identical178 keyed compiled objects and correct outputs. No hit-count or acceleration inference. On coherent91a1, copied old-UUID cache is rejected and repopulates48SPV/178native objects with the new build UUID; both complete T78 outputs remain byte-identical accepted baseline.",
+  "full_model_fixture_scope": "Two requests of the same pinned 2.785-second English clip, exact transcript and language, explicit Vulkan placement and resource controls. Not two distinct clips or broad ASR accuracy."
 }

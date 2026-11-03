@@ -11,7 +11,8 @@ objects change; shader, backend and driver bytes remain unchanged.
 
 [Exact source, build and lifetime review](results/optimization-warmup-source-build-0046.json)
 keep this initialization change distinct from shortening the correctness harness.
-The original two-clip full model is running under unchanged limits; transcripts,
+Two requests of the same pinned 2.785-second English clip are running under
+unchanged limits; exact transcript/language and placement checks,
 cache replay and all-five completion remain unclaimed. No performance measurement was collected.
 
 ## 2026-11-03: constrained softmax compilation correction

@@ -942,5 +942,6 @@
     },
     "source_review": "954853cb777119c3c1177bfe69b50ba70910ed12853e17e5ba6a40e558462839",
     "build_runner_review": "7966b1d9313fce661f4522d92d0c4b7ff60cb502fe83083023ed9880b120baa8"
-  }
+  },
+  "full_model_fixture_scope": "Two requests of the same pinned 2.785-second English clip, exact transcript and language, explicit Vulkan placement and resource controls. Not two distinct clips or broad ASR accuracy."
 }
