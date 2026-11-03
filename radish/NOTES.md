@@ -1,5 +1,17 @@
 # Radish status
 
+## 2026-11-03: both warm modes complete; real-request result remains open
+
+[The coherent full-model run](results/optimization-asr-coherent-timeout-0046.json)
+completes both actual warm-up decoder steps and synchronized temporary-session
+cleanup. The real request's prefix completes and audio subsampling starts, but
+the original watchdog stops the run before a transcript. The original audio,
+two requests, token budget and resource limits are unchanged.
+
+All focused queue, local-family and TTS checks remain valid. The failure is
+preserved for exact structural reconciliation; cache replay and performance
+measurement remain held.
+
 ## 2026-11-03: build coherent queue overhead changes
 
 The [new source and build](results/optimization-coherent-queue-source-build-0046.json)
