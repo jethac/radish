@@ -1,5 +1,15 @@
 # Radish status
 
+## 2026-11-03: identify ASR memory ownership
+
+A diagnostic candidate adds bounded raw allocator, process and cgroup snapshots
+around compilation, graph execution and warm-up cleanup. It preserves all model
+work, shaders and limits and performs no allocation trimming or timing.
+[Exact source and build](results/optimization-resource-ownership-source-build-0046.json)
+are independently paired. The original full workload is running; memory diagnosis
+and full-model correctness remain open. File and shared-memory charges overlap,
+and allocator mappings describe reservations rather than resident memory.
+
 ## 2026-11-03: preserve the attention-batched model result
 
 The new batching paths execute in the original model, but the full run still

@@ -1,5 +1,5 @@
 {
-  "status": "Source/build and focused GQA54/softmax8 correctness qualified. Full8138/3a30 handle85294 timed out in streaming prefill under original300s/640MiB/128MiB controls; offline one-step cleanup passed, no requested transcripts. No full-model/cache/performance claim.",
+  "status": "Diagnostic cdd557/3a30 changes only raw memory reporting over8138. Original full49065 is running to resolve memory ownership after85294 watchdog failure. No fullmodel/cache or performance success claim.",
   "application": "Frozen ASR source with previously published GQA, quantized phase, memory-liveness and unit-axis overlays",
   "ordered_additive_patches": [
     {
@@ -86,6 +86,13 @@
       "sha256": "17afafe7fc6617fa57b6fc63350fd041ddb3297dc49490d174d6c5873d3bdadd",
       "strip": 1,
       "apply_root": "Mesa root after quantized-batching overlay"
+    },
+    {
+      "file": "0046-asr-resource-ownership-snapshots.patch",
+      "sha256": "07e279f77794f20f7f804a984d2f615aa0fb5050f572ff79f0a50506ef7ab760",
+      "author_sha256": "7bec291249d2f45ad36c3c0dcfe4b7062c976f8d38334d7573c68c1ce3c295d3",
+      "strip": 1,
+      "apply_root": "root containing transcribe.cpp; ggml path headers normalized"
     }
   ],
   "cache_source_files": {
@@ -312,14 +319,14 @@
     "archive_members": "3ac3f2855cdfabfc691bdf82bf9d8d08d0e2de714d3d57fad97021ab4c291489",
     "build_result": "e71c72e97d3982b96af7b375c20dee5e8eb94dc62b584b651e04bec7e7c6905b"
   },
-  "current_listener": "8138d46f89be6661300252bd6b5f2c0220818d8fc45566e6654abee1f2fdafbc",
+  "current_listener": "cdd557123c1a02ed21e6ff6a49b5505b06abde9a620ae3d16034f3391a77cf9a",
   "current_libraries": {
     "libstraylight_asr.a": "f4f582c8dab2d774d9a99dd4d16a1a5756466dd099686ba8562fabe099794d73",
     "libggml-cpu.a": "d995ee7629e69509970ad3fe687f8a77a469c419ba7cd91404ca8bb79f4e85da",
-    "libtranscribe.a": "06409048d9eb99c2d08dca941e72f841f2c49a517a5f44166f669cfdd69cd5e8",
+    "libtranscribe.a": "3dedc4640080f8c3ede0d1b9bdb63b10b1c2008e2c2bdf99d83d5fe66b72d82a",
     "libggml-base.a": "28ec1c9e67f976b670a074b310cb09389cddce48fc7cc42a9e7f06a9449b0fc1",
     "libggml.a": "44072c75ec479e9e440cc8f9583c6d6250eab629a739c7ddf98bc70aefb8ba5d",
-    "libggml-vulkan.a": "9bbde555adaad90cb19616127656a3cad23ea4c97d43d84d9d34d219230f2969"
+    "libggml-vulkan.a": "0526af27bbff2891e4e6503572b4cbc3bfae7e2553bf2edd9c1df06573a6fa88"
   },
   "phase_release_stage": {
     "build": {
@@ -1047,5 +1054,44 @@
     "file": "optimization-asr-attention-batch-timeout-0046.json",
     "sha256": "9aa019759678c1a8b21d23fc157c206289eec2a154f547593aefab178ed793de",
     "independent_review": "pending; owner terminal artifact verified"
+  },
+  "resource_diagnostic_stage": {
+    "build": {
+      "status": "PASS host build; resource diagnostic full scope pending",
+      "source_release": "021888d90c24039415f00bdf7a31586367386bc4d20ebb096f99142a36692225",
+      "base_result": "c5fdb24319b0f52f363591f73f4f1e1933632b029ccf474bc3fafc55d53e15fa",
+      "sources": {
+        "backend": {
+          "base": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/quant-queue-batching/candidate/ggml-vulkan.cpp",
+          "preimage": "e895015df4e58098871a763bfb9e36ad3ff461744cbc65615a09110c2c32f88a",
+          "candidate": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/resource-ownership-snapshots/candidate/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+          "sha256": "ecf5041a6ff3932be91f879404cf65aad8d430b3bece07122f13b587cbe19e38",
+          "header": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/resource-ownership-snapshots/candidate/ggml/src/ggml-vulkan/asr_resource_snapshot.h",
+          "header_sha256": "aef1297302964b410148dd2cf2424b2bd731477b59b13fb629eafa5bc019d8c3"
+        },
+        "model": {
+          "base": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/bounded-production-warmup/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+          "preimage": "920420c4283b40b6cd334a4aca0f4290165ec743b4d191a445bf63d6fc3a4e2e",
+          "candidate": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/resource-ownership-snapshots/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+          "sha256": "bfbf607d8e37fe5361874cf6f339164b4a9d3d7c1d3354f0aecf0a1658226c3e",
+          "header": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/resource-ownership-snapshots/candidate/transcribe.cpp/src/arch/qwen3_asr/asr_resource_snapshot.h",
+          "header_sha256": "aef1297302964b410148dd2cf2424b2bd731477b59b13fb629eafa5bc019d8c3"
+        }
+      },
+      "commands": "0cc364ae53df569bfef37540fc7e915a9d7a26366cda63fbc4e24df2966382b7",
+      "archive_members": "af6c35351be28f6204875870eb43a0c5f39587992f0906222f3346f9f996fef3",
+      "listener": "cdd557123c1a02ed21e6ff6a49b5505b06abde9a620ae3d16034f3391a77cf9a",
+      "libraries": {
+        "libstraylight_asr.a": "f4f582c8dab2d774d9a99dd4d16a1a5756466dd099686ba8562fabe099794d73",
+        "libggml-cpu.a": "d995ee7629e69509970ad3fe687f8a77a469c419ba7cd91404ca8bb79f4e85da",
+        "libtranscribe.a": "3dedc4640080f8c3ede0d1b9bdb63b10b1c2008e2c2bdf99d83d5fe66b72d82a",
+        "libggml-base.a": "28ec1c9e67f976b670a074b310cb09389cddce48fc7cc42a9e7f06a9449b0fc1",
+        "libggml.a": "44072c75ec479e9e440cc8f9583c6d6250eab629a739c7ddf98bc70aefb8ba5d",
+        "libggml-vulkan.a": "0526af27bbff2891e4e6503572b4cbc3bfae7e2553bf2edd9c1df06573a6fa88"
+      },
+      "scope": "Exactly current Qwen model and Vulkan backend objects over8138; bridge/shaders/driver/math/work/caps unchanged; bounded read-only untimed resource snapshots"
+    },
+    "source_review": "75bb02650ea2d023bd5e7dac04353a36851ce8107daa105711a670250bd38601",
+    "build_runner_review": "60d07916f891e202a6472a1f158d52cdf489d6bad8427fa3f5358366c2225051"
   }
 }

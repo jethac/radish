@@ -1,0 +1,302 @@
+{
+  "status": "Read-only diagnostic source/build qualified; original full-model49065 running, diagnosis pending",
+  "source_release": {
+    "status": "source frozen; ownerbuild/independentreview pending",
+    "files": {
+      "backend": {
+        "base": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/quant-queue-batching/candidate/ggml-vulkan.cpp",
+        "preimage": "e895015df4e58098871a763bfb9e36ad3ff461744cbc65615a09110c2c32f88a",
+        "candidate": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/resource-ownership-snapshots/candidate/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+        "sha256": "ecf5041a6ff3932be91f879404cf65aad8d430b3bece07122f13b587cbe19e38",
+        "header": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/resource-ownership-snapshots/candidate/ggml/src/ggml-vulkan/asr_resource_snapshot.h",
+        "header_sha256": "aef1297302964b410148dd2cf2424b2bd731477b59b13fb629eafa5bc019d8c3"
+      },
+      "model": {
+        "base": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/bounded-production-warmup/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+        "preimage": "920420c4283b40b6cd334a4aca0f4290165ec743b4d191a445bf63d6fc3a4e2e",
+        "candidate": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/resource-ownership-snapshots/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+        "sha256": "bfbf607d8e37fe5361874cf6f339164b4a9d3d7c1d3354f0aecf0a1658226c3e",
+        "header": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/resource-ownership-snapshots/candidate/transcribe.cpp/src/arch/qwen3_asr/asr_resource_snapshot.h",
+        "header_sha256": "aef1297302964b410148dd2cf2424b2bd731477b59b13fb629eafa5bc019d8c3"
+      }
+    },
+    "patch": "7bec291249d2f45ad36c3c0dcfe4b7062c976f8d38334d7573c68c1ce3c295d3",
+    "scope": [
+      "read-only mallinfo2 rawarena/live/free/mmapreserved bytes; no allocator trim/free/controls",
+      "own proc RSS/PSS/swap andunifiedcgroup ownership bytes; missingread=-1/available0, nonfatal",
+      "atmost64existingcompile pairs and64graph pairs plusbothwarmcleanup pairs;3boundedlines/sample, no clocks or rates",
+      "onebackend+Qwenmodel TU; no ABI/sharedheader/shader/driver/bridge/workload/returnvalue changes; current8138warmup/shaders/3a30driver retained"
+    ],
+    "interpretation": [
+      "mallinfo mmap bytes are reservations, not RSS; correlate proc/cgroup category samples",
+      "samples are sequential read-only values, not atomic snapshot",
+      "existing memory caps/300s andtwo realclips preserved"
+    ],
+    "timing_collected": false
+  },
+  "public_patch": {
+    "file": "0046-asr-resource-ownership-snapshots.patch",
+    "sha256": "07e279f77794f20f7f804a984d2f615aa0fb5050f572ff79f0a50506ef7ab760",
+    "author_sha256": "7bec291249d2f45ad36c3c0dcfe4b7062c976f8d38334d7573c68c1ce3c295d3",
+    "strip": 1,
+    "apply_root": "root containing transcribe.cpp; only ggml path headers normalized"
+  },
+  "build": {
+    "status": "PASS host build; resource diagnostic full scope pending",
+    "source_release": "021888d90c24039415f00bdf7a31586367386bc4d20ebb096f99142a36692225",
+    "base_result": "c5fdb24319b0f52f363591f73f4f1e1933632b029ccf474bc3fafc55d53e15fa",
+    "sources": {
+      "backend": {
+        "base": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/quant-queue-batching/candidate/ggml-vulkan.cpp",
+        "preimage": "e895015df4e58098871a763bfb9e36ad3ff461744cbc65615a09110c2c32f88a",
+        "candidate": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/resource-ownership-snapshots/candidate/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+        "sha256": "ecf5041a6ff3932be91f879404cf65aad8d430b3bece07122f13b587cbe19e38",
+        "header": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/resource-ownership-snapshots/candidate/ggml/src/ggml-vulkan/asr_resource_snapshot.h",
+        "header_sha256": "aef1297302964b410148dd2cf2424b2bd731477b59b13fb629eafa5bc019d8c3"
+      },
+      "model": {
+        "base": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/bounded-production-warmup/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+        "preimage": "920420c4283b40b6cd334a4aca0f4290165ec743b4d191a445bf63d6fc3a4e2e",
+        "candidate": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/resource-ownership-snapshots/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+        "sha256": "bfbf607d8e37fe5361874cf6f339164b4a9d3d7c1d3354f0aecf0a1658226c3e",
+        "header": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/resource-ownership-snapshots/candidate/transcribe.cpp/src/arch/qwen3_asr/asr_resource_snapshot.h",
+        "header_sha256": "aef1297302964b410148dd2cf2424b2bd731477b59b13fb629eafa5bc019d8c3"
+      }
+    },
+    "commands": "0cc364ae53df569bfef37540fc7e915a9d7a26366cda63fbc4e24df2966382b7",
+    "archive_members": "af6c35351be28f6204875870eb43a0c5f39587992f0906222f3346f9f996fef3",
+    "listener": "cdd557123c1a02ed21e6ff6a49b5505b06abde9a620ae3d16034f3391a77cf9a",
+    "libraries": {
+      "libstraylight_asr.a": "f4f582c8dab2d774d9a99dd4d16a1a5756466dd099686ba8562fabe099794d73",
+      "libggml-cpu.a": "d995ee7629e69509970ad3fe687f8a77a469c419ba7cd91404ca8bb79f4e85da",
+      "libtranscribe.a": "3dedc4640080f8c3ede0d1b9bdb63b10b1c2008e2c2bdf99d83d5fe66b72d82a",
+      "libggml-base.a": "28ec1c9e67f976b670a074b310cb09389cddce48fc7cc42a9e7f06a9449b0fc1",
+      "libggml.a": "44072c75ec479e9e440cc8f9583c6d6250eab629a739c7ddf98bc70aefb8ba5d",
+      "libggml-vulkan.a": "0526af27bbff2891e4e6503572b4cbc3bfae7e2553bf2edd9c1df06573a6fa88"
+    },
+    "scope": "Exactly current Qwen model and Vulkan backend objects over8138; bridge/shaders/driver/math/work/caps unchanged; bounded read-only untimed resource snapshots"
+  },
+  "commands": [
+    {
+      "key": "model",
+      "argv": [
+        "/usr/bin/clang++",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/src/arch/qwen3_asr",
+        "--target=aarch64-linux-gnu",
+        "--sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+        "-DGGML_USE_CPU",
+        "-DGGML_USE_VULKAN",
+        "-DMINIZ_NO_INFLATE_APIS",
+        "-DMINIZ_NO_STDIO",
+        "-DMINIZ_NO_TIME",
+        "-DMINIZ_NO_ZLIB_COMPATIBLE_NAMES",
+        "-DTRANSCRIBE_BUILD",
+        "-DTRANSCRIBE_COMMIT=\"unknown\"",
+        "-DTRANSCRIBE_STATIC",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/app-asr/include",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/src",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/include",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/../include",
+        "--gcc-install-dir=/home/jethac/Projects/straylight-voice/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wall",
+        "-Wextra",
+        "-Wshadow",
+        "-Wpedantic",
+        "-Wno-unused-parameter",
+        "-Wno-missing-field-initializers",
+        "-o",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-resource-snapshots-build-0046/model.o",
+        "-c",
+        "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/resource-ownership-snapshots/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build",
+      "env": {}
+    },
+    {
+      "key": "backend",
+      "argv": [
+        "/usr/bin/clang++",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-app-cache-build-0046/source",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-app-cache-build-0046/source",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-app-cache-build-0046/source",
+        "--target=aarch64-linux-gnu",
+        "--sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+        "-DGGML_SCHED_MAX_COPIES=4",
+        "-DGGML_VULKAN_BFLOAT16_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_DECODE_VECTOR_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E2M1_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E4M3_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_INTEGER_DOT_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_KHR_PROFILE",
+        "-D_GNU_SOURCE",
+        "-D_XOPEN_SOURCE=600",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/ggml-vulkan/..",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build/transcribe/ggml/src/ggml-vulkan",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/../include",
+        "-isystem",
+        "/run/media/jethac/Shared/radish/vulkan-headers/include",
+        "-isystem",
+        "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/deps/spirv-headers-install/include",
+        "--gcc-install-dir=/home/jethac/Projects/straylight-voice/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wmissing-declarations",
+        "-Wmissing-noreturn",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wcast-qual",
+        "-Wno-unused-function",
+        "-Wunreachable-code-break",
+        "-Wunreachable-code-return",
+        "-Wmissing-prototypes",
+        "-Wextra-semi",
+        "-o",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-resource-snapshots-build-0046/backend.o",
+        "-c",
+        "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/resource-ownership-snapshots/candidate/ggml/src/ggml-vulkan/ggml-vulkan.cpp"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build",
+      "env": {}
+    },
+    {
+      "argv": [
+        "cargo",
+        "build",
+        "--offline",
+        "--locked",
+        "--target",
+        "aarch64-unknown-linux-gnu",
+        "--features",
+        "asr-vulkan",
+        "-j3",
+        "--manifest-path",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-untimed-build-0046/rust-app/listen/Cargo.toml"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-resource-snapshots-build-0046",
+      "env": {
+        "STRAYLIGHT_ASR_LIB": "/run/media/jethac/Shared/radish/optimization-five-asr-resource-snapshots-build-0046/libs",
+        "STRAYLIGHT_SYSROOT": "/home/jethac/Projects/straylight-voice/sysroot",
+        "CARGO_TARGET_DIR": "/run/media/jethac/Shared/radish/optimization-five-asr-resource-snapshots-build-0046/cargo-target",
+        "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER": "clang",
+        "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS": "-C link-arg=--target=aarch64-linux-gnu -C link-arg=-fuse-ld=lld -C link-arg=--sysroot=/home/jethac/Projects/straylight-voice/sysroot -C link-arg=-L/home/jethac/Projects/straylight-voice/sysroot/usr/lib -C link-arg=-L/home/jethac/Projects/straylight-voice/sysroot/usr/lib/aarch64-linux-gnu -C link-arg=-L/run/media/jethac/Shared/radish/build-loader/loader -C link-arg=-Wl,--allow-shlib-undefined -C link-arg=-Wno-unused-command-line-argument -C target-cpu=cortex-a53",
+        "CC_aarch64_unknown_linux_gnu": "clang",
+        "CFLAGS_aarch64_unknown_linux_gnu": "--target=aarch64-linux-gnu --sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+        "AR_aarch64_unknown_linux_gnu": "llvm-ar",
+        "PKG_CONFIG_SYSROOT_DIR": "/home/jethac/Projects/straylight-voice/sysroot",
+        "PKG_CONFIG_LIBDIR": "/home/jethac/Projects/straylight-voice/sysroot/usr/lib/pkgconfig:/home/jethac/Projects/straylight-voice/sysroot/usr/share/pkgconfig",
+        "PKG_CONFIG_ALLOW_CROSS": "1"
+      }
+    }
+  ],
+  "source_review": {
+    "status": "passed finite read-only resource instrumentation source counterpart; owner build/payload and resource evidence remain",
+    "release_sha256": "021888d90c24039415f00bdf7a31586367386bc4d20ebb096f99142a36692225",
+    "patch_sha256": "7bec291249d2f45ad36c3c0dcfe4b7062c976f8d38334d7573c68c1ce3c295d3",
+    "files": {
+      "backend": {
+        "base": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/quant-queue-batching/candidate/ggml-vulkan.cpp",
+        "preimage": "e895015df4e58098871a763bfb9e36ad3ff461744cbc65615a09110c2c32f88a",
+        "candidate": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/resource-ownership-snapshots/candidate/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+        "sha256": "ecf5041a6ff3932be91f879404cf65aad8d430b3bece07122f13b587cbe19e38",
+        "header": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/resource-ownership-snapshots/candidate/ggml/src/ggml-vulkan/asr_resource_snapshot.h",
+        "header_sha256": "aef1297302964b410148dd2cf2424b2bd731477b59b13fb629eafa5bc019d8c3"
+      },
+      "model": {
+        "base": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/bounded-production-warmup/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+        "preimage": "920420c4283b40b6cd334a4aca0f4290165ec743b4d191a445bf63d6fc3a4e2e",
+        "candidate": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/resource-ownership-snapshots/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+        "sha256": "bfbf607d8e37fe5361874cf6f339164b4a9d3d7c1d3354f0aecf0a1658226c3e",
+        "header": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/resource-ownership-snapshots/candidate/transcribe.cpp/src/arch/qwen3_asr/asr_resource_snapshot.h",
+        "header_sha256": "aef1297302964b410148dd2cf2424b2bd731477b59b13fb629eafa5bc019d8c3"
+      }
+    },
+    "checks": [
+      "Exact preimage/candidate/header hashes and git apply --reverse --check against frozen candidate pass; both colocated headers byte-identical. No shaders, model weights, graph math, queues, memory caps or user budget changed.",
+      "Compile snapshots wrap ggml_vk_create_pipeline_func at its caller; END is after function returns and local SPIRV rewrite vectors are destroyed. Existing diagnostic compile bound64 retained; no extra lazy pipeline requested.",
+      "Graph snapshots wrap the same graph_compute exactly once after unchanged placement check, returning its exact ggml_status. Bound64 pairs, labels distinguish exact TLS warm session/mode and graph nodes/KV counters; no timers or new computation.",
+      "Warm scope synchronizes remaining scheduler before before-cleanup sample; saves mode before restoring TLS, frees temporary through same public function, then after-cleanup sample. No extra model/backend/cache/KV retention.",
+      "Header performs bounded read-only own-process proc and own unified cgroup reads, allocator statistics and three bounded stderr lines. No trim/mallopt/free/allocation controls, no /proc writes, no signal handler or timer.",
+      "Read errors set empty NUL string; missing keys return minus1, cgroup availability explicit. EINTR retried, bounded buffers NUL-terminated; exact key delimiter prevents anon matching anon_thp or file matching file_mapped. cgroup member path bounded by2048 and path2304.",
+      "errno restored by scope on every return. mallinfo2 build/runtime symbol availability remains owner target-link gate; instrumentation is Linux/glibc only with no-op otherwise.",
+      "Per-TU snapshot bound256 exceeds corresponding at-most128 compile or128 graph plus4 cleanup sample calls; no per-dispatch sample. Bounded output fits existing32MiB log reservation; no guard ceiling changed."
+    ],
+    "interpretation_limits": [
+      "mallinfo arena/free/used/mmap fields are allocator accounting, not precise logical-live bytes or resident size. Pair with proc/cgroup categories.",
+      "cgroup file includes shmem; do not add them. VmSwap alone is not full group swap. Samples read sequentially, not atomically.",
+      "Snapshot call has small temporary stack/read/log overhead and may touch proc/libc pages; no performance measurement or speed comparison intended.",
+      "No trim or allocator policy change justified until actual samples distinguish retained free pages from live backend pools."
+    ],
+    "source_audit": "888353a555fb2d90208a53b0650d923853513495896f271e91a4abd912fe6e32",
+    "required_actual": [
+      "Both offline cleanup-before/after and streaming phase/graph samples available",
+      "Current resource sampler output, compiler begin/end pairs and clean caps/fault/services",
+      "Full original real input/budget/transcript acceptance remains separate"
+    ],
+    "timing_collected": false
+  },
+  "build_runner_review": {
+    "status": "PASS finite source/build/runner pairing; resource diagnosis only untilactual fulloracles pass",
+    "source_release": "021888d90c24039415f00bdf7a31586367386bc4d20ebb096f99142a36692225",
+    "source_review": "75bb02650ea2d023bd5e7dac04353a36851ce8107daa105711a670250bd38601",
+    "build_result": "3d099def9068b90f28fe24ebe851bf1ccbb6fa138cffa764954febb37511c1af",
+    "commands": "0cc364ae53df569bfef37540fc7e915a9d7a26366cda63fbc4e24df2966382b7",
+    "archive_deltas": {
+      "libtranscribe.a": {
+        "members": 137,
+        "changed": [
+          [
+            45,
+            [
+              "model.cpp.o",
+              "7ea56efa44949b7ffb2e180af6f59465cc21b675a25d68c7ba04c6012bab0a5b"
+            ],
+            [
+              "model.cpp.o",
+              "4e9fc35db00b07dd2b5bc21778bc2a482ea4da29272d4a6d44a400a56d9e2c64"
+            ]
+          ]
+        ]
+      },
+      "libggml-vulkan.a": {
+        "members": 159,
+        "changed": [
+          [
+            0,
+            [
+              "ggml-vulkan.cpp.o",
+              "73afb295494c96f3081f9f6fa1805e028a01ab17e9926853333f3093e9310fd8"
+            ],
+            [
+              "ggml-vulkan.cpp.o",
+              "2a9b4d042f07652f9ac922c4278cdc89b36a0059eef06afe3b3656904b4eab8a"
+            ]
+          ]
+        ]
+      }
+    },
+    "listener": "cdd557123c1a02ed21e6ff6a49b5505b06abde9a620ae3d16034f3391a77cf9a",
+    "runner": "a89c2f87b17a796dc24d31b5ef169565a59a3e4b806635d3148240ef247a218a",
+    "argv": "259fe2c4c2e66f07f8fdd70890b8c85cacf9c298f6fd808e610f1c73de1d875a",
+    "hostcheck": "ed1e5d7f00d47d99caf247ff465e8b2554e7a125febbb1dad81ccd4032d681a2",
+    "scope": "onlyactualQwenmodel/backend object occurrences over8138; allothernormalmembers/bridge/shaders/libraries exact; current3a30driver unchanged",
+    "libc": "newmallinfo2UND GLIBC2.33; ownerread-only targetgetconf reportsGLIBC2.43",
+    "controls": "original2clips,allwarmwork,budgets,640M128swap300s/304MiBfloor/faultservices preserved; onlystrongerpass-path ownershipdata assertions",
+    "readout": "heapmmapreservation notRSS; cgroupfile includes shmem; snapshots sequential notatomic. No timing/performance/trim claim",
+    "timing_collected": false
+  },
+  "scope": "Only bounded allocator/proc/cgroup snapshots in model/backend. No trim, mathematical, shader, driver, workload, guard or timing changes. Raw file/shmem charges overlap; mmap reservation is not RSS. Missing fields remain explicitly unavailable.",
+  "performance_measurement": false
+}

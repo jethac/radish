@@ -26,7 +26,7 @@
     {
       "area": 4,
       "implementation": "Integrated GQA broadcast, phase-specific quantized kernels, encoder-to-prefill device-buffer reuse and reduced host staging; actual application pipeline cache and supported-kernel initialization correction are built. Constrained-profile subsampling reuses one independent chunk graph across the complete audio, lowering unnecessary live convolution intermediates. Scheduler scratch is released between subsampling and encoder; Vulkan-owned allocations leave the BO reuse cache on final unref. Incremental KV allocates actual prompt/draft demand and grows geometrically up to the unchanged full context ceiling. The constrained softmax shader uses one runtime-width body and preserves column loops instead of seven constant-width expansions, retaining numerical order and masks. Production constrained-profile warmup now uses fresh temporary borrowed-model sessions and one actual decoder step per mode; synthetic state is synchronized and freed before real requests. The original warm prompt now has owned string lifetime.",
-      "evidence": "The queue-only3a30 focused GQA54 and softmax8 numerical/full-partial checks independently pass. Original full8138/3a30 handle85294 completed offline one-step warmup and streaming encoder, then reached the unchanged300-second watchdog in streaming prefill. New attention/softmax batch8 selection is actual; no streaming warmup completion or real requested transcripts. Guardtelemetry reached640MiB memory/128MiBswap, outcome timeout/TERM rather than OOM. Original workload and controls retained. Fullmodel and ASR cache replay remain open; no unchanged retry."
+      "evidence": "The queue-only3a30 focused GQA54 and softmax8 numerical/full-partial checks independently pass. Original full8138/3a30 handle85294 completed offline one-step warmup and streaming encoder, then reached the unchanged300-second watchdog in streaming prefill. New attention/softmax batch8 selection is actual; no streaming warmup completion or real requested transcripts. Guardtelemetry reached640MiB memory/128MiBswap, outcome timeout/TERM rather than OOM. Original workload and controls retained. Fullmodel and ASR cache replay remain open; no unchanged retry. A separately built, reviewed read-only resource diagnostic candidate cdd557 now runs the same original workload as49065 to identify memory ownership; no behavioral fix or outcome is inferred."
     },
     {
       "area": 5,
@@ -54,11 +54,12 @@
     "0046-asr-quantized-batching.patch": "527d36a900a20dd4605ba3a5c2195aa89d10530788171896ec0da47694a107e6",
     "0046-asr-softmax-compiler-footprint.patch": "21b5bf1e2f1b223c8d38d85403da422304029cc710a2369074a51f3545982662",
     "0046-asr-bounded-production-warmup.patch": "7898ee829fab47935a16b9c2f8f508e8f36e04a7f50834261f665fc6805c5886",
-    "0046-asr-attention-batching.patch": "17afafe7fc6617fa57b6fc63350fd041ddb3297dc49490d174d6c5873d3bdadd"
+    "0046-asr-attention-batching.patch": "17afafe7fc6617fa57b6fc63350fd041ddb3297dc49490d174d6c5873d3bdadd",
+    "0046-asr-resource-ownership-snapshots.patch": "07e279f77794f20f7f804a984d2f615aa0fb5050f572ff79f0a50506ef7ab760"
   },
   "existing_results": "Original743 CTS cases and modified132 robustness outcomes remain historical pinned evidence; no conformance count or selected performance change.",
   "completion_gate": "TTS side is qualified for the stated T213/T78 fixtures. All-five gate remains CLOSED on ASR full-model memory/placement/transcript and real application replay; full GOAL remains active.",
-  "as_of_utc": "2026-11-03 02:08:40 UTC",
+  "as_of_utc": "2026-11-03 02:18:00 UTC",
   "correctness_receipts": {
     "optimization-cache-correctness-0046.json": "0af98f899b26429971ef61df554e2cf4a4fe340019353f9ed7491869ab59b1f5",
     "optimization-queue-correctness-0046.json": "98c9f0d64a5ef1076462930effb6fd3e22c48de75cad78e87f7e68eaa6636b0e",
@@ -83,7 +84,8 @@
     "optimization-asr-stream-prefill-timeout-0046.json": "0e8e2b0cbcccf2a49f0f8b3c008ae9174053d174f72c2efab59b24d7883d1d4b",
     "optimization-attention-batching-gqa-actual-0046.json": "ea1a64af900cfe61ae0135878b48208a3ac756bd567d88c0eb4435c32caae724",
     "optimization-attention-batching-softmax-actual-0046.json": "a76dd7b0c307c083f3c79ec03cc2fb0990617fe5c87f3caccd0147d88d4c53f4",
-    "optimization-asr-attention-batch-timeout-0046.json": "9aa019759678c1a8b21d23fc157c206289eec2a154f547593aefab178ed793de"
+    "optimization-asr-attention-batch-timeout-0046.json": "9aa019759678c1a8b21d23fc157c206289eec2a154f547593aefab178ed793de",
+    "optimization-asr-attention-batch-timeout-independent-0046.json": "e8e5641ac78ffd2653e137c8ce681eb09603464f4c701dcde17c0e34e1ebf144"
   },
   "drivers": {
     "bounded_cache_queue_half": "61e8/9f64 exact integrated cache+queue+corrected idiv",
