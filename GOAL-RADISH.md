@@ -31,7 +31,7 @@ unmodified. It is a way in, not a promise of more FLOPs.
 
 | | |
 | --- | --- |
-| SoC | Qualcomm APQ8053 (Snapdragon 625-class) |
+| SoC | Qualcomm APQ8053-Lite, marketed as Snapdragon 624 (MSM8953 family, no modem). Same CPU and GPU as the Pro part; the Lite codec is limited to 1080p. |
 | CPU | 8 × Cortex-A53 at up to 1.8048 GHz, in-order; ~57.8 GFLOP/s FP32 nominal |
 | GPU | Adreno 506, a5xx generation, up to 650 MHz; mainline `msm` DRM, no KGSL |
 | GPU nominal | 124.8 GFLOP/s FP32 (assumes 96 ALU lanes × 650 MHz × 2; not a Qualcomm-verified figure). FP16 nominally 2×. |
