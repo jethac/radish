@@ -1,0 +1,45 @@
+{
+  "status": "FAIL at unchanged memory cap; last marker starts soft_max_f32 pipeline creation",
+  "listener": "8f301aa50fcb023ba1c9c79e3436bccb0ee3359feb1d87db1b56b36539fb9a25",
+  "driver": "4923d9ebd889f577a1118ac5a7a04466c61b704a6bfeae40b0961167ef1c308c",
+  "actual": {
+    "encoder_placement_compute_gpu": 533,
+    "rejected_compute_nodes": 0,
+    "last_pipeline_begin": "soft_max_f32",
+    "matching_pipeline_end": false,
+    "quant_batching_observed": {
+      "native_units": 44,
+      "grid": [
+        56,
+        3,
+        1
+      ],
+      "one_workgroup_per_chunk": true,
+      "max_batch": 8,
+      "actual_submits": 21,
+      "result": 0
+    },
+    "transcripts": 0
+  },
+  "resources": {
+    "memory_cap_MiB": 640,
+    "swap_cap_MiB": 128,
+    "memory_peak_MiB": 640,
+    "swap_peak_MiB": 71.3
+  },
+  "run_log": "a6a55c8a7acebd22c51b7f71c9d0a046be408ee13272de97d631e31a1df4d76a",
+  "kernel_log": "9fbee395170c58a61d0d5d0bdb5e69bc819dcb04e68baf22e48723849f9eb6de",
+  "collection": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+  "fault_check": "PASS: no new GPU fault/recovery messages",
+  "services_after": [
+    "active",
+    "active"
+  ],
+  "drain": "inactive/dead/not-found",
+  "performance_measurement": false,
+  "limits": [
+    "The unmatched pipeline marker identifies the execution boundary, not the allocation responsible for OOM. Source/ownership diagnosis remains open.",
+    "Original audio, model, warmups,256 decode budget, no-CPU-compute-fallback policy and caps are unchanged. No retry/import after failure.",
+    "Independent six-kernel batching correctness, bounded KV growth and scoped TTS integration remain valid."
+  ]
+}

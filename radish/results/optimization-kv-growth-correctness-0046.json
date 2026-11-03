@@ -1,0 +1,153 @@
+{
+  "status": "passed",
+  "scope": "Actual KV preservation/growth and fresh GPU-view reads only; policy productioncallpath/fullmodel remain separate",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-kv-growth-v2/probe",
+  "run_log": "c0aa51ce981519c1323ed468c3c37d072928041a9af819e4215472443788326a",
+  "runner_result": "7e579b00b4d8f8ea7730a27d7db6393c95bf0511dfa00be4bec67ba7329c9f05",
+  "helper_source": "1c3333165a78be0a99f5f1edc3a346c7e03c2d688b2cd769ee5515429e44cc3c",
+  "independent_source_host_gate": "be75578ece00a89d48f30759bd5755dcd4fc7fd07b37c2ec3274611888bbc0a3",
+  "payload": {
+    "radish_icd.json": {
+      "bytes": 149,
+      "sha256": "66e05939e2afb0486eb80f2a6181254692bf6e1e1d9c342a79de32ed0e650ac5"
+    },
+    "libvulkan.so.1": {
+      "bytes": 703696,
+      "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+    },
+    "resources": {
+      "bytes": 49628480,
+      "sha256": "0993a7f3bcecfd807d6faa6955198d2b5ca2dd19a70b865ba09ab1d064998be3"
+    },
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 13629824,
+      "sha256": "91a1a98e7c8e5b004895f0bc0dbb24c434f2caa4e5c224a8399026f09b48db80"
+    },
+    "payload.json": {
+      "bytes": 819,
+      "sha256": "3eb941f59ef56b80099173fef41836ae0bf528e16aa205d4e00060997515f910"
+    }
+  },
+  "actual_graphs": [
+    {
+      "type": 1,
+      "capacity": 16,
+      "written_rows": 16,
+      "GPU_CONT_nodes": 2,
+      "full_guarded_bytes": 1835264
+    },
+    {
+      "type": 1,
+      "capacity": 32,
+      "written_rows": 16,
+      "GPU_CONT_nodes": 2,
+      "full_guarded_bytes": 1835264
+    },
+    {
+      "type": 1,
+      "capacity": 32,
+      "written_rows": 32,
+      "GPU_CONT_nodes": 2,
+      "full_guarded_bytes": 3670272
+    },
+    {
+      "type": 1,
+      "capacity": 64,
+      "written_rows": 32,
+      "GPU_CONT_nodes": 2,
+      "full_guarded_bytes": 3670272
+    },
+    {
+      "type": 1,
+      "capacity": 64,
+      "written_rows": 48,
+      "GPU_CONT_nodes": 2,
+      "full_guarded_bytes": 5505280
+    },
+    {
+      "type": 0,
+      "capacity": 16,
+      "written_rows": 16,
+      "GPU_CONT_nodes": 2,
+      "full_guarded_bytes": 3670272
+    },
+    {
+      "type": 0,
+      "capacity": 32,
+      "written_rows": 16,
+      "GPU_CONT_nodes": 2,
+      "full_guarded_bytes": 3670272
+    },
+    {
+      "type": 0,
+      "capacity": 32,
+      "written_rows": 32,
+      "GPU_CONT_nodes": 2,
+      "full_guarded_bytes": 7340288
+    },
+    {
+      "type": 0,
+      "capacity": 64,
+      "written_rows": 32,
+      "GPU_CONT_nodes": 2,
+      "full_guarded_bytes": 7340288
+    },
+    {
+      "type": 0,
+      "capacity": 64,
+      "written_rows": 48,
+      "GPU_CONT_nodes": 2,
+      "full_guarded_bytes": 11010304
+    }
+  ],
+  "growths": [
+    {
+      "type": 1,
+      "old_capacity": 16,
+      "new_capacity": 32,
+      "postappend_n": 33,
+      "postappend_head": 33,
+      "postappend_generated_rows": 20
+    },
+    {
+      "type": 1,
+      "old_capacity": 32,
+      "new_capacity": 64,
+      "postappend_n": 49,
+      "postappend_head": 49,
+      "postappend_generated_rows": 36
+    },
+    {
+      "type": 0,
+      "old_capacity": 16,
+      "new_capacity": 32,
+      "postappend_n": 33,
+      "postappend_head": 33,
+      "postappend_generated_rows": 20
+    },
+    {
+      "type": 0,
+      "old_capacity": 32,
+      "new_capacity": 64,
+      "postappend_n": 49,
+      "postappend_head": 49,
+      "postappend_generated_rows": 36
+    }
+  ],
+  "checks": [
+    "BothF16/F32 actualcausal_lm kv_init16\u2192kv_grow32\u2192kv_grow64, 28layers\u00d78KVheads\u00d7128dims. Eachgrowth verifies all oldK/V bytes and zero unused newrows beforeappend.",
+    "12promptrows plusgeneratedrows fill oldcapacity beforeeachgrow. Actualoneaheadn/head17atcapacity16 and33atcapacity32 preserved by assertions; printedn/head33/49 are after subsequentgeneratedrowappend. keep=min(n,oldcapacity) retains all actuallywrittenrows.",
+    "All ten freshgraphs materialize swappedhead/position4D views with newcapacity layerstride and bothK/V newbacking. Exactly20CONToperations assertedVulkan beforecompute; mandatoryCPUlastscheduler slot provides noCPUcompute credit.",
+    "Entire guardedoutputbuffers including poisonprefix/middlegaps/suffix pass byte oracle; entireK/V allocations and zero-unused rows rechecked aftereverygraph. No stale-view-only shortcut.",
+    "Auxiliary copiedpolicy arithmetic checks fixed320clamp/256budget values; it doesNOT execute production staticpolicy. Sourcecallsite/mask/lastbudget proof remains531fc.",
+    "Original384MiB/90s smallscope/fault/service/disk caps preserved; actual70.1MiB/no swap. No timing/benchmark collection."
+  ],
+  "remaining": [
+    "Original ASR fullmodel53398 timed out withouttranscript; no fullmodel fit/accuracy/import claim.",
+    "No universalcapacity/longsequence/concurrentgrowth claim; originalsmall two-boundary synthetic qualification only."
+  ]
+}

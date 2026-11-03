@@ -1,0 +1,486 @@
+{
+  "status": "passed",
+  "scope": "Actualsixquantkernels, full/partial8sequentialbatchedsubmissions and unchangedexactoracles; no performancecollection",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-quant-batch/probe",
+  "run_log": "f473514d8aad1ff94a440ff3385ebcc4432b3cbecf4fce7bfcf993edea7190ec",
+  "runner_result": "572c0e3d2869fa1effd946681686db930048ed7bab387ddfa0424bf193280f26",
+  "source": "07066f7cdf420a1fc74047ad6cf0220e3d3511d3bfd2970126b92d78cf7ab2e6",
+  "payload": {
+    "radish_icd.json": {
+      "bytes": 148,
+      "sha256": "17cddb72cba8d9fa1dbccfd8f2eeacbbe605f56c8323fb246cb89ec114bdc3d0"
+    },
+    "khr_quant_q6_k_mv.spv": {
+      "bytes": 6012,
+      "sha256": "5380fea9ff53e8e768cf86e645e915baa0ade20cac37c426793568a793155e9e"
+    },
+    "resources": {
+      "bytes": 752840,
+      "sha256": "1339c74e3ecfd781a57c0a5a28eb47679016225e623fbfbac677d58c9fcc9f37"
+    },
+    "khr_quant_q8_0_mv.spv": {
+      "bytes": 4772,
+      "sha256": "725ed1bafdc1e1e2c3e263370c5235a61faf96a20767ee2792c867a56f3107ce"
+    },
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "khr_quant_q6_k_mm.spv": {
+      "bytes": 8352,
+      "sha256": "7f5a5f46e2d95236bb1adc8d5998a2ecb15e5599fd4ae7c0c7f58136592a786b"
+    },
+    "khr_quant_q8_0_mm.spv": {
+      "bytes": 7096,
+      "sha256": "4dbcc7ea8fe1eb53dfd63d314fc5e08be0c4072b9663c25bd9d0a3ef378e95b3"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 13631800,
+      "sha256": "4923d9ebd889f577a1118ac5a7a04466c61b704a6bfeae40b0961167ef1c308c"
+    },
+    "khr_quant_q4_k_mv.spv": {
+      "bytes": 6392,
+      "sha256": "e1a74242cd49c4c7e0c37da55b1da2bc698318b827eabffdc467c8cbd159e611"
+    },
+    "khr_quant_q4_k_mm.spv": {
+      "bytes": 8732,
+      "sha256": "001193cd195f5c6b15de7a5757c8d150dae40c41e6b046743464490896f4e379"
+    },
+    "payload.json": {
+      "bytes": 1531,
+      "sha256": "ae065448f5b76b4ae508ef9c0bce9224b66b191bb1be3190120e482b17e2a627"
+    }
+  },
+  "native_bodies": "Allsixnativeblake3+fullassemblybodysegments byte-identical original85caf nativeadmission. No newshaderarithmetic.",
+  "dispatches": [
+    {
+      "native": 53,
+      "grid": [
+        3,
+        2,
+        4
+      ],
+      "tile": [
+        1,
+        1,
+        1
+      ],
+      "batch": 8,
+      "packed": 1,
+      "local_memory": 1,
+      "submits": 3,
+      "result": 0
+    },
+    {
+      "native": 53,
+      "grid": [
+        3,
+        2,
+        2
+      ],
+      "tile": [
+        1,
+        1,
+        1
+      ],
+      "batch": 8,
+      "packed": 1,
+      "local_memory": 1,
+      "submits": 2,
+      "result": 0
+    },
+    {
+      "native": 53,
+      "grid": [
+        3,
+        2,
+        2
+      ],
+      "tile": [
+        1,
+        1,
+        1
+      ],
+      "batch": 8,
+      "packed": 1,
+      "local_memory": 1,
+      "submits": 2,
+      "result": 0
+    },
+    {
+      "native": 43,
+      "grid": [
+        9,
+        3,
+        4
+      ],
+      "tile": [
+        1,
+        1,
+        1
+      ],
+      "batch": 8,
+      "packed": 1,
+      "local_memory": 1,
+      "submits": 14,
+      "result": 0
+    },
+    {
+      "native": 43,
+      "grid": [
+        9,
+        3,
+        2
+      ],
+      "tile": [
+        1,
+        1,
+        1
+      ],
+      "batch": 8,
+      "packed": 1,
+      "local_memory": 1,
+      "submits": 7,
+      "result": 0
+    },
+    {
+      "native": 43,
+      "grid": [
+        9,
+        3,
+        2
+      ],
+      "tile": [
+        1,
+        1,
+        1
+      ],
+      "batch": 8,
+      "packed": 1,
+      "local_memory": 1,
+      "submits": 7,
+      "result": 0
+    },
+    {
+      "native": 52,
+      "grid": [
+        3,
+        2,
+        4
+      ],
+      "tile": [
+        1,
+        1,
+        1
+      ],
+      "batch": 8,
+      "packed": 1,
+      "local_memory": 1,
+      "submits": 3,
+      "result": 0
+    },
+    {
+      "native": 52,
+      "grid": [
+        3,
+        2,
+        2
+      ],
+      "tile": [
+        1,
+        1,
+        1
+      ],
+      "batch": 8,
+      "packed": 1,
+      "local_memory": 1,
+      "submits": 2,
+      "result": 0
+    },
+    {
+      "native": 52,
+      "grid": [
+        3,
+        2,
+        2
+      ],
+      "tile": [
+        1,
+        1,
+        1
+      ],
+      "batch": 8,
+      "packed": 1,
+      "local_memory": 1,
+      "submits": 2,
+      "result": 0
+    },
+    {
+      "native": 41,
+      "grid": [
+        9,
+        3,
+        4
+      ],
+      "tile": [
+        1,
+        1,
+        1
+      ],
+      "batch": 8,
+      "packed": 1,
+      "local_memory": 1,
+      "submits": 14,
+      "result": 0
+    },
+    {
+      "native": 41,
+      "grid": [
+        9,
+        3,
+        2
+      ],
+      "tile": [
+        1,
+        1,
+        1
+      ],
+      "batch": 8,
+      "packed": 1,
+      "local_memory": 1,
+      "submits": 7,
+      "result": 0
+    },
+    {
+      "native": 41,
+      "grid": [
+        9,
+        3,
+        2
+      ],
+      "tile": [
+        1,
+        1,
+        1
+      ],
+      "batch": 8,
+      "packed": 1,
+      "local_memory": 1,
+      "submits": 7,
+      "result": 0
+    },
+    {
+      "native": 44,
+      "grid": [
+        3,
+        2,
+        4
+      ],
+      "tile": [
+        1,
+        1,
+        1
+      ],
+      "batch": 8,
+      "packed": 1,
+      "local_memory": 1,
+      "submits": 3,
+      "result": 0
+    },
+    {
+      "native": 44,
+      "grid": [
+        3,
+        2,
+        2
+      ],
+      "tile": [
+        1,
+        1,
+        1
+      ],
+      "batch": 8,
+      "packed": 1,
+      "local_memory": 1,
+      "submits": 2,
+      "result": 0
+    },
+    {
+      "native": 44,
+      "grid": [
+        3,
+        2,
+        2
+      ],
+      "tile": [
+        1,
+        1,
+        1
+      ],
+      "batch": 8,
+      "packed": 1,
+      "local_memory": 1,
+      "submits": 2,
+      "result": 0
+    },
+    {
+      "native": 34,
+      "grid": [
+        9,
+        3,
+        4
+      ],
+      "tile": [
+        1,
+        1,
+        1
+      ],
+      "batch": 8,
+      "packed": 1,
+      "local_memory": 1,
+      "submits": 14,
+      "result": 0
+    },
+    {
+      "native": 34,
+      "grid": [
+        9,
+        3,
+        2
+      ],
+      "tile": [
+        1,
+        1,
+        1
+      ],
+      "batch": 8,
+      "packed": 1,
+      "local_memory": 1,
+      "submits": 7,
+      "result": 0
+    },
+    {
+      "native": 34,
+      "grid": [
+        9,
+        3,
+        2
+      ],
+      "tile": [
+        1,
+        1,
+        1
+      ],
+      "batch": 8,
+      "packed": 1,
+      "local_memory": 1,
+      "submits": 7,
+      "result": 0
+    }
+  ],
+  "round_counters": [
+    {
+      "type": 0,
+      "mode": "mm",
+      "round": 0,
+      "submits": 3,
+      "flushes": 3,
+      "expected": 3
+    },
+    {
+      "type": 0,
+      "mode": "mm",
+      "round": 1,
+      "submits": 4,
+      "flushes": 4,
+      "expected": 4
+    },
+    {
+      "type": 0,
+      "mode": "mv",
+      "round": 0,
+      "submits": 14,
+      "flushes": 14,
+      "expected": 14
+    },
+    {
+      "type": 0,
+      "mode": "mv",
+      "round": 1,
+      "submits": 14,
+      "flushes": 14,
+      "expected": 14
+    },
+    {
+      "type": 1,
+      "mode": "mm",
+      "round": 0,
+      "submits": 3,
+      "flushes": 3,
+      "expected": 3
+    },
+    {
+      "type": 1,
+      "mode": "mm",
+      "round": 1,
+      "submits": 4,
+      "flushes": 4,
+      "expected": 4
+    },
+    {
+      "type": 1,
+      "mode": "mv",
+      "round": 0,
+      "submits": 14,
+      "flushes": 14,
+      "expected": 14
+    },
+    {
+      "type": 1,
+      "mode": "mv",
+      "round": 1,
+      "submits": 14,
+      "flushes": 14,
+      "expected": 14
+    },
+    {
+      "type": 2,
+      "mode": "mm",
+      "round": 0,
+      "submits": 3,
+      "flushes": 3,
+      "expected": 3
+    },
+    {
+      "type": 2,
+      "mode": "mm",
+      "round": 1,
+      "submits": 4,
+      "flushes": 4,
+      "expected": 4
+    },
+    {
+      "type": 2,
+      "mode": "mv",
+      "round": 0,
+      "submits": 14,
+      "flushes": 14,
+      "expected": 14
+    },
+    {
+      "type": 2,
+      "mode": "mv",
+      "round": 1,
+      "submits": 14,
+      "flushes": 14,
+      "expected": 14
+    }
+  ],
+  "numerics": "All12changingrounds exactindependentQ4/Q6/Q8CPUdecode/dot, GQA2 andall3completeallocations/guards.2508MMoutputs or396MVoutputs perround.",
+  "checks": [
+    "All18BEGIN/ENDpairs actualtile1,1,1/batch8/packed1/local_memory1/result0. MMgrids24\u21923submits,12\u21922eachsplit; MV108\u219214,54\u21927eachsplit.",
+    "All12readonlysubmit_count+seqno rounddeltas equal3/4MM and14/14MV. This establishesactivefull+partialbatching, not numericalpasswithdormantselector.",
+    "Original384M/90s/fault/service/diskguards retained; peak6.9MiB/no swap. Source/pipelinecachemetadata importproof016d remains separate fromthiscoldfunctional scope."
+  ],
+  "remaining": "ActualfullASRtwo-request numerical/placement/cache/memory/watchdog qualification required. No TTSrepeat, no latency/speedup/simultaneousresidency claim."
+}

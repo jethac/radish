@@ -20,13 +20,13 @@
     },
     {
       "area": 3,
-      "implementation": "Reuse invariant program/resource/static state within bounded chunks of one dispatch; keep per-chunk base/NDRANGE and WFI, flush/wait at existing batch end; direct-window graph intermediate elimination",
-      "evidence": "Queue full/partial-batch correctness passes 66,688 exact values. Direct-window graph elimination is exercised by fixed T213 and integrated retained T78 models, all required GPU traces return zero. No performance claim."
+      "implementation": "Reuse invariant program/resource/static state within bounded chunks of one dispatch; keep per-chunk base/NDRANGE and WFI, flush/wait at existing batch end; direct-window graph intermediate elimination Narrow qualified quantized-kernel batching now retains state across up to8 sequential one-workgroup chunks, excluding unsafe global memory behavior.",
+      "evidence": "Queue full/partial-batch correctness passes 66,688 exact values. Direct-window graph elimination is exercised by fixed T213 and integrated retained T78 models, all required GPU traces return zero. No performance claim. Expanded six-kernel M33 fixture verifies17,424 exact outputs/full3allocation guards and all real full/partial batch counts; no performance measurement."
     },
     {
       "area": 4,
       "implementation": "Integrated GQA broadcast, phase-specific quantized kernels, encoder-to-prefill device-buffer reuse and reduced host staging; actual application pipeline cache and supported-kernel initialization correction are built. Constrained-profile subsampling reuses one independent chunk graph across the complete audio, lowering unnecessary live convolution intermediates. Scheduler scratch is released between subsampling and encoder; Vulkan-owned allocations leave the BO reuse cache on final unref. Incremental KV allocates actual prompt/draft demand and grows geometrically up to the unchanged full context ceiling.",
-      "evidence": "Six quantized kernels, floating GQA and all32 native classes pass. Phase release3f5/91a1 completes encoder then fails prefill at the unchanged640MiB/128MiB limits. Incremental KV ab5 is source/build reviewed; original full model and focused actual growth qualification remain pending."
+      "evidence": "Quantized kernels/GQA/native32 remain valid. Actual KV growth now passes four real reallocations and ten fresh-view graphs across F16/F32. Previousab5 completes encoder/prefill then times out during decoder-step path at unchanged300s; current8f301/4923 full model is pending. Latest8f301/4923 reaches actual quantized batching then OOMs at unmatched soft_max_f32 pipeline creation begin during encoder; no transcript. Exact responsible allocation is under diagnosis."
     },
     {
       "area": 5,
@@ -50,11 +50,12 @@
     "0046-asr-profile-matrix-init.patch": "4652afd06124dd0832efb85159e3d0d2b5699aedef971c7a1ddc891ba864903c",
     "0046-asr-subsample-liveness.patch": "0295e09fd7ddcf116d1f1675b91dc5fa7a51052e7d767461e0a6cc9d56c7f58f",
     "0046-asr-phase-scratch-release.patch": "0c5c0f16803a7787cc1b1c9fd1a1dd002b1e65d7ec6138192bd4b89a3b1fc87d",
-    "0046-asr-incremental-kv.patch": "47c7b982904508cdb473342c006213bffa300905f7bb92d60bfaf00d16cbaca3"
+    "0046-asr-incremental-kv.patch": "47c7b982904508cdb473342c006213bffa300905f7bb92d60bfaf00d16cbaca3",
+    "0046-asr-quantized-batching.patch": "527d36a900a20dd4605ba3a5c2195aa89d10530788171896ec0da47694a107e6"
   },
   "existing_results": "Original743 CTS cases and modified132 robustness outcomes remain historical pinned evidence; no conformance count or selected performance change.",
   "completion_gate": "TTS side is qualified for the stated T213/T78 fixtures. All-five gate remains CLOSED on ASR full-model memory/placement/transcript and real application replay; full GOAL remains active.",
-  "as_of_utc": "2026-11-03 00:56 UTC",
+  "as_of_utc": "2026-11-03 01:15 UTC",
   "correctness_receipts": {
     "optimization-cache-correctness-0046.json": "0af98f899b26429971ef61df554e2cf4a4fe340019353f9ed7491869ab59b1f5",
     "optimization-queue-correctness-0046.json": "98c9f0d64a5ef1076462930effb6fd3e22c48de75cad78e87f7e68eaa6636b0e",
@@ -68,12 +69,16 @@
     "optimization-retained-runtime-import-0046.json": "08c8e3fee4052ad817137c76374af8384c8c0962c905d4b5cf37147267c1c780",
     "optimization-application-cache-payloads-0046.json": "d15d3fc92d9fac98f663b26b8c1196835c9e49c06f26dce3c611df4e112c42d2",
     "optimization-retained-runtime-combined-0046.json": "ac4ad9614166b557fee4acb2ea61c9d38ac4a1edc1a60aa38fe73bc253c73e9e",
-    "optimization-tts-allocator-regression-0046.json": "554b9aea07bdbe42dbd1064f34993b9fdd79a85c02ac5102cd935228a1e7f596"
+    "optimization-tts-allocator-regression-0046.json": "554b9aea07bdbe42dbd1064f34993b9fdd79a85c02ac5102cd935228a1e7f596",
+    "optimization-kv-growth-correctness-0046.json": "7d0745d9877b0e643794376dae6cb629f4d54ae6155223e3e4010c3032cbceaf",
+    "optimization-quant-batch-correctness-0046.json": "9f0efe3fb17fb2e832145c7a5907c79bb89a31f8c20f51065d47b5f80ed0345b",
+    "optimization-asr-decoder-timeout-0046.json": "5f941421d989024e35cde161fe03a406ad2c00d5cafee9ae935d8ffea5c0bda9",
+    "optimization-asr-softmax-init-memory-failure-0046.json": "e58dd1144e001ea4107da4eb240eaa2e672ab9798198e19e62cd801d8eb838c0"
   },
   "drivers": {
     "bounded_cache_queue_half": "61e8/9f64 exact integrated cache+queue+corrected idiv",
     "tts_candidate": "1ed3/5eed direct-window batching; T213 and T78 full core/waveform correctness passed with selective half2/FP32ten",
-    "current_coherent_candidate": "63b4/91a1 exact memory-policy-only overlay over1ed3/5eed; focused T78 retained runtime/cache regression passes554b9aea"
+    "current_coherent_candidate": "07f160/4923d9 exact pipeline-eligibility+queue overlay over63b4/91a1; zero new matches across frozen TTS inventories and unchanged lifetime permit TTS closure carryforward"
   },
   "preserved_failure": "First quantized native helper compared logical64/128 against physical32x2/64x2 and failed before data. V2 checks exact existing logical and physical mappings; no shader, oracle or guard changed.",
   "preserved_failures": [
@@ -82,7 +87,10 @@
     "First full ASR cold25335: generic shared-memory matrix initialization rejected backend before model execution.",
     "Corrected ASR89794: Vulkan backend initializes, then unchanged640MiB cgroup cap OOM-kills process before transcript/placement completion; no memory-limit waiver.",
     "Serial-subsample53764: all3 GPU subsample graphs complete; encoder placement533/0 then OOM at640MiB/swap85.1MiB. Diagnostic ownership investigation continues; original caps and full model retained.",
-    "Phase-release84990: all3 subsample graphs and encoder complete; prefill793/0 then OOM640MiB/swap128MiB. Full model outputs remain unqualified; original inputs/budget/caps unchanged."
+    "Phase-release84990: all3 subsample graphs and encoder complete; prefill793/0 then OOM640MiB/swap128MiB. Full model outputs remain unqualified; original inputs/budget/caps unchanged.",
+    "IncrementalKV53398: encoder/prefill complete with64-row initial KV and unchanged320-row/256-token ceiling; decoder-step path reaches placement761/0, then original300s timeout, no transcript. Not OOM result; guard peak640MiB/swap112.9MiB.",
+    "KV helper28378: required trailing CPU scheduler backend missing, assertion before GPU graph work; v2 corrects metadata/backend contract while enforcing every CONT compute node on Vulkan, then passes49528.",
+    "Quant-batched29537: actual native44 batch8/grid56x3 completes with21 submits; latest pipeline begin soft_max_f32 has no matching end before640MiB OOM/swap71.3. No output, no unchanged retry."
   ],
   "runtime_cache": "Actual ncnn missing-cache cold process exports populated cache; second process accepts and re-exports identical178 keyed compiled objects and correct outputs. No hit-count or acceleration inference. On coherent91a1, copied old-UUID cache is rejected and repopulates48SPV/178native objects with the new build UUID; both complete T78 outputs remain byte-identical accepted baseline."
 }

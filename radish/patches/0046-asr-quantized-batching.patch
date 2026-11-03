@@ -1,0 +1,173 @@
+--- a/mesa/src/freedreno/radish/rd_private.h
++++ b/mesa/src/freedreno/radish/rd_private.h
+@@ -115,6 +115,7 @@
+    bool linear_subgroups;
+    bool packed_1d_barrier;
+    bool linear_barriers;
++   bool batch_local_memory;
+    VkPipelineCreateFlags compile_flags;
+    struct nir_shader *sampling_nir;
+    struct rd_sampling_entry *sampling_variants;
+--- a/mesa/src/freedreno/radish/rd_pipeline.c
++++ b/mesa/src/freedreno/radish/rd_pipeline.c
+@@ -188,6 +188,34 @@
+ }
+ 
+ static bool
++rd_batch_local_memory(nir_shader *nir)
++{
++   nir_foreach_function_impl(impl, nir) {
++      nir_foreach_block(block, impl) {
++         nir_foreach_instr(instr, block) {
++            if (instr->type != nir_instr_type_intrinsic)
++               continue;
++            const nir_intrinsic_instr *intr = nir_instr_as_intrinsic(instr);
++            if (nir_intrinsic_has_atomic_op(intr) ||
++                strstr(nir_intrinsic_infos[intr->intrinsic].name, "atomic"))
++               return false;
++            if (nir_intrinsic_has_access(intr) &&
++                (nir_intrinsic_access(intr) & (ACCESS_COHERENT | ACCESS_VOLATILE)))
++               return false;
++            if (intr->intrinsic == nir_intrinsic_barrier &&
++                ((nir_intrinsic_memory_modes(intr) & ~nir_var_mem_shared) ||
++                 (nir_intrinsic_memory_scope(intr) != SCOPE_NONE &&
++                  nir_intrinsic_memory_scope(intr) != SCOPE_WORKGROUP) ||
++                 (nir_intrinsic_execution_scope(intr) != SCOPE_NONE &&
++                  nir_intrinsic_execution_scope(intr) != SCOPE_WORKGROUP)))
++               return false;
++         }
++      }
++   }
++   return true;
++}
++
++static bool
+ rd_repack_1d_local_id(nir_builder *b, nir_intrinsic_instr *intr, void *data)
+ {
+    if (intr->intrinsic != nir_intrinsic_load_local_invocation_id)
+@@ -280,6 +308,7 @@
+       ralloc_free(nir);
+       return VK_ERROR_FEATURE_NOT_PRESENT;
+    }
++   pipeline->batch_local_memory = rd_batch_local_memory(nir);
+    pipeline->linear_subgroups = rd_uses_subgroups(nir);
+    bool workgroup_barrier = rd_uses_workgroup_barrier(nir);
+    pipeline->packed_1d_barrier = !pipeline->linear_subgroups &&
+--- a/mesa/src/freedreno/radish/rd_queue.c
++++ b/mesa/src/freedreno/radish/rd_queue.c
+@@ -628,6 +628,44 @@
+    return (uint64_t)device->info.threadsize_base * ir3_shader_halfregs(v) <= 4096;
+ }
+ 
++static bool
++rd_packed_quant_batch_resources(struct rd_device *device,
++                                const struct rd_pipeline *pipeline)
++{
++   const struct ir3_shader_variant *v = pipeline->variant;
++   const bool mm = pipeline->logical_local_size[0] == 64 &&
++      v->local_size[0] == 32 && v->shared_size == 4096 && v->loops == 3;
++   const bool mv = pipeline->logical_local_size[0] == 128 &&
++      v->local_size[0] == 64 && v->shared_size == 512 && v->loops == 2;
++   if (fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) != 506 || (!mm && !mv) ||
++       pipeline->logical_local_size[1] != 1 || pipeline->logical_local_size[2] != 1 ||
++       v->local_size[1] != 2 || v->local_size[2] != 1 || !v->has_barrier ||
++       !pipeline->packed_1d_barrier || !pipeline->batch_local_memory ||
++       pipeline->linear_subgroups || pipeline->linear_barriers ||
++       v->shader_options.workgroup_resident_threads ||
++       !v->shader_options.nir_options.a5xx_ssbo_size_consts ||
++       v->pvtmem_size || v->constant_data_size || v->info.double_threadsize ||
++       v->info.preamble_instrs_count || v->instrlen > 53 ||
++       v->info.max_reg + 1 > 12 || v->info.max_half_reg + 1 > 12 ||
++       pipeline->resource_count != 3 || pipeline->descriptor_count != 3 ||
++       pipeline->buffer_count != 3 || pipeline->used_descriptors != UINT64_C(7) ||
++       pipeline->resource_usage.texture_count || pipeline->resource_usage.sampler_count ||
++       pipeline->resource_usage.image_count || pipeline->sampling_mask ||
++       v->image_mapping.num_tex || v->num_ssbos != 3 ||
++       pipeline->layout->push_range_count != 1 ||
++       pipeline->layout->push_ranges[0].offset != 0 ||
++       pipeline->layout->push_ranges[0].size != 68 ||
++       pipeline->layout->push_ranges[0].stageFlags != VK_SHADER_STAGE_COMPUTE_BIT)
++      return false;
++   for (unsigned i = 0; i < 3; i++) {
++      if (pipeline->resources[i].type != VK_DESCRIPTOR_TYPE_STORAGE_BUFFER ||
++          pipeline->resources[i].buffer_slot != i || pipeline->buffer_descriptors[i] != i)
++         return false;
++   }
++   return (uint64_t)v->local_size[0] * v->local_size[1] * v->local_size[2] *
++      ir3_shader_halfregs(v) <= 4096;
++}
++
+ static VkResult
+ rd_execute_dispatch(struct rd_device *device, const struct rd_dispatch *dispatch,
+                     struct rd_submit_profile *profile)
+@@ -669,6 +707,9 @@
+    if (!v->loops && !v->has_barrier &&
+        (v->instrlen <= 32 || rd_short_buffer_batch_resources(device, dispatch->pipeline)) &&
+        ((requested_chunks >= 1 && requested_chunks <= 4) || requested_chunks == 8))
++      max_chunks = requested_chunks;
++   if ((requested_chunks == 2 || requested_chunks == 4 || requested_chunks == 8) &&
++       rd_packed_quant_batch_resources(device, dispatch->pipeline))
+       max_chunks = requested_chunks;
+    int64_t tiled_chunks = debug_get_num_option("RADISH_TILED_BATCH_CHUNKS", 1);
+    if ((tiled_chunks == 2 || tiled_chunks == 4 || tiled_chunks == 8) &&
+@@ -798,6 +839,17 @@
+    }
+    struct fd_submit *submit = NULL;
+    struct fd_ringbuffer *ring = NULL;
++   static unsigned diagnostic_dispatches;
++   const bool diagnostics = debug_get_bool_option("RADISH_RESOURCE_DIAGNOSTICS", false) &&
++      p_atomic_inc_return(&diagnostic_dispatches) <= 4096;
++   const uint64_t first_submit = device->submit_count;
++   if (diagnostics) {
++      fprintf(stderr, "RADISH_DISPATCH_BEGIN native=%u grid=%u,%u,%u tile=%u,%u,%u batch=%u packed=%u local_memory=%u\n",
++         v->instrlen, dispatch->grid[0], dispatch->grid[1], dispatch->grid[2],
++         tile[0], tile[1], tile[2], max_chunks, dispatch->pipeline->packed_1d_barrier,
++         dispatch->pipeline->batch_local_memory);
++      fflush(stderr);
++   }
+    unsigned chunks = 0;
+    uint32_t base[3];
+    for (base[2] = 0; base[2] < dispatch->grid[2]; base[2] += tile[2]) {
+@@ -853,9 +905,19 @@
+       rd_flush(device, ring);
+       VkResult result = rd_finish_submit(device, submit, ring, profile, sample);
+       rd_gpu_elapsed_release(sample);
++      if (diagnostics) {
++         fprintf(stderr, "RADISH_DISPATCH_END native=%u result=%d submits=%" PRIu64 "\n",
++            v->instrlen, result, device->submit_count - first_submit);
++         fflush(stderr);
++      }
+       return result;
+    }
+    rd_gpu_elapsed_release(sample);
++   if (diagnostics) {
++      fprintf(stderr, "RADISH_DISPATCH_END native=%u result=0 submits=%" PRIu64 "\n",
++         v->instrlen, device->submit_count - first_submit);
++      fflush(stderr);
++   }
+    return VK_SUCCESS;
+ }
+ 
+--- a/transcribe.cpp/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/transcribe.cpp/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -4249,10 +4249,20 @@
+     // at the end to flip compile_pending/compiled and notify waiters.
+     if (has_claimed_task) {
+         auto & task = claimed_task;
++        static std::atomic<unsigned> diagnostic_compiles {0};
++        const char * diagnostic_env = getenv("TRANSCRIBE_RESOURCE_DIAGNOSTICS");
++        const bool diagnostics = diagnostic_env && strcmp(diagnostic_env, "1") == 0 &&
++            diagnostic_compiles.fetch_add(1, std::memory_order_relaxed) < 64;
++        if (diagnostics) {
++            std::cerr << "ASR_PIPELINE_BEGIN name=" << task.pipeline->name << "\n" << std::flush;
++        }
+         ggml_vk_create_pipeline_func(device, task.pipeline, task.spv_size, task.spv_data,
+                                      task.entrypoint, task.parameter_count, task.wg_denoms,
+                                      task.specialization_constants, task.disable_robustness,
+                                      task.require_full_subgroups, task.required_subgroup_size);
++        if (diagnostics) {
++            std::cerr << "ASR_PIPELINE_END name=" << task.pipeline->name << "\n" << std::flush;
++        }
+     }
+ 
+     // Another thread may be compiling the pipeline we need; block on it here.

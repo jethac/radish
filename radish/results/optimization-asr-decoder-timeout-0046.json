@@ -1,0 +1,24 @@
+{
+  "status": "FAIL original300s watchdog at first decode graph; no transcript or successful full-model qualification",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-full-incremental-kv/probe",
+  "pins": {
+    "run.log": "69c391a688f2b0365b4700b5ae530ffc11b8e067ee1be9c4161c098f87194575",
+    "failure.json": "a95a7052e6c8bb49ba98e144c9ea6e49f73bf364b010278a25536bfc0aa6d4b8",
+    "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+    "service.txt": "ad25a425c001e97363ad07f2d839954f499f9a5d673535fea8ff6c01e602fd0e",
+    "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+  },
+  "observed": [
+    "All three one-chunk subsample graphs completed; old25MiB arena released, encoder completed.",
+    "KV request prompt49+budget256 retains originallimit320 but allocates64rows7340032bytes; no growth marker.",
+    "Prefill793 GPU nodes completed sufficiently to release external encoder handoff and build/enter first step761 GPU nodes. No second step placement or transcript.",
+    "Failure is watchdog timeout, not new oom-kill; resource peak640MiB andswap112.9MiB are admission accounting only."
+  ],
+  "source_exclusions": [
+    "While condition usesEOS, generated token count andcur_past/fullcapacity only; all substituted clocks assign/export diagnostic durations. Rustfeed/poll/finishwait remained unchanged in705d.",
+    "Growth conditioncur_past>=64 is false atfirststep49. A completedstep readsGPUargmax thenappendsonegeneratedtoken andincrementscur_past; inheritedoneaheadcache n/head doesnotcontrolthisloopcondition or restartlogic."
+  ],
+  "known_implementation_gap": "Actual runnerrequests batch1; existinggeneric batching explicitly excludes loops/barriers andTTSclass excludes all sixpackedquant3SSBO kernels. Q6headM151936 at4rows/group requires37984 oneWG chunks. This is source work accounting, not measured causal attribution.",
+  "unresolved": "Existingterminal log cannot distinguish first-step lazycompilation/recording versusGPUdispatch withinfirstgraph. New boundeduntimed begin/end markers accompany narrow batching integration; no blindrerun or timeoutincrease.",
+  "timing_collected": false
+}
