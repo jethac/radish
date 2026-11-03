@@ -10,13 +10,13 @@
     {
       "area": 1,
       "implementation": "Persistent frontend/harmonic ORT session pair retained across runtime requests, dynamic-shape validation, owned outputs and bounded session count; activation arena/pattern retention disabled",
-      "evidence": "Host bit-exact checks and AArch64 untimed target helper paired. Target four-request sequences at1/4threads currently running under original runtime guards; combined production memory/correctness remains pending.",
+      "evidence": "Target8 ordered requests and50 full-array comparisons bit-exact at1/4threads, including dynamic shape/style. Integrated frontend plus selected GPU core residency/memory remains pending.",
       "graph_policy": "Original ORT_DISABLE_ALL retained. Generic BASIC changed F0 and harmonic phase under strict oracle; rejected, not tolerance-adjusted."
     },
     {
       "area": 2,
       "implementation": "Direct-window C128/K11/d1,3,5 convolution kernel reading original packed input and fusing padding; removes planar intermediate and conversion dispatch",
-      "evidence": "FP32 and weight-only-half untimed models cross-built and independently paired; exact2archive members changed/260unchanged. Original fixedT213 load-only/native then full562342output and waveform checks pending."
+      "evidence": "Original fixedT213 FP32 model independently passes repeat2, complete562342 outputs, accepted e128 bit identity, original127800-sample waveform gate. All179 native programs admitted. No performance result."
     },
     {
       "area": 3,
@@ -26,12 +26,12 @@
     {
       "area": 4,
       "implementation": "GQA native broadcast removes repeated K/V tensors and redundant copies. Phase-specific quantized kernels and encoder-to-prefill device-buffer handoff are authored and building separately",
-      "evidence": "Combined AArch64 c506 build with capability profile ON is paired. Six new quantized modules pass native admission; functional runner has passed, independent numerical review pending. Fresh GQA graphs/ratio2 metadata constructed. Additive unit-axis final link and full-model memory/transcript checks pending."
+      "evidence": "All six new quantized modules pass8976 exact values/fullallocation guards. Final unit-axis/GQA/liveness25d9 and untimed d507 built. Floating GQA/current32 native and actual full-model placement/transcript/memory remain pending."
     },
     {
       "area": 5,
       "implementation": "Real compiled Vulkan cache entries using Mesa cache import/export/merge and IR3 native serializer, including sampling NIR and resource metadata; selective weight-only precision source is being integrated",
-      "evidence": "Real compiled-cache target key/lifetime/merge/import/native-resource/full32output correctness independently passed; sampled-image variants not exercised. Exhaustive65,536 GPU half decoding patterns independently passed, including all signed subnormals/zeros. Weight-only ncnn variant cross-build paired; model numerical/waveform/native quality gates pending."
+      "evidence": "Compiled-cache fixture and exhaustive half unpack pass. All-twelve weight-only-half selection fails two original model values; stricter selective policy pending without tolerance change. Runtime ncnn cache import/atomic save code reviewed and built, application save/reload target pending. ASR app cache lifecycle source in progress."
     }
   ],
   "measurement_policy": "No new performance results. Timers disabled in the frontend correctness helper; driver PROFILE/GPU_ELAPSED disabled in forthcoming correctness scopes. Required timeout/memory/fault/service telemetry remains.",
@@ -48,15 +48,24 @@
   },
   "existing_results": "Original743 CTS cases and modified132 robustness outcomes remain historical pinned evidence; no conformance count or selected performance change.",
   "completion_gate": "All five areas must have integrated working code and relevant source/build/native/resource/numerical/lifetime evidence before measuring performance. Full-model output/waveform and process memory gates remain.",
-  "as_of_utc": "2026-11-02 23:49:57 UTC",
+  "as_of_utc": "2026-11-03 00:05:11 UTC",
   "correctness_receipts": {
     "optimization-cache-correctness-0046.json": "0af98f899b26429971ef61df554e2cf4a4fe340019353f9ed7491869ab59b1f5",
     "optimization-queue-correctness-0046.json": "98c9f0d64a5ef1076462930effb6fd3e22c48de75cad78e87f7e68eaa6636b0e",
-    "optimization-half-decode-correctness-0046.json": "49749d9800e6ba420215dae3da000f5e1c70660f8c1194fc4a5e2667f8af1caa"
+    "optimization-half-decode-correctness-0046.json": "49749d9800e6ba420215dae3da000f5e1c70660f8c1194fc4a5e2667f8af1caa",
+    "optimization-frontend-target-0046.json": "814a623d219399ad1688ed8706ede25f78aca199bd4df1875803ff3433210504",
+    "optimization-quant-kernels-correctness-0046.json": "548de8fb816058f5807bc36788d4b66e778f8bd04dec179ac32ce41b2a0fecd7",
+    "optimization-tts-direct-full-correctness-0046.json": "6bfcd47a01d0ded6834da326886958d30d10f7534beb29082eb83b9ab3cf95af",
+    "optimization-half-model-failure-0046.json": "faf37ec11009ce29eee12f3e964e6b71157e8f19d970e0b4e27671358ccdfede"
   },
   "drivers": {
     "bounded_cache_queue_half": "61e8/9f64 exact integrated cache+queue+corrected idiv",
-    "tts_candidate": "1ed3df79c0fc425b88dddd3790f91610c95286603f62f41a4c2a74b37358a774 / 5eedfeeba72984333fb867ea7ee162ad1e9eff64a3a626eb366c142f9e0ff997; adds source-qualified direct-window batching, target model pending"
+    "tts_candidate": "1ed3/5eed exact direct-window batching; FP32 fixed core/waveform passes, half model failure retained"
   },
-  "preserved_failure": "First quantized native helper compared logical64/128 against physical32x2/64x2 and failed before data. V2 checks exact existing logical and physical mappings; no shader, oracle or guard changed."
+  "preserved_failure": "First quantized native helper compared logical64/128 against physical32x2/64x2 and failed before data. V2 checks exact existing logical and physical mappings; no shader, oracle or guard changed.",
+  "preserved_failures": [
+    "Half full48210:2/562342 numerical mismatches under original tolerance; no second extraction/waveform.",
+    "Quant first helper logical/physical assertion and native32 exactAPI1.0 assertion were setup failures; minimal harness corrections preserve modules/oracles."
+  ],
+  "runtime_cache": "RADISH_NCNN_PIPELINE_CACHE_FILE with --reuse-pipeline-cache selects bounded opaque ncnn import and atomic successful-loop export. Missing/corrupt/old data rebuilds empty; target lifecycle pending."
 }

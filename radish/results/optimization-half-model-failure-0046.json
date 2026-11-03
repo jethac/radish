@@ -1,0 +1,34 @@
+{
+  "status": "FAIL original full core numerical oracle; preserved, precision policy correction in progress",
+  "candidate": "weight-only half v2 4578d54d on unchanged selected twelve eligible convolutions",
+  "driver": "5eedfeeba72984333fb867ea7ee162ad1e9eff64a3a626eb366c142f9e0ff997",
+  "outputs": 562342,
+  "mismatches": 2,
+  "indices": [
+    357807,
+    357808
+  ],
+  "actual": [
+    -0.494836092,
+    -0.222919866
+  ],
+  "reference": [
+    -0.49142313,
+    -0.225441456
+  ],
+  "tolerance": {
+    "absolute": 0.002,
+    "relative": 0.002
+  },
+  "first_extraction_only": true,
+  "second_extraction_waveform": "unattempted due to first failure",
+  "run_log": "93eea25531d88a67efb1f4b65be04e62b45548c575bb0ba8ada989e6f0f33592",
+  "failed_output": "1a56756c5a9fc2616dd88253d1d95865801f737b5b5cacb4ec03a2637328dcb1",
+  "fault_check": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+  "services_after": [
+    "active",
+    "active"
+  ],
+  "performance_measurement": false,
+  "scope": "FP32 direct implementation passes; exhaustive half unpack passes; this result rejects blanket eligible weight precision under unchanged end-model oracle."
+}

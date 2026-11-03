@@ -1,0 +1,152 @@
+{
+  "status": "PASS six selected quant phase modules, both rounds exact numerical and full-allocation checks",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-quant-phase-v2/probe",
+  "log": "05c306b905fda017123a5861e77a1ac31b99931e45488e18f51f68063af030f9",
+  "payload": {
+    "radish_icd.json": {
+      "bytes": 151,
+      "sha256": "f15ec35f35414c76a9d0252d7414bf5b9e3cae666a6e4f86e26ab9b8da1d3318"
+    },
+    "khr_quant_q6_k_mv.spv": {
+      "bytes": 6012,
+      "sha256": "5380fea9ff53e8e768cf86e645e915baa0ade20cac37c426793568a793155e9e"
+    },
+    "resources": {
+      "bytes": 751832,
+      "sha256": "541942e79915c0c265736f1022f549ebae04b26fa010fcc94bc8560533c6db15"
+    },
+    "khr_quant_q8_0_mv.spv": {
+      "bytes": 4772,
+      "sha256": "725ed1bafdc1e1e2c3e263370c5235a61faf96a20767ee2792c867a56f3107ce"
+    },
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "khr_quant_q6_k_mm.spv": {
+      "bytes": 8352,
+      "sha256": "7f5a5f46e2d95236bb1adc8d5998a2ecb15e5599fd4ae7c0c7f58136592a786b"
+    },
+    "khr_quant_q8_0_mm.spv": {
+      "bytes": 7096,
+      "sha256": "4dbcc7ea8fe1eb53dfd63d314fc5e08be0c4072b9663c25bd9d0a3ef378e95b3"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 13629760,
+      "sha256": "9f640904b0f4399cf0a034020d6c1e7f0041e7ce60db481b1c8255d855e59954"
+    },
+    "khr_quant_q4_k_mv.spv": {
+      "bytes": 6392,
+      "sha256": "e1a74242cd49c4c7e0c37da55b1da2bc698318b827eabffdc467c8cbd159e611"
+    },
+    "khr_quant_q4_k_mm.spv": {
+      "bytes": 8732,
+      "sha256": "001193cd195f5c6b15de7a5757c8d150dae40c41e6b046743464490896f4e379"
+    },
+    "payload.json": {
+      "bytes": 1534,
+      "sha256": "a67cb516eb212d2efcc490efc7250ef86fdf9eb0d6283368b16c5b545847f430"
+    }
+  },
+  "native_identical": true,
+  "cases": [
+    {
+      "type": 0,
+      "mode": "mm",
+      "round": 0,
+      "outputs": 1292,
+      "split_z": 1
+    },
+    {
+      "type": 0,
+      "mode": "mm",
+      "round": 1,
+      "outputs": 1292,
+      "split_z": 2
+    },
+    {
+      "type": 0,
+      "mode": "mv",
+      "round": 0,
+      "outputs": 204,
+      "split_z": 1
+    },
+    {
+      "type": 0,
+      "mode": "mv",
+      "round": 1,
+      "outputs": 204,
+      "split_z": 2
+    },
+    {
+      "type": 1,
+      "mode": "mm",
+      "round": 0,
+      "outputs": 1292,
+      "split_z": 1
+    },
+    {
+      "type": 1,
+      "mode": "mm",
+      "round": 1,
+      "outputs": 1292,
+      "split_z": 2
+    },
+    {
+      "type": 1,
+      "mode": "mv",
+      "round": 0,
+      "outputs": 204,
+      "split_z": 1
+    },
+    {
+      "type": 1,
+      "mode": "mv",
+      "round": 1,
+      "outputs": 204,
+      "split_z": 2
+    },
+    {
+      "type": 2,
+      "mode": "mm",
+      "round": 0,
+      "outputs": 1292,
+      "split_z": 1
+    },
+    {
+      "type": 2,
+      "mode": "mm",
+      "round": 1,
+      "outputs": 1292,
+      "split_z": 2
+    },
+    {
+      "type": 2,
+      "mode": "mv",
+      "round": 0,
+      "outputs": 204,
+      "split_z": 1
+    },
+    {
+      "type": 2,
+      "mode": "mv",
+      "round": 1,
+      "outputs": 204,
+      "split_z": 2
+    }
+  ],
+  "total_exact_output_words": 8976,
+  "dispatches": 18,
+  "checks": [
+    "Independent bit decode for Q4_K/Q6_K/Q8_0; dyadic product/sum bounds make every exact reference value valid regardless of parallel FP32 order.",
+    "MM M17/N19 and MV M17/N3 force inactive tail lanes through barriers; all512 K values covered.",
+    "Two A versus four B batches exercise head broadcast2; second round changes inputs and splits z into two dispatches with nonzero baseZ.",
+    "Every byte of all three allocations including unused batch holes and outer guards checked after each fence.",
+    "Source/public feature chain and six native bodies exact to admitted compile; no private spills or resource guard changes."
+  ],
+  "limitations": [
+    "This qualifies selected quant kernels and ABI, not complete model accuracy, floating GQA, encoder/prefill lifecycle or640MiB full peak.",
+    "Existing Q6 N1 route already avoided full dequant temporary; this result qualifies new reduction geometry without rewriting baseline history."
+  ],
+  "performance_collection": false
+}

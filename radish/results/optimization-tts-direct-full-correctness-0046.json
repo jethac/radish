@@ -1,0 +1,48 @@
+{
+  "status": "passed",
+  "scope": "Untimed fullfixedT213FP32directwindow core+waveform correctness; no performanceevidence",
+  "full_result": "be8fcb9fa81c47bb64a4cfbd27eec6f104b6b5a0aa0cb17c1155a7a3282b7c69",
+  "full_run_log": {
+    "bytes": 134119,
+    "sha256": "7f6adc081ee421530a6528da0dde27e11ec65f582816a9e7e087ca0dcf674efc"
+  },
+  "native_review": "639b50d2f518beb16dad70b7a3727c45700908188770eb54ab9ee1b3da952488",
+  "outputs": [
+    {
+      "file": "ncnn-vulkan-candidate.f32",
+      "sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287",
+      "core_values": 562342,
+      "core_max_error": 0.000110626220703125,
+      "core_mismatches": 0,
+      "wave_samples": 127800,
+      "wave_mismatches": 0,
+      "saved_f32_wave_snr_db": 98.17043016906139,
+      "saved_f32_wave_max_error": 1.1920928955078125e-05
+    },
+    {
+      "file": "ncnn-vulkan-output.f32",
+      "sha256": "e128ce6329b06837670fbea51f1fa9510659865d7719a52b696ebd2f68d4d287",
+      "core_values": 562342,
+      "core_max_error": 0.000110626220703125,
+      "core_mismatches": 0,
+      "wave_samples": 127800,
+      "wave_mismatches": 0,
+      "saved_f32_wave_snr_db": 98.17043016906139,
+      "saved_f32_wave_max_error": 1.1920928955078125e-05
+    }
+  ],
+  "gpu_layer_traces": 1178,
+  "core_compares_logged": 2,
+  "checks": [
+    "Bothcompleteextractionslogoriginal562342valuecomparezeroerrors; finalcandidate/outputfilesretainexactaccepted e128bytes",
+    "IndependentlyrecomputedfullcoreandoriginalNPZwavreferenceall-samplethresholdsfromsavedFP32files, SNR>=50dB. ExistingvalidatorusesdoubletailthenFP32save; independentnumbersdifferonlyfinalrounding",
+    "1178executed589layerGPUtraces/ret0; noCPUfallback. Newdirectwindowselectedbyactualpairedsource/nativeclass; no separateprofilingtraceused",
+    "Original640M/300s/fault/services/hashes/inodes retained; no timingoutputscollected"
+  ],
+  "limits": [
+    "Fullfinalfiles containiteration2; iteration1numericalcomparisonloggedbutnofirstseparatefilehash",
+    "NoJapanese/dynamicrequest/persistentfrontend/fullruntimeprecisionclaim",
+    "Actualspecificqueuebatch/chunkcountsnotrecordedwithoutprofiling; genericqueuefull8+partialfixtureseparate",
+    "No speed/throughput/occupancy claim"
+  ]
+}

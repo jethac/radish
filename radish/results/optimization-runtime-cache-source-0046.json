@@ -1,0 +1,39 @@
+{
+  "verdict": "PASS finite ncnn actualappcache lifecycle/source review; build/actualruntimepending",
+  "release": "a1ccc835ec60a87f8f44fadc64f1dab1307e8e8e86fd9f6418606a8bf7afeb44",
+  "variants": [
+    {
+      "variant": "normal",
+      "baseline": "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/source/tests/ncnn/kokoro_runtime.cpp",
+      "before": "0a51e252adfb48d778f497709cdf0ad191e03803733a30fdd28eb20c414aa5f9",
+      "candidate": "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/persistent-app-cache/normal/tests/ncnn/kokoro_runtime.cpp",
+      "after": "b4a1192845993d2a51d1b48ff6c08eabed846455315abd6b27e6983f428148b4",
+      "patch": "95df95bb3e5ee770ac38afa56772fea911f32ae6e223dfff9f0aa87cb7f7092a"
+    },
+    {
+      "variant": "untimed",
+      "baseline": "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/untimed-runtime/source/tests/ncnn/kokoro_runtime.cpp",
+      "before": "38a8736cbc624c5083670363dccd8cb013ed513d772be427c3e0aee3b743e69d",
+      "candidate": "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/persistent-app-cache/untimed/tests/ncnn/kokoro_runtime.cpp",
+      "after": "2f9f10b1d4be35ed5c28b30b715638f025b3d6881c01817c1b7c40b8653ca670",
+      "patch": "95df95bb3e5ee770ac38afa56772fea911f32ae6e223dfff9f0aa87cb7f7092a"
+    }
+  ],
+  "checks": [
+    "Normalanduntimedhavebyteidenticaladditivepatch; no math/graph/operator/backend/clockexpressionchanges",
+    "ExplicitabsolutepathonlyunderactualVulkanrequestloop/sharedpipelinecacheflag; noimplicitcachefileoutsideconfiguredscope",
+    "ImportO_NOFOLLOW/nonblocking fd;fstatregularpositive<=64MiB, boundedcompleteEINTRread+EOF; invalidorunavailablefallsbackfreshactualncnnPipelineCache",
+    "Existingncnnload_cachevalidatesfiledevice/UUID/hashes/SPVandimportsactualVkPipelineCache\u2192merge. Fallbackresetscachebeforeanycoresessionpipelineusesit; no danglingpipelinesatinitialization",
+    "SharedcachecreatedonceoutsideCoreSessioneviction, net.opt pointsactualcache; newdirectwindowPipeline::create(shaderID,opt,spec) usesit. Saveafterallrequestspublished whilecache/device/liveNetobjectsvalid; cleanupdestroyscorethen sharedcache thenfrontend",
+    "Saveexistingncnnopaquevector<=64MiB,private mkstempsamepathparent withEINTRwrites/fsync/close/atomicrename; failedsaveunlinkstemporary anddoesnotcorruptoldfile",
+    "Successlogrecordsactualimportaccepted/exportbytes; numericalruntimeoraclesremainunchanged. Nolatency/speedclaimfromimportorentrycount",
+    "No concurrentcacheaccess occursinserialrequestloop. Atomicreplacement protectsreadersagainstpartialfiles; directoryfsyncnotprovided, socrashdurabilitynotclaimed."
+  ],
+  "remaining": [
+    "Ownerlinkagainstactualselectedncnnload/saveAPIs andmatchednewarchive",
+    "Validtwo-requestuntimedfullfrontend/core/waveform+actualmemoryunder640MiB",
+    "Secondprocessimportedcachemustshowrealcompiledentriesandcorrectfulloutputs; nohelper-onlyclaim",
+    "Serialization/loadtemporaryvectorsandnativecopiesaddpeakmemory, mustbeaccountedwithretainedORTsessions",
+    "No performanceuntilallfiveareasqualified"
+  ]
+}

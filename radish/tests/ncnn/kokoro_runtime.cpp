@@ -126,6 +126,68 @@ struct LoopPipelineCache {
     radish_ncnn::GpuInstance instance;
     const ncnn::VulkanDevice* device=nullptr;
     std::unique_ptr<ncnn::PipelineCache> cache;
+    std::string path;
+    bool imported=false;
+    size_t imported_bytes=0;
+    void load() {
+        const char* configured=std::getenv("RADISH_NCNN_PIPELINE_CACHE_FILE");
+        if(!configured || !*configured) return;
+        path=configured;
+        require(path.front()=='/' && path.back()!='/',"pipeline cache must be an absolute file path");
+        int fd=open(path.c_str(),O_RDONLY|O_CLOEXEC|O_NOFOLLOW|O_NONBLOCK);
+        if(fd<0) {
+            std::printf("pipeline cache import: empty (%s)\n",errno==ENOENT?"missing":"unavailable");
+            return;
+        }
+        struct stat st;
+        bool valid=fstat(fd,&st)==0 && S_ISREG(st.st_mode) && st.st_size>0 && st.st_size<=64*1024*1024;
+        std::vector<unsigned char> data;
+        if(valid) {
+            data.resize(static_cast<size_t>(st.st_size));
+            size_t offset=0;
+            while(offset<data.size()) {
+                ssize_t n=read(fd,data.data()+offset,data.size()-offset);
+                if(n<0 && errno==EINTR) continue;
+                if(n<=0) { valid=false; break; }
+                offset+=static_cast<size_t>(n);
+            }
+            unsigned char extra;
+            if(valid && read(fd,&extra,1)!=0) valid=false;
+        }
+        close(fd);
+        if(valid && cache->load_cache(data.data(),data.size())==0) {
+            imported=true; imported_bytes=data.size();
+            std::printf("pipeline cache import: accepted bytes=%zu\n",imported_bytes);
+        } else {
+            cache.reset(new ncnn::PipelineCache(device));
+            std::printf("pipeline cache import: rejected, rebuilt empty\n");
+        }
+    }
+    void save() {
+        if(path.empty() || !cache) return;
+        std::vector<unsigned char> data;
+        if(cache->save_cache(data)!=0 || data.empty() || data.size()>64*1024*1024) {
+            std::fprintf(stderr,"pipeline cache export: unavailable or outside size bound\n");
+            return;
+        }
+        std::string pattern=path+".tmp-XXXXXX";
+        std::vector<char> temporary(pattern.begin(),pattern.end()); temporary.push_back('\0');
+        int fd=mkstemp(temporary.data());
+        if(fd<0) { std::fprintf(stderr,"pipeline cache export: temporary file unavailable\n"); return; }
+        bool ok=fcntl(fd,F_SETFD,FD_CLOEXEC)==0;
+        size_t offset=0;
+        while(ok && offset<data.size()) {
+            ssize_t n=write(fd,data.data()+offset,data.size()-offset);
+            if(n<0 && errno==EINTR) continue;
+            if(n<=0) { ok=false; break; }
+            offset+=static_cast<size_t>(n);
+        }
+        if(ok && fsync(fd)!=0) ok=false;
+        if(close(fd)!=0) ok=false;
+        if(ok && rename(temporary.data(),path.c_str())!=0) ok=false;
+        if(!ok) unlink(temporary.data());
+        std::printf("pipeline cache export: %s bytes=%zu\n",ok?"saved":"failed",data.size());
+    }
     void initialize() {
         if(cache) return;
         require(ncnn::create_gpu_instance()==0,"cannot create shared GPU instance"); instance.active=true;
@@ -135,6 +197,7 @@ struct LoopPipelineCache {
         require(std::strstr(device->info.device_name(),"Radish")!=nullptr,"expected Radish device");
         require(!device->info.bug_corrupted_online_pipeline_cache(),"shared pipeline cache lookup is disabled");
         cache.reset(new ncnn::PipelineCache(device));
+        load();
     }
 #endif
 };
@@ -446,6 +509,9 @@ int run_request_loop(const std::vector<std::string>& args,const std::vector<std:
             phase="request_published";
             manifest("running","");
         }
+#if NCNN_VULKAN
+        if(shared) shared->save();
+#endif
         phase="complete"; cleanup_core();
         memory.push_back(memory_sample("session_cleanup",active,process_start));
         manifest("complete","");
@@ -505,6 +571,8 @@ int main(int argc,char** argv) {
         require(args.size()==6,"usage: radish-kokoro-runtime [--affine-snake|--norm-affine-snake] [--deconv2d] [--vulkan|--cpu-packed] [--threads N] [--ort-threads N] [--max-frames N] [--repeat N] [--ort-lib PATH] [--request-loop --next-input DIR ... [--cancel-file PATH] [--reuse-pipeline-cache]] MODELS INPUT_DIR PARAM WEIGHTS TAIL NEW_OUTPUT; use the staging wrapper to verify artifact hashes");
         require(request_loop ? !next_inputs.empty() && repeat==1 : next_inputs.empty() && cancel_file.empty(),
                 "request-loop requires one to three --next-input directories and --repeat1; next-input/cancel-file are loop-only");
+        const char* persistent_cache=std::getenv("RADISH_NCNN_PIPELINE_CACHE_FILE");
+        require(!persistent_cache || !*persistent_cache || reuse_pipeline_cache,"persistent cache requires --reuse-pipeline-cache");
         if(reuse_pipeline_cache) {
             require(request_loop && vulkan,"--reuse-pipeline-cache requires a Vulkan request loop");
             const char* enabled=std::getenv("RADISH_NCNN_PIPELINE_CACHE");

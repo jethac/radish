@@ -1,0 +1,125 @@
+{
+  "verdict": "PASS target persistent frontend strict request semantics at threads1and4; no performance collected",
+  "receipt": "ae1153c0fbb5a75df8b3734b940726ff6301e4f797fb7a3027a7ba10e1de0b35",
+  "run_log": "def3cb5849eb28db0edc0c066d4d0ff55dd2b6cab22e84ec63ab3ab45cd7b1ef",
+  "payload": {
+    "input1-speed.f32": {
+      "bytes": 4,
+      "sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
+    },
+    "radish_icd.json": {
+      "bytes": 153,
+      "sha256": "0750523f2edee9a9aa02688f268837553749816fb2cad31be74d7b262c2be681"
+    },
+    "resources": {
+      "bytes": 69624,
+      "sha256": "111521c347d432e8077bd6f2a406710ef3690063f307953698203d5f98ffffb3"
+    },
+    "input0-style.f32": {
+      "bytes": 1024,
+      "sha256": "30a2c76520b76bce395b3e2c33592c56322dffb50d70f7f0f7aeaef968407d66"
+    },
+    "input0-ids.i64": {
+      "bytes": 112,
+      "sha256": "3c3bfd2e56f6f778a6082ee0b183a68d2053d36c4fd1f3ee12126dc3c9d68ae6"
+    },
+    "input1-style.f32": {
+      "bytes": 1024,
+      "sha256": "30a2c76520b76bce395b3e2c33592c56322dffb50d70f7f0f7aeaef968407d66"
+    },
+    "input1-ids.i64": {
+      "bytes": 656,
+      "sha256": "59be815147b69aa3c35ec078861f234de785b4c50c1336586e3dd40b38ed29d6"
+    },
+    "input2-ids.i64": {
+      "bytes": 400,
+      "sha256": "6e5e83f37cffe684ee2507d03617fed92df2354455c70febcc39e2b8aacc1a49"
+    },
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "input2-speed.f32": {
+      "bytes": 4,
+      "sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
+    },
+    "input2-style.f32": {
+      "bytes": 1024,
+      "sha256": "4e7e3b01f1f8f5a458f5f27eba6440b2e59cf70babc4589840bf2db0dd54718b"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 13629760,
+      "sha256": "9f640904b0f4399cf0a034020d6c1e7f0041e7ce60db481b1c8255d855e59954"
+    },
+    "input0-speed.f32": {
+      "bytes": 4,
+      "sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
+    },
+    "payload.json": {
+      "bytes": 1898,
+      "sha256": "0f98d066ad3d2e67f4e2babb5edc1194870f1462e2861f42b18d787d80728179"
+    }
+  },
+  "target_ORT": "1.28.2/API24",
+  "requests": [
+    [
+      "0",
+      "78",
+      "0"
+    ],
+    [
+      "1",
+      "213",
+      "1"
+    ],
+    [
+      "2",
+      "168",
+      "1"
+    ],
+    [
+      "3",
+      "78",
+      "1"
+    ],
+    [
+      "0",
+      "78",
+      "0"
+    ],
+    [
+      "1",
+      "213",
+      "1"
+    ],
+    [
+      "2",
+      "168",
+      "1"
+    ],
+    [
+      "3",
+      "78",
+      "1"
+    ]
+  ],
+  "strict_comparisons": 50,
+  "arrays": [
+    "asr",
+    "f0",
+    "n",
+    "har",
+    "durations"
+  ],
+  "checks": [
+    "All8expectedrequest-lifecycle markers,50completearraybitcomparisons zero differences/maxerror0",
+    "Freshsessionsreference eachrequest equals persistentpair; repeatedshort afterfull anddifferentstyle request additionally equals initialshort",
+    "Exactgraph/input/ORT assetchecks before/after retained, originalservices/fault/postflightclean",
+    "NO_TIMING helper: reportedload/runzeros aredisabledplaceholders, not measuredperformance; noGPUAPIs used"
+  ],
+  "remaining": [
+    "Actualproductionpersistentfrontend+newGPUcore integratedruntimecorrectness/combinedpeak",
+    "TTSloadnative andunchangedcore/waveformoracles",
+    "No timings or speed claims untilallfiveimplementationareasqualified"
+  ]
+}
