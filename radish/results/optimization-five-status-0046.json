@@ -26,7 +26,7 @@
     {
       "area": 4,
       "implementation": "Integrated GQA broadcast, phase-specific quantized kernels, encoder-to-prefill device-buffer reuse and reduced host staging; actual application pipeline cache and supported-kernel initialization correction are built. Constrained-profile subsampling reuses one independent chunk graph across the complete audio, lowering unnecessary live convolution intermediates. Scheduler scratch is released between subsampling and encoder; Vulkan-owned allocations leave the BO reuse cache on final unref. Incremental KV allocates actual prompt/draft demand and grows geometrically up to the unchanged full context ceiling. The constrained softmax shader uses one runtime-width body and preserves column loops instead of seven constant-width expansions, retaining numerical order and masks. Production constrained-profile warmup now uses fresh temporary borrowed-model sessions and one actual decoder step per mode; synthetic state is synchronized and freed before real requests. The original warm prompt now has owned string lifetime. Constrained-profile heap cleanup asks glibc to return unused pages after compilation and synchronized temporary-session destruction. Quantized decoding now processes up to32 rows per workgroup in consecutive four-row blocks with uniform shared-memory reuse barriers and unchanged per-row arithmetic.",
-      "evidence": "Candidate listenerd4d0 and driver4d20 preserve all previous qualified paths. Three new MV native bodies fit original limits with no private memory. The exact6912-output fixture passes all31/32/33-row boundaries,18 changing-input rounds, complete allocation guards and27 full/partial batched dispatches; native text matches admission. Original full42969 is running with freshv13 cache, both full warm modes/audio, two requests of the same pinned2.785s English clip, full real256-token budget and original640MiB/128MiBswap/300s limits. Prior29498 streaming-prefill timeout remains preserved. Full model and ASR application-cache replay are open; no performance measurement."
+      "evidence": "Candidate d4d0/4d20 preserves all qualified operator/resource results, including exact6912 MV32 outputs and original fullallocation guards. Full42969 again reaches the original300-second watchdog during streaming prefill: offline one-step cleanup and streaming encoder complete, but no streaming decoder STEP/DONE or requested transcript. Actual Q6 vocabulary dispatches use4748 workgroups/594 submissions, confirming the new mapping without a timing claim. The full warm audio/modes, two same pinned2.785s requests, real256 budget and640MiB/128MiBswap/300s controls remain unchanged. Memory640M/swap64.7M are guard telemetry. Full model and ASR cache replay remain open; no unchanged retry or performance release."
     },
     {
       "area": 5,
@@ -63,7 +63,7 @@
   },
   "existing_results": "Original743 CTS cases and modified132 robustness outcomes remain historical pinned evidence; no conformance count or selected performance change.",
   "completion_gate": "TTS side is qualified for the stated T213/T78 fixtures. All-five gate remains CLOSED on ASR full-model memory/placement/transcript and real application replay; full GOAL remains active.",
-  "as_of_utc": "2026-11-03 04:16:50 UTC",
+  "as_of_utc": "2026-11-03 04:21:54 UTC",
   "correctness_receipts": {
     "optimization-cache-correctness-0046.json": "0af98f899b26429971ef61df554e2cf4a4fe340019353f9ed7491869ab59b1f5",
     "optimization-queue-correctness-0046.json": "98c9f0d64a5ef1076462930effb6fd3e22c48de75cad78e87f7e68eaa6636b0e",
@@ -98,7 +98,8 @@
     "optimization-asr-heap-release-structural-0046.json": "089620c62c6a9974523aabe36b084fed1a419bbba6ca023d95921146fc78361f",
     "optimization-asr-rms-batch-timeout-0046.json": "e454eabd3386b4b811aa4e9bc903ba5c84a98f40c5216af41e2d704f94a09767",
     "optimization-mv32-native-0046.json": "4cde060ac5da27a0de98df793c13b4f22241c4701fe51e4680e58a0cc6a75842",
-    "optimization-mv32-correctness-0046.json": "f19c69469efe16a54bb60fcb4ab75c4092b1f4b128380a366e51f6d7e4f17107"
+    "optimization-mv32-correctness-0046.json": "f19c69469efe16a54bb60fcb4ab75c4092b1f4b128380a366e51f6d7e4f17107",
+    "optimization-asr-mv32-timeout-0046.json": "e28721c49074556a29ea9ba8a360e5c11dacf4b2316000e27139fb7e2b19fce2"
   },
   "drivers": {
     "bounded_cache_queue_half": "61e8/9f64 exact integrated cache+queue+corrected idiv",

@@ -1,5 +1,5 @@
 {
-  "status": "Source/build/three native resources and6912 exact numerical/fullpartial checks closed; original full42969 running, cache replay held",
+  "status": "Source/build/three native resources and6912 numerical/fullpartial checks closed; full42969 watchdog failure preserved; cache replay held",
   "source_release": {
     "status": "source ready; owner host generation/build then independent source/native/numerical qualification required; no performance measurement",
     "files": {

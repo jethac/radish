@@ -1,0 +1,59 @@
+{
+  "status": "FAIL original full model at unchanged watchdog; bounded MV32 native/numerical results remain passing",
+  "handle": 42969,
+  "listener": "d4d0ec3aeb16a44e494e96891f75a40f04b8baab8b080a95bc7346e8179d4f30",
+  "driver": "4d2012f00c8f874649fab64d52f000b57c52236b87f1818173cc2e233d0f71af",
+  "failure": {
+    "status": "failed",
+    "error": "probe/compile process returned 1",
+    "started": true,
+    "terminal": false,
+    "process_returncode": 1,
+    "remote": "/var/tmp/radish/core-compute-opt0046-asr-full-mv32",
+    "unit": "radish-core-compute-probe-1793679365930530649"
+  },
+  "run_log_sha256": "55bf199fc9393dcb5b2451a0c49613ac8373c932d4352e509ffb1cbfa9262de4",
+  "terminal_result": "original300s watchdog/TERM; not systemd OOM result",
+  "guard_resource_peak": {
+    "memory_MiB": 640,
+    "systemd_swap_peak_text": "64.7M",
+    "performance_measurement": false
+  },
+  "warm_markers": [
+    "ASR_WARMUP_STEP mode=offline completed=1",
+    "ASR_WARMUP_DONE mode=offline steps=1 temporary_session=1 synchronized=1 status=0"
+  ],
+  "requested_transcripts": [],
+  "phase": "Offline warm STEP1 and synchronized DONE0 passed; streaming encoder graph_end697 complete then cached-prefix prefill1157/791 GPU0 rejected begun. No streaming STEP/DONE or requested transcript.4096 completed diagnostic pairs reach the cap, not proof the last line stalled.",
+  "actual_packed_q6_vocabulary": [
+    [
+      "4748",
+      "1",
+      "1",
+      "594"
+    ],
+    [
+      "4748",
+      "1",
+      "1",
+      "594"
+    ]
+  ],
+  "mv32_actual_review_sha256": "f19c69469efe16a54bb60fcb4ab75c4092b1f4b128380a366e51f6d7e4f17107",
+  "collection": {
+    "passed": true,
+    "errors": []
+  },
+  "fault_check": "PASS: no new GPU fault/recovery messages\n",
+  "services": [
+    "active",
+    "active"
+  ],
+  "drain": [
+    [
+      "drain-000.txt",
+      "LoadState=not-found\nActiveState=inactive\nSubState=dead\n"
+    ]
+  ],
+  "next": "Independent remaining structural diagnosis before changed candidate; no unchanged retry/cache import/performance"
+}

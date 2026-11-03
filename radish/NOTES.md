@@ -1,5 +1,17 @@
 # Radish status
 
+## 2026-11-03: preserve the MV32 full-model timeout
+
+[The unchanged full run](results/optimization-asr-mv32-timeout-0046.json) completes
+offline warm-up and the streaming encoder, then reaches the original watchdog
+during streaming prefill before requested transcripts. The new vocabulary
+mapping is active: 4,748 workgroups complete in 594 submissions. This verifies
+execution structure; it is not a timing result.
+
+The passing kernel checks remain valid. Further source-backed diagnosis is
+required for full-model completion. Cache replay and performance measurement
+remain held; no unchanged retry is planned.
+
 ## 2026-11-03: qualify sequential decoding rows
 
 [All 6,912 exact CPU comparisons pass](results/optimization-mv32-correctness-0046.json),
