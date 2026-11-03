@@ -1259,8 +1259,7 @@ In order of size:
    robustness queue duplication (232), and the 121,120 graphics-path
    results.
 
-What is on the tablet after this pass: `/var/tmp/radish-canon/cts/`
-(`deqp-vk` 81 MB, `vulkan/` CTS data 18 MB, no run results), drivers
-`a7e796f6ddd1` (`3740401`), `46ec36d1a5e8` (`4c51830`), `3c58218041a4`
-(`6eba49b`) with their ICD manifests in `/var/tmp/radish-canon/lib/`.
-`scripts/tsv/cts.py cleanup` removes the CTS.
+What is on the tablet after this pass: driver `3c58218041a4` (`6eba49b`)
+and its ICD manifest in `/var/tmp/radish-canon/lib/`. The CTS
+(`/var/tmp/radish-canon/cts`, 95 MB) was removed; `cts.sh setup` pushes it
+again.
