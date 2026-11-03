@@ -1,0 +1,62 @@
+--- a/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -177,6 +177,19 @@
+         vkGetInstanceProcAddr(static_cast<VkInstance>(vk_instance.instance), "vkGetPhysicalDeviceFeatures2KHR"));
+     if (!query) throw std::runtime_error("KHR profile missing enabled instance entrypoint vkGetPhysicalDeviceFeatures2KHR");
+     query(physical, features);
++}
++
++static bool ggml_vk_profile_matmul_type(ggml_type type) {
++    switch (type) {
++    case GGML_TYPE_F32:
++    case GGML_TYPE_F16:
++    case GGML_TYPE_Q4_K:
++    case GGML_TYPE_Q6_K:
++    case GGML_TYPE_Q8_0:
++        return true;
++    default:
++        return false;
++    }
+ }
+ 
+ static vk::Result ggml_vk_profile_wait_semaphores(vk::Device device, const vk::SemaphoreWaitInfo & info, uint64_t timeout) {
+@@ -2094,8 +2107,25 @@
+         const bool use_cm1_int = device->coopmat_int_support &&
+                                  (device->architecture == AMD_RDNA3 || device->architecture == AMD_RDNA4);
+ 
++#ifdef GGML_VULKAN_KHR_PROFILE
++        const auto & profile_limits = device->properties.limits;
++        if (profile_limits.maxComputeSharedMemorySize < 4096 ||
++            profile_limits.maxComputeWorkGroupInvocations < 128 ||
++            profile_limits.maxComputeWorkGroupSize[0] < 128) {
++            throw std::runtime_error("KHR quantized matrix kernels exceed device workgroup/shared-memory limits");
++        }
++#endif
+         for (uint32_t i = 0; i < GGML_TYPE_COUNT; ++i) {
+             ggml_type t = (ggml_type)i;
++#ifdef GGML_VULKAN_KHR_PROFILE
++            if (!ggml_vk_profile_matmul_type(t)) {
++                device->mul_mat_s[i] = device->mul_mat_m[i] = device->mul_mat_l[i] = false;
++                device->mul_mat_s_int[i] = device->mul_mat_m_int[i] = device->mul_mat_l_int[i] = false;
++                device->mul_mat_id_s[i] = device->mul_mat_id_m[i] = device->mul_mat_id_l[i] = false;
++                device->mul_mat_id_s_int[i] = device->mul_mat_id_m_int[i] = device->mul_mat_id_l_int[i] = false;
++                continue;
++            }
++#endif
+             // Disable medium and large matrix multiplication if not enough shared memory is available
+             // Check mmq warptiles as the largest configuration
+             // Throw an error if not enough for any matrix multiplication is available
+@@ -15849,6 +15879,13 @@
+         case GGML_OP_MUL_MAT_ID:
+             {
+                 ggml_type src0_type = op->src[0]->type;
++#ifdef GGML_VULKAN_KHR_PROFILE
++                if (op->op == GGML_OP_MUL_MAT_ID || !ggml_vk_profile_matmul_type(src0_type) ||
++                    (op->src[1]->type != GGML_TYPE_F32 && op->src[1]->type != GGML_TYPE_F16) ||
++                    op->type != GGML_TYPE_F32) {
++                    return false;
++                }
++#endif
+                 if (op->op == GGML_OP_MUL_MAT_ID) {
+                     if (!device->mul_mat_id_s[src0_type] && !device->mul_mat_id_m[src0_type] && !device->mul_mat_id_l[src0_type]) {
+                         // If there's not enough shared memory for row_ids and the result tile, fallback to CPU

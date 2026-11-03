@@ -1,0 +1,79 @@
+{
+  "status": "passed",
+  "scope": "Fresh-process populated application cache import with retained frontend + selective half GPU core; two untimed T78 requests.",
+  "capture": "/run/media/jethac/Shared/radish/kokoro-runtime-short-single-vulkan-opt0046-retained-import-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache",
+  "session_manifest": "8565f803338316129aee0608afccd21f780adaae24b5c13354c5960ca0880fb1",
+  "device_session_manifest": "653c4bc78e36293c78a35b9e27f48b49df223f827bdb02ed8e6b952c53c5fe90",
+  "run_log": "2da259b8dfa0af730032da21551470bfc4f81b66c61ce84a7a335c3a16670602",
+  "requests": [
+    {
+      "request": 0,
+      "validation": "b381796881f5b81b30d658040fda49971353b8439a26cd69337593c17dbd3b20",
+      "sessions_reused": false,
+      "metrics": {
+        "core": {
+          "values": 205942,
+          "sha256": "eae4d4c0c3b5d259e1f36bac2ffb71a7d4b23898de9b0cb1baa4972a608160fe",
+          "mismatches": 0,
+          "max_abs_error": 0.00018262863159179688,
+          "snr_db": 115.05478478017295
+        },
+        "waveform": {
+          "values": 46800,
+          "sha256": "a3ee5df6762bb5487a1196d277cf97ed739237ca58f3473c747aeebe48e9059c",
+          "mismatches": 0,
+          "max_abs_error": 3.0338764190673828e-05,
+          "snr_db": 90.61419452818066
+        }
+      }
+    },
+    {
+      "request": 1,
+      "validation": "9c76d5d2b615975a6385abccfdb05e2929e443526c7ea7b0d30b3cb841d68ce0",
+      "sessions_reused": true,
+      "metrics": {
+        "core": {
+          "values": 205942,
+          "sha256": "eae4d4c0c3b5d259e1f36bac2ffb71a7d4b23898de9b0cb1baa4972a608160fe",
+          "mismatches": 0,
+          "max_abs_error": 0.00018262863159179688,
+          "snr_db": 115.05478478017295
+        },
+        "waveform": {
+          "values": 46800,
+          "sha256": "a3ee5df6762bb5487a1196d277cf97ed739237ca58f3473c747aeebe48e9059c",
+          "mismatches": 0,
+          "max_abs_error": 3.0338764190673828e-05,
+          "snr_db": 90.61419452818066
+        }
+      }
+    }
+  ],
+  "actual_cache": {
+    "bytes": 2198316,
+    "sha256": "146e2534cad01aa1441ebabfe7992cd40bc2c4409ff4a628daba2d764aaae517",
+    "spirv_entries": 48,
+    "vulkan_bytes": 1705332,
+    "real_native_objects": 178,
+    "device_cache_unpersisted_entries": 5
+  },
+  "memory": {
+    "cap_MiB": 640,
+    "swap_cap_MiB": 128,
+    "observed_cgroup_memory_peak_MiB": 467.2,
+    "observed_cgroup_swap_peak_MiB": 0.0,
+    "both_ORT_sessions_retained": true
+  },
+  "checks": [
+    "Both sessions and core remain resident: core miss then hit; all eight boundary files match exact per-request CPU reference inputs and each other.",
+    "Each request passes all 205942 core values and 46800 waveform samples, with original thresholds and waveform SNR90.614dB.",
+    "All 1178 actual layer traces use GPU with ret0; two half-weight operators and ten FP32 fallbacks remain selected.",
+    "The file contains 48 SPIR-V entries and 178 real compiled objects. Five custom operator/device-cache entries remain in process only.",
+    "Original memory/swap/watchdog/fault/service/asset checks retained. Cgroup accounting is resource evidence, not a performance measurement."
+  ],
+  "remaining": [
+    "No native hit-count or acceleration inference; actual populated import and correctness only.",
+    "No claim of universal text/style/length coverage or zero swap.",
+    "ASR full model and the all-five performance gate remain separate."
+  ]
+}

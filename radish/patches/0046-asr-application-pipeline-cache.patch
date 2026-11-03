@@ -1,0 +1,215 @@
+--- a/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -1,4 +1,173 @@
+ #include "ggml-vulkan-common.h"
++
++#include <cerrno>
++#include <atomic>
++#ifndef _WIN32
++#include <fcntl.h>
++#include <sys/stat.h>
++#include <unistd.h>
++#endif
++
++static constexpr size_t ggml_vk_pipeline_cache_limit = 16 * 1024 * 1024;
++
++static bool ggml_vk_pipeline_cache_header(const vk_device_struct & device, const std::vector<uint8_t> & data) {
++    if (data.size() < sizeof(VkPipelineCacheHeaderVersionOne)) return false;
++    VkPipelineCacheHeaderVersionOne header;
++    memcpy(&header, data.data(), sizeof(header));
++    return header.headerSize == sizeof(header) && header.headerVersion == VK_PIPELINE_CACHE_HEADER_VERSION_ONE &&
++        header.vendorID == device.properties.vendorID && header.deviceID == device.properties.deviceID &&
++        memcmp(header.pipelineCacheUUID, device.properties.pipelineCacheUUID.data(), VK_UUID_SIZE) == 0;
++}
++
++#ifndef _WIN32
++struct ggml_vk_cache_fd {
++    int fd;
++    explicit ggml_vk_cache_fd(int value) : fd(value) {}
++    ~ggml_vk_cache_fd() { if (fd >= 0) close(fd); }
++    ggml_vk_cache_fd(const ggml_vk_cache_fd &) = delete;
++    ggml_vk_cache_fd & operator=(const ggml_vk_cache_fd &) = delete;
++};
++
++static std::vector<uint8_t> ggml_vk_pipeline_cache_read(vk_device_struct & device) {
++    const char * path = getenv("GGML_VK_PIPELINE_CACHE");
++    if (!path || !*path) return {};
++    std::string full(path);
++    const auto slash = full.find_last_of('/');
++    if (full.front() != '/' || slash == std::string::npos || slash + 1 == full.size()) {
++        std::cerr << "ggml_vulkan: pipeline cache requires an absolute file path\n";
++        return {};
++    }
++    const std::string base = full.substr(slash + 1);
++    if (base == "." || base == ".." || base.size() > 180) return {};
++    const std::string parent = slash ? full.substr(0, slash) : "/";
++    ggml_vk_cache_fd dir(open(parent.c_str(), O_RDONLY | O_DIRECTORY | O_CLOEXEC | O_NOFOLLOW));
++    struct stat st;
++    if (dir.fd < 0 || fstat(dir.fd, &st) || st.st_uid != geteuid() || (st.st_mode & 0022)) {
++        std::cerr << "ggml_vulkan: pipeline cache directory must be owned and privately writable\n";
++        return {};
++    }
++    device.pipeline_cache_name = base;
++    device.pipeline_cache_dir = dir.fd;
++    dir.fd = -1;
++    ggml_vk_cache_fd file(openat(device.pipeline_cache_dir, base.c_str(), O_RDONLY | O_CLOEXEC | O_NOFOLLOW | O_NONBLOCK));
++    if (file.fd < 0) return {};
++    if (fstat(file.fd, &st) || !S_ISREG(st.st_mode) || st.st_uid != geteuid() || st.st_nlink != 1 || (st.st_mode & 0022) ||
++        st.st_size < (off_t) sizeof(VkPipelineCacheHeaderVersionOne) || (uint64_t) st.st_size > ggml_vk_pipeline_cache_limit) {
++        std::cerr << "ggml_vulkan: rejected pipeline cache file metadata\n";
++        return {};
++    }
++    std::vector<uint8_t> data((size_t) st.st_size);
++    size_t done = 0;
++    while (done < data.size()) {
++        const ssize_t count = read(file.fd, data.data() + done, data.size() - done);
++        if (count < 0 && errno == EINTR) continue;
++        if (count <= 0) return {};
++        done += (size_t) count;
++    }
++    uint8_t extra;
++    if (read(file.fd, &extra, 1) != 0 || !ggml_vk_pipeline_cache_header(device, data)) {
++        std::cerr << "ggml_vulkan: rejected stale or corrupt pipeline cache header\n";
++        return {};
++    }
++    return data;
++}
++
++static bool ggml_vk_pipeline_cache_write(vk_device_struct & device, const std::vector<uint8_t> & data) {
++    struct stat st;
++    if (fstatat(device.pipeline_cache_dir, device.pipeline_cache_name.c_str(), &st, AT_SYMLINK_NOFOLLOW) == 0) {
++        if (!S_ISREG(st.st_mode) || st.st_uid != geteuid() || st.st_nlink != 1) return false;
++    } else if (errno != ENOENT) {
++        return false;
++    }
++    static std::atomic<uint64_t> serial{0};
++    const std::string temporary = "." + device.pipeline_cache_name + ".tmp." + std::to_string(getpid()) +
++        "." + std::to_string(serial.fetch_add(1, std::memory_order_relaxed));
++    ggml_vk_cache_fd file(openat(device.pipeline_cache_dir, temporary.c_str(),
++        O_WRONLY | O_CREAT | O_EXCL | O_CLOEXEC | O_NOFOLLOW, 0600));
++    if (file.fd < 0) return false;
++    size_t done = 0;
++    bool ok = true;
++    while (done < data.size()) {
++        const ssize_t count = write(file.fd, data.data() + done, data.size() - done);
++        if (count < 0 && errno == EINTR) continue;
++        if (count <= 0) { ok = false; break; }
++        done += (size_t) count;
++    }
++    if (ok && fsync(file.fd)) ok = false;
++    if (close(file.fd)) ok = false;
++    file.fd = -1;
++    if (ok && renameat(device.pipeline_cache_dir, temporary.c_str(),
++                       device.pipeline_cache_dir, device.pipeline_cache_name.c_str())) ok = false;
++    if (!ok) unlinkat(device.pipeline_cache_dir, temporary.c_str(), 0);
++    if (ok && fsync(device.pipeline_cache_dir)) ok = false;
++    return ok;
++}
++#endif
++
++static void ggml_vk_pipeline_cache_init(vk_device_struct & device) {
++    std::vector<uint8_t> data;
++    try {
++#ifndef _WIN32
++        data = ggml_vk_pipeline_cache_read(device);
++#endif
++    } catch (const std::exception & e) {
++        std::cerr << "ggml_vulkan: pipeline cache import skipped: " << e.what() << '\n';
++    }
++    VkPipelineCacheCreateInfo info{};
++    info.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
++    info.initialDataSize = data.size();
++    info.pInitialData = data.empty() ? nullptr : data.data();
++    VkResult result = vkCreatePipelineCache(device.device, &info, nullptr, &device.pipeline_cache);
++    if (result != VK_SUCCESS && !data.empty()) {
++        data.clear();
++        info.initialDataSize = 0;
++        info.pInitialData = nullptr;
++        result = vkCreatePipelineCache(device.device, &info, nullptr, &device.pipeline_cache);
++    }
++    if (result != VK_SUCCESS) {
++        device.pipeline_cache = VK_NULL_HANDLE;
++        std::cerr << "ggml_vulkan: optional pipeline cache unavailable result=" << result << '\n';
++    } else {
++        std::cerr << "ggml_vulkan: pipeline cache initialized import_bytes=" << data.size() << '\n';
++    }
++}
++
++static void ggml_vk_pipeline_cache_finish(vk_device_struct & device) {
++    std::lock_guard<std::mutex> lock(device.pipeline_cache_mutex);
++    if (device.pipeline_cache != VK_NULL_HANDLE) {
++        try {
++#ifndef _WIN32
++            if (device.pipeline_cache_dir >= 0) {
++                size_t size = 0;
++                if (vkGetPipelineCacheData(device.device, device.pipeline_cache, &size, nullptr) == VK_SUCCESS &&
++                    size >= sizeof(VkPipelineCacheHeaderVersionOne) && size <= ggml_vk_pipeline_cache_limit) {
++                    std::vector<uint8_t> data(size);
++                    if (vkGetPipelineCacheData(device.device, device.pipeline_cache, &size, data.data()) == VK_SUCCESS &&
++                        size <= data.size()) {
++                        data.resize(size);
++                        if (ggml_vk_pipeline_cache_header(device, data) && ggml_vk_pipeline_cache_write(device, data)) {
++                            std::cerr << "ggml_vulkan: pipeline cache saved bytes=" << data.size() << '\n';
++                        } else {
++                            std::cerr << "ggml_vulkan: optional pipeline cache save skipped\n";
++                        }
++                    }
++                }
++            }
++#endif
++        } catch (const std::exception & e) {
++            std::cerr << "ggml_vulkan: pipeline cache export skipped: " << e.what() << '\n';
++        }
++        vkDestroyPipelineCache(device.device, device.pipeline_cache, nullptr);
++        device.pipeline_cache = VK_NULL_HANDLE;
++    }
++#ifndef _WIN32
++    if (device.pipeline_cache_dir >= 0) {
++        close(device.pipeline_cache_dir);
++        device.pipeline_cache_dir = -1;
++    }
++#endif
++}
++
+ #ifdef GGML_VULKAN_KHR_PROFILE
+ #include "ggml-vulkan-khr-profile.hpp"
+ #define getProperties2 getProperties2KHR
+@@ -806,7 +975,8 @@
+ #endif
+ 
+     try {
+-        pipeline->pipeline = device->device.createComputePipeline(VK_NULL_HANDLE, compute_pipeline_create_info).value;
++        std::lock_guard<std::mutex> cache_lock(device->pipeline_cache_mutex);
++        pipeline->pipeline = device->device.createComputePipeline(vk::PipelineCache(device->pipeline_cache), compute_pipeline_create_info).value;
+     } catch (const vk::SystemError& e) {
+         std::cerr << "ggml_vulkan: compute pipeline creation failed for " << pipeline->name << ": " << e.what() << std::endl;
+         throw;
+@@ -4883,6 +5053,7 @@
+             .setPEnabledExtensionNames(device_extensions);
+         device_create_info.setPNext(&device_features2);
+         device->device = device->physical_device.createDevice(device_create_info);
++        ggml_vk_pipeline_cache_init(*device);
+ 
+         if (device->device_fault) {
+             device->pfn_vkGetDeviceFaultInfoEXT = (PFN_vkGetDeviceFaultInfoEXT)
+@@ -16684,6 +16855,7 @@
+ 
+     device.destroyDescriptorSetLayout(dsl);
+ 
++    ggml_vk_pipeline_cache_finish(*this);
+     device.destroy();
+ }
+ 
+--- a/ggml/src/ggml-vulkan/ggml-vulkan-types.h
++++ b/ggml/src/ggml-vulkan/ggml-vulkan-types.h
+@@ -687,6 +687,10 @@
+     // runs with no lock held, so different pipelines can compile in parallel.
+     // Lock order is device->mutex -> compile_mutex, never the reverse.
+     std::mutex compile_mutex;
++    std::mutex pipeline_cache_mutex;
++    VkPipelineCache pipeline_cache = VK_NULL_HANDLE;
++    int pipeline_cache_dir = -1;
++    std::string pipeline_cache_name;
+     std::condition_variable compile_cv;
+ 
+     uint32_t debug_cmdbuf_idx {};

@@ -10,7 +10,7 @@
     {
       "area": 1,
       "implementation": "Persistent frontend/harmonic ORT session pair retained across runtime requests, dynamic-shape validation, owned outputs and bounded session count; activation arena/pattern retention disabled",
-      "evidence": "Target8 ordered requests and50 full-array comparisons bit-exact at1/4threads, including dynamic shape/style. Integrated frontend plus selected GPU core residency/memory remains pending.",
+      "evidence": "Integrated retained frontend plus selected GPU core passes four T78 requests in cold/import processes; two ORT sessions remain live per process, exact per-request CPU boundaries and original core/waveform gates pass. Separate varying-shape/style target tests remain valid.",
       "graph_policy": "Original ORT_DISABLE_ALL retained. Generic BASIC changed F0 and harmonic phase under strict oracle; rejected, not tolerance-adjusted."
     },
     {
@@ -21,20 +21,20 @@
     {
       "area": 3,
       "implementation": "Reuse invariant program/resource/static state within bounded chunks of one dispatch; keep per-chunk base/NDRANGE and WFI, flush/wait at existing batch end; direct-window graph intermediate elimination",
-      "evidence": "Queue target correctness independently passed:66,688 exact outputs/full2allocation guards, two changed-data/reversed-descriptor rounds; each18chunks\u21924submits/4flushes exercises full8+partial1. Application fullmodel still pending."
+      "evidence": "Queue full/partial-batch correctness passes 66,688 exact values. Direct-window graph elimination is exercised by fixed T213 and integrated retained T78 models, all required GPU traces return zero. No performance claim."
     },
     {
       "area": 4,
-      "implementation": "GQA native broadcast removes repeated K/V tensors and redundant copies. Phase-specific quantized kernels and encoder-to-prefill device-buffer handoff are authored and building separately",
-      "evidence": "Six quantized kernels8976 exact values, floating GQA987808 exact values and all32 current native resource classes pass. Final untimed ASR with actual cache260941 builds. Full model stops before inference on generic shared-memory tile initialization; source fix in progress, no model qualification."
+      "implementation": "Integrated GQA broadcast, phase-specific quantized kernels, encoder-to-prefill device-buffer reuse and reduced host staging; actual application pipeline cache and supported-kernel initialization correction are built.",
+      "evidence": "Six quantized kernels, floating GQA and all32 native classes pass. Corrected full ASR92209 initializes Vulkan0, then is OOM-killed at unchanged640MiB cap before output. Full model fit, transcript, placement and fresh-process replay remain open."
     },
     {
       "area": 5,
       "implementation": "Real compiled Vulkan cache entries using Mesa cache import/export/merge and IR3 native serializer, including sampling NIR and resource metadata; selective weight-only precision source is being integrated",
-      "evidence": "Stricter computed absolute L1 weight budget selects2half/10FP32 operators and passes original two full-core comparisons and127800-sample waveform gate (d8a7a67b). Prior all12 selection failure retained. ncnn actual cache lifecycle built; integrated retained frontend/cache runtime target underway. ASR real cache lifecycle built, full model blocked by backend initialization."
+      "evidence": "Selective half2/FP32ten passes fixedT213 and integratedT78 original outputs. Real ncnn export/import contains48SPV/178compiled objects, all178 keyed native payloads unchanged after replay. Five custom/device-cache entries stay in-process. ASR cache lifecycle is built but full model qualification remains open."
     }
   ],
-  "measurement_policy": "No new performance results. Timers disabled in the frontend correctness helper; driver PROFILE/GPU_ELAPSED disabled in forthcoming correctness scopes. Required timeout/memory/fault/service telemetry remains.",
+  "measurement_policy": "No new performance results or performance collection. Untimed application paths report timing_collected=false; timeout/memory/fault/service telemetry is used only to verify controls.",
   "patches": {
     "0046-radish-compiled-pipeline-cache.patch": "3676b04a9f71b2f0ac676bb327693059193797218621e141706f91b09bf754af",
     "0046-radish-queue-state-reuse.patch": "e2df8c5915b011b20d67b41352f4d126be922d0bfbf0989d9d3b0bc43e7fc728",
@@ -45,11 +45,13 @@
     "0046-asr-unit-axis-contiguity.patch": "aa445f5a6fd72174152bca2347e2447392798b0789ac694fbef3889e2d5b3967",
     "0046-radish-direct-window-batching.patch": "6bbca30b2ddfc4431ab0b1cee4980783a9b1e7f7111d9ca5e95ad18403fc3d92",
     "0046-ncnn-weight-only-precision.patch": "4578d54d34c41374ec92f697393448c67c72af134ea7b6bb65a84f8ed58bafb1",
-    "0046-ncnn-absolute-weight-budget.patch": "602c133670191527f51d066848277b7efbde65d5ef45a82e856bb87cc3646897"
+    "0046-ncnn-absolute-weight-budget.patch": "602c133670191527f51d066848277b7efbde65d5ef45a82e856bb87cc3646897",
+    "0046-asr-application-pipeline-cache.patch": "7766b6ca5ba5c2acc431b92ebc66288211a026b96c40ea4617884822bb79abdc",
+    "0046-asr-profile-matrix-init.patch": "4652afd06124dd0832efb85159e3d0d2b5699aedef971c7a1ddc891ba864903c"
   },
   "existing_results": "Original743 CTS cases and modified132 robustness outcomes remain historical pinned evidence; no conformance count or selected performance change.",
-  "completion_gate": "All five areas must have integrated working code and relevant source/build/native/resource/numerical/lifetime evidence before measuring performance. Full-model output/waveform and process memory gates remain.",
-  "as_of_utc": "2026-11-03 00:14:59 UTC",
+  "completion_gate": "TTS side is qualified for the stated T213/T78 fixtures. All-five gate remains CLOSED on ASR full-model memory/placement/transcript and real application replay; full GOAL remains active.",
+  "as_of_utc": "2026-11-03 00:26 UTC",
   "correctness_receipts": {
     "optimization-cache-correctness-0046.json": "0af98f899b26429971ef61df554e2cf4a4fe340019353f9ed7491869ab59b1f5",
     "optimization-queue-correctness-0046.json": "98c9f0d64a5ef1076462930effb6fd3e22c48de75cad78e87f7e68eaa6636b0e",
@@ -58,17 +60,22 @@
     "optimization-quant-kernels-correctness-0046.json": "548de8fb816058f5807bc36788d4b66e778f8bd04dec179ac32ce41b2a0fecd7",
     "optimization-tts-direct-full-correctness-0046.json": "6bfcd47a01d0ded6834da326886958d30d10f7534beb29082eb83b9ab3cf95af",
     "optimization-half-model-failure-0046.json": "faf37ec11009ce29eee12f3e964e6b71157e8f19d970e0b4e27671358ccdfede",
-    "optimization-selective-half-full-correctness-0046.json": "d8a7a67b488ee20e4ec66818c0cf18f6c5e9402372ac0a9eee56e2058e8a4c03"
+    "optimization-selective-half-full-correctness-0046.json": "d8a7a67b488ee20e4ec66818c0cf18f6c5e9402372ac0a9eee56e2058e8a4c03",
+    "optimization-retained-runtime-cold-0046.json": "7a02642de6d6ad46577223a94945481ef1e40bfabddd34032c0cac86023d32d9",
+    "optimization-retained-runtime-import-0046.json": "08c8e3fee4052ad817137c76374af8384c8c0962c905d4b5cf37147267c1c780",
+    "optimization-application-cache-payloads-0046.json": "d15d3fc92d9fac98f663b26b8c1196835c9e49c06f26dce3c611df4e112c42d2",
+    "optimization-retained-runtime-combined-0046.json": "ac4ad9614166b557fee4acb2ea61c9d38ac4a1edc1a60aa38fe73bc253c73e9e"
   },
   "drivers": {
     "bounded_cache_queue_half": "61e8/9f64 exact integrated cache+queue+corrected idiv",
-    "tts_candidate": "1ed3/5eed exact direct-window batching; FP32 fixed core/waveform passes, half model failure retained"
+    "tts_candidate": "1ed3/5eed direct-window batching; T213 and T78 full core/waveform correctness passed with selective half2/FP32ten"
   },
   "preserved_failure": "First quantized native helper compared logical64/128 against physical32x2/64x2 and failed before data. V2 checks exact existing logical and physical mappings; no shader, oracle or guard changed.",
   "preserved_failures": [
     "Half full48210:2/562342 numerical mismatches under original tolerance; no second extraction/waveform.",
     "Quant first helper logical/physical assertion and native32 exactAPI1.0 assertion were setup failures; minimal harness corrections preserve modules/oracles.",
-    "First full ASR cold25335: generic shared-memory matrix initialization rejected backend before model execution."
+    "First full ASR cold25335: generic shared-memory matrix initialization rejected backend before model execution.",
+    "Corrected ASR89794: Vulkan backend initializes, then unchanged640MiB cgroup cap OOM-kills process before transcript/placement completion; no memory-limit waiver."
   ],
-  "runtime_cache": "RADISH_NCNN_PIPELINE_CACHE_FILE with --reuse-pipeline-cache selects bounded opaque ncnn import and atomic successful-loop export. Missing/corrupt/old data rebuilds empty; target lifecycle pending."
+  "runtime_cache": "Actual ncnn missing-cache cold process exports populated cache; second process accepts and re-exports identical178 keyed compiled objects and correct outputs. No hit-count or acceleration inference."
 }

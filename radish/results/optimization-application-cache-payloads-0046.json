@@ -1,0 +1,35 @@
+{
+  "status": "passed",
+  "scope": "Independent parsing of actual app export and fresh-process re-export; no hit-count/performance inference",
+  "files": [
+    {
+      "file": "cold-model.cache",
+      "sha256": "ddfbffa063344e514ba7a246d57fd1ee443e74604343594baadda1205d4126d6",
+      "bytes": 2198316,
+      "spirv_entries": 48,
+      "vulkan_bytes": 1705332,
+      "objects": 178,
+      "fnv_hashes_valid": true
+    },
+    {
+      "file": "import-model.cache",
+      "sha256": "146e2534cad01aa1441ebabfe7992cd40bc2c4409ff4a628daba2d764aaae517",
+      "bytes": 2198316,
+      "spirv_entries": 48,
+      "vulkan_bytes": 1705332,
+      "objects": 178,
+      "fnv_hashes_valid": true
+    }
+  ],
+  "same178_keyed_native_payloads": true,
+  "cache_total_hash_difference": "Serialization object order may differ; exact keyed payload map is byte-identical.",
+  "format_sources": [
+    "ncnn pipelinecache.cpp cache_file_header and fnv1a_32",
+    "Mesa vk_pipeline_cache.c GetPipelineCacheData / load_initial_data; align8",
+    "Radish rd_pipeline_cache.cpp object key32 and serialized native payload"
+  ],
+  "limits": [
+    "Same native payload after app import plus actual output checks proves populated cache integration; does not count restore hits or isolate acceleration.",
+    "Five custom operator/device-cache entries remain in-process only."
+  ]
+}

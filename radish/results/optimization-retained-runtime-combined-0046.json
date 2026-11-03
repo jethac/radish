@@ -1,0 +1,21 @@
+{
+  "status": "passed",
+  "scope": "Actual retained frontend + selective half GPU inference + populated application cache export/fresh-process import, four complete untimed T78 requests.",
+  "cold_review": "7a02642de6d6ad46577223a94945481ef1e40bfabddd34032c0cac86023d32d9",
+  "fresh_import_review": "08c8e3fee4052ad817137c76374af8384c8c0962c905d4b5cf37147267c1c780",
+  "native_cache_objects_review": "d15d3fc92d9fac98f663b26b8c1196835c9e49c06f26dce3c611df4e112c42d2",
+  "facts": [
+    "Both processes keep two ORT sessions and CoreSession across two requests; core miss then hit; request-owned boundaries and outputs remain exact between cold/import processes.",
+    "Each of four outputs independently matches exact captured-boundary CPU reference: 205942 core values and 46800 waveform samples, zero original-threshold errors, waveform90.614dB against50dB minimum.",
+    "Each process records all1178GPUret0traces andactual2half+10FP32policy. No silent frontend recreation, GPUfallback or precision downgrade.",
+    "Actual persisted ncnn files contain48SPV and178nativeobjects; all178 keyed native serialized payloads byte-identical after import/re-export despite order-dependent totalfilehash.",
+    "Cold resourcepeak455.1MiB plus103.1MiBswap; imported process467.2MiB/no swap. Both original640M/128swap controls retained, no comparative performance conclusion.",
+    "No clocks/profiling/benchmark collection; systemd resource accounting preserved for guard verification."
+  ],
+  "limitations": [
+    "Current repeated T78 fixture scope; target frontend variedshape/style strict tests and fixedT213 full core/waveform qualified separately.",
+    "Five custom operator/device-cache entries remain in-process only; no all-pipeline persistent coverage claim.",
+    "No native cache hit count, startup improvement, speedup or full Vulkan conformance claim.",
+    "ASR whole-model correctness/placement/peak and full GOAL remain separate."
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "status": "Built source overlay; backend initializes, full model memory qualification failed",
+  "application": "Frozen ASR source with previously published GQA, quantized phase, memory-liveness and unit-axis overlays",
+  "ordered_additive_patches": [
+    {
+      "file": "0046-asr-application-pipeline-cache.patch",
+      "sha256": "7766b6ca5ba5c2acc431b92ebc66288211a026b96c40ea4617884822bb79abdc",
+      "strip": 1,
+      "apply_root": "transcribe.cpp"
+    },
+    {
+      "file": "0046-asr-profile-matrix-init.patch",
+      "sha256": "4652afd06124dd0832efb85159e3d0d2b5699aedef971c7a1ddc891ba864903c",
+      "strip": 1,
+      "apply_root": "transcribe.cpp"
+    }
+  ],
+  "cache_source_files": {
+    "ggml-vulkan.cpp": {
+      "baseline": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/unit-axis/ggml-vulkan.cpp",
+      "preimage": "659540f211afc507a7b3c775816165b9930ec50fbd1a7aeeef0917ab9ea20094",
+      "candidate": "5221aca93eb458841238a78c7510d572647a02d62fb680e44c6ff4eb96103cb2"
+    },
+    "ggml-vulkan-types.h": {
+      "baseline": "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/ggml-vulkan/ggml-vulkan-types.h",
+      "preimage": "f416a030b44ea9ab794bf48bf84300304e2c49aabd7f72601d64e1bbc2b6d34b",
+      "candidate": "ef0ac3caa668eab76d53c204048f5ed32ec5009dfcee2c64f53d3837eacfc359"
+    }
+  },
+  "init_preimage": "5221aca93eb458841238a78c7510d572647a02d62fb680e44c6ff4eb96103cb2",
+  "init_candidate": "ae6ca5abf8ac28acf74815728ac06dbfd1118506218affac78d35c7b5c22f315",
+  "build_rules": [
+    "Application-cache patch changes ggml-vulkan-types.h; rebuild all dependent Vulkan translation units, retaining generated shader bytes.",
+    "Profile-init patch changes only ggml-vulkan.cpp; rebuild that translation unit over the matched cache build.",
+    "Use the untimed correctness frontend/bridge/model derivative for current qualification. No performance collection is authorized."
+  ],
+  "actual_compile": [
+    "/usr/bin/clang++",
+    "-I/run/media/jethac/Shared/radish/optimization-five-asr-app-cache-build-0046/source",
+    "-I/run/media/jethac/Shared/radish/optimization-five-asr-app-cache-build-0046/source",
+    "-I/run/media/jethac/Shared/radish/optimization-five-asr-app-cache-build-0046/source",
+    "--target=aarch64-linux-gnu",
+    "--sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+    "-DGGML_SCHED_MAX_COPIES=4",
+    "-DGGML_VULKAN_BFLOAT16_GLSLC_SUPPORT",
+    "-DGGML_VULKAN_COOPMAT2_DECODE_VECTOR_GLSLC_SUPPORT",
+    "-DGGML_VULKAN_COOPMAT2_GLSLC_SUPPORT",
+    "-DGGML_VULKAN_COOPMAT_GLSLC_SUPPORT",
+    "-DGGML_VULKAN_FLOAT_E2M1_GLSLC_SUPPORT",
+    "-DGGML_VULKAN_FLOAT_E4M3_GLSLC_SUPPORT",
+    "-DGGML_VULKAN_INTEGER_DOT_GLSLC_SUPPORT",
+    "-DGGML_VULKAN_KHR_PROFILE",
+    "-D_GNU_SOURCE",
+    "-D_XOPEN_SOURCE=600",
+    "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/ggml-vulkan/..",
+    "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build/transcribe/ggml/src/ggml-vulkan",
+    "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/../include",
+    "-isystem",
+    "/run/media/jethac/Shared/radish/vulkan-headers/include",
+    "-isystem",
+    "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/deps/spirv-headers-install/include",
+    "--gcc-install-dir=/home/jethac/Projects/straylight-voice/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+    "-O3",
+    "-DNDEBUG",
+    "-std=c++17",
+    "-fPIC",
+    "-fvisibility=hidden",
+    "-fvisibility-inlines-hidden",
+    "-Wmissing-declarations",
+    "-Wmissing-noreturn",
+    "-Wall",
+    "-Wextra",
+    "-Wpedantic",
+    "-Wcast-qual",
+    "-Wno-unused-function",
+    "-Wunreachable-code-break",
+    "-Wunreachable-code-return",
+    "-Wmissing-prototypes",
+    "-Wextra-semi",
+    "-o",
+    "/run/media/jethac/Shared/radish/optimization-five-asr-init-fixed-build-0046/ggml-vulkan.cpp.o",
+    "-c",
+    "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/profile-matrix-init/ggml-vulkan.cpp"
+  ],
+  "actual_compile_cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build",
+  "actual_link": {
+    "argv": [
+      "cargo",
+      "build",
+      "--offline",
+      "--locked",
+      "--target",
+      "aarch64-unknown-linux-gnu",
+      "--features",
+      "asr-vulkan",
+      "-j3",
+      "--manifest-path",
+      "/run/media/jethac/Shared/radish/optimization-five-asr-untimed-build-0046/rust-app/listen/Cargo.toml"
+    ],
+    "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-app-cache-build-0046",
+    "env": {
+      "STRAYLIGHT_ASR_LIB": "/run/media/jethac/Shared/radish/optimization-five-asr-init-fixed-build-0046/libs",
+      "STRAYLIGHT_SYSROOT": "/home/jethac/Projects/straylight-voice/sysroot",
+      "CARGO_TARGET_DIR": "/run/media/jethac/Shared/radish/optimization-five-asr-init-fixed-build-0046/cargo-target",
+      "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER": "clang",
+      "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS": "-C link-arg=--target=aarch64-linux-gnu -C link-arg=-fuse-ld=lld -C link-arg=--sysroot=/home/jethac/Projects/straylight-voice/sysroot -C link-arg=-L/home/jethac/Projects/straylight-voice/sysroot/usr/lib -C link-arg=-L/home/jethac/Projects/straylight-voice/sysroot/usr/lib/aarch64-linux-gnu -C link-arg=-L/run/media/jethac/Shared/radish/build-loader/loader -C link-arg=-Wl,--allow-shlib-undefined -C link-arg=-Wno-unused-command-line-argument -C target-cpu=cortex-a53",
+      "CC_aarch64_unknown_linux_gnu": "clang",
+      "CFLAGS_aarch64_unknown_linux_gnu": "--target=aarch64-linux-gnu --sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+      "AR_aarch64_unknown_linux_gnu": "llvm-ar",
+      "PKG_CONFIG_SYSROOT_DIR": "/home/jethac/Projects/straylight-voice/sysroot",
+      "PKG_CONFIG_LIBDIR": "/home/jethac/Projects/straylight-voice/sysroot/usr/lib/pkgconfig:/home/jethac/Projects/straylight-voice/sysroot/usr/share/pkgconfig",
+      "PKG_CONFIG_ALLOW_CROSS": "1"
+    }
+  },
+  "libraries": {
+    "libstraylight_asr.a": "e06b15366b65afd124a092bbb2de3cbe153f5e7d201df6b5c1f19e4df25356c9",
+    "libggml-cpu.a": "d995ee7629e69509970ad3fe687f8a77a469c419ba7cd91404ca8bb79f4e85da",
+    "libtranscribe.a": "0ec74276eaad2485e01e72783679678f161f273d34e05807da557962125d3520",
+    "libggml-base.a": "28ec1c9e67f976b670a074b310cb09389cddce48fc7cc42a9e7f06a9449b0fc1",
+    "libggml.a": "44072c75ec479e9e440cc8f9583c6d6250eab629a739c7ddf98bc70aefb8ba5d",
+    "libggml-vulkan.a": "74f5a24147fe1b132067a20255999decb621499e0c7e28e5bbd6db6f25aef0ac"
+  },
+  "listener": "92209fe64db13b4be25951839ad86ed7de6f0b20cec2af521418e0a7365176fc",
+  "source_review": "c7ef69075c2fd4632b3ecb2a411db022d84de7684d71a60ad30cc346b503ed6d",
+  "build_runner_review": "74e67652eb7a62720d2b5b9bce6b13677d8342fe8cda948ed93842b2a0b9ce3e",
+  "actual_result": "optimization-asr-memory-failure-0046.json",
+  "limits": "Opaque app-cache use is implemented, but full ASR saved-populated-cache/import/transcript and resource fit are not qualified."
+}
