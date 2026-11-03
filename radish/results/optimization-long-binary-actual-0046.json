@@ -1,0 +1,157 @@
+{
+  "status": "passed",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-long-binary-v2/probe",
+  "pins": {
+    "run.log": "b5cf29a8d124430152fcb456862f437057071cc66caa07bbf62aa0c25401c528",
+    "runner-result.json": "f0a08e23a91d97964ab9ecb10793a0bec16a5958b1f33198c64bff3dd3b66ff0",
+    "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+    "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+    "services-after.txt": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+  },
+  "payload": {
+    "radish_icd.json": {
+      "bytes": 151,
+      "sha256": "b36ef49d0e02188396ba27a2af2bb0f24c514f935613334ceafaad64318463fc"
+    },
+    "resources": {
+      "bytes": 745208,
+      "sha256": "32a3d65d94cc23a4dd20cb7084db27b9d87c8b73cac9b7e29756dc5011d13809"
+    },
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "mul_f32_f32_f32.spv": {
+      "bytes": 5960,
+      "sha256": "e52b032a7cb770fad5f5eb3609798b426bcdae76abe1a3c081210db309333d23"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 13640248,
+      "sha256": "11cf0aa23c785011262146e6ea2c8f71fa84cff3da92635495cc44fe3db05ac0"
+    },
+    "add_f32_f32_f32.spv": {
+      "bytes": 5960,
+      "sha256": "68b98fdbaf36855a47f587db8da035d00b12c8ee0d1919f129cff82e6df8d166"
+    },
+    "payload.json": {
+      "bytes": 962,
+      "sha256": "9ba46b68a8e163b469acbef15bef678e279fe6a80cb88e15c7faf249485e24c4"
+    }
+  },
+  "source_native_review": "66ece4afe9afe14069ebc7cae18befd240d2609ac95aae5bc8f065fd9545ef7e",
+  "storage_v2_review": "17da029c564de48d45a600925f64c75ec35cce25f08e99608127203b519ac496",
+  "native": [
+    {
+      "kind": "0",
+      "native": "202",
+      "full_count": "16",
+      "half_count": "12",
+      "loops": "0",
+      "barrier": "0",
+      "private": "0",
+      "shared": "0",
+      "physical": "128,1,1",
+      "packed": "0",
+      "safety": "1",
+      "used": "7",
+      "resources": "3",
+      "num_ssbos": "3",
+      "resident_wave": "32",
+      "resident_slots": "1408",
+      "push": "116",
+      "before_data": "1",
+      "native_body_sha256": "9975c9a10e87ce47eb54dd3de5bfe81a422cf0eba9db6f61bc18fae8cebe375a"
+    },
+    {
+      "kind": "1",
+      "native": "117",
+      "full_count": "9",
+      "half_count": "12",
+      "loops": "0",
+      "barrier": "0",
+      "private": "0",
+      "shared": "0",
+      "physical": "128,1,1",
+      "packed": "0",
+      "safety": "1",
+      "used": "7",
+      "resources": "3",
+      "num_ssbos": "3",
+      "resident_wave": "32",
+      "resident_slots": "960",
+      "push": "116",
+      "before_data": "1",
+      "native_body_sha256": "2352cdf176bbceef07e4704bd116cef5b03de7a5912ef5783b9ec7e5bca8ddbe"
+    },
+    {
+      "kind": "2",
+      "native": "200",
+      "full_count": "16",
+      "half_count": "12",
+      "loops": "0",
+      "barrier": "0",
+      "private": "0",
+      "shared": "0",
+      "physical": "128,1,1",
+      "packed": "0",
+      "safety": "1",
+      "used": "7",
+      "resources": "3",
+      "num_ssbos": "3",
+      "resident_wave": "32",
+      "resident_slots": "1408",
+      "push": "116",
+      "before_data": "1",
+      "native_body_sha256": "d5815861318a67da7eae2e5b55310996346653d5b4cac6bdb24ed9b0a2a517e7"
+    },
+    {
+      "kind": "3",
+      "native": "115",
+      "full_count": "9",
+      "half_count": "12",
+      "loops": "0",
+      "barrier": "0",
+      "private": "0",
+      "shared": "0",
+      "physical": "128,1,1",
+      "packed": "0",
+      "safety": "1",
+      "used": "7",
+      "resources": "3",
+      "num_ssbos": "3",
+      "resident_wave": "32",
+      "resident_slots": "960",
+      "push": "116",
+      "before_data": "1",
+      "native_body_sha256": "dc640960b6f3abc7cb7a12bea5b7e9a2dccd087fc5bfc4b4e67c102f6a64612e"
+    }
+  ],
+  "native_body_identity": "All four actual assembly/stat bodies byte-identical admitted compile-only after only CL program ordinal normalization; same modules/driver. Private/shared/loops0. Resident one-wave32 slots1408/960; wholeWG count is not compiler occupancy.",
+  "numerical": {
+    "rounds": 8,
+    "outputs": 2097160,
+    "CPU": "exact original dyadic add/multiply references, all32bit results bit-exact",
+    "all_allocations": 3,
+    "descriptor_visible_tail_lanes": 511,
+    "changing_seeds": 2,
+    "specializations": "add/mul norepeat0/1"
+  },
+  "structural": {
+    "dispatches": 8,
+    "groups_per_dispatch": 513,
+    "groups_per_EXEC": 64,
+    "EXEC_chunks_per_dispatch": 9,
+    "FD_per_dispatch": 2,
+    "FD_total": 16,
+    "window_slots": 2,
+    "queued_chunks": 9,
+    "CS_bytes": 65536,
+    "metadata_bytes": 13200,
+    "CS_backing_bytes": 65536,
+    "BO_refs": 14,
+    "drain": "eight final drains, result0; full8EXEC +tail1 and pending>1 actually active"
+  },
+  "controls": "Original90s/384MiB, unchanged all allocation/descriptor/guard checks, fault clean/services active/collection complete. Earlier33240 failed helper allocation before data, preserved; this actual qualifies corrected fixture without kernel retry.",
+  "limits": "Finite longbinary class/original selected specs and shapes only; no model transcript or speed claim.",
+  "timing_collected": false
+}

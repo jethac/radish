@@ -1709,7 +1709,7 @@
     "driver": "11cf0aa23c785011262146e6ea2c8f71fa84cff3da92635495cc44fe3db05ac0",
     "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
     "source_build_receipt": "optimization-grouped-work-source-build-0046.json",
-    "target_status": "Grouped RMS/norm/GQA/softmax independently pass. Long v2 run passed pending actual counterpart; quant first four Q4MM rounds pass and remaining cases are pending. Original full db872/11cf scope remains conditional.",
+    "target_status": "GPU hangcheck/recovery in case09 Q8MM480x257x4320; all new GPU scopes held. Full db872/11cf model never launched. Earlier finite passed scopes remain retained.",
     "patches": [
       {
         "file": "0046-coherent-workgroup-budget.patch",
@@ -1732,7 +1732,9 @@
       "optimization-long-binary-native-0046.json": "66ece4afe9afe14069ebc7cae18befd240d2609ac95aae5bc8f065fd9545ef7e",
       "optimization-grouped-gqa-actual-0046.json": "15fc39d6809a4be95b6a21dcb3bf65208917ad107e91480ebd08d98362b51ec4",
       "optimization-grouped-softmax-actual-0046.json": "d07a05051d17b8383bd2ecea8569ff32e6be6b4cc307a64dc5ab55b5d38d7bee",
-      "optimization-grouped-quant-partial-0046.json": "3f2fe9136475a929e10b302bf585b7aa066c1deeaf37b3ba94b91e119985c0bc"
+      "optimization-grouped-quant-partial-0046.json": "3f2fe9136475a929e10b302bf585b7aa066c1deeaf37b3ba94b91e119985c0bc",
+      "optimization-grouped-quant-gpu-fault-0046.json": "4ed63aa608b233c7eb3b1b0c885b3aef907452d8e5b490a1b3284a4a8507684e",
+      "optimization-long-binary-actual-0046.json": "89e0caeab613d6bf07ec3077b68094c5d4e91e28bb0e58157840a19cdecc6f9d"
     }
   }
 }

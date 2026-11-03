@@ -1,5 +1,19 @@
 # Radish status
 
+## 2026-11-03: grouped Q8 matrix fault stops execution
+
+The remaining quantized sequence stopped on a [GPU hangcheck](results/optimization-grouped-quant-gpu-fault-0046.json)
+in Q8 MM480x257x4320. Nine units passed before the fault; two later units never
+ran. The final deferred fence returned device-lost. The captured kernel reported
+hangcheck and recovery; no MMU fault line was observed. The exact offending command
+and shader location remain under investigation. This is not a numerical mismatch.
+
+All new GPU execution, including the original model and cache replay, is held.
+The unit is drained and appliance services remain active. A read-only GPU dump is
+preserved; no manual reset, reboot or clock change was performed. Existing grouped
+RMS, norm, attention, softmax and [long-binary](results/optimization-long-binary-actual-0046.json)
+passes remain scoped evidence. Performance remains unmeasured.
+
 ## 2026-11-03: grouped attention and softmax verified
 
 [Grouped attention](results/optimization-grouped-gqa-actual-0046.json) passes

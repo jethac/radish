@@ -1,0 +1,62 @@
+{
+  "status": "GPU hangcheck/recovery; all new GPU work halted",
+  "handle": 21277,
+  "case": "case09 type2 Q8 MM originalcase1 round0",
+  "matrix": {
+    "M": 480,
+    "N": 257,
+    "K": 4320,
+    "grid": [
+      4,
+      17,
+      1
+    ],
+    "tile": [
+      4,
+      2,
+      1
+    ],
+    "FD_submits": 2
+  },
+  "actual": "Final deferred drain returned -4 (VK_ERROR_DEVICE_LOST), no numerical output comparison reached",
+  "kernel": "msm hangcheck detected gpu lockup rb0, then recover_worker; no MMU fault line observed in captured interval",
+  "fences": {
+    "hangcheck_completed": 6159017,
+    "submitted": 6159019,
+    "snapshot_retired": 6159018,
+    "CP_SCRATCH_REG2": 6159018,
+    "rptr": 85,
+    "wptr": 85
+  },
+  "scope_limits": "These are captured values, not proof of the exact offending command or shader PC; command decode/source diagnosis pending.",
+  "device_state": "Own unit not-found/inactive/dead; both appliance services active; no Radish unit live after read-only collection",
+  "gpu_actions_after_fault": 0,
+  "reset_reboot_clock_changes": 0,
+  "passed_units_before_fault": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "unexecuted_units": [
+    10,
+    11
+  ],
+  "earlier_carried_receipt": "3f2fe913",
+  "captures": {
+    "failure.json": "7470d9ce4d262102a4e022c5c293ac351e2acd7eec797272337e5e40a8a79e39",
+    "run.log": "72422dc51c7e9b1b765b9249266c15b93adbf6443c6dda5c055e2914b12026e2",
+    "fault-check.txt": "2a3fce579294b125cddee395f2cbfbeb1620a5a7b38d78cefabebbca672f45c8",
+    "collection.json": "be400cd7e1278531d1d27fe09a238615e57dfa843df419395e9540020cc10779",
+    "fault-preservation/dmesg-current.txt": "5b6f77caef5f3806c19896bacf95b169fdb8577636bd0cdc313043adb0b1ff88",
+    "fault-preservation/devcd24-data.bin": "a3684f1d26a609163ff2c8abf6d6608c8c1a87946eeecf1d6da6b4ae69a38cee",
+    "fault-preservation/result.json": "68963f54a902a72cf40598c8e286b841b1695657d2df488d1b56e8f0088715e1"
+  },
+  "model_and_cache": "not launched; full334523 held",
+  "performance_measurement": false
+}
