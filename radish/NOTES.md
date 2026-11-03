@@ -1,5 +1,21 @@
 # Radish status
 
+## 2026-11-03: constrained softmax compilation correction
+
+The latest full ASR candidate reaches encoder work and actual quantized batching,
+then exhausts the unchanged 640 MiB limit during softmax pipeline creation.
+The isolated correction retains one runtime-width shader body and column loops,
+preserving masks, reductions and numerical order. The original generator
+reproduces both baseline modules exactly; only the two softmax modules and their
+single archive object change. New native programs use 64/65 units, shared128 and
+no private memory, with code and registers inside the existing bounds.
+
+[Source and build](results/optimization-softmax-source-build-0046.json) retain the
+failed candidate and exact replacement provenance. Focused old/new and CPU
+numerical checks and the original full-model result remain separate gates.
+TTS, actual KV growth and quant batching evidence carry forward. No performance
+measurements have been collected for this work.
+
 ## 2026-11-02: real Q4 dequant and five-buffer fused matvec pass
 
 The real Vulkan 1.0 Q4 modules pass 512 exact half outputs, two fused FP32 outputs and all six allocation guards through public storage8/storage16/Int8 enablement with robustness enabled. All five matvec buffers are active, including both nonzero fusion inputs. This qualifies the five-SSBO source increment and these two kernels; complete backend and ASR model execution remain pending.

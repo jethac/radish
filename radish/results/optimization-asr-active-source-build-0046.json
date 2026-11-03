@@ -1,5 +1,5 @@
 {
-  "status": "Current8f301/4923 has qualified quant batching but full model fails at memory cap during soft_max_f32 pipeline creation; no transcript or performance claim.",
+  "status": "Softmax-only candidate a9e281 on unchanged4923 driver; original full model still unqualified. Existing TTS/KV/quant checks carry forward; no timings.",
   "application": "Frozen ASR source with previously published GQA, quantized phase, memory-liveness and unit-axis overlays",
   "ordered_additive_patches": [
     {
@@ -67,6 +67,13 @@
       "author_sha256": "546b49cba61b1bb31f043a8aaa71e28310c680846b4f7a9f5db54b39f8bb4102",
       "strip": 1,
       "apply_root": "root containing mesa and transcribe.cpp; only path headers normalized"
+    },
+    {
+      "file": "0046-asr-softmax-compiler-footprint.patch",
+      "sha256": "21b5bf1e2f1b223c8d38d85403da422304029cc710a2369074a51f3545982662",
+      "author_sha256": "40afa4d5d0741b4226b36729883eae0386d587775b109144e7c8d0b0f5a2492a",
+      "strip": 1,
+      "apply_root": "root containing transcribe.cpp; apply after quantized-batching overlay"
     }
   ],
   "cache_source_files": {
@@ -293,14 +300,14 @@
     "archive_members": "3ac3f2855cdfabfc691bdf82bf9d8d08d0e2de714d3d57fad97021ab4c291489",
     "build_result": "e71c72e97d3982b96af7b375c20dee5e8eb94dc62b584b651e04bec7e7c6905b"
   },
-  "current_listener": "8f301aa50fcb023ba1c9c79e3436bccb0ee3359feb1d87db1b56b36539fb9a25",
+  "current_listener": "a9e281618e4ed436bdad58bbd95ef5b6b4571ac3bce4f238e65ea0018f7d53e3",
   "current_libraries": {
     "libstraylight_asr.a": "a5b65664178c9f447cb8e9bbc887c4eb0906116e044f45bfaec417cbe6a333d0",
     "libggml-cpu.a": "d995ee7629e69509970ad3fe687f8a77a469c419ba7cd91404ca8bb79f4e85da",
     "libtranscribe.a": "0b443bf5f92a7b5a7485025374397fd2a91137e8f95c7d76ca26d2dc58875166",
     "libggml-base.a": "28ec1c9e67f976b670a074b310cb09389cddce48fc7cc42a9e7f06a9449b0fc1",
     "libggml.a": "44072c75ec479e9e440cc8f9583c6d6250eab629a739c7ddf98bc70aefb8ba5d",
-    "libggml-vulkan.a": "fdd92a9bffc47353472fc8dc1ec0f39917199f41d737d2ee196cbcfef7a85ef4"
+    "libggml-vulkan.a": "9bbde555adaad90cb19616127656a3cad23ea4c97d43d84d9d34d219230f2969"
   },
   "phase_release_stage": {
     "build": {
@@ -724,5 +731,176 @@
     },
     "source_review": "016d947085c2c4028f9a19147d65284cc2e324a8a131ea62878410817a27d3fb",
     "full_runner_review": "f1a66a1f4a0a7efbca6467e42be92180a4eb99ddd3fcb782f2eb5fdabd25a988"
+  },
+  "softmax_stage": {
+    "build": {
+      "status": "PASS isolated two-module shader build and untimed listener link; actual pending",
+      "source": "b07d60b667c05f44f28c3eb95a7bff43dc90d79b9d9327b94f18f8a6946862cc",
+      "source_release": "9754668a859e955d9c04061a87d1deb3c950628f45768a50f43ab088e71e4b46",
+      "base_result": "df5812cfe54adc8978f80c20c0ffaa0d9b7efc14ea44938496fcc11ade51b030",
+      "listener": "a9e281618e4ed436bdad58bbd95ef5b6b4571ac3bce4f238e65ea0018f7d53e3",
+      "libraries": {
+        "libstraylight_asr.a": "a5b65664178c9f447cb8e9bbc887c4eb0906116e044f45bfaec417cbe6a333d0",
+        "libggml-cpu.a": "d995ee7629e69509970ad3fe687f8a77a469c419ba7cd91404ca8bb79f4e85da",
+        "libtranscribe.a": "0b443bf5f92a7b5a7485025374397fd2a91137e8f95c7d76ca26d2dc58875166",
+        "libggml-base.a": "28ec1c9e67f976b670a074b310cb09389cddce48fc7cc42a9e7f06a9449b0fc1",
+        "libggml.a": "44072c75ec479e9e440cc8f9583c6d6250eab629a739c7ddf98bc70aefb8ba5d",
+        "libggml-vulkan.a": "9bbde555adaad90cb19616127656a3cad23ea4c97d43d84d9d34d219230f2969"
+      },
+      "modules": {
+        "soft_max_f32.spv": "d6200563cbb1eb2b07e2802852f95746e3bbf2d5f6ae350009b4b3166d109d06",
+        "soft_max_f32_f16.spv": "a984c14dde730030bdba5b608e828a6c060f4db7a37941538c298db8fb9e750b"
+      },
+      "commands": [
+        {
+          "argv": [
+            "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build/Release/vulkan-shaders-gen",
+            "--glslc",
+            "/usr/bin/glslc",
+            "--source",
+            "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/ggml-vulkan/vulkan-shaders/soft_max.comp",
+            "--output-dir",
+            "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046/baseline/spv",
+            "--target-hpp",
+            "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046/baseline/ggml-vulkan-shaders.hpp",
+            "--target-cpp",
+            "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046/baseline/soft_max.comp.cpp"
+          ],
+          "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046"
+        },
+        {
+          "argv": [
+            "/usr/bin/spirv-val",
+            "--target-env",
+            "vulkan1.0",
+            "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046/baseline/spv/soft_max_f32.spv"
+          ],
+          "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046"
+        },
+        {
+          "argv": [
+            "/usr/bin/spirv-val",
+            "--target-env",
+            "vulkan1.0",
+            "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046/baseline/spv/soft_max_f32_f16.spv"
+          ],
+          "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046"
+        },
+        {
+          "argv": [
+            "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build/Release/vulkan-shaders-gen",
+            "--glslc",
+            "/usr/bin/glslc",
+            "--source",
+            "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046/shader-source/soft_max.comp",
+            "--output-dir",
+            "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046/candidate/spv",
+            "--target-hpp",
+            "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046/candidate/ggml-vulkan-shaders.hpp",
+            "--target-cpp",
+            "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046/candidate/soft_max.comp.cpp"
+          ],
+          "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046"
+        },
+        {
+          "argv": [
+            "/usr/bin/spirv-val",
+            "--target-env",
+            "vulkan1.0",
+            "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046/candidate/spv/soft_max_f32.spv"
+          ],
+          "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046"
+        },
+        {
+          "argv": [
+            "/usr/bin/spirv-val",
+            "--target-env",
+            "vulkan1.0",
+            "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046/candidate/spv/soft_max_f32_f16.spv"
+          ],
+          "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046"
+        },
+        {
+          "argv": [
+            "/usr/bin/clang++",
+            "--target=aarch64-linux-gnu",
+            "--sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+            "-DGGML_SCHED_MAX_COPIES=4",
+            "-DGGML_VULKAN_BFLOAT16_GLSLC_SUPPORT",
+            "-DGGML_VULKAN_COOPMAT2_DECODE_VECTOR_GLSLC_SUPPORT",
+            "-DGGML_VULKAN_COOPMAT2_GLSLC_SUPPORT",
+            "-DGGML_VULKAN_COOPMAT_GLSLC_SUPPORT",
+            "-DGGML_VULKAN_FLOAT_E2M1_GLSLC_SUPPORT",
+            "-DGGML_VULKAN_FLOAT_E4M3_GLSLC_SUPPORT",
+            "-DGGML_VULKAN_INTEGER_DOT_GLSLC_SUPPORT",
+            "-DGGML_VULKAN_KHR_PROFILE",
+            "-D_GNU_SOURCE",
+            "-D_XOPEN_SOURCE=600",
+            "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/ggml-vulkan/..",
+            "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build/transcribe/ggml/src/ggml-vulkan",
+            "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/../include",
+            "-isystem",
+            "/run/media/jethac/Shared/radish/vulkan-headers/include",
+            "-isystem",
+            "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/deps/spirv-headers-install/include",
+            "--gcc-install-dir=/home/jethac/Projects/straylight-voice/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+            "-O3",
+            "-DNDEBUG",
+            "-std=c++17",
+            "-fPIC",
+            "-fvisibility=hidden",
+            "-fvisibility-inlines-hidden",
+            "-Wmissing-declarations",
+            "-Wmissing-noreturn",
+            "-Wall",
+            "-Wextra",
+            "-Wpedantic",
+            "-Wcast-qual",
+            "-Wno-unused-function",
+            "-Wunreachable-code-break",
+            "-Wunreachable-code-return",
+            "-Wmissing-prototypes",
+            "-Wextra-semi",
+            "-o",
+            "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046/soft_max.comp.cpp.o",
+            "-c",
+            "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046/candidate/soft_max.comp.cpp"
+          ],
+          "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build"
+        },
+        {
+          "argv": [
+            "cargo",
+            "build",
+            "--offline",
+            "--locked",
+            "--target",
+            "aarch64-unknown-linux-gnu",
+            "--features",
+            "asr-vulkan",
+            "-j3",
+            "--manifest-path",
+            "/run/media/jethac/Shared/radish/optimization-five-asr-untimed-build-0046/rust-app/listen/Cargo.toml"
+          ],
+          "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046",
+          "env": {
+            "STRAYLIGHT_ASR_LIB": "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046/libs",
+            "STRAYLIGHT_SYSROOT": "/home/jethac/Projects/straylight-voice/sysroot",
+            "CARGO_TARGET_DIR": "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046/cargo-target",
+            "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER": "clang",
+            "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS": "-C link-arg=--target=aarch64-linux-gnu -C link-arg=-fuse-ld=lld -C link-arg=--sysroot=/home/jethac/Projects/straylight-voice/sysroot -C link-arg=-L/home/jethac/Projects/straylight-voice/sysroot/usr/lib -C link-arg=-L/home/jethac/Projects/straylight-voice/sysroot/usr/lib/aarch64-linux-gnu -C link-arg=-L/run/media/jethac/Shared/radish/build-loader/loader -C link-arg=-Wl,--allow-shlib-undefined -C link-arg=-Wno-unused-command-line-argument -C target-cpu=cortex-a53",
+            "CC_aarch64_unknown_linux_gnu": "clang",
+            "CFLAGS_aarch64_unknown_linux_gnu": "--target=aarch64-linux-gnu --sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+            "AR_aarch64_unknown_linux_gnu": "llvm-ar",
+            "PKG_CONFIG_SYSROOT_DIR": "/home/jethac/Projects/straylight-voice/sysroot",
+            "PKG_CONFIG_LIBDIR": "/home/jethac/Projects/straylight-voice/sysroot/usr/lib/pkgconfig:/home/jethac/Projects/straylight-voice/sysroot/usr/share/pkgconfig",
+            "PKG_CONFIG_ALLOW_CROSS": "1"
+          }
+        }
+      ],
+      "scope": "Only soft_max.comp.cpp.o replaced over8f301; all backend/model/driver/other modules unchanged; no timings"
+    },
+    "source_review": "b9045ce2b476049451c9bd53715ebbcdede3617c09888d454a3e8b7d11f62f99",
+    "build_native_runner_review": "c551ba5af08ebcd23181a45f8cbe6860561febd818ab23149edcaf2c9864f2ad"
   }
 }

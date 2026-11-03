@@ -25,8 +25,8 @@
     },
     {
       "area": 4,
-      "implementation": "Integrated GQA broadcast, phase-specific quantized kernels, encoder-to-prefill device-buffer reuse and reduced host staging; actual application pipeline cache and supported-kernel initialization correction are built. Constrained-profile subsampling reuses one independent chunk graph across the complete audio, lowering unnecessary live convolution intermediates. Scheduler scratch is released between subsampling and encoder; Vulkan-owned allocations leave the BO reuse cache on final unref. Incremental KV allocates actual prompt/draft demand and grows geometrically up to the unchanged full context ceiling.",
-      "evidence": "Quantized kernels/GQA/native32 remain valid. Actual KV growth now passes four real reallocations and ten fresh-view graphs across F16/F32. Previousab5 completes encoder/prefill then times out during decoder-step path at unchanged300s; current8f301/4923 full model is pending. Latest8f301/4923 reaches actual quantized batching then OOMs at unmatched soft_max_f32 pipeline creation begin during encoder; no transcript. Exact responsible allocation is under diagnosis."
+      "implementation": "Integrated GQA broadcast, phase-specific quantized kernels, encoder-to-prefill device-buffer reuse and reduced host staging; actual application pipeline cache and supported-kernel initialization correction are built. Constrained-profile subsampling reuses one independent chunk graph across the complete audio, lowering unnecessary live convolution intermediates. Scheduler scratch is released between subsampling and encoder; Vulkan-owned allocations leave the BO reuse cache on final unref. Incremental KV allocates actual prompt/draft demand and grows geometrically up to the unchanged full context ceiling. The constrained softmax shader uses one runtime-width body and preserves column loops instead of seven constant-width expansions, retaining numerical order and masks.",
+      "evidence": "TTS, actual KV growth and quant batching remain qualified. Failed8f301 full run OOMs at soft_max_f32 compile begin, with original caps intact. New a9e281 changes only two softmax modules; baseline generator reproduces original bytes, two new native programs fit code/register/shared limits with no private memory. Focused numerical and original full-model results are recorded separately; no full-model or performance claim."
     },
     {
       "area": 5,
@@ -51,11 +51,12 @@
     "0046-asr-subsample-liveness.patch": "0295e09fd7ddcf116d1f1675b91dc5fa7a51052e7d767461e0a6cc9d56c7f58f",
     "0046-asr-phase-scratch-release.patch": "0c5c0f16803a7787cc1b1c9fd1a1dd002b1e65d7ec6138192bd4b89a3b1fc87d",
     "0046-asr-incremental-kv.patch": "47c7b982904508cdb473342c006213bffa300905f7bb92d60bfaf00d16cbaca3",
-    "0046-asr-quantized-batching.patch": "527d36a900a20dd4605ba3a5c2195aa89d10530788171896ec0da47694a107e6"
+    "0046-asr-quantized-batching.patch": "527d36a900a20dd4605ba3a5c2195aa89d10530788171896ec0da47694a107e6",
+    "0046-asr-softmax-compiler-footprint.patch": "21b5bf1e2f1b223c8d38d85403da422304029cc710a2369074a51f3545982662"
   },
   "existing_results": "Original743 CTS cases and modified132 robustness outcomes remain historical pinned evidence; no conformance count or selected performance change.",
   "completion_gate": "TTS side is qualified for the stated T213/T78 fixtures. All-five gate remains CLOSED on ASR full-model memory/placement/transcript and real application replay; full GOAL remains active.",
-  "as_of_utc": "2026-11-03 01:15 UTC",
+  "as_of_utc": "2026-11-03 01:27 UTC",
   "correctness_receipts": {
     "optimization-cache-correctness-0046.json": "0af98f899b26429971ef61df554e2cf4a4fe340019353f9ed7491869ab59b1f5",
     "optimization-queue-correctness-0046.json": "98c9f0d64a5ef1076462930effb6fd3e22c48de75cad78e87f7e68eaa6636b0e",

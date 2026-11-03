@@ -1,5 +1,20 @@
 # Radish
 
+Current checkpoint (2026-11-03): the five-area optimization implementation is
+under untimed correctness validation. Retained TTS sessions, convolution and
+selective precision, queue reuse, and real TTS pipeline-cache export/import
+pass their stated model fixtures. Full ASR inference and its cache replay remain
+open. The latest ASR failure reached softmax pipeline creation and exhausted the
+unchanged memory cap; an isolated shader correction is built and its two native
+programs fit the existing resource limits. Numerical and full-model checks remain
+required. [Current implementation and evidence](radish/results/optimization-five-status-0046.json)
+and the [full goal](radish/GOAL.md) are authoritative.
+
+No new performance measurement is permitted until all five areas pass. The
+32.835-second Japanese result below belongs to the frozen earlier build; it is
+not a measurement of the new candidate. All Vulkan conformance claims remain
+limited to the exact recorded test scopes.
+
 ## TL;DR
 
 Radish is an experimental, compute-first Vulkan driver for Adreno 5xx, built
@@ -20,7 +35,7 @@ The first target is the Adreno 506 / APQ8053 on Linux with the `msm` DRM driver.
 Radish shares Mesa's Vulkan infrastructure and Freedreno's ir3 compiler. It is
 a separate driver, with its own a5xx resource bindings and command emission.
 
-## Current status
+## Historical selected baseline
 
 Separate [public 8-bit storage and timeline semaphore checks](radish/CORE_API_0044.md) now pass, including neighboring byte writes and a host-released queued 64-bit value dependency around real compute. These are bounded prerequisites; API remains 1.0, and ASR inference is not yet qualified.
 
@@ -30,7 +45,7 @@ The matched Japanese resident request now takes **32.835 seconds on Vulkan versu
 
 The first intended Japanese request now passes complete core and waveform validation on its exact tablet frontend/source boundary: 47.314 seconds first synthesis for 4.2 seconds of audio, with all 589 core layers on Vulkan. [The scoped runtime result](radish/RUNTIME_INTEGRATION.md) keeps resident and matched Japanese CPU measurements separate; no end-to-end speedup is claimed.
 
-**Current priority:** the concrete compute/shared implementation and unchanged
+**Historical priority:** the concrete compute/shared implementation and unchanged
 full-model correctness gates pass. Work now targets end-to-end Straylight GPU performance, with correctness guards preserved. [Batching recovery](radish/BATCHING_RECOVERY.md) first lowers resident fixed-core time by 22.00%, from 67.63 to 52.75 seconds; the separately paired normalization change reaches 51.44 seconds, with exact outputs. The subsequent [explicit app robustness pair](radish/EXPLICIT_ROBUSTNESS.md), after four shader-tail fixes, reaches 34.33 seconds on the same driver while retaining requested robustness support and application defaults. The latest
 [0044 checkpoint](radish/CORE_API_0044.md) has representative valid-use evidence
 for the original40 command paths, alongside focused BASIC, private/constant,

@@ -1,0 +1,83 @@
+{
+  "status": "source-readyv2 strengthened13throwguard; ownerhelperrebuildrequired",
+  "source": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/softmax-correctness/softmax_compare.c",
+  "source_sha256": "350dad8bda000ccc01446248c6e060a9a8135ddd1a419eb229f1e17a7f513f7b",
+  "utilities": {
+    "core_resources.c": "a5024c99a2bbc55983659dc2083a3b8d91e73c0c0760fc8509fdc2dc75405378",
+    "test_common.h": "4b022481571560cd58577d1303955f8c96e72891a2647947daa607eb5fd93b2b"
+  },
+  "setup_reuse": "Actual priorquantfixture public1.1/KHRfeatures/strictprivateICD route; onlydescriptorcount4. Storage16 enabled, Float16 arithmetic remainsfalse. No optionalfeatureinflation.",
+  "modules": {
+    "soft_max_f32": {
+      "old": {
+        "path": "/run/media/jethac/Shared/radish/asr-graph-bounded-build-0045/modules/soft_max_f32/soft_max_f32.spv",
+        "sha256": "73040815d0133b09049cf6f57c0f87d1703dfd10e9147880d45bcca08a1b3a09",
+        "bytes": 78724
+      },
+      "new": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046/candidate/spv/soft_max_f32.spv",
+        "sha256": "d6200563cbb1eb2b07e2802852f95746e3bbf2d5f6ae350009b4b3166d109d06",
+        "bytes": 7896
+      }
+    },
+    "soft_max_f32_f16": {
+      "old": {
+        "path": "/run/media/jethac/Shared/radish/asr-graph-bounded-build-0045/modules/soft_max_f32_f16/soft_max_f32_f16.spv",
+        "sha256": "916d906b36fe043de96729413ea3f4a6a8dde17ceece10fa222fa57de1388311",
+        "bytes": 79988
+      },
+      "new": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-softmax-build-0046/candidate/spv/soft_max_f32_f16.spv",
+        "sha256": "a984c14dde730030bdba5b608e828a6c060f4db7a37941538c298db8fb9e750b",
+        "bytes": 7992
+      }
+    }
+  },
+  "native": "Both old/newactualmodules, spec32/logical32/physical16x2/shared128/4SSBO/push68, compileonlyargbeforebufferallocation available. Newprivate/codeboundsrequireseparateactualtwo-case gate; not assumedzero.",
+  "coverage": {
+    "widths": [
+      1,
+      9,
+      17,
+      33,
+      64,
+      67,
+      76,
+      128,
+      256,
+      320,
+      336,
+      512,
+      1024
+    ],
+    "families": "F32mask andF16mask; A/Dfloat32",
+    "perfamily": "52cases,104dispatches; eachdispatch13workgroupsfor12validrows, provinguniformout-of-rangerowreturn. Twofamilies inseparateoriginalsmallunits.",
+    "configs": [
+      "plain",
+      "broadcastfinite/negative-infinitymask",
+      "sinkswithoutmask",
+      "broadcastmask+sinks+ALiBi"
+    ],
+    "shape": "2positions\u00d76heads;mask3heads broadcastover6, n_head_log2=4/m0=.25/m1=.5/max_bias8 validactualALiBi formula andbothheadbranches.",
+    "outputs_per_family": 136464,
+    "guards": "5completeallocationchecks: immutableA/B/sinks exactallbytes, bothold/newoutputsfullprefix/suffix/paddingpoison. Nooutputguardexceptionoutside12*K actualpayload.",
+    "CPUreference": "Independent scalarFP32logit/max/expf withdoubleexp-sum/floatinverse, actualGGMLCPUsoftmax algebra; fixed dyadicinput/masks/slopes ensureexactF16maskrepresentation. NMSEequation and1e-6 threshold come from existingtest_soft_max override, not chosenafterfailure.",
+    "old_new": "Requireexact0old/newbitdifferences independently ofCPUbound. Reportbitdiffcount/first8words/maxabs percase; anynumericdifference/nonfinite/NMSEviolation causesfinalFAIL; API/guarderrorshardstop. No tolerance relaxation."
+  },
+  "source_pins": {
+    "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/tests/test-backend-ops.cpp": "ab8619ac74f8b752f866f0ad01ff2a78991b6f99ff40c78b59630ff584c62a17",
+    "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/ggml-cpu/ops.cpp": "215d16e7ebbb4066920e2d7a5f7ea6c46636d298aedd553e00f0b3ebb0d59305",
+    "/run/media/jethac/Shared/radish/optimization-five-asr-app-cache-build-0046/source/vulkan-shaders/vulkan-shaders-gen.cpp": "1b6dd6f5e56975fc6aaf85a9057356eb319e6e4801f3822153c2467e8e07f6dc",
+    "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/softmax-compiler-footprint/candidate/soft_max.comp": "b07d60b667c05f44f28c3eb95a7bff43dc90d79b9d9327b94f18f8a6946862cc"
+  },
+  "tolerance_refs": [
+    "ggml/tests/test-backend-ops.cpp5894 test_soft_max::max_nmse_err=1e-6",
+    "samefile301 NMSE=sum(a-b)^2/sum(a)^2",
+    "ggml/src/ggml-cpu/ops.cpp5860-5917 scale+mask/ALiBi/stablemax/exp/sinksum/normalization"
+  ],
+  "owner_build": "Use existingquant C strictAArch64 build/header/dependencyutilities, link-lm forscalarpowf/expf/fmaxf; noGGMLmodelarchives needed. CLI driverICD oldSPV newSPV f32|f16 [--compile-only]. Same384M90s/8MiBlog+64MiBdisk/fault/service rules. RADISH_SHARED_GROUPS=1 andoriginalsingle-groupcontrols, allperformanceflags0; no author execution.",
+  "timing_collected": false,
+  "v1_source": "158a3894274236f32bde699b0f486d7e824ff2a8bff48cf8a1e2a584fbdcbeff",
+  "v2_diff": "d572bfcdc9e171069a9f60e25d9ecb7bd7e86fe9dd349c894b2de4b0b1894564",
+  "v2_delta": "OnlyDold/Dnewdescriptor+allocation ranges cover13rows ratherthan12. Numericpayload/pushnrowsremain12; fullallocationpoisoncheckstill treats13throwasguard. ThusRBAcannotmask anaccidentalrow13write. Atmost8192extraoutputbytes total. Allshaders/oracles/inputs/caps unchanged."
+}
