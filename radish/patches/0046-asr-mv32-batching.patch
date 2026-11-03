@@ -1,0 +1,11 @@
+--- a/src/freedreno/radish/rd_queue.c
++++ b/src/freedreno/radish/rd_queue.c
+@@ -636,7 +636,7 @@
+    const bool mm = pipeline->logical_local_size[0] == 64 &&
+       v->local_size[0] == 32 && v->shared_size == 4096 && v->loops == 3;
+    const bool mv = pipeline->logical_local_size[0] == 128 &&
+-      v->local_size[0] == 64 && v->shared_size == 512 && v->loops == 2;
++      v->local_size[0] == 64 && v->shared_size == 512 && (v->loops == 2 || v->loops == 3);
+    if (fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) != 506 || (!mm && !mv) ||
+        pipeline->logical_local_size[1] != 1 || pipeline->logical_local_size[2] != 1 ||
+        v->local_size[1] != 2 || v->local_size[2] != 1 || !v->has_barrier ||

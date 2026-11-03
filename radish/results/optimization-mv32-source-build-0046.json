@@ -1,0 +1,1115 @@
+{
+  "status": "Source/host build and three native admissions closed; numerical/fullmodel/cache gates pending",
+  "source_release": {
+    "status": "source ready; owner host generation/build then independent source/native/numerical qualification required; no performance measurement",
+    "files": {
+      "ggml/src/ggml-vulkan/ggml-vulkan.cpp": {
+        "preimage_path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/constrained-heap-release/candidate/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+        "baseline": "be3f4d106c732b968774c67a7afa372761e7434578d4dcf2b8aa586ab3144bc9",
+        "candidate": "2f79c611f89f7f68ca09c562511863cfef9ad2e93d92805ce7e931bb5bd490de"
+      },
+      "ggml/src/ggml-vulkan/vulkan-shaders/mul_mm_khr_quant.comp": {
+        "preimage_path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/quant-phase/candidate/ggml/src/ggml-vulkan/vulkan-shaders/mul_mm_khr_quant.comp",
+        "baseline": "7f4b76675977763178bf9f2ec0705300a54e0f3028f3dbfd8358b501dd018fcf",
+        "candidate": "41aab2145de60abdac17aae243f01ef5e2c5d7cb3a195d49b76fe2f01a1de427"
+      }
+    },
+    "patch_sha256": "48e3df7ec2515a6cdddd5f1771816aa71d718fd40b4a0aa5ec7fb42ac3038c2f",
+    "scope": [
+      "Only KHR_GEMV Q4_K/Q6_K/Q8_0: up to eight sequential four-row blocks per workgroup,32 output rows per group.",
+      "Same128 invocations,512 shared bytes, same per-row ascending pairs/FMA and five-level reduction order.",
+      "Uniform row-block loop bounds; partial row lanes reach all barriers. A uniform final barrier protects reduction-output read before next block reuses shared storage.",
+      "All MM branch bytes unchanged; generic quantization/dequantization/math/feature/liveness/cache/heap policy unchanged.",
+      "Backend pipeline row denominator and overflow/domain admission use32 rather than4 forMV only; model shapes/budget/context unchanged."
+    ],
+    "row_mapping": "row=32*workgroup_x+4*block+(local_id>>5), block in0..7 while32*workgroup_x+4*block<M. All valid rows exactly once; lane=local_id&31.",
+    "actual_evidence": "62956 completed capped prefix: Q4 MV native43 packed1 batch8 has142 dispatches/10080 submits; Q6 MV native41 packed1 batch8 has2 dispatches/9496 submits. Q8 MV shares same generated body and source-backed step28 routing. Structural counts are not timing attribution.",
+    "shader_variants": {
+      "generator_source": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/quant-phase/candidate/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp",
+      "changed": [
+        "khr_quant_q4_k_mv",
+        "khr_quant_q6_k_mv",
+        "khr_quant_q8_0_mv"
+      ],
+      "unchanged": [
+        "khr_quant_q4_k_mm",
+        "khr_quant_q6_k_mm",
+        "khr_quant_q8_0_mm"
+      ],
+      "defines": "Existing DATA_A_Q4_K/Q6_K/Q8_0 +KHR_GEMV; exact existing generator/target/flags; no optimizer changes."
+    },
+    "validation": [
+      "Independent source loop/barrier/output-bijection and backend denominator review.",
+      "Owner generated-module validation; verify allMM modules byte-identical, only3MV modules changed; fresh native of3MV only.",
+      "Reject new private spill/threads/shared or combined register occupancy beyond existing caps; inspect loop count before narrowly admitting newbatch policy.",
+      "Existing independent six-kernel CPU quant decode/full3allocation oracles; extendMV rows to cover block32 boundary and full/partial eightchunk batches, two seed rounds/GQA/baseZ/paddedholes.",
+      "Original full model two requests and warm modes/caps/cache lifecycle only after admitted source/build/native/numerics."
+    ]
+  },
+  "queue_release": {
+    "status": "source frozen exactone-line MVloop3 admission; ownerbuild and6912numericactual pending",
+    "preimage": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/rms-queue-batching/candidate/rd_queue.c",
+      "sha256": "107cc9ac8e6bbedde4370adf50e06d0120567ce9952016bd0e52dfd9a17d0eb8"
+    },
+    "candidate_sha256": "d688f13fcdf064de080566daa0110edc7595e87de0d3a554f28d2dad9d4baf10",
+    "patch_sha256": "3278bb28d0496d5c1032f104eb45874419c42d5deef4f521b8e80adce86ce6e3",
+    "integration_base": "currenta6d65; onequeueobject only, modeld4d0 remains isolatedreviewed",
+    "delta": "For existingpackedquant MVlogical128/physical64x2/shared512 admitloops2 OR3. ExistingMMlogical64/shared4096loops3 unchanged. All maxnative53/full12/half12/private0/4096slots/3SSBO/push68/NIRsafety/oneWG/WFI/8chunks unchanged.",
+    "actual3mv": {
+      "Q4": {
+        "native": 43,
+        "loops": 3,
+        "full_count": 9,
+        "half_count": 10,
+        "slots": 3584
+      },
+      "Q6": {
+        "native": 41,
+        "loops": 3,
+        "full_count": 8,
+        "half_count": 9,
+        "slots": 3200
+      },
+      "Q8": {
+        "native": 34,
+        "loops": 3,
+        "full_count": 8,
+        "half_count": 6,
+        "slots": 2816
+      },
+      "all": "private0/shared512/128threads,used7/localmemory1/linear0/resident0,const0/preamble0/codeBO8192"
+    },
+    "required": [
+      "Independentone-linepredicatecounterpart andTTSweakshapeexclusioncarryforward",
+      "Ownerqueueonlybuild/strip pairing",
+      "Actual3MV6912values/full3guards/31,32,33row andbatchfullpartialcounts onnewdriver, nativeidentitysame",
+      "Originalfullmodelwarmmodes/twoclips/caps andcoldcacheexport/import stillrequired"
+    ],
+    "timing_collected": false
+  },
+  "public_patches": [
+    {
+      "file": "0046-asr-quantized-mv32.patch",
+      "sha256": "d730c322d91569df7e2ffbef9bc6503ca16720a18d235ccd56dc74039be8f8ad",
+      "path_normalization_only": "ggml to transcribe.cpp/ggml",
+      "strip": 1,
+      "apply_root": "ASR source root after constrained heap release"
+    },
+    {
+      "file": "0046-asr-mv32-batching.patch",
+      "sha256": "3278bb28d0496d5c1032f104eb45874419c42d5deef4f521b8e80adce86ce6e3",
+      "strip": 1,
+      "apply_root": "Mesa after RMS batching overlay"
+    }
+  ],
+  "build": {
+    "status": "PASS isolated3MV module/backend build and untimed listener link; native/numerical/model gates pending",
+    "source_release": "64faf7b8ba629b472eccd74b449bc23c855d71efe3fcf6192d12593c62983e0a",
+    "base_result": "08c6a442679f3f51ba09d48ebf1253126a0d3b41e86773c87687f34841efe655",
+    "listener": "d4d0ec3aeb16a44e494e96891f75a40f04b8baab8b080a95bc7346e8179d4f30",
+    "libraries": {
+      "libstraylight_asr.a": "f4f582c8dab2d774d9a99dd4d16a1a5756466dd099686ba8562fabe099794d73",
+      "libggml-cpu.a": "d995ee7629e69509970ad3fe687f8a77a469c419ba7cd91404ca8bb79f4e85da",
+      "libtranscribe.a": "618736b85c8948c96735152434149ec911648e06eddee3a8e6d9e89aef6238ed",
+      "libggml-base.a": "28ec1c9e67f976b670a074b310cb09389cddce48fc7cc42a9e7f06a9449b0fc1",
+      "libggml.a": "44072c75ec479e9e440cc8f9583c6d6250eab629a739c7ddf98bc70aefb8ba5d",
+      "libggml-vulkan.a": "2805304fb324d31b15485e59448d5128e46a38e2fab58239acc743300d0dbb11"
+    },
+    "modules": {
+      "khr_quant_q6_k_mv.spv": "3700e0e16e1749360a57b4902092ee758e9da5a099fa422414576c72ee00f5c9",
+      "khr_quant_q8_0_mv.spv": "13aac3afc458dee6ccc0f96d6a5af9eee7cf167a3844946addab250288ebd3b4",
+      "khr_quant_q6_k_mm.spv": "7f5a5f46e2d95236bb1adc8d5998a2ecb15e5599fd4ae7c0c7f58136592a786b",
+      "khr_quant_q8_0_mm.spv": "4dbcc7ea8fe1eb53dfd63d314fc5e08be0c4072b9663c25bd9d0a3ef378e95b3",
+      "khr_quant_q4_k_mv.spv": "a78d55ce6d90c9e34c29c7f7762e157642c9932f5497ccaaf69e07beb1c88cbe",
+      "khr_quant_q4_k_mm.spv": "001193cd195f5c6b15de7a5757c8d150dae40c41e6b046743464490896f4e379"
+    },
+    "header": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/constrained-heap-release/candidate/ggml/src/ggml-vulkan/asr_resource_snapshot.h",
+      "sha256": "0d2299a5bd63b1c6ecc93e066b36cf3812ec10b529d4b9b25f2c4c502a5922c2"
+    },
+    "commands": "d5db70a8ab88d7d2fad02fd6b26e7866a416b1792cdac426767867838674faa9",
+    "scope": "Only backend and generatedquantshader objects over43ec; MM3 byte-identical/model/bridge/driver/other shaders unchanged; no timing"
+  },
+  "commands": [
+    {
+      "argv": [
+        "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build/Release/vulkan-shaders-gen",
+        "--glslc",
+        "/usr/bin/glslc",
+        "--source",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/ggml-vulkan/vulkan-shaders/mul_mm_khr_quant.comp",
+        "--output-dir",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/baseline/spv",
+        "--target-hpp",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/baseline/ggml-vulkan-shaders.hpp",
+        "--target-cpp",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/baseline/mul_mm_khr_quant.comp.cpp"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/baseline/spv/khr_quant_q6_k_mv.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/baseline/spv/khr_quant_q8_0_mv.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/baseline/spv/khr_quant_q6_k_mm.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/baseline/spv/khr_quant_q8_0_mm.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/baseline/spv/khr_quant_q4_k_mv.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/baseline/spv/khr_quant_q4_k_mm.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+    },
+    {
+      "argv": [
+        "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build/Release/vulkan-shaders-gen",
+        "--glslc",
+        "/usr/bin/glslc",
+        "--source",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/shader-source/mul_mm_khr_quant.comp",
+        "--output-dir",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/candidate/spv",
+        "--target-hpp",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/candidate/ggml-vulkan-shaders.hpp",
+        "--target-cpp",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/candidate/mul_mm_khr_quant.comp.cpp"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/candidate/spv/khr_quant_q6_k_mv.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/candidate/spv/khr_quant_q8_0_mv.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/candidate/spv/khr_quant_q6_k_mm.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/candidate/spv/khr_quant_q8_0_mm.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/candidate/spv/khr_quant_q4_k_mv.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/candidate/spv/khr_quant_q4_k_mm.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+    },
+    {
+      "key": "backend",
+      "argv": [
+        "/usr/bin/clang++",
+        "-I/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/constrained-heap-release/candidate/ggml/src/ggml-vulkan",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-app-cache-build-0046/source",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-app-cache-build-0046/source",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-app-cache-build-0046/source",
+        "--target=aarch64-linux-gnu",
+        "--sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+        "-DGGML_SCHED_MAX_COPIES=4",
+        "-DGGML_VULKAN_BFLOAT16_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_DECODE_VECTOR_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E2M1_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E4M3_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_INTEGER_DOT_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_KHR_PROFILE",
+        "-D_GNU_SOURCE",
+        "-D_XOPEN_SOURCE=600",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/ggml-vulkan/..",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build/transcribe/ggml/src/ggml-vulkan",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/../include",
+        "-isystem",
+        "/run/media/jethac/Shared/radish/vulkan-headers/include",
+        "-isystem",
+        "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/deps/spirv-headers-install/include",
+        "--gcc-install-dir=/home/jethac/Projects/straylight-voice/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wmissing-declarations",
+        "-Wmissing-noreturn",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wcast-qual",
+        "-Wno-unused-function",
+        "-Wunreachable-code-break",
+        "-Wunreachable-code-return",
+        "-Wmissing-prototypes",
+        "-Wextra-semi",
+        "-o",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/backend.o",
+        "-c",
+        "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/quant-sequential-rows/candidate/ggml/src/ggml-vulkan/ggml-vulkan.cpp"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build"
+    },
+    {
+      "key": "shader",
+      "argv": [
+        "/usr/bin/clang++",
+        "--target=aarch64-linux-gnu",
+        "--sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+        "-DGGML_SCHED_MAX_COPIES=4",
+        "-DGGML_VULKAN_BFLOAT16_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_DECODE_VECTOR_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E2M1_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E4M3_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_INTEGER_DOT_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_KHR_PROFILE",
+        "-D_GNU_SOURCE",
+        "-D_XOPEN_SOURCE=600",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/ggml-vulkan/..",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build/transcribe/ggml/src/ggml-vulkan",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/../include",
+        "-isystem",
+        "/run/media/jethac/Shared/radish/vulkan-headers/include",
+        "-isystem",
+        "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/deps/spirv-headers-install/include",
+        "--gcc-install-dir=/home/jethac/Projects/straylight-voice/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wmissing-declarations",
+        "-Wmissing-noreturn",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wcast-qual",
+        "-Wno-unused-function",
+        "-Wunreachable-code-break",
+        "-Wunreachable-code-return",
+        "-Wmissing-prototypes",
+        "-Wextra-semi",
+        "-o",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/mul_mm_khr_quant.comp.cpp.o",
+        "-c",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/candidate/mul_mm_khr_quant.comp.cpp"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build"
+    },
+    {
+      "argv": [
+        "cargo",
+        "build",
+        "--offline",
+        "--locked",
+        "--target",
+        "aarch64-unknown-linux-gnu",
+        "--features",
+        "asr-vulkan",
+        "-j3",
+        "--manifest-path",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-untimed-build-0046/rust-app/listen/Cargo.toml"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046",
+      "env": {
+        "STRAYLIGHT_ASR_LIB": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/libs",
+        "STRAYLIGHT_SYSROOT": "/home/jethac/Projects/straylight-voice/sysroot",
+        "CARGO_TARGET_DIR": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/cargo-target",
+        "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER": "clang",
+        "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS": "-C link-arg=--target=aarch64-linux-gnu -C link-arg=-fuse-ld=lld -C link-arg=--sysroot=/home/jethac/Projects/straylight-voice/sysroot -C link-arg=-L/home/jethac/Projects/straylight-voice/sysroot/usr/lib -C link-arg=-L/home/jethac/Projects/straylight-voice/sysroot/usr/lib/aarch64-linux-gnu -C link-arg=-L/run/media/jethac/Shared/radish/build-loader/loader -C link-arg=-Wl,--allow-shlib-undefined -C link-arg=-Wno-unused-command-line-argument -C target-cpu=cortex-a53",
+        "CC_aarch64_unknown_linux_gnu": "clang",
+        "CFLAGS_aarch64_unknown_linux_gnu": "--target=aarch64-linux-gnu --sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+        "AR_aarch64_unknown_linux_gnu": "llvm-ar",
+        "PKG_CONFIG_SYSROOT_DIR": "/home/jethac/Projects/straylight-voice/sysroot",
+        "PKG_CONFIG_LIBDIR": "/home/jethac/Projects/straylight-voice/sysroot/usr/lib/pkgconfig:/home/jethac/Projects/straylight-voice/sysroot/usr/share/pkgconfig",
+        "PKG_CONFIG_ALLOW_CROSS": "1"
+      }
+    }
+  ],
+  "module_generation": {
+    "status": "PASS original generator baseline all6 byte-equivalent; candidate3MM unchanged/3MV Vulkan1.0 valid",
+    "source_release": "64faf7b8ba629b472eccd74b449bc23c855d71efe3fcf6192d12593c62983e0a",
+    "generator": "57a6c7bbae4cb8ccdcb3d8d5a3ca999fc838a4c75bbf0c8e0fa293bd88537527",
+    "glslc": "1d1eed1a4f93d1e21c0ef200a5de68ce02ef94c92b100e8d03909d96303fb60a",
+    "commands": [
+      {
+        "argv": [
+          "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build/Release/vulkan-shaders-gen",
+          "--glslc",
+          "/usr/bin/glslc",
+          "--source",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/ggml-vulkan/vulkan-shaders/mul_mm_khr_quant.comp",
+          "--output-dir",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/baseline/spv",
+          "--target-hpp",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/baseline/ggml-vulkan-shaders.hpp",
+          "--target-cpp",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/baseline/mul_mm_khr_quant.comp.cpp"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/baseline/spv/khr_quant_q6_k_mv.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/baseline/spv/khr_quant_q8_0_mv.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/baseline/spv/khr_quant_q6_k_mm.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/baseline/spv/khr_quant_q8_0_mm.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/baseline/spv/khr_quant_q4_k_mv.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/baseline/spv/khr_quant_q4_k_mm.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+      },
+      {
+        "argv": [
+          "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build/Release/vulkan-shaders-gen",
+          "--glslc",
+          "/usr/bin/glslc",
+          "--source",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/shader-source/mul_mm_khr_quant.comp",
+          "--output-dir",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/candidate/spv",
+          "--target-hpp",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/candidate/ggml-vulkan-shaders.hpp",
+          "--target-cpp",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/candidate/mul_mm_khr_quant.comp.cpp"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/candidate/spv/khr_quant_q6_k_mv.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/candidate/spv/khr_quant_q8_0_mv.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/candidate/spv/khr_quant_q6_k_mm.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/candidate/spv/khr_quant_q8_0_mm.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/candidate/spv/khr_quant_q4_k_mv.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/candidate/spv/khr_quant_q4_k_mm.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046"
+      }
+    ],
+    "modules": {
+      "khr_quant_q6_k_mv.spv": "3700e0e16e1749360a57b4902092ee758e9da5a099fa422414576c72ee00f5c9",
+      "khr_quant_q8_0_mv.spv": "13aac3afc458dee6ccc0f96d6a5af9eee7cf167a3844946addab250288ebd3b4",
+      "khr_quant_q6_k_mm.spv": "7f5a5f46e2d95236bb1adc8d5998a2ecb15e5599fd4ae7c0c7f58136592a786b",
+      "khr_quant_q8_0_mm.spv": "4dbcc7ea8fe1eb53dfd63d314fc5e08be0c4072b9663c25bd9d0a3ef378e95b3",
+      "khr_quant_q4_k_mv.spv": "a78d55ce6d90c9e34c29c7f7762e157642c9932f5497ccaaf69e07beb1c88cbe",
+      "khr_quant_q4_k_mm.spv": "001193cd195f5c6b15de7a5757c8d150dae40c41e6b046743464490896f4e379"
+    }
+  },
+  "source_review": {
+    "status": "passed finite source-only algorithm/backend review; not built/generated/native/numerical admitted; current29498 unchanged",
+    "release_sha256": "64faf7b8ba629b472eccd74b449bc23c855d71efe3fcf6192d12593c62983e0a",
+    "patch_sha256": "48e3df7ec2515a6cdddd5f1771816aa71d718fd40b4a0aa5ec7fb42ac3038c2f",
+    "files": {
+      "ggml/src/ggml-vulkan/ggml-vulkan.cpp": {
+        "preimage_path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/constrained-heap-release/candidate/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+        "baseline": "be3f4d106c732b968774c67a7afa372761e7434578d4dcf2b8aa586ab3144bc9",
+        "candidate": "2f79c611f89f7f68ca09c562511863cfef9ad2e93d92805ce7e931bb5bd490de"
+      },
+      "ggml/src/ggml-vulkan/vulkan-shaders/mul_mm_khr_quant.comp": {
+        "preimage_path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/quant-phase/candidate/ggml/src/ggml-vulkan/vulkan-shaders/mul_mm_khr_quant.comp",
+        "baseline": "7f4b76675977763178bf9f2ec0705300a54e0f3028f3dbfd8358b501dd018fcf",
+        "candidate": "41aab2145de60abdac17aae243f01ef5e2c5d7cb3a195d49b76fe2f01a1de427"
+      }
+    },
+    "findings": [
+      "Each valid row is mapped uniquely group=floor(row/32),block=floor((row%32)/4),rowlane=row%4; four32lane groups reuse identical perrow body. Source-mapping enumeration for1..129 andlarger boundaries agrees; no shader execution.",
+      "Each lane keeps original k=lane*2 ascending by64, same weight_pair, firstw.x thenw.y FMA, samepartial[128] indexing and widths16,8,4,2,1 reduction additions. Row scheduling changes, perrowdot/reductionorder preserved.",
+      "Outerblock condition depends onlyWGid/uniformM andblock, notlane; all128invocations execute sameiterationcount. Partial rows usezero weights butstillread validB andparticipate inallbarriers; onlyfinalstore guarded. K is divisible32/256 by existing blocksize check, so k+1 valid.",
+      "Newfinaluniformbarrier ensures lane0 finalpartial read/store completes before nextrow block overwrites sharedpartial; noearlyreturn or divergentbarrier. Lastpartial4row block remains safe.",
+      "Same128threads/shared512/3SSBO/push68; no source extra array/registerdata allocation. Native compiler loop/register/privatecode effects remainunqualified until actual3MVnative; source alone cannot proveold occupancy ceiling.",
+      "MMbranch byteexact, generator/defines unchanged. Only3MVmodulebytes expectedchanged. Backend3MVrowdenoms4\u219232 androws-per-group validation bothupdated; ggml dispatch denominator mustproduceceil(M/32), N groups andsamebatchz. No pushABI/header/layoutchange.",
+      "ExistingN batchstride/GQA/baseZ handling unchanged. All row offsetsstill inlogicalquant-elementunits; no packedblockremap change. Max public group count65535 bounds rowbase32multiplication below2^21; storageRange furtherbounds addressing.",
+      "No trim/cache/allocator/scheduler/model/audio/budget mutation. Current43ec/a6d65 full29498 usesoldMV, this source is isolatedonly."
+    ],
+    "risks_and_required_gates": [
+      "Extrauniformloop/barrier canchange registerliveness/nativecode; rejectprivate spilling orresourceincrease beyond existingguards, qualifyexactnewloopcount beforeanynewqueueclass admission.",
+      "Changingdenominator requires refreshedactualselectedmetadata/grid andexact3newSPV/native identities. OldMVfixture gridsceilM/4 areinvalidfornewbody; reuseoracle withceilM/32 androws around31/32/33 plusfullpartialsequentialbatch coverage.",
+      "OriginalperrowquantCPUdecode/order/exactdyadicoracle, GQA/baseZ/holes/fullguards remain required; no resulttoleranceloosen.",
+      "CurrentfullmodelifPASS musttakecache replaybeforeoptionalMVintegration; no sourcebuild/device/timing authorizationfromthisreceipt."
+    ],
+    "timing_collected": false
+  },
+  "listener_review": {
+    "status": "PASS isolated MV32 listener source/module/archive/link pairing; native/numerical/fullmodel pending",
+    "source_review": "e82cdff00c3efae1e3e3ba1e06018afbf5b0277ea2c377c1640b32ac44e3a42f",
+    "module_payload_review": "cb4823586e74a47eb562f2bf9f5b54a3691987a551a1d5de73153bc9236d04de",
+    "result": "97405ec9036f39039ed8368a8fad817af39c9d92675251d6ee9dea514173b765",
+    "listener": "d4d0ec3aeb16a44e494e96891f75a40f04b8baab8b080a95bc7346e8179d4f30",
+    "archive_changes": {
+      "libggml-vulkan.a": {
+        "members": 159,
+        "delta": [
+          [
+            0,
+            [
+              "ggml-vulkan.cpp.o",
+              "07fa171dc151c5af95432b39b28fd8699543992eaaa9346497183efeaf966b4f"
+            ],
+            [
+              "ggml-vulkan.cpp.o",
+              "bd06f35fa4982c868ef652a569f975a7a7c0f8b1ca77cc4d335f1c4f5621c968"
+            ]
+          ],
+          [
+            109,
+            [
+              "mul_mm_khr_quant.comp.cpp.o",
+              "02e55a07f58b4a80b6512ff22dad637c10720932f36829980fbcfe42b7b9647c"
+            ],
+            [
+              "mul_mm_khr_quant.comp.cpp.o",
+              "7ef8056e523ecaebf27b542481acea83768c09e53bf0767305093a3e3ba576f2"
+            ]
+          ]
+        ]
+      }
+    },
+    "checks": [
+      "Exactly backend andgeneratedquantshader members differ inlibggml-vulkan; allothermembers/fiveotherlibs byteexact43ec. Qwenmodel,bridge,heaprelease anduntimedRust unchanged.",
+      "Exactbackendcompileflags preserved apartfromsource/outputoperand andoneexplicitincludeofexistingheaderdirectory. Sameheapdiagnosticheader0d229 included; constrainedprofile remainsenabled, actualperformance logger remainsdisabled.",
+      "All6 embeddedSPV arrays parsed/rehashed torecorded modules;3MM byteidenticalbaseline,3MV source/module pins matched.",
+      "SameuntimedCargoargs isolatedtarget/libpath, AArch64ELF183 exact. No source outsideauthorizedoverlay inspected ormodified."
+    ],
+    "timing_collected": false
+  },
+  "queue_source_review": {
+    "status": "passed exact one-line MVloop3 admission source counterpart",
+    "release": "498aaf12e73411b16b209790c6cdb1ac71b92abd336a92d6a2489843143f2873",
+    "patch": "3278bb28d0496d5c1032f104eb45874419c42d5deef4f521b8e80adce86ce6e3",
+    "candidate": "d688f13fcdf064de080566daa0110edc7595e87de0d3a554f28d2dad9d4baf10",
+    "native_counterpart": "4cde060ac5da27a0de98df793c13b4f22241c4701fe51e4680e58a0cc6a75842",
+    "checks": [
+      "Exact inverse of onlyMV loops2\u21922or3 recovers107cc; MMloops3/otherpredicates and WFI/tile/chunk/flush/lifetimes/cache/ABI/math are byteunchanged.",
+      "Actual Q4/Q6/Q8 native43/41/34, loop3, counts9/10,8/9,8/6 fit unchanged native53/full12/half12 caps and3584/3200/2816slots\u22644096. RMS477 independentpredicateunchanged.",
+      "All3native128logical/64x2physical/shared512/private0/SSBO3/push68/used7/localmemorysafe1/linear0/resident0/const0/preamble0; unchangedcached safety bitmetaa survivesnewUUIDcacheimport asprior.",
+      "No new thread/shared/register/private ceiling, simultaneousgroups or unboundedchunk admission. Requested2/4/8 sequentialchunks only; standardsharedgroups1oneWG/tile andWFI unchanged."
+    ],
+    "TTS_exclusion": [
+      {
+        "path": "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/fp32-v1/native-inventory-current.json",
+        "sha256": "81e6c7eac2442ad51a5f9b16596f80a177849727576d8cd7a78ff2f58501a8fb",
+        "records": 179,
+        "newloop3_weakshape_matches": []
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/weights-v2/native-inventory-current.json",
+        "sha256": "11b19a275b0659b794b98c187badf83d115ed45ea1080ca1c0498550b453911f",
+        "records": 179,
+        "newloop3_weakshape_matches": []
+      }
+    ],
+    "remaining": "Owner exactbuild/strip/payload gate then6912exactCPU/full3guards/rows31,32,33/GQA2/baseZ/fullpartialsubmitcounteractual. Noextra32module orTTS tests.",
+    "timing_collected": false
+  },
+  "driver_build": {
+    "status": "PASS isolated host build; target qualification pending",
+    "source_release": "498aaf12e73411b16b209790c6cdb1ac71b92abd336a92d6a2489843143f2873",
+    "source": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/mv32-queue-batching/candidate/rd_queue.c",
+    "source_sha256": "d688f13fcdf064de080566daa0110edc7595e87de0d3a554f28d2dad9d4baf10",
+    "object": "0e5ada111d92209e7c1fb9fde4edd9e043167f60bb96138b9686930f5a449da0",
+    "commands": "8a6387de39dcd74dcd32d638e50de6cfb6381938b13d4fb30802a6e1b985b272",
+    "argv": [
+      "clang++",
+      "--target=aarch64-linux-gnu",
+      "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+      "-mcpu=cortex-a53",
+      "-o",
+      "/run/media/jethac/Shared/radish/optimization-five-mv32-queue-driver-0046/libvulkan_radish.so",
+      "src/freedreno/radish/libvulkan_radish.so.p/meson-generated_.._rd_entrypoints.c.o",
+      "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/cache-build/rd_instance.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_device.c.o",
+      "/run/media/jethac/Shared/radish/optimization-five-phase-release-driver-0046/rd_memory.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_descriptor.c.o",
+      "/run/media/jethac/Shared/radish/optimization-five-quant-queue-driver-0046/rd_pipeline.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_command.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_sampling.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_nir_sampling.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_nir_resources.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_nir_robust.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_resources.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_transfer.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_image.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_event.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_query.c.o",
+      "/run/media/jethac/Shared/radish/optimization-five-mv32-queue-driver-0046/rd_queue.c.o",
+      "-L/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib",
+      "-Wl,--as-needed",
+      "-Wl,--no-undefined",
+      "-shared",
+      "-fPIC",
+      "-Wl,-soname,libvulkan_radish.so",
+      "-Wl,--whole-archive",
+      "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/cache-build/rd_pipeline_cache.cpp.o",
+      "-Wl,--start-group",
+      "src/vulkan/runtime/libvulkan_lite_runtime.a",
+      "src/vulkan/runtime/libvulkan_runtime.a",
+      "src/vulkan/runtime/libvulkan_instance.a",
+      "-Wl,--no-whole-archive",
+      "-fuse-ld=lld",
+      "--rtlib=libgcc",
+      "-Wl,-rpath-link,/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib",
+      "src/freedreno/drm/libfreedreno_drm.a",
+      "src/util/libmesa_util.a",
+      "src/util/libmesa_util_simd.a",
+      "src/util/blake3/libblake3.a",
+      "src/c11/impl/libmesa_util_c11.a",
+      "src/freedreno/ir3/libfreedreno_ir3.a",
+      "src/freedreno/isa/libir3encode.a",
+      "/run/media/jethac/Shared/radish/compute11-idiv-isolated-build-0045/libnir.idiv.a",
+      "src/compiler/libcompiler.a",
+      "src/freedreno/common/libfreedreno_common.a",
+      "src/freedreno/isa/libir3decode.a",
+      "src/compiler/isaspec/libisaspec.a",
+      "src/freedreno/fdl/libfreedreno_layout.a",
+      "src/vulkan/util/libvulkan_util.a",
+      "src/compiler/spirv/libvtn.a",
+      "-Wl,--version-script",
+      "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/vulkan/vulkan.sym",
+      "-Wl,-Bsymbolic",
+      "-Wl,--gc-sections",
+      "/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/libz.so",
+      "-pthread",
+      "-lm",
+      "/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/libdrm.so",
+      "-Wl,--end-group"
+    ],
+    "cwd": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build",
+    "strip_argv": [
+      "llvm-strip",
+      "--strip-debug",
+      "-o",
+      "/run/media/jethac/Shared/radish/optimization-five-mv32-queue-driver-0046/libvulkan_radish.stripped.so",
+      "/run/media/jethac/Shared/radish/optimization-five-mv32-queue-driver-0046/libvulkan_radish.so"
+    ],
+    "base_result": "d3fda8bc56b924317352c1fb92d2fcd784b1767fe80a6de3a32251e2954fcf69",
+    "sha256": "0d5496a7528bddab3ac1ee6f1c75f5ba417d7deeba40bfbbd66eb844c48fe9ff",
+    "strip_sha256": "4d2012f00c8f874649fab64d52f000b57c52236b87f1818173cc2e233d0f71af",
+    "scope": "Only rd_queue.c.o changed overa6d65; unchanged ABI/header/pipeline/cache/compiler/memory/shaders"
+  },
+  "driver_commands": [
+    {
+      "argv": [
+        "clang",
+        "-I/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/quant-queue-batching/candidate",
+        "-I/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/mesa/src/freedreno/radish",
+        "--target=aarch64-linux-gnu",
+        "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+        "-mcpu=cortex-a53",
+        "-Isrc/freedreno/radish/libvulkan_radish.so.p",
+        "-Isrc/freedreno/radish",
+        "-I../mesa/src/freedreno/radish",
+        "-Isrc/freedreno",
+        "-I../mesa/src/freedreno",
+        "-Isrc/freedreno/registers",
+        "-I../mesa/src/freedreno/registers",
+        "-Isrc/freedreno/registers/adreno",
+        "-I../mesa/src/freedreno/registers/adreno",
+        "-Isrc/freedreno/common",
+        "-I../mesa/src/freedreno/common",
+        "-Iinclude",
+        "-I../mesa/include",
+        "-Isrc",
+        "-I../mesa/src",
+        "-Isrc/vulkan/util",
+        "-I../mesa/src/vulkan/util",
+        "-Isrc/vulkan/runtime",
+        "-I../mesa/src/vulkan/runtime",
+        "-I../mesa/src/vulkan/runtime/bvh",
+        "-Isrc/compiler/nir",
+        "-I../mesa/src/compiler/nir",
+        "-Isrc/compiler",
+        "-I../mesa/src/compiler",
+        "-Isrc/util",
+        "-Isrc/util/format",
+        "-Isrc/compiler/spirv",
+        "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include",
+        "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include/libdrm",
+        "-fvisibility=hidden",
+        "-fdiagnostics-color=always",
+        "-D_FILE_OFFSET_BITS=64",
+        "-Wall",
+        "-Winvalid-pch",
+        "-std=c11",
+        "-O2",
+        "-g",
+        "-D__STDC_CONSTANT_MACROS",
+        "-D__STDC_FORMAT_MACROS",
+        "-D__STDC_LIMIT_MACROS",
+        "-DPACKAGE_VERSION=\"27.0.0-devel\"",
+        "-DHAVE_OPENGL=0",
+        "-DHAVE_OPENGL_ES_1=0",
+        "-DHAVE_OPENGL_ES_2=0",
+        "-DMESA_SYSTEM_HAS_KMS_DRM=1",
+        "-DVIDEO_CODEC_VC1DEC=0",
+        "-DVIDEO_CODEC_H264DEC=0",
+        "-DVIDEO_CODEC_H264ENC=0",
+        "-DVIDEO_CODEC_H265DEC=0",
+        "-DVIDEO_CODEC_H265ENC=0",
+        "-DVIDEO_CODEC_AV1DEC=0",
+        "-DVIDEO_CODEC_AV1ENC=0",
+        "-DVIDEO_CODEC_VP9DEC=0",
+        "-DVIDEO_CODEC_MPEG12DEC=0",
+        "-DVIDEO_CODEC_JPEGDEC=0",
+        "-DUSE_LIBGLVND=0",
+        "-DHAVE_LIBDRM",
+        "-DHAVE_GFX_COMPUTE",
+        "-DGLAPI_EXPORT_PROTO_ENTRY_POINTS=1",
+        "-DALLOW_KCMP",
+        "-DMESA_DEBUG=0",
+        "-DENABLE_SHADER_CACHE",
+        "-DHAVE___BUILTIN_BSWAP32",
+        "-DHAVE___BUILTIN_BSWAP64",
+        "-DHAVE___BUILTIN_CLZ",
+        "-DHAVE___BUILTIN_CLZLL",
+        "-DHAVE___BUILTIN_CTZ",
+        "-DHAVE___BUILTIN_EXPECT",
+        "-DHAVE___BUILTIN_FFS",
+        "-DHAVE___BUILTIN_FFSLL",
+        "-DHAVE___BUILTIN_POPCOUNT",
+        "-DHAVE___BUILTIN_POPCOUNTLL",
+        "-DHAVE___BUILTIN_UNREACHABLE",
+        "-DHAVE___BUILTIN_TYPES_COMPATIBLE_P",
+        "-DHAVE___BUILTIN_ADD_OVERFLOW",
+        "-DHAVE_FUNC_ATTRIBUTE_CONST",
+        "-DHAVE_FUNC_ATTRIBUTE_FLATTEN",
+        "-DHAVE_FUNC_ATTRIBUTE_MALLOC",
+        "-DHAVE_FUNC_ATTRIBUTE_PURE",
+        "-DHAVE_FUNC_ATTRIBUTE_UNUSED",
+        "-DHAVE_FUNC_ATTRIBUTE_WARN_UNUSED_RESULT",
+        "-DHAVE_FUNC_ATTRIBUTE_WEAK",
+        "-DHAVE_FUNC_ATTRIBUTE_FORMAT",
+        "-DHAVE_FUNC_ATTRIBUTE_PACKED",
+        "-DHAVE_FUNC_ATTRIBUTE_RETURNS_NONNULL",
+        "-DHAVE_FUNC_ATTRIBUTE_ALIAS",
+        "-DHAVE_FUNC_ATTRIBUTE_NORETURN",
+        "-DHAVE_FUNC_ATTRIBUTE_COLD",
+        "-DHAVE_FUNC_ATTRIBUTE_VISIBILITY",
+        "-DHAVE_UINT128",
+        "-DHAVE_REALLOCARRAY",
+        "-DHAVE_FMEMOPEN",
+        "-DHAVE_MALLINFO2",
+        "-D_GNU_SOURCE",
+        "-DUSE_GCC_ATOMIC_BUILTINS",
+        "-DMAJOR_IN_SYSMACROS",
+        "-DHAS_SCHED_H",
+        "-DHAS_SCHED_GETAFFINITY",
+        "-DHAVE_LINUX_FUTEX_H",
+        "-DHAVE_ENDIAN_H",
+        "-DHAVE_DLFCN_H",
+        "-DHAVE_SYS_SHM_H",
+        "-DHAVE_CET_H",
+        "-DHAVE_POLL_H",
+        "-DHAVE_SYS_INOTIFY_H",
+        "-DHAVE_LINUX_UDMABUF_H",
+        "-DHAVE_STRTOF",
+        "-DHAVE_MKOSTEMP",
+        "-DHAVE_MEMFD_CREATE",
+        "-DHAVE_RANDOM_R",
+        "-DHAVE_FLOCK",
+        "-DHAVE_STRTOK_R",
+        "-DHAVE_GETRANDOM",
+        "-DHAVE_POSIX_FALLOCATE",
+        "-DHAVE_SECURE_GETENV",
+        "-DHAVE_SYSCONF",
+        "-DHAVE_SC_PHYS_PAGES",
+        "-DHAVE_GNU_QSORT_R",
+        "-DHAVE_STRUCT_TIMESPEC",
+        "-DHAVE_PROGRAM_INVOCATION_NAME",
+        "-DHAVE_ISSIGNALING",
+        "-DHAVE_POSIX_MEMALIGN",
+        "-DHAVE_DIRENT_D_TYPE",
+        "-DHAVE_STRTOD_L",
+        "-DHAVE_DLADDR",
+        "-DHAVE_DL_ITERATE_PHDR",
+        "-DHAVE_ZLIB",
+        "-DHAVE_COMPRESSION",
+        "-DHAVE_PTHREAD",
+        "-DHAVE_PTHREAD_SETAFFINITY",
+        "-DDRAW_LLVM_AVAILABLE=0",
+        "-DAMD_LLVM_AVAILABLE=0",
+        "-DGALLIVM_USE_ORCJIT=0",
+        "-DTHREAD_SANITIZER=0",
+        "-DHAVE_DRI2",
+        "-DHAVE_RENDERDOC_INTEGRATION=1",
+        "-Werror=implicit-function-declaration",
+        "-Werror=missing-prototypes",
+        "-Werror=return-type",
+        "-Werror=empty-body",
+        "-Werror=incompatible-pointer-types",
+        "-Werror=int-conversion",
+        "-Wimplicit-fallthrough",
+        "-Wmisleading-indentation",
+        "-Wno-missing-field-initializers",
+        "-Wno-format-truncation",
+        "-fno-math-errno",
+        "-fno-trapping-math",
+        "-Qunused-arguments",
+        "-fno-common",
+        "-Wno-unknown-pragmas",
+        "-Wno-microsoft-enum-value",
+        "-Wno-unused-function",
+        "-Werror=format",
+        "-Wformat-security",
+        "-Werror=thread-safety",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-Wno-unused-command-line-argument",
+        "-fPIC",
+        "-DVK_USE_PLATFORM_DISPLAY_KHR",
+        "-pthread",
+        "-DXXH_FORCE_ALIGN_CHECK=0",
+        "-DXXH_FORCE_MEMORY_ACCESS=0",
+        "-Wno-override-init",
+        "-Wno-initializer-overrides",
+        "-MD",
+        "-MQ",
+        "/run/media/jethac/Shared/radish/optimization-five-mv32-queue-driver-0046/rd_queue.c.o",
+        "-MF",
+        "/run/media/jethac/Shared/radish/optimization-five-mv32-queue-driver-0046/rd_queue.c.d",
+        "-o",
+        "/run/media/jethac/Shared/radish/optimization-five-mv32-queue-driver-0046/rd_queue.c.o",
+        "-c",
+        "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/mv32-queue-batching/candidate/rd_queue.c"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build"
+    }
+  ],
+  "driver_review": {
+    "status": "PASS isolated MV32 queue source/build/strip pairing; actual selected batching qualification pending",
+    "source_review": "d2e1e4b88de41f3a5d353f9e225eac95a400f7b11b9d868628f2f8655c046e02",
+    "build": "48611505b4a35d7a7082745f73dac3faba2090847e14db274a3b372281ff832f",
+    "driver": "0d5496a7528bddab3ac1ee6f1c75f5ba417d7deeba40bfbbd66eb844c48fe9ff",
+    "strip": "4d2012f00c8f874649fab64d52f000b57c52236b87f1818173cc2e233d0f71af",
+    "link_delta": [
+      [
+        "/run/media/jethac/Shared/radish/optimization-five-rms-queue-driver-0046/libvulkan_radish.so",
+        "/run/media/jethac/Shared/radish/optimization-five-mv32-queue-driver-0046/libvulkan_radish.so"
+      ],
+      [
+        "/run/media/jethac/Shared/radish/optimization-five-rms-queue-driver-0046/rd_queue.c.o",
+        "/run/media/jethac/Shared/radish/optimization-five-mv32-queue-driver-0046/rd_queue.c.o"
+      ]
+    ],
+    "link_inputs": [
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/meson-generated_.._rd_entrypoints.c.o",
+        "sha256": "7af87ca59925cf281a41ffbd0942c8e3d72ae968024a09d404b078303f259b81"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/cache-build/rd_instance.c.o",
+        "sha256": "b3a085119336afbdc66c9c466d27f071ea6385052a46d162936493cc5cbe5bd5"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_device.c.o",
+        "sha256": "d934729230947f99837d24be73705756a639c57b0f1acc2681391fcc4d0a8741"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-phase-release-driver-0046/rd_memory.c.o",
+        "sha256": "6eb26002ab3e3a519de398f577d2e3b525ec6ebc2cd9862186ca0160fce0a7ca"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_descriptor.c.o",
+        "sha256": "3b47786c8d4e23b850479655a3ee75cec3e963fa8b4a83fc4e0ff3a20936992f"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-quant-queue-driver-0046/rd_pipeline.c.o",
+        "sha256": "bd509fda17f6a2768069819ea1af2a1bd28b41c06c92f7d5a9fe551ada433a36"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_command.c.o",
+        "sha256": "7605bf9736b3e8049c1e453dcb072088f5feb973420ace3065fb600dfd79ea66"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_sampling.c.o",
+        "sha256": "7c4cc23140331089e4875c0156cde20c58e5b1909e2581ff3b688a73217fa2b7"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_nir_sampling.c.o",
+        "sha256": "f2822d98eabf16403fc5bf3bf2ee483e25e02e88b82980948d2ee9274ccdb57b"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_nir_resources.c.o",
+        "sha256": "7803bef847199704d3197fb386ce78a6d5ad6bee05712417f9ccda3ad91df3d8"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_nir_robust.c.o",
+        "sha256": "ccff7715a8919e739a579e91d75791752e82ddd800dd44df911d81af0cdc7655"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_resources.c.o",
+        "sha256": "bdc2b62f55854fab2ee226f3ce40868389c95f44bb90b25c97b602934e7d01a1"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_transfer.c.o",
+        "sha256": "2fd3f3fcf16fa39e2877c2f345c2cebbc560af778ac155436b48a6440e7f3ecc"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_image.c.o",
+        "sha256": "32ffa0ab116dc52823ede0141db831c07b59ed9fedfe376d9079ea8a1edc7208"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_event.c.o",
+        "sha256": "d4740d71392e303abcfa1372f828bc9946ba53485f6b90cdb0166fb14ff9a00c"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_query.c.o",
+        "sha256": "5fa697ca900332cc5a53fce54e91ca1229f90ffd6ca206ecc7e0bd04ea89dee5"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-mv32-queue-driver-0046/rd_queue.c.o",
+        "sha256": "0e5ada111d92209e7c1fb9fde4edd9e043167f60bb96138b9686930f5a449da0"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/cache-build/rd_pipeline_cache.cpp.o",
+        "sha256": "4350a52e9f298078c6acafd909bf9357722fe6cac56d8b194a5378d004e74192"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/vulkan/runtime/libvulkan_lite_runtime.a",
+        "sha256": "72857d03da8ebe299147ef8c0c535d6bb4afe09fac97c401704fdec703c15b29"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/vulkan/runtime/libvulkan_runtime.a",
+        "sha256": "ea8e988689581f3272940a6a6e07f9eb72092c0c4b99dffe83c391d33ff0de54"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/vulkan/runtime/libvulkan_instance.a",
+        "sha256": "e2ab58d74cb2945ef367855f9b68fdfced87d0eb869a17a63008cdf2347ed69e"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/drm/libfreedreno_drm.a",
+        "sha256": "8eaa794b66525b3ce4b637131dfb549ea7ab5ddd4883a0cd7ed96ae052d07642"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/util/libmesa_util.a",
+        "sha256": "8057fd5f2ba559d82c35891e13ef64892f288eb6f6c52f46f435d4671137864f"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/util/libmesa_util_simd.a",
+        "sha256": "17aceba849bf8bf1389c2a0fb6db54843310467b6e038788d16f931e987aa8a7"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/util/blake3/libblake3.a",
+        "sha256": "6c9f100652cfd5917ecbc3c577e64e6579dbfe21d7505b6ec4b77c633f608aad"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/c11/impl/libmesa_util_c11.a",
+        "sha256": "8d1a8495e9ccdb9de7fab5768b97f45e470c824fe11b113677934d89f233ce41"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/ir3/libfreedreno_ir3.a",
+        "sha256": "7122b60175750aca8f5e4f80a9b9a0376cb2fb6b32797a87178e30ae31c5ca16"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/isa/libir3encode.a",
+        "sha256": "3c4363047a7cfdbbe8503c9a8f8829746fdeafe54bb2f8665720d301e79e9ccf"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/compute11-idiv-isolated-build-0045/libnir.idiv.a",
+        "sha256": "5f428db8643a05c46521ae5dafa087a80f7ddc131610bdfb02f1110799db21c9"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/compiler/libcompiler.a",
+        "sha256": "b6c6552a7d1d34fbcc66291db91b562746d969da085bb7e128a21ef0f0fe7f9d"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/common/libfreedreno_common.a",
+        "sha256": "6e12b1b1b17035bd6f5c1396a3f7247f639bcefc1ba958311ffaccaf9616afc6"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/isa/libir3decode.a",
+        "sha256": "751a446d9a040591aab305fc25b48ce5a7f4b60587bda453bc915362b2e34a8d"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/compiler/isaspec/libisaspec.a",
+        "sha256": "99e4cc2f96d2273429c5109675165616bc8ed6c914d6b6d97a334ba6144f4ee2"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/fdl/libfreedreno_layout.a",
+        "sha256": "571168cf6c3ea9af38f74b1a3ff9cde65735e4e7e7d11f7aa9498581711a0423"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/vulkan/util/libvulkan_util.a",
+        "sha256": "c2bc2d32536fa508afec6c1ad0258a2c6639c0055e76f1ea2ee5f65c4852f1e9"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/compiler/spirv/libvtn.a",
+        "sha256": "63ffa8ff7e81e57a3ad463ea6d643edb3030d49003d37ddcf11253f82a028e95"
+      }
+    ],
+    "allocated_sections_equal": 26,
+    "program_headers_load_bytes_equal": true,
+    "checks": [
+      "Only rd_queue object changes overa6d65; allheaders/ABI/pipeline/cache/compiler/memory/shaders andcurrentd4d0 model independentlypaired.",
+      "Exactone-line MVloop2OR3 selector; source d2e1 independentlyclosed; allcaps/private0/4096slots/WFI unchanged.",
+      "No TTSweakershape matches inboth179inventories; no broadnative/TTS replay warranted. Focused3MV6912 numeric/fullpartial required;native4cde carries."
+    ],
+    "timing_collected": false
+  },
+  "scope": "Three quantized MV shaders process up to32 rows through sequential four-row blocks, preserving per-row FMA/reduction and adding a uniform shared-reuse barrier. Three MM modules and all other model/shader/lifetime policies are byte-identical. Existing queue predicate accepts the observed third loop within unchanged resource limits.",
+  "performance_measurement": false
+}

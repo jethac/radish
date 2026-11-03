@@ -25,8 +25,8 @@
     },
     {
       "area": 4,
-      "implementation": "Integrated GQA broadcast, phase-specific quantized kernels, encoder-to-prefill device-buffer reuse and reduced host staging; actual application pipeline cache and supported-kernel initialization correction are built. Constrained-profile subsampling reuses one independent chunk graph across the complete audio, lowering unnecessary live convolution intermediates. Scheduler scratch is released between subsampling and encoder; Vulkan-owned allocations leave the BO reuse cache on final unref. Incremental KV allocates actual prompt/draft demand and grows geometrically up to the unchanged full context ceiling. The constrained softmax shader uses one runtime-width body and preserves column loops instead of seven constant-width expansions, retaining numerical order and masks. Production constrained-profile warmup now uses fresh temporary borrowed-model sessions and one actual decoder step per mode; synthetic state is synchronized and freed before real requests. The original warm prompt now has owned string lifetime. Constrained-profile heap cleanup asks glibc to return unused pages after compilation and synchronized temporary-session destruction.",
-      "evidence": "Current listener43ecf594 and drivera6d65 retain qualified quantized kernels, GQA, KV growth, compact softmax, full/partial batching and constrained heap release. Last full62956 completed offline one-step warmup and streaming encoder, then timed out during streaming prefill before requested transcripts; that failure remains preserved. Capped structural evidence identified421 RMS dispatches with64889 submissions, not a timing attribution. Queue-only RMS connection now passes its bounded numerical/full-partial check. Original full29498 is running with freshv12 cache, two requests of the same pinned2.785s English clip, full warm audio/both modes, real256-token budget and unchanged640MiB/128MiBswap/300s limits. Full-model and ASR application-cache replay remain open. MV sequential-row source is isolated and unbuilt; no performance release."
+      "implementation": "Integrated GQA broadcast, phase-specific quantized kernels, encoder-to-prefill device-buffer reuse and reduced host staging; actual application pipeline cache and supported-kernel initialization correction are built. Constrained-profile subsampling reuses one independent chunk graph across the complete audio, lowering unnecessary live convolution intermediates. Scheduler scratch is released between subsampling and encoder; Vulkan-owned allocations leave the BO reuse cache on final unref. Incremental KV allocates actual prompt/draft demand and grows geometrically up to the unchanged full context ceiling. The constrained softmax shader uses one runtime-width body and preserves column loops instead of seven constant-width expansions, retaining numerical order and masks. Production constrained-profile warmup now uses fresh temporary borrowed-model sessions and one actual decoder step per mode; synthetic state is synchronized and freed before real requests. The original warm prompt now has owned string lifetime. Constrained-profile heap cleanup asks glibc to return unused pages after compilation and synchronized temporary-session destruction. Quantized decoding now processes up to32 rows per workgroup in consecutive four-row blocks with uniform shared-memory reuse barriers and unchanged per-row arithmetic.",
+      "evidence": "Current listener43ec and drivera6d65 retain all qualified operator, memory and batching results. Original full29498 completes offline one-step warmup and streaming encoder, then times out during cached-prefix streaming prefill before either requested transcript. RMS batching is active:421 dispatches covering64889 workgroups use8258 submissions;172 quantized MV dispatches use20472 submissions in the capped log. These are structural counts, not timing attribution. The same clip, two requests, full warm audio/modes, real256-token budget and640MiB/128MiBswap/300s limits remain unchanged. The next source-reviewed implementation processes32 quantized MV rows per workgroup; its isolated build is complete with three MM modules unchanged, and three new MV native resource gates pass with no private memory and unchanged caps; numerical checks remain pending. Full model and ASR cache replay remain open."
     },
     {
       "area": 5,
@@ -57,11 +57,13 @@
     "0046-asr-attention-batching.patch": "17afafe7fc6617fa57b6fc63350fd041ddb3297dc49490d174d6c5873d3bdadd",
     "0046-asr-resource-ownership-snapshots.patch": "07e279f77794f20f7f804a984d2f615aa0fb5050f572ff79f0a50506ef7ab760",
     "0046-asr-constrained-heap-release.patch": "bcabd39a58f8fa5e1ef3195624d3d7737cba32fde04f4aa3e20d8948f85673b1",
-    "0046-asr-rms-batching.patch": "499b5e11be37a07d9eed9b87231ee6cc73dfc6722b84a4fd527a1110a52d08db"
+    "0046-asr-rms-batching.patch": "499b5e11be37a07d9eed9b87231ee6cc73dfc6722b84a4fd527a1110a52d08db",
+    "0046-asr-quantized-mv32.patch": "d730c322d91569df7e2ffbef9bc6503ca16720a18d235ccd56dc74039be8f8ad",
+    "0046-asr-mv32-batching.patch": "3278bb28d0496d5c1032f104eb45874419c42d5deef4f521b8e80adce86ce6e3"
   },
   "existing_results": "Original743 CTS cases and modified132 robustness outcomes remain historical pinned evidence; no conformance count or selected performance change.",
   "completion_gate": "TTS side is qualified for the stated T213/T78 fixtures. All-five gate remains CLOSED on ASR full-model memory/placement/transcript and real application replay; full GOAL remains active.",
-  "as_of_utc": "2026-11-03 03:59:51 UTC",
+  "as_of_utc": "2026-11-03 04:05:49 UTC",
   "correctness_receipts": {
     "optimization-cache-correctness-0046.json": "0af98f899b26429971ef61df554e2cf4a4fe340019353f9ed7491869ab59b1f5",
     "optimization-queue-correctness-0046.json": "98c9f0d64a5ef1076462930effb6fd3e22c48de75cad78e87f7e68eaa6636b0e",
@@ -93,7 +95,9 @@
     "optimization-asr-heap-release-timeout-0046.json": "abc7cf70a7bf084a11ec5e38387a7df8c193f66816a1b0ee32a8ec6bc5633578",
     "optimization-asr-heap-release-actual-0046.json": "764010f401ab6e699601b5bff5697ed26a6b2fa1e90cea07b77962c7bdd7e7c9",
     "optimization-rms-batch-correctness-0046.json": "ba535a93e746e75c403ec51e32ed6fede6c52894d89a882d831ee67d974cb451",
-    "optimization-asr-heap-release-structural-0046.json": "089620c62c6a9974523aabe36b084fed1a419bbba6ca023d95921146fc78361f"
+    "optimization-asr-heap-release-structural-0046.json": "089620c62c6a9974523aabe36b084fed1a419bbba6ca023d95921146fc78361f",
+    "optimization-asr-rms-batch-timeout-0046.json": "e454eabd3386b4b811aa4e9bc903ba5c84a98f40c5216af41e2d704f94a09767",
+    "optimization-mv32-native-0046.json": "4cde060ac5da27a0de98df793c13b4f22241c4701fe51e4680e58a0cc6a75842"
   },
   "drivers": {
     "bounded_cache_queue_half": "61e8/9f64 exact integrated cache+queue+corrected idiv",

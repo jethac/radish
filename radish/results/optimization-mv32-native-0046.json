@@ -1,0 +1,143 @@
+{
+  "status": "passed three new MV32 native/resource/interface admission; numerical dispatch conditional on exact loop3 queue predicate",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-mv32-native/compile",
+  "run_log": "213e8d75eda857b790b388eba6e11f60cebc4612c7eb79a810dfee20fba5fc17",
+  "runner_result": "8cfa09463951f706d404a2e8614bd85ccfc62fbde815ada5622de7aa2d368411",
+  "payload": {
+    "radish_icd.json": {
+      "bytes": 148,
+      "sha256": "071cf81a97532c6b6b715fc3ce78567ac6769fdbc034dc68342ebf5a72b20e4d"
+    },
+    "khr_quant_q6_k_mv.spv": {
+      "bytes": 6416,
+      "sha256": "3700e0e16e1749360a57b4902092ee758e9da5a099fa422414576c72ee00f5c9"
+    },
+    "resources": {
+      "bytes": 748968,
+      "sha256": "c9f3373330c3b2aff2cc2197b7587edc206bd41143114f9c05eb228147979de5"
+    },
+    "khr_quant_q8_0_mv.spv": {
+      "bytes": 5192,
+      "sha256": "13aac3afc458dee6ccc0f96d6a5af9eee7cf167a3844946addab250288ebd3b4"
+    },
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 13632984,
+      "sha256": "a6d65cd60046f254b36971f6d89b47292f75da5eeb515121cfd7fc4a59bf5cb3"
+    },
+    "khr_quant_q4_k_mv.spv": {
+      "bytes": 6812,
+      "sha256": "a78d55ce6d90c9e34c29c7f7762e157642c9932f5497ccaaf69e07beb1c88cbe"
+    },
+    "payload.json": {
+      "bytes": 1105,
+      "sha256": "d914c89a79dcdd6996017c88e37bab97e7e01b9a234cad558eebc48b35bde84e"
+    }
+  },
+  "source_release": "69de60e41b4bc02ecdab4d34725b77a99d84e458810439745ffb2226442ade4c",
+  "native": [
+    {
+      "type": 0,
+      "mode": "mv",
+      "descriptors": 3,
+      "buffers": 3,
+      "images": 0,
+      "logical": "128,1,1",
+      "physical": "64,2,1",
+      "packed1d": 1,
+      "shared": 512,
+      "native": 43,
+      "full": 9,
+      "half": 10,
+      "private": 0,
+      "loops": 3,
+      "has_barrier": 1,
+      "used": 7,
+      "local_memory": 1,
+      "linear_subgroups": 0,
+      "linear_barriers": 0,
+      "resident_override": 0,
+      "num_ssbos": 3,
+      "code_bytes": 5632,
+      "code_bo_bytes": 8192,
+      "const_data": 0,
+      "preamble": 0,
+      "halfreg_slots": 3584,
+      "before_data": 1,
+      "emitted_native_text_sha256": "23a81c8b584c16101a8c22deb349e5d78e49c0dee8bb26cea930308be59111bb"
+    },
+    {
+      "type": 1,
+      "mode": "mv",
+      "descriptors": 3,
+      "buffers": 3,
+      "images": 0,
+      "logical": "128,1,1",
+      "physical": "64,2,1",
+      "packed1d": 1,
+      "shared": 512,
+      "native": 41,
+      "full": 8,
+      "half": 9,
+      "private": 0,
+      "loops": 3,
+      "has_barrier": 1,
+      "used": 7,
+      "local_memory": 1,
+      "linear_subgroups": 0,
+      "linear_barriers": 0,
+      "resident_override": 0,
+      "num_ssbos": 3,
+      "code_bytes": 5376,
+      "code_bo_bytes": 8192,
+      "const_data": 0,
+      "preamble": 0,
+      "halfreg_slots": 3200,
+      "before_data": 1,
+      "emitted_native_text_sha256": "c217aa25fc85a454c3e1a668041ffed65d00c158cdf39ba12f0a84af5c1f9ee8"
+    },
+    {
+      "type": 2,
+      "mode": "mv",
+      "descriptors": 3,
+      "buffers": 3,
+      "images": 0,
+      "logical": "128,1,1",
+      "physical": "64,2,1",
+      "packed1d": 1,
+      "shared": 512,
+      "native": 34,
+      "full": 8,
+      "half": 6,
+      "private": 0,
+      "loops": 3,
+      "has_barrier": 1,
+      "used": 7,
+      "local_memory": 1,
+      "linear_subgroups": 0,
+      "linear_barriers": 0,
+      "resident_override": 0,
+      "num_ssbos": 3,
+      "code_bytes": 4480,
+      "code_bo_bytes": 8192,
+      "const_data": 0,
+      "preamble": 0,
+      "halfreg_slots": 2816,
+      "before_data": 1,
+      "emitted_native_text_sha256": "2f7a707b4c9e42bc10462d2edddfc998f73193bd81bd985f995c4bf5eec6ec02"
+    }
+  ],
+  "checks": [
+    "Only three changed Q4_K/Q6_K/Q8_0 MVmodules compiled, no data buffers or dispatch. ExistingMM/TTS/KV/GQA/softmax bodies not repeated.",
+    "All retain128logical/64x2physical/shared512/private0/threeSSBO/push68. Exact actual used7, local-memorysafe1, packed1, linearflags0 and residentoverride0 establish predicate fields.",
+    "Counts printed maxindex+1: Q4full9/half10\u21923584slots, Q6full8/half9\u21923200, Q8full8/half6\u21922816. Existing4096 ceiling retained. Code5632/5376/4480bytes fit8192BO, constdata/preamble0.",
+    "Newuniformrow-block loop yields three loops in allMV; previouspredicate requires two and therefore safelyexcludesnewkernels until narrowexplicitMVloop3 admission. No other ceiling/class change indicated.",
+    "Entire emitted native text pinned for laterfunctionalbody identity; same shader hash/modulename/native length alone is insufficient because row loop changes despite native43/41/34 lengths remaining.",
+    "Clean collection/assets/fault/services and successful drainedunit; reported9MiB underoriginal384MiB90s. No timing orspeedclaim."
+  ],
+  "next": "Batch owner minimalMVloop3 predicate source/build gate, then unchanged18round/6912exactCPU/fullguards/GQA/baseZ/fullpartialcounter fixture. Fullmodel andcache remainseparate.",
+  "timing_collected": false
+}

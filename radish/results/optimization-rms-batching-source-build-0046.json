@@ -1,5 +1,5 @@
 {
-  "status": "Exact queue-only source/build and focused actual qualified; full model running, cache replay conditional",
+  "status": "Exact queue-only source/build and focused actual qualified; original full29498 watchdog result preserved separately; cache replay held",
   "source_release": {
     "status": "source frozen; independent counterpart/isolated owner build/focused actual required before model",
     "preimage": {

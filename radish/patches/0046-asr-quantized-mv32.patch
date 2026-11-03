@@ -1,0 +1,68 @@
+--- a/transcribe.cpp/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/transcribe.cpp/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -3091,11 +3091,11 @@
+         khr_quant_##TYPE##_##PHASE##_data, "main", 3, sizeof(vk_mat_mat_push_constants), \
+         {X, Y, 1}, {}, 1);
+     KHR_QUANT_PIPELINE(0, q4_k, mm, 0, 16, 16)
+-    KHR_QUANT_PIPELINE(0, q4_k, mv, 1, 4, 1)
++    KHR_QUANT_PIPELINE(0, q4_k, mv, 1, 32, 1)
+     KHR_QUANT_PIPELINE(1, q6_k, mm, 0, 16, 16)
+-    KHR_QUANT_PIPELINE(1, q6_k, mv, 1, 4, 1)
++    KHR_QUANT_PIPELINE(1, q6_k, mv, 1, 32, 1)
+     KHR_QUANT_PIPELINE(2, q8_0, mm, 0, 16, 16)
+-    KHR_QUANT_PIPELINE(2, q8_0, mv, 1, 4, 1)
++    KHR_QUANT_PIPELINE(2, q8_0, mv, 1, 32, 1)
+ #undef KHR_QUANT_PIPELINE
+ #endif
+ 
+@@ -7666,7 +7666,7 @@
+         ggml_nbytes(dst) > limits.maxStorageBufferRange)
+         return false;
+     const bool gemv = dst->ne[1] <= mul_mat_vec_max_cols;
+-    const uint64_t rows_per_group = gemv ? 4 : 16;
++    const uint64_t rows_per_group = gemv ? 32 : 16;
+     const uint64_t cols_per_group = gemv ? 1 : 16;
+     if (uint64_t(dst->ne[0]) > rows_per_group * limits.maxComputeWorkGroupCount[0] ||
+         uint64_t(dst->ne[1]) > cols_per_group * limits.maxComputeWorkGroupCount[1] ||
+--- a/transcribe.cpp/ggml/src/ggml-vulkan/vulkan-shaders/mul_mm_khr_quant.comp
++++ b/transcribe.cpp/ggml/src/ggml-vulkan/vulkan-shaders/mul_mm_khr_quant.comp
+@@ -49,23 +49,27 @@
+ void main() {
+     uint a, b, d;
+     batch_offsets(a, b, d);
+-    const uint row = gl_WorkGroupID.x * 4 + (gl_LocalInvocationID.x >> 5);
+     const uint col = gl_WorkGroupID.y;
+     const uint lane = gl_LocalInvocationID.x & 31;
+     const uint lane_base = gl_LocalInvocationID.x & ~31u;
+-    float sum = 0.0;
+-    [[dont_unroll]] for (uint k = lane * 2; k < p.K; k += 64) {
+-        const vec2 w = row < p.M ? weight_pair(a + row * p.stride_a + k) : vec2(0.0);
+-        sum = fma(w.x, data_b[b + col * p.stride_b + k], sum);
+-        sum = fma(w.y, data_b[b + col * p.stride_b + k + 1], sum);
+-    }
+-    partial[lane_base + lane] = sum;
+-    barrier();
+-    [[dont_unroll]] for (uint width = 16; width != 0; width >>= 1) {
+-        if (lane < width) partial[lane_base + lane] += partial[lane_base + lane + width];
++    const uint row_base = gl_WorkGroupID.x * 32;
++    [[dont_unroll]] for (uint block = 0; block < 8 && row_base + block * 4 < p.M; ++block) {
++        const uint row = row_base + block * 4 + (gl_LocalInvocationID.x >> 5);
++        float sum = 0.0;
++        [[dont_unroll]] for (uint k = lane * 2; k < p.K; k += 64) {
++            const vec2 w = row < p.M ? weight_pair(a + row * p.stride_a + k) : vec2(0.0);
++            sum = fma(w.x, data_b[b + col * p.stride_b + k], sum);
++            sum = fma(w.y, data_b[b + col * p.stride_b + k + 1], sum);
++        }
++        partial[lane_base + lane] = sum;
++        barrier();
++        [[dont_unroll]] for (uint width = 16; width != 0; width >>= 1) {
++            if (lane < width) partial[lane_base + lane] += partial[lane_base + lane + width];
++            barrier();
++        }
++        if (lane == 0 && row < p.M) data_d[d + col * p.stride_d + row] = partial[lane_base];
+         barrier();
+     }
+-    if (lane == 0 && row < p.M) data_d[d + col * p.stride_d + row] = partial[lane_base];
+ }
+ #else
+ layout(local_size_x = 64, local_size_y = 1, local_size_z = 1) in;

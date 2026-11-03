@@ -1,5 +1,19 @@
 # Radish status
 
+## 2026-11-03: preserve the RMS-integrated model result
+
+[The original full run](results/optimization-asr-rms-batch-timeout-0046.json)
+completes offline warm-up and the streaming encoder, then reaches the unchanged
+watchdog during streaming prefill before either requested transcript. RMS batching
+is active and its focused numerical result remains valid. Submission counts are
+structural evidence, not timing attribution.
+
+The next implementation processes consecutive quantized MV row blocks within
+each workgroup while preserving per-row arithmetic and reduction order. Its
+[three changed shaders pass native-resource admission](results/optimization-mv32-native-0046.json)
+with no private memory and unchanged limits. [Reproducible source/build](results/optimization-mv32-source-build-0046.json)
+is recorded; numerical checks precede the full model. ASR cache replay and performance measurement remain held.
+
 ## 2026-11-03: connect bounded RMS batching
 
 The [queue-only RMS change](results/optimization-rms-batching-source-build-0046.json)
