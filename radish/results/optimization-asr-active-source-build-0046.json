@@ -141,7 +141,7 @@
   ],
   "source_review": "c7ef69075c2fd4632b3ecb2a411db022d84de7684d71a60ad30cc346b503ed6d",
   "build_runner_review": "74e67652eb7a62720d2b5b9bce6b13677d8342fe8cda948ed93842b2a0b9ce3e",
-  "actual_result": "optimization-asr-stream-warmup-timeout-0046.json",
+  "actual_result": "optimization-asr-mv32-timeout-0046.json",
   "limits": "Opaque app-cache use is implemented, but full ASR saved-populated-cache/import/transcript and resource fit are not qualified.",
   "init_stage_listener": "92209fe64db13b4be25951839ad86ed7de6f0b20cec2af521418e0a7365176fc",
   "init_stage_libraries": {
@@ -344,14 +344,14 @@
     "archive_members": "3ac3f2855cdfabfc691bdf82bf9d8d08d0e2de714d3d57fad97021ab4c291489",
     "build_result": "e71c72e97d3982b96af7b375c20dee5e8eb94dc62b584b651e04bec7e7c6905b"
   },
-  "current_listener": "43ecf594ba21b5e6d7603a7a786eb72ca8958a2dceebb2b38c3ad4f101fdd4be",
+  "current_listener": "d4d0ec3aeb16a44e494e96891f75a40f04b8baab8b080a95bc7346e8179d4f30",
   "current_libraries": {
     "libstraylight_asr.a": "f4f582c8dab2d774d9a99dd4d16a1a5756466dd099686ba8562fabe099794d73",
     "libggml-cpu.a": "d995ee7629e69509970ad3fe687f8a77a469c419ba7cd91404ca8bb79f4e85da",
     "libtranscribe.a": "618736b85c8948c96735152434149ec911648e06eddee3a8e6d9e89aef6238ed",
     "libggml-base.a": "28ec1c9e67f976b670a074b310cb09389cddce48fc7cc42a9e7f06a9449b0fc1",
     "libggml.a": "44072c75ec479e9e440cc8f9583c6d6250eab629a739c7ddf98bc70aefb8ba5d",
-    "libggml-vulkan.a": "df698e5392462e786933f4de1be008b086b17d36ea4f6363a46cf4c1650aa395"
+    "libggml-vulkan.a": "2805304fb324d31b15485e59448d5128e46a38e2fab58239acc743300d0dbb11"
   },
   "phase_release_stage": {
     "build": {
@@ -1076,8 +1076,8 @@
     "build_review": "8f30f8e3c82cd99e10117e3fafa0fc57481f592e8f63ab10451a64004da80098"
   },
   "latest_full_model_result": {
-    "file": "optimization-asr-heap-release-timeout-0046.json",
-    "sha256": "abc7cf70a7bf084a11ec5e38387a7df8c193f66816a1b0ee32a8ec6bc5633578"
+    "file": "optimization-asr-mv32-timeout-0046.json",
+    "sha256": "e28721c49074556a29ea9ba8a360e5c11dacf4b2316000e27139fb7e2b19fce2"
   },
   "resource_diagnostic_stage": {
     "build": {
@@ -1372,5 +1372,6 @@
       "strip_sha256": "4d2012f00c8f874649fab64d52f000b57c52236b87f1818173cc2e233d0f71af",
       "scope": "Only rd_queue.c.o changed overa6d65; unchanged ABI/header/pipeline/cache/compiler/memory/shaders"
     }
-  }
+  },
+  "historical_warmup_result": "optimization-asr-stream-warmup-timeout-0046.json"
 }
