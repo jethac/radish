@@ -1,0 +1,1344 @@
+{
+  "status": "Retained original full-model timeout; completed capped-prefix structural accounting, not performance attribution",
+  "handle": 42969,
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-full-mv32/probe",
+  "pins": {
+    "run.log": "55bf199fc9393dcb5b2451a0c49613ac8373c932d4352e509ffb1cbfa9262de4",
+    "failure.json": "4b2f5476f7d0b8d269ad21aa0295d660d9c9f0bd084ed94e8e95d5ec6f1d9365",
+    "service.txt": "e20bf121fa2a9c525e9d6b2d885bb3cdaeeba67d91f555208227fa576e241108",
+    "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+    "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+    "drain-000.txt": "899a8a5a73232d4a07b56824413da1c88dc2dc685e89886ca2bc05f89923b9f6",
+    "launch.json": "7173890c4ae79b0122db89a960444b28db75dbcfe874ed191f6e46a5447a32ee"
+  },
+  "owner_terminal_receipt": "e28721c49074556a29ea9ba8a360e5c11dacf4b2316000e27139fb7e2b19fce2",
+  "selected_native_receipt": {
+    "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/selected-native-current/independent-actual-review.json",
+    "sha256": "a1a5856baa3954aeca609350285fc0cc0e1d3472d5168feab43905b16cf4ce7c"
+  },
+  "candidate": {
+    "listener": "d4d0ec3aeb16a44e494e96891f75a40f04b8baab8b080a95bc7346e8179d4f30",
+    "driver": "4d2012f00c8f874649fab64d52f000b57c52236b87f1818173cc2e233d0f71af",
+    "missing_app_cache": "v13"
+  },
+  "terminal": "Original 300s watchdog/TERM; systemd reports timeout, not OOM. Guard telemetry peak640MiB/swap64.7M. No supplied clip transcript, no accepted populated-cache replay.",
+  "phase": "Offline encoder/prefill/actual one decoder step/synchronized temporary cleanup completed. Streaming encoder graph_end697 completed; cached-prefix prefill graph_begin1157,791GPU/0rejected begun, no streaming STEP/DONE.",
+  "diagnostic_scope": {
+    "compile_begin_end_pairs": 34,
+    "dispatch_begin_end_pairs": 4096,
+    "dispatch_cap_reached": true,
+    "all_recorded_dispatch_results": 0,
+    "last_capped_marker_is_stall_evidence": false,
+    "counts_cover": "Only completed printed prefix, not the complete model or complete failed run. Native ordinal alone is not a unique pipeline identity."
+  },
+  "totals": {
+    "dispatches": 4096,
+    "groups": 1071090,
+    "submits": 77376,
+    "batch1_submits": 20738,
+    "three_local_family_batch1_submits": 15978,
+    "unclassified_specialization_batch1_submits": 434
+  },
+  "ranked_batch1_families": [
+    {
+      "native": 62,
+      "packed": 0,
+      "module_family": "cpy_transpose_32 or cpy_transpose_02_32",
+      "selected_case": "case07,case08",
+      "qualification": "two module identities share this native/resource family; not separable by printed ordinal",
+      "dispatches": 54,
+      "groups": 7776,
+      "submits": 7776,
+      "classes": [
+        {
+          "native": 62,
+          "batch": 1,
+          "packed": 0,
+          "tile": "1,1,1",
+          "local_memory": 1,
+          "dispatches": 54,
+          "submits": 7776,
+          "groups": 7776,
+          "grids": {
+            "25,15,1": 6,
+            "7,15,1": 6,
+            "1,1,480": 6,
+            "2,2,14": 36
+          }
+        }
+      ]
+    },
+    {
+      "native": 73,
+      "packed": 0,
+      "module_family": "cpy_transpose_16",
+      "selected_case": "case16",
+      "qualification": "",
+      "dispatches": 104,
+      "groups": 5760,
+      "submits": 5760,
+      "classes": [
+        {
+          "native": 73,
+          "batch": 1,
+          "packed": 0,
+          "tile": "1,1,1",
+          "local_memory": 1,
+          "dispatches": 104,
+          "submits": 5760,
+          "groups": 5760,
+          "grids": {
+            "2,4,8": 76,
+            "1,4,8": 28
+          }
+        }
+      ]
+    },
+    {
+      "native": 30,
+      "packed": 1,
+      "module_family": "norm_f32",
+      "selected_case": "case21",
+      "qualification": "",
+      "dispatches": 74,
+      "groups": 2442,
+      "submits": 2442,
+      "classes": [
+        {
+          "native": 30,
+          "batch": 1,
+          "packed": 1,
+          "tile": "1,1,1",
+          "local_memory": 1,
+          "dispatches": 74,
+          "submits": 2442,
+          "groups": 2442,
+          "grids": {
+            "33,1,1": 74
+          }
+        }
+      ]
+    },
+    {
+      "native": 35,
+      "packed": 0,
+      "module_family": "rope_neox_f32",
+      "selected_case": "case14",
+      "qualification": "",
+      "dispatches": 210,
+      "groups": 59976,
+      "submits": 1071,
+      "classes": [
+        {
+          "native": 35,
+          "batch": 1,
+          "packed": 0,
+          "tile": "64,1,1",
+          "local_memory": 1,
+          "dispatches": 154,
+          "submits": 1015,
+          "groups": 59304,
+          "grids": {
+            "392,1,1": 28,
+            "784,1,1": 28,
+            "80,1,1": 28,
+            "160,1,1": 28,
+            "312,1,1": 21,
+            "624,1,1": 21
+          }
+        },
+        {
+          "native": 35,
+          "batch": 1,
+          "packed": 0,
+          "tile": "8,1,1",
+          "local_memory": 1,
+          "dispatches": 28,
+          "submits": 28,
+          "groups": 224,
+          "grids": {
+            "8,1,1": 28
+          }
+        },
+        {
+          "native": 35,
+          "batch": 1,
+          "packed": 0,
+          "tile": "16,1,1",
+          "local_memory": 1,
+          "dispatches": 28,
+          "submits": 28,
+          "groups": 448,
+          "grids": {
+            "16,1,1": 28
+          }
+        }
+      ]
+    },
+    {
+      "native": 110,
+      "packed": 0,
+      "module_family": "im2col_f32",
+      "selected_case": "case05",
+      "qualification": "",
+      "dispatches": 12,
+      "groups": 48384,
+      "submits": 960,
+      "classes": [
+        {
+          "native": 110,
+          "batch": 1,
+          "packed": 0,
+          "tile": "8,8,1",
+          "local_memory": 1,
+          "dispatches": 12,
+          "submits": 960,
+          "groups": 48384,
+          "grids": {
+            "8,25,32": 6,
+            "8,13,16": 6
+          }
+        }
+      ]
+    },
+    {
+      "native": 202,
+      "packed": 0,
+      "module_family": "add_f32_f32_f32",
+      "selected_case": "case03",
+      "qualification": "regular selected specialization",
+      "dispatches": 314,
+      "groups": 49180,
+      "submits": 816,
+      "classes": [
+        {
+          "native": 202,
+          "batch": 1,
+          "packed": 0,
+          "tile": "1,64,1",
+          "local_memory": 1,
+          "dispatches": 58,
+          "submits": 560,
+          "groups": 34332,
+          "grids": {
+            "1,512,6": 6,
+            "1,512,2": 6,
+            "1,195,1": 6,
+            "1,69,1": 2,
+            "1,231,1": 36,
+            "1,66,1": 2
+          }
+        },
+        {
+          "native": 202,
+          "batch": 1,
+          "packed": 0,
+          "tile": "1,58,1",
+          "local_memory": 1,
+          "dispatches": 256,
+          "submits": 256,
+          "groups": 14848,
+          "grids": {
+            "1,58,1": 256
+          }
+        }
+      ]
+    },
+    {
+      "native": 200,
+      "packed": 0,
+      "module_family": "mul_f32_f32_f32",
+      "selected_case": "case13",
+      "qualification": "regular selected specialization",
+      "dispatches": 436,
+      "groups": 28994,
+      "submits": 707,
+      "classes": [
+        {
+          "native": 200,
+          "batch": 1,
+          "packed": 0,
+          "tile": "1,58,1",
+          "local_memory": 1,
+          "dispatches": 74,
+          "submits": 74,
+          "groups": 4292,
+          "grids": {
+            "1,58,1": 74
+          }
+        },
+        {
+          "native": 200,
+          "batch": 1,
+          "packed": 0,
+          "tile": "1,64,1",
+          "local_memory": 1,
+          "dispatches": 194,
+          "submits": 465,
+          "groups": 21734,
+          "grids": {
+            "1,98,1": 83,
+            "1,196,1": 28,
+            "1,78,1": 62,
+            "1,156,1": 21
+          }
+        },
+        {
+          "native": 200,
+          "batch": 1,
+          "packed": 0,
+          "tile": "1,2,1",
+          "local_memory": 1,
+          "dispatches": 28,
+          "submits": 28,
+          "groups": 56,
+          "grids": {
+            "1,2,1": 28
+          }
+        },
+        {
+          "native": 200,
+          "batch": 1,
+          "packed": 0,
+          "tile": "1,4,1",
+          "local_memory": 1,
+          "dispatches": 28,
+          "submits": 28,
+          "groups": 112,
+          "grids": {
+            "1,4,1": 28
+          }
+        },
+        {
+          "native": 200,
+          "batch": 1,
+          "packed": 0,
+          "tile": "1,20,1",
+          "local_memory": 1,
+          "dispatches": 84,
+          "submits": 84,
+          "groups": 1680,
+          "grids": {
+            "1,20,1": 84
+          }
+        },
+        {
+          "native": 200,
+          "batch": 1,
+          "packed": 0,
+          "tile": "1,40,1",
+          "local_memory": 1,
+          "dispatches": 28,
+          "submits": 28,
+          "groups": 1120,
+          "grids": {
+            "1,40,1": 28
+          }
+        }
+      ]
+    },
+    {
+      "native": 121,
+      "packed": 0,
+      "module_family": "im2col_f32_f16",
+      "selected_case": "case00",
+      "qualification": "",
+      "dispatches": 6,
+      "groups": 19200,
+      "submits": 384,
+      "classes": [
+        {
+          "native": 121,
+          "batch": 1,
+          "packed": 0,
+          "tile": "1,50,1",
+          "local_memory": 1,
+          "dispatches": 6,
+          "submits": 384,
+          "groups": 19200,
+          "grids": {
+            "1,50,64": 6
+          }
+        }
+      ]
+    },
+    {
+      "native": 41,
+      "packed": 0,
+      "module_family": "set_rows_f32_f16_i64",
+      "selected_case": "case15",
+      "qualification": "ONLY packed=0; packed=1 is the different Q6 MV family",
+      "dispatches": 154,
+      "groups": 18032,
+      "submits": 378,
+      "classes": [
+        {
+          "native": 41,
+          "batch": 1,
+          "packed": 0,
+          "tile": "8,1,1",
+          "local_memory": 1,
+          "dispatches": 56,
+          "submits": 56,
+          "groups": 448,
+          "grids": {
+            "8,1,1": 56
+          }
+        },
+        {
+          "native": 41,
+          "batch": 1,
+          "packed": 0,
+          "tile": "64,1,1",
+          "local_memory": 1,
+          "dispatches": 98,
+          "submits": 322,
+          "groups": 17584,
+          "grids": {
+            "80,1,1": 56,
+            "312,1,1": 42
+          }
+        }
+      ]
+    },
+    {
+      "native": 117,
+      "packed": 0,
+      "module_family": "unclassified exact specialization",
+      "selected_case": null,
+      "qualification": "add/mul norepeat specialization is a source lead, not exact native proof",
+      "dispatches": 280,
+      "groups": 13920,
+      "submits": 375,
+      "classes": [
+        {
+          "native": 117,
+          "batch": 1,
+          "packed": 0,
+          "tile": "1,58,1",
+          "local_memory": 1,
+          "dispatches": 72,
+          "submits": 72,
+          "groups": 4176,
+          "grids": {
+            "1,58,1": 72
+          }
+        },
+        {
+          "native": 117,
+          "batch": 1,
+          "packed": 0,
+          "tile": "1,64,1",
+          "local_memory": 1,
+          "dispatches": 95,
+          "submits": 190,
+          "groups": 8510,
+          "grids": {
+            "1,98,1": 55,
+            "1,78,1": 40
+          }
+        },
+        {
+          "native": 117,
+          "batch": 1,
+          "packed": 0,
+          "tile": "1,2,1",
+          "local_memory": 1,
+          "dispatches": 57,
+          "submits": 57,
+          "groups": 114,
+          "grids": {
+            "1,2,1": 57
+          }
+        },
+        {
+          "native": 117,
+          "batch": 1,
+          "packed": 0,
+          "tile": "1,20,1",
+          "local_memory": 1,
+          "dispatches": 56,
+          "submits": 56,
+          "groups": 1120,
+          "grids": {
+            "1,20,1": 56
+          }
+        }
+      ]
+    },
+    {
+      "native": 115,
+      "packed": 0,
+      "module_family": "unclassified exact specialization",
+      "selected_case": null,
+      "qualification": "add/mul norepeat specialization is a source lead, not exact native proof",
+      "dispatches": 59,
+      "groups": 118,
+      "submits": 59,
+      "classes": [
+        {
+          "native": 115,
+          "batch": 1,
+          "packed": 0,
+          "tile": "1,2,1",
+          "local_memory": 1,
+          "dispatches": 59,
+          "submits": 59,
+          "groups": 118,
+          "grids": {
+            "1,2,1": 59
+          }
+        }
+      ]
+    },
+    {
+      "native": 29,
+      "packed": 0,
+      "module_family": "get_rows_q6_k_f32",
+      "selected_case": "case10",
+      "qualification": "",
+      "dispatches": 4,
+      "groups": 396,
+      "submits": 9,
+      "classes": [
+        {
+          "native": 29,
+          "batch": 1,
+          "packed": 0,
+          "tile": "4,16,1",
+          "local_memory": 1,
+          "dispatches": 2,
+          "submits": 7,
+          "groups": 352,
+          "grids": {
+            "4,49,1": 1,
+            "4,39,1": 1
+          }
+        },
+        {
+          "native": 29,
+          "batch": 1,
+          "packed": 0,
+          "tile": "4,1,1",
+          "local_memory": 1,
+          "dispatches": 1,
+          "submits": 1,
+          "groups": 4,
+          "grids": {
+            "4,1,1": 1
+          }
+        },
+        {
+          "native": 29,
+          "batch": 1,
+          "packed": 0,
+          "tile": "4,10,1",
+          "local_memory": 1,
+          "dispatches": 1,
+          "submits": 1,
+          "groups": 40,
+          "grids": {
+            "4,10,1": 1
+          }
+        }
+      ]
+    },
+    {
+      "native": 14,
+      "packed": 1,
+      "module_family": "argmax_f32",
+      "selected_case": "case31",
+      "qualification": "one observed workgroup, no multi-chunk batching opportunity",
+      "dispatches": 1,
+      "groups": 1,
+      "submits": 1,
+      "classes": [
+        {
+          "native": 14,
+          "batch": 1,
+          "packed": 1,
+          "tile": "1,1,1",
+          "local_memory": 1,
+          "dispatches": 1,
+          "submits": 1,
+          "groups": 1,
+          "grids": {
+            "1,1,1": 1
+          }
+        }
+      ]
+    }
+  ],
+  "all_printed_structural_classes": [
+    {
+      "native": 53,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 423,
+      "submits": 18270,
+      "groups": 146160,
+      "grids": {
+        "56,1,1": 6,
+        "56,3,1": 36,
+        "64,4,1": 83,
+        "128,4,1": 28,
+        "384,4,1": 27,
+        "64,1,1": 84,
+        "128,1,1": 28,
+        "384,1,1": 28,
+        "64,3,1": 62,
+        "128,3,1": 21,
+        "384,3,1": 20
+      }
+    },
+    {
+      "native": 44,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 272,
+      "submits": 9160,
+      "groups": 73244,
+      "grids": {
+        "30,50,1": 6,
+        "30,13,1": 6,
+        "56,3,1": 146,
+        "224,3,1": 36,
+        "64,3,1": 22,
+        "64,4,1": 28,
+        "64,1,1": 28
+      }
+    },
+    {
+      "native": 477,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 421,
+      "submits": 8258,
+      "groups": 64889,
+      "grids": {
+        "49,1,1": 55,
+        "8,49,1": 28,
+        "16,49,1": 28,
+        "1,1,1": 59,
+        "8,1,1": 28,
+        "16,1,1": 28,
+        "10,1,1": 56,
+        "8,10,1": 28,
+        "16,10,1": 28,
+        "39,1,1": 41,
+        "8,39,1": 21,
+        "16,39,1": 21
+      }
+    },
+    {
+      "native": 62,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 54,
+      "submits": 7776,
+      "groups": 7776,
+      "grids": {
+        "25,15,1": 6,
+        "7,15,1": 6,
+        "1,1,480": 6,
+        "2,2,14": 36
+      }
+    },
+    {
+      "native": 65,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 104,
+      "submits": 6760,
+      "groups": 54080,
+      "grids": {
+        "512,2,1": 48,
+        "16,1,1": 28,
+        "160,1,1": 28
+      }
+    },
+    {
+      "native": 73,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 104,
+      "submits": 5760,
+      "groups": 5760,
+      "grids": {
+        "2,4,8": 76,
+        "1,4,8": 28
+      }
+    },
+    {
+      "native": 536,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 56,
+      "submits": 5376,
+      "groups": 43008,
+      "grids": {
+        "32,16,1": 28,
+        "64,16,1": 28
+      }
+    },
+    {
+      "native": 30,
+      "batch": 1,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 74,
+      "submits": 2442,
+      "groups": 2442,
+      "grids": {
+        "33,1,1": 74
+      }
+    },
+    {
+      "native": 358,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 82,
+      "submits": 2120,
+      "groups": 16936,
+      "grids": {
+        "100,15,1": 6,
+        "4,2,16": 48,
+        "4,1,16": 28
+      }
+    },
+    {
+      "native": 64,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 36,
+      "submits": 2088,
+      "groups": 16632,
+      "grids": {
+        "462,1,1": 36
+      }
+    },
+    {
+      "native": 43,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 142,
+      "submits": 1260,
+      "groups": 10080,
+      "grids": {
+        "192,1,1": 29,
+        "32,1,1": 85,
+        "64,1,1": 28
+      }
+    },
+    {
+      "native": 41,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 2,
+      "submits": 1188,
+      "groups": 9496,
+      "grids": {
+        "4748,1,1": 2
+      }
+    },
+    {
+      "native": 35,
+      "batch": 1,
+      "packed": 0,
+      "tile": "64,1,1",
+      "local_memory": 1,
+      "dispatches": 154,
+      "submits": 1015,
+      "groups": 59304,
+      "grids": {
+        "392,1,1": 28,
+        "784,1,1": 28,
+        "80,1,1": 28,
+        "160,1,1": 28,
+        "312,1,1": 21,
+        "624,1,1": 21
+      }
+    },
+    {
+      "native": 110,
+      "batch": 1,
+      "packed": 0,
+      "tile": "8,8,1",
+      "local_memory": 1,
+      "dispatches": 12,
+      "submits": 960,
+      "groups": 48384,
+      "grids": {
+        "8,25,32": 6,
+        "8,13,16": 6
+      }
+    },
+    {
+      "native": 202,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,64,1",
+      "local_memory": 1,
+      "dispatches": 58,
+      "submits": 560,
+      "groups": 34332,
+      "grids": {
+        "1,512,6": 6,
+        "1,512,2": 6,
+        "1,195,1": 6,
+        "1,69,1": 2,
+        "1,231,1": 36,
+        "1,66,1": 2
+      }
+    },
+    {
+      "native": 200,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,64,1",
+      "local_memory": 1,
+      "dispatches": 194,
+      "submits": 465,
+      "groups": 21734,
+      "grids": {
+        "1,98,1": 83,
+        "1,196,1": 28,
+        "1,78,1": 62,
+        "1,156,1": 21
+      }
+    },
+    {
+      "native": 225,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 76,
+      "submits": 440,
+      "groups": 3520,
+      "grids": {
+        "2,2,16": 48,
+        "1,1,16": 28
+      }
+    },
+    {
+      "native": 20,
+      "batch": 8,
+      "packed": 0,
+      "tile": "4,16,1",
+      "local_memory": 1,
+      "dispatches": 296,
+      "submits": 392,
+      "groups": 111232,
+      "grids": {
+        "4,58,1": 144,
+        "4,196,1": 56,
+        "4,40,1": 56,
+        "4,156,1": 40
+      }
+    },
+    {
+      "native": 121,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,50,1",
+      "local_memory": 1,
+      "dispatches": 6,
+      "submits": 384,
+      "groups": 19200,
+      "grids": {
+        "1,50,64": 6
+      }
+    },
+    {
+      "native": 41,
+      "batch": 1,
+      "packed": 0,
+      "tile": "64,1,1",
+      "local_memory": 1,
+      "dispatches": 98,
+      "submits": 322,
+      "groups": 17584,
+      "grids": {
+        "80,1,1": 56,
+        "312,1,1": 42
+      }
+    },
+    {
+      "native": 22,
+      "batch": 8,
+      "packed": 0,
+      "tile": "4,16,1",
+      "local_memory": 1,
+      "dispatches": 56,
+      "submits": 278,
+      "groups": 136712,
+      "grids": {
+        "4,512,6": 6,
+        "4,512,2": 6,
+        "4,195,1": 6,
+        "4,231,1": 36,
+        "4,58,1": 2
+      }
+    },
+    {
+      "native": 202,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,58,1",
+      "local_memory": 1,
+      "dispatches": 256,
+      "submits": 256,
+      "groups": 14848,
+      "grids": {
+        "1,58,1": 256
+      }
+    },
+    {
+      "native": 222,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 36,
+      "submits": 252,
+      "groups": 2016,
+      "grids": {
+        "2,2,14": 36
+      }
+    },
+    {
+      "native": 344,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 36,
+      "submits": 252,
+      "groups": 2016,
+      "grids": {
+        "2,2,14": 36
+      }
+    },
+    {
+      "native": 117,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,64,1",
+      "local_memory": 1,
+      "dispatches": 95,
+      "submits": 190,
+      "groups": 8510,
+      "grids": {
+        "1,98,1": 55,
+        "1,78,1": 40
+      }
+    },
+    {
+      "native": 24,
+      "batch": 8,
+      "packed": 0,
+      "tile": "4,16,1",
+      "local_memory": 1,
+      "dispatches": 75,
+      "submits": 149,
+      "groups": 57192,
+      "grids": {
+        "4,294,1": 27,
+        "4,60,1": 28,
+        "4,234,1": 20
+      }
+    },
+    {
+      "native": 34,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 28,
+      "submits": 112,
+      "groups": 896,
+      "grids": {
+        "32,1,1": 28
+      }
+    },
+    {
+      "native": 21,
+      "batch": 8,
+      "packed": 0,
+      "tile": "4,16,1",
+      "local_memory": 1,
+      "dispatches": 104,
+      "submits": 104,
+      "groups": 35392,
+      "grids": {
+        "4,98,1": 48,
+        "4,128,1": 28,
+        "4,20,1": 28
+      }
+    },
+    {
+      "native": 200,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,20,1",
+      "local_memory": 1,
+      "dispatches": 84,
+      "submits": 84,
+      "groups": 1680,
+      "grids": {
+        "1,20,1": 84
+      }
+    },
+    {
+      "native": 200,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,58,1",
+      "local_memory": 1,
+      "dispatches": 74,
+      "submits": 74,
+      "groups": 4292,
+      "grids": {
+        "1,58,1": 74
+      }
+    },
+    {
+      "native": 117,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,58,1",
+      "local_memory": 1,
+      "dispatches": 72,
+      "submits": 72,
+      "groups": 4176,
+      "grids": {
+        "1,58,1": 72
+      }
+    },
+    {
+      "native": 115,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,2,1",
+      "local_memory": 1,
+      "dispatches": 59,
+      "submits": 59,
+      "groups": 118,
+      "grids": {
+        "1,2,1": 59
+      }
+    },
+    {
+      "native": 117,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,2,1",
+      "local_memory": 1,
+      "dispatches": 57,
+      "submits": 57,
+      "groups": 114,
+      "grids": {
+        "1,2,1": 57
+      }
+    },
+    {
+      "native": 20,
+      "batch": 8,
+      "packed": 0,
+      "tile": "1,64,1",
+      "local_memory": 1,
+      "dispatches": 20,
+      "submits": 56,
+      "groups": 25884,
+      "grids": {
+        "1,512,6": 6,
+        "1,512,2": 6,
+        "1,195,1": 6,
+        "1,69,1": 2
+      }
+    },
+    {
+      "native": 26,
+      "batch": 8,
+      "packed": 0,
+      "tile": "1,64,1",
+      "local_memory": 1,
+      "dispatches": 56,
+      "submits": 56,
+      "groups": 5488,
+      "grids": {
+        "1,98,1": 56
+      }
+    },
+    {
+      "native": 41,
+      "batch": 1,
+      "packed": 0,
+      "tile": "8,1,1",
+      "local_memory": 1,
+      "dispatches": 56,
+      "submits": 56,
+      "groups": 448,
+      "grids": {
+        "8,1,1": 56
+      }
+    },
+    {
+      "native": 117,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,20,1",
+      "local_memory": 1,
+      "dispatches": 56,
+      "submits": 56,
+      "groups": 1120,
+      "grids": {
+        "1,20,1": 56
+      }
+    },
+    {
+      "native": 24,
+      "batch": 8,
+      "packed": 0,
+      "tile": "4,6,1",
+      "local_memory": 1,
+      "dispatches": 29,
+      "submits": 29,
+      "groups": 696,
+      "grids": {
+        "4,6,1": 29
+      }
+    },
+    {
+      "native": 200,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,2,1",
+      "local_memory": 1,
+      "dispatches": 28,
+      "submits": 28,
+      "groups": 56,
+      "grids": {
+        "1,2,1": 28
+      }
+    },
+    {
+      "native": 35,
+      "batch": 1,
+      "packed": 0,
+      "tile": "8,1,1",
+      "local_memory": 1,
+      "dispatches": 28,
+      "submits": 28,
+      "groups": 224,
+      "grids": {
+        "8,1,1": 28
+      }
+    },
+    {
+      "native": 200,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,4,1",
+      "local_memory": 1,
+      "dispatches": 28,
+      "submits": 28,
+      "groups": 112,
+      "grids": {
+        "1,4,1": 28
+      }
+    },
+    {
+      "native": 35,
+      "batch": 1,
+      "packed": 0,
+      "tile": "16,1,1",
+      "local_memory": 1,
+      "dispatches": 28,
+      "submits": 28,
+      "groups": 448,
+      "grids": {
+        "16,1,1": 28
+      }
+    },
+    {
+      "native": 20,
+      "batch": 8,
+      "packed": 0,
+      "tile": "1,4,1",
+      "local_memory": 1,
+      "dispatches": 28,
+      "submits": 28,
+      "groups": 112,
+      "grids": {
+        "1,4,1": 28
+      }
+    },
+    {
+      "native": 200,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,40,1",
+      "local_memory": 1,
+      "dispatches": 28,
+      "submits": 28,
+      "groups": 1120,
+      "grids": {
+        "1,40,1": 28
+      }
+    },
+    {
+      "native": 29,
+      "batch": 1,
+      "packed": 0,
+      "tile": "4,16,1",
+      "local_memory": 1,
+      "dispatches": 2,
+      "submits": 7,
+      "groups": 352,
+      "grids": {
+        "4,49,1": 1,
+        "4,39,1": 1
+      }
+    },
+    {
+      "native": 31,
+      "batch": 8,
+      "packed": 0,
+      "tile": "4,16,1",
+      "local_memory": 1,
+      "dispatches": 3,
+      "submits": 3,
+      "groups": 1048,
+      "grids": {
+        "4,86,1": 1,
+        "4,98,1": 1,
+        "4,78,1": 1
+      }
+    },
+    {
+      "native": 20,
+      "batch": 8,
+      "packed": 0,
+      "tile": "1,58,1",
+      "local_memory": 1,
+      "dispatches": 2,
+      "submits": 2,
+      "groups": 116,
+      "grids": {
+        "1,58,1": 2
+      }
+    },
+    {
+      "native": 20,
+      "batch": 8,
+      "packed": 0,
+      "tile": "1,20,1",
+      "local_memory": 1,
+      "dispatches": 2,
+      "submits": 2,
+      "groups": 40,
+      "grids": {
+        "1,20,1": 2
+      }
+    },
+    {
+      "native": 20,
+      "batch": 8,
+      "packed": 0,
+      "tile": "1,12,1",
+      "local_memory": 1,
+      "dispatches": 2,
+      "submits": 2,
+      "groups": 24,
+      "grids": {
+        "1,12,1": 2
+      }
+    },
+    {
+      "native": 20,
+      "batch": 8,
+      "packed": 0,
+      "tile": "1,2,1",
+      "local_memory": 1,
+      "dispatches": 1,
+      "submits": 1,
+      "groups": 2,
+      "grids": {
+        "1,2,1": 1
+      }
+    },
+    {
+      "native": 29,
+      "batch": 1,
+      "packed": 0,
+      "tile": "4,1,1",
+      "local_memory": 1,
+      "dispatches": 1,
+      "submits": 1,
+      "groups": 4,
+      "grids": {
+        "4,1,1": 1
+      }
+    },
+    {
+      "native": 14,
+      "batch": 1,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 1,
+      "submits": 1,
+      "groups": 1,
+      "grids": {
+        "1,1,1": 1
+      }
+    },
+    {
+      "native": 29,
+      "batch": 1,
+      "packed": 0,
+      "tile": "4,10,1",
+      "local_memory": 1,
+      "dispatches": 1,
+      "submits": 1,
+      "groups": 40,
+      "grids": {
+        "4,10,1": 1
+      }
+    }
+  ],
+  "q6_head_actual": "Two packed=1,local_memory=1,native41,grid4748x1x1,batch8,594-submit traces. Do not mix native41 packed=0 set_rows.",
+  "constraints": {
+    "three_local_families": "Current oneWG resident <=4096 half-register slots, no private, existing NIR local-only safety, exact 2SSBO/push120 interface. Connect to existing <=8 sequential chunks only; no cap or native shader change.",
+    "remaining_nonbarrier": "Existing generic selector rejects loops or native>32 unless its separate exact short-buffer class applies. Larger generic batching is not authorized by counts alone.",
+    "unknown_115_117": "434 submits explicitly unclassified at exact specialization level; no admission or complete coverage claim.",
+    "driver_architecture": "Each internal flush currently waits immediately. Independent deferred-completion design must preserve each flush/WFI and bound retained submissions; queue depth is distinct from physical WG residency."
+  },
+  "next": "One coherent local-selector plus independently reviewed bounded deferred-completion plan, focused representative numerical/lifetime/guard checks. No isolated-selector or unchanged full-model run.",
+  "performance_measurement": false
+}

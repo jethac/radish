@@ -1,0 +1,328 @@
+--- a/src/freedreno/radish/rd_queue.c
++++ b/src/freedreno/radish/rd_queue.c
+@@ -7,6 +7,7 @@
+ #include "common/fd5_hw.h"
+ #include "common/freedreno_common.h"
+ #include "drm/freedreno_ringbuffer.h"
++#include "drm/freedreno_ringbuffer_sp.h"
+ #include "vk_sync.h"
+ #include "util/u_math.h"
+ #include "util/u_atomic.h"
+@@ -507,6 +508,176 @@
+    return result;
+ }
+ 
++struct rd_pending_submit {
++   struct fd_submit *submit;
++   struct fd_ringbuffer *ring;
++   struct fd_fence *fence;
++   struct fd_bo *cs_backing;
++};
++
++struct rd_submit_window {
++   struct rd_pending_submit pending[8];
++   unsigned count, chunks, cs_bytes, bo_refs, backing_bytes;
++   size_t metadata_bytes;
++};
++
++static void
++rd_window_report(const char *action, const char *reason,
++                 const struct rd_submit_window *window, VkResult result)
++{
++   static int counter;
++   if (!debug_get_bool_option("TRANSCRIBE_RESOURCE_DIAGNOSTICS", false) ||
++       p_atomic_inc_return(&counter) > 256)
++      return;
++   fprintf(stderr, "RADISH_DEFERRED_%s slots=%u chunks=%u cs_bytes=%u bo_refs=%u metadata_bytes=%zu backing_bytes=%u reason=%s result=%d\n",
++      action, window->count, window->chunks, window->cs_bytes,
++      window->bo_refs, window->metadata_bytes, window->backing_bytes, reason, result);
++   fflush(stderr);
++}
++
++static VkResult
++rd_window_drain(struct rd_device *device, struct rd_submit_window *window,
++                const char *reason)
++{
++   if (!window->count)
++      return VK_SUCCESS;
++   struct fd_fence *last = window->pending[window->count - 1].fence;
++   VkResult result = VK_ERROR_DEVICE_LOST;
++   if (!fd_pipe_wait_timeout(device->pipe, last, 5000000000ull)) {
++      uint64_t faults = 0;
++      if (!fd_pipe_get_param(device->pipe, FD_CTX_FAULTS, &faults) &&
++          faults == device->faults)
++         result = VK_SUCCESS;
++   }
++   rd_window_report("DRAIN", reason, window, result);
++   for (unsigned i = 0; i < window->count; i++) {
++      fd_fence_del(window->pending[i].fence);
++      fd_ringbuffer_del(window->pending[i].ring);
++      fd_submit_del(window->pending[i].submit);
++   }
++   memset(window, 0, sizeof(*window));
++   return result;
++}
++
++static bool
++rd_window_pipeline(struct rd_device *device, const struct rd_dispatch *dispatch)
++{
++   const struct rd_pipeline *p = dispatch->pipeline;
++   const struct ir3_shader_variant *v = p->variant;
++   const uint64_t threads = (uint64_t)v->local_size[0] *
++      v->local_size[1] * v->local_size[2];
++   if (fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) != 506 ||
++       fd_device_version(device->fd) < FD_VERSION_SOFTPIN || dispatch->indirect ||
++       p->sampling_nir || p->sampling_variants || !p->batch_local_memory ||
++       p->linear_subgroups || p->linear_barriers ||
++       v->shader_options.workgroup_resident_threads ||
++       !v->shader_options.nir_options.a5xx_ssbo_size_consts ||
++       v->pvtmem_size || v->constant_data_size || v->info.preamble_instrs_count ||
++       p->private_bo || !threads || threads > 128 ||
++       threads * ir3_shader_halfregs(v) > 4096 ||
++       v->shared_size > 16384 || p->resource_count < 1 || p->resource_count > 5 ||
++       v->num_ssbos != p->resource_count ||
++       p->descriptor_count != p->resource_count || p->buffer_count != p->resource_count ||
++       p->resource_usage.texture_count || p->resource_usage.sampler_count ||
++       p->resource_usage.image_count || p->sampling_mask || v->image_mapping.num_tex)
++      return false;
++   for (unsigned i = 0; i < p->resource_count; i++) {
++      if (p->resources[i].type != VK_DESCRIPTOR_TYPE_STORAGE_BUFFER)
++         return false;
++   }
++   return true;
++}
++
++static bool
++rd_window_footprint(struct fd_submit *submit, struct fd_ringbuffer *ring,
++                    uint32_t *initial_start, struct fd_bo **backing,
++                    unsigned *references, size_t *metadata)
++{
++   const struct fd_submit_sp *sp = to_fd_submit_sp(submit);
++   const struct fd_ringbuffer_sp *rp = to_fd_ringbuffer_sp(ring);
++   if (ring->start != initial_start || ring->size != 32768 ||
++       rp->u.nr_cmds != 1 || rp->u.max_cmds > 5 ||
++       sp->nr_bos > 12 || sp->max_bos > 20 ||
++       sp->nr_suballoc_bos > 12 || sp->max_suballoc_bos > 20 ||
++       sp->bo_table->size > 43 || sp->suballoc_bo_table->size > 43 ||
++       sp->suballoc_ring || !sp->ring_pool.parent ||
++       (uint64_t)sp->ring_pool.parent->element_size *
++          sp->ring_pool.parent->num_elements + sizeof(void *) > 4096)
++      return false;
++   struct fd_bo *bo = rp->ring_bo;
++   *backing = bo->handle ? bo : fd_bo_heap_block(bo);
++   if (!*backing || (*backing)->size > 4 * 1024 * 1024)
++      return false;
++   *references = sp->nr_bos + sp->nr_suballoc_bos;
++   *metadata = sizeof(*sp) + sizeof(*rp) + sizeof(struct fd_fence) + 4096 +
++      (sp->max_bos + sp->max_suballoc_bos) * sizeof(struct fd_bo *) +
++      rp->u.max_cmds * sizeof(struct fd_cmd_sp) +
++      2 * sizeof(struct hash_table) +
++      (sp->bo_table->size + sp->suballoc_bo_table->size) * sizeof(struct hash_entry);
++   return *metadata <= 16384;
++}
++
++static VkResult
++rd_finish_dispatch_submit(struct rd_device *device, struct fd_submit *submit,
++                          struct fd_ringbuffer *ring,
++                          struct rd_submit_profile *profile,
++                          struct rd_gpu_elapsed *sample,
++                          struct rd_submit_window *window,
++                          uint32_t *initial_start, unsigned chunks)
++{
++   if (!window)
++      return rd_finish_submit(device, submit, ring, profile, sample);
++   device->submit_count++;
++   struct fd_fence *fence = fd_submit_flush(submit, -1, false);
++   if (!fence) {
++      rd_window_drain(device, window, "error");
++      fd_ringbuffer_del(ring);
++      fd_submit_del(submit);
++      return VK_ERROR_DEVICE_LOST;
++   }
++   fd_fence_flush(fence);
++   if (fence->submit_error) {
++      rd_window_drain(device, window, "error");
++      fd_fence_del(fence);
++      fd_ringbuffer_del(ring);
++      fd_submit_del(submit);
++      return VK_ERROR_DEVICE_LOST;
++   }
++   struct fd_bo *backing = NULL;
++   unsigned references = 0;
++   size_t metadata = 0;
++   bool bounded = rd_window_footprint(submit, ring, initial_start,
++                                       &backing, &references, &metadata);
++   bool known_backing = false;
++   for (unsigned i = 0; i < window->count; i++)
++      known_backing |= window->pending[i].cs_backing == backing;
++   const uint64_t backing_bytes = window->backing_bytes +
++      (bounded && !known_backing ? backing->size : 0);
++   if (!bounded || backing_bytes > 4 * 1024 * 1024) {
++      VkResult before = rd_window_drain(device, window, "fallback");
++      VkResult result = fd_pipe_wait_timeout(device->pipe, fence, 5000000000ull) ?
++         VK_ERROR_DEVICE_LOST : VK_SUCCESS;
++      uint64_t faults = 0;
++      if (fd_pipe_get_param(device->pipe, FD_CTX_FAULTS, &faults) ||
++          faults != device->faults)
++         result = VK_ERROR_DEVICE_LOST;
++      fd_fence_del(fence);
++      fd_ringbuffer_del(ring);
++      fd_submit_del(submit);
++      return before == VK_SUCCESS ? result : before;
++   }
++   window->pending[window->count++] = (struct rd_pending_submit){submit, ring, fence, backing};
++   window->chunks += chunks;
++   window->cs_bytes += 32768;
++   window->bo_refs += references;
++   window->metadata_bytes += metadata;
++   window->backing_bytes = backing_bytes;
++   rd_window_report("ENQUEUE", "gpu", window, VK_SUCCESS);
++   if (window->count == ARRAY_SIZE(window->pending))
++      return rd_window_drain(device, window, "capacity");
++   return VK_SUCCESS;
++}
++
+ VkResult
+ rd_query_timestamp(struct rd_device *device, struct rd_query_pool *pool,
+                     uint64_t *value)
+@@ -749,7 +920,7 @@
+ 
+ static VkResult
+ rd_execute_dispatch(struct rd_device *device, const struct rd_dispatch *dispatch,
+-                    struct rd_submit_profile *profile)
++                    struct rd_submit_profile *profile, struct rd_submit_window *window)
+ {
+    if (!dispatch->grid[0] || !dispatch->grid[1] || !dispatch->grid[2])
+       return VK_SUCCESS;
+@@ -760,6 +931,12 @@
+          return VK_ERROR_UNKNOWN;
+    }
+    const struct ir3_shader_variant *v = dispatch->pipeline->variant;
++   if (window && (profile || !rd_window_pipeline(device, dispatch))) {
++      VkResult drained = rd_window_drain(device, window, "unsupported");
++      if (drained != VK_SUCCESS)
++         return drained;
++      window = NULL;
++   }
+    uint32_t tile[3], budget = v->has_barrier ? 1 : 64;
+    int64_t shared_groups = debug_get_num_option("RADISH_SHARED_GROUPS", 1);
+    if (v->has_barrier &&
+@@ -934,6 +1111,7 @@
+       fflush(stderr);
+    }
+    unsigned chunks = 0;
++   uint32_t *initial_ring_start = NULL;
+    uint32_t base[3];
+    for (base[2] = 0; base[2] < dispatch->grid[2]; base[2] += tile[2]) {
+       for (base[1] = 0; base[1] < dispatch->grid[1]; base[1] += tile[1]) {
+@@ -956,6 +1134,8 @@
+                   return VK_ERROR_OUT_OF_HOST_MEMORY;
+                }
+             }
++            if (!chunks)
++               initial_ring_start = ring->start;
+             uint32_t grid[3];
+             for (unsigned i = 0; i < 3; i++)
+                grid[i] = MIN2(tile[i], dispatch->grid[i] - base[i]);
+@@ -971,8 +1151,8 @@
+                   rd_gpu_elapsed_emit(ring, sample->bo, 16);
+                   OUT_WFI5(ring);
+                }
+-               VkResult result = rd_finish_submit(device, submit, ring, profile,
+-                                                   sample);
++               VkResult result = rd_finish_dispatch_submit(device, submit, ring, profile,
++                                                   sample, window, initial_ring_start, chunks);
+                rd_gpu_elapsed_release(sample);
+                sample = NULL;
+                submit = NULL;
+@@ -986,7 +1166,8 @@
+    }
+    if (submit) {
+       rd_flush(device, ring);
+-      VkResult result = rd_finish_submit(device, submit, ring, profile, sample);
++      VkResult result = rd_finish_dispatch_submit(device, submit, ring, profile, sample,
++                                                    window, initial_ring_start, chunks);
+       rd_gpu_elapsed_release(sample);
+       if (diagnostics) {
+          fprintf(stderr, "RADISH_DISPATCH_END native=%u result=%d submits=%" PRIu64 "\n",
+@@ -1108,6 +1289,8 @@
+ {
+    struct rd_device *device = container_of(queue->base.device, struct rd_device, vk);
+    bool profile = debug_get_bool_option("RADISH_PROFILE", false);
++   struct rd_submit_window window = {0};
++   bool deferred = !profile && debug_get_num_option("RADISH_BATCH_CHUNKS", 1) == 8;
+    __sync_synchronize();
+    VkResult result = vk_sync_wait_many(&device->vk, submit->wait_count,
+       submit->waits, VK_SYNC_WAIT_COMPLETE, UINT64_MAX);
+@@ -1123,6 +1306,12 @@
+          struct rd_submit_profile submit_profile = {0};
+          const struct rd_dispatch *dispatch = &recorded->dispatch;
+          struct rd_dispatch indirect;
++         if (recorded->type != RD_CMD_DISPATCH || recorded->dispatch.indirect ||
++             !rd_window_pipeline(device, &recorded->dispatch)) {
++            result = rd_window_drain(device, &window, "cpu");
++            if (result != VK_SUCCESS)
++               return rd_queue_fail(queue);
++         }
+          if (recorded->type == RD_CMD_DISPATCH) {
+             result = VK_SUCCESS;
+             indirect = *dispatch;
+@@ -1144,7 +1333,8 @@
+                result = rd_prepare_sampling(device, &indirect);
+             if (result == VK_SUCCESS)
+                result = rd_execute_dispatch(device, dispatch,
+-                                            profile ? &submit_profile : NULL);
++                                            profile ? &submit_profile : NULL,
++                                            deferred ? &window : NULL);
+             if (result == VK_SUCCESS)
+                rd_query_account_dispatch(device, dispatch);
+             if (indirect.sampling_addresses)
+@@ -1190,10 +1380,15 @@
+                        (unsigned)recorded->type, submits, elapsed, result);
+             }
+          }
+-         if (result != VK_SUCCESS)
++         if (result != VK_SUCCESS) {
++            rd_window_drain(device, &window, "error");
+             return rd_queue_fail(queue);
+-      }
+-   }
++         }
++      }
++   }
++   result = rd_window_drain(device, &window, "final");
++   if (result != VK_SUCCESS)
++      return rd_queue_fail(queue);
+    result = vk_sync_signal_many(&device->vk, submit->signal_count, submit->signals);
+    return result == VK_SUCCESS ? VK_SUCCESS : rd_queue_fail(queue);
+ }
+--- a/src/freedreno/drm/freedreno_drmif.h
++++ b/src/freedreno/drm/freedreno_drmif.h
+@@ -105,6 +105,7 @@
+     */
+    int fence_fd;
+    bool use_fence_fd;
++   int submit_error;
+ };
+ 
+ struct fd_fence *fd_fence_new(struct fd_pipe *pipe, bool use_fence_fd);
+--- a/src/freedreno/drm/freedreno_pipe.c
++++ b/src/freedreno/drm/freedreno_pipe.c
+@@ -225,6 +225,7 @@
+    util_queue_fence_init(&f->ready);
+    f->use_fence_fd = use_fence_fd;
+    f->fence_fd = -1;
++   f->submit_error = -EINPROGRESS;
+ 
+    return f;
+ }
+--- a/src/freedreno/drm/msm/msm_ringbuffer_sp.c
++++ b/src/freedreno/drm/msm/msm_ringbuffer_sp.c
+@@ -131,6 +131,7 @@
+ 
+    ret = drmCommandWriteRead(pipe->dev->fd, DRM_MSM_GEM_SUBMIT, &req,
+                              sizeof(req));
++   fd_submit->out_fence->submit_error = ret;
+    if (ret) {
+       ERROR_MSG("submit failed: %d (%s)", ret, strerror(errno));
+       msm_dump_submit(&req);

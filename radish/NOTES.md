@@ -1,5 +1,19 @@
 # Radish status
 
+## 2026-11-03: build coherent queue overhead changes
+
+The [new source and build](results/optimization-coherent-queue-source-build-0046.json)
+retain up to eight ordered submissions while preserving every GPU flush and
+checking each enqueue result. Existing norm and transpose shaders also use the
+bounded batching policy. AArch64 layout checks preserve every existing fence
+field offset and its size; the new error status occupies padding.
+
+This candidate has not run on the target. Dependency and local-family checks,
+one focused TTS regression, and the original ASR workload remain required.
+The [last ASR capture](results/optimization-asr-mv32-holistic-0046.json) is preserved:
+streaming prefill timed out before requested outputs. Performance measurement
+remains forbidden until all five integrated areas pass.
+
 ## 2026-11-03: preserve the MV32 full-model timeout
 
 [The unchanged full run](results/optimization-asr-mv32-timeout-0046.json) completes

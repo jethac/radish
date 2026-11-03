@@ -1,5 +1,5 @@
 {
-  "status": "Active qualification candidate d4d0/4d20: source/build,3native and6912 exact numerical/fullpartial gates closed. Original full42969 timed out during streaming prefill before real outputs; failure preserved. No cache replay, performance or all-five completion claim.",
+  "status": "Host qualification candidate d4d0/6f15: coherent deferred waits and local-family batching source/build complete, target checks pending. Latest model result remains42969 on prior4d20; full model/cache and all-five performance gate remain open/closed respectively.",
   "application": "Frozen ASR source with previously published GQA, quantized phase, memory-liveness and unit-axis overlays",
   "ordered_additive_patches": [
     {
@@ -118,6 +118,18 @@
       "sha256": "3278bb28d0496d5c1032f104eb45874419c42d5deef4f521b8e80adce86ce6e3",
       "strip": 1,
       "apply_root": "Mesa root after RMS batching"
+    },
+    {
+      "file": "0046-bounded-deferred-submit.patch",
+      "sha256": "2846df45ce9544c6b4a31a607f510769a4db5dd318cc10f700a9ed663b67f4db",
+      "strip": 1,
+      "apply_root": "Mesa root after MV32 queue overlay; apply in listed order"
+    },
+    {
+      "file": "0046-local-buffer-batching.patch",
+      "sha256": "0eb63e877f43086da423f668b80cd264b70d0871652f9b4df333503da8ae75ac",
+      "strip": 1,
+      "apply_root": "Mesa root after MV32 queue overlay; apply in listed order"
     }
   ],
   "cache_source_files": {
@@ -563,9 +575,10 @@
     "result_sha256": "56a897bb432a0d13a460277b80be1e014994af94a31a9f945512bac17dd7b7e7"
   },
   "current_driver": {
-    "full": "0d5496a7528bddab3ac1ee6f1c75f5ba417d7deeba40bfbbd66eb844c48fe9ff",
-    "deployed_strip": "4d2012f00c8f874649fab64d52f000b57c52236b87f1818173cc2e233d0f71af",
-    "source": "0046-asr-mv32-batching.patch overa6d65; queueobject only"
+    "full": "f3763bf6c1c0d464369a099f3bbc96325b982941cc5336495c62386f79b9d208",
+    "deployed_strip": "6f1551cc8ed772439d53157b50e518bef79b3a49f3144e058127faa8740a71ee",
+    "source": "0046-bounded-deferred-submit.patch +0046-local-buffer-batching.patch over4d20; queue plus two DRM objects, existing ABI unchanged",
+    "target_status": "not yet executed"
   },
   "incremental_source_review": "531fcaaa71331df51fca79dbd9c52e8664ae373cf76c9ec331b9eee2a25c3799",
   "incremental_build_runner_review": "d6930974ea4a41177dd4c46c34dc55cf96b1f58ffe327766190c245e02de7d01",
@@ -1373,5 +1386,110 @@
       "scope": "Only rd_queue.c.o changed overa6d65; unchanged ABI/header/pipeline/cache/compiler/memory/shaders"
     }
   },
-  "historical_warmup_result": "optimization-asr-stream-warmup-timeout-0046.json"
+  "historical_warmup_result": "optimization-asr-stream-warmup-timeout-0046.json",
+  "coherent_queue_stage": {
+    "source_build_receipt": "5c975036e9b5f893fd869180c81a9e71ef3a757a0d453d5e4e8e14f22952a348",
+    "build": {
+      "status": "PASS isolated coherent v2 host build; source/header/target counterpart pending",
+      "source_release": "64377b635976e753fb29a792684bf53602bbae726b97f382acf2e179d24dd2ef",
+      "source_files": {
+        "src/freedreno/radish/rd_queue.c": "4d86095b211476ca784e35f1877b539bd86dc41752bbcc420e38b5bcef8bbe48",
+        "src/freedreno/drm/freedreno_drmif.h": "636309854ead8becef8901a9e46c254d59c5d7e36134d70cdb5828f621fc0b70",
+        "src/freedreno/drm/freedreno_pipe.c": "85e8afb8bb9c1e85a196f2eff683999cb14089471fac8cc12fa5c8eccc4115a2",
+        "src/freedreno/drm/msm/msm_ringbuffer_sp.c": "535d5a7d7fd517e70a8cdb17324a3278220fc808704eea59244bf96b1eba2f59"
+      },
+      "object": "63503e8667a5c4314ef8ba0900c57fdc062639c6e964c3029051fe58d2238ffe",
+      "drm_archive": "11e7e2e4ce74ace77632d5c460f68663dee35e245c92a3177135afbd410e30a5",
+      "drm_objects": {
+        "freedreno_pipe.c.o": "a035e451e5e1e250c14751a121e4f1ba934b9d4e67b24bd7f4dc5b4639ce326c",
+        "msm_msm_ringbuffer_sp.c.o": "70d169251513cd9bc91d8664798b4b77fbf169f5b8aec4fab540ef712dd592e9"
+      },
+      "drm_base_archive": "8eaa794b66525b3ce4b637131dfb549ea7ab5ddd4883a0cd7ed96ae052d07642",
+      "commands": "8366d260c3a0c2e5a16a9c194715d50fe9233b5a8ef81f791ec1c22a0dabfa98",
+      "layout": "f777fa14e8d0a75de5d9f79d86daf3525484bbd2bef53f0fec3680281f405d76",
+      "argv": [
+        "clang++",
+        "--target=aarch64-linux-gnu",
+        "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+        "-mcpu=cortex-a53",
+        "-o",
+        "/run/media/jethac/Shared/radish/optimization-five-coherent-queue-v2-driver-0046/libvulkan_radish.so",
+        "src/freedreno/radish/libvulkan_radish.so.p/meson-generated_.._rd_entrypoints.c.o",
+        "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/cache-build/rd_instance.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_device.c.o",
+        "/run/media/jethac/Shared/radish/optimization-five-phase-release-driver-0046/rd_memory.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_descriptor.c.o",
+        "/run/media/jethac/Shared/radish/optimization-five-quant-queue-driver-0046/rd_pipeline.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_command.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_sampling.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_nir_sampling.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_nir_resources.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_nir_robust.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_resources.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_transfer.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_image.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_event.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_query.c.o",
+        "/run/media/jethac/Shared/radish/optimization-five-coherent-queue-v2-driver-0046/rd_queue.c.o",
+        "-L/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib",
+        "-Wl,--as-needed",
+        "-Wl,--no-undefined",
+        "-shared",
+        "-fPIC",
+        "-Wl,-soname,libvulkan_radish.so",
+        "-Wl,--whole-archive",
+        "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/cache-build/rd_pipeline_cache.cpp.o",
+        "-Wl,--start-group",
+        "src/vulkan/runtime/libvulkan_lite_runtime.a",
+        "src/vulkan/runtime/libvulkan_runtime.a",
+        "src/vulkan/runtime/libvulkan_instance.a",
+        "-Wl,--no-whole-archive",
+        "-fuse-ld=lld",
+        "--rtlib=libgcc",
+        "-Wl,-rpath-link,/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib",
+        "/run/media/jethac/Shared/radish/optimization-five-coherent-queue-v2-driver-0046/libfreedreno_drm.a",
+        "src/util/libmesa_util.a",
+        "src/util/libmesa_util_simd.a",
+        "src/util/blake3/libblake3.a",
+        "src/c11/impl/libmesa_util_c11.a",
+        "src/freedreno/ir3/libfreedreno_ir3.a",
+        "src/freedreno/isa/libir3encode.a",
+        "/run/media/jethac/Shared/radish/compute11-idiv-isolated-build-0045/libnir.idiv.a",
+        "src/compiler/libcompiler.a",
+        "src/freedreno/common/libfreedreno_common.a",
+        "src/freedreno/isa/libir3decode.a",
+        "src/compiler/isaspec/libisaspec.a",
+        "src/freedreno/fdl/libfreedreno_layout.a",
+        "src/vulkan/util/libvulkan_util.a",
+        "src/compiler/spirv/libvtn.a",
+        "-Wl,--version-script",
+        "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/vulkan/vulkan.sym",
+        "-Wl,-Bsymbolic",
+        "-Wl,--gc-sections",
+        "/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/libz.so",
+        "-pthread",
+        "-lm",
+        "/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/libdrm.so",
+        "-Wl,--end-group"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build",
+      "strip_argv": [
+        "llvm-strip",
+        "--strip-debug",
+        "-o",
+        "/run/media/jethac/Shared/radish/optimization-five-coherent-queue-v2-driver-0046/libvulkan_radish.stripped.so",
+        "/run/media/jethac/Shared/radish/optimization-five-coherent-queue-v2-driver-0046/libvulkan_radish.so"
+      ],
+      "base_result": "48611505b4a35d7a7082745f73dac3faba2090847e14db274a3b372281ff832f",
+      "sha256": "f3763bf6c1c0d464369a099f3bbc96325b982941cc5336495c62386f79b9d208",
+      "strip_sha256": "6f1551cc8ed772439d53157b50e518bef79b3a49f3144e058127faa8740a71ee",
+      "scope": "Only reviewed queue composition and two DRM archive members; other fd_fence consumers require offset/sole-allocator source audit"
+    },
+    "target_status": "Pending focused and integrated checks; never measured"
+  },
+  "prior_driver": {
+    "full": "0d5496a7528bddab3ac1ee6f1c75f5ba417d7deeba40bfbbd66eb844c48fe9ff",
+    "deployed_strip": "4d2012f00c8f874649fab64d52f000b57c52236b87f1818173cc2e233d0f71af",
+    "source": "0046-asr-mv32-batching.patch overa6d65; queueobject only"
+  }
 }
