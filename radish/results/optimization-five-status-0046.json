@@ -92,7 +92,7 @@
       "qualification": "CLOSED for pinned precision and actual TTS/ASR persistent compiled-cache lifecycle, including fresh-process accepted import and original outputs. No cache-hit count, speedup or broader accuracy claim."
     }
   ],
-  "measurement_policy": "All-five prerequisite closed; coordinator explicitly released matched T168 CPU/GPU baseline under original controls and PROFILE0. No new performance result collected at this checkpoint.",
+  "measurement_policy": "Five-area milestone is closed and matched timing authorized. Initial43a CPU run was discovered to be serial despite requested4threads; preserved/excluded from fairCPU4 comparison. GPU timing held until source-identical ON/ON current build is paired. No GPU speedup claim.",
   "patches": {
     "0046-radish-compiled-pipeline-cache.patch": "3676b04a9f71b2f0ac676bb327693059193797218621e141706f91b09bf754af",
     "0046-radish-queue-state-reuse.patch": "e2df8c5915b011b20d67b41352f4d126be922d0bfbf0989d9d3b0bc43e7fc728",
@@ -259,5 +259,7 @@
     "sha256": "c10f060796f69fca5c85b9e7f5178ffa687b2eb49fb71cfb9530c3b7c8cf53ab",
     "status": "PASS exact one-request phrase/prefix/placement/resources after actual accepted670548-byte import; all34 canonical compiled key/payload/checksum records equal cold. File difference is record order only."
   },
-  "timing_release": "optimization-matched-t168-timing-release-0046.json"
+  "timing_release": "optimization-matched-t168-timing-release-0046.json",
+  "cpu_parallelism_erratum": "optimization-cpu-parallelism-erratum-0046.json",
+  "serial_cpu_observation": "optimization-serial-cpu-observation-0046.json"
 }

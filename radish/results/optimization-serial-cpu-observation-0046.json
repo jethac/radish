@@ -1,0 +1,108 @@
+{
+  "status": "Two-request T168 original numerical checks PASS; requested4-thread CPU comparison INVALID because actual ncnn core is serial",
+  "handle": 97720,
+  "runtime_sha256": "43a966cec03e890b67b851d2e553504935aad1a765a8a6c120f7f3f4d5615ae5",
+  "archive_sha256": "8df626f39c42f4e7f9f6cd8f4ba171f58651de2d001bfe4780bc49d2b2d18729",
+  "threading": "Requested ncnn4; effective ncnn core serial due OPENMP/SIMPLEOMP OFF. ORT frontend4 remains distinct.",
+  "independent_threading_receipt": "optimization-cpu-parallelism-erratum-0046.json",
+  "numerical": {
+    "passed": true,
+    "requests": [
+      {
+        "request": 0,
+        "capture": "/run/media/jethac/Shared/radish/kokoro-runtime-ja-greet-single-cpu-packed-opt0046-current-cpu-norm-affine-snake-deconv2d-loop/request-000",
+        "report": "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/prepared-t168-performance/current-matched-plan/cpu-validation-00.json",
+        "sha256": "c52af290e705a85ab35b40b4d5ad007f3359e0c851a1685d94d2222873b1c341",
+        "core": {
+          "values": 443542,
+          "actual": {
+            "bytes": 1774168,
+            "sha256": "297b1d81de6a28ba2208f414e0b84dbaca79775866a8e2e1b70920e2ca543eba"
+          },
+          "reference": {
+            "bytes": 1774168,
+            "sha256": "ef963ac988d0b81f476d407e0f0512d455ad1c7ce749e4267f43af8ceae09de9"
+          },
+          "max_abs_error": 0.000301361083984375,
+          "relative_rms": 2.1498286074653708e-06,
+          "snr_db": 113.35192324633036,
+          "atol": 0.002,
+          "rtol": 0.002,
+          "minimum_snr_db": null,
+          "mismatches": 0,
+          "passed": true
+        },
+        "waveform": {
+          "values": 100800,
+          "actual": {
+            "bytes": 403200,
+            "sha256": "50b769031c2714e5d941aaa84badd8c6c8365f0a86a4a2e1254b09257922f102"
+          },
+          "reference": {
+            "bytes": 403200,
+            "sha256": "26b5910c6ed2dc0f80cc042e46fae1fbdd3c390a3c13c42098dcea2d34060efb"
+          },
+          "max_abs_error": 6.629526615142822e-05,
+          "relative_rms": 4.2878091041964344e-05,
+          "snr_db": 87.35529115865447,
+          "atol": 0.0002,
+          "rtol": 0.002,
+          "minimum_snr_db": 50.0,
+          "mismatches": 0,
+          "passed": true
+        }
+      },
+      {
+        "request": 1,
+        "capture": "/run/media/jethac/Shared/radish/kokoro-runtime-ja-greet-single-cpu-packed-opt0046-current-cpu-norm-affine-snake-deconv2d-loop/request-001",
+        "report": "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/prepared-t168-performance/current-matched-plan/cpu-validation-01.json",
+        "sha256": "6a1328cae3f5274e6432c9c9d04811aa2b0069beda5fe6e438775e61a8c92cd9",
+        "core": {
+          "values": 443542,
+          "actual": {
+            "bytes": 1774168,
+            "sha256": "297b1d81de6a28ba2208f414e0b84dbaca79775866a8e2e1b70920e2ca543eba"
+          },
+          "reference": {
+            "bytes": 1774168,
+            "sha256": "ef963ac988d0b81f476d407e0f0512d455ad1c7ce749e4267f43af8ceae09de9"
+          },
+          "max_abs_error": 0.000301361083984375,
+          "relative_rms": 2.1498286074653708e-06,
+          "snr_db": 113.35192324633036,
+          "atol": 0.002,
+          "rtol": 0.002,
+          "minimum_snr_db": null,
+          "mismatches": 0,
+          "passed": true
+        },
+        "waveform": {
+          "values": 100800,
+          "actual": {
+            "bytes": 403200,
+            "sha256": "50b769031c2714e5d941aaa84badd8c6c8365f0a86a4a2e1254b09257922f102"
+          },
+          "reference": {
+            "bytes": 403200,
+            "sha256": "26b5910c6ed2dc0f80cc042e46fae1fbdd3c390a3c13c42098dcea2d34060efb"
+          },
+          "max_abs_error": 6.629526615142822e-05,
+          "relative_rms": 4.2878091041964344e-05,
+          "snr_db": 87.35529115865447,
+          "atol": 0.0002,
+          "rtol": 0.002,
+          "minimum_snr_db": 50.0,
+          "mismatches": 0,
+          "passed": true
+        }
+      }
+    ]
+  },
+  "core_seconds": [
+    106.086407,
+    105.578953
+  ],
+  "memory_peak_mib": 457.5,
+  "swap_peak_mib": 0,
+  "scope": "Preserved initial serial-core observation, not a valid four-thread baseline or GPU comparison. GPU timing not executed. Correct source-identical ON/ON build required for both arms."
+}

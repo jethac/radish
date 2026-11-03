@@ -1,0 +1,86 @@
+{
+  "status": "CONFIRMED actual43a ncnn CPU parallel regions compiled out; --threads4 is requested metadata, not effective4-worker ncnn execution",
+  "binary": {
+    "path": "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/persistent-app-cache/normal-v3-prepared-build/radish-kokoro-runtime",
+    "sha256": "43a966cec03e890b67b851d2e553504935aad1a765a8a6c120f7f3f4d5615ae5",
+    "bytes": 11305696
+  },
+  "archive": {
+    "path": "/run/media/jethac/Shared/radish/tts-direct-window-weights-v3-build-0046/libncnn.a",
+    "sha256": "8df626f39c42f4e7f9f6cd8f4ba171f58651de2d001bfe4780bc49d2b2d18729",
+    "bytes": 11466018
+  },
+  "current_build": {
+    "path": "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/persistent-app-cache/normal-v3-prepared-build/result.json",
+    "sha256": "3ae597539642aa035af93c1d257a02174217638a801fad1a2b16dd618d62b019",
+    "bytes": 6262
+  },
+  "current_compile_cache": {
+    "path": "/run/media/jethac/Shared/radish/packed-a-implementation-0042-a6naaxsx/build/CMakeCache.txt",
+    "sha256": "76758cd14c8eaa6d6aac1e51c54ac811fd2ef57e2480c8fc07a8084ac4b0fcc5",
+    "bytes": 31901
+  },
+  "current_generated_header": {
+    "path": "/run/media/jethac/Shared/radish/packed-a-implementation-0042-a6naaxsx/build/radish_helpers/ncnn/src/platform.h",
+    "sha256": "f1b1ad2cef3be751fc2653df76474154d1539ab373e809499b536bea416c05a1",
+    "bytes": 12498
+  },
+  "runtime_source": {
+    "path": "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/persistent-app-cache/normal/tests/ncnn/kokoro_runtime.cpp",
+    "sha256": "b4a1192845993d2a51d1b48ff6c08eabed846455315abd6b27e6983f428148b4",
+    "bytes": 37512
+  },
+  "option_helper": {
+    "path": "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/source/tests/ncnn/runtime_helpers.h",
+    "sha256": "1e970df28e997cd5d67e2c573074067511592aa448399544f2a6f0564fafc220",
+    "bytes": 7946
+  },
+  "objects": {
+    "cpu.cpp.o": {
+      "path": "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/prepared-t168-performance/cpu-parallelism-audit/cpu.cpp.o",
+      "sha256": "65b3882288cf42fc0f2c51743a6891d0539a4cf34c760a8afbee746af0ae4650",
+      "bytes": 40232
+    },
+    "convolution1d_arm.cpp.o": {
+      "path": "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/prepared-t168-performance/cpu-parallelism-audit/convolution1d_arm.cpp.o",
+      "sha256": "b3ee45ce5d724cfe7d71cc7ea49caa6b1af16c362425648f251f3b203f38bd9e",
+      "bytes": 146488
+    },
+    "simpleomp.cpp.o": {
+      "path": "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/prepared-t168-performance/cpu-parallelism-audit/simpleomp.cpp.o",
+      "sha256": "eea19238a5af318efec8d6dd922ef60e053b62c631515534857c1647a87e1b1e",
+      "bytes": 688
+    }
+  },
+  "observations": [
+    "Actual ELF get_omp_num_threads returns constant1, set_omp_num_threads is a no-op, thread_num returns0; these are not calls into an OpenMP runtime.",
+    "Actual archive and final ELF contain no __kmpc/GOMP/plainomp runtime entrypoints; linked needed libraries contain no external libomp/libgomp.",
+    "Matched current generated configuration has NCNN_OPENMP=OFF/NCNN_SIMPLEOMP=OFF; CPU/Conv1D compile flags retain O3/CortexA53/fastmath/SIMD but have no fopenmp. This is specifically missing parallel execution, not wholesale unoptimized scalar math.",
+    "Runtime --threads parses4, passes via CoreSession to configure_options assigning net.opt.num_threads, then CPU Extractor executes inherited option. An option does not restore compiled-out pragma parallel loops.",
+    "ORT is a separately dynamically loaded runtime with its own4-thread option; this audit does not claim the whole application is single-threaded or that no helper/background thread exists.",
+    "Current serial-core run is not an optimized4-thread CPU baseline. No CPU/GPU speed ratio or attribution to all observed historical timing differences follows. Historical parallel provenance is independently owned by packed."
+  ],
+  "evidence": {
+    "actual-43a-openmp-functions.txt": {
+      "path": "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/prepared-t168-performance/cpu-parallelism-audit/actual-43a-openmp-functions.txt",
+      "sha256": "5d3160ef34c16369981472da67e2f362e7ed58072b8e817c082a11547358f11b",
+      "bytes": 988
+    },
+    "openmp-symbols.json": {
+      "path": "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/prepared-t168-performance/cpu-parallelism-audit/openmp-symbols.json",
+      "sha256": "30fbece1573de76d34ca6058b6076d8065bf828579d337834779d821c98d0e22",
+      "bytes": 2671
+    },
+    "current-compile-flags.txt": {
+      "path": "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/prepared-t168-performance/cpu-parallelism-audit/current-compile-flags.txt",
+      "sha256": "eeeb27f2aeb619459dfdaffadabfc9e995d7d4c58db871cb65a76d993e9b8cee",
+      "bytes": 522594
+    },
+    "actual-needed.txt": {
+      "path": "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/prepared-t168-performance/cpu-parallelism-audit/actual-needed.txt",
+      "sha256": "82ca1e3e645082f70fec55050e5392e7dfb68e0de4e7d40f156a1150557cd52f",
+      "bytes": 341
+    }
+  },
+  "scope": "Read-only host source/ELF/archive review; no live capture read, target action, new compilation or benchmark performed. Root directs fresh current-source ON/ON build with actual runtime symbol verification and both matched arms on same corrected binary before comparison."
+}

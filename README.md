@@ -15,8 +15,10 @@ and the [five-area ledger](radish/results/optimization-five-completion-ledger-00
 describe the qualified scope.
 
 This completes the implementation prerequisite milestone, not the
-[full goal](radish/GOAL.md). No new performance result has been collected. The
-32.835-second Japanese result below is from the frozen earlier build. Matched
+[full goal](radish/GOAL.md). An initial CPU run exposed disabled ncnn parallelism
+despite a four-thread request; its correct outputs and serial timing are preserved,
+and it is excluded from the four-thread comparison while the common build is corrected.
+The 32.835-second Japanese result below is from the frozen earlier build. Matched
 performance, broader accuracy, conformance, deployment and GPU-efficiency work
 remain active; cache acceptance alone establishes no speedup or native hit count.
 

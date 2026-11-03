@@ -11,5 +11,6 @@
   "controls": "Original TTS300s/640MiB128MiBswap/lock/fault/services/disk/headroom and unchanged per-request same-boundary core/waveform criteria. ASR900s exception does not extend to TTS.",
   "prepared_plan_sha256": "a359ec11d43dc5241091ebae7c1c3afbb85253c54d3028dadf1092ad490b518e",
   "performance_collected": false,
-  "broader_GOAL": "active; milestone and CPU win alone do not close full requirements"
+  "broader_GOAL": "active; milestone and CPU win alone do not close full requirements",
+  "current_build_hold": "Specific43a/8df paired CPU4 assumption invalidated by independent-effective-parallelism review. Root authorizes corrected ON/ON source-identical common build, source/build pairing and effective thread proof before new measurement. All-five functional milestone remains valid."
 }
