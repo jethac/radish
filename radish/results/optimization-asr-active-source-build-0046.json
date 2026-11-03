@@ -1,5 +1,5 @@
 {
-  "status": "Qualification candidate db872/7575: all four changed native and focused numerical gates pass. Original full22258 active; prior78241 failure retained. Model/cache and all-five completion remain open; performance closed.",
+  "status": "Current db872/7575 focused MM/RMS native and numerical gates pass. Full22258 completes both warm modes and begins real audio processing but reaches original300s watchdog before a transcript. FullASR/cache and all-five remain open; performance forbidden; no unchanged retry.",
   "application": "Frozen ASR source with previously published GQA, quantized phase, memory-liveness and unit-axis overlays",
   "ordered_additive_patches": [
     {
@@ -596,7 +596,7 @@
     "full": "62d7b3b12fab5f83b68abfdebe0837118dc08e45c95571816fe281686a360cde",
     "deployed_strip": "7575351e906ecae8f6ca3a8b57d860594521526383e62935058a9bfe7811afb5",
     "source": "0046-asr-mm128-batching.patch over6f15; queue object only",
-    "target_status": "Focused MM numerical/full-partial native identity passes; TTS/deferred lifetime and prior paths unchanged. Original full22258 active."
+    "target_status": "MM primitive passes; unchanged shared lifetime/TTS evidence carries forward. Original full22258 timed out before requested output."
   },
   "incremental_source_review": "531fcaaa71331df51fca79dbd9c52e8664ae373cf76c9ec331b9eee2a25c3799",
   "incremental_build_runner_review": "d6930974ea4a41177dd4c46c34dc55cf96b1f58ffe327766190c245e02de7d01",
@@ -1107,12 +1107,11 @@
     "build_review": "8f30f8e3c82cd99e10117e3fafa0fc57481f592e8f63ab10451a64004da80098"
   },
   "latest_full_model_result": {
-    "file": "optimization-asr-coherent-timeout-0046.json",
-    "sha256": "78bcb32665e2276e856dcf642125d2b9a05495af5a756e1d9a4eaec09c4254c1",
-    "status": "Independently confirmed original watchdog: both warm modes complete; actual request prefix ends, audio subsampling begins, no transcript",
-    "candidate": "d4d0/6f15",
-    "independent_file": "optimization-asr-coherent-structural-0046.json",
-    "independent_sha256": "f51ade4f6cb92e953d1bc759ed9318e1618c5ec022e312b18e373806667bc3a2"
+    "receipt": "optimization-asr-mm128-rms-timeout-0046.json",
+    "sha256": "34f0f8d0ca3cb8f4879a514bad1291df43f57db04399f215ca0800d9f041a701",
+    "handle": 22258,
+    "status": "Both warm modes complete, realprefix1151 and first subsample36 complete; next36 begins before original watchdog, no transcript",
+    "scope": "No transcript comparison result, no ASR cache qualification, no speed claim"
   },
   "resource_diagnostic_stage": {
     "build": {
@@ -1702,6 +1701,6 @@
     "driver": "7575351e906ecae8f6ca3a8b57d860594521526383e62935058a9bfe7811afb5",
     "cache": "fresh missing v15",
     "scope": "Both production warm modes/full audio, two requests of same pinned2.785s clip, real256 budget and original640MiB/128swap/300s controls",
-    "status": "live; no transcript result claimed"
+    "status": "terminal watchdog failure; no requested transcript"
   }
 }

@@ -1,0 +1,46 @@
+{
+  "status": "FAIL original full ASR watchdog; both warm modes complete, real request begun, no transcript",
+  "handle": 22258,
+  "evidence": "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-full-mm128-rms/probe",
+  "run_log": {
+    "sha256": "610341b38fe5649f9e9f3d1ec625541cb261184fce11a31bc10fa641283562f9",
+    "bytes": 700109
+  },
+  "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
+  "driver": "7575351e906ecae8f6ca3a8b57d860594521526383e62935058a9bfe7811afb5",
+  "warm_markers": [
+    "ASR_WARMUP_STEP mode=offline completed=1",
+    "ASR_WARMUP_DONE mode=offline steps=1 temporary_session=1 synchronized=1 status=0",
+    "ASR_WARMUP_STEP mode=streaming completed=1",
+    "ASR_WARMUP_DONE mode=streaming steps=1 temporary_session=1 synchronized=1 status=0"
+  ],
+  "last_graph_markers": [
+    "straylight-listen: asr: qwen3_asr@2597: sched buffer Vulkan0 -> 0.4 MBstraylight-listen: asr: qwen3_asr@2597: sched buffer CPU -> 0.0 MBstraylight-listen: asr: qwen3_asr KHR placement: compute_gpu=786 compute_rejected=0 metadata=365 policy=no_cpu_fallbackASR_OWNERSHIP phase=graph_begin label=mode=request nodes=1151 kv_n=0 kv_head=0 kv_capacity=16 heap_arena_bytes=121626624 heap_used_bytes=78809744 heap_free_bytes=42816880 heap_mmap_bytes=330964992 heap_mmap_regions=1 heap_top_free_bytes=1694992",
+    "ASR_OWNERSHIP phase=graph_end label=mode=request nodes=1151 kv_n=0 kv_head=0 kv_capacity=16 heap_arena_bytes=121626624 heap_used_bytes=79063072 heap_free_bytes=42563552 heap_mmap_bytes=330964992 heap_mmap_regions=1 heap_top_free_bytes=1694992",
+    "straylight-listen: asr: qwen3_asr@820: sched buffer Vulkan0 -> 26.2 MBstraylight-listen: asr: qwen3_asr@820: sched buffer CPU -> 0.1 MBstraylight-listen: asr: qwen3_asr KHR placement: compute_gpu=19 compute_rejected=0 metadata=17 policy=no_cpu_fallbackASR_OWNERSHIP phase=graph_begin label=mode=request nodes=36 kv_n=0 kv_head=0 kv_capacity=16 heap_arena_bytes=125820928 heap_used_bytes=76529392 heap_free_bytes=49291536 heap_mmap_bytes=330964992 heap_mmap_regions=1 heap_top_free_bytes=1694992",
+    "ASR_OWNERSHIP phase=graph_end label=mode=request nodes=36 kv_n=0 kv_head=0 kv_capacity=16 heap_arena_bytes=125820928 heap_used_bytes=76529552 heap_free_bytes=49291376 heap_mmap_bytes=330964992 heap_mmap_regions=1 heap_top_free_bytes=1694992",
+    "straylight-listen: asr: qwen3_asr KHR placement: compute_gpu=19 compute_rejected=0 metadata=17 policy=no_cpu_fallbackASR_OWNERSHIP phase=graph_begin label=mode=request nodes=36 kv_n=0 kv_head=0 kv_capacity=16 heap_arena_bytes=125820928 heap_used_bytes=76529344 heap_free_bytes=49291584 heap_mmap_bytes=330964992 heap_mmap_regions=1 heap_top_free_bytes=1694992"
+  ],
+  "failure": {
+    "status": "failed",
+    "error": "probe/compile process returned 1",
+    "started": true,
+    "terminal": false,
+    "process_returncode": 1,
+    "remote": "/var/tmp/radish/core-compute-opt0046-asr-full-mm128-rms",
+    "unit": "radish-core-compute-probe-1793682892355459575"
+  },
+  "collection": {
+    "passed": true,
+    "errors": []
+  },
+  "authoritative_terminal_drain": "LoadState=not-found\nActiveState=inactive\nSubState=dead\n",
+  "services_after": [
+    "active",
+    "active"
+  ],
+  "fault_check": "PASS: no new GPU fault/recovery messages\n",
+  "guard_memory_peak": "640MiB;63.8MiB swap",
+  "limits": "Original640MiB/128swap/300s/15stop; both40000-sample warm modes and two same2.785s requests/full256 budget unchanged",
+  "scope": "Offline and streaming actual warm step/cleanup pass; realprefix1151 ends, first36 subsample ends, second36 begins before watchdog. No requested output/transcript comparison occurred. Capped diagnostic silence is not a stall claim. Independent structural reconciliation pending. No ASR cache qualification or speed claim; import held."
+}

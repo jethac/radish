@@ -1,5 +1,18 @@
 # Radish status
 
+## 2026-11-03: combined ASR run remains incomplete
+
+The [combined full run](results/optimization-asr-mm128-rms-timeout-0046.json)
+reached the original300-second watchdog. Both warm-up modes completed their actual
+decoder step and synchronized cleanup. The real request completed its prefix
+and first subsampling graph; the next subsampling graph began before termination.
+No transcript was produced, so no transcript comparison passed or failed.
+
+The MM and RMS focused correctness results remain valid. Memory guard telemetry
+was640MiB with63.8MiB swap; no GPU fault was recorded and both services remained
+active. The failure and exact candidate are preserved. Full STT and ASR cache
+replay remain open; no performance measurement or unchanged retry is authorized.
+
 ## 2026-11-03: matrix and RMS correctness gates pass
 
 The [matrix check](results/optimization-mm128-actual-0046.json) passes all138,456

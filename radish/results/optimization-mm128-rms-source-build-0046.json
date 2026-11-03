@@ -1,5 +1,5 @@
 {
-  "status": "Combined source/build and changed-family native/numerical gates pass; original full model22258 active, cache replay pending",
+  "status": "Combined source/build and changed-family native/numerical gates pass; original full22258 watchdog failure preserved, cache replay held",
   "scope": "Three MM variants process up to128 rows through sequential16-row tiles; selected RMS uses one runtime body with unchanged rounded iteration and arithmetic order. MV32 and five unselected RMS payloads remain byte-identical. No model/driver/limits/precision change.",
   "sources": {
     "quant-mm-sequential-tiles": {
@@ -1296,5 +1296,9 @@
     "optimization-rms-runtime-native-0046.json": "7d4c159d64f3459a8a76143a35fbde465865d42ed5857f6bb41d909d089f42be",
     "optimization-mm128-actual-0046.json": "beadea9ce3d5b1f35f964614ac0088975ec3a5dcee16ab4a84bf7a13e4603951",
     "optimization-rms-runtime-actual-0046.json": "c66cc6ed9944e645a5c7f73f83ccb88bc7d78bc0acfab1de09886db2229f9647"
+  },
+  "latest_full_model_result": {
+    "file": "optimization-asr-mm128-rms-timeout-0046.json",
+    "sha256": "34f0f8d0ca3cb8f4879a514bad1291df43f57db04399f215ca0800d9f041a701"
   }
 }
