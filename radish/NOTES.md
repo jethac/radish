@@ -31,15 +31,31 @@ Measured (GPU at 650 MHz, services running):
   Runs at the 850 MB cap with swap; first cold run raised the listener's
   major faults by 12k.
 
-Next: cheap RBA lowering (one check per vector, CTS robustness re-run);
-deconvolution and 1x1 kernels; identify the ASR kernels by name and fix the
-slow ones; ASR memory (weights copied to GPU buffers) before any sustained
-ASR runs beside the service.
+Decided 2026-11-03: TTS runs with RBA off by default (RADISH_NCNN_ROBUST=1
+opts in; per-vector checks stay a conformance item). GPU ASR is
+deprioritised: built and documented above, not optimised further.
+
+Kernel work, same session, warm request (synth) / decoder GPU busy:
+- baseline RBA off: 25.22 s / 21.1 s
+- + RADISH_NCNN_GEMM (tiled GEMM for deconvolution and 1x1 Conv1D): 23.73 s
+  (deconv1d_85 0.97 -> 0.38 s, deconv1d_84 0.62 -> 0.22, 1x1s 0.21 -> 0.05)
+- + driver RADISH_BARRIER_GROUPS=32 RADISH_GROUPS=4096 (bigger chunks,
+  submits 8.9k -> 1.5k): 21.94 s / 19.3 s
+- + RADISH_NCNN_WINOGRAD (F(6,3), chunked kernels): **21.28 s** / 17.3 s,
+  peak 554 MB, no swap; core rel RMS 1.1e-6, waveform rel RMS 2.4e-5.
+`scripts/tsv/tts.sh` now sets all four. Rejected: storing transformed
+Winograd weights (304 MB vs 105 MB; swap, net 21.11 s at best).
+Known: RADISH_TRACE tick span is wrong when submits wrap the slot ring
+(busy sums are fine).
+
+Next: Winograd GEMM load phase (vec4-aligned V per chunk offset, ~12 ->
+~17 GFLOP/s would cut ~3 s); conv1d_23/83 (strided/22-channel, 0.42 s);
+GPU decoder overlapped with CPU work; full applicable 1.1 CTS.
 
 Left on the device: `/var/tmp/radish-canon/` (lib: drivers 0f721436 and
-c1755aaf, loader, libsegv.so; bin: kokoro runtimes 52c9e565, c439b311; tts:
+c1755aaf, loader, libsegv.so; bin: kokoro runtimes 52c9e565, e37db9b1; tts:
 hardlinks into /var/tmp/radish; cache; asr/wav cmd-en clips and pipeline
-cache; ubench/).
+cache). Kokoro runtime now e37db9b1; ubench/ and runs/ removed.
 
 
 ## Populated ASR cache export qualified — 2026-11-03

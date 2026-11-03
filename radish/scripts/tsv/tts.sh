@@ -33,6 +33,7 @@ BASE_ENV=(--setenv=RADISH_NCNN_TILED=1 --setenv=RADISH_NCNN_TILED32=0 --setenv=R
     --setenv=RADISH_NCNN_PIPELINE_CACHE=1 --setenv=RADISH_NCNN_TRACE=1 --setenv=RADISH_PROFILE=0
     --setenv=RADISH_BATCH_CHUNKS=8 --setenv=RADISH_TILED_BATCH_CHUNKS=8 --setenv=RADISH_TILED_GROUPS_X=1
     --setenv=RADISH_SHARED_GROUPS=8 --setenv=RADISH_NCNN_RESHAPE_ALIAS=1
+    --setenv=RADISH_NCNN_GEMM=1 --setenv=RADISH_NCNN_WINOGRAD=1 --setenv=RADISH_BARRIER_GROUPS=32 --setenv=RADISH_GROUPS=4096
     --setenv=LD_LIBRARY_PATH=$PREFIX/lib --setenv=VK_DRIVER_FILES=$PREFIX/lib/icd-$SHA.json)
 CMD="systemd-run --unit=radish-tts-$LABEL --wait --pipe --collect -p MemoryMax=640M -p MemorySwapMax=128M \
  -p RuntimeMaxSec=420 -p TimeoutStopSec=15 -p LimitCORE=0 ${BASE_ENV[*]} ${CACHE[*]} ${ENVS[*]} \
