@@ -1,5 +1,19 @@
 # Radish status
 
+## 2026-11-03: release unused constrained-profile heap pages
+
+The diagnostic run confirms that offline warm-up frees its KV buffer while
+55.08 MiB remains allocator-free inside a retained heap arena. It still reaches
+the original watchdog before requested transcripts. [Independent ownership evidence](results/optimization-asr-memory-ownership-actual-0046.json)
+keeps free heap, resident memory, swap and overlapping cgroup categories distinct.
+
+The next candidate asks glibc to release unused pages after compilation and
+after synchronized temporary-session destruction, under the existing constrained
+profile. [Source, lifetime and exact build](results/optimization-constrained-heap-release-source-build-0046.json)
+are qualified; live allocations, model work, shaders and limits stay unchanged.
+The original full run is active. Actual released memory, transcripts and ASR
+cache replay remain open; no performance measurement has been made.
+
 ## 2026-11-03: identify ASR memory ownership
 
 A diagnostic candidate adds bounded raw allocator, process and cgroup snapshots

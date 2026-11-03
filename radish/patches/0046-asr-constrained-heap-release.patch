@@ -1,0 +1,67 @@
+--- a/transcribe.cpp/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/transcribe.cpp/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -4266,6 +4266,7 @@
+             std::cerr << "ASR_PIPELINE_END name=" << task.pipeline->name << "\n" << std::flush;
+             asr_resource_snapshot("compile_end", task.pipeline->name.c_str());
+         }
++        asr_release_unused_heap("compile_return", task.pipeline->name.c_str(), diagnostics);
+     }
+ 
+     // Another thread may be compiling the pipeline we need; block on it here.
+--- a/transcribe.cpp/ggml/src/ggml-vulkan/asr_resource_snapshot.h
++++ b/transcribe.cpp/ggml/src/ggml-vulkan/asr_resource_snapshot.h
+@@ -67,7 +67,20 @@
+     std::fprintf(stderr, "ASR_OWNERSHIP_CGROUP phase=%.64s available=%u current_bytes=%lld swap_bytes=%lld anon_bytes=%lld file_bytes=%lld shmem_bytes=%lld kernel_bytes=%lld pagetables_bytes=%lld unevictable_bytes=%lld\n", phase,cgroup?1u:0u,current[0]?std::strtoll(current,nullptr,10):-1,swap[0]?std::strtoll(swap,nullptr,10):-1,asr_resource_value(stat,"anon"),asr_resource_value(stat,"file"),asr_resource_value(stat,"shmem"),asr_resource_value(stat,"kernel"),asr_resource_value(stat,"pagetables"),asr_resource_value(stat,"unevictable"));
+     std::fflush(stderr); funlockfile(stderr);
+ }
++static void asr_release_unused_heap(const char *phase, const char *label, bool diagnostics) {
++    const int saved_errno = errno;
++    struct RestoreErrno { int value; ~RestoreErrno() { errno = value; } } restore{saved_errno};
++    const char *policy = std::getenv("TRANSCRIBE_VULKAN_KHR_PROFILE");
++    if (!policy || std::strcmp(policy, "1")) return;
++    const int result = malloc_trim(0);
++    if (diagnostics) {
++        std::fprintf(stderr, "ASR_HEAP_RELEASE phase=%.64s label=%.160s result=%d policy=khr_linux_glibc\n", phase, label, result);
++        std::fflush(stderr);
++        asr_resource_snapshot("heap_release_after", label);
++    }
++}
+ #else
+ static void asr_resource_snapshot(const char *, const char *) {}
++static void asr_release_unused_heap(const char *, const char *, bool) {}
+ #endif
+ #endif
+--- a/transcribe.cpp/src/arch/qwen3_asr/model.cpp
++++ b/transcribe.cpp/src/arch/qwen3_asr/model.cpp
+@@ -2885,6 +2885,8 @@
+                 active_warmup = previous;
+                 transcribe_session_free(session);
+                 asr_resource_snapshot("warm_cleanup_after", mode);
++                asr_release_unused_heap("warm_cleanup", mode,
++                    transcribe::env::flag("TRANSCRIBE_RESOURCE_DIAGNOSTICS"));
+             }
+         } scope{active_warmup, temporary};
+         active_warmup = &state;
+--- a/transcribe.cpp/src/arch/qwen3_asr/asr_resource_snapshot.h
++++ b/transcribe.cpp/src/arch/qwen3_asr/asr_resource_snapshot.h
+@@ -67,7 +67,20 @@
+     std::fprintf(stderr, "ASR_OWNERSHIP_CGROUP phase=%.64s available=%u current_bytes=%lld swap_bytes=%lld anon_bytes=%lld file_bytes=%lld shmem_bytes=%lld kernel_bytes=%lld pagetables_bytes=%lld unevictable_bytes=%lld\n", phase,cgroup?1u:0u,current[0]?std::strtoll(current,nullptr,10):-1,swap[0]?std::strtoll(swap,nullptr,10):-1,asr_resource_value(stat,"anon"),asr_resource_value(stat,"file"),asr_resource_value(stat,"shmem"),asr_resource_value(stat,"kernel"),asr_resource_value(stat,"pagetables"),asr_resource_value(stat,"unevictable"));
+     std::fflush(stderr); funlockfile(stderr);
+ }
++static void asr_release_unused_heap(const char *phase, const char *label, bool diagnostics) {
++    const int saved_errno = errno;
++    struct RestoreErrno { int value; ~RestoreErrno() { errno = value; } } restore{saved_errno};
++    const char *policy = std::getenv("TRANSCRIBE_VULKAN_KHR_PROFILE");
++    if (!policy || std::strcmp(policy, "1")) return;
++    const int result = malloc_trim(0);
++    if (diagnostics) {
++        std::fprintf(stderr, "ASR_HEAP_RELEASE phase=%.64s label=%.160s result=%d policy=khr_linux_glibc\n", phase, label, result);
++        std::fflush(stderr);
++        asr_resource_snapshot("heap_release_after", label);
++    }
++}
+ #else
+ static void asr_resource_snapshot(const char *, const char *) {}
++static void asr_release_unused_heap(const char *, const char *, bool) {}
+ #endif
+ #endif

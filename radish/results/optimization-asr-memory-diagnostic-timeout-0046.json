@@ -1,0 +1,52 @@
+{
+  "status": "FAIL original full-model watchdog; useful memory diagnostic data, not functional qualification",
+  "handle": 49065,
+  "listener": "cdd557123c1a02ed21e6ff6a49b5505b06abde9a620ae3d16034f3391a77cf9a",
+  "driver": "3a300087ec25ded4226857735e5bb7c0353a1a9f74c04fa83d3a28bd70f68ed6",
+  "failure": {
+    "status": "failed",
+    "error": "probe/compile process returned 1",
+    "started": true,
+    "terminal": false,
+    "process_returncode": 1,
+    "remote": "/var/tmp/radish/core-compute-opt0046-asr-full-resource-snapshots",
+    "unit": "radish-core-compute-probe-1793672238206409079"
+  },
+  "run_log_sha256": "0b2f1d59d539d59faa298327a0abaea9089912f48e4cddf0ef2e5d0d0883e8af",
+  "terminal_result": "original300s timeout/TERM, not systemd OOM result",
+  "guard_resource_peak": {
+    "memory_MiB": 640,
+    "swap_MiB": 128,
+    "performance_measurement": false
+  },
+  "warm_markers": [
+    "ASR_WARMUP_STEP mode=offline completed=1",
+    "ASR_WARMUP_DONE mode=offline steps=1 temporary_session=1 synchronized=1 status=0"
+  ],
+  "offline_cleanup_raw_snapshots": [
+    "ASR_OWNERSHIP phase=warm_cleanup_before label=offline heap_arena_bytes=108023808 heap_used_bytes=50399584 heap_free_bytes=57624224 heap_mmap_bytes=0 heap_mmap_regions=0 heap_top_free_bytes=6778272",
+    "ASR_OWNERSHIP_PROC phase=warm_cleanup_before rss_kib=78892 anon_kib=49284 file_kib=29608 shmem_kib=0 swap_kib=55752 pss_kib=76935 private_dirty_kib=49284 anonymous_kib=49284",
+    "ASR_OWNERSHIP_CGROUP phase=warm_cleanup_before available=1 current_bytes=641626112 swap_bytes=57565184 anon_bytes=50466816 file_bytes=586747904 shmem_bytes=579371008 kernel_bytes=3444736 pagetables_bytes=1622016 unevictable_bytes=579371008",
+    "ASR_OWNERSHIP phase=warm_cleanup_after label=offline heap_arena_bytes=108023808 heap_used_bytes=50268864 heap_free_bytes=57754944 heap_mmap_bytes=0 heap_mmap_regions=0 heap_top_free_bytes=6778272",
+    "ASR_OWNERSHIP_PROC phase=warm_cleanup_after rss_kib=78892 anon_kib=49284 file_kib=29608 shmem_kib=0 swap_kib=55752 pss_kib=76935 private_dirty_kib=49284 anonymous_kib=49284",
+    "ASR_OWNERSHIP_CGROUP phase=warm_cleanup_after available=1 current_bytes=634535936 swap_bytes=57565184 anon_bytes=50466816 file_bytes=579407872 shmem_bytes=572030976 kernel_bytes=3436544 pagetables_bytes=1622016 unevictable_bytes=572030976"
+  ],
+  "interpretation_limits": [
+    "memory.stat file includes shmem; do not sum them as separate charges",
+    "mallinfo mmap is reservation, not resident memory",
+    "samples are sequential, not atomic",
+    "retained free heap does not itself quantify how many pages malloc_trim would release"
+  ],
+  "phase": "streaming encoder complete; cached-prefix streaming prefill791/0; no streaming STEP/DONE or requestedtranscript",
+  "actual_requested_outputs": [],
+  "collection": {
+    "passed": true,
+    "errors": []
+  },
+  "fault_check": "PASS: no new GPU fault/recovery messages\n",
+  "services": [
+    "active",
+    "active"
+  ],
+  "next": "independent ownership interpretation and justified source fix; no unchangedretry/import/performance"
+}

@@ -1,5 +1,5 @@
 {
-  "status": "Diagnostic cdd557/3a30 changes only raw memory reporting over8138. Original full49065 is running to resolve memory ownership after85294 watchdog failure. No fullmodel/cache or performance success claim.",
+  "status": "Current43ecf594/3a30 adds constrained free-heap release over diagnosticcdd557. Source/build qualified, full62956 running. Prior49065 timed out with usable ownership evidence; no fullmodel/cache/performance claim.",
   "application": "Frozen ASR source with previously published GQA, quantized phase, memory-liveness and unit-axis overlays",
   "ordered_additive_patches": [
     {
@@ -93,6 +93,13 @@
       "author_sha256": "7bec291249d2f45ad36c3c0dcfe4b7062c976f8d38334d7573c68c1ce3c295d3",
       "strip": 1,
       "apply_root": "root containing transcribe.cpp; ggml path headers normalized"
+    },
+    {
+      "file": "0046-asr-constrained-heap-release.patch",
+      "sha256": "bcabd39a58f8fa5e1ef3195624d3d7737cba32fde04f4aa3e20d8948f85673b1",
+      "author_sha256": "1122dc2bd179f4eac1421ba63e520d872097de6785c82c150d292df54ca45c1c",
+      "strip": 1,
+      "apply_root": "root containing transcribe.cpp after resource-snapshot overlay; ggml path headers normalized"
     }
   ],
   "cache_source_files": {
@@ -319,14 +326,14 @@
     "archive_members": "3ac3f2855cdfabfc691bdf82bf9d8d08d0e2de714d3d57fad97021ab4c291489",
     "build_result": "e71c72e97d3982b96af7b375c20dee5e8eb94dc62b584b651e04bec7e7c6905b"
   },
-  "current_listener": "cdd557123c1a02ed21e6ff6a49b5505b06abde9a620ae3d16034f3391a77cf9a",
+  "current_listener": "43ecf594ba21b5e6d7603a7a786eb72ca8958a2dceebb2b38c3ad4f101fdd4be",
   "current_libraries": {
     "libstraylight_asr.a": "f4f582c8dab2d774d9a99dd4d16a1a5756466dd099686ba8562fabe099794d73",
     "libggml-cpu.a": "d995ee7629e69509970ad3fe687f8a77a469c419ba7cd91404ca8bb79f4e85da",
-    "libtranscribe.a": "3dedc4640080f8c3ede0d1b9bdb63b10b1c2008e2c2bdf99d83d5fe66b72d82a",
+    "libtranscribe.a": "618736b85c8948c96735152434149ec911648e06eddee3a8e6d9e89aef6238ed",
     "libggml-base.a": "28ec1c9e67f976b670a074b310cb09389cddce48fc7cc42a9e7f06a9449b0fc1",
     "libggml.a": "44072c75ec479e9e440cc8f9583c6d6250eab629a739c7ddf98bc70aefb8ba5d",
-    "libggml-vulkan.a": "0526af27bbff2891e4e6503572b4cbc3bfae7e2553bf2edd9c1df06573a6fa88"
+    "libggml-vulkan.a": "df698e5392462e786933f4de1be008b086b17d36ea4f6363a46cf4c1650aa395"
   },
   "phase_release_stage": {
     "build": {
@@ -1093,5 +1100,48 @@
     },
     "source_review": "75bb02650ea2d023bd5e7dac04353a36851ce8107daa105711a670250bd38601",
     "build_runner_review": "60d07916f891e202a6472a1f158d52cdf489d6bad8427fa3f5358366c2225051"
+  },
+  "heap_release_stage": {
+    "build": {
+      "status": "PASS host build; heap release actual and full model pending",
+      "source_release": "2362bb12cef6d3149ec3dcd4353e0e0081d47475968628c928ba6fe2573c660d",
+      "base_result": "3d099def9068b90f28fe24ebe851bf1ccbb6fa138cffa764954febb37511c1af",
+      "sources": {
+        "backend": {
+          "base": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/resource-ownership-snapshots/candidate/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+          "preimage": "ecf5041a6ff3932be91f879404cf65aad8d430b3bece07122f13b587cbe19e38",
+          "candidate": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/constrained-heap-release/candidate/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+          "sha256": "be3f4d106c732b968774c67a7afa372761e7434578d4dcf2b8aa586ab3144bc9",
+          "header_base": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/resource-ownership-snapshots/candidate/ggml/src/ggml-vulkan/asr_resource_snapshot.h",
+          "header_preimage": "aef1297302964b410148dd2cf2424b2bd731477b59b13fb629eafa5bc019d8c3",
+          "header": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/constrained-heap-release/candidate/ggml/src/ggml-vulkan/asr_resource_snapshot.h",
+          "header_sha256": "0d2299a5bd63b1c6ecc93e066b36cf3812ec10b529d4b9b25f2c4c502a5922c2"
+        },
+        "model": {
+          "base": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/resource-ownership-snapshots/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+          "preimage": "bfbf607d8e37fe5361874cf6f339164b4a9d3d7c1d3354f0aecf0a1658226c3e",
+          "candidate": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/constrained-heap-release/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+          "sha256": "3a1ce3338f235a1dbf2790e90b85add07d2e25fc868d9bd313f8f8cabe8e52c4",
+          "header_base": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/resource-ownership-snapshots/candidate/transcribe.cpp/src/arch/qwen3_asr/asr_resource_snapshot.h",
+          "header_preimage": "aef1297302964b410148dd2cf2424b2bd731477b59b13fb629eafa5bc019d8c3",
+          "header": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/constrained-heap-release/candidate/transcribe.cpp/src/arch/qwen3_asr/asr_resource_snapshot.h",
+          "header_sha256": "0d2299a5bd63b1c6ecc93e066b36cf3812ec10b529d4b9b25f2c4c502a5922c2"
+        }
+      },
+      "commands": "06eb7c206114561ffc234eb54e118c9ad58260b8521022c4bb09599a1a0af2f7",
+      "archive_members": "114a6716660548934e4ba3d0c65eec5cfc3b73314f9988cb951dbb8741470020",
+      "listener": "43ecf594ba21b5e6d7603a7a786eb72ca8958a2dceebb2b38c3ad4f101fdd4be",
+      "libraries": {
+        "libstraylight_asr.a": "f4f582c8dab2d774d9a99dd4d16a1a5756466dd099686ba8562fabe099794d73",
+        "libggml-cpu.a": "d995ee7629e69509970ad3fe687f8a77a469c419ba7cd91404ca8bb79f4e85da",
+        "libtranscribe.a": "618736b85c8948c96735152434149ec911648e06eddee3a8e6d9e89aef6238ed",
+        "libggml-base.a": "28ec1c9e67f976b670a074b310cb09389cddce48fc7cc42a9e7f06a9449b0fc1",
+        "libggml.a": "44072c75ec479e9e440cc8f9583c6d6250eab629a739c7ddf98bc70aefb8ba5d",
+        "libggml-vulkan.a": "df698e5392462e786933f4de1be008b086b17d36ea4f6363a46cf4c1650aa395"
+      },
+      "scope": "Exactly current Qwen model and Vulkan backend objects overcdd557; bridge/shaders/driver/math/work/caps unchanged; constrained glibc free-page release after compile and synchronized warm session cleanup"
+    },
+    "source_review": "789875a95753ba2c730eb3c6d0ed31c82d960d56a365acb862490490398a3eed",
+    "build_runner_review": "7c762a0d03f457a24ca2ac7728ae954191e2b91e870a7de17ea8922f4c25d6c2"
   }
 }
