@@ -1,0 +1,24 @@
+{
+  "status": "FAIL actual backend initialization before inference, no transcript",
+  "binary": "260941293da95d6646ab13ef37efd70e16280220fc7fa99119de3bf9dcb27430",
+  "driver": "9f640904b0f4399cf0a034020d6c1e7f0041e7ce60db481b1c8255d855e59954",
+  "error": "Shared memory size too small for matrix multiplication",
+  "consequence": "Backend initialization threw; application had no recognizer. Exit0 was rejected by required full transcript gate. No model accuracy or cache replay claim.",
+  "cache": "Empty36-byte cache saved; preserved",
+  "run_log": "4564023c53c6d8f13f23572bf0b507db8955f785742717cf8ebc3cf813f83679",
+  "failure": {
+    "status": "failed",
+    "error": "exact original two-request transcript required",
+    "started": true,
+    "terminal": true,
+    "process_returncode": 0,
+    "remote": "/var/tmp/radish/core-compute-opt0046-asr-full-cold",
+    "unit": "radish-core-compute-probe-1793664907575010788"
+  },
+  "fault_check": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+  "services_after": [
+    "active",
+    "active"
+  ],
+  "next": "Source-correct capability initialization for actual admitted KHRprofile kernels; no property or guard change, no blind rerun"
+}

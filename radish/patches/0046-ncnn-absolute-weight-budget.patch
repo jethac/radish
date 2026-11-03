@@ -1,0 +1,12 @@
+--- a/ncnn/src/layer/vulkan/convolution1d_vulkan.cpp
++++ b/ncnn/src/layer/vulkan/convolution1d_vulkan.cpp
+@@ -187,7 +187,8 @@
+         destination[i / 2] = (uint32_t)encoded[0] | ((uint32_t)encoded[1] << 16);
+     }
+     for (int co = 0; co < 128; co++)
+-        if (row_error[co] > row_norm[co] / 4096.0 + (128 * 11) / 33554432.0)
++        if (row_error[co] > row_norm[co] / 4096.0 + (128 * 11) / 33554432.0
++            || row_error[co] > 1.0 / 512.0)
+             return 0;
+     packed = words;
+     fprintf(stderr, "RADISH_CONV_PRECISION channels=128 kernel=11 dilation=%d weights=fp16-rte activations=fp32 shared=fp32 accumulation=fp32 bias=fp32 output=fp32 normalization=fp32\n", dilation);

@@ -26,12 +26,12 @@
     {
       "area": 4,
       "implementation": "GQA native broadcast removes repeated K/V tensors and redundant copies. Phase-specific quantized kernels and encoder-to-prefill device-buffer handoff are authored and building separately",
-      "evidence": "All six new quantized modules pass8976 exact values/fullallocation guards. Final unit-axis/GQA/liveness25d9 and untimed d507 built. Floating GQA/current32 native and actual full-model placement/transcript/memory remain pending."
+      "evidence": "Six quantized kernels8976 exact values, floating GQA987808 exact values and all32 current native resource classes pass. Final untimed ASR with actual cache260941 builds. Full model stops before inference on generic shared-memory tile initialization; source fix in progress, no model qualification."
     },
     {
       "area": 5,
       "implementation": "Real compiled Vulkan cache entries using Mesa cache import/export/merge and IR3 native serializer, including sampling NIR and resource metadata; selective weight-only precision source is being integrated",
-      "evidence": "Compiled-cache fixture and exhaustive half unpack pass. All-twelve weight-only-half selection fails two original model values; stricter selective policy pending without tolerance change. Runtime ncnn cache import/atomic save code reviewed and built, application save/reload target pending. ASR app cache lifecycle source in progress."
+      "evidence": "Stricter computed absolute L1 weight budget selects2half/10FP32 operators and passes original two full-core comparisons and127800-sample waveform gate (d8a7a67b). Prior all12 selection failure retained. ncnn actual cache lifecycle built; integrated retained frontend/cache runtime target underway. ASR real cache lifecycle built, full model blocked by backend initialization."
     }
   ],
   "measurement_policy": "No new performance results. Timers disabled in the frontend correctness helper; driver PROFILE/GPU_ELAPSED disabled in forthcoming correctness scopes. Required timeout/memory/fault/service telemetry remains.",
@@ -44,11 +44,12 @@
     "0046-asr-phase-memory.patch": "c54aef91c40b2a99fc39e63e68a36eb58b390954c43c2aa1e0e9cc6f1087dc69",
     "0046-asr-unit-axis-contiguity.patch": "aa445f5a6fd72174152bca2347e2447392798b0789ac694fbef3889e2d5b3967",
     "0046-radish-direct-window-batching.patch": "6bbca30b2ddfc4431ab0b1cee4980783a9b1e7f7111d9ca5e95ad18403fc3d92",
-    "0046-ncnn-weight-only-precision.patch": "4578d54d34c41374ec92f697393448c67c72af134ea7b6bb65a84f8ed58bafb1"
+    "0046-ncnn-weight-only-precision.patch": "4578d54d34c41374ec92f697393448c67c72af134ea7b6bb65a84f8ed58bafb1",
+    "0046-ncnn-absolute-weight-budget.patch": "602c133670191527f51d066848277b7efbde65d5ef45a82e856bb87cc3646897"
   },
   "existing_results": "Original743 CTS cases and modified132 robustness outcomes remain historical pinned evidence; no conformance count or selected performance change.",
   "completion_gate": "All five areas must have integrated working code and relevant source/build/native/resource/numerical/lifetime evidence before measuring performance. Full-model output/waveform and process memory gates remain.",
-  "as_of_utc": "2026-11-03 00:05:11 UTC",
+  "as_of_utc": "2026-11-03 00:14:59 UTC",
   "correctness_receipts": {
     "optimization-cache-correctness-0046.json": "0af98f899b26429971ef61df554e2cf4a4fe340019353f9ed7491869ab59b1f5",
     "optimization-queue-correctness-0046.json": "98c9f0d64a5ef1076462930effb6fd3e22c48de75cad78e87f7e68eaa6636b0e",
@@ -56,7 +57,8 @@
     "optimization-frontend-target-0046.json": "814a623d219399ad1688ed8706ede25f78aca199bd4df1875803ff3433210504",
     "optimization-quant-kernels-correctness-0046.json": "548de8fb816058f5807bc36788d4b66e778f8bd04dec179ac32ce41b2a0fecd7",
     "optimization-tts-direct-full-correctness-0046.json": "6bfcd47a01d0ded6834da326886958d30d10f7534beb29082eb83b9ab3cf95af",
-    "optimization-half-model-failure-0046.json": "faf37ec11009ce29eee12f3e964e6b71157e8f19d970e0b4e27671358ccdfede"
+    "optimization-half-model-failure-0046.json": "faf37ec11009ce29eee12f3e964e6b71157e8f19d970e0b4e27671358ccdfede",
+    "optimization-selective-half-full-correctness-0046.json": "d8a7a67b488ee20e4ec66818c0cf18f6c5e9402372ac0a9eee56e2058e8a4c03"
   },
   "drivers": {
     "bounded_cache_queue_half": "61e8/9f64 exact integrated cache+queue+corrected idiv",
@@ -65,7 +67,8 @@
   "preserved_failure": "First quantized native helper compared logical64/128 against physical32x2/64x2 and failed before data. V2 checks exact existing logical and physical mappings; no shader, oracle or guard changed.",
   "preserved_failures": [
     "Half full48210:2/562342 numerical mismatches under original tolerance; no second extraction/waveform.",
-    "Quant first helper logical/physical assertion and native32 exactAPI1.0 assertion were setup failures; minimal harness corrections preserve modules/oracles."
+    "Quant first helper logical/physical assertion and native32 exactAPI1.0 assertion were setup failures; minimal harness corrections preserve modules/oracles.",
+    "First full ASR cold25335: generic shared-memory matrix initialization rejected backend before model execution."
   ],
   "runtime_cache": "RADISH_NCNN_PIPELINE_CACHE_FILE with --reuse-pipeline-cache selects bounded opaque ncnn import and atomic successful-loop export. Missing/corrupt/old data rebuilds empty; target lifecycle pending."
 }

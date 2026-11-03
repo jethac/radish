@@ -1,0 +1,51 @@
+{
+  "status": "passed",
+  "scope": "Untimed fullfixedT213selective2operatorhalfweights+FP32sensitivepaths core/waveform correctness; no performance evidence",
+  "full_result": "3f63962cc2728ac370e1a992c9e3731220c51b0fae6a516f04c14493bbaeeb07",
+  "full_run_log": {
+    "bytes": 136025,
+    "sha256": "734aec22640b0eead9c56cdd6607c248502c985534c15fd0f67726808b706895"
+  },
+  "native_review": "ce8c7c6f53bb62a57f349c8c7be4c0cad960136be392395eb7cb8fc29debd4af",
+  "outputs": [
+    {
+      "file": "ncnn-vulkan-candidate.f32",
+      "sha256": "44cfa322de8d912d3beaa77d27ecfa45d040cf63c31a97fedbe36de5704a57bf",
+      "core_values": 562342,
+      "core_max_error": 0.00016427040100097656,
+      "core_mismatches": 0,
+      "wave_samples": 127800,
+      "wave_mismatches": 0,
+      "saved_f32_wave_snr_db": 90.93439897025144,
+      "saved_f32_wave_max_error": 3.3989548683166504e-05
+    },
+    {
+      "file": "ncnn-vulkan-output.f32",
+      "sha256": "44cfa322de8d912d3beaa77d27ecfa45d040cf63c31a97fedbe36de5704a57bf",
+      "core_values": 562342,
+      "core_max_error": 0.00016427040100097656,
+      "core_mismatches": 0,
+      "wave_samples": 127800,
+      "wave_mismatches": 0,
+      "saved_f32_wave_snr_db": 90.93439897025144,
+      "saved_f32_wave_max_error": 3.3989548683166504e-05
+    }
+  ],
+  "gpu_layer_traces": 1178,
+  "core_compares_logged": 2,
+  "half_operators_executed_policy": 2,
+  "fp32_fallback_operators": 10,
+  "checks": [
+    "Originalcore562342finitevalues/allthresholds0.002+0.002absref passbothcompleteextractions; finaltwofilesmatch44cfnewhalfoutput",
+    "Independentlyrecomputedall127800waveformsamplesagainstoriginalNPZwavoracle, noerrorsat2e-4+2e-3absref;SNR90.9344dB>unchanged50dB",
+    "Actualmodel2half+10F32loadmarkers;180actualnativebodyreusece8c remainspaired; matchedallGPU1178ret0layertraces",
+    "Wholecandidateoriginalmemory/watchdog/headroom/fault/services/hash/inodecontrolsretained. No timing/profilingcollection",
+    "Prior12half2mismatchfailureimmutable; strictergeneralabsoluteL1policycomputeslowerroroperatorsfromweights, nofixtureindex/layernamecodedmask andnooutputtolerancerelaxation"
+  ],
+  "limits": [
+    "Fullretainedfilesiteration2; completefirstoutputcompareloggedbutfirstfilenotpreserved separately",
+    "ThisqualifiesselectivehalfonlyforfixedT213boundary; integratedretainedfrontend/dynamicT78/otherstyle/speechoutputsandcombinedmemoryremainpending",
+    "L1weightboundexactdotperturbationonly; FP32rounding/nonlinearpropagationactualwholeoraclegates remainmandatory",
+    "No universalFP16featureclaim/noFP16activations/norm/accumulation/no speedclaim"
+  ]
+}
