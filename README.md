@@ -2,15 +2,14 @@
 
 Current checkpoint (2026-11-03): retained TTS sessions, convolution, selective
 precision and real pipeline-cache export/import pass their stated model fixtures.
-Full ASR inference and its cache replay remain open. The approved 900-second
-untimed correctness run completed both warm modes and progressed into real
-request decoding, then reached the process watchdog without a transcript.
+The corrected ASR application now also passes two requests of the pinned English
+clip, with the exact expected transcript and language, validated prefix-cache
+growth/reuse, GPU placement and resource controls.
 
-Postflight found no new GPU fault or reported OOM; both appliance services remain
-active. The conditional cache replay has not run. A reviewed prefix KV valid-row fix is
-now undergoing the same full correctness check, with added commit/growth/reuse
-assertions and the original transcript oracle. The earlier Q8 GPU fault and
-all failed full-model attempts remain preserved. [Current evidence](radish/results/optimization-five-status-0046.json)
+The ASR application-cache integration remains open: the successful process did
+not save a populated cache. A backend cleanup change is building, followed by
+one actual request to save and one fresh-process request to reload it. Earlier
+failures remain preserved. [Current evidence](radish/results/optimization-five-status-0046.json)
 and the [full goal](radish/GOAL.md) are authoritative.
 
 No new performance measurement is permitted until all five areas pass. The

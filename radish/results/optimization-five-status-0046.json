@@ -165,12 +165,12 @@
     "listener": "56400857333cbd3c0f3129ae4435485e3c7ef0c26a86f48b59322ab38a8d93f1",
     "driver": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
     "receipt": "optimization-asr-prefix-kv-source-build-0046.json",
-    "target_status": "Production prefix valid-row correction and folded commit/growth/reuse assertions are source/build/payload reviewed. Corrected cold18620 passed fresh admission and started the application; full transcript/cache/resource validation is pending.",
+    "target_status": "564008/0f721 passes scoped two-request model and prefix-state qualification. A cache-only backend lifecycle change is building; it must pass actual one-request cold save and fresh-process reload. All-five/performance gate remains closed.",
     "performance_gate": "CLOSED"
   },
-  "device_execution_hold": "Only the corrected approved900s cold18620 scope is active. Conditional import requires independent cold PASS. Driver0f721 and all non-timeout controls remain unchanged; old11cf fault candidate stays held. No performance collection.",
+  "device_execution_hold": "No live GPU job. Application18620 exited0 with both exact transcripts, but no populated cache save. Cache-only source correction/build and minimal actual-app save/reload remain; no performance collection.",
   "approved_timeout_exception": {
-    "status": "Explicit user approval covers original cold and conditional import correctness scopes. Original17350 timeout is preserved; corrected prefix-KV cold18620 is active after concrete source fix. Import has not run.",
+    "status": "Existing explicit900s authorization carries to justified correctness fixes. Full model18620 passed its numerical/runtime scope; actual one-request cold cache save and conditional reload will use the same limits and retained guards.",
     "proposal": "optimization-asr-900s-proposal-0046.json",
     "proposal_sha256": "6a08d8e2748e7d70c6a306b1aedab49e272f089d2f6045d66bdc09329665ac00",
     "review": "optimization-asr-900s-proposal-review-0046.json",
@@ -184,9 +184,11 @@
     "authorization_sha256": "9757cffe4c7f152296f24a95621671dacea09e3792210c61ab97beb9be140532"
   },
   "latest_full_model": {
-    "status": "TIMEOUT at approved900s; no requested transcript",
-    "receipt": "optimization-asr-900s-terminal-17350-0046.json",
-    "sha256": "ddb01a35494ad1c401b54b1029151ae852d318a8c691605741216b673ca86ec5",
-    "next_source_action": "Correct production prefix KV valid-row bookkeeping before growth and verify the actual stream_begin/growth/prefix-reuse path. No unchanged retry, further watchdog increase or import execution."
+    "status": "Scoped model/prefix/placement/resource PASS: two exact requests of the pinned English clip, process exit0. Wrapper cache-save gate FAIL.",
+    "receipt": "optimization-asr-prefix-model-actual-0046.json",
+    "sha256": "725773903e2c6e9965dfb387dbf651b0d3dd6e65b47e8155fb6a6aedf2de3df6",
+    "cache_failure": "optimization-asr-cache-save-failure-0046.json",
+    "cache_failure_sha256": "11e23f5e16749c48ed26929d8575d0d7f8853fc0c7b948638fc7ddd175a2e731",
+    "limits": "One clip requested twice; not broad ASR accuracy or performance. Populated application-cache save and fresh-process import remain open."
   }
 }

@@ -1,0 +1,216 @@
+{
+  "status": "PASS scoped end-to-end model/prefix/placement/resource correctness; wrapper FAIL cache-save gate preserved",
+  "handle": 18620,
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-prefix-kv-cold-900/probe",
+  "pins": {
+    "run.log": "23ecbae897bbee7e5189c6ac756664f6253fcab1c61a6fe42eb3f7dbc2b14a42",
+    "failure.json": "ddc433ed320080954b565324cc5f40c95cef7d93d58b8d3095f4719ddb587eae",
+    "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+    "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+    "services-after.txt": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce",
+    "host-before.json": "ee10b594084ceac332b4dcab456f37894bd64cc8ccbdfb2079a6be01fe144597",
+    "assets-before.txt": "2c0761862770c31a49759cf6fc1abd8910bad37422614674d420a21a7aad4838",
+    "assets-after.txt": "2c0761862770c31a49759cf6fc1abd8910bad37422614674d420a21a7aad4838",
+    "launch.json": "a226496bba4d4c055d68df744bf0ae724fbd32268f4df062a3c2789b969c1cc6"
+  },
+  "payload": {
+    "radish_icd.json": {
+      "bytes": 159,
+      "sha256": "2625145708fd87108bdae5a9f10f37467352f7d746e442975fce7ebd4c37d720"
+    },
+    "libvulkan.so.1": {
+      "bytes": 703696,
+      "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+    },
+    "resources": {
+      "bytes": 103642368,
+      "sha256": "56400857333cbd3c0f3129ae4435485e3c7ef0c26a86f48b59322ab38a8d93f1"
+    },
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 13640376,
+      "sha256": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e"
+    },
+    "input.wav": {
+      "bytes": 89164,
+      "sha256": "0a66f7817c57252c814b0ecb645c76fdb40a043d1d24ae8468f10c0342c60aee"
+    },
+    "payload.json": {
+      "bytes": 961,
+      "sha256": "f419ac55a6975bc147d3e3745d0754465acf46aa9ac780a782d89c2f9d5d87ed"
+    }
+  },
+  "process_returncode": 0,
+  "original_wrapper_failure": {
+    "status": "failed",
+    "error": "actual populated Vulkan cache save required",
+    "started": true,
+    "terminal": true,
+    "process_returncode": 0,
+    "remote": "/var/tmp/radish/core-compute-opt0046-asr-prefix-kv-cold-900",
+    "unit": "radish-core-compute-probe-1793689308860590700"
+  },
+  "numerical": {
+    "requested_phrases": [
+      [
+        "en",
+        "en",
+        "How came you to leave the key in the door?"
+      ],
+      [
+        "en",
+        "en",
+        "How came you to leave the key in the door?"
+      ]
+    ],
+    "original_clip_requests": 2,
+    "distinct_clips": 1,
+    "exact_original_text_language_pass": true,
+    "scope": "Pinned originalEnglishclip reproducibility twice in one model/session lifetime; no broadmultilingualWER/CER orlogit-equivalence claim.",
+    "prompt_decode_budget_capacity_limit_retained": [
+      [
+        "45",
+        "256",
+        "64",
+        "304",
+        "16"
+      ],
+      [
+        "45",
+        "256",
+        "64",
+        "304",
+        "64"
+      ]
+    ]
+  },
+  "prefix_regression": {
+    "real_sequence_verified_after_streaming_warm_done": true,
+    "ordered_offsets_in_real_segment": [
+      2337,
+      10281,
+      10345
+    ],
+    "commit": "rows=n=head9/capacity16",
+    "initialgrowth": "16\u219264,rows9/head9",
+    "reuse": "requested9/reused9/valid9/head9/capacity64",
+    "all_commit_rows": [
+      [
+        10,
+        10,
+        10,
+        16
+      ],
+      [
+        9,
+        9,
+        9,
+        16
+      ]
+    ],
+    "all_reuse_rows": [
+      [
+        10,
+        0,
+        0,
+        0,
+        64
+      ],
+      [
+        10,
+        10,
+        10,
+        10,
+        64
+      ],
+      [
+        9,
+        9,
+        9,
+        9,
+        64
+      ],
+      [
+        9,
+        9,
+        60,
+        60,
+        64
+      ]
+    ],
+    "exact_copy_values_carry": "Existing7d074manualn>0K/V/fullguards/freshviewactual +unchangedkv_growsource; currentfullactualprovesmissingproductionvalidcountpublication andtwooriginaloutputs, notnewdirectKVdatareadback."
+  },
+  "warmup": {
+    "ordered_steps": [
+      "offline",
+      "streaming"
+    ],
+    "ordered_done": [
+      "offline",
+      "streaming"
+    ],
+    "samples_each": 40000,
+    "temporary_session_synchronized_cleanup": true
+  },
+  "placement": {
+    "graphs_checked": 52,
+    "compute_rejected_values": [
+      0
+    ],
+    "all_no_cpu_fallback": true,
+    "observed_interfaces": [
+      [
+        19,
+        0,
+        17
+      ],
+      [
+        533,
+        0,
+        164
+      ],
+      [
+        761,
+        0,
+        365
+      ],
+      [
+        786,
+        0,
+        365
+      ],
+      [
+        791,
+        0,
+        366
+      ],
+      [
+        793,
+        0,
+        312
+      ]
+    ]
+  },
+  "resources": {
+    "hard_MemoryMax": "640M",
+    "hard_MemorySwapMax": "128M",
+    "systemd_reported_peak": "640M (swap:68.4M)",
+    "own_cgroup_snapshot_max_current_bytes": 671064064,
+    "own_cgroup_snapshot_max_swap_bytes": 69173248,
+    "admission": "Userapproved900swholeprocess/935host exception only; no timeout/OOMreported/processsuccess; originalkernel500ms/fences/disk/reserves/fault/service/drain controls retained. Automaticresourceaccounting isnotperformance evidence.",
+    "all_actual_Vulkan_buffer_log_final": "Total device:0B aftermodel/sessionbufferdestruction"
+  },
+  "cache_gate": {
+    "status": "FAILED/OPEN",
+    "initialized_import_bytes": [
+      0
+    ],
+    "save_markers": [],
+    "pulled_cache_present": false,
+    "reason": "Wrapperrequiresactualpopulatedcache save marker andpulledcompiledobjects. Noneobserved/pulled. Physicaldevicecachefileexistence notasserted bythisreview; lifecycle diagnosis batchowned. No conditionalimport authorization orallfivecompletionfromthisreceipt."
+  },
+  "timing_collected": false
+}

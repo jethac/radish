@@ -1,5 +1,26 @@
 # Radish status
 
+## Scoped ASR model success; cache lifecycle remains open — 2026-11-03
+
+Corrected run18620 exited successfully and returned the exact expected English
+transcript for both requests of the pinned clip: “How came you to leave the key
+in the door?” Both warm modes, the ordered real prefix commit/growth/reuse,
+all-GPU placement and original resource controls pass independent review. Peak
+memory was640MiB with68.4MiB swap; both services remained active, with no new GPU
+fault or reported OOM. This qualifies the stated clip and retained-session path,
+not broad ASR accuracy or performance.
+
+The wrapper separately failed its populated-cache-save requirement. The private
+cache directory was empty. Source inspection found export depended on the
+device destructor while a retained device reference prevented reliable teardown.
+A backend-only change will save non-destructively after synchronized backend
+cleanup. One cold actual request and one fresh-process reload request will cover
+that lifecycle; the accepted two-request numerical result carries forward.
+[Model evidence](results/optimization-asr-prefix-model-actual-0046.json) and
+[cache failure evidence](results/optimization-asr-cache-save-failure-0046.json)
+keep these outcomes distinct. The all-five performance gate remains closed.
+
+
 ## Prefix KV valid-row correction — 2026-11-03
 
 Successful prefix computation now publishes its valid KV-row count and head

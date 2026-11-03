@@ -1,0 +1,41 @@
+{
+  "status": "CONFIRMED application cache persistence lifecycle defect; model numerical result separately reviewed",
+  "terminal_capture": {
+    "path": "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-prefix-kv-cold-900/probe/run.log",
+    "sha256": "23ecbae897bbee7e5189c6ac756664f6253fcab1c61a6fe42eb3f7dbc2b14a42"
+  },
+  "postflight": {
+    "path": "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-prefix-kv-cold-900/probe/cache-failure-readonly-postflight.txt",
+    "sha256": "ef5505e734d1c7e79cfcb8bf6065764133040caf8c5f38999d9060cd6a616d16"
+  },
+  "backend_source": {
+    "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/quant-mm-sequential-tiles/candidate/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+    "sha256": "90229c94de9e0959610dcc48b462914f08ed7960ae988637cd0e6fca78519510"
+  },
+  "types_source": {
+    "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/pipeline-cache/candidate/ggml-vulkan-types.h",
+    "sha256": "ef0ac3caa668eab76d53c204048f5ed32ec5009dfcee2c64f53d3837eacfc359"
+  },
+  "observed": {
+    "imports_bytes": [
+      0
+    ],
+    "save_marker_count": 0,
+    "process_exit": "0/SUCCESS",
+    "all_logged_device_buffer_bytes_freed": true,
+    "cache_postflight": "Owned private v19 directory exists but empty; cache file absent. See preserved owner postflight."
+  },
+  "source_cause": [
+    "Current export reachable only from vk_device_struct destructor.",
+    "Device is retained in vk_instance.devices and its own buffer_type.context holds a strong shared_ptr to the same device; no backend-free deletion of this context releases that ownership. Data buffer release is therefore not device destruction or cache export.",
+    "ggml_backend_vk_free already calls ggml_vk_cleanup, which discards unsubmitted context, synchronizes pending submissions and cleans graph/context resources, then deletes backend context. It currently does not persist the live cache."
+  ],
+  "repair": "Reuse exact non-destructive, mutex-serialized export at post-cleanup backend-free boundary while retaining cache/device for shared users. Preserve destructor fallback; no global-cycle correction.",
+  "race_and_errors": [
+    "createComputePipeline uses pipeline_cache_mutex; proposed save takes only that mutex, so cannot race serialization or acquire compile_mutex in reverse order.",
+    "Other backend users retain their own device refs; save does not destroy cache or close directory.",
+    "Optional import/export path/header/UUID/size/private-file/atomic fsync-rename and I/O exception behavior unchanged; partial-load backend free remains optional save."
+  ],
+  "execution": "No device action in this review. New actual app one-clip cold save + fresh-process accepted reload required;18620 successful two-request outputs do not close absent cache lifecycle.",
+  "performance_collection": false
+}
