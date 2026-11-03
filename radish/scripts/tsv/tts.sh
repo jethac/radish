@@ -1,18 +1,19 @@
 #!/usr/bin/env bash
 # Run the Kokoro decoder (ncnn) through Radish on the tablet: two requests of
 # the same Japanese input in one process (request 0 cold, request 1 warm).
-# usage: tts.sh LABEL DRIVER_SHA12 [--cpu] [--runtime NAME] [--requests N] [VAR=VALUE ...]
+# usage: tts.sh LABEL DRIVER_SHA12 [--cpu] [--runtime NAME] [--requests N] [--cache-tag T] [VAR=VALUE ...]
 # Extra VAR=VALUE pairs are passed to the process environment.
 # Results are pulled to $SRC/runs/LABEL (stdout log, manifests, core output).
 set -euo pipefail
 . "$(dirname "$0")/common.sh"
 LABEL=$1 SHA=$2; shift 2
-BACKEND=--vulkan RUNTIME=radish-kokoro-runtime-52c9e565 REQUESTS=2 ENVS=()
+BACKEND=--vulkan RUNTIME=radish-kokoro-runtime-52c9e565 REQUESTS=2 ENVS=() CACHE_TAG=
 while [[ $# -gt 0 ]]; do
     case $1 in
         --cpu) BACKEND=--cpu-packed ;;
         --runtime) RUNTIME=$2; shift ;;
         --requests) REQUESTS=$2; shift ;;
+        --cache-tag) CACHE_TAG=-$2; shift ;;
         *=*) ENVS+=(--setenv="$1") ;;
         *) echo "unknown argument $1" >&2; exit 2 ;;
     esac
@@ -24,7 +25,7 @@ LOOP=(--request-loop "${NEXT[@]}")
 CACHE=()
 if [[ $BACKEND == --vulkan ]]; then
     LOOP+=(--reuse-pipeline-cache)
-    CACHE=(--setenv=RADISH_NCNN_PIPELINE_CACHE_FILE=$PREFIX/cache/tts-$SHA.bin)
+    CACHE=(--setenv=RADISH_NCNN_PIPELINE_CACHE_FILE=$PREFIX/cache/tts-$SHA$CACHE_TAG.bin)
 fi
 BASE_ENV=(--setenv=RADISH_NCNN_TILED=1 --setenv=RADISH_NCNN_TILED32=0 --setenv=RADISH_NCNN_PLANAR=1
     --setenv=RADISH_NCNN_PLANAR_PACKED_A=1 --setenv=RADISH_NCNN_NORM_SUM4=1 --setenv=RADISH_NCNN_NORM_OUTPLACE=1
@@ -46,8 +47,9 @@ flock -w 1800 "$LOCK" bash -c '
     after=$(gpu_fault_count)
     echo "gpu_fault_lines before=$before after=$after" | tee "'"$OUT"'/faults.txt"
     adbsh "cat /sys/class/thermal/thermal_zone8/temp; free -m" > "'"$OUT"'/post.txt"
-    adb -s $SERIAL pull -q "'"$R"'/output" "'"$OUT"'/" >/dev/null || true
-    adbsh "rm -f '"$R"'/output/request-*/boundary/*.f32 '"$R"'/output/request-*/waveform.f32"
+    adbsh "rm -f '"$R"'/output/request-*/boundary/*.f32"
+    adb -s $SERIAL pull -q "'"$R"'/." "'"$OUT"'/" >/dev/null || true
+    adbsh "rm -rf '"$R"'"
 '
 grep -E "core extraction|request [0-9] core|synthesis|FAIL|exit" "$OUT/log.txt" || true
 python3 - "$OUT" <<'PY'

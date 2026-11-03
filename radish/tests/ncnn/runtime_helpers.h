@@ -7,6 +7,9 @@
 #include "gpu.h"
 #endif
 #include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 #include <chrono>
 #include <string>
 #include <vector>
@@ -115,6 +118,17 @@ inline int set_shape_hints(ncnn::Net& net,bool style,bool vulkan) {
 }
 
 #if NCNN_VULKAN
+inline long long trace_now_ns() {
+    struct timespec ts; clock_gettime(CLOCK_MONOTONIC,&ts);
+    return static_cast<long long>(ts.tv_sec)*1000000000LL+ts.tv_nsec;
+}
+// Phase markers on the same clock as ncnn's RADISH_TRACE layer lines.
+inline void trace_phase(const char* phase) {
+    const char* value=std::getenv("RADISH_NCNN_TRACE");
+    if(value && value[0] && std::strcmp(value,"0")!=0)
+        std::fprintf(stderr,"RADISH_TRACE event=phase name=%s dispatch_seq=%llu t=%lld\n",phase,
+                     static_cast<unsigned long long>(ncnn::VkCompute::dispatch_sequence()),trace_now_ns());
+}
 inline int extract_gpu(ncnn::Net& net,const std::vector<ncnn::Mat>& inputs,const std::vector<std::string>& names,
                 const char* target,ncnn::Mat& output,bool trim=false,double* trim_seconds=nullptr) {
     const ncnn::VulkanDevice* device=net.vulkan_device();
@@ -126,6 +140,7 @@ inline int extract_gpu(ncnn::Net& net,const std::vector<ncnn::Mat>& inputs,const
     ex.set_blob_vkallocator(allocators.opt.blob_vkallocator);
     ex.set_workspace_vkallocator(allocators.opt.workspace_vkallocator);
     ex.set_staging_vkallocator(allocators.opt.staging_vkallocator);
+    trace_phase("extract_begin");
     ncnn::VkCompute command(device);
     std::vector<ncnn::VkMat> uploaded(inputs.size());
     for(size_t i=0;i<inputs.size();++i) {
@@ -134,7 +149,9 @@ inline int extract_gpu(ncnn::Net& net,const std::vector<ncnn::Mat>& inputs,const
         RADISH_NCNN_CHECK(uploaded[i].elemsize==static_cast<size_t>(uploaded[i].elempack)*(net.opt.use_fp16_packed?2u:4u));
         RADISH_NCNN_CHECK(ex.input(names[i].c_str(),uploaded[i])==0);
     }
+    trace_phase("upload_submit");
     RADISH_NCNN_CHECK(command.submit_and_wait()==0);
+    trace_phase("upload_done");
     RADISH_NCNN_CHECK(command.reset()==0);
     const auto before_forward=command.pending_dispatch_total();
     ncnn::VkMat result;
@@ -148,7 +165,9 @@ inline int extract_gpu(ncnn::Net& net,const std::vector<ncnn::Mat>& inputs,const
     ncnn::Option download_opt=allocators.opt;
     download_opt.use_packing_layout=false;
     command.record_download(result,output,download_opt);
+    trace_phase("final_submit");
     RADISH_NCNN_CHECK(command.submit_and_wait()==0);
+    trace_phase("final_done");
     RADISH_NCNN_CHECK(!output.empty() && output.elempack==1 && output.elemsize==4u);
     allocators.trim=trim;
     return 0;
