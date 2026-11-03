@@ -1,12 +1,15 @@
 {
-  "status": "Initial corrected four-thread CPU baseline validated; matched GPU arms pending interface correction",
+  "status": "Initial matched default-device T168 CPU/GPU baseline COMPLETE with full original numerical checks; GPU is slower than CPU; optimization remains active",
   "runtime_sha256": "52c9e56579c80f948f5a3d4b0e79f100de9f0fddffc1dfc54a4d7e3409ec8dee",
   "archive_sha256": "4c58c62ea071ce1b50ea4a65d33be3c5a1c1b7e8760c0d3025680508a63cbe1d",
   "source_change": "Only NCNN_OPENMP and NCNN_SIMPLEOMP ON, retaining current source plus11 accepted overlays. Same common runtime for CPU/GPU; actual worker probe proves four concurrent threads, operator code calls that runtime.",
   "receipts": {
     "optimization-current-simpleomp-build-0046.json": "81030cf4ac47b4495916b452a309597d717462ad0aaa8e34815cfcfd3e03891b",
     "optimization-current-simpleomp-workers-0046.json": "139ebf4389150bb880cfbe8c66ae4238662042084e5d1c36b0811d854f1aab7e",
-    "optimization-current-cpu-actual-0046.json": "e759723102700b585c6f2cf60e4df28f945ed55ce1575c8a26ca53ae19771275"
+    "optimization-current-cpu-actual-0046.json": "e759723102700b585c6f2cf60e4df28f945ed55ce1575c8a26ca53ae19771275",
+    "optimization-current-gpu-cold-actual-0046.json": "290e3b3ac69944590ab90ab9052b4b926063cabe20d901b2f287348c1ec7feb7",
+    "optimization-current-gpu-import-actual-0046.json": "bf52bcbc92ac69072d0ada596ffaeadcb9707097ed581ae5947e6fbb2914e298",
+    "optimization-current-device-interface-correction-0046.json": "339fabd1d9d697bd23484f54af20ec7f25ca4e9859e6be472329673f570a1fe4"
   },
   "fixture": "Same Japanese T168 /100800 samples at24000Hz =4.2 seconds;4ncnn+4ORT, retained frontend and same-shape core, PROFILE0",
   "requests": [
@@ -59,6 +62,195 @@
     "correction": "Use accepted existing normal-runtime default robustness=true path. simplevk resolves private VK_DRIVER_FILES ICD library_path directly; staged loader is fallback and not claimed used. No binary, math, shader or CPU remeasurement needed.",
     "reviewed_old_plan": "812af verified requested argv/assets but missed unsupported GPU runtime flags; old attempt preserved."
   },
-  "remaining": "GPU missing-cache first/warm and fresh imported-cache first/warm under original controls, followed by actual-boundary accuracy; no GPU speed claim. Broader GOAL remains active.",
-  "excluded_history": "43a/97720 ncnn core was serial despite requested4; preserved but excluded from four-thread comparison. Historical32.835/37.262 belongs earlier build."
+  "remaining": "Continue optimizing measured losses. Next isolated candidate explicitly requests optional robustBufferAccess=false on the same current driver, then scheduling-preserving loss accounting with read-only thermal/devfreq observations. No conformance/deployment completion or CPU-win stopping criterion.",
+  "excluded_history": "43a/97720 ncnn core was serial despite requested4; preserved but excluded from four-thread comparison. Historical32.835/37.262 belongs earlier build.",
+  "arms": {
+    "cpu": {
+      "requests": [
+        {
+          "index": 0,
+          "phases": {
+            "frontend_wall_seconds": 5.246972301974893,
+            "shape_seconds": 0.017423126031644642,
+            "core_load_seconds": 1.3403453100472689,
+            "core_scope_seconds": 32.29555417597294,
+            "extraction_seconds": [
+              29.74528494599508
+            ],
+            "tail_seconds": 0.07977446302538738,
+            "synthesis_seconds": 37.73395993001759,
+            "core_cache_hit": false
+          },
+          "synthesis_rtf": 8.984276173813711
+        },
+        {
+          "index": 1,
+          "phases": {
+            "frontend_wall_seconds": 1.620809954998549,
+            "shape_seconds": 0.017558751977048814,
+            "core_load_seconds": 0,
+            "core_scope_seconds": 29.116244701028336,
+            "extraction_seconds": [
+              29.063414488045964
+            ],
+            "tail_seconds": 0.07969159696949646,
+            "synthesis_seconds": 30.923339025990572,
+            "core_cache_hit": true
+          },
+          "synthesis_rtf": 7.362699768092993
+        }
+      ],
+      "session": {
+        "seconds": 68.8420379050076,
+        "timing_scope": "Each request regenerates frontend/source and one tail. A same-shape core remains resident; per-request extraction includes GPU allocator trimming. Request timing excludes publication and final session teardown; session timing includes completed captures and final teardown. Memory samples are phase observations, not isolated peaks. Accuracy requires separate same-boundary references for every completed request.",
+        "core_cache_hit_sequence": [
+          false,
+          true
+        ]
+      },
+      "peak_MiB": 451.1,
+      "swap_MiB": 0,
+      "numerical": "Both443542 core values and100800 waveform samples pass original full finite/tolerance checks against each actual captured boundary.",
+      "receipt": "optimization-current-cpu-actual-0046.json"
+    },
+    "gpu_missing": {
+      "requests": [
+        {
+          "index": 0,
+          "phases": {
+            "frontend_wall_seconds": 5.0631218969938345,
+            "shape_seconds": 0.018116252031177282,
+            "core_load_seconds": 22.562671737046912,
+            "core_scope_seconds": 57.090549223008566,
+            "extraction_seconds": [
+              34.464243235997856
+            ],
+            "tail_seconds": 0.08120123000117019,
+            "synthesis_seconds": 62.34495543601224,
+            "core_cache_hit": false
+          },
+          "synthesis_rtf": 14.844037008574343
+        },
+        {
+          "index": 1,
+          "phases": {
+            "frontend_wall_seconds": 1.7322676240000874,
+            "shape_seconds": 0.01800599100533873,
+            "core_load_seconds": 0,
+            "core_scope_seconds": 34.43454105302226,
+            "extraction_seconds": [
+              34.38227459701011
+            ],
+            "tail_seconds": 0.08127602096647024,
+            "synthesis_seconds": 36.35431282600621,
+            "core_cache_hit": true
+          },
+          "synthesis_rtf": 8.655788768096716
+        }
+      ],
+      "session": {
+        "seconds": 99.17724071699195,
+        "timing_scope": "Each request regenerates frontend/source and one tail. A same-shape core remains resident; per-request extraction includes GPU allocator trimming. Request timing excludes publication and final session teardown; session timing includes completed captures and final teardown. Memory samples are phase observations, not isolated peaks. Accuracy requires separate same-boundary references for every completed request.",
+        "core_cache_hit_sequence": [
+          false,
+          true
+        ]
+      },
+      "peak_MiB": 554.7,
+      "swap_MiB": 0,
+      "numerical": "Both443542 core values and100800 waveform samples pass original full finite/tolerance checks against each actual captured boundary.",
+      "receipt": "optimization-current-gpu-cold-actual-0046.json"
+    },
+    "gpu_imported": {
+      "requests": [
+        {
+          "index": 0,
+          "phases": {
+            "frontend_wall_seconds": 5.126507726032287,
+            "shape_seconds": 0.01761619799071923,
+            "core_load_seconds": 4.845340283005498,
+            "core_scope_seconds": 39.36144161300035,
+            "extraction_seconds": [
+              34.452421872993
+            ],
+            "tail_seconds": 0.08290873299119994,
+            "synthesis_seconds": 44.67993740399834,
+            "core_cache_hit": false
+          },
+          "synthesis_rtf": 10.638080334285318
+        },
+        {
+          "index": 1,
+          "phases": {
+            "frontend_wall_seconds": 1.7195826519746333,
+            "shape_seconds": 0.017819011001847684,
+            "core_load_seconds": 0,
+            "core_scope_seconds": 34.444137048965786,
+            "extraction_seconds": [
+              34.389624440984335
+            ],
+            "tail_seconds": 0.08180555200669914,
+            "synthesis_seconds": 36.3500982169644,
+            "core_cache_hit": true
+          },
+          "synthesis_rtf": 8.654785289753427
+        }
+      ],
+      "session": {
+        "seconds": 82.18407848401694,
+        "timing_scope": "Each request regenerates frontend/source and one tail. A same-shape core remains resident; per-request extraction includes GPU allocator trimming. Request timing excludes publication and final session teardown; session timing includes completed captures and final teardown. Memory samples are phase observations, not isolated peaks. Accuracy requires separate same-boundary references for every completed request.",
+        "core_cache_hit_sequence": [
+          false,
+          true
+        ]
+      },
+      "peak_MiB": 540.6,
+      "swap_MiB": 0,
+      "numerical": "Both443542 core values and100800 waveform samples pass original full finite/tolerance checks against each actual captured boundary.",
+      "receipt": "optimization-current-gpu-import-actual-0046.json"
+    }
+  },
+  "comparison": {
+    "cpu_warm_s": 30.923339025990572,
+    "gpu_warm_missing_process_s": 36.35431282600621,
+    "gpu_warm_imported_process_s": 36.3500982169644,
+    "gpu_warm_slower_percent": 17.562701736222564,
+    "cache_first_request_saved_seconds": 17.665018032013904,
+    "cache_first_core_load_saved_seconds": 17.717331454041414,
+    "interpretation": "In these sequential initial samples, disk cache reduces startup; same-process warm latency is essentially unchanged. This is not a statistical or sustained-performance result."
+  },
+  "GPU_trace": [
+    {
+      "request": 0,
+      "GPU_layer_records": 589,
+      "all_layer_returns": 0,
+      "ncnn_intermediate_submit_events": 44,
+      "ncnn_submit_done_events": 44,
+      "sum_pending_groups_at_traced_submits": 1867639,
+      "sum_layer_dispatch_groups": 1878355,
+      "meaning": "ncnn VkCompute intermediate submit events/group counters, NOT Radish EXEC/DRM FD submission totals; final submit may be outside these intermediate-submit trace sites"
+    },
+    {
+      "request": 1,
+      "GPU_layer_records": 589,
+      "all_layer_returns": 0,
+      "ncnn_intermediate_submit_events": 44,
+      "ncnn_submit_done_events": 44,
+      "sum_pending_groups_at_traced_submits": 1867639,
+      "sum_layer_dispatch_groups": 1878355,
+      "meaning": "ncnn VkCompute intermediate submit events/group counters, NOT Radish EXEC/DRM FD submission totals; final submit may be outside these intermediate-submit trace sites"
+    }
+  ],
+  "GPU_cache": {
+    "bytes": 2197676,
+    "SPIRV_entries": 48,
+    "native_objects": 178,
+    "UUID": "7a8cf1e614239a742c3967d489fb40e5",
+    "UUID_matches_actual_driver_build_id": true,
+    "full_record_bounds_and_FNV_checksums": true,
+    "canonical_identical_to_cold": true
+  },
+  "GPU_device_policy": "Default RBA=true, simplevk direct private ICD via VK_DRIVER_FILES; staged loader is fallback only, not claimed used. Source/interface339fabd1 matches accepted9f8; no binary/math change.",
+  "precision": "CPU core FP32; GPU accepted selective policy uses two FP16-weight operators and ten FP32 fallbacks with FP32 activations/accumulation/output, all original end-to-end numerical limits retained.",
+  "thermal_frequency": "Not sampled in this baseline. No thermal stability, frequency matching, GPU utilization or saturation claim."
 }

@@ -15,27 +15,36 @@ and the [five-area ledger](radish/results/optimization-five-completion-ledger-00
 describe the qualified scope.
 
 This completes the implementation prerequisite milestone, not the
-[full goal](radish/GOAL.md). The corrected four-thread CPU baseline takes
-**37.734 seconds first / 30.923 seconds warm** for 4.2 seconds of audio, with
-complete output validation and 451.1 MiB peak memory. The common build now has
-verified parallel workers. The earlier requested-four-thread run was serial and
-remains excluded. [Current baseline and phase timings](radish/results/optimization-current-matched-baseline-0046.json)
-record the limits of this initial pair.
+[full goal](radish/GOAL.md). The initial matched T168 results for 4.2 seconds of
+audio are fully validated on the corrected common runtime with four CPU workers:
 
-The GPU launch stopped before inference on unsupported wrapper options; it is
-not a timing sample. Corrected GPU plans use the existing qualified default
-robustness and private ICD path. No current GPU comparison is available yet.
-The 32.835-second Japanese result below belongs to the frozen earlier build.
-Performance optimization, broader accuracy, conformance, deployment and GPU
-efficiency remain active.
+| Backend / startup regime | First request | Warm request | Peak memory / swap |
+| --- | ---: | ---: | ---: |
+| CPU | 37.734 s | 30.923 s | 451.1 MiB / 0 |
+| GPU, missing disk cache | 62.345 s | 36.354 s | 554.7 MiB / 0 |
+| GPU, imported disk cache | 44.680 s | 36.350 s | 540.6 MiB / 0 |
+
+GPU warm synthesis is **17.56% slower than CPU** in this initial pair. Disk cache
+reduces startup, with no steady-state gain in these samples. The GPU uses the
+qualified default robustness=true and direct private ICD path. All 589 layers
+run on GPU; every output passes the original numerical checks.
+[Phase timings, cache and counter evidence](radish/results/optimization-current-matched-baseline-0046.json)
+keep app submissions distinct from driver submissions. Thermal/frequency data
+were not sampled, so these are not sustained-performance results.
+
+The earlier requested-four-thread run was serial and remains excluded. Its
+replacement has verified concurrent workers. The failed GPU CLI launch also
+remains preserved and excluded. The 32.835-second result below belongs to the
+frozen earlier build. Optimization continues against measured losses; broader
+accuracy, conformance, deployment and GPU efficiency remain active.
 
 ## TL;DR
 
 Radish is an experimental, compute-first Vulkan driver for Adreno 5xx, built
 inside Mesa's Freedreno project. It currently runs the Kokoro neural decoder
 through ncnn on the Adreno 506 in a Lenovo ThinkSmart View. FP32 output checks
-pass. A historical matched Japanese runtime beat four-thread ncnn CPU; the new
-implementation is undergoing a fresh matched comparison. Synthesis remains far
+pass. A historical matched Japanese runtime beat four-thread ncnn CPU; the current
+default-device baseline is slower and optimization continues. Synthesis remains far
 from realtime. The goal
 is fast speech inference that makes full use of attainable GPU performance.
 

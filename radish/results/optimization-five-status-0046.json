@@ -92,7 +92,7 @@
       "qualification": "CLOSED for pinned precision and actual TTS/ASR persistent compiled-cache lifecycle, including fresh-process accepted import and original outputs. No cache-hit count, speedup or broader accuracy claim."
     }
   ],
-  "measurement_policy": "All five functional prerequisites closed and root released matched measurements. Corrected ON/ON CPU52c9 baseline validated; GPU startup49945 rejected unsupported CLI before inference and is excluded. Next uses qualified default robustness=true/private ICD path. Full GOAL active.",
+  "measurement_policy": "All-five prerequisites closed. Initial matched52c9 T168 baseline complete and validated: CPU first/warm37.734/30.923s; GPU missing62.345/36.354s; GPU imported44.680/36.350s. GPU warm17.56% slower; full GOAL and optimization active. DefaultRBAtrue/privateICD; no sustained thermal claim.",
   "patches": {
     "0046-radish-compiled-pipeline-cache.patch": "3676b04a9f71b2f0ac676bb327693059193797218621e141706f91b09bf754af",
     "0046-radish-queue-state-reuse.patch": "e2df8c5915b011b20d67b41352f4d126be922d0bfbf0989d9d3b0bc43e7fc728",

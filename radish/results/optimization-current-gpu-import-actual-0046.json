@@ -1,0 +1,189 @@
+{
+  "status": "passed",
+  "mode": "gpu-import",
+  "capture": "/run/media/jethac/Shared/radish/kokoro-runtime-ja-greet-single-vulkan-opt0046-omp-default-gpu-import-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache",
+  "validation_aggregate": {
+    "path": "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/prepared-t168-performance/simpleomp-default-device-plan/gpu-import-validated.json",
+    "bytes": 3501,
+    "sha256": "8485612235ad5a1ae5323067776f1eeb5d2ef9e41b47d97941fd7838072498f1"
+  },
+  "same_effective_thread_provenance": {
+    "archive": "4c58c62e",
+    "runtime": "52c9e565",
+    "build_review": "81030cf4",
+    "four_worker_actual": "139ebf43",
+    "filled_plan": "812af844"
+  },
+  "rounds": [
+    {
+      "index": 0,
+      "runtime": {
+        "path": "/run/media/jethac/Shared/radish/kokoro-runtime-ja-greet-single-vulkan-opt0046-omp-default-gpu-import-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache/request-000/runtime.json",
+        "bytes": 1861,
+        "sha256": "521a48d566cb0d8f4888ec326081ed55bc1546c559068cc9f90c8a1442a615bc"
+      },
+      "validation": {
+        "path": "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/prepared-t168-performance/simpleomp-default-device-plan/gpu-import-validation-00.json",
+        "bytes": 2237,
+        "sha256": "a86241e631e750ac59d7ab82d857511a9682b9b8be5113873c26a4f78ddf4269"
+      },
+      "accuracy": {
+        "core": {
+          "values": 443542,
+          "mismatches": 0,
+          "max_abs_error": 0.00013947486877441406,
+          "snr_db": 117.59802788266418,
+          "atol": 0.002,
+          "rtol": 0.002,
+          "minimum_snr_db": null,
+          "actual_sha256": "46224346356444811287a3b088b696ca55e422d84edc184a17a4b058b7968579",
+          "reference_sha256": "ef963ac988d0b81f476d407e0f0512d455ad1c7ce749e4267f43af8ceae09de9"
+        },
+        "waveform": {
+          "values": 100800,
+          "mismatches": 0,
+          "max_abs_error": 3.096647560596466e-05,
+          "snr_db": 91.0002347194316,
+          "atol": 0.0002,
+          "rtol": 0.002,
+          "minimum_snr_db": 50.0,
+          "actual_sha256": "509d41e4db01f6ea5ca1959e4e927ba60e9246a4cec0dbdeec4f58deb1d5bc9c",
+          "reference_sha256": "26b5910c6ed2dc0f80cc042e46fae1fbdd3c390a3c13c42098dcea2d34060efb"
+        }
+      },
+      "timing": {
+        "frontend_wall_seconds": 5.126507726032287,
+        "shape_seconds": 0.01761619799071923,
+        "core_load_seconds": 4.845340283005498,
+        "core_scope_seconds": 39.36144161300035,
+        "extraction_seconds": [
+          34.452421872993
+        ],
+        "tail_seconds": 0.08290873299119994,
+        "synthesis_seconds": 44.67993740399834,
+        "core_cache_hit": false
+      },
+      "audio_seconds": 4.2
+    },
+    {
+      "index": 1,
+      "runtime": {
+        "path": "/run/media/jethac/Shared/radish/kokoro-runtime-ja-greet-single-vulkan-opt0046-omp-default-gpu-import-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache/request-001/runtime.json",
+        "bytes": 1855,
+        "sha256": "2b7ea929c1376e849afcdd5ee5586742c681cf81b45516cd03618fb707731d91"
+      },
+      "validation": {
+        "path": "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/prepared-t168-performance/simpleomp-default-device-plan/gpu-import-validation-01.json",
+        "bytes": 2237,
+        "sha256": "5cb76753f2035f1848beab5d760c9ce807ee2b2bd72acde627df2d23894c0e18"
+      },
+      "accuracy": {
+        "core": {
+          "values": 443542,
+          "mismatches": 0,
+          "max_abs_error": 0.00013947486877441406,
+          "snr_db": 117.59802788266418,
+          "atol": 0.002,
+          "rtol": 0.002,
+          "minimum_snr_db": null,
+          "actual_sha256": "46224346356444811287a3b088b696ca55e422d84edc184a17a4b058b7968579",
+          "reference_sha256": "ef963ac988d0b81f476d407e0f0512d455ad1c7ce749e4267f43af8ceae09de9"
+        },
+        "waveform": {
+          "values": 100800,
+          "mismatches": 0,
+          "max_abs_error": 3.096647560596466e-05,
+          "snr_db": 91.0002347194316,
+          "atol": 0.0002,
+          "rtol": 0.002,
+          "minimum_snr_db": 50.0,
+          "actual_sha256": "509d41e4db01f6ea5ca1959e4e927ba60e9246a4cec0dbdeec4f58deb1d5bc9c",
+          "reference_sha256": "26b5910c6ed2dc0f80cc042e46fae1fbdd3c390a3c13c42098dcea2d34060efb"
+        }
+      },
+      "timing": {
+        "frontend_wall_seconds": 1.7195826519746333,
+        "shape_seconds": 0.017819011001847684,
+        "core_load_seconds": 0,
+        "core_scope_seconds": 34.444137048965786,
+        "extraction_seconds": [
+          34.389624440984335
+        ],
+        "tail_seconds": 0.08180555200669914,
+        "synthesis_seconds": 36.3500982169644,
+        "core_cache_hit": true
+      },
+      "audio_seconds": 4.2
+    }
+  ],
+  "session": {
+    "seconds": 82.18407848401694,
+    "timing_scope": "Each request regenerates frontend/source and one tail. A same-shape core remains resident; per-request extraction includes GPU allocator trimming. Request timing excludes publication and final session teardown; session timing includes completed captures and final teardown. Memory samples are phase observations, not isolated peaks. Accuracy requires separate same-boundary references for every completed request.",
+    "core_cache_hit_sequence": [
+      false,
+      true
+    ]
+  },
+  "controls": {
+    "process": "successful collection/exit, services/fault controls retained",
+    "immutable_assets": "before/after asset and graph hashes identical",
+    "new_dmesg_lines": [
+      "[309322.932391] audit: type=1130 audit(1793693415.667:6772): pid=1 uid=0 auid=4294967295 ses=4294967295 msg='unit=radish-runtime-runtime-ja-greet-vulkan-opt0046-omp-default-gpu-import-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache comm=\"systemd\" exe=\"/usr/lib/systemd/systemd\" hostname=? addr=? terminal=? res=success'",
+      "[309405.293099] audit: type=1131 audit(1793693498.027:6773): pid=1 uid=0 auid=4294967295 ses=4294967295 msg='unit=radish-runtime-runtime-ja-greet-vulkan-opt0046-omp-default-gpu-import-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache comm=\"systemd\" exe=\"/usr/lib/systemd/systemd\" hostname=? addr=? terminal=? res=success'"
+    ],
+    "resource_service": "Nov 03 17:10:15 thinksmart systemd[1]: Started [systemd-run] /var/tmp/radish/runtime-runtime-ja-greet-vulkan-opt0046-omp-default-gpu-import-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache/radish-kokoro-runtime --norm-affine-snake --deconv2d --request-loop --next-input /var/tmp/radish/runtime-runtime-ja-greet-vulkan-opt0046-omp-default-gpu-import-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache/input-runtime-ja-greet --reuse-pipeline-cache --vulkan --threads 4 --ort-threads 4 --max-frames 512 --repeat 1 /var/tmp/radish/runtime-runtime-ja-greet-vulkan-opt0046-omp-default-gpu-import-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache/models /var/tmp/radish/runtime-runtime-ja-greet-vulkan-opt0046-omp-default-gpu-import-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache/input-runtime-ja-greet /var/tmp/radish/runtime-runtime-ja-greet-vulkan-opt0046-omp-default-gpu-import-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache/decoder.ncnn.param /var/tmp/radish/kokoro-core-shapes-instancenorm/decoder.ncnn.bin /var/tmp/radish/runtime-runtime-ja-greet-vulkan-opt0046-omp-default-gpu-import-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache/kokoro-tail.bin /var/tmp/radish/runtime-runtime-ja-greet-vulkan-opt0046-omp-default-gpu-import-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache/output.\nNov 03 17:11:38 thinksmart systemd[1]: radish-runtime-runtime-ja-greet-vulkan-opt0046-omp-default-gpu-import-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache.service: Deactivated successfully.\nNov 03 17:11:38 thinksmart systemd[1]: radish-runtime-runtime-ja-greet-vulkan-opt0046-omp-default-gpu-import-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache.service: Consumed 19.935s CPU time over 1min 22.360s wall clock time, 540.6M memory peak.\n",
+    "limits": "original640MiB/128MiB/300seconds scope, original disk/headroom/lock/service/fault/collection guards"
+  },
+  "scope": "One pinned Japanese T168 input, original full numerical checks passed for both requests. Process-cold missing/imported cache and same-process warm request remain distinct. No driver FD-submit counts or cache hit counts inferred from ncnn trace; no statistical, sustained thermal, or universal workload claim.",
+  "timing_collected": true,
+  "GPU_trace": [
+    {
+      "request": 0,
+      "GPU_layer_records": 589,
+      "all_layer_returns": 0,
+      "ncnn_intermediate_submit_events": 44,
+      "ncnn_submit_done_events": 44,
+      "sum_pending_groups_at_traced_submits": 1867639,
+      "sum_layer_dispatch_groups": 1878355,
+      "meaning": "ncnn VkCompute intermediate submit events/group counters, NOT Radish EXEC/DRM FD submission totals; final submit may be outside these intermediate-submit trace sites"
+    },
+    {
+      "request": 1,
+      "GPU_layer_records": 589,
+      "all_layer_returns": 0,
+      "ncnn_intermediate_submit_events": 44,
+      "ncnn_submit_done_events": 44,
+      "sum_pending_groups_at_traced_submits": 1867639,
+      "sum_layer_dispatch_groups": 1878355,
+      "meaning": "ncnn VkCompute intermediate submit events/group counters, NOT Radish EXEC/DRM FD submission totals; final submit may be outside these intermediate-submit trace sites"
+    }
+  ],
+  "cache": {
+    "path": "/run/media/jethac/Shared/radish/evidence/runtime-runtime-ja-greet-vulkan-opt0046-omp-default-gpu-import-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache-pipeline.cache",
+    "bytes": 2197676,
+    "sha256": "32e3e0100fce9c07631c1dda4c189bfc06e9d7fadb27230a14b6888c47895c86",
+    "SPIRV_entries": 48,
+    "native_objects": 178,
+    "UUID": "7a8cf1e614239a742c3967d489fb40e5",
+    "UUID_matches_actual_driver_build_id": true,
+    "full_record_bounds_and_FNV_checksums": true,
+    "canonical": {
+      "path": "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/prepared-t168-performance/simpleomp-default-device-plan/gpu-import-cache-canonical.json",
+      "sha256": "4f93d9423ca6a9dff5f628889ec7a3df17ed3ff1cf43753e59f3a31e6fa40253"
+    },
+    "per_request_pipeline_entries": [
+      {
+        "index": 0,
+        "pipeline_cache_entries": 178,
+        "device_pipeline_cache_entries": 5
+      },
+      {
+        "index": 1,
+        "pipeline_cache_entries": 178,
+        "device_pipeline_cache_entries": 5
+      }
+    ],
+    "canonical_identical_to_cold": true
+  },
+  "actual_device_policy": "Default RBA=true, simplevk direct private ICD via VK_DRIVER_FILES; staged loader is fallback only, not claimed used. Source/interface339fabd1 matches accepted9f8; no binary/math change."
+}

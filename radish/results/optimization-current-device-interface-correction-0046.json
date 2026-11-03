@@ -1,0 +1,48 @@
+{
+  "status": "PASS narrow corrected GPU default-device interface and filled plans",
+  "release_sha256": "8104caca4ce778d6f9f5e7b3e5709496a5ed448f7700d24bbf7b6da62aa13fa2",
+  "plans": {
+    "gpu-cold": "eb2b3911769d295d966ca2500129ecc66cc88e00292edb4ad3148bda3e158f37",
+    "gpu-import": "85c19396d72e9e441982cd6da8a1b0a30ba0448bfc270b9a861d14ca9c0bfaa8"
+  },
+  "source_and_prior_evidence": {
+    "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/persistent-app-cache/normal/tests/ncnn/kokoro_runtime.cpp": "b4a1192845993d2a51d1b48ff6c08eabed846455315abd6b27e6983f428148b4",
+    "/run/media/jethac/Shared/radish/tts-current-simpleomp-build-0046/source/ncnn/src/simplevk.cpp": "a9b1dd40b0326c52eea99998cb1666b7d52288b44a17b4891defe181c51bc48a",
+    "/run/media/jethac/Shared/radish/tts-current-simpleomp-build-0046/source/ncnn/src/gpu.cpp": "a32dd2c2b99d2c383ad9adb8b936f0242c8498860c91ecef7658f58273518058",
+    "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/prepared-t168-performance/timed-cache-wrapper/device-runtime.sh": "9b826fb2a541be1fed9385d9b9af2bf323af9dd0032eeb6541988d262bb22941",
+    "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/untimed-runtime-deferred-regression-v2/launch.json": "fc78e6a7de2bec5fd3c9e65f0d45e4c9e13dc35188ff4f2424f172fb99f8e471",
+    "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/untimed-runtime-deferred-regression-v2/device-runtime.sh": "d1bc44c7f0bc11f9229ed94aa5595643bd8aa67dd8006197a7e527b33b2fee99",
+    "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/untimed-runtime-deferred-regression-v2/independent-actual-review.json": "9f8bb8f7a48edc9645a18b0e18c9f01d57008eb04de72f99b079deb164c38a80"
+  },
+  "actual_runtime_supported_options": [
+    "--affine-snake",
+    "--cancel-file",
+    "--cpu-packed",
+    "--deconv2d",
+    "--max-frames",
+    "--next-input",
+    "--norm-affine-snake",
+    "--ort-lib",
+    "--ort-threads",
+    "--repeat",
+    "--request-loop",
+    "--reuse-pipeline-cache",
+    "--threads",
+    "--vulkan"
+  ],
+  "checks": [
+    "Exact inverse of removed robustness option, fresh labels and explicit correction metadata recovers prior GPU plans; every asset/environment/workload/control unchanged. Same52c9 and completed CPUe759 remain valid, no rebuild.",
+    "Wrapper receives no ROBUST option, so DEVICE_ARGS stays empty; generated GPU argv consists only of parser-supported CORE expansion norm-affine-snake/deconv2d, request-loop/next-input/reuse-pipeline-cache, vulkan, threads/ort-threads/max-frames/repeat and six positional paths.",
+    "Same path as accepted untimed9f8: get_gpu_device0 constructs VulkanDevice(index,true), leaving advertised robustBufferAccess enabled. This is source-derived default policy, not a new requested=enabled runtime telemetry claim; prior RBA0 plan was wrong.",
+    "simplevk uses VK_DRIVER_FILES private JSON library_path before NCNN_VULKAN_DRIVER/default lib search, then dlopens private ICD. Exact driver/ICD assets retain before/after hashes and Radish single-device/nonfallback/trace checks. Staged loader remains pinned fallback artifact, not claimed loaded.",
+    "GOAL49-50 loader-discovery milestone remains separate;230 per-process ICD/isolation/no system replacement satisfied by qualified direct-ICD path. No global ICD/installed Mesa mutation.",
+    "Wrapper unchanged9b826 retains original300s/330host/640MiB/128MiB, cachemissing/accepted/export, fault/services/ownership/drain/disk and per-request numerical validation requirements."
+  ],
+  "corrections": [
+    "49945 startup failure and original plans remain preserved; no inference or GPU-speed result attributed to failedlaunch.",
+    "Earlier812af plan pin/source build review did not establish this GPU CLI compatibility; this receipt explicitly corrects that interface omission.",
+    "No RBA0 or staged-loader-primary comparison claim; later explicitRBAfalse experiment is separate."
+  ],
+  "CPU_sample": "6982/e759 carries, same binary/source, no CPU changes",
+  "reviewer_device_actions": 0
+}
