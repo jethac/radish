@@ -1,5 +1,5 @@
 {
-  "status": "Softmax-only candidate a9e281 on unchanged4923 driver; original full model still unqualified. Existing TTS/KV/quant checks carry forward; no timings.",
+  "status": "Currenta9e281/4923 passes softmax native/numerical gates; fullmodel47504 times out during normal streaming warmup after offlinewarmup succeeds. No requested clip transcript/cache replay/all-five closure.",
   "application": "Frozen ASR source with previously published GQA, quantized phase, memory-liveness and unit-axis overlays",
   "ordered_additive_patches": [
     {
@@ -97,7 +97,7 @@
   ],
   "source_review": "c7ef69075c2fd4632b3ecb2a411db022d84de7684d71a60ad30cc346b503ed6d",
   "build_runner_review": "74e67652eb7a62720d2b5b9bce6b13677d8342fe8cda948ed93842b2a0b9ce3e",
-  "actual_result": "optimization-asr-softmax-init-memory-failure-0046.json",
+  "actual_result": "optimization-asr-stream-warmup-timeout-0046.json",
   "limits": "Opaque app-cache use is implemented, but full ASR saved-populated-cache/import/transcript and resource fit are not qualified.",
   "init_stage_listener": "92209fe64db13b4be25951839ad86ed7de6f0b20cec2af521418e0a7365176fc",
   "init_stage_libraries": {
@@ -901,6 +901,7 @@
       "scope": "Only soft_max.comp.cpp.o replaced over8f301; all backend/model/driver/other modules unchanged; no timings"
     },
     "source_review": "b9045ce2b476049451c9bd53715ebbcdede3617c09888d454a3e8b7d11f62f99",
-    "build_native_runner_review": "c551ba5af08ebcd23181a45f8cbe6860561febd818ab23149edcaf2c9864f2ad"
+    "build_native_runner_review": "c551ba5af08ebcd23181a45f8cbe6860561febd818ab23149edcaf2c9864f2ad",
+    "numerical_actual": "optimization-softmax-numerical-0046.json"
   }
 }

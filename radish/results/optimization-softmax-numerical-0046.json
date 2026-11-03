@@ -1,0 +1,53 @@
+{
+  "status": "PASS both actual softmax numerical families; full model now admitted subject to existing fresh controls",
+  "source_gate": "1a891320a1ba07538abbba2460782c4f10a819c48f2f270fdef40c6b24ccb5f0",
+  "build_runner_gate": "774d19d959cf7a0cccee4a0fa84a5eaa316b2995249e45429275fe6a9a889763",
+  "families": [
+    {
+      "family": "f32",
+      "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-softmax-f32/probe",
+      "runner_result": "61f1f15fc786b5ca8eb9461bbe00065648d19550038552b4dc5a71fe5e772b1f",
+      "run_log": "3f67098fbbc6abd4fdb500816fe1e679bae13edbe1938d8f677c77eae52f3838",
+      "run_log_bytes": 9164158,
+      "cases": 52,
+      "outputs": 136464,
+      "old_new_bit_differences": 0,
+      "max_cpu_nmse": 1.03204105669e-14,
+      "new_native_blake3": "a58853608335ec590df46e2c1bca884efc9b715032489b64ad730ec5e2054b60",
+      "new_native_body_sha256": "55beba0c8b97a31d0c4a704a33aae4410e1cdace6adb7a1d46d3f0da1d57f8c9",
+      "new_native_exact_admission": true,
+      "dispatches": 104,
+      "workgroups": 1352,
+      "device_disk_after_kib": 417108
+    },
+    {
+      "family": "f16",
+      "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-softmax-f16/probe",
+      "runner_result": "5af40a992c0cfe78a17e3b9b9fa6e4cdff78826976dec3c5534c28202f7d6734",
+      "run_log": "546be9db10bcf6739e359b4c0c36db0a7c31d9b87e130c73a1cb5b7fe3a89068",
+      "run_log_bytes": 9610259,
+      "cases": 52,
+      "outputs": 136464,
+      "old_new_bit_differences": 0,
+      "max_cpu_nmse": 1.03204105669e-14,
+      "new_native_blake3": "40d413efd2181b6a065bd5a1fa2c9e47b42d6c5ec03b30413d0d1c8809c340d5",
+      "new_native_body_sha256": "856729c224a619ff31f7fc53d405927d7171b9d3d21a032b0cf4224ba99e2375",
+      "new_native_exact_admission": true,
+      "dispatches": 104,
+      "workgroups": 1352,
+      "device_disk_after_kib": 416004
+    }
+  ],
+  "total_cases": 104,
+  "total_old_new_output_pairs": 272928,
+  "total_individual_output_words": 545856,
+  "total_dispatches": 208,
+  "checks": [
+    "All actual module/helper/driver payloads rehashed. Exact 13 widths times four masks/sinks/ALiBi configurations in each of two mask families; zero old/new bit differences and nonfinite, existing independent CPU NMSE1e-6 passed.",
+    "Both changed native assembly bodies/blake3 are byte-exact to admitted two-case output; shared128/private0, physical16x2 and logical32 preserved. Every actual dispatch completed with13 single-workgroup chunks.",
+    "All five complete allocations and extra descriptor-accessible row13 remain exact outside twelve numerical rows. Immutable inputs, guards and numeric checks execute each case before PASS. Clean collection, service/fault, assets and terminal result.",
+    "Host-streamed disassembly logs exceed nominal8MiB allowance (not a device file); actual device disk remains over400MiB, preserving64MiB floor. Future equivalent diagnostic reservations should be16MiB. No replay or numerical scope change warranted.",
+    "Full model remains separate: this qualifies exact target softmax modules, not transcript correctness, total memory fit or populated application-cache replay."
+  ],
+  "timing_collected": false
+}

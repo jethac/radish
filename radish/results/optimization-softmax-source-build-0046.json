@@ -1,5 +1,5 @@
 {
-  "status": "Source/build and bounded native resources qualified; numerical/full model status below",
+  "status": "Source/build, native and focused old/new+CPU numerical qualification passed. Fullmodel reached offlinewarmup success, then original timeout in streamingwarmup; not qualified.",
   "release": {
     "status": "source-ready KHR-only compilation-footprint correction; exact native and numerical qualification required",
     "preimage": "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/ggml-vulkan/vulkan-shaders/soft_max.comp",
@@ -670,7 +670,7 @@
     },
     "base_recipe": "6a57dee48f4f7c40a7f48205a8929b2792237082ef1db632384b9118938050fb"
   },
-  "numeric_helper_status": "F32 numerical scope running; F16 and full-model outcomes pending",
+  "numeric_helper_status": "Both numerical families passed104 cases/272928 bit-identical old-new pairs; independentCPU maxNMSE1.032e-14 <= original1e-6; full allocations/guardrow pass",
   "numeric_helper_build_runner_review": {
     "status": "PASS finite v2 helper build and two functional runner pairings",
     "source_review": "1a891320a1ba07538abbba2460782c4f10a819c48f2f270fdef40c6b24ccb5f0",
@@ -723,5 +723,11 @@
       "Both old native families and both new native cases already admitted; this gate permits two bounded functional scopes, not full model until numerical outcomes independently pass. No timing instrumentation."
     ],
     "timing_collected": false
-  }
+  },
+  "numeric_actual": {
+    "file": "optimization-softmax-numerical-0046.json",
+    "sha256": "87288f9c381a6ea66b6ef15a2b15b5ed06bc06dba0df8611e504f167d6c4fd74"
+  },
+  "accounting_note": "Old-module disassembly produced approximately9MiB host-streamed logs per family versus8MiB reserved device allowance. Actual device free-floor proof remains valid and separate from numerical validity. Future equivalent verbose diagnostics should reserve16MiB; no repeated work required. Fullmodel reserves32MiB unchanged.",
+  "full_model_result": "optimization-asr-stream-warmup-timeout-0046.json"
 }

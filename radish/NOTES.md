@@ -12,7 +12,12 @@ no private memory, with code and registers inside the existing bounds.
 
 [Source and build](results/optimization-softmax-source-build-0046.json) retain the
 failed candidate and exact replacement provenance. Focused old/new and CPU
-numerical checks and the original full-model result remain separate gates.
+numerical checks now pass all104 cases and272928 bit-identical pairs, with full
+allocation guards and maximumCPU NMSE1.032e-14 below the original1e-6 limit.
+The original two-request full-model run completes offline warmup, then reaches
+the unchanged300-second timeout during streaming warmup before producing the
+requested clip transcripts. This is a timeout, not an OOM result. Normal streaming
+functionality and the real256-token inference budget remain required.
 TTS, actual KV growth and quant batching evidence carry forward. No performance
 measurements have been collected for this work.
 

@@ -1,0 +1,40 @@
+{
+  "status": "FAILED original full model; source/numerical softmax qualification remains valid",
+  "review": "owner terminal artifact reconciliation; independent phase diagnosis ongoing",
+  "handle": 47504,
+  "listener": "a9e281618e4ed436bdad58bbd95ef5b6b4571ac3bce4f238e65ea0018f7d53e3",
+  "driver": "4923d9ebd889f577a1118ac5a7a04466c61b704a6bfeae40b0961167ef1c308c",
+  "failure": "timeout at original300-second guard; processTERM, not OOM",
+  "phase": "Normal offline warmup completed status0. Streaming warmup began and did not end before timeout. Requested two clip transcripts never appeared. Both corrected softmax variants compiled successfully. Later stream encoder finished and prefill placement791GPU/0rejected appeared.",
+  "resource_guard_telemetry": {
+    "memory_limit_mib": 640,
+    "swap_limit_mib": 128,
+    "memory_peak_mib": 640,
+    "swap_peak_mib": 62.5,
+    "note": "Guard telemetry only; no matched performance or memory-improvement experiment"
+  },
+  "terminal": {
+    "drain": "LoadState=not-found\nActiveState=inactive\nSubState=dead\n",
+    "collection": {
+      "passed": true,
+      "errors": []
+    },
+    "fault_check": "PASS: no new GPU fault/recovery messages\n",
+    "services": [
+      "active",
+      "active"
+    ]
+  },
+  "pins": {
+    "run.log": "285780a2062f5667b8f37b36be24d3021ca64731d90069badc28fa23cb67dea7",
+    "failure.json": "51c151bb1c8eaabb6d6535a23f8fd241439c487bbdb1b5280ea0b4c11921ca0e",
+    "launch.json": "ffe8edd9ba307fca7d719f6cf4f6c93b3dd83f43beccd3ba538805538f6707ee",
+    "host-before.json": "c11bc56a59eb24f71d64d8bb28eeacd0ff7bca0e2d3cc2a38e3ee2dad66d615b",
+    "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+    "drain-000.txt": "899a8a5a73232d4a07b56824413da1c88dc2dc685e89886ca2bc05f89923b9f6",
+    "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+    "services-after.txt": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+  },
+  "remaining": "Diagnose justified production warmup redundancy/initialization without removing actual streaming functionality or changing real256-token inference. No unchanged retry or accepted-cache import.",
+  "timing_collected": false
+}

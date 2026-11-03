@@ -4,10 +4,10 @@ Current checkpoint (2026-11-03): the five-area optimization implementation is
 under untimed correctness validation. Retained TTS sessions, convolution and
 selective precision, queue reuse, and real TTS pipeline-cache export/import
 pass their stated model fixtures. Full ASR inference and its cache replay remain
-open. The latest ASR failure reached softmax pipeline creation and exhausted the
-unchanged memory cap; an isolated shader correction is built and its two native
-programs fit the existing resource limits. Numerical and full-model checks remain
-required. [Current implementation and evidence](radish/results/optimization-five-status-0046.json)
+open. The corrected softmax modules fit the existing resource limits and pass focused
+old/new and CPU numerical checks. The latest full ASR run completes offline
+warmup, then reaches the unchanged timeout during streaming warmup before
+producing the requested transcripts. Full-model and cache-replay checks remain required. [Current implementation and evidence](radish/results/optimization-five-status-0046.json)
 and the [full goal](radish/GOAL.md) are authoritative.
 
 No new performance measurement is permitted until all five areas pass. The

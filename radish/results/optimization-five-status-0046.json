@@ -26,7 +26,7 @@
     {
       "area": 4,
       "implementation": "Integrated GQA broadcast, phase-specific quantized kernels, encoder-to-prefill device-buffer reuse and reduced host staging; actual application pipeline cache and supported-kernel initialization correction are built. Constrained-profile subsampling reuses one independent chunk graph across the complete audio, lowering unnecessary live convolution intermediates. Scheduler scratch is released between subsampling and encoder; Vulkan-owned allocations leave the BO reuse cache on final unref. Incremental KV allocates actual prompt/draft demand and grows geometrically up to the unchanged full context ceiling. The constrained softmax shader uses one runtime-width body and preserves column loops instead of seven constant-width expansions, retaining numerical order and masks.",
-      "evidence": "TTS, actual KV growth and quant batching remain qualified. Failed8f301 full run OOMs at soft_max_f32 compile begin, with original caps intact. New a9e281 changes only two softmax modules; baseline generator reproduces original bytes, two new native programs fit code/register/shared limits with no private memory. Focused numerical and original full-model results are recorded separately; no full-model or performance claim."
+      "evidence": "Existing GQA/quant kernels, actual KV growth and full/partial batching pass. Corrected softmax modules pass native bounds and104 exact old/new+CPU cases. Fulla9e281/4923 now completes normal offline warmup, but reaches the unchanged300s timeout during streaming warmup before requested clip transcripts. No OOM result, no fullmodel/cache replay qualification."
     },
     {
       "area": 5,
@@ -56,7 +56,7 @@
   },
   "existing_results": "Original743 CTS cases and modified132 robustness outcomes remain historical pinned evidence; no conformance count or selected performance change.",
   "completion_gate": "TTS side is qualified for the stated T213/T78 fixtures. All-five gate remains CLOSED on ASR full-model memory/placement/transcript and real application replay; full GOAL remains active.",
-  "as_of_utc": "2026-11-03 01:27 UTC",
+  "as_of_utc": "2026-11-03 01:37:03 UTC",
   "correctness_receipts": {
     "optimization-cache-correctness-0046.json": "0af98f899b26429971ef61df554e2cf4a4fe340019353f9ed7491869ab59b1f5",
     "optimization-queue-correctness-0046.json": "98c9f0d64a5ef1076462930effb6fd3e22c48de75cad78e87f7e68eaa6636b0e",
@@ -74,7 +74,9 @@
     "optimization-kv-growth-correctness-0046.json": "7d0745d9877b0e643794376dae6cb629f4d54ae6155223e3e4010c3032cbceaf",
     "optimization-quant-batch-correctness-0046.json": "9f0efe3fb17fb2e832145c7a5907c79bb89a31f8c20f51065d47b5f80ed0345b",
     "optimization-asr-decoder-timeout-0046.json": "5f941421d989024e35cde161fe03a406ad2c00d5cafee9ae935d8ffea5c0bda9",
-    "optimization-asr-softmax-init-memory-failure-0046.json": "e58dd1144e001ea4107da4eb240eaa2e672ab9798198e19e62cd801d8eb838c0"
+    "optimization-asr-softmax-init-memory-failure-0046.json": "e58dd1144e001ea4107da4eb240eaa2e672ab9798198e19e62cd801d8eb838c0",
+    "optimization-softmax-numerical-0046.json": "87288f9c381a6ea66b6ef15a2b15b5ed06bc06dba0df8611e504f167d6c4fd74",
+    "optimization-asr-stream-warmup-timeout-0046.json": "451bcbad7facc0f9da6dae867abac558e1870f84b1bc5537319a48bd637b3613"
   },
   "drivers": {
     "bounded_cache_queue_half": "61e8/9f64 exact integrated cache+queue+corrected idiv",
@@ -91,7 +93,8 @@
     "Phase-release84990: all3 subsample graphs and encoder complete; prefill793/0 then OOM640MiB/swap128MiB. Full model outputs remain unqualified; original inputs/budget/caps unchanged.",
     "IncrementalKV53398: encoder/prefill complete with64-row initial KV and unchanged320-row/256-token ceiling; decoder-step path reaches placement761/0, then original300s timeout, no transcript. Not OOM result; guard peak640MiB/swap112.9MiB.",
     "KV helper28378: required trailing CPU scheduler backend missing, assertion before GPU graph work; v2 corrects metadata/backend contract while enforcing every CONT compute node on Vulkan, then passes49528.",
-    "Quant-batched29537: actual native44 batch8/grid56x3 completes with21 submits; latest pipeline begin soft_max_f32 has no matching end before640MiB OOM/swap71.3. No output, no unchanged retry."
+    "Quant-batched29537: actual native44 batch8/grid56x3 completes with21 submits; latest pipeline begin soft_max_f32 has no matching end before640MiB OOM/swap71.3. No output, no unchanged retry.",
+    "47504: original300s timeout/TERM during normal streaming warmup after offlinewarmupstatus0. Softmaxcompilesfinish; no requested clip transcript. Guardpeak640MiB/swap62.5MiB; notOOM or performanceexperiment."
   ],
   "runtime_cache": "Actual ncnn missing-cache cold process exports populated cache; second process accepts and re-exports identical178 keyed compiled objects and correct outputs. No hit-count or acceleration inference. On coherent91a1, copied old-UUID cache is rejected and repopulates48SPV/178native objects with the new build UUID; both complete T78 outputs remain byte-identical accepted baseline."
 }
