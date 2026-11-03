@@ -1107,13 +1107,12 @@
     "build_review": "8f30f8e3c82cd99e10117e3fafa0fc57481f592e8f63ab10451a64004da80098"
   },
   "latest_full_model_result": {
-    "receipt": "optimization-asr-mm128-rms-timeout-0046.json",
-    "sha256": "34f0f8d0ca3cb8f4879a514bad1291df43f57db04399f215ca0800d9f041a701",
-    "handle": 22258,
-    "status": "Both warm modes complete, realprefix1151 and first subsample36 complete; next36 begins before original watchdog, no transcript",
-    "scope": "No transcript comparison result, no ASR cache qualification, no speed claim",
-    "independent_receipt": "optimization-asr-mm128-rms-structural-0046.json",
-    "independent_sha256": "45326e582db3cfc0e3062107a7da91a70bc053f3d30fe95b9788e12ae73a8ef8"
+    "status": "failedoriginalprocesswatchdog,no transcript",
+    "receipt": "optimization-asr-matrix-fence-timeout-0046.json",
+    "independent_sha256": "2d3c161625a42bf9b4f297575efddf46da50af7446908ad66b3f0da443303d79",
+    "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
+    "driver": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
+    "performance_measurement": false
   },
   "resource_diagnostic_stage": {
     "build": {
@@ -1743,7 +1742,9 @@
     "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
     "source_build_receipt": "optimization-matrix-fence-source-build-0046.json",
     "actual_union": "optimization-grouped-quant-actual-union-0046.json",
-    "active_full_model": "82231; originalfullwork/freshmissingv17; pending",
-    "scope": "Old11cfcase09GPUfault remains preserved/unqualified; revisedpolicy is source-backed bounded kernel-fence progress, not hangchecktimeout change."
+    "active_full_model": "82231 terminal300sprocess-timeout; bothwarmmodes/realprefix/two36nodegraphs complete,thirdbegan,no transcript. No newGPUfault,cleanservice/drain.",
+    "scope": "Old11cfcase09GPUfault remains preserved/unqualified; revisedpolicy is source-backed bounded kernel-fence progress, not hangchecktimeout change.",
+    "terminal_receipt": "optimization-asr-matrix-fence-timeout-0046.json",
+    "next_scope": "Host-only900sprocess-watchdogproposal;notauthorizedpendingexplicitusersteering.NoGOALedit orGPUexecution."
   }
 }

@@ -10,7 +10,10 @@ A grouped-work qualification encountered a Q8 GPU hangcheck. The fault is
 preserved. A revised matrix policy exposes each execution through a kernel
 fence, retaining the same workgroups and limits. Both isolated diagnostic bands
 and the remaining full Q8 tests pass; the cause is not uniquely proved. The
-original full ASR model is being checked on that revision. [Current evidence](radish/results/optimization-five-status-0046.json)
+original full ASR model completed both warm modes and part of the real request,
+then reached the retained300-second process watchdog before a transcript. A
+host-only900-second correctness proposal awaits explicit authorization; no kernel
+hangcheck or other resource limit change is proposed. [Current evidence](radish/results/optimization-five-status-0046.json)
 and the [full goal](radish/GOAL.md) are authoritative.
 
 No new performance measurement is permitted until all five areas pass. The

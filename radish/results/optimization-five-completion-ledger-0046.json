@@ -1,0 +1,180 @@
+{
+  "status": "Five-area implementation ledger; milestone remains OPEN pending integrated ASR and fresh-process cache replay",
+  "as_of_utc": "2026-11-03T06:32:22.294887+00:00",
+  "purpose": "Consolidation of existing accepted receipts only; no new execution, native review, or performance collection.",
+  "source_documents": [
+    {
+      "path": "/home/jethac/Projects/lenovo-8/radish/results/optimization-five-status-0046.json",
+      "sha256": "e649ccc2ef5f0b34d0733e2652b746b59d9bb80682bd5543e476b2a2dcd97301"
+    },
+    {
+      "path": "/home/jethac/Projects/lenovo-8/radish/results/optimization-asr-active-source-build-0046.json",
+      "sha256": "2d2373df274dbd2151fc53df7d37e856340abe84063c440eb7297a214a648a26"
+    },
+    {
+      "path": "/home/jethac/Projects/lenovo-8/radish/results/optimization-grouped-completion-matrix-0046.json",
+      "sha256": "47870f0cf5d50c706de5ef0a2a91f6bf45b0018ece34e3d2a180b0b166c84968"
+    }
+  ],
+  "current_candidate": {
+    "listener_sha256": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
+    "driver_sha256": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
+    "cache": "fresh missing v17",
+    "active_scope": "82231 terminal watchdog failure; both warm modes complete, real prefix and two subsampling graphs complete, third begins; no requested transcript"
+  },
+  "areas": [
+    {
+      "area": 1,
+      "implementation": "Retained frontend and harmonic ORT sessions, owned outputs, validated dynamic shapes, bounded session and activation lifetime; validated ORT_DISABLE_ALL policy retained.",
+      "actual_use": "Four T78 requests across cold and fresh-import processes; two ORT sessions and GPU core retained within each process.",
+      "functional_resource_evidence": "Each captured request boundary matches its CPU reference under original core/waveform criteria (205942 core values and 46800 waveform samples per request); zero threshold errors; waveform SNR 90.614 dB. Session/placement/memory controls passed.",
+      "receipts": [
+        "frontend",
+        "tts_shared_queue",
+        "tts_carry"
+      ],
+      "qualification": "Closed for pinned T78 fixture; broader frontend/TTS quality is not claimed."
+    },
+    {
+      "area": 2,
+      "implementation": "Direct-window C128/K11 convolution with dilation 1/3/5 reads packed input and fuses padding, eliminating planar intermediate/conversion work.",
+      "actual_use": "Full T213 FP32 model repeat2, and retained T78 integrated runtime.",
+      "functional_resource_evidence": "Full 562342 core outputs and 127800 waveform samples under original criteria, accepted FP32 core bit identity; 179 native programs admitted. Shared queue regression retains exact accepted T78 boundaries and outputs.",
+      "receipts": [
+        "tts_fp32",
+        "frontend",
+        "tts_shared_queue",
+        "tts_carry"
+      ],
+      "qualification": "Closed for pinned T213/T78 fixtures; no speed claim."
+    },
+    {
+      "area": 3,
+      "implementation": "Graph/packing elimination, bounded state reuse and grouped execution, eight-slot ordered deferred FD completion, explicit enqueue error status, and drains before CPU work/final signals. Existing GPU flush/WFI ordering remains.",
+      "actual_use": "Dependent GPU producer/consumer plus CPU byte-copy/final-fence fixture; full TTS integrated runtime; every newly affected ASR family has focused grouped/full-tail actual evidence.",
+      "functional_resource_evidence": "Dependency full-four-allocation oracle and actual eight-slot capacity/CPU/final drains; local-family 93732 outputs; grouped RMS 169984, norm 149760, GQA 1590732, softmax 177408 old/new pairs plus 354816 CPU comparisons, long binary 2097160, quant union 994998. Matrix policy now emits one EXEC per FD, retaining up to eight WG per EXEC/eight ordered FD slots. Nonmatrix grouped and nonbarrier work bounds remain separately documented; queued work is not simultaneous residency.",
+      "receipts": [
+        "dependent_queue",
+        "local_families",
+        "grouped_geometry",
+        "quant_union",
+        "current_driver",
+        "tts_shared_queue",
+        "tts_carry"
+      ],
+      "qualification": "Focused functional/resource gates closed; current integrated ASR completion still pending. Original grouped Q8 fault remains preserved; changed bounded-fence policy passes the original failing case without proving a unique fault cause."
+    },
+    {
+      "area": 4,
+      "implementation": "Actual ASR GQA and quantized phase kernels, MM128/MV32 sequential work, compact softmax/RMS bodies, full-audio one-chunk subsampling, phase scratch/BO lifetime release, GPU handoff reuse, incremental KV growth, isolated one-step production warm sessions and constrained post-owner heap release.",
+      "actual_use": "Previous and current full applications execute both warm modes and real input processing; 82231 reaches watchdog before requested transcript. Focused actuals exercise all changed kernel/resource families and real KV growth.",
+      "functional_resource_evidence": "Real F16/F32 KV 16-to-32-to-64 growth preserves K/V rows and fresh views. Source/actual ownership evidence establishes scratch release and 35 paired heap-release calls with allocator-used bytes unchanged and anonymous RSS reductions. All new grouped geometry has original CPU/full-buffer guards and native resource evidence.",
+      "receipts": [
+        "grouped_geometry",
+        "quant_union",
+        "kv_growth",
+        "heap_release"
+      ],
+      "qualification": "OPEN: require actual two-request exact transcript/language, intended GPU placement, bounded memory and populated-cache export in current full application. Helper success and warmup progress do not establish completed real ASR."
+    },
+    {
+      "area": 5,
+      "implementation": "Selective half-weight storage with two qualified operators and ten FP32 fallbacks, exhaustive correct half decode; real compiled Vulkan pipeline-cache serialization/keying/merge/import plus application-owned persistence.",
+      "actual_use": "T213 and T78 execute actual half2/FP32ten; TTS cold/export/fresh-import persists 48 SPIR-V and 178 compiled native objects. ASR uses an actual private cache path in the full runner.",
+      "functional_resource_evidence": "All 65536 half patterns (including 2046 signed subnormals) satisfy exact finite-bit/NaN-class checks. T213 original core tolerance 0.002 + 0.002*abs(reference), waveform minimum 50 dB, actual 90.934 dB. TTS fresh process imports populated native entries, rejects old UUID safely, retains exact accepted outputs and bounded queue use.",
+      "receipts": [
+        "half_bits",
+        "tts_half",
+        "frontend",
+        "compiled_cache",
+        "tts_shared_queue",
+        "tts_carry"
+      ],
+      "qualification": "TTS precision/cache use closed for pinned fixtures. OPEN: ASR completed cold outputs/export and one-clip fresh-process accepted-cache replay."
+    }
+  ],
+  "remaining_milestone_gates": [
+    {
+      "gate": "Integrated ASR cold",
+      "scope": "A completed current-candidate full ASR correctness scope remains required. 82231 retained its two pinned2.785s requests, both40000-sample warm modes and256 ceiling but timed out before a transcript. Any next scope requires explicit coordinator decision; no unchanged retry follows from this ledger.",
+      "controls": "Current reviewed runner retains 640 MiB memory, 128 MiB swap, 300-second whole-process watchdog and original disk/fault/service checks. These are recorded current harness controls; this ledger does not assert they are literal user-specified limits.",
+      "owner": "dispatch executes; packed independently reviews terminal PASS; batch diagnoses terminal failure."
+    },
+    {
+      "gate": "ASR fresh-process populated-cache replay",
+      "scope": "One same pinned clip with accepted v17 cache, same actual application/driver and warm-mode/output/placement/resource checks. Conditional runner already paired (9148878b plus 00783a8e path refresh).",
+      "condition": "Held: 82231 did not pass cold qualification."
+    }
+  ],
+  "receipts": {
+    "frontend": {
+      "path": "/home/jethac/Projects/lenovo-8/radish/results/optimization-retained-runtime-combined-0046.json",
+      "sha256": "ac4ad9614166b557fee4acb2ea61c9d38ac4a1edc1a60aa38fe73bc253c73e9e"
+    },
+    "tts_fp32": {
+      "path": "/home/jethac/Projects/lenovo-8/radish/results/optimization-tts-direct-full-correctness-0046.json",
+      "sha256": "6bfcd47a01d0ded6834da326886958d30d10f7534beb29082eb83b9ab3cf95af"
+    },
+    "tts_half": {
+      "path": "/home/jethac/Projects/lenovo-8/radish/results/optimization-selective-half-full-correctness-0046.json",
+      "sha256": "d8a7a67b488ee20e4ec66818c0cf18f6c5e9402372ac0a9eee56e2058e8a4c03"
+    },
+    "half_bits": {
+      "path": "/home/jethac/Projects/lenovo-8/radish/results/optimization-half-decode-correctness-0046.json",
+      "sha256": "49749d9800e6ba420215dae3da000f5e1c70660f8c1194fc4a5e2667f8af1caa"
+    },
+    "tts_shared_queue": {
+      "path": "/home/jethac/Projects/lenovo-8/radish/results/optimization-tts-deferred-queue-regression-0046.json",
+      "sha256": "9f8bb8f7a48edc9645a18b0e18c9f01d57008eb04de72f99b079deb164c38a80"
+    },
+    "dependent_queue": {
+      "path": "/home/jethac/Projects/lenovo-8/radish/results/optimization-deferred-queue-correctness-0046.json",
+      "sha256": "6d6b7931f20085b5f6705ca208455b33dd953b46ba4949dfb8b6135d3c979f7f"
+    },
+    "local_families": {
+      "path": "/home/jethac/Projects/lenovo-8/radish/results/optimization-local-family-correctness-0046.json",
+      "sha256": "3272fdcef22815d255c50ddf3401ab1713d667e705d21ff32591170900531d9f"
+    },
+    "compiled_cache": {
+      "path": "/home/jethac/Projects/lenovo-8/radish/results/optimization-cache-correctness-0046.json",
+      "sha256": "0af98f899b26429971ef61df554e2cf4a4fe340019353f9ed7491869ab59b1f5"
+    },
+    "kv_growth": {
+      "path": "/home/jethac/Projects/lenovo-8/radish/results/optimization-kv-growth-correctness-0046.json",
+      "sha256": "7d0745d9877b0e643794376dae6cb629f4d54ae6155223e3e4010c3032cbceaf"
+    },
+    "heap_release": {
+      "path": "/home/jethac/Projects/lenovo-8/radish/results/optimization-asr-heap-release-actual-0046.json",
+      "sha256": "764010f401ab6e699601b5bff5697ed26a6b2fa1e90cea07b77962c7bdd7e7c9"
+    },
+    "grouped_geometry": {
+      "path": "/home/jethac/Projects/lenovo-8/radish/results/optimization-grouped-completion-matrix-0046.json",
+      "sha256": "47870f0cf5d50c706de5ef0a2a91f6bf45b0018ece34e3d2a180b0b166c84968"
+    },
+    "quant_union": {
+      "path": "/home/jethac/Projects/lenovo-8/radish/results/optimization-grouped-quant-actual-union-0046.json",
+      "sha256": "3c7fd1e909a2aa94b651230f7e0d7698f34d1de5bae7f4d7847adbaf2fd79b4c"
+    },
+    "current_driver": {
+      "path": "/home/jethac/Projects/lenovo-8/radish/results/optimization-matrix-fence-source-build-0046.json",
+      "sha256": "60b887ead3a95297c93a531855990122a6224915626d229614164fd1890541db"
+    },
+    "tts_carry": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/grouped-barrier-correctness/matrix-policy-TTS-carry-review.json",
+      "sha256": "87787e4091e1e1fb7cf17c1c1db591350b76fe25b929a8801419b907ae52472c"
+    },
+    "asr_terminal": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/matrix-exec-fence/independent-terminal-82231-review.json",
+      "sha256": "2d3c161625a42bf9b4f297575efddf46da50af7446908ad66b3f0da443303d79"
+    }
+  },
+  "boundaries": [
+    "This is the five-area prerequisite milestone, not completion of the broader GOAL.",
+    "No performance collection, benchmark, profiling, or speedup selection is authorized by this ledger. Root must explicitly open timing after milestone evidence closes.",
+    "Later conformance, broader accuracy, matched performance, deployment and GPU-efficiency obligations remain active.",
+    "T213/T78 and one repeated pinned ASR clip do not establish broad voice or speech accuracy.",
+    "Historical failures and mixed-policy carried evidence remain explicit; no failed or unexecuted scope is relabelled PASS."
+  ],
+  "timing_collected": false,
+  "performance_collection_allowed": false
+}

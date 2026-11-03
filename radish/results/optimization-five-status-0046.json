@@ -26,7 +26,7 @@
     {
       "area": 4,
       "implementation": "Integrated GQA broadcast, phase-specific quantized kernels, encoder-to-prefill device-buffer reuse and reduced host staging; actual application pipeline cache and supported-kernel initialization correction are built. Constrained-profile subsampling reuses one independent chunk graph across the complete audio, lowering unnecessary live convolution intermediates. Scheduler scratch is released between subsampling and encoder; Vulkan-owned allocations leave the BO reuse cache on final unref. Incremental KV allocates actual prompt/draft demand and grows geometrically up to the unchanged full context ceiling. The constrained softmax shader uses one runtime-width body and preserves column loops instead of seven constant-width expansions, retaining numerical order and masks. Production constrained-profile warmup now uses fresh temporary borrowed-model sessions and one actual decoder step per mode; synthetic state is synchronized and freed before real requests. The original warm prompt now has owned string lifetime. Constrained-profile heap cleanup asks glibc to return unused pages after compilation and synchronized temporary-session destruction. Quantized decoding now processes up to32 rows per workgroup in consecutive four-row blocks with uniform shared-memory reuse barriers and unchanged per-row arithmetic. Coherent host candidate db8725 adds sequential128-row quantized MM and one selected RMS runtime body; current d4d0/6f15 is preserved.",
-      "evidence": "All affectedgeometryhas finitevalues/guard evidence; quant union28rounds994998words explicitly combines22carriedrounds on11cf with6remainingrounds onbounded0f721. Q8faultpreserved; twoisolatedbands and fullremainingQ8 cases pass. Originalmodeldb872/0f721/freshv17 is being checked underunchangedlimits. Fulltranscripts/cache stillopen, no performance."
+      "evidence": "Quant union28round994998exactvalues/fullguards andotheraffectedgeometrypassed. Fulldb872/0f721/v17 completedbothwarmmodes/cleanup andrealprefix/twosubsamplinggraphs buthit300sprocesswatchdog duringthird, beforetranscript. GPUfault/servicecontrols clean,640MiBpeak/61.5MiBswap withinoriginalcaps; fullaccuracy/cache remainopen. No performance."
     },
     {
       "area": 5,
@@ -132,7 +132,9 @@
     "optimization-matrix-fence-source-build-0046.json": "60b887ead3a95297c93a531855990122a6224915626d229614164fd1890541db",
     "optimization-q8-band-diagnostic-0046.json": "970834d985f57b128e363ad3c38a009e6a7359a44eb288c8d7e1e718b483ffc0",
     "optimization-grouped-quant-actual-union-0046.json": "3c7fd1e909a2aa94b651230f7e0d7698f34d1de5bae7f4d7847adbaf2fd79b4c",
-    "optimization-grouped-completion-matrix-0046.json": "47870f0cf5d50c706de5ef0a2a91f6bf45b0018ece34e3d2a180b0b166c84968"
+    "optimization-grouped-completion-matrix-0046.json": "47870f0cf5d50c706de5ef0a2a91f6bf45b0018ece34e3d2a180b0b166c84968",
+    "optimization-asr-matrix-fence-timeout-0046.json": "2d3c161625a42bf9b4f297575efddf46da50af7446908ad66b3f0da443303d79",
+    "optimization-five-completion-ledger-0046.json": "a814ffd0ddb0bcc0fa1487640c0fbe62a679265bb9525bc46727db639f0f337c"
   },
   "drivers": {
     "bounded_cache_queue_half": "61e8/9f64 exact integrated cache+queue+corrected idiv",
@@ -163,8 +165,8 @@
     "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
     "driver": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
     "receipt": "optimization-matrix-fence-source-build-0046.json",
-    "target_status": "Focusedgeometryclosed withexplicitcarriedmixedpolicyevidence; originalfullmodel82231 active/no finaltranscriptyet. Old11cfGPUfaultpreserved.",
+    "target_status": "Focusedgeometrypasses withexplicitmixed-policyunion. Originalfull82231 timedoutafterbothwarmsteps,realprefix,andtwosubsamplegraphs; thirdbegan.No transcript/cachequalification. Revisedprocess-timeout proposalrequiresuserauthorization; performanceCLOSED.",
     "performance_gate": "CLOSED"
   },
-  "device_execution_hold": "Original11cf faultcandidate remains held. Revised0f721 oneEXECpermatrixFD passes remaining09/10/11; rootreleased oneoriginalfullmodel, currently running as82231 after preflight-only84704diskstop and verifiedarchive. Cacheimport requiresindependentcoldPASS. No timing/config change."
+  "device_execution_hold": "No liveGPUjob. Full82231 endedatunchanged300sprocesswatchdog withoutrequestedtranscript; no newGPUfault/OOMreported. No unchangedretry/import. Isolated900s cold+conditionalimport proposal ishost-only, NOTAUTHORIZEDFOREXECUTION pendingexplicitusersteering underGOAL41\u201342."
 }

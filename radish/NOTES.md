@@ -1,5 +1,23 @@
 # Radish status
 
+## 2026-11-03: full ASR reaches the retained process deadline
+
+The [revised-driver full run](results/optimization-asr-matrix-fence-timeout-0046.json)
+completed both warm-up steps and synchronized cleanup, then the real-request
+prefix and two subsampling graphs. The third graph began before the unchanged
+300-second process watchdog terminated it. No requested transcript completed.
+There was no new GPU fault or reported OOM; services and collection checks passed.
+Guard telemetry recorded640 MiB memory and61.5 MiB swap, within the existing caps.
+
+All [five-area evidence and remaining gates](results/optimization-five-completion-ledger-0046.json)
+remain explicit. TTS is qualified for its stated fixtures; full ASR output and
+fresh-process application-cache replay remain open. A host-only proposal would
+change the whole-process deadline to900 seconds for the cold check and conditional
+cache replay, preserving the500 ms kernel hangcheck and every other workload,
+resource and correctness control. It has not run: explicit user authorization is
+required because the goal preserves existing timeout controls. Performance
+measurement remains forbidden, and the300-second failure is preserved.
+
 ## 2026-11-03: matrix execution fences pass remaining Q8 checks
 
 The [revised matrix submission policy](results/optimization-matrix-fence-source-build-0046.json)
