@@ -1,5 +1,19 @@
 # Radish status
 
+## 2026-11-03: isolate production warmup session state
+
+The constrained ASR startup now runs both original full-audio warmup modes in
+fresh sessions borrowing the loaded model. Each performs encoder, prefill and
+one real decoder step, then synchronizes and destroys discarded state. Real
+requests retain the original context ceiling, EOS behavior and 256-token budget.
+The warm prompt also gains owned string lifetime. Only the Qwen model and bridge
+objects change; shader, backend and driver bytes remain unchanged.
+
+[Exact source, build and lifetime review](results/optimization-warmup-source-build-0046.json)
+keep this initialization change distinct from shortening the correctness harness.
+The original two-clip full model is running under unchanged limits; transcripts,
+cache replay and all-five completion remain unclaimed. No performance measurement was collected.
+
 ## 2026-11-03: constrained softmax compilation correction
 
 The latest full ASR candidate reaches encoder work and actual quantized batching,

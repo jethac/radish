@@ -1,5 +1,5 @@
 {
-  "status": "Currenta9e281/4923 passes softmax native/numerical gates; fullmodel47504 times out during normal streaming warmup after offlinewarmup succeeds. No requested clip transcript/cache replay/all-five closure.",
+  "status": "Current8138/4923 changes only warmup session/control lifetime and fixes owned prompt lifetime. Source/build qualified, original full50572 pending. Real two clips/fullbudget/caps retained; no fullmodel/cache/performance claim.",
   "application": "Frozen ASR source with previously published GQA, quantized phase, memory-liveness and unit-axis overlays",
   "ordered_additive_patches": [
     {
@@ -74,6 +74,12 @@
       "author_sha256": "40afa4d5d0741b4226b36729883eae0386d587775b109144e7c8d0b0f5a2492a",
       "strip": 1,
       "apply_root": "root containing transcribe.cpp; apply after quantized-batching overlay"
+    },
+    {
+      "file": "0046-asr-bounded-production-warmup.patch",
+      "sha256": "7898ee829fab47935a16b9c2f8f508e8f36e04a7f50834261f665fc6805c5886",
+      "strip": 1,
+      "apply_root": "root containing transcribe.cpp and app-asr; exact two source files after softmax overlay"
     }
   ],
   "cache_source_files": {
@@ -300,11 +306,11 @@
     "archive_members": "3ac3f2855cdfabfc691bdf82bf9d8d08d0e2de714d3d57fad97021ab4c291489",
     "build_result": "e71c72e97d3982b96af7b375c20dee5e8eb94dc62b584b651e04bec7e7c6905b"
   },
-  "current_listener": "a9e281618e4ed436bdad58bbd95ef5b6b4571ac3bce4f238e65ea0018f7d53e3",
+  "current_listener": "8138d46f89be6661300252bd6b5f2c0220818d8fc45566e6654abee1f2fdafbc",
   "current_libraries": {
-    "libstraylight_asr.a": "a5b65664178c9f447cb8e9bbc887c4eb0906116e044f45bfaec417cbe6a333d0",
+    "libstraylight_asr.a": "f4f582c8dab2d774d9a99dd4d16a1a5756466dd099686ba8562fabe099794d73",
     "libggml-cpu.a": "d995ee7629e69509970ad3fe687f8a77a469c419ba7cd91404ca8bb79f4e85da",
-    "libtranscribe.a": "0b443bf5f92a7b5a7485025374397fd2a91137e8f95c7d76ca26d2dc58875166",
+    "libtranscribe.a": "06409048d9eb99c2d08dca941e72f841f2c49a517a5f44166f669cfdd69cd5e8",
     "libggml-base.a": "28ec1c9e67f976b670a074b310cb09389cddce48fc7cc42a9e7f06a9449b0fc1",
     "libggml.a": "44072c75ec479e9e440cc8f9583c6d6250eab629a739c7ddf98bc70aefb8ba5d",
     "libggml-vulkan.a": "9bbde555adaad90cb19616127656a3cad23ea4c97d43d84d9d34d219230f2969"
@@ -903,5 +909,38 @@
     "source_review": "b9045ce2b476049451c9bd53715ebbcdede3617c09888d454a3e8b7d11f62f99",
     "build_native_runner_review": "c551ba5af08ebcd23181a45f8cbe6860561febd818ab23149edcaf2c9864f2ad",
     "numerical_actual": "optimization-softmax-numerical-0046.json"
+  },
+  "bounded_warmup_stage": {
+    "build": {
+      "status": "PASS host build; original full model pending",
+      "source_release": "77e58ef060102fe1d7aa065cf8daaa742a03f7e5655bb707643084c22a4a5352",
+      "base_result": "507ffe2ff561939010c1ce51e2dd59ea5f1daeb5ffde3a85ebf7862f0ae8cdc0",
+      "sources": {
+        "transcribe.cpp/src/arch/qwen3_asr/model.cpp": {
+          "source_preimage": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/incremental-kv/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+          "preimage": "62450f603141ed2572c6ebde05375593ca8c49b6f1f5984166c995b4d13aec3a",
+          "candidate": "920420c4283b40b6cd334a4aca0f4290165ec743b4d191a445bf63d6fc3a4e2e"
+        },
+        "app-asr/straylight_asr.cpp": {
+          "source_preimage": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/subsample-liveness/candidate/app-asr/straylight_asr.cpp",
+          "preimage": "e1e0fca78accf0ae3d1caf131ea3b07750f930abfdcab208d0dc4a4b3b836eb4",
+          "candidate": "a62514c77ce3571fc0e196e28447a324b7fd76f91315f43376ffc313352e2e98"
+        }
+      },
+      "commands": "b8d0a3f4f86ada2beb0ba10f7c3712759b134fbb41d8373d6e436a3c8a805676",
+      "archive_members": "cda8fcb9c2275bb7a2a90df335e665dc05f32b2eb76ce597d8163b5787fe538b",
+      "listener": "8138d46f89be6661300252bd6b5f2c0220818d8fc45566e6654abee1f2fdafbc",
+      "libraries": {
+        "libstraylight_asr.a": "f4f582c8dab2d774d9a99dd4d16a1a5756466dd099686ba8562fabe099794d73",
+        "libggml-cpu.a": "d995ee7629e69509970ad3fe687f8a77a469c419ba7cd91404ca8bb79f4e85da",
+        "libtranscribe.a": "06409048d9eb99c2d08dca941e72f841f2c49a517a5f44166f669cfdd69cd5e8",
+        "libggml-base.a": "28ec1c9e67f976b670a074b310cb09389cddce48fc7cc42a9e7f06a9449b0fc1",
+        "libggml.a": "44072c75ec479e9e440cc8f9583c6d6250eab629a739c7ddf98bc70aefb8ba5d",
+        "libggml-vulkan.a": "9bbde555adaad90cb19616127656a3cad23ea4c97d43d84d9d34d219230f2969"
+      },
+      "scope": "Exactly current Qwen model and bridge objects overa9e281; decoder/encoder/shader/backend/driver and real requestbudget unchanged; private temporary warmup sessions only, no timers"
+    },
+    "source_review": "954853cb777119c3c1177bfe69b50ba70910ed12853e17e5ba6a40e558462839",
+    "build_runner_review": "7966b1d9313fce661f4522d92d0c4b7ff60cb502fe83083023ed9880b120baa8"
   }
 }

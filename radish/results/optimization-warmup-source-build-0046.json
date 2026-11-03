@@ -1,0 +1,233 @@
+{
+  "status": "Source/lifetime and exact two-object build/runner qualified; original fullmodel50572 running, outputs not claimed",
+  "source_release": {
+    "status": "source-ready private production warmup; no build/device action by author",
+    "files": {
+      "transcribe.cpp/src/arch/qwen3_asr/model.cpp": {
+        "source_preimage": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/incremental-kv/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+        "preimage": "62450f603141ed2572c6ebde05375593ca8c49b6f1f5984166c995b4d13aec3a",
+        "candidate": "920420c4283b40b6cd334a4aca0f4290165ec743b4d191a445bf63d6fc3a4e2e"
+      },
+      "app-asr/straylight_asr.cpp": {
+        "source_preimage": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/subsample-liveness/candidate/app-asr/straylight_asr.cpp",
+        "preimage": "e1e0fca78accf0ae3d1caf131ea3b07750f930abfdcab208d0dc4a4b3b836eb4",
+        "candidate": "a62514c77ce3571fc0e196e28447a324b7fd76f91315f43376ffc313352e2e98"
+      }
+    },
+    "patch": "7898ee829fab47935a16b9c2f8f508e8f36e04a7f50834261f665fc6805c5886",
+    "scope": [
+      "Only Qwen constrained Vulkan startup calls the private warmup entry; all generic/CPU paths remain unchanged apart from stable prompt ownership.",
+      "Each mode uses a fresh temporary session borrowing the already loaded model/backend. Both offline and streaming execute the full original40000sample synthetic input, encoder, prefill and one actual decoder step with original256 ceiling/KVpolicy. TLS exactsession scope only bounds discarded generation.",
+      "Normal requests have no TLS binding and retain EOS/fullbudget/context/streaming behavior. Warm completion returns before header draft/transcript/truncation publication.",
+      "RAII synchronizes temporary scheduler, restores prior TLS and destroys temporary session/KV/metadata/results. Shared model/backend weights and compiled pipelines remain. User session never receives synthetic prompt/KV/tokens.",
+      "Existing warm prompt dangling temporary c_str is fixed with an owned std::string across both calls. Bounded step and cleanup markers contain no clocks.",
+      "No shaders, driver limits, real audio, user decode budget, model weights, or timeout/memory guards change. Actual full model remains required."
+    ],
+    "build_handoff": "Replace only exact currentQwen model.cpp.o occurrence and active bridge straylight_asr.cpp.o overa9e281 softmax libraries. No public header or class layout changes. New private C symbol defined in model and declared in bridge.",
+    "timing_collected": false
+  },
+  "public_patch": {
+    "file": "0046-asr-bounded-production-warmup.patch",
+    "sha256": "7898ee829fab47935a16b9c2f8f508e8f36e04a7f50834261f665fc6805c5886",
+    "strip": 1,
+    "apply_root": "root containing transcribe.cpp and app-asr after softmax shader overlay"
+  },
+  "build": {
+    "status": "PASS host build; original full model pending",
+    "source_release": "77e58ef060102fe1d7aa065cf8daaa742a03f7e5655bb707643084c22a4a5352",
+    "base_result": "507ffe2ff561939010c1ce51e2dd59ea5f1daeb5ffde3a85ebf7862f0ae8cdc0",
+    "sources": {
+      "transcribe.cpp/src/arch/qwen3_asr/model.cpp": {
+        "source_preimage": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/incremental-kv/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+        "preimage": "62450f603141ed2572c6ebde05375593ca8c49b6f1f5984166c995b4d13aec3a",
+        "candidate": "920420c4283b40b6cd334a4aca0f4290165ec743b4d191a445bf63d6fc3a4e2e"
+      },
+      "app-asr/straylight_asr.cpp": {
+        "source_preimage": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/subsample-liveness/candidate/app-asr/straylight_asr.cpp",
+        "preimage": "e1e0fca78accf0ae3d1caf131ea3b07750f930abfdcab208d0dc4a4b3b836eb4",
+        "candidate": "a62514c77ce3571fc0e196e28447a324b7fd76f91315f43376ffc313352e2e98"
+      }
+    },
+    "commands": "b8d0a3f4f86ada2beb0ba10f7c3712759b134fbb41d8373d6e436a3c8a805676",
+    "archive_members": "cda8fcb9c2275bb7a2a90df335e665dc05f32b2eb76ce597d8163b5787fe538b",
+    "listener": "8138d46f89be6661300252bd6b5f2c0220818d8fc45566e6654abee1f2fdafbc",
+    "libraries": {
+      "libstraylight_asr.a": "f4f582c8dab2d774d9a99dd4d16a1a5756466dd099686ba8562fabe099794d73",
+      "libggml-cpu.a": "d995ee7629e69509970ad3fe687f8a77a469c419ba7cd91404ca8bb79f4e85da",
+      "libtranscribe.a": "06409048d9eb99c2d08dca941e72f841f2c49a517a5f44166f669cfdd69cd5e8",
+      "libggml-base.a": "28ec1c9e67f976b670a074b310cb09389cddce48fc7cc42a9e7f06a9449b0fc1",
+      "libggml.a": "44072c75ec479e9e440cc8f9583c6d6250eab629a739c7ddf98bc70aefb8ba5d",
+      "libggml-vulkan.a": "9bbde555adaad90cb19616127656a3cad23ea4c97d43d84d9d34d219230f2969"
+    },
+    "scope": "Exactly current Qwen model and bridge objects overa9e281; decoder/encoder/shader/backend/driver and real requestbudget unchanged; private temporary warmup sessions only, no timers"
+  },
+  "commands": [
+    {
+      "argv": [
+        "/usr/bin/clang++",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/src/arch/qwen3_asr",
+        "--target=aarch64-linux-gnu",
+        "--sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+        "-DGGML_USE_CPU",
+        "-DGGML_USE_VULKAN",
+        "-DMINIZ_NO_INFLATE_APIS",
+        "-DMINIZ_NO_STDIO",
+        "-DMINIZ_NO_TIME",
+        "-DMINIZ_NO_ZLIB_COMPATIBLE_NAMES",
+        "-DTRANSCRIBE_BUILD",
+        "-DTRANSCRIBE_COMMIT=\"unknown\"",
+        "-DTRANSCRIBE_STATIC",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/app-asr/include",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/src",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/include",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/../include",
+        "--gcc-install-dir=/home/jethac/Projects/straylight-voice/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wall",
+        "-Wextra",
+        "-Wshadow",
+        "-Wpedantic",
+        "-Wno-unused-parameter",
+        "-Wno-missing-field-initializers",
+        "-o",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-bounded-warmup-build-0046/object-0/model.cpp.o",
+        "-c",
+        "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/bounded-production-warmup/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build",
+      "env": {}
+    },
+    {
+      "argv": [
+        "/usr/bin/clang++",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/app-asr",
+        "--target=aarch64-linux-gnu",
+        "--sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+        "-DSTRAYLIGHT_ASR_VULKAN=1",
+        "-DTRANSCRIBE_STATIC",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/app-asr/include",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/include",
+        "--gcc-install-dir=/home/jethac/Projects/straylight-voice/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+        "-O3",
+        "-DNDEBUG",
+        "-std=gnu++17",
+        "-fPIC",
+        "-o",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-bounded-warmup-build-0046/object-1/straylight_asr.cpp.o",
+        "-c",
+        "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/bounded-production-warmup/candidate/app-asr/straylight_asr.cpp"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build",
+      "env": {}
+    },
+    {
+      "argv": [
+        "cargo",
+        "build",
+        "--offline",
+        "--locked",
+        "--target",
+        "aarch64-unknown-linux-gnu",
+        "--features",
+        "asr-vulkan",
+        "-j3",
+        "--manifest-path",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-untimed-build-0046/rust-app/listen/Cargo.toml"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-bounded-warmup-build-0046",
+      "env": {
+        "STRAYLIGHT_ASR_LIB": "/run/media/jethac/Shared/radish/optimization-five-asr-bounded-warmup-build-0046/libs",
+        "STRAYLIGHT_SYSROOT": "/home/jethac/Projects/straylight-voice/sysroot",
+        "CARGO_TARGET_DIR": "/run/media/jethac/Shared/radish/optimization-five-asr-bounded-warmup-build-0046/cargo-target",
+        "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER": "clang",
+        "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS": "-C link-arg=--target=aarch64-linux-gnu -C link-arg=-fuse-ld=lld -C link-arg=--sysroot=/home/jethac/Projects/straylight-voice/sysroot -C link-arg=-L/home/jethac/Projects/straylight-voice/sysroot/usr/lib -C link-arg=-L/home/jethac/Projects/straylight-voice/sysroot/usr/lib/aarch64-linux-gnu -C link-arg=-L/run/media/jethac/Shared/radish/build-loader/loader -C link-arg=-Wl,--allow-shlib-undefined -C link-arg=-Wno-unused-command-line-argument -C target-cpu=cortex-a53",
+        "CC_aarch64_unknown_linux_gnu": "clang",
+        "CFLAGS_aarch64_unknown_linux_gnu": "--target=aarch64-linux-gnu --sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+        "AR_aarch64_unknown_linux_gnu": "llvm-ar",
+        "PKG_CONFIG_SYSROOT_DIR": "/home/jethac/Projects/straylight-voice/sysroot",
+        "PKG_CONFIG_LIBDIR": "/home/jethac/Projects/straylight-voice/sysroot/usr/lib/pkgconfig:/home/jethac/Projects/straylight-voice/sysroot/usr/share/pkgconfig",
+        "PKG_CONFIG_ALLOW_CROSS": "1"
+      }
+    }
+  ],
+  "source_review": {
+    "status": "passed",
+    "scope": "Independent frozen source/lifecycle review only; host build/payload and full-model actual remain separate gates",
+    "release_sha256": "77e58ef060102fe1d7aa065cf8daaa742a03f7e5655bb707643084c22a4a5352",
+    "patch_sha256": "7898ee829fab47935a16b9c2f8f508e8f36e04a7f50834261f665fc6805c5886",
+    "files": {
+      "transcribe.cpp/src/arch/qwen3_asr/model.cpp": {
+        "source_preimage": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/incremental-kv/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+        "preimage": "62450f603141ed2572c6ebde05375593ca8c49b6f1f5984166c995b4d13aec3a",
+        "candidate": "920420c4283b40b6cd334a4aca0f4290165ec743b4d191a445bf63d6fc3a4e2e"
+      },
+      "app-asr/straylight_asr.cpp": {
+        "source_preimage": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/subsample-liveness/candidate/app-asr/straylight_asr.cpp",
+        "preimage": "e1e0fca78accf0ae3d1caf131ea3b07750f930abfdcab208d0dc4a4b3b836eb4",
+        "candidate": "a62514c77ce3571fc0e196e28447a324b7fd76f91315f43376ffc313352e2e98"
+      }
+    },
+    "checks": [
+      "Exact patch, both baseline/source-preimage hashes and candidate hashes match release; git apply --check succeeds against frozen baseline.",
+      "TLS is thread-local and bound to exact temporary session pointer. Warm function refuses nested TLS use and non-Qwen/non-KHR model; normal user sessions never match.",
+      "While condition bypasses EOS only for warm session. An actual compute_qwen_graph(sb.graph) and tensor_get(sb.out) must succeed before completed_steps increments and loop breaks. Failed compute/no available step returns failure; marker is not emitted merely on graph creation.",
+      "Original max_new computation and step_capacity_limit unchanged. Warm temp has no header draft, so initial generated count one is below original256 floor. Normal EOS/budget/repetition/result publication path unchanged.",
+      "Warm return precedes header draft/transcript/truncation publication. Streaming uses public begin/feed/finalize; feed does frontend/subsample/prefix work, only finalize invokes run_impl once.",
+      "Both modes receive all40000 original deterministic warm samples. warm_context string owns rp.prompt through both synchronous calls, correcting the old temporary-string lifetime.",
+      "Each temporary uses public session_init borrowing shared model. Scope synchronizes remaining scheduler then restores TLS and frees session before DONE marker; model/backends/weights/pipelines remain alive. Public API exception guards return status and RAII handles every execution exit.",
+      "Temporary offline and streaming sessions execute sequentially and are destroyed between modes. Existing real e->asr object is created before warmup, but constrained init_context allocates no KV, scheduler or compute_ctx (base fields null); therefore no overlapping user GPU workspace. Its prompt/KV/header result state is untouched. Only a small empty host session object overlaps.",
+      "Generic/CPU paths retain original full warm calls; shared owned warm_context is the only prompt-lifetime correction there. No public header/class layout/shader/driver/caps/oracle change."
+    ],
+    "required_actual": [
+      "Both warm DONE statuses0 and steps1 following real step execution markers",
+      "Both original user inputs/transcripts/languages, GPU placement and unchanged full budget",
+      "Resource guards, drained unit, clean fault/services, populated cache"
+    ],
+    "timing_collected": false
+  },
+  "build_runner_review": {
+    "status": "PASS exact two-object build/ELF and additive full-model runner pairing; source counterpart separately required before launch",
+    "release": "77e58ef060102fe1d7aa065cf8daaa742a03f7e5655bb707643084c22a4a5352",
+    "build_result": "c5fdb24319b0f52f363591f73f4f1e1933632b029ccf474bc3fafc55d53e15fa",
+    "archive_changes": {
+      "libstraylight_asr.a": [
+        [
+          0,
+          "straylight_asr.cpp.o",
+          "e0ea60e512b302bd9ae5d8c8f1e8ece28fec6c39010660b15a5c0943e4b8f59e",
+          "f97c908b436da8c5dc784972137f753c5a0478557e88e6bc6df3df1199a8fa09"
+        ]
+      ],
+      "libggml-cpu.a": [],
+      "libtranscribe.a": [
+        [
+          45,
+          "model.cpp.o",
+          "5df6f6dfdb7ff2571b77beb39535f85ac2641dedfe2fbca4a7e09468e27202d6",
+          "7ea56efa44949b7ffb2e180af6f59465cc21b675a25d68c7ba04c6012bab0a5b"
+        ]
+      ],
+      "libggml-base.a": [],
+      "libggml.a": [],
+      "libggml-vulkan.a": []
+    },
+    "listener": "8138d46f89be6661300252bd6b5f2c0220818d8fc45566e6654abee1f2fdafbc",
+    "runner": "7a4245f334bf0d9faa3d858021e56f6f8dc8931f28cd40ad336d530d17a828ec",
+    "argv": "9fc6a3c4b49d0a94824f8afb0740f70ed9842c74add58166cb181dcb63993e09",
+    "hostcheck": "3ab3ba683eb8d59c8c7dbbcc9fdd7fd3749f85e6a9b48befa53e146b3020ab67",
+    "checks": [
+      "All six archive member names/order/hashes compared to a9e281; only exact currentQwen model occurrence and bridge replaced, preserving other model.cpp.o occurrences and all shader/backend libraries.",
+      "No class/public-header ABI changes; explicit private C warmup symbol linked in real AArch64 listener. Original untimed Rust and driver4923 remain.",
+      "Runner delta is only three stronger assertions for both actual warmup decoder steps, synchronized temporary-session cleanup, and original40000sample/two-mode work. Original two real clips/transcript/language/no-fallback and all640MiB/128MiBswap/300s/disk/fault/service controls preserved.",
+      "New missing privatecachev8 with actual listener8138; check-only pins refreshed with no device action. Numerical/native modules unchanged from87288/8e94, so no repeated kernel scope needed."
+    ],
+    "timing_collected": false
+  },
+  "scope": "Actual full40000 synthetic audio in both offline and streaming; private fresh borrowed-model sessions perform one real decoder step then synchronized cleanup. Shared loaded weights/backend/pipelines persist. Real two clips/full256-token budget unchanged. No shader/backend/driver change and no benchmark.",
+  "performance_measurement": false
+}

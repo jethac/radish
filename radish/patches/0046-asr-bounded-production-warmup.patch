@@ -1,0 +1,138 @@
+--- a/transcribe.cpp/src/arch/qwen3_asr/model.cpp
++++ b/transcribe.cpp/src/arch/qwen3_asr/model.cpp
+@@ -40,6 +40,14 @@
+ namespace transcribe::qwen3_asr {
+ 
+ extern const Arch arch;
++
++struct WarmupState {
++    transcribe_session * session;
++    bool streaming;
++    int completed_steps = 0;
++};
++
++static thread_local WarmupState * active_warmup = nullptr;
+ 
+ static bool khr_gpu_model_policy(const QwenAsrModel * cm) {
+     const char * policy = std::getenv("TRANSCRIBE_VULKAN_KHR_PROFILE");
+@@ -1451,7 +1459,8 @@
+     int64_t       t_step_get_us     = 0;
+     const int64_t t_step_loop_start = INT64_C(0);
+     bool          repeating         = false;
+-    while (next_tok != eos_id && static_cast<int32_t>(generated_ids.size()) < max_new &&
++    const bool warming = active_warmup && active_warmup->session == session;
++    while ((next_tok != eos_id || warming) && static_cast<int32_t>(generated_ids.size()) < max_new &&
+            cur_past + 1 <= step_capacity_limit) {
+         if (cur_past >= max_n_kv) {
+             ggml_backend_sched_synchronize(cc->sched);
+@@ -1503,11 +1512,22 @@
+         cc->kv_cache.n    = cur_past + 1;
+         cc->kv_cache.head = cur_past + 1;
+         t_step_get_us += INT64_C(0) - t_comp1;
++        if (warming) {
++            ++active_warmup->completed_steps;
++            if (transcribe::env::flag("TRANSCRIBE_RESOURCE_DIAGNOSTICS")) {
++                std::fprintf(stderr, "ASR_WARMUP_STEP mode=%s completed=1\n",
++                             active_warmup->streaming ? "streaming" : "offline");
++            }
++            break;
++        }
+         if (next_tok != eos_id && transcribe::stop_on_repetition(generated_ids, "qwen3_asr run")) {
+             cc->mark_repetition_stop();
+             repeating = true;
+             break;
+         }
++    }
++    if (warming) {
++        return active_warmup->completed_steps == 1 ? TRANSCRIBE_OK : TRANSCRIBE_ERR_BACKEND;
+     }
+     t_step_loop_us = INT64_C(0) - t_step_loop_start;
+     n_steps        = static_cast<int>(generated_ids.size()) - 1 - n_accepted;
+@@ -2828,4 +2848,44 @@
+     /* .accepts_ext_kind = */ nullptr,
+ };
+ 
++
++extern "C" transcribe_status transcribe_qwen3_asr_warmup(
++    transcribe_model * model, const transcribe_session_params * session_params,
++    const float * pcm, int n_samples, const transcribe_run_params * params, bool streaming) {
++    if (!model || model->arch != &arch || !khr_gpu_model_policy(static_cast<QwenAsrModel *>(model)) ||
++        active_warmup || !pcm || n_samples <= 0) {
++        return TRANSCRIBE_ERR_INVALID_ARG;
++    }
++    transcribe_session * temporary = nullptr;
++    transcribe_status status = transcribe_session_init(model, session_params, &temporary);
++    if (status != TRANSCRIBE_OK) return status;
++    WarmupState state{temporary, streaming};
++    {
++        struct Scope {
++            WarmupState * previous;
++            transcribe_session * session;
++            ~Scope() {
++                if (session->sched) ggml_backend_sched_synchronize(session->sched);
++                active_warmup = previous;
++                transcribe_session_free(session);
++            }
++        } scope{active_warmup, temporary};
++        active_warmup = &state;
++        if (streaming) {
++            status = transcribe_stream_begin(temporary, params, nullptr);
++            if (status == TRANSCRIBE_OK) status = transcribe_stream_feed(temporary, pcm, n_samples, nullptr);
++            if (status == TRANSCRIBE_OK) status = transcribe_stream_finalize(temporary, nullptr);
++        } else {
++            status = transcribe_run(temporary, pcm, n_samples, params);
++        }
++        if (status == TRANSCRIBE_OK && state.completed_steps != 1) status = TRANSCRIBE_ERR_BACKEND;
++    }
++    if (transcribe::env::flag("TRANSCRIBE_RESOURCE_DIAGNOSTICS")) {
++        std::fprintf(stderr,
++                     "ASR_WARMUP_DONE mode=%s steps=%d temporary_session=1 synchronized=1 status=%d\n",
++                     streaming ? "streaming" : "offline", state.completed_steps, static_cast<int>(status));
++    }
++    return status;
++}
++
+ }  // namespace transcribe::qwen3_asr
+--- a/app-asr/straylight_asr.cpp
++++ b/app-asr/straylight_asr.cpp
+@@ -39,6 +39,10 @@
+ 
+ #include "transcribe.h"
+ #include "transcribe/vad.h"
++
++extern "C" transcribe_status transcribe_qwen3_asr_warmup(
++    transcribe_model * model, const transcribe_session_params * session_params,
++    const float * pcm, int n_samples, const transcribe_run_params * params, bool streaming);
+ 
+ #include <sys/resource.h>
+ #include <sys/syscall.h>
+@@ -531,15 +535,26 @@
+         std::vector<float> warm(kRate * 2 + kRate / 2);
+         uint32_t           x = 1;
+         for (auto & v : warm) { x = x * 1664525u + 1013904223u; v = ((x >> 8) / 16777216.0f - 0.5f) * 0.01f; }
++        const std::string warm_context = "warm";
+         transcribe_run_params rp;
+-        sla_engine::run_params(rp, "warm");
++        sla_engine::run_params(rp, warm_context);
++        const char * profile = std::getenv("TRANSCRIBE_VULKAN_KHR_PROFILE");
++        const char * architecture = transcribe_model_arch_string(e->asr_model);
++        const bool bounded_warmup = cfg->backend == SLA_BACKEND_VULKAN && profile &&
++            !std::strcmp(profile, "1") && architecture && !std::strcmp(architecture, "qwen3_asr");
+         e->run_gen = e->gen.load();
+         if (resource_diagnostics()) std::fprintf(stderr, "ASR_MEMORY phase=warm_offline_begin samples=%zu\n", warm.size());
+-        const int warm_status = transcribe_run(e->asr, warm.data(), (int) warm.size(), &rp);
++        const int warm_status = bounded_warmup ?
++            transcribe_qwen3_asr_warmup(e->asr_model, &sp, warm.data(), (int) warm.size(), &rp, false) :
++            transcribe_run(e->asr, warm.data(), (int) warm.size(), &rp);
+         if (resource_diagnostics()) std::fprintf(stderr, "ASR_MEMORY phase=warm_offline_end status=%d\n", warm_status);
+         if (e->cfg.streaming) {
+             if (resource_diagnostics()) std::fprintf(stderr, "ASR_MEMORY phase=warm_stream_begin\n");
+-            if (transcribe_stream_begin(e->asr, &rp, nullptr) == TRANSCRIBE_OK) {
++            if (bounded_warmup) {
++                const int stream_status = transcribe_qwen3_asr_warmup(
++                    e->asr_model, &sp, warm.data(), (int) warm.size(), &rp, true);
++                if (resource_diagnostics()) std::fprintf(stderr, "ASR_MEMORY phase=warm_stream_end status=%d\n", stream_status);
++            } else if (transcribe_stream_begin(e->asr, &rp, nullptr) == TRANSCRIBE_OK) {
+                 const int feed_status = transcribe_stream_feed(e->asr, warm.data(), (int) warm.size(), nullptr);
+                 const int final_status = transcribe_stream_finalize(e->asr, nullptr);
+                 if (resource_diagnostics()) std::fprintf(stderr, "ASR_MEMORY phase=warm_stream_end feed_status=%d final_status=%d\n", feed_status, final_status);

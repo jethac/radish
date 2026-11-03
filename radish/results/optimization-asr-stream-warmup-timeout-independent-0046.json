@@ -1,0 +1,16 @@
+{
+  "status": "FAIL preserved original300s watchdog; no completed real clip or cache-import qualification",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-full-softmax/probe",
+  "run_log": "285780a2062f5667b8f37b36be24d3021ca64731d90069badc28fa23cb67dea7",
+  "failure": "51c151bb1c8eaabb6d6535a23f8fd241439c487bbdb1b5280ea0b4c11921ca0e",
+  "service": "1fef2f64b6974da2b161918274f1b6f08ff8d53188d3d5329579f0e3df55484a",
+  "observations": [
+    "New F32/F16 softmax compilation both BEGIN/END complete; all34 emitted pipeline creation pairs match.",
+    "Offline40000sample warmup completes status0 after three actualN1 decoder head/argmax steps. This is not evidence of256 executed steps;256 is the unchanged configured ceiling.",
+    "Streaming warmup begins, completes its encoder and reaches prefill791GPU/0rejected. No streaming-warmup end and no supplied input transcript occur before timeout.",
+    "The4096 dispatch trace bound is reached with4096 matching successful ENDs; subsequent silence cannot identify a hung dispatch. Later placement/memory lines establish continued graph progress.",
+    "NoOOM service result or newGPUfault; process isTERM by original300s cap; clean collection, inactive drain and live services preserved. Guard accounting memory640MiB/swap62.5MiB is not performance measurement.",
+    "Production startup currently performs two discarded full-budget warmups. Source additionally confirms dangling rp.prompt from temporary string; proposed bounded temporary-session warmup preserves both modes/fullaudio and fixes ownership."
+  ],
+  "timing_collected": false
+}

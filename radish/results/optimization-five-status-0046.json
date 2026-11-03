@@ -25,8 +25,8 @@
     },
     {
       "area": 4,
-      "implementation": "Integrated GQA broadcast, phase-specific quantized kernels, encoder-to-prefill device-buffer reuse and reduced host staging; actual application pipeline cache and supported-kernel initialization correction are built. Constrained-profile subsampling reuses one independent chunk graph across the complete audio, lowering unnecessary live convolution intermediates. Scheduler scratch is released between subsampling and encoder; Vulkan-owned allocations leave the BO reuse cache on final unref. Incremental KV allocates actual prompt/draft demand and grows geometrically up to the unchanged full context ceiling. The constrained softmax shader uses one runtime-width body and preserves column loops instead of seven constant-width expansions, retaining numerical order and masks.",
-      "evidence": "Existing GQA/quant kernels, actual KV growth and full/partial batching pass. Corrected softmax modules pass native bounds and104 exact old/new+CPU cases. Fulla9e281/4923 now completes normal offline warmup, but reaches the unchanged300s timeout during streaming warmup before requested clip transcripts. No OOM result, no fullmodel/cache replay qualification."
+      "implementation": "Integrated GQA broadcast, phase-specific quantized kernels, encoder-to-prefill device-buffer reuse and reduced host staging; actual application pipeline cache and supported-kernel initialization correction are built. Constrained-profile subsampling reuses one independent chunk graph across the complete audio, lowering unnecessary live convolution intermediates. Scheduler scratch is released between subsampling and encoder; Vulkan-owned allocations leave the BO reuse cache on final unref. Incremental KV allocates actual prompt/draft demand and grows geometrically up to the unchanged full context ceiling. The constrained softmax shader uses one runtime-width body and preserves column loops instead of seven constant-width expansions, retaining numerical order and masks. Production constrained-profile warmup now uses fresh temporary borrowed-model sessions and one actual decoder step per mode; synthetic state is synchronized and freed before real requests. The original warm prompt now has owned string lifetime.",
+      "evidence": "All prior TTS/GQA/quant/KV/softmax scoped checks remain valid. 47504 completed offline warmup and timed out during streaming warmup before real clips. New warm-only source7898 has independent lifetime/build/runner qualification; original full50572 is running on8138/4923 with both40000-audio warmups and unchanged realtwo clips/256budget/limits. Actual transcripts/cache replay remain open."
     },
     {
       "area": 5,
@@ -52,11 +52,12 @@
     "0046-asr-phase-scratch-release.patch": "0c5c0f16803a7787cc1b1c9fd1a1dd002b1e65d7ec6138192bd4b89a3b1fc87d",
     "0046-asr-incremental-kv.patch": "47c7b982904508cdb473342c006213bffa300905f7bb92d60bfaf00d16cbaca3",
     "0046-asr-quantized-batching.patch": "527d36a900a20dd4605ba3a5c2195aa89d10530788171896ec0da47694a107e6",
-    "0046-asr-softmax-compiler-footprint.patch": "21b5bf1e2f1b223c8d38d85403da422304029cc710a2369074a51f3545982662"
+    "0046-asr-softmax-compiler-footprint.patch": "21b5bf1e2f1b223c8d38d85403da422304029cc710a2369074a51f3545982662",
+    "0046-asr-bounded-production-warmup.patch": "7898ee829fab47935a16b9c2f8f508e8f36e04a7f50834261f665fc6805c5886"
   },
   "existing_results": "Original743 CTS cases and modified132 robustness outcomes remain historical pinned evidence; no conformance count or selected performance change.",
   "completion_gate": "TTS side is qualified for the stated T213/T78 fixtures. All-five gate remains CLOSED on ASR full-model memory/placement/transcript and real application replay; full GOAL remains active.",
-  "as_of_utc": "2026-11-03 01:37:03 UTC",
+  "as_of_utc": "2026-11-03 01:47:17 UTC",
   "correctness_receipts": {
     "optimization-cache-correctness-0046.json": "0af98f899b26429971ef61df554e2cf4a4fe340019353f9ed7491869ab59b1f5",
     "optimization-queue-correctness-0046.json": "98c9f0d64a5ef1076462930effb6fd3e22c48de75cad78e87f7e68eaa6636b0e",
@@ -76,7 +77,8 @@
     "optimization-asr-decoder-timeout-0046.json": "5f941421d989024e35cde161fe03a406ad2c00d5cafee9ae935d8ffea5c0bda9",
     "optimization-asr-softmax-init-memory-failure-0046.json": "e58dd1144e001ea4107da4eb240eaa2e672ab9798198e19e62cd801d8eb838c0",
     "optimization-softmax-numerical-0046.json": "87288f9c381a6ea66b6ef15a2b15b5ed06bc06dba0df8611e504f167d6c4fd74",
-    "optimization-asr-stream-warmup-timeout-0046.json": "451bcbad7facc0f9da6dae867abac558e1870f84b1bc5537319a48bd637b3613"
+    "optimization-asr-stream-warmup-timeout-0046.json": "451bcbad7facc0f9da6dae867abac558e1870f84b1bc5537319a48bd637b3613",
+    "optimization-asr-stream-warmup-timeout-independent-0046.json": "608555829c979816b438ec55b6ac4ba6b8d5a4924c22cec1edd584c36aed43fd"
   },
   "drivers": {
     "bounded_cache_queue_half": "61e8/9f64 exact integrated cache+queue+corrected idiv",
