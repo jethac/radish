@@ -20,13 +20,13 @@
     },
     {
       "area": 3,
-      "implementation": "Reuse invariant program/resource/static state within bounded chunks of one dispatch; keep per-chunk base/NDRANGE and WFI, flush/wait at existing batch end; direct-window graph intermediate elimination Narrow qualified quantized-kernel batching now retains state across up to8 sequential one-workgroup chunks, excluding unsafe global memory behavior. Exact qualified floating attention and compact softmax families now use the same dependency-safe one-workgroup batch policy.",
-      "evidence": "Queue full/partial-batch correctness passes 66,688 exact values. Direct-window graph elimination is exercised by fixed T213 and integrated retained T78 models, all required GPU traces return zero. No performance claim. Expanded six-kernel M33 fixture verifies17,424 exact outputs/full3allocation guards and all real full/partial batch counts; no performance measurement. New attention class independently passes69,516 exact GQA outputs and7 submits per54-workgroup dispatch; narrow softmax8 preserves7296 old/new values and CPU/full-allocation oracles with2 submits per13-workgroup new shader. Both full and partial batches are exercised."
+      "implementation": "Reuse invariant program/resource/static state within bounded chunks of one dispatch; keep per-chunk base/NDRANGE and WFI, flush/wait at existing batch end; direct-window graph intermediate elimination Narrow qualified quantized-kernel batching now retains state across up to8 sequential one-workgroup chunks, excluding unsafe global memory behavior. Exact qualified floating attention and compact softmax families now use the same dependency-safe one-workgroup batch policy. The qualified RMS resource family also uses the existing one-workgroup batch policy without increasing register or shared-memory bounds.",
+      "evidence": "Queue full/partial-batch correctness passes 66,688 exact values. Direct-window graph elimination is exercised by fixed T213 and integrated retained T78 models, all required GPU traces return zero. No performance claim. Expanded six-kernel M33 fixture verifies17,424 exact outputs/full3allocation guards and all real full/partial batch counts; no performance measurement. New attention class independently passes69,516 exact GQA outputs and7 submits per54-workgroup dispatch; narrow softmax8 preserves7296 old/new values and CPU/full-allocation oracles with2 submits per13-workgroup new shader. Both full and partial batches are exercised. RMS batching independently passes41,472 original CPU output checks/full3allocation guards, with four18-workgroup dispatches each completing8+8+2 chunks in3 submits and flushes; native body remains byte-identical."
     },
     {
       "area": 4,
       "implementation": "Integrated GQA broadcast, phase-specific quantized kernels, encoder-to-prefill device-buffer reuse and reduced host staging; actual application pipeline cache and supported-kernel initialization correction are built. Constrained-profile subsampling reuses one independent chunk graph across the complete audio, lowering unnecessary live convolution intermediates. Scheduler scratch is released between subsampling and encoder; Vulkan-owned allocations leave the BO reuse cache on final unref. Incremental KV allocates actual prompt/draft demand and grows geometrically up to the unchanged full context ceiling. The constrained softmax shader uses one runtime-width body and preserves column loops instead of seven constant-width expansions, retaining numerical order and masks. Production constrained-profile warmup now uses fresh temporary borrowed-model sessions and one actual decoder step per mode; synthetic state is synchronized and freed before real requests. The original warm prompt now has owned string lifetime. Constrained-profile heap cleanup asks glibc to return unused pages after compilation and synchronized temporary-session destruction.",
-      "evidence": "Current listener43ecf594 and driver3a30 retain independently qualified quantized kernels, GQA, KV growth, compact softmax, full/partial batching and actual constrained heap release. The35 paired release calls preserve live allocations and return resident pages; their deltas are not summed into a peak or speedup. Latest original full62956 completes offline one-step warmup and streaming encoder, then reaches the unchanged300-second watchdog during streaming prefill before either requested transcript. Systemd reports640M memory/64.4M swap peak as guard telemetry. Two requests of the same pinned2.785s English clip, full warm audio/modes, real256-token budget and all limits remain unchanged. Full model and ASR application-cache replay are still open; no unchanged retry or performance release."
+      "evidence": "Current listener43ecf594 and drivera6d65 retain qualified quantized kernels, GQA, KV growth, compact softmax, full/partial batching and constrained heap release. Last full62956 completed offline one-step warmup and streaming encoder, then timed out during streaming prefill before requested transcripts; that failure remains preserved. Capped structural evidence identified421 RMS dispatches with64889 submissions, not a timing attribution. Queue-only RMS connection now passes its bounded numerical/full-partial check. Original full29498 is running with freshv12 cache, two requests of the same pinned2.785s English clip, full warm audio/both modes, real256-token budget and unchanged640MiB/128MiBswap/300s limits. Full-model and ASR application-cache replay remain open. MV sequential-row source is isolated and unbuilt; no performance release."
     },
     {
       "area": 5,
@@ -56,11 +56,12 @@
     "0046-asr-bounded-production-warmup.patch": "7898ee829fab47935a16b9c2f8f508e8f36e04a7f50834261f665fc6805c5886",
     "0046-asr-attention-batching.patch": "17afafe7fc6617fa57b6fc63350fd041ddb3297dc49490d174d6c5873d3bdadd",
     "0046-asr-resource-ownership-snapshots.patch": "07e279f77794f20f7f804a984d2f615aa0fb5050f572ff79f0a50506ef7ab760",
-    "0046-asr-constrained-heap-release.patch": "bcabd39a58f8fa5e1ef3195624d3d7737cba32fde04f4aa3e20d8948f85673b1"
+    "0046-asr-constrained-heap-release.patch": "bcabd39a58f8fa5e1ef3195624d3d7737cba32fde04f4aa3e20d8948f85673b1",
+    "0046-asr-rms-batching.patch": "499b5e11be37a07d9eed9b87231ee6cc73dfc6722b84a4fd527a1110a52d08db"
   },
   "existing_results": "Original743 CTS cases and modified132 robustness outcomes remain historical pinned evidence; no conformance count or selected performance change.",
   "completion_gate": "TTS side is qualified for the stated T213/T78 fixtures. All-five gate remains CLOSED on ASR full-model memory/placement/transcript and real application replay; full GOAL remains active.",
-  "as_of_utc": "2026-11-03 02:37:10 UTC",
+  "as_of_utc": "2026-11-03 03:59:51 UTC",
   "correctness_receipts": {
     "optimization-cache-correctness-0046.json": "0af98f899b26429971ef61df554e2cf4a4fe340019353f9ed7491869ab59b1f5",
     "optimization-queue-correctness-0046.json": "98c9f0d64a5ef1076462930effb6fd3e22c48de75cad78e87f7e68eaa6636b0e",
@@ -90,7 +91,9 @@
     "optimization-asr-memory-ownership-actual-0046.json": "1e6c4df8cfec9b6e34e6efa415f406c97e2c21d2a8016dc9ff21818f9992058d",
     "optimization-asr-memory-diagnostic-timeout-0046.json": "9b35388cf932dc4af0e63cd7aee9d2d5dee78f10c27acfc3f190ed679dbf54d3",
     "optimization-asr-heap-release-timeout-0046.json": "abc7cf70a7bf084a11ec5e38387a7df8c193f66816a1b0ee32a8ec6bc5633578",
-    "optimization-asr-heap-release-actual-0046.json": "764010f401ab6e699601b5bff5697ed26a6b2fa1e90cea07b77962c7bdd7e7c9"
+    "optimization-asr-heap-release-actual-0046.json": "764010f401ab6e699601b5bff5697ed26a6b2fa1e90cea07b77962c7bdd7e7c9",
+    "optimization-rms-batch-correctness-0046.json": "ba535a93e746e75c403ec51e32ed6fede6c52894d89a882d831ee67d974cb451",
+    "optimization-asr-heap-release-structural-0046.json": "089620c62c6a9974523aabe36b084fed1a419bbba6ca023d95921146fc78361f"
   },
   "drivers": {
     "bounded_cache_queue_half": "61e8/9f64 exact integrated cache+queue+corrected idiv",

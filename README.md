@@ -7,9 +7,8 @@ pass their stated model fixtures. Full ASR inference and its cache replay remain
 open. The corrected softmax modules fit the existing resource limits and pass focused
 old/new and CPU numerical checks. The latest full ASR run completes offline
 warmup and the streaming encoder, then reaches the unchanged timeout during
-streaming prefill before the requested transcripts. A queue-only attention and
-softmax batching change now passes focused numerical and full/partial submission
-checks. Full-model and cache-replay checks remain required. [Current implementation and evidence](radish/results/optimization-five-status-0046.json)
+streaming prefill before the requested transcripts. Queue-only attention, softmax and RMS
+batching changes now pass focused numerical and full/partial submission checks. Full-model and cache-replay checks remain required. [Current implementation and evidence](radish/results/optimization-five-status-0046.json)
 and the [full goal](radish/GOAL.md) are authoritative.
 
 No new performance measurement is permitted until all five areas pass. The

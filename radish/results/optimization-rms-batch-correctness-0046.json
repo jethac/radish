@@ -1,0 +1,161 @@
+{
+  "status": "passed focused RMS native-resource/CPU numerical/full-partial batching actual",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-rms-batch/probe",
+  "run_log": "4233972aec093c62e2a5b8c91de6eed6c59de63b01d43cdd0e91e2070106f763",
+  "runner_result": "3bd739f37e8cf89031371684184acdeb26f2f203c7234ee81a27fda0557ce5cb",
+  "source_release": "186be5bce7a1e7e8ef3071e35828108ae122b1bd7d9f91e5d51ad94fd4984357",
+  "payload": {
+    "radish_icd.json": {
+      "bytes": 146,
+      "sha256": "e5d552cb7ed0eb892039ea51423128851a77d885b3c7312febb85cde8fab7d2d"
+    },
+    "resources": {
+      "bytes": 748176,
+      "sha256": "b49edf4ec01d92a9cd876ecfc882fc91c0e5b6c287199672f3574301d840f25d"
+    },
+    "rms_norm_f32.spv": {
+      "bytes": 67876,
+      "sha256": "36925402fb906d86c41ccfe80e9e828ef33121a4122faa9770ce42fe4db68250"
+    },
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 13632984,
+      "sha256": "a6d65cd60046f254b36971f6d89b47292f75da5eeb515121cfd7fc4a59bf5cb3"
+    },
+    "payload.json": {
+      "bytes": 815,
+      "sha256": "60ae1136cb598161a4db6d511efd6ce337014a0ae141a208b39e96726bf73120"
+    }
+  },
+  "native": {
+    "units": 477,
+    "full_register_count": 10,
+    "half_register_count": 12,
+    "corresponding_max_indices": [
+      9,
+      11
+    ],
+    "threads": 128,
+    "halfregister_slots": 4096,
+    "shared_bytes": 512,
+    "private_bytes": 0,
+    "loops": 2,
+    "push_bytes": 116,
+    "SSBO_count": 3,
+    "actual_used_descriptor_mask": 7,
+    "logical": [
+      128,
+      1,
+      1
+    ],
+    "physical": [
+      64,
+      2,
+      1
+    ],
+    "packed_1d": true,
+    "batch_local_memory": true,
+    "linear_flags": false,
+    "resident_threads_override": 0,
+    "body_identity": "Full emitted native assembly and stats byte-identical to prior selectedcase12 after normalizing only program ordinal13/1\u21921/1; no instruction/source hash normalization.",
+    "normalized_native_text_sha256": "6e3485264a9da1ba5acf1095a38c64a7e5ef549809a3ea8d77b52d23f35a9f71"
+  },
+  "rounds": [
+    {
+      "width": "128",
+      "round": "0",
+      "outputs": "2304",
+      "grid": "3,3,2",
+      "groups": "18",
+      "submits": "3",
+      "flushes": "3",
+      "expected": "3",
+      "max_chunks": "8",
+      "partial": "2",
+      "max_row_nmse": "7.73341756857e-15",
+      "cpu_nmse_limit": "1e-7",
+      "max_abs": "1.19209289551e-07",
+      "nonfinite": "0",
+      "zero_diffs": "0",
+      "full3allocations": "1",
+      "guardrow_visible": "1",
+      "result": "PASS"
+    },
+    {
+      "width": "128",
+      "round": "1",
+      "outputs": "2304",
+      "grid": "3,3,2",
+      "groups": "18",
+      "submits": "3",
+      "flushes": "3",
+      "expected": "3",
+      "max_chunks": "8",
+      "partial": "2",
+      "max_row_nmse": "7.73341756857e-15",
+      "cpu_nmse_limit": "1e-7",
+      "max_abs": "1.19209289551e-07",
+      "nonfinite": "0",
+      "zero_diffs": "0",
+      "full3allocations": "1",
+      "guardrow_visible": "1",
+      "result": "PASS"
+    },
+    {
+      "width": "1024",
+      "round": "0",
+      "outputs": "18432",
+      "grid": "3,3,2",
+      "groups": "18",
+      "submits": "3",
+      "flushes": "3",
+      "expected": "3",
+      "max_chunks": "8",
+      "partial": "2",
+      "max_row_nmse": "7.65232011365e-15",
+      "cpu_nmse_limit": "1e-7",
+      "max_abs": "1.19209289551e-07",
+      "nonfinite": "0",
+      "zero_diffs": "0",
+      "full3allocations": "1",
+      "guardrow_visible": "1",
+      "result": "PASS"
+    },
+    {
+      "width": "1024",
+      "round": "1",
+      "outputs": "18432",
+      "grid": "3,3,2",
+      "groups": "18",
+      "submits": "3",
+      "flushes": "3",
+      "expected": "3",
+      "max_chunks": "8",
+      "partial": "2",
+      "max_row_nmse": "7.65232011365e-15",
+      "cpu_nmse_limit": "1e-7",
+      "max_abs": "1.19209289551e-07",
+      "nonfinite": "0",
+      "zero_diffs": "0",
+      "full3allocations": "1",
+      "guardrow_visible": "1",
+      "result": "PASS"
+    }
+  ],
+  "outputs": 41472,
+  "max_row_nmse": 7.73341756857e-15,
+  "maximum_absolute_error": 1.19209289551e-07,
+  "checks": [
+    "Original CPU RMS per-row NMSE1e-7 bound retained; max observed7.734e-15, exactzero-row+0, nonfinite0 across both actualwidths128/1024 and two changing rounds.",
+    "Full3allocations preserve all input/sourceB/paddedstrides/offset/padding guards; additional outputrow remains descriptor-visible and poison unchanged. Source fullcomparison precedes roundPASS.",
+    "All4dispatch traces show18groups3D/tile1/batch8 with3submits. Readonly device submit_count andseqno both3 afterfence eachround; original queue loop implies8+8+2, no simultaneous residency claim.",
+    "Mask7 actual is now established; source predicate requiresA/D andallowsoptionalB within7, exact3ordinalSSBO. Count-vs-index guard is correct at4096 slots.",
+    "Payloadsource/build/driver/module, collection/fault/services and successful terminalunit pinned. No TTS/KV/GQA/quant/softmax or32native replay, no timing collected."
+  ],
+  "resource_limit": "Reported59.6MiB peak within original384MiB/90s. Not a performance measurement.",
+  "remaining": "Originalfull-model completion and freshcache import remain separate; this fixture does not claim broad RMS orASR accuracy.",
+  "timing_collected": false
+}

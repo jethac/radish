@@ -1,5 +1,18 @@
 # Radish status
 
+## 2026-11-03: connect bounded RMS batching
+
+The [queue-only RMS change](results/optimization-rms-batching-source-build-0046.json)
+uses the existing eight-chunk policy within the same 4,096-register-slot limit.
+[The focused check](results/optimization-rms-batch-correctness-0046.json) passes
+41,472 CPU comparisons and complete allocation guards. Each 18-workgroup dispatch
+completes two full batches and one two-workgroup remainder; the native shader is unchanged.
+
+The original full model is running on this driver with listener43ec, both warm-up
+modes, two requests of the same pinned clip and all original limits. The prior
+streaming-prefill timeout is preserved. ASR full-model and cache-replay checks
+remain open, and no performance measurement has been made.
+
 ## 2026-11-03: verify free-page release and preserve the model timeout
 
 [Independent paired resource checks](results/optimization-asr-heap-release-actual-0046.json)

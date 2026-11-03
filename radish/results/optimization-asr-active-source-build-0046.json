@@ -1,5 +1,5 @@
 {
-  "status": "Current43ecf594/3a30 source/build and actual free-page release qualified; original full62956 timed out during streaming prefill before requested transcripts. Full-model/cache/performance requirements remain open.",
+  "status": "Listener43ec unchanged; drivera6d65 adds reviewed RMS batching. Focused numerical/full-partial actual passes; original full model29498 is running with freshv12 cache and unchanged workload/limits. ASR model and cache replay remain open.",
   "application": "Frozen ASR source with previously published GQA, quantized phase, memory-liveness and unit-axis overlays",
   "ordered_additive_patches": [
     {
@@ -100,6 +100,12 @@
       "author_sha256": "1122dc2bd179f4eac1421ba63e520d872097de6785c82c150d292df54ca45c1c",
       "strip": 1,
       "apply_root": "root containing transcribe.cpp after resource-snapshot overlay; ggml path headers normalized"
+    },
+    {
+      "file": "0046-asr-rms-batching.patch",
+      "sha256": "499b5e11be37a07d9eed9b87231ee6cc73dfc6722b84a4fd527a1110a52d08db",
+      "strip": 1,
+      "apply_root": "Mesa root after attention-batching overlay"
     }
   ],
   "cache_source_files": {
@@ -545,9 +551,9 @@
     "result_sha256": "56a897bb432a0d13a460277b80be1e014994af94a31a9f945512bac17dd7b7e7"
   },
   "current_driver": {
-    "full": "1cc8e0118b88ba24f0291068ceba28597e17e9c7e8f28afc1436e71d2a5c461a",
-    "deployed_strip": "3a300087ec25ded4226857735e5bb7c0353a1a9f74c04fa83d3a28bd70f68ed6",
-    "source": "0046-asr-attention-batching.patch over current4923; queue object only"
+    "full": "d14484ff88d4d33f85961d24b369e083fbd2dc5fe423aead4332d4c51aa7b0fa",
+    "deployed_strip": "a6d65cd60046f254b36971f6d89b47292f75da5eeb515121cfd7fc4a59bf5cb3",
+    "source": "0046-asr-rms-batching.patch over current3a30; queue object only"
   },
   "incremental_source_review": "531fcaaa71331df51fca79dbd9c52e8664ae373cf76c9ec331b9eee2a25c3799",
   "incremental_build_runner_review": "d6930974ea4a41177dd4c46c34dc55cf96b1f58ffe327766190c245e02de7d01",
@@ -1146,5 +1152,95 @@
   "actual_heap_release": {
     "file": "optimization-asr-heap-release-actual-0046.json",
     "sha256": "764010f401ab6e699601b5bff5697ed26a6b2fa1e90cea07b77962c7bdd7e7c9"
+  },
+  "rms_batching_stage": {
+    "build": {
+      "status": "PASS isolated host build; target qualification pending",
+      "source_release": "3b1738fd393208bc7e1e7fca737c86df68648d06f80a601700004be6049f1ab0",
+      "source": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/rms-queue-batching/candidate/rd_queue.c",
+      "source_sha256": "107cc9ac8e6bbedde4370adf50e06d0120567ce9952016bd0e52dfd9a17d0eb8",
+      "object": "cb21c383c9ee3aa3104a54930801848c492958e9f972ae343861dbb5f162538d",
+      "commands": "2d09bce84d0b948ad184f6057a7eb67a2e8a500bc18dbd1e676b5412dd18e2c1",
+      "argv": [
+        "clang++",
+        "--target=aarch64-linux-gnu",
+        "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+        "-mcpu=cortex-a53",
+        "-o",
+        "/run/media/jethac/Shared/radish/optimization-five-rms-queue-driver-0046/libvulkan_radish.so",
+        "src/freedreno/radish/libvulkan_radish.so.p/meson-generated_.._rd_entrypoints.c.o",
+        "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/cache-build/rd_instance.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_device.c.o",
+        "/run/media/jethac/Shared/radish/optimization-five-phase-release-driver-0046/rd_memory.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_descriptor.c.o",
+        "/run/media/jethac/Shared/radish/optimization-five-quant-queue-driver-0046/rd_pipeline.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_command.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_sampling.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_nir_sampling.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_nir_resources.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_nir_robust.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_resources.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_transfer.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_image.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_event.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_query.c.o",
+        "/run/media/jethac/Shared/radish/optimization-five-rms-queue-driver-0046/rd_queue.c.o",
+        "-L/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib",
+        "-Wl,--as-needed",
+        "-Wl,--no-undefined",
+        "-shared",
+        "-fPIC",
+        "-Wl,-soname,libvulkan_radish.so",
+        "-Wl,--whole-archive",
+        "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/cache-build/rd_pipeline_cache.cpp.o",
+        "-Wl,--start-group",
+        "src/vulkan/runtime/libvulkan_lite_runtime.a",
+        "src/vulkan/runtime/libvulkan_runtime.a",
+        "src/vulkan/runtime/libvulkan_instance.a",
+        "-Wl,--no-whole-archive",
+        "-fuse-ld=lld",
+        "--rtlib=libgcc",
+        "-Wl,-rpath-link,/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib",
+        "src/freedreno/drm/libfreedreno_drm.a",
+        "src/util/libmesa_util.a",
+        "src/util/libmesa_util_simd.a",
+        "src/util/blake3/libblake3.a",
+        "src/c11/impl/libmesa_util_c11.a",
+        "src/freedreno/ir3/libfreedreno_ir3.a",
+        "src/freedreno/isa/libir3encode.a",
+        "/run/media/jethac/Shared/radish/compute11-idiv-isolated-build-0045/libnir.idiv.a",
+        "src/compiler/libcompiler.a",
+        "src/freedreno/common/libfreedreno_common.a",
+        "src/freedreno/isa/libir3decode.a",
+        "src/compiler/isaspec/libisaspec.a",
+        "src/freedreno/fdl/libfreedreno_layout.a",
+        "src/vulkan/util/libvulkan_util.a",
+        "src/compiler/spirv/libvtn.a",
+        "-Wl,--version-script",
+        "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/vulkan/vulkan.sym",
+        "-Wl,-Bsymbolic",
+        "-Wl,--gc-sections",
+        "/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/libz.so",
+        "-pthread",
+        "-lm",
+        "/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/libdrm.so",
+        "-Wl,--end-group"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build",
+      "strip_argv": [
+        "llvm-strip",
+        "--strip-debug",
+        "-o",
+        "/run/media/jethac/Shared/radish/optimization-five-rms-queue-driver-0046/libvulkan_radish.stripped.so",
+        "/run/media/jethac/Shared/radish/optimization-five-rms-queue-driver-0046/libvulkan_radish.so"
+      ],
+      "base_result": "3916314854dcc042ec8b5ddb327f2a8d43e2f0a4d2cb49bbee30b50bae99979b",
+      "sha256": "d14484ff88d4d33f85961d24b369e083fbd2dc5fe423aead4332d4c51aa7b0fa",
+      "strip_sha256": "a6d65cd60046f254b36971f6d89b47292f75da5eeb515121cfd7fc4a59bf5cb3",
+      "scope": "Only rd_queue.c.o changed over3a30; unchanged ABI/header/pipeline/cache/compiler/memory/shaders"
+    },
+    "source_review": "7a6f1cd42428bbb6988e0c6fda53492f5fdb7dfe79ea5c4b4053ecfd7a9ccd16",
+    "build_review": "7edc15752aa24a4f1d9728e3a831903cad6ad2226c13239a196bd3d047c0ba4b",
+    "actual_review": "ba535a93e746e75c403ec51e32ed6fede6c52894d89a882d831ee67d974cb451"
   }
 }

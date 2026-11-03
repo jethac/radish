@@ -1,0 +1,511 @@
+{
+  "status": "62956 retained original full-model timeout; useful memory release qualified independently; no real transcript or cache import",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-full-heap-release/probe",
+  "pins": {
+    "run.log": "a240f9de0af7a97616d4101d957691783e875929256e5e23bcc1b3f346d8b830",
+    "failure.json": "2c7757f46516c0756b963e870dbf7795eae3952b5660beed59b85b8016d9d001",
+    "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+    "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+    "drain-000.txt": "899a8a5a73232d4a07b56824413da1c88dc2dc685e89886ca2bc05f89923b9f6"
+  },
+  "candidate": "43ec heap-release listener /3a30 attention-batch driver/missingv11",
+  "phase": "offline warm encoder/prefill/actual one decoder step/temp sync cleanup completes; streaming encoder completes then cached-prefix prefill791 GPU/0 rejected remains incomplete. No supplied clip transcript.",
+  "diagnostic_pairs": {
+    "compile": 34,
+    "dispatch": 4096,
+    "dispatch_cap_reached": true,
+    "all_completed_results_zero": true,
+    "last_capped_marker_is_stall_evidence": false
+  },
+  "capped_prefix_structural_counts": [
+    {
+      "native": 477,
+      "batch": 1,
+      "packed": 1,
+      "tile": "1,1,1",
+      "dispatches": 421,
+      "submits": 64889,
+      "groups": 64889
+    },
+    {
+      "native": 53,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "dispatches": 423,
+      "submits": 18270,
+      "groups": 146160
+    },
+    {
+      "native": 43,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "dispatches": 142,
+      "submits": 10080,
+      "groups": 80640
+    },
+    {
+      "native": 41,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "dispatches": 2,
+      "submits": 9496,
+      "groups": 75968
+    },
+    {
+      "native": 44,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "dispatches": 272,
+      "submits": 9160,
+      "groups": 73244
+    },
+    {
+      "native": 62,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,1,1",
+      "dispatches": 54,
+      "submits": 7776,
+      "groups": 7776
+    },
+    {
+      "native": 65,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "dispatches": 104,
+      "submits": 6760,
+      "groups": 54080
+    },
+    {
+      "native": 73,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,1,1",
+      "dispatches": 104,
+      "submits": 5760,
+      "groups": 5760
+    },
+    {
+      "native": 536,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "dispatches": 56,
+      "submits": 5376,
+      "groups": 43008
+    },
+    {
+      "native": 30,
+      "batch": 1,
+      "packed": 1,
+      "tile": "1,1,1",
+      "dispatches": 74,
+      "submits": 2442,
+      "groups": 2442
+    },
+    {
+      "native": 358,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "dispatches": 82,
+      "submits": 2120,
+      "groups": 16936
+    },
+    {
+      "native": 64,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "dispatches": 36,
+      "submits": 2088,
+      "groups": 16632
+    },
+    {
+      "native": 35,
+      "batch": 1,
+      "packed": 0,
+      "tile": "64,1,1",
+      "dispatches": 154,
+      "submits": 1015,
+      "groups": 59304
+    },
+    {
+      "native": 110,
+      "batch": 1,
+      "packed": 0,
+      "tile": "8,8,1",
+      "dispatches": 12,
+      "submits": 960,
+      "groups": 48384
+    },
+    {
+      "native": 34,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "dispatches": 28,
+      "submits": 896,
+      "groups": 7168
+    },
+    {
+      "native": 202,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,64,1",
+      "dispatches": 58,
+      "submits": 560,
+      "groups": 34332
+    },
+    {
+      "native": 200,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,64,1",
+      "dispatches": 194,
+      "submits": 465,
+      "groups": 21734
+    },
+    {
+      "native": 225,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "dispatches": 76,
+      "submits": 440,
+      "groups": 3520
+    },
+    {
+      "native": 20,
+      "batch": 8,
+      "packed": 0,
+      "tile": "4,16,1",
+      "dispatches": 296,
+      "submits": 392,
+      "groups": 111232
+    },
+    {
+      "native": 121,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,50,1",
+      "dispatches": 6,
+      "submits": 384,
+      "groups": 19200
+    },
+    {
+      "native": 41,
+      "batch": 1,
+      "packed": 0,
+      "tile": "64,1,1",
+      "dispatches": 98,
+      "submits": 322,
+      "groups": 17584
+    },
+    {
+      "native": 22,
+      "batch": 8,
+      "packed": 0,
+      "tile": "4,16,1",
+      "dispatches": 56,
+      "submits": 278,
+      "groups": 136712
+    },
+    {
+      "native": 202,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,58,1",
+      "dispatches": 256,
+      "submits": 256,
+      "groups": 14848
+    },
+    {
+      "native": 222,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "dispatches": 36,
+      "submits": 252,
+      "groups": 2016
+    },
+    {
+      "native": 344,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "dispatches": 36,
+      "submits": 252,
+      "groups": 2016
+    },
+    {
+      "native": 117,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,64,1",
+      "dispatches": 95,
+      "submits": 190,
+      "groups": 8510
+    },
+    {
+      "native": 24,
+      "batch": 8,
+      "packed": 0,
+      "tile": "4,16,1",
+      "dispatches": 75,
+      "submits": 149,
+      "groups": 57192
+    },
+    {
+      "native": 21,
+      "batch": 8,
+      "packed": 0,
+      "tile": "4,16,1",
+      "dispatches": 104,
+      "submits": 104,
+      "groups": 35392
+    },
+    {
+      "native": 200,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,20,1",
+      "dispatches": 84,
+      "submits": 84,
+      "groups": 1680
+    },
+    {
+      "native": 200,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,58,1",
+      "dispatches": 74,
+      "submits": 74,
+      "groups": 4292
+    },
+    {
+      "native": 117,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,58,1",
+      "dispatches": 72,
+      "submits": 72,
+      "groups": 4176
+    },
+    {
+      "native": 115,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,2,1",
+      "dispatches": 59,
+      "submits": 59,
+      "groups": 118
+    },
+    {
+      "native": 117,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,2,1",
+      "dispatches": 57,
+      "submits": 57,
+      "groups": 114
+    },
+    {
+      "native": 20,
+      "batch": 8,
+      "packed": 0,
+      "tile": "1,64,1",
+      "dispatches": 20,
+      "submits": 56,
+      "groups": 25884
+    },
+    {
+      "native": 26,
+      "batch": 8,
+      "packed": 0,
+      "tile": "1,64,1",
+      "dispatches": 56,
+      "submits": 56,
+      "groups": 5488
+    },
+    {
+      "native": 41,
+      "batch": 1,
+      "packed": 0,
+      "tile": "8,1,1",
+      "dispatches": 56,
+      "submits": 56,
+      "groups": 448
+    },
+    {
+      "native": 117,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,20,1",
+      "dispatches": 56,
+      "submits": 56,
+      "groups": 1120
+    },
+    {
+      "native": 24,
+      "batch": 8,
+      "packed": 0,
+      "tile": "4,6,1",
+      "dispatches": 29,
+      "submits": 29,
+      "groups": 696
+    },
+    {
+      "native": 200,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,2,1",
+      "dispatches": 28,
+      "submits": 28,
+      "groups": 56
+    },
+    {
+      "native": 35,
+      "batch": 1,
+      "packed": 0,
+      "tile": "8,1,1",
+      "dispatches": 28,
+      "submits": 28,
+      "groups": 224
+    },
+    {
+      "native": 200,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,4,1",
+      "dispatches": 28,
+      "submits": 28,
+      "groups": 112
+    },
+    {
+      "native": 35,
+      "batch": 1,
+      "packed": 0,
+      "tile": "16,1,1",
+      "dispatches": 28,
+      "submits": 28,
+      "groups": 448
+    },
+    {
+      "native": 20,
+      "batch": 8,
+      "packed": 0,
+      "tile": "1,4,1",
+      "dispatches": 28,
+      "submits": 28,
+      "groups": 112
+    },
+    {
+      "native": 200,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,40,1",
+      "dispatches": 28,
+      "submits": 28,
+      "groups": 1120
+    },
+    {
+      "native": 29,
+      "batch": 1,
+      "packed": 0,
+      "tile": "4,16,1",
+      "dispatches": 2,
+      "submits": 7,
+      "groups": 352
+    },
+    {
+      "native": 31,
+      "batch": 8,
+      "packed": 0,
+      "tile": "4,16,1",
+      "dispatches": 3,
+      "submits": 3,
+      "groups": 1048
+    },
+    {
+      "native": 20,
+      "batch": 8,
+      "packed": 0,
+      "tile": "1,58,1",
+      "dispatches": 2,
+      "submits": 2,
+      "groups": 116
+    },
+    {
+      "native": 20,
+      "batch": 8,
+      "packed": 0,
+      "tile": "1,20,1",
+      "dispatches": 2,
+      "submits": 2,
+      "groups": 40
+    },
+    {
+      "native": 20,
+      "batch": 8,
+      "packed": 0,
+      "tile": "1,12,1",
+      "dispatches": 2,
+      "submits": 2,
+      "groups": 24
+    },
+    {
+      "native": 20,
+      "batch": 8,
+      "packed": 0,
+      "tile": "1,2,1",
+      "dispatches": 1,
+      "submits": 1,
+      "groups": 2
+    },
+    {
+      "native": 29,
+      "batch": 1,
+      "packed": 0,
+      "tile": "4,1,1",
+      "dispatches": 1,
+      "submits": 1,
+      "groups": 4
+    },
+    {
+      "native": 14,
+      "batch": 1,
+      "packed": 1,
+      "tile": "1,1,1",
+      "dispatches": 1,
+      "submits": 1,
+      "groups": 1
+    },
+    {
+      "native": 29,
+      "batch": 1,
+      "packed": 0,
+      "tile": "4,10,1",
+      "dispatches": 1,
+      "submits": 1,
+      "groups": 40
+    }
+  ],
+  "native_mapping": {
+    "477": "selectedcase12 rms_norm_f32,2loops/128logical64x2/shared512/private0/fullcount10/halfcount12/push116/3buffers.421dispatches64889submits.",
+    "43 packed1": "Q4_K MV,142dispatches10080submits",
+    "41 packed1": "Q6_K MV,2dispatches9496submits; do not mix native41packed0 elementwise/copy code."
+  },
+  "memory_effect_receipt": {
+    "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/constrained-heap-release/independent-actual-release-review.json",
+    "sha256": "764010f401ab6e699601b5bff5697ed26a6b2fa1e90cea07b77962c7bdd7e7c9"
+  },
+  "limits": "Original300s watchdog,640MiB/128MiBswap controls retained. Actual outcome timeout/TERM, reported peak640MiB/swap64.4MiB; not an OOM result.",
+  "next": "Root prioritizes narrow existing RMS477 sequential batching eligibility+unchanged shader numerical/fullpartial check; coherent Q4/Q6/Q8 MV32row source remains isolated/unbuilt. No timing attribution, cap rise, unchanged retry or import.",
+  "performance_measurement": false
+}
