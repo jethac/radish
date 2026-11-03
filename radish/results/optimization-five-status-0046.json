@@ -64,7 +64,9 @@
     "0046-local-buffer-batching.patch": "0eb63e877f43086da423f668b80cd264b70d0871652f9b4df333503da8ae75ac",
     "0046-asr-quantized-mm128.patch": "44d465ff3df86cd337b1929c1820bf8a5afb04787c4eca0269aab71c193156e8",
     "0046-asr-rms-runtime-body.patch": "cb22a2827f70092c42a0d6ece95055bd5d213dfb806b3069c9747a359329bee1",
-    "0046-asr-mm128-batching.patch": "5ccd4f01a0b803bae8d9ac058ef437e1f8da6357ef8491aec327c744d0aca089"
+    "0046-asr-mm128-batching.patch": "5ccd4f01a0b803bae8d9ac058ef437e1f8da6357ef8491aec327c744d0aca089",
+    "0046-coherent-workgroup-budget.patch": "df5e449b21fe8c612e600ed879dd3c60661881f07ade8c0dd4793cdafef2eb32",
+    "0046-deferred-wave-residency.patch": "2d86677eb6e685a8d8562f847879ef9252cb135157e208522f1ee351a5e8af36"
   },
   "existing_results": "Original743 CTS cases and modified132 robustness outcomes remain historical pinned evidence; no conformance count or selected performance change.",
   "completion_gate": "TTS side is qualified for the stated T213/T78 fixtures. All-five gate remains CLOSED on ASR full-model memory/placement/transcript and real application replay; full GOAL remains active.",
@@ -114,7 +116,8 @@
     "optimization-rms-runtime-native-0046.json": "7d4c159d64f3459a8a76143a35fbde465865d42ed5857f6bb41d909d089f42be",
     "optimization-mm128-actual-0046.json": "beadea9ce3d5b1f35f964614ac0088975ec3a5dcee16ab4a84bf7a13e4603951",
     "optimization-rms-runtime-actual-0046.json": "c66cc6ed9944e645a5c7f73f83ccb88bc7d78bc0acfab1de09886db2229f9647",
-    "optimization-asr-mm128-rms-timeout-0046.json": "34f0f8d0ca3cb8f4879a514bad1291df43f57db04399f215ca0800d9f041a701"
+    "optimization-asr-mm128-rms-timeout-0046.json": "34f0f8d0ca3cb8f4879a514bad1291df43f57db04399f215ca0800d9f041a701",
+    "optimization-asr-mm128-rms-structural-0046.json": "45326e582db3cfc0e3062107a7da91a70bc053f3d30fe95b9788e12ae73a8ef8"
   },
   "drivers": {
     "bounded_cache_queue_half": "61e8/9f64 exact integrated cache+queue+corrected idiv",
@@ -143,9 +146,9 @@
   "full_model_fixture_scope": "Two requests of the same pinned 2.785-second English clip, exact transcript and language, explicit Vulkan placement and resource controls. Not two distinct clips or broad ASR accuracy.",
   "next_candidate": {
     "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
-    "driver": "7575351e906ecae8f6ca3a8b57d860594521526383e62935058a9bfe7811afb5",
-    "receipt": "optimization-mm128-rms-source-build-0046.json",
-    "target_status": "Focused native/numerical pass; full22258 terminal watchdog before transcript, cache replay held",
+    "driver": "11cf0aa23c785011262146e6ea2c8f71fa84cff3da92635495cc44fe3db05ac0",
+    "receipt": "optimization-grouped-work-source-build-0046.json",
+    "target_status": "source-reviewed/host-built; grouped-work target qualification pending",
     "performance_gate": "CLOSED"
   }
 }

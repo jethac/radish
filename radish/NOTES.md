@@ -1,5 +1,21 @@
 # Radish status
 
+## 2026-11-03: bounded grouped-work candidate built
+
+The [next queue candidate](results/optimization-grouped-work-source-build-0046.json)
+combines up to eight independent workgroups per command for qualified interfaces,
+and aligns deferred non-barrier residency checks with the compiler. It also admits
+the existing long add/multiply kernels to bounded batching. Shader and model bytes
+are unchanged.
+
+The candidate explicitly raises queued barrier work from8 to64 workgroups per
+submission, at most512 across the bounded window. Per-resident-workgroup resources,
+command-memory and reference bounds, watchdogs and fault controls stay unchanged.
+Source/build checks pass; numerical, shared-isolation and full/partial target checks
+are required before another model run. Existing TTS admission is unchanged.
+The [latest independent ASR result](results/optimization-asr-mm128-rms-structural-0046.json)
+remains a watchdog failure before any requested transcript. Performance is unmeasured.
+
 ## 2026-11-03: combined ASR run remains incomplete
 
 The [combined full run](results/optimization-asr-mm128-rms-timeout-0046.json)

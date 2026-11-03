@@ -1111,7 +1111,9 @@
     "sha256": "34f0f8d0ca3cb8f4879a514bad1291df43f57db04399f215ca0800d9f041a701",
     "handle": 22258,
     "status": "Both warm modes complete, realprefix1151 and first subsample36 complete; next36 begins before original watchdog, no transcript",
-    "scope": "No transcript comparison result, no ASR cache qualification, no speed claim"
+    "scope": "No transcript comparison result, no ASR cache qualification, no speed claim",
+    "independent_receipt": "optimization-asr-mm128-rms-structural-0046.json",
+    "independent_sha256": "45326e582db3cfc0e3062107a7da91a70bc053f3d30fe95b9788e12ae73a8ef8"
   },
   "resource_diagnostic_stage": {
     "build": {
@@ -1702,5 +1704,27 @@
     "cache": "fresh missing v15",
     "scope": "Both production warm modes/full audio, two requests of same pinned2.785s clip, real256 budget and original640MiB/128swap/300s controls",
     "status": "terminal watchdog failure; no requested transcript"
+  },
+  "pending_grouped_work_candidate": {
+    "driver": "11cf0aa23c785011262146e6ea2c8f71fa84cff3da92635495cc44fe3db05ac0",
+    "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
+    "source_build_receipt": "optimization-grouped-work-source-build-0046.json",
+    "target_status": "Never executed; independent source and host build only",
+    "patches": [
+      {
+        "file": "0046-coherent-workgroup-budget.patch",
+        "sha256": "df5e449b21fe8c612e600ed879dd3c60661881f07ade8c0dd4793cdafef2eb32",
+        "strip": 1,
+        "apply_root": "Mesa root over7575 in listed order"
+      },
+      {
+        "file": "0046-deferred-wave-residency.patch",
+        "sha256": "2d86677eb6e685a8d8562f847879ef9252cb135157e208522f1ee351a5e8af36",
+        "strip": 1,
+        "apply_root": "Mesa root over7575 in listed order"
+      }
+    ],
+    "application_modules": "byte-identical db872",
+    "queued_work_expansion_explicit": true
   }
 }

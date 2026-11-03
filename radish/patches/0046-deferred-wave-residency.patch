@@ -1,0 +1,24 @@
+--- a/src/freedreno/radish/rd_queue.c
++++ b/src/freedreno/radish/rd_queue.c
+@@ -566,6 +566,12 @@
+    const struct ir3_shader_variant *v = p->variant;
+    const uint64_t threads = (uint64_t)v->local_size[0] *
+       v->local_size[1] * v->local_size[2];
++   const uint64_t wave_size = (uint64_t)device->info.threadsize_base *
++      (v->info.double_threadsize ? 2 : 1);
++   if (!wave_size)
++      return false;
++   const uint64_t resident_threads = v->has_barrier ?
++      DIV_ROUND_UP(threads, wave_size) * wave_size : wave_size;
+    if (fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) != 506 ||
+        fd_device_version(device->fd) < FD_VERSION_SOFTPIN || dispatch->indirect ||
+        p->sampling_nir || p->sampling_variants || !p->batch_local_memory ||
+@@ -574,7 +580,7 @@
+        !v->shader_options.nir_options.a5xx_ssbo_size_consts ||
+        v->pvtmem_size || v->constant_data_size || v->info.preamble_instrs_count ||
+        p->private_bo || !threads || threads > 128 ||
+-       threads * ir3_shader_halfregs(v) > 4096 ||
++       resident_threads * ir3_shader_halfregs(v) > 4096 ||
+        v->shared_size > 16384 || p->resource_count < 1 || p->resource_count > 5 ||
+        v->num_ssbos != p->resource_count ||
+        p->descriptor_count != p->resource_count || p->buffer_count != p->resource_count ||
