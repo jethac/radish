@@ -1,5 +1,5 @@
 {
-  "status": "Implementation in progress; performance gate CLOSED",
+  "status": "All five implementation and pinned functional/resource milestone areas qualified; broader GOAL active",
   "authorization": "Implement all five optimization areas before any latency/throughput measurements, profiling or speedup selection.",
   "source_baselines": {
     "Mesa": "exact active corrected5c6d source overlay in compute11-active-conformance-candidate-0045.json; historicalf222 and selectedfcd unchanged",
@@ -9,32 +9,90 @@
   "areas": [
     {
       "area": 1,
-      "implementation": "Persistent frontend/harmonic ORT session pair retained across runtime requests, dynamic-shape validation, owned outputs and bounded session count; activation arena/pattern retention disabled",
-      "evidence": "Integrated retained frontend plus selected GPU core passes four T78 requests in cold/import processes; two ORT sessions remain live per process, exact per-request CPU boundaries and original core/waveform gates pass. Separate varying-shape/style target tests remain valid.",
-      "graph_policy": "Original ORT_DISABLE_ALL retained. Generic BASIC changed F0 and harmonic phase under strict oracle; rejected, not tolerance-adjusted."
+      "implementation": "Retained frontend and harmonic ORT sessions, owned outputs, validated dynamic shapes, bounded session and activation lifetime; validated ORT_DISABLE_ALL policy retained.",
+      "actual_use": "Four T78 requests across cold and fresh-import processes; two ORT sessions and GPU core retained within each process.",
+      "functional_resource_evidence": "Each captured request boundary matches its CPU reference under original core/waveform criteria (205942 core values and 46800 waveform samples per request); zero threshold errors; waveform SNR 90.614 dB. Session/placement/memory controls passed.",
+      "receipts": [
+        "frontend",
+        "tts_shared_queue",
+        "tts_carry"
+      ],
+      "qualification": "Closed for pinned T78 fixture; broader frontend/TTS quality is not claimed."
     },
     {
       "area": 2,
-      "implementation": "Direct-window C128/K11/d1,3,5 convolution kernel reading original packed input and fusing padding; removes planar intermediate and conversion dispatch",
-      "evidence": "Original fixedT213 FP32 model independently passes repeat2, complete562342 outputs, accepted e128 bit identity, original127800-sample waveform gate. All179 native programs admitted. No performance result."
+      "implementation": "Direct-window C128/K11 convolution with dilation 1/3/5 reads packed input and fuses padding, eliminating planar intermediate/conversion work.",
+      "actual_use": "Full T213 FP32 model repeat2, and retained T78 integrated runtime.",
+      "functional_resource_evidence": "Full 562342 core outputs and 127800 waveform samples under original criteria, accepted FP32 core bit identity; 179 native programs admitted. Shared queue regression retains exact accepted T78 boundaries and outputs.",
+      "receipts": [
+        "tts_fp32",
+        "frontend",
+        "tts_shared_queue",
+        "tts_carry"
+      ],
+      "qualification": "Closed for pinned T213/T78 fixtures; no speed claim."
     },
     {
       "area": 3,
-      "implementation": "Reuse invariant program/resource/static state within bounded chunks of one dispatch; keep per-chunk base/NDRANGE and WFI, flush/wait at existing batch end; direct-window graph intermediate elimination Narrow qualified quantized-kernel batching now retains state across up to8 sequential one-workgroup chunks, excluding unsafe global memory behavior. Exact qualified floating attention and compact softmax families now use the same dependency-safe one-workgroup batch policy. The qualified RMS resource family also uses the existing one-workgroup batch policy without increasing register or shared-memory bounds. Coherent queue candidate retains up to eight ordered FD submissions with explicit submit-error status and all existing GPU flushes; local norm/transpose families use the existing eight-chunk policy.",
-      "evidence": "Queue full/partial-batch correctness passes 66,688 exact values. Direct-window graph elimination is exercised by fixed T213 and integrated retained T78 models, all required GPU traces return zero. No performance claim. Expanded six-kernel M33 fixture verifies17,424 exact outputs/full3allocation guards and all real full/partial batch counts; no performance measurement. New attention class independently passes69,516 exact GQA outputs and7 submits per54-workgroup dispatch; narrow softmax8 preserves7296 old/new values and CPU/full-allocation oracles with2 submits per13-workgroup new shader. Both full and partial batches are exercised. RMS batching independently passes41,472 original CPU output checks/full3allocation guards, with four18-workgroup dispatches each completing8+8+2 chunks in3 submits and flushes; native body remains byte-identical. The coherent deferred-wait candidate passes source/build/ABI and two changing dependent chains/full4 buffer oracles, including actual8-slot capacity, CPU-copy and final-fence drains. Local-family actual3272 passes all93,732 output checks/full guards and exact prior native bodies with full/partial batching. Focused TTS9f8b also passes exact accepted T78 outputs/boundaries with actual8-slot/64-chunk deferred use and original limits. Original full ASR78241 subsequently timed out during real-request processing after both warm modes completed; no speed claim follows from submission counts."
+      "implementation": "Graph/packing elimination, bounded state reuse and grouped execution, eight-slot ordered deferred FD completion, explicit enqueue error status, and drains before CPU work/final signals. Existing GPU flush/WFI ordering remains.",
+      "actual_use": "Dependent GPU producer/consumer plus CPU byte-copy/final-fence fixture; full TTS integrated runtime; every newly affected ASR family has focused grouped/full-tail actual evidence.",
+      "functional_resource_evidence": "Dependency full-four-allocation oracle and actual eight-slot capacity/CPU/final drains; local-family 93732 outputs; grouped RMS 169984, norm 149760, GQA 1590732, softmax 177408 old/new pairs plus 354816 CPU comparisons, long binary 2097160, quant union 994998. Matrix policy now emits one EXEC per FD, retaining up to eight WG per EXEC/eight ordered FD slots. Nonmatrix grouped and nonbarrier work bounds remain separately documented; queued work is not simultaneous residency.",
+      "receipts": [
+        "dependent_queue",
+        "local_families",
+        "grouped_geometry",
+        "quant_union",
+        "current_driver",
+        "tts_shared_queue",
+        "tts_carry"
+      ],
+      "qualification": "CLOSED for focused functional/resource gates and pinned TTS/ASR integration. Original grouped Q8 fault retained; changed bounded-fence policy passed original failing case without unique fault-cause attribution."
     },
     {
       "area": 4,
-      "implementation": "Integrated GQA broadcast, phase-specific quantized kernels, encoder-to-prefill device-buffer reuse and reduced host staging; actual application pipeline cache and supported-kernel initialization correction are built. Constrained-profile subsampling reuses one independent chunk graph across the complete audio, lowering unnecessary live convolution intermediates. Scheduler scratch is released between subsampling and encoder; Vulkan-owned allocations leave the BO reuse cache on final unref. Incremental KV allocates actual prompt/draft demand and grows geometrically up to the unchanged full context ceiling. The constrained softmax shader uses one runtime-width body and preserves column loops instead of seven constant-width expansions, retaining numerical order and masks. Production constrained-profile warmup now uses fresh temporary borrowed-model sessions and one actual decoder step per mode; synthetic state is synchronized and freed before real requests. The original warm prompt now has owned string lifetime. Constrained-profile heap cleanup asks glibc to return unused pages after compilation and synchronized temporary-session destruction. Quantized decoding now processes up to32 rows per workgroup in consecutive four-row blocks with uniform shared-memory reuse barriers and unchanged per-row arithmetic. Coherent host candidate db8725 adds sequential128-row quantized MM and one selected RMS runtime body; current d4d0/6f15 is preserved.",
-      "evidence": "Quant union28round994998exactvalues/fullguards andotheraffectedgeometrypassed. Fulldb872/0f721/v17 completedbothwarmmodes/cleanup andrealprefix/twosubsamplinggraphs buthit300sprocesswatchdog duringthird, beforetranscript. GPUfault/servicecontrols clean,640MiBpeak/61.5MiBswap withinoriginalcaps; fullaccuracy/cache remainopen. No performance."
+      "implementation": "Actual ASR GQA and quantized phase kernels, MM128/MV32 sequential work, compact softmax/RMS bodies, full-audio one-chunk subsampling, phase scratch/BO lifetime release, GPU handoff reuse, incremental KV growth, isolated one-step production warm sessions and constrained post-owner heap release. Successful prefix prefill now commits valid K/V row count and head before publishing cached IDs, so initial growth preserves written prefix.",
+      "actual_use": "18620 completes both original warm modes and two requests of the same full pinned clip with exact original English text/language. Actual first-real prefix commits9/cap16, initialgrowth16-to-64 copies9, reuse9 valid9; second request correctly reuses9 with valid60.",
+      "functional_resource_evidence": "Real F16/F32 KV 16-to-32-to-64 growth preserves K/V rows and fresh views. Source/actual ownership evidence establishes scratch release and 35 paired heap-release calls with allocator-used bytes unchanged and anonymous RSS reductions. All new grouped geometry has original CPU/full-buffer guards and native resource evidence. Existing actual K/V-copy value proof is composed with production publication source review and pending first-real COMMIT9cap16 -> grow16-to-64 rows9/head9 -> REUSE9 assertion; no manual counter seeding or separate heavyweight helper substitutes for real request evidence.",
+      "receipts": [
+        "grouped_geometry",
+        "quant_union",
+        "kv_growth",
+        "heap_release",
+        "prefix_source",
+        "prefix_markers",
+        "prefix_build",
+        "prefix_runner",
+        "prefix_payload",
+        "asr_model_actual",
+        "asr_cache_cold_actual",
+        "asr_cache_import_actual"
+      ],
+      "qualification": "CLOSED for pinned repeated English clip:18620 full two-request outputs/prefix/placement/resources and52e7 one-clip cold/import regressions. No broader speech-quality/logit-equivalence claim."
     },
     {
       "area": 5,
-      "implementation": "Real compiled Vulkan cache entries using Mesa cache import/export/merge and IR3 native serializer, including sampling NIR and resource metadata; selective weight-only precision actively uses two qualified operators with ten FP32 fallbacks",
-      "evidence": "Selective half2/FP32ten passes fixedT213 and integratedT78 original outputs. Real ncnn export/import contains48SPV/178compiled objects, all178 keyed native payloads unchanged after replay. Five custom/device-cache entries stay in-process. ASR cache lifecycle is built but full model qualification remains open."
+      "implementation": "Selective half-weight storage with two qualified operators and ten FP32 fallbacks, exhaustive correct half decode; real compiled Vulkan pipeline-cache serialization/keying/merge/import plus application-owned persistence. Backend-free now reuses non-destructive cache export after synchronized cleanup; it does not depend on shared logical-device destructor reachability.",
+      "actual_use": "T213 and T78 execute actual half2/FP32ten; TTS cold/export/fresh-import persists 48 SPIR-V and 178 compiled native objects. ASR uses an actual private cache path in the full runner. ASR actual52e7 process saves670548B after backend cleanup, then fresh process accepts that cache and again emits exact original phrase.",
+      "functional_resource_evidence": "All 65536 half patterns (including 2046 signed subnormals) satisfy exact finite-bit/NaN-class checks. T213 original core tolerance 0.002 + 0.002*abs(reference), waveform minimum 50 dB, actual 90.934 dB. TTS fresh process imports populated native entries, rejects old UUID safely, retains exact accepted outputs and bounded queue use. ASR cold/import independently validate34 unique compiled records, every inner length/checksum/full boundary and UUID/build-ID; canonical key/payload sets identical. Raw SHA difference is record order only, not numerical or payload change.",
+      "receipts": [
+        "half_bits",
+        "tts_half",
+        "frontend",
+        "compiled_cache",
+        "tts_shared_queue",
+        "tts_carry",
+        "asr_model_actual",
+        "asr_cache_failure",
+        "cache_save_source",
+        "cache_save_build",
+        "app_close_reachability",
+        "asr_cache_cold_actual",
+        "asr_cache_import_actual"
+      ],
+      "qualification": "CLOSED for pinned precision and actual TTS/ASR persistent compiled-cache lifecycle, including fresh-process accepted import and original outputs. No cache-hit count, speedup or broader accuracy claim."
     }
   ],
-  "measurement_policy": "No new performance results or performance collection. Untimed application paths report timing_collected=false; timeout/memory/fault/service telemetry is used only to verify controls.",
+  "measurement_policy": "All-five prerequisite closed; coordinator explicitly released matched T168 CPU/GPU baseline under original controls and PROFILE0. No new performance result collected at this checkpoint.",
   "patches": {
     "0046-radish-compiled-pipeline-cache.patch": "3676b04a9f71b2f0ac676bb327693059193797218621e141706f91b09bf754af",
     "0046-radish-queue-state-reuse.patch": "e2df8c5915b011b20d67b41352f4d126be922d0bfbf0989d9d3b0bc43e7fc728",
@@ -70,8 +128,8 @@
     "0046-matrix-execution-fences.patch": "7918a937d6dedffc51ce227e11e02273ca95a62da9679b4f089a4e12822314eb"
   },
   "existing_results": "Original743 CTS cases and modified132 robustness outcomes remain historical pinned evidence; no conformance count or selected performance change.",
-  "completion_gate": "TTS side is qualified for the stated T213/T78 fixtures. All-five gate remains CLOSED on ASR full-model memory/placement/transcript and real application replay; full GOAL remains active.",
-  "as_of_utc": "2026-11-03 06:12:48 UTC",
+  "completion_gate": "CLOSED as a completed prerequisite milestone for the pinned T213/T78 TTS fixtures and repeated 2.785-second English ASR clip, including real application cache save/fresh-process replay. Broader conformance, accuracy, matched performance, deployment and GPU-efficiency GOAL remains active.",
+  "as_of_utc": "2026-11-03 07:39:58 UTC",
   "correctness_receipts": {
     "optimization-cache-correctness-0046.json": "0af98f899b26429971ef61df554e2cf4a4fe340019353f9ed7491869ab59b1f5",
     "optimization-queue-correctness-0046.json": "98c9f0d64a5ef1076462930effb6fd3e22c48de75cad78e87f7e68eaa6636b0e",
@@ -159,16 +217,16 @@
       "status": "Original full78241 watchdog after both warm modes completed; real request begun, no transcript"
     }
   ],
-  "runtime_cache": "Actual ncnn missing-cache cold process exports populated cache; second process accepts and re-exports identical178 keyed compiled objects and correct outputs. No hit-count or acceleration inference. On coherent91a1, copied old-UUID cache is rejected and repopulates48SPV/178native objects with the new build UUID; both complete T78 outputs remain byte-identical accepted baseline.",
+  "runtime_cache": "Actual ncnn cache export/import retains48SPV/178compiled objects and correct T78 outputs, with five custom/device-cache entries in-process only. Current ASR52e7 application exports34 compiled records, fresh process accepts670548bytes, reproduces exact original phrase and re-exports the same34 canonical records. No hit-count or acceleration inference.",
   "full_model_fixture_scope": "Two requests of the same pinned 2.785-second English clip, exact transcript and language, explicit Vulkan placement and resource controls. Not two distinct clips or broad ASR accuracy.",
   "next_candidate": {
     "listener": "52e7df4c584aa867b074b0d76a4deb326181324d4be865d81060790e377ba7ad",
     "driver": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
     "receipt": "optimization-asr-backend-cache-save-source-build-0046.json",
-    "target_status": "Prior two-request model/prefix/runtime PASS carried. Cold68562 actual populated cache export independentlyPASS07b99. Fresh process24302 accepted exact670548-byte cache and is executing; output/re-export/resource qualification pending.",
-    "performance_gate": "CLOSED"
+    "target_status": "Qualified current52e7/0f721: prior two-request model/prefix/runtime PASS carried across cache-only backend save change; one-request cold save07b99 and fresh-process importc10f independently PASS.",
+    "performance_gate": "Released for matched T168 baseline after finite filled-plan review and original fresh controls"
   },
-  "device_execution_hold": "Only approved fresh-process one-request import24302 is active. Same52e7/0f721/v20 and all original guards; exact083489 source bytes pinned. No performance collection before independent import/full-five closure.",
+  "device_execution_hold": "Old11cf faulting grouped-matrix policy remains held. Revised0f721 policy and current52e7 model/cache scopes pass. No device scope active at this checkpoint; future launches require original controls and authorized scope.",
   "approved_timeout_exception": {
     "status": "Existing explicit900s authorization carries to justified correctness fixes. Full model18620 passed its numerical/runtime scope; actual one-request cold cache save and conditional reload will use the same limits and retained guards.",
     "proposal": "optimization-asr-900s-proposal-0046.json",
@@ -195,5 +253,11 @@
     "receipt": "optimization-asr-cache-cold-actual-0046.json",
     "sha256": "07b99bd6f82391a8944768cd2b234416bf185b8b831dc2ba5e7844d3891f5759",
     "status": "PASS exact one-request phrase/prefix/placement/resources and actual670548-byte export containing34 fully parsed/checksummed compiled records with currentdriverUUID."
-  }
+  },
+  "asr_cache_import_actual": {
+    "receipt": "optimization-asr-cache-import-actual-0046.json",
+    "sha256": "c10f060796f69fca5c85b9e7f5178ffa687b2eb49fb71cfb9530c3b7c8cf53ab",
+    "status": "PASS exact one-request phrase/prefix/placement/resources after actual accepted670548-byte import; all34 canonical compiled key/payload/checksum records equal cold. File difference is record order only."
+  },
+  "timing_release": "optimization-matched-t168-timing-release-0046.json"
 }

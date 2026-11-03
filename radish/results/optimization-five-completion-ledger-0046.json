@@ -1,7 +1,7 @@
 {
-  "status": "Five-area implementation ledger; milestone remains OPEN pending integrated ASR and fresh-process cache replay",
-  "as_of_utc": "2026-11-03T07:18:43.464715+00:00",
-  "purpose": "Consolidation of existing accepted receipts only; no new execution, native review, or performance collection.",
+  "status": "Five-area implementation and pinned functional/resource prerequisite milestone CLOSED; broader GOAL remains ACTIVE",
+  "as_of_utc": "2026-11-03T07:39:54.028990+00:00",
+  "purpose": "Consolidation of accepted implementation, actual use and functional/resource receipts. No performance execution authorized by this ledger.",
   "source_documents": [
     {
       "path": "/home/jethac/Projects/lenovo-8/radish/results/optimization-five-status-0046.json",
@@ -19,8 +19,8 @@
   "current_candidate": {
     "listener_sha256": "52e7df4c584aa867b074b0d76a4deb326181324d4be865d81060790e377ba7ad",
     "driver_sha256": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
-    "cache": "v20 planned actual app missing-cache save and accepted fresh-process replay; v19 empty failure preserved",
-    "active_scope": "18620 model numerical/placement/resource PASS with cache-save failure preserved. Cache-only source/build/payload fully reviewed; authorized one-clip actual cold on52e7/0f721/v20 pending owner fresh admission; accepted import conditional."
+    "cache": "v20 cold populated save and fresh-process accepted import qualified:670548B,34 compiled records with exact canonical key/payload equality; raw serialization order may differ.",
+    "active_scope": "18620 closes full two-request model/prefix/placement/resource correctness; cache-only52e7 cold68562 and fresh import24302 close real application persistence and exact one-clip output regression. No pending five-area functional gate."
   },
   "areas": [
     {
@@ -62,7 +62,7 @@
         "tts_shared_queue",
         "tts_carry"
       ],
-      "qualification": "Focused functional/resource gates closed; current integrated ASR completion still pending. Original grouped Q8 fault remains preserved; changed bounded-fence policy passes the original failing case without proving a unique fault cause."
+      "qualification": "CLOSED for focused functional/resource gates and pinned TTS/ASR integration. Original grouped Q8 fault retained; changed bounded-fence policy passed original failing case without unique fault-cause attribution."
     },
     {
       "area": 4,
@@ -79,15 +79,17 @@
         "prefix_build",
         "prefix_runner",
         "prefix_payload",
-        "asr_model_actual"
+        "asr_model_actual",
+        "asr_cache_cold_actual",
+        "asr_cache_import_actual"
       ],
-      "qualification": "Model numerical/prefix/placement/resource correctness CLOSED for pinned repeated clip on564008/0f721, carried to cache-lifecycle-only52e7 pending one-clip actual save/reload regression. No broader speech-quality claim."
+      "qualification": "CLOSED for pinned repeated English clip:18620 full two-request outputs/prefix/placement/resources and52e7 one-clip cold/import regressions. No broader speech-quality/logit-equivalence claim."
     },
     {
       "area": 5,
       "implementation": "Selective half-weight storage with two qualified operators and ten FP32 fallbacks, exhaustive correct half decode; real compiled Vulkan pipeline-cache serialization/keying/merge/import plus application-owned persistence. Backend-free now reuses non-destructive cache export after synchronized cleanup; it does not depend on shared logical-device destructor reachability.",
-      "actual_use": "T213 and T78 execute actual half2/FP32ten; TTS cold/export/fresh-import persists 48 SPIR-V and 178 compiled native objects. ASR uses an actual private cache path in the full runner.",
-      "functional_resource_evidence": "All 65536 half patterns (including 2046 signed subnormals) satisfy exact finite-bit/NaN-class checks. T213 original core tolerance 0.002 + 0.002*abs(reference), waveform minimum 50 dB, actual 90.934 dB. TTS fresh process imports populated native entries, rejects old UUID safely, retains exact accepted outputs and bounded queue use.",
+      "actual_use": "T213 and T78 execute actual half2/FP32ten; TTS cold/export/fresh-import persists 48 SPIR-V and 178 compiled native objects. ASR uses an actual private cache path in the full runner. ASR actual52e7 process saves670548B after backend cleanup, then fresh process accepts that cache and again emits exact original phrase.",
+      "functional_resource_evidence": "All 65536 half patterns (including 2046 signed subnormals) satisfy exact finite-bit/NaN-class checks. T213 original core tolerance 0.002 + 0.002*abs(reference), waveform minimum 50 dB, actual 90.934 dB. TTS fresh process imports populated native entries, rejects old UUID safely, retains exact accepted outputs and bounded queue use. ASR cold/import independently validate34 unique compiled records, every inner length/checksum/full boundary and UUID/build-ID; canonical key/payload sets identical. Raw SHA difference is record order only, not numerical or payload change.",
       "receipts": [
         "half_bits",
         "tts_half",
@@ -99,24 +101,14 @@
         "asr_cache_failure",
         "cache_save_source",
         "cache_save_build",
-        "app_close_reachability"
+        "app_close_reachability",
+        "asr_cache_cold_actual",
+        "asr_cache_import_actual"
       ],
-      "qualification": "TTS precision/cache use closed for pinned fixtures. ASR exact full outputs closed, but18620 cache-save gate failed and emptyv19 is preserved. OPEN: corrected actual-app populated cold save and fresh-process accepted replay onv20."
+      "qualification": "CLOSED for pinned precision and actual TTS/ASR persistent compiled-cache lifecycle, including fresh-process accepted import and original outputs. No cache-hit count, speedup or broader accuracy claim."
     }
   ],
-  "remaining_milestone_gates": [
-    {
-      "gate": "Actual ASR application populated cache persistence",
-      "scope": "One original full clip in actual52e7 application after both original warm modes, missingv20. Preserve original exact transcript/language, prefix regression, GPU/resource controls; require successful populated native cache save. Carry18620 fulltwo-request numerical proof.",
-      "controls": "Approved900s/935host;640MiB/128MiBswap, original disk/fault/services/ownership and500ms kernelhangcheck unchanged.",
-      "owner": "dispatch executes; packed independently reviews terminal actual; batch diagnoses failures."
-    },
-    {
-      "gate": "ASR fresh-process populated-cache replay",
-      "scope": "One original full clip on52e7/0f721 with accepted populatedv20, original output/placement/resource/cache requirements.",
-      "condition": "Only after independent successful actual cold save; no replay yet."
-    }
-  ],
+  "remaining_milestone_gates": [],
   "receipts": {
     "frontend": {
       "path": "/home/jethac/Projects/lenovo-8/radish/results/optimization-retained-runtime-combined-0046.json",
@@ -225,6 +217,14 @@
     "cache_save_payload": {
       "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/pipeline-cache-backend-save/independent-filled-payload-review.json",
       "sha256": "440ff38bf0836a885f2d623e19ca927e4665c0d9dd649709cc02b0bac4cdb5a3"
+    },
+    "asr_cache_cold_actual": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/pipeline-cache-backend-save/independent-cold-cache-actual-review.json",
+      "sha256": "07b99bd6f82391a8944768cd2b234416bf185b8b831dc2ba5e7844d3891f5759"
+    },
+    "asr_cache_import_actual": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/pipeline-cache-backend-save/independent-import-cache-actual-review.json",
+      "sha256": "c10f060796f69fca5c85b9e7f5178ffa687b2eb49fb71cfb9530c3b7c8cf53ab"
     }
   },
   "boundaries": [
@@ -250,5 +250,8 @@
       "sha256": "9757cffe4c7f152296f24a95621671dacea09e3792210c61ab97beb9be140532"
     },
     "interpretation": "Explicit user reply \"you may\" authorizes only reviewed cold and conditional fresh-process import RuntimeMaxSec900/host935. Kernel500ms,640MiB/128MiBswap, original disk/fault/services/ownership, workload and math remain unchanged. No new performance authority."
-  }
+  },
+  "milestone_closed": true,
+  "overall_goal_complete": false,
+  "performance_release": "Separate explicit root decision required after reviewing this closure; no timing has been collected or authorized by this artifact."
 }

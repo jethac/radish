@@ -1,0 +1,15 @@
+{
+  "status": "Root explicitly authorizes matched T168 baseline measurements after all five pinned functional/resource prerequisites close",
+  "authorization": "Root message: Explicit root release NOW; user condition do not measure until all five done is satisfied for pinned milestone. Execute only after final filled-plan review and original fresh controls.",
+  "milestone_ledger_sha256": "290441947beb82519c4f45e99a72c6ad6576dbe54809412f5dcee4d981502d3e",
+  "actual_receipts": [
+    "725773903e2c6e9965dfb387dbf651b0d3dd6e65b47e8155fb6a6aedf2de3df6",
+    "07b99bd6f82391a8944768cd2b234416bf185b8b831dc2ba5e7844d3891f5759",
+    "c10f060796f69fca5c85b9e7f5178ffa687b2eb49fb71cfb9530c3b7c8cf53ab"
+  ],
+  "scope": "Same normal43a binary on CPU-packed and Vulkan/current0f721;4ncnn/4ORT/retained frontend/originalT168 tokens,voice,speed. CPU fresh+warm, GPU missing-cache fresh+warm, GPU accepted-cache fresh+warm reported separately. PROFILE0. No source/shader variants before baseline.",
+  "controls": "Original TTS300s/640MiB128MiBswap/lock/fault/services/disk/headroom and unchanged per-request same-boundary core/waveform criteria. ASR900s exception does not extend to TTS.",
+  "prepared_plan_sha256": "a359ec11d43dc5241091ebae7c1c3afbb85253c54d3028dadf1092ad490b518e",
+  "performance_collected": false,
+  "broader_GOAL": "active; milestone and CPU win alone do not close full requirements"
+}

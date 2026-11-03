@@ -1,5 +1,5 @@
 {
-  "status": "Application52e7/driver0f721 has independently qualified the one-request populated-cache save, with prior two-request model numerics carried. Fresh-process import24302 is active; final accepted-cache transcript/resource/re-export check is the remaining five-area integration gate. No performance collection.",
+  "status": "Current52e7/0f721 qualifies exact pinned ASR model outputs, production prefix growth/reuse, GPU placement, resources, populated app cache save and fresh-process replay. Five-area prerequisite milestone closes; broader GOAL and performance work remain active.",
   "application": "Frozen ASR source with previously published GQA, quantized phase, memory-liveness and unit-axis overlays",
   "ordered_additive_patches": [
     {
@@ -185,7 +185,7 @@
   ],
   "source_review": "c7ef69075c2fd4632b3ecb2a411db022d84de7684d71a60ad30cc346b503ed6d",
   "build_runner_review": "74e67652eb7a62720d2b5b9bce6b13677d8342fe8cda948ed93842b2a0b9ce3e",
-  "actual_result": "optimization-asr-mv32-timeout-0046.json",
+  "actual_result": "optimization-asr-cache-import-actual-0046.json",
   "limits": "Opaque app-cache use is implemented, but full ASR saved-populated-cache/import/transcript and resource fit are not qualified.",
   "init_stage_listener": "92209fe64db13b4be25951839ad86ed7de6f0b20cec2af521418e0a7365176fc",
   "init_stage_libraries": {
@@ -610,7 +610,7 @@
     "full": "5cf3e0b76f3aa3035af44a149b4dd0a7cc04e548abb4797bb7d539f6c7be8241",
     "deployed_strip": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
     "source": "0046-matrix-execution-fences.patch over11cf; unchanged by prefix KV fix",
-    "target_status": "Qualified finite matrix policy and carried unaffected geometry/TTS evidence. Full transcript qualification remains open."
+    "target_status": "Qualified finite policy/geometry/TTS evidence plus current pinned full ASR model and populated application-cache replay. No broad conformance or speed claim."
   },
   "incremental_source_review": "531fcaaa71331df51fca79dbd9c52e8664ae373cf76c9ec331b9eee2a25c3799",
   "incremental_build_runner_review": "d6930974ea4a41177dd4c46c34dc55cf96b1f58ffe327766190c245e02de7d01",
@@ -1121,11 +1121,10 @@
     "build_review": "8f30f8e3c82cd99e10117e3fafa0fc57481f592e8f63ab10451a64004da80098"
   },
   "latest_full_model_result": {
-    "status": "failedoriginalprocesswatchdog,no transcript",
-    "receipt": "optimization-asr-matrix-fence-timeout-0046.json",
-    "independent_sha256": "2d3c161625a42bf9b4f297575efddf46da50af7446908ad66b3f0da443303d79",
-    "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
-    "driver": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
+    "status": "PASS two identical original requests with exact phrase/language, prefix regression, GPU placement and original resource controls; cache-save failure separately preserved and fixed",
+    "receipt": "optimization-asr-prefix-model-actual-0046.json",
+    "independent_sha256": "725773903e2c6e9965dfb387dbf651b0d3dd6e65b47e8155fb6a6aedf2de3df6",
+    "cache_closure": "optimization-asr-cache-import-actual-0046.json",
     "performance_measurement": false
   },
   "resource_diagnostic_stage": {
@@ -1714,9 +1713,10 @@
     "handle": 24302,
     "listener": "52e7df4c584aa867b074b0d76a4deb326181324d4be865d81060790e377ba7ad",
     "driver": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
-    "cache": "accepted exact670548-byte v20 cache SHA083489dc9be7cbf087e63851fd3b6b54748e034c17e44a43dd4d8e3463b02f97",
-    "status": "Actual accepted-cache initialization and GPU execution confirmed; final transcript/re-export/resource checks pending",
-    "scope": "One original request, both production warm modes, prefix regression/full256, approved900s and unchanged640MiB128swap/fault/services/disk/kernel controls. Prior18620two-request numerical/runtime qualification carried."
+    "cache": "Accepted670548bytes; all34 canonical re-export records equal cold; raw file differs only by record order",
+    "status": "Terminal independent PASSc10f0607; no live scope",
+    "scope": "One original request, both production warm modes, prefix regression/full256, approved900s and unchanged640MiB128swap/fault/services/disk/kernel controls. Prior18620two-request numerical/runtime qualification carried.",
+    "independent_receipt": "optimization-asr-cache-import-actual-0046.json"
   },
   "pending_grouped_work_candidate": {
     "driver": "11cf0aa23c785011262146e6ea2c8f71fa84cff3da92635495cc44fe3db05ac0",
@@ -1778,13 +1778,23 @@
   "prefix_kv_stage": {
     "source_build_receipt": "optimization-asr-prefix-kv-source-build-0046.json",
     "listener": "56400857333cbd3c0f3129ae4435485e3c7ef0c26a86f48b59322ab38a8d93f1",
-    "status": "Integrated production prefix and two-request model scope independentlyPASS72577390; actual cache save stillopen",
+    "status": "Integrated production prefix and two-request model scope independently PASS72577390; cache-only lifecycle save/replay subsequently PASS07b99/c10f on52e7.",
     "actual": "optimization-asr-prefix-model-actual-0046.json"
   },
   "backend_cache_save_stage": {
     "source_build_receipt": "optimization-asr-backend-cache-save-source-build-0046.json",
     "listener": "52e7df4c584aa867b074b0d76a4deb326181324d4be865d81060790e377ba7ad",
-    "status": "Cold actual68562 independentlyPASS07b99; fresh-process import24302 initialized670548bytes and is active, actual output/re-export/resource validation pending.",
-    "cold_actual": "optimization-asr-cache-cold-actual-0046.json"
+    "status": "Cold07b99 and fresh-process importc10f independently PASS; actual34compiledrecords/currentUUID/one original phrase per process, with prior two-request model proof carried.",
+    "cold_actual": "optimization-asr-cache-cold-actual-0046.json",
+    "import_actual": "optimization-asr-cache-import-actual-0046.json"
+  },
+  "historical_actual_result": "optimization-asr-mv32-timeout-0046.json",
+  "historical_latest_full_model_result": {
+    "status": "failedoriginalprocesswatchdog,no transcript",
+    "receipt": "optimization-asr-matrix-fence-timeout-0046.json",
+    "independent_sha256": "2d3c161625a42bf9b4f297575efddf46da50af7446908ad66b3f0da443303d79",
+    "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
+    "driver": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
+    "performance_measurement": false
   }
 }

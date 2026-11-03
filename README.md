@@ -1,21 +1,24 @@
 # Radish
 
-Current checkpoint (2026-11-03): retained TTS sessions, convolution, selective
-precision and real pipeline-cache export/import pass their stated model fixtures.
-The corrected ASR application now also passes two requests of the pinned English
-clip, with the exact expected transcript and language, validated prefix-cache
-growth/reuse, GPU placement and resource controls.
+Current checkpoint (2026-11-03): all five optimization areas have concrete
+implementations and passing functional/resource evidence for the pinned fixtures.
+Retained TTS sessions, convolution, selective precision and pipeline-cache reuse
+pass their T213/T78 scopes. The corrected ASR application passes two requests of
+the same 2.785-second English clip with the exact expected transcript and
+language, production prefix-cache growth/reuse, GPU placement and resource controls.
 
-The ASR application now saves a validated cache containing34 compiled pipeline
-records. A fresh process has accepted that cache and is running the final reload
-correctness check; its transcript, re-export and resource validation remain open. Earlier
-failures remain preserved. [Current evidence](radish/results/optimization-five-status-0046.json)
-and the [full goal](radish/GOAL.md) are authoritative.
+The actual ASR application also saves and reloads a populated Vulkan pipeline
+cache. A fresh process accepts all 34 compiled records, produces the original
+transcript, and re-exports identical canonical records; only file order differs.
+Earlier failures remain preserved. [Current evidence](radish/results/optimization-five-status-0046.json)
+and the [five-area ledger](radish/results/optimization-five-completion-ledger-0046.json)
+describe the qualified scope.
 
-No new performance measurement is permitted until all five areas pass. The
-32.835-second Japanese result below belongs to the frozen earlier build; it is
-not a measurement of the new candidate. Conformance claims remain limited to
-the exact recorded scopes.
+This completes the implementation prerequisite milestone, not the
+[full goal](radish/GOAL.md). No new performance result has been collected. The
+32.835-second Japanese result below is from the frozen earlier build. Matched
+performance, broader accuracy, conformance, deployment and GPU-efficiency work
+remain active; cache acceptance alone establishes no speedup or native hit count.
 
 ## TL;DR
 
