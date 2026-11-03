@@ -1,0 +1,892 @@
+{
+  "status": "Coherent source and host build complete; target native, numerical and full-model checks pending",
+  "scope": "Three MM variants process up to128 rows through sequential16-row tiles; selected RMS uses one runtime body with unchanged rounded iteration and arithmetic order. MV32 and five unselected RMS payloads remain byte-identical. No model/driver/limits/precision change.",
+  "sources": {
+    "quant-mm-sequential-tiles": {
+      "status": "Source frozen; owner generation/build and independent source/native/numerical admission required. Combined with RMS qualification before any full model; no timing.",
+      "files": {
+        "ggml/src/ggml-vulkan/ggml-vulkan.cpp": {
+          "preimage_path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/quant-sequential-rows/candidate/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+          "baseline": "2f79c611f89f7f68ca09c562511863cfef9ad2e93d92805ce7e931bb5bd490de",
+          "candidate": "90229c94de9e0959610dcc48b462914f08ed7960ae988637cd0e6fca78519510"
+        },
+        "ggml/src/ggml-vulkan/vulkan-shaders/mul_mm_khr_quant.comp": {
+          "preimage_path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/quant-sequential-rows/candidate/ggml/src/ggml-vulkan/vulkan-shaders/mul_mm_khr_quant.comp",
+          "baseline": "41aab2145de60abdac17aae243f01ef5e2c5d7cb3a195d49b76fe2f01a1de427",
+          "candidate": "63855778ee217997b5e728834e9a416c252e90790b03aa3f49d96058ef754a01"
+        }
+      },
+      "patch_sha256": "d864fa320dd902cd858be8ad0279193fabe8073c205640500ab3bde750e351f1",
+      "scope": [
+        "Only KHR MM Q4_K/Q6_K/Q8_0: up to eight sequential16-row tiles per workgroup,128 output rows per group.",
+        "Same64 invocations/4096 shared bytes/four FP32 accumulators and16 output columns per group. Per-output weight dequantization and ascending K/FMA are unchanged.",
+        "Uniform outer tile loop; invalid tail rows/columns still reach every original shared barrier. Each original K-tile second barrier completes all shared reads before next input tile overwrite; output stores consume only private sums, so no new post-store barrier is needed.",
+        "MV32 branch byte-identical. Backend changes exactly three MM row denominators plus matching uint64 domain admission16 to128; all placement/lifetime/cache/heap/feature policy unchanged."
+      ],
+      "mapping": "row=128*workgroup_x+16*tile+2*(local_id&7)+row_component, tile0..7 while blockbase<M; row_component0/1. cols16*workgroup_y+2*(local_id>>3)+col_component.",
+      "evidence": {
+        "terminal": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/coherent-queue-overhead-v2/independent-terminal-78241-review.json",
+        "sha256": "f51ade4f6cb92e953d1bc759ed9318e1618c5ec022e312b18e373806667bc3a2",
+        "prefix": "Selected quant-MM native53+44 classes have695 printed dispatches/27430 submits in exact capped4096 prefix. Structural counts only, not duration or a whole-run total."
+      },
+      "shader_variants": {
+        "generator_source": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/quant-phase/candidate/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp",
+        "changed": [
+          "khr_quant_q4_k_mm",
+          "khr_quant_q6_k_mm",
+          "khr_quant_q8_0_mm"
+        ],
+        "unchanged": [
+          "khr_quant_q4_k_mv",
+          "khr_quant_q6_k_mv",
+          "khr_quant_q8_0_mv"
+        ],
+        "defines": "Existing generator definitions and flags; no KHR_GEMV for MM. No optimizer or other generated-source change."
+      },
+      "validation": [
+        "Independent exact per-output math/barrier/tail mapping review; all valid row/column output coordinates exactly once.",
+        "Owner generation verifies old reproduction/new three MM modules and byte-identical three MV modules; compile only three new MM native cases before data.",
+        "No private spills,64threads,shared4096,combined resident half-register slots<=4096; native/register/loop fingerprint is measured for admission, not assumed or widened blindly.",
+        "Existing independent CPU quant decode/oracle; focused rows127/128/129 and257,N5,K512,2A/4B GQA ratio2,two seeds/splitZ,padded holes and descriptor-visible up to127 invalid tail rows. Full/partial8 chunk traces.",
+        "RMS source/native/numerical counterpart completes in parallel; original full two requests/warm modes/controls/cache only after coherent gates."
+      ]
+    },
+    "rms-runtime-body": {
+      "status": "frozen source for independent counterpart and owner host shader build; no device admission",
+      "preimage": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/ggml-vulkan/vulkan-shaders/rms_norm.comp",
+        "sha256": "d4091c124651b59569e9db7250337b621af219083afcde97618bb9bbf71673d7"
+      },
+      "candidate": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/rms-runtime-body/candidate/ggml/src/ggml-vulkan/vulkan-shaders/rms_norm.comp",
+        "sha256": "2bbdae873ce0b03b919f4068d34aa2967c901d9a9e62b4d67147311f0f5d92d5"
+      },
+      "patch": "5115cf2c9a385861cb65236dfb4ad3665bef7423f3a81c35f1abb4add141c798",
+      "source_option_review": "bac899e87f8be5c2c300a778eef55f7b8fd761ec11f9dea22acec005e5cb6d48",
+      "scope": "KHRonly single runtime rms_norm call and DontUnroll four columnloops. NonKHR macro expands tooriginalunroll andoldmaincalltree staysunderelse. No backend/queue/shaderABI/precision/resourcecap changes.",
+      "iteration_mapping": "num_blocks=ceil(width/128);0no-op,1/2/3/4same,5..8\u21928,9..10\u219210,11..12\u219212,13..16\u219216,17..32\u219232,>32same",
+      "invariants": [
+        "Same rounded num_iters asoriginal, including zero additions for paddedtail; increasing col=tid+128*idx.",
+        "Same scalarFP32 sum source and shared128 reduction tree/barriers, mean/eps/inversesqrt/output expressions and alloffsets/strides/specialization branches.",
+        "No dynamiclocalcache,extraarrays,FP16math,tolerancechange; runtimeuniformwidth andzero no-op preserve uniform barriers.",
+        "Currentmodel usesunfusedrms_norm_f32 spec0/0; generic/fusion expressions unchanged exceptloopunrollpolicy onKHR. No qualification claim for unselectedfusions."
+      ],
+      "baseline_selected_module": {
+        "path": "/run/media/jethac/Shared/radish/asr-graph-bounded-build-0045/modules/rms_norm_f32/rms_norm_f32.spv",
+        "bytes": 67876,
+        "sha256": "36925402fb906d86c41ccfe80e9e828ef33121a4122faa9770ce42fe4db68250",
+        "capability_numbers": [
+          1
+        ]
+      },
+      "build_handoff": "Reuse priorsoftmax exact shaderreproduction machinery for only rms_norm_f32 fromthisonefile. Reproduceold36925402 baseline first; new SPV1.0 validate andlinkonegeneratedshaderobject into currentd4d0. Noothermodules/backend/model/driverchange. Also finitegenericpreprocessor token-equivalence proof. Nativeonly beforedata underold90s/384MiB;private0/4096slots/shared512 limitsunchanged.",
+      "remaining": [
+        "Independent source/order/generic counterpart",
+        "Owner build/unchangedmodulepairing",
+        "ExactnewRMS native/private/resource gate",
+        "Bounded original-vs-new plusCPU1e-7/fullguards includingactualwidths/tails",
+        "CombinedquantMM+RMS focusedgates beforeoneoriginalmodel; no isolatedRMS modelrun"
+      ],
+      "timing_collected": false
+    }
+  },
+  "source_reviews": {
+    "quant-mm-sequential-tiles": {
+      "status": "passed source/order/backend and finite helper counterpart; native/selector/actual remain",
+      "production_release": "60a0bc099c89a980027de9b4365603c95dd4d82524065d7414ffc2f464c6c589",
+      "shader": "63855778ee217997b5e728834e9a416c252e90790b03aa3f49d96058ef754a01",
+      "backend": "90229c94de9e0959610dcc48b462914f08ed7960ae988637cd0e6fca78519510",
+      "checks": [
+        "Allpreimages/candidates/patchpinschecked; backendinverse exactlyrecoversthepriorfourlines. ThreeMMpipeline rowdenominators andsame uint64 domain rule become128; unchangedMV32 andallotherbranches.",
+        "Entire commonheader/quantdequant/batchoffsets+KHR_GEMV branch byte-identical. MM mapping row=128gx+16tile+2laneLow+component givesexactonce allvalidrows/columns; independent finite enumeration127/128/129/257\u00d7N9 found noholes/duplicates.",
+        "Uniformoutertile loop executesatmost8; block/tailconditions useworkgroupid/pushconstants only. Invalidrow/columnlanes stillexecute allK andload/compute barriers.",
+        "Originalascendingbase32/innerK32FMAvec4 sequence, fouraccumulators reset peroutputtile, quantweight pair/decode andA/B strides/GQA mapping unchanged. No crossrow reduction.",
+        "Originalend-of-K barrier completes everysharedread before anexttile overwrites shared. Outputstoresconsumeprivate sums, so anotherpoststorebarrier isunneeded. Nextiteration loadbarrierprecedes allnextreads. No earlyreturndivergence.",
+        "No64thread/shared4096/resourceceilingincrease; moresequentialrowsperWG changesworkmapping butnot totalmodelmath. Newnativeprivate/register/loop data mustbeadmittedbeforefunctional; existingMMqueue loopfingerprint mustnotbesilentlyassumed.",
+        "N9helper isactualMM domain sinceproduction threshold8; sourceproposedN5 is superseded validationprose only."
+      ],
+      "timing_collected": false
+    },
+    "rms-runtime-body": {
+      "status": "PASS finite RMS KHR runtime-body source/generic counterpart",
+      "release": "286322b71c56670407008022b96045804f9896d7b4ac0efe1a88e56a365f0154",
+      "candidate": "2bbdae873ce0b03b919f4068d34aa2967c901d9a9e62b4d67147311f0f5d92d5",
+      "preimage": "d4091c124651b59569e9db7250337b621af219083afcde97618bb9bbf71673d7",
+      "patch": "5115cf2c9a385861cb65236dfb4ad3665bef7423f3a81c35f1abb4add141c798",
+      "checks": [
+        "Independent removal of KHR conditionals and generic macro expansion recovers all original non-whitespace bytes, including complete old ten-call main and every expression. Generic path semantics unchanged.",
+        "Runtime rounded num_iters exactly reproduces original branches for zero,1/2/3/4,5..8,9..10,11..12,13..16,17..32,and>32; exhaustive0..131072block arithmetic checked. Zero-block branch remains uniform no-op.",
+        "Each invocation visits identical increasing col=tid+BLOCK_SIZE*idx, including padded zero square-adds. Scalar partial sum, shared128 reduction tree/order/barriers,division/epsilon/inversesqrt and both fused/unfused output branches are exact original expressions.",
+        "No invocation-dependent return before barriers; num_blocks/num_iters are uniform push/spec inputs. Output tail continue occurs only after completed shared reduction and no later barriers.",
+        "No private per-thread array or dynamic local-cache indexing introduced; scalar sum plus existing static shared buffer only. Native spilling/registers are still unknown until target compile.",
+        "Selected model unfusedF32 spec0/0 remains the qualified scope; unchanged generic and optional multiply/add source is not a claim of new numerical qualification for unselected fusions."
+      ],
+      "required": [
+        "Owner reproduce baseline36925402 and validate newSPV; native private0/shared512/128threads/combinedslots<=4096; no hardware cap increase.",
+        "Focused old/new bit agreement plus original independent CPU1e-7 per-row bound and descriptor-visible full guards, actual widths/tails.",
+        "Combined MM+RMS prerequisites before original model; no isolated RMS model attempt or timing."
+      ],
+      "timing_collected": false
+    }
+  },
+  "build": {
+    "status": "PASS isolated combined MM128/RMS build; native and numerical gates pending",
+    "source_releases": {
+      "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/quant-mm-sequential-tiles": "60a0bc099c89a980027de9b4365603c95dd4d82524065d7414ffc2f464c6c589",
+      "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/rms-runtime-body": "286322b71c56670407008022b96045804f9896d7b4ac0efe1a88e56a365f0154"
+    },
+    "base_result": "97405ec9036f39039ed8368a8fad817af39c9d92675251d6ee9dea514173b765",
+    "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
+    "libraries": {
+      "libstraylight_asr.a": "f4f582c8dab2d774d9a99dd4d16a1a5756466dd099686ba8562fabe099794d73",
+      "libggml-cpu.a": "d995ee7629e69509970ad3fe687f8a77a469c419ba7cd91404ca8bb79f4e85da",
+      "libtranscribe.a": "618736b85c8948c96735152434149ec911648e06eddee3a8e6d9e89aef6238ed",
+      "libggml-base.a": "28ec1c9e67f976b670a074b310cb09389cddce48fc7cc42a9e7f06a9449b0fc1",
+      "libggml.a": "44072c75ec479e9e440cc8f9583c6d6250eab629a739c7ddf98bc70aefb8ba5d",
+      "libggml-vulkan.a": "42f8b488d56ae218f1854d97ca46052ff5dcf232956f9744082dc90d8c589870"
+    },
+    "modules": {
+      "khr_quant_q6_k_mv.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q6_k_mv.spv",
+        "sha256": "3700e0e16e1749360a57b4902092ee758e9da5a099fa422414576c72ee00f5c9",
+        "bytes": 6416
+      },
+      "khr_quant_q8_0_mv.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q8_0_mv.spv",
+        "sha256": "13aac3afc458dee6ccc0f96d6a5af9eee7cf167a3844946addab250288ebd3b4",
+        "bytes": 5192
+      },
+      "khr_quant_q6_k_mm.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q6_k_mm.spv",
+        "sha256": "581c9f94a1587acc62dc5e67fbe58c355fda2d6a8129722dd42c4fc213351ff1",
+        "bytes": 8740
+      },
+      "khr_quant_q8_0_mm.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q8_0_mm.spv",
+        "sha256": "5934d36543ecbb53aca4d0cf9e4c77fa3e796754abdb68c394c524f33b4983bf",
+        "bytes": 7516
+      },
+      "khr_quant_q4_k_mv.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q4_k_mv.spv",
+        "sha256": "a78d55ce6d90c9e34c29c7f7762e157642c9932f5497ccaaf69e07beb1c88cbe",
+        "bytes": 6812
+      },
+      "khr_quant_q4_k_mm.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q4_k_mm.spv",
+        "sha256": "bb761a8a5012934233d8b579e12e323c46249ccd4d0c0382baa236aa46c5a145",
+        "bytes": 9136
+      },
+      "rms_norm_mul_add_f32.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/spv/rms_norm_mul_add_f32.spv",
+        "sha256": "e226950ba127f0eaa84b12990dc065badc9c69a0579f06b2a19de4f44978e929",
+        "bytes": 72216
+      },
+      "rms_norm_f32.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/spv/rms_norm_f32.spv",
+        "sha256": "58cde5ba19b9959da217cc319e7a4518c00e0b116ca42da7ac801f35b3b68721",
+        "bytes": 8000
+      },
+      "rms_norm_mul_rope_f32_f16.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/spv/rms_norm_mul_rope_f32_f16.spv",
+        "sha256": "f9b91302bcb10bac98a918aeafc1f4c6b29d6ddbf523fc8fe456c94e1dbe0bbe",
+        "bytes": 27784
+      },
+      "rms_norm_set_rows_f32_f16.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/spv/rms_norm_set_rows_f32_f16.spv",
+        "sha256": "c0892e90f980a581cdcab49d987db75fa8cbd496e3df93fe64a9e0ae10d0aaaf",
+        "bytes": 68228
+      },
+      "rms_norm_set_rows_f32_f32.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/spv/rms_norm_set_rows_f32_f32.spv",
+        "sha256": "5e7f51ccbc3c5938e7434c11b0804379870bcebcad6db43c19d389ed9d6656b5",
+        "bytes": 67712
+      },
+      "rms_norm_mul_rope_f32_f32.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/spv/rms_norm_mul_rope_f32_f32.spv",
+        "sha256": "b22724714a13a6a5c769976b989fd7e280e6b5d0d0d8666438c301e37d495a7b",
+        "bytes": 27620
+      }
+    },
+    "header": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/constrained-heap-release/candidate/ggml/src/ggml-vulkan/asr_resource_snapshot.h",
+      "sha256": "0d2299a5bd63b1c6ecc93e066b36cf3812ec10b529d4b9b25f2c4c502a5922c2"
+    },
+    "commands": "b66e3155a13ba2ca6d6f17ff54800eeeddb89fc311742826f2ae01cbe25637ac",
+    "scope": "Only backend/generated quant/generated RMS objects over d4d0; all three MV32 modules byte-identical; model/bridge/driver/other modules unchanged; no timing"
+  },
+  "module_generation": {
+    "status": "PASS current quant6/RMS6 baseline reproduced; unselected RMS5 retained; three new MM and one RMS validated Vulkan1.0; MV3 byte-identical",
+    "source_releases": {
+      "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/quant-mm-sequential-tiles": "60a0bc099c89a980027de9b4365603c95dd4d82524065d7414ffc2f464c6c589",
+      "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/rms-runtime-body": "286322b71c56670407008022b96045804f9896d7b4ac0efe1a88e56a365f0154"
+    },
+    "generator": "57a6c7bbae4cb8ccdcb3d8d5a3ca999fc838a4c75bbf0c8e0fa293bd88537527",
+    "glslc": "1d1eed1a4f93d1e21c0ef200a5de68ce02ef94c92b100e8d03909d96303fb60a",
+    "commands": [
+      {
+        "argv": [
+          "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build/Release/vulkan-shaders-gen",
+          "--glslc",
+          "/usr/bin/glslc",
+          "--source",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/shader-source/mul_mm_khr_quant.comp",
+          "--output-dir",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/baseline/spv",
+          "--target-hpp",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/baseline/ggml-vulkan-shaders.hpp",
+          "--target-cpp",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/baseline/mul_mm_khr_quant.comp.cpp"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/baseline/spv/khr_quant_q6_k_mv.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/baseline/spv/khr_quant_q8_0_mv.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/baseline/spv/khr_quant_q6_k_mm.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/baseline/spv/khr_quant_q8_0_mm.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/baseline/spv/khr_quant_q4_k_mv.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/baseline/spv/khr_quant_q4_k_mm.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+      },
+      {
+        "argv": [
+          "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build/Release/vulkan-shaders-gen",
+          "--glslc",
+          "/usr/bin/glslc",
+          "--source",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/shader-source/mul_mm_khr_quant.comp",
+          "--output-dir",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv",
+          "--target-hpp",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/ggml-vulkan-shaders.hpp",
+          "--target-cpp",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/mul_mm_khr_quant.comp.cpp"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q6_k_mv.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q8_0_mv.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q6_k_mm.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q8_0_mm.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q4_k_mv.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q4_k_mm.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+      },
+      {
+        "argv": [
+          "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build/Release/vulkan-shaders-gen",
+          "--glslc",
+          "/usr/bin/glslc",
+          "--source",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/ggml-vulkan/vulkan-shaders/rms_norm.comp",
+          "--output-dir",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/baseline/spv",
+          "--target-hpp",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/baseline/ggml-vulkan-shaders.hpp",
+          "--target-cpp",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/baseline/rms_norm.comp.cpp"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/baseline/spv/rms_norm_f32.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+      },
+      {
+        "argv": [
+          "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build/Release/vulkan-shaders-gen",
+          "--glslc",
+          "/usr/bin/glslc",
+          "--source",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/shader-source/rms_norm.comp",
+          "--output-dir",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/spv",
+          "--target-hpp",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/ggml-vulkan-shaders.hpp",
+          "--target-cpp",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/rms_norm.comp.cpp"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+      },
+      {
+        "argv": [
+          "/usr/bin/spirv-val",
+          "--target-env",
+          "vulkan1.0",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/spv/rms_norm_f32.spv"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+      }
+    ],
+    "modules": {
+      "khr_quant_q6_k_mv.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q6_k_mv.spv",
+        "sha256": "3700e0e16e1749360a57b4902092ee758e9da5a099fa422414576c72ee00f5c9",
+        "bytes": 6416
+      },
+      "khr_quant_q8_0_mv.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q8_0_mv.spv",
+        "sha256": "13aac3afc458dee6ccc0f96d6a5af9eee7cf167a3844946addab250288ebd3b4",
+        "bytes": 5192
+      },
+      "khr_quant_q6_k_mm.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q6_k_mm.spv",
+        "sha256": "581c9f94a1587acc62dc5e67fbe58c355fda2d6a8129722dd42c4fc213351ff1",
+        "bytes": 8740
+      },
+      "khr_quant_q8_0_mm.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q8_0_mm.spv",
+        "sha256": "5934d36543ecbb53aca4d0cf9e4c77fa3e796754abdb68c394c524f33b4983bf",
+        "bytes": 7516
+      },
+      "khr_quant_q4_k_mv.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q4_k_mv.spv",
+        "sha256": "a78d55ce6d90c9e34c29c7f7762e157642c9932f5497ccaaf69e07beb1c88cbe",
+        "bytes": 6812
+      },
+      "khr_quant_q4_k_mm.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q4_k_mm.spv",
+        "sha256": "bb761a8a5012934233d8b579e12e323c46249ccd4d0c0382baa236aa46c5a145",
+        "bytes": 9136
+      },
+      "rms_norm_mul_add_f32.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/spv/rms_norm_mul_add_f32.spv",
+        "sha256": "e226950ba127f0eaa84b12990dc065badc9c69a0579f06b2a19de4f44978e929",
+        "bytes": 72216
+      },
+      "rms_norm_f32.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/spv/rms_norm_f32.spv",
+        "sha256": "58cde5ba19b9959da217cc319e7a4518c00e0b116ca42da7ac801f35b3b68721",
+        "bytes": 8000
+      },
+      "rms_norm_mul_rope_f32_f16.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/spv/rms_norm_mul_rope_f32_f16.spv",
+        "sha256": "f9b91302bcb10bac98a918aeafc1f4c6b29d6ddbf523fc8fe456c94e1dbe0bbe",
+        "bytes": 27784
+      },
+      "rms_norm_set_rows_f32_f16.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/spv/rms_norm_set_rows_f32_f16.spv",
+        "sha256": "c0892e90f980a581cdcab49d987db75fa8cbd496e3df93fe64a9e0ae10d0aaaf",
+        "bytes": 68228
+      },
+      "rms_norm_set_rows_f32_f32.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/spv/rms_norm_set_rows_f32_f32.spv",
+        "sha256": "5e7f51ccbc3c5938e7434c11b0804379870bcebcad6db43c19d389ed9d6656b5",
+        "bytes": 67712
+      },
+      "rms_norm_mul_rope_f32_f32.spv": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/spv/rms_norm_mul_rope_f32_f32.spv",
+        "sha256": "b22724714a13a6a5c769976b989fd7e280e6b5d0d0d8666438c301e37d495a7b",
+        "bytes": 27620
+      }
+    }
+  },
+  "commands": [
+    {
+      "argv": [
+        "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build/Release/vulkan-shaders-gen",
+        "--glslc",
+        "/usr/bin/glslc",
+        "--source",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mv32-build-0046/shader-source/mul_mm_khr_quant.comp",
+        "--output-dir",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/baseline/spv",
+        "--target-hpp",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/baseline/ggml-vulkan-shaders.hpp",
+        "--target-cpp",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/baseline/mul_mm_khr_quant.comp.cpp"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/baseline/spv/khr_quant_q6_k_mv.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/baseline/spv/khr_quant_q8_0_mv.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/baseline/spv/khr_quant_q6_k_mm.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/baseline/spv/khr_quant_q8_0_mm.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/baseline/spv/khr_quant_q4_k_mv.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/baseline/spv/khr_quant_q4_k_mm.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+    },
+    {
+      "argv": [
+        "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build/Release/vulkan-shaders-gen",
+        "--glslc",
+        "/usr/bin/glslc",
+        "--source",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/shader-source/mul_mm_khr_quant.comp",
+        "--output-dir",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv",
+        "--target-hpp",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/ggml-vulkan-shaders.hpp",
+        "--target-cpp",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/mul_mm_khr_quant.comp.cpp"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q6_k_mv.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q8_0_mv.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q6_k_mm.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q8_0_mm.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q4_k_mv.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q4_k_mm.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+    },
+    {
+      "argv": [
+        "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build/Release/vulkan-shaders-gen",
+        "--glslc",
+        "/usr/bin/glslc",
+        "--source",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/ggml-vulkan/vulkan-shaders/rms_norm.comp",
+        "--output-dir",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/baseline/spv",
+        "--target-hpp",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/baseline/ggml-vulkan-shaders.hpp",
+        "--target-cpp",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/baseline/rms_norm.comp.cpp"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/baseline/spv/rms_norm_f32.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+    },
+    {
+      "argv": [
+        "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build/Release/vulkan-shaders-gen",
+        "--glslc",
+        "/usr/bin/glslc",
+        "--source",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/shader-source/rms_norm.comp",
+        "--output-dir",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/spv",
+        "--target-hpp",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/ggml-vulkan-shaders.hpp",
+        "--target-cpp",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/rms_norm.comp.cpp"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+    },
+    {
+      "argv": [
+        "/usr/bin/spirv-val",
+        "--target-env",
+        "vulkan1.0",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/spv/rms_norm_f32.spv"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046"
+    },
+    {
+      "key": "backend",
+      "argv": [
+        "/usr/bin/clang++",
+        "-I/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/constrained-heap-release/candidate/ggml/src/ggml-vulkan",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-app-cache-build-0046/source",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-app-cache-build-0046/source",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-app-cache-build-0046/source",
+        "--target=aarch64-linux-gnu",
+        "--sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+        "-DGGML_SCHED_MAX_COPIES=4",
+        "-DGGML_VULKAN_BFLOAT16_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_DECODE_VECTOR_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E2M1_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E4M3_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_INTEGER_DOT_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_KHR_PROFILE",
+        "-D_GNU_SOURCE",
+        "-D_XOPEN_SOURCE=600",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/ggml-vulkan/..",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build/transcribe/ggml/src/ggml-vulkan",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/../include",
+        "-isystem",
+        "/run/media/jethac/Shared/radish/vulkan-headers/include",
+        "-isystem",
+        "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/deps/spirv-headers-install/include",
+        "--gcc-install-dir=/home/jethac/Projects/straylight-voice/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wmissing-declarations",
+        "-Wmissing-noreturn",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wcast-qual",
+        "-Wno-unused-function",
+        "-Wunreachable-code-break",
+        "-Wunreachable-code-return",
+        "-Wmissing-prototypes",
+        "-Wextra-semi",
+        "-o",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/backend.o",
+        "-c",
+        "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/quant-mm-sequential-tiles/candidate/ggml/src/ggml-vulkan/ggml-vulkan.cpp"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build"
+    },
+    {
+      "key": "quant",
+      "argv": [
+        "/usr/bin/clang++",
+        "--target=aarch64-linux-gnu",
+        "--sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+        "-DGGML_SCHED_MAX_COPIES=4",
+        "-DGGML_VULKAN_BFLOAT16_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_DECODE_VECTOR_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E2M1_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E4M3_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_INTEGER_DOT_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_KHR_PROFILE",
+        "-D_GNU_SOURCE",
+        "-D_XOPEN_SOURCE=600",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/ggml-vulkan/..",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build/transcribe/ggml/src/ggml-vulkan",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/../include",
+        "-isystem",
+        "/run/media/jethac/Shared/radish/vulkan-headers/include",
+        "-isystem",
+        "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/deps/spirv-headers-install/include",
+        "--gcc-install-dir=/home/jethac/Projects/straylight-voice/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wmissing-declarations",
+        "-Wmissing-noreturn",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wcast-qual",
+        "-Wno-unused-function",
+        "-Wunreachable-code-break",
+        "-Wunreachable-code-return",
+        "-Wmissing-prototypes",
+        "-Wextra-semi",
+        "-o",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/mul_mm_khr_quant.comp.cpp.o",
+        "-c",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/mul_mm_khr_quant.comp.cpp"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build"
+    },
+    {
+      "key": "rms",
+      "argv": [
+        "/usr/bin/clang++",
+        "--target=aarch64-linux-gnu",
+        "--sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+        "-DGGML_SCHED_MAX_COPIES=4",
+        "-DGGML_VULKAN_BFLOAT16_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_DECODE_VECTOR_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E2M1_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E4M3_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_INTEGER_DOT_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_KHR_PROFILE",
+        "-D_GNU_SOURCE",
+        "-D_XOPEN_SOURCE=600",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/ggml-vulkan/..",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build/transcribe/ggml/src/ggml-vulkan",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/../include",
+        "-isystem",
+        "/run/media/jethac/Shared/radish/vulkan-headers/include",
+        "-isystem",
+        "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/deps/spirv-headers-install/include",
+        "--gcc-install-dir=/home/jethac/Projects/straylight-voice/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wmissing-declarations",
+        "-Wmissing-noreturn",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wcast-qual",
+        "-Wno-unused-function",
+        "-Wunreachable-code-break",
+        "-Wunreachable-code-return",
+        "-Wmissing-prototypes",
+        "-Wextra-semi",
+        "-o",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms_norm.comp.cpp.o",
+        "-c",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/rms_norm.comp.cpp"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build"
+    },
+    {
+      "argv": [
+        "cargo",
+        "build",
+        "--offline",
+        "--locked",
+        "--target",
+        "aarch64-unknown-linux-gnu",
+        "--features",
+        "asr-vulkan",
+        "-j3",
+        "--manifest-path",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-untimed-build-0046/rust-app/listen/Cargo.toml"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046",
+      "env": {
+        "STRAYLIGHT_ASR_LIB": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/libs",
+        "STRAYLIGHT_SYSROOT": "/home/jethac/Projects/straylight-voice/sysroot",
+        "CARGO_TARGET_DIR": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/cargo-target",
+        "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER": "clang",
+        "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS": "-C link-arg=--target=aarch64-linux-gnu -C link-arg=-fuse-ld=lld -C link-arg=--sysroot=/home/jethac/Projects/straylight-voice/sysroot -C link-arg=-L/home/jethac/Projects/straylight-voice/sysroot/usr/lib -C link-arg=-L/home/jethac/Projects/straylight-voice/sysroot/usr/lib/aarch64-linux-gnu -C link-arg=-L/run/media/jethac/Shared/radish/build-loader/loader -C link-arg=-Wl,--allow-shlib-undefined -C link-arg=-Wno-unused-command-line-argument -C target-cpu=cortex-a53",
+        "CC_aarch64_unknown_linux_gnu": "clang",
+        "CFLAGS_aarch64_unknown_linux_gnu": "--target=aarch64-linux-gnu --sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+        "AR_aarch64_unknown_linux_gnu": "llvm-ar",
+        "PKG_CONFIG_SYSROOT_DIR": "/home/jethac/Projects/straylight-voice/sysroot",
+        "PKG_CONFIG_LIBDIR": "/home/jethac/Projects/straylight-voice/sysroot/usr/lib/pkgconfig:/home/jethac/Projects/straylight-voice/sysroot/usr/share/pkgconfig",
+        "PKG_CONFIG_ALLOW_CROSS": "1"
+      }
+    }
+  ],
+  "public_patches": [
+    {
+      "file": "0046-asr-quantized-mm128.patch",
+      "sha256": "44d465ff3df86cd337b1929c1820bf8a5afb04787c4eca0269aab71c193156e8",
+      "strip": 1,
+      "apply_root": "ASR source root over d4d0 source chain",
+      "normalization": "Only ggml path prefix normalized to transcribe.cpp/ggml"
+    },
+    {
+      "file": "0046-asr-rms-runtime-body.patch",
+      "sha256": "cb22a2827f70092c42a0d6ece95055bd5d213dfb806b3069c9747a359329bee1",
+      "strip": 1,
+      "apply_root": "ASR source root over d4d0 source chain",
+      "normalization": "Only ggml path prefix normalized to transcribe.cpp/ggml"
+    }
+  ],
+  "reproduction_script": {
+    "file": "scripts/build-asr-mm128-rms-0046.py",
+    "sha256": "fc0f2965431ea499091d88e188da9d6c9a8f8b1d7d8f04cc7ccd74a11146f1c1",
+    "note": "Pinned isolated paths and tools; generated RMS C++ retains all five baseline fused definitions, substitutes only selected rms_norm_f32. Native qualification does not include unselected fused SPIR-V1.5 modules."
+  },
+  "preserved_host_stops": [
+    {
+      "status": "host-only stop before compile",
+      "reason": "RMS generator emits six variants; initial assertion expected selected rms_norm_f32 only",
+      "preserved": "current quant generation completed; no device action"
+    },
+    {
+      "status": "host-only stop",
+      "reason": "unselected RMS fused modules are existing SPIR-V1.5, outside selected Vulkan1.0 scope; exact byte preservation required, not selected-module validation",
+      "device_action": false
+    }
+  ],
+  "remaining": [
+    "Four changed selected native resource admissions",
+    "Focused unchanged-oracle MM and RMS numerical/full-allocation checks",
+    "One original full ASR scope",
+    "Conditional one-request actual populated-cache import"
+  ],
+  "performance_measurement": false
+}

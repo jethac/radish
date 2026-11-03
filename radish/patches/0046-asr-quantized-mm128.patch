@@ -1,0 +1,101 @@
+--- a/transcribe.cpp/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/transcribe.cpp/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -3090,11 +3090,11 @@
+         "khr_quant_" #TYPE "_" #PHASE, khr_quant_##TYPE##_##PHASE##_len, \
+         khr_quant_##TYPE##_##PHASE##_data, "main", 3, sizeof(vk_mat_mat_push_constants), \
+         {X, Y, 1}, {}, 1);
+-    KHR_QUANT_PIPELINE(0, q4_k, mm, 0, 16, 16)
++    KHR_QUANT_PIPELINE(0, q4_k, mm, 0, 128, 16)
+     KHR_QUANT_PIPELINE(0, q4_k, mv, 1, 32, 1)
+-    KHR_QUANT_PIPELINE(1, q6_k, mm, 0, 16, 16)
++    KHR_QUANT_PIPELINE(1, q6_k, mm, 0, 128, 16)
+     KHR_QUANT_PIPELINE(1, q6_k, mv, 1, 32, 1)
+-    KHR_QUANT_PIPELINE(2, q8_0, mm, 0, 16, 16)
++    KHR_QUANT_PIPELINE(2, q8_0, mm, 0, 128, 16)
+     KHR_QUANT_PIPELINE(2, q8_0, mv, 1, 32, 1)
+ #undef KHR_QUANT_PIPELINE
+ #endif
+@@ -7666,7 +7666,7 @@
+         ggml_nbytes(dst) > limits.maxStorageBufferRange)
+         return false;
+     const bool gemv = dst->ne[1] <= mul_mat_vec_max_cols;
+-    const uint64_t rows_per_group = gemv ? 32 : 16;
++    const uint64_t rows_per_group = gemv ? 32 : 128;
+     const uint64_t cols_per_group = gemv ? 1 : 16;
+     if (uint64_t(dst->ne[0]) > rows_per_group * limits.maxComputeWorkGroupCount[0] ||
+         uint64_t(dst->ne[1]) > cols_per_group * limits.maxComputeWorkGroupCount[1] ||
+--- a/transcribe.cpp/ggml/src/ggml-vulkan/vulkan-shaders/mul_mm_khr_quant.comp
++++ b/transcribe.cpp/ggml/src/ggml-vulkan/vulkan-shaders/mul_mm_khr_quant.comp
+@@ -80,40 +80,43 @@
+     uint a, b, d;
+     batch_offsets(a, b, d);
+     const uint lane = gl_LocalInvocationID.x;
+-    const uint row0 = gl_WorkGroupID.x * 16;
++    const uint row_base = gl_WorkGroupID.x * 128;
+     const uint col0 = gl_WorkGroupID.y * 16;
+     const uint row = (lane & 7) * 2;
+     const uint col = (lane >> 3) * 2;
+-    vec4 sum = vec4(0.0);
+-    [[dont_unroll]] for (uint base = 0; base < p.K; base += 32) {
+-        [[dont_unroll]] for (uint i = lane; i < 256; i += 64) {
+-            const uint r = i >> 4;
+-            const uint k = (i & 15) * 2;
+-            vec2 w = vec2(0.0);
+-            if (row0 + r < p.M && base + k < p.K)
+-                w = weight_pair(a + (row0 + r) * p.stride_a + base + k);
+-            tile_a[r][k] = w.x;
+-            tile_a[r][k + 1] = w.y;
+-            tile_b[r][k] = col0 + r < p.N && base + k < p.K ?
+-                data_b[b + (col0 + r) * p.stride_b + base + k] : 0.0;
+-            tile_b[r][k + 1] = col0 + r < p.N && base + k + 1 < p.K ?
+-                data_b[b + (col0 + r) * p.stride_b + base + k + 1] : 0.0;
++    [[dont_unroll]] for (uint tile = 0; tile < 8 && row_base + tile * 16 < p.M; ++tile) {
++        const uint row0 = row_base + tile * 16;
++        vec4 sum = vec4(0.0);
++        [[dont_unroll]] for (uint base = 0; base < p.K; base += 32) {
++            [[dont_unroll]] for (uint i = lane; i < 256; i += 64) {
++                const uint r = i >> 4;
++                const uint k = (i & 15) * 2;
++                vec2 w = vec2(0.0);
++                if (row0 + r < p.M && base + k < p.K)
++                    w = weight_pair(a + (row0 + r) * p.stride_a + base + k);
++                tile_a[r][k] = w.x;
++                tile_a[r][k + 1] = w.y;
++                tile_b[r][k] = col0 + r < p.N && base + k < p.K ?
++                    data_b[b + (col0 + r) * p.stride_b + base + k] : 0.0;
++                tile_b[r][k + 1] = col0 + r < p.N && base + k + 1 < p.K ?
++                    data_b[b + (col0 + r) * p.stride_b + base + k + 1] : 0.0;
++            }
++            barrier();
++            [[dont_unroll]] for (uint k = 0; k < 32; ++k) {
++                const vec2 av = vec2(tile_a[row][k], tile_a[row + 1][k]);
++                const vec2 bv = vec2(tile_b[col][k], tile_b[col + 1][k]);
++                sum = fma(av.xyxy, bv.xxyy, sum);
++            }
++            barrier();
+         }
+-        barrier();
+-        [[dont_unroll]] for (uint k = 0; k < 32; ++k) {
+-            const vec2 av = vec2(tile_a[row][k], tile_a[row + 1][k]);
+-            const vec2 bv = vec2(tile_b[col][k], tile_b[col + 1][k]);
+-            sum = fma(av.xyxy, bv.xxyy, sum);
++        if (col0 + col < p.N) {
++            if (row0 + row < p.M) data_d[d + (col0 + col) * p.stride_d + row0 + row] = sum.x;
++            if (row0 + row + 1 < p.M) data_d[d + (col0 + col) * p.stride_d + row0 + row + 1] = sum.y;
+         }
+-        barrier();
+-    }
+-    if (col0 + col < p.N) {
+-        if (row0 + row < p.M) data_d[d + (col0 + col) * p.stride_d + row0 + row] = sum.x;
+-        if (row0 + row + 1 < p.M) data_d[d + (col0 + col) * p.stride_d + row0 + row + 1] = sum.y;
+-    }
+-    if (col0 + col + 1 < p.N) {
+-        if (row0 + row < p.M) data_d[d + (col0 + col + 1) * p.stride_d + row0 + row] = sum.z;
+-        if (row0 + row + 1 < p.M) data_d[d + (col0 + col + 1) * p.stride_d + row0 + row + 1] = sum.w;
++        if (col0 + col + 1 < p.N) {
++            if (row0 + row < p.M) data_d[d + (col0 + col + 1) * p.stride_d + row0 + row] = sum.z;
++            if (row0 + row + 1 < p.M) data_d[d + (col0 + col + 1) * p.stride_d + row0 + row + 1] = sum.w;
++        }
+     }
+ }
+ #endif

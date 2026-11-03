@@ -1,5 +1,18 @@
 # Radish status
 
+## 2026-11-03: combined matrix and RMS candidate built
+
+The [combined candidate](results/optimization-mm128-rms-source-build-0046.json)
+processes consecutive matrix row tiles in one workgroup and replaces repeated
+RMS bodies with a single runtime body. Per-output arithmetic and resource limits
+are unchanged. Three decode modules and five unused RMS variants retain their
+exact previous bytes. Host generation and linking pass; target native and
+numerical checks remain pending before one original full-model run.
+
+The previous ASR run completed both warmups and the real request prefix, then
+timed out before producing a transcript. TTS remains qualified on its stated
+fixtures. All-five completion remains open and performance measurement is closed.
+
 ## 2026-11-03: both warm modes complete; real-request result remains open
 
 [The coherent full-model run](results/optimization-asr-coherent-timeout-0046.json)

@@ -1,0 +1,75 @@
+--- a/transcribe.cpp/ggml/src/ggml-vulkan/vulkan-shaders/rms_norm.comp
++++ b/transcribe.cpp/ggml/src/ggml-vulkan/vulkan-shaders/rms_norm.comp
+@@ -56,6 +56,12 @@
+ layout(local_size_x = BLOCK_SIZE, local_size_y = 1, local_size_z = 1) in;
+ 
+ shared FLOAT_TYPE sumsh[BLOCK_SIZE];
++
++#if defined(GGML_VULKAN_KHR_PROFILE)
++#define RMS_NORM_COLUMN_LOOP [[dont_unroll]]
++#else
++#define RMS_NORM_COLUMN_LOOP [[unroll]]
++#endif
+ 
+ void rms_norm(uint num_iters) {
+     const uint ncols     = p.ne00;
+@@ -83,7 +89,7 @@
+ #endif
+     FLOAT_TYPE sum = FLOAT_TYPE(0.0f); // partial sum for thread in warp
+ 
+-    [[unroll]] for (uint col = tid, idx = 0; idx < num_iters; col += BLOCK_SIZE, ++idx) {
++    RMS_NORM_COLUMN_LOOP for (uint col = tid, idx = 0; idx < num_iters; col += BLOCK_SIZE, ++idx) {
+         FLOAT_TYPE xi = FLOAT_TYPE(0);
+         if (col < ncols) {
+             xi = FLOAT_TYPE(data_a[a_offset + col]);
+@@ -108,7 +114,7 @@
+ 
+     if (do_multiply) {
+         if (ncols > p.ne10) {
+-            [[unroll]] for (uint col = tid, idx = 0; idx < num_iters; col += BLOCK_SIZE, ++idx) {
++            RMS_NORM_COLUMN_LOOP for (uint col = tid, idx = 0; idx < num_iters; col += BLOCK_SIZE, ++idx) {
+                 if (col >= ncols) {
+                     continue;
+                 }
+@@ -122,7 +128,7 @@
+                 data_d[d_offset + col] = D_TYPE(value);
+             }
+         } else {
+-            [[unroll]] for (uint col = tid, idx = 0; idx < num_iters; col += BLOCK_SIZE, ++idx) {
++            RMS_NORM_COLUMN_LOOP for (uint col = tid, idx = 0; idx < num_iters; col += BLOCK_SIZE, ++idx) {
+                 if (col >= ncols) {
+                     continue;
+                 }
+@@ -137,7 +143,7 @@
+             }
+         }
+     } else {
+-        [[unroll]] for (uint col = tid, idx = 0; idx < num_iters; col += BLOCK_SIZE, ++idx) {
++        RMS_NORM_COLUMN_LOOP for (uint col = tid, idx = 0; idx < num_iters; col += BLOCK_SIZE, ++idx) {
+             if (col >= ncols) {
+                 continue;
+             }
+@@ -161,6 +167,17 @@
+     // instantiate the rms_norm function for several different
+     // dimensions, to allow loop unrolling
+     uint num_blocks = (p.ne00 + BLOCK_SIZE - 1) / BLOCK_SIZE;
++#if defined(GGML_VULKAN_KHR_PROFILE)
++    const uint num_iters = num_blocks > 32 ? num_blocks :
++                           num_blocks > 16 ? 32 :
++                           num_blocks > 12 ? 16 :
++                           num_blocks > 10 ? 12 :
++                           num_blocks > 8 ? 10 :
++                           num_blocks > 4 ? 8 : num_blocks;
++    if (num_blocks != 0) {
++        rms_norm(num_iters);
++    }
++#else
+     if (num_blocks > 32) {
+         rms_norm(num_blocks);
+     } else if (num_blocks > 16) {
+@@ -182,4 +199,5 @@
+     } else if (num_blocks == 1) {
+         rms_norm(1);
+     }
++#endif
+ }
