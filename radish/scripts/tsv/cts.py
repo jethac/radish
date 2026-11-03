@@ -243,11 +243,22 @@ def cmd_run(args):
         excluded = {l.strip() for l in open(args.exclude) if l.strip()}
     batches_path = os.path.join(outdir, "batches.tsv")
     nbatch = sum(1 for _ in open(batches_path)) if os.path.exists(batches_path) else 0
+    resf = open(res_path, "a")
+    batf = open(batches_path, "a")
+    # reparse rewrites results.tsv; it skips a group while this is present.
+    running = os.path.join(outdir, ".running")
+    open(running, "w").write(str(os.getpid()))
+    try:
+        _run_loop(args, outdir, cases, done, excluded, nbatch, resf, batf)
+    finally:
+        os.unlink(running)
+    summarize([outdir])
+
+
+def _run_loop(args, outdir, cases, done, excluded, nbatch, resf, batf):
     rate = None  # seconds per case, measured
     fault_streak = False
     size = args.first_batch
-    resf = open(res_path, "a")
-    batf = open(batches_path, "a")
     while True:
         todo = [c for c in cases if c not in done and c not in excluded]
         if not todo:
@@ -332,7 +343,6 @@ def cmd_run(args):
                   flush=True)
         else:
             fault_streak = False
-    summarize([outdir])
 
 
 # --- summaries -----------------------------------------------------------------
@@ -405,6 +415,9 @@ def cmd_reparse(args):
             path = os.path.join(d, "results.tsv")
             if not os.path.exists(path):
                 continue
+            if os.path.exists(os.path.join(d, ".running")):
+                print(f"skipping {run}/{name}: still running", file=sys.stderr)
+                continue
             parsed = {}
             for q in sorted(os.listdir(os.path.join(d, "qpa"))):
                 if q.endswith(".qpa.xz"):
@@ -462,11 +475,14 @@ def cmd_ledger(args):
             "Crash", "Timeout", "InternalError"]
     res, cases = {}, []
     seen = set()
+    source = {}  # case -> run that supplied its result
     for run in args.runs:
         for name in sorted(os.listdir(os.path.join(RUNS, run))):
             d = os.path.join(RUNS, run, name)
             if not os.path.exists(os.path.join(d, "results.tsv")):
                 continue
+            for c in load_results(os.path.join(d, "results.tsv")):
+                source[c] = run
             for c in open(os.path.join(d, "cases.txt")):
                 c = c.strip()
                 if c and c not in seen:
@@ -481,24 +497,28 @@ def cmd_ledger(args):
                 cases.append(c)
     for depth in (2, 3):
         groups = collections.OrderedDict()
+        runs_of = collections.defaultdict(set)
         for c in cases:
-            g = groups.setdefault(".".join(c.split(".")[:depth]), collections.Counter())
+            key = ".".join(c.split(".")[:depth])
+            g = groups.setdefault(key, collections.Counter())
             g[res.get(c, "NotRun")] += 1
+            if c in source:
+                runs_of[key].add(source[c].rsplit("-", 1)[-1])
         tot = collections.Counter()
         print(f"\n| {'group' if depth == 2 else 'second-level group'} | cases | "
-              + " | ".join(cols) + " | other | not run |")
-        print("|---" * (len(cols) + 4) + "|")
+              + " | ".join(cols) + " | other | not run | driver |")
+        print("|---" * (len(cols) + 5) + "|")
         for key, g in sorted(groups.items()):
             if depth == 3 and args.skip_all_notsupported and g["NotSupported"] == sum(g.values()):
                 continue
             tot.update(g)
             other = sum(v for k, v in g.items() if k not in cols and k != "NotRun")
             print(f"| {key} | {sum(g.values())} | " + " | ".join(str(g[c]) for c in cols)
-                  + f" | {other} | {g['NotRun']} |")
+                  + f" | {other} | {g['NotRun']} | {', '.join(sorted(runs_of[key]))} |")
         if depth == 2:
             other = sum(v for k, v in tot.items() if k not in cols and k != "NotRun")
             print(f"| **total** | {sum(tot.values())} | " + " | ".join(str(tot[c]) for c in cols)
-                  + f" | {other} | {tot['NotRun']} |")
+                  + f" | {other} | {tot['NotRun']} | |")
 
 
 def main():
