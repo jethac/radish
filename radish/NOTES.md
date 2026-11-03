@@ -1,5 +1,47 @@
 # Radish status
 
+## Current state — 2026-11-03 (rebuilt from the source branches)
+
+Everything below this section is the previous agent's log, kept for lookups.
+
+Build and run from the branches with `scripts/tsv/`: `deploy-driver.sh`
+(driver → `/var/tmp/radish-canon/lib/libvulkan_radish-<sha12>.so` + own ICD
+manifest), `build-tts.sh`/`tts.sh` (Kokoro decoder), `ubench.sh`
+(ceilings), `asr.sh` (straylight-listen `--asr-input`), `trace-report.py`.
+`RADISH_TRACE=<file>` (driver) + `RADISH_NCNN_TRACE=1` give per-dispatch GPU
+time, ioctl and fence-wait time, joined to ncnn layers.
+
+Measured (GPU at 650 MHz, services running):
+
+- Canonical driver 103e5260 = deployed 0f721436: decoder output bit-identical.
+- Kokoro warm request, 4.2 s ja audio: RBA on 36.66 s (frontend 1.75, core
+  34.67, tail 0.08); **RBA off 25.22 s** (core 23.32), output identical.
+  Core is GPU-bound: GPU busy 21.1 of 23.1 s; ioctl 0.7 s, encode 0.4 s,
+  ncnn recording 0.02 s. 276.5 GFLOP conv/deconv at 14.4 GFLOP/s (k=11
+  Conv1D 15–17 = ~85% of ALU peak; deconv1d_84/85 3.5; 1x1 conv1d_21/26/33
+  and conv1d_83 1.4–1.7). RBA costs 11.2 s: per-component branch per load.
+- ALU ceiling 19.4 GFLOP/s FP32 = FP16 (16 lanes); bandwidth SSBO 2.9,
+  texel RGBA32F 4.9, RGBA16F 6.3, copy 3.0 GB/s (see GOAL-RADISH.md).
+- More barrier workgroups per CP_EXEC_CS (`RADISH_BARRIER_GROUPS=8`): no GPU
+  time change on Kokoro or ASR. Double thread size: no change.
+- ASR (straylight-listen release, `--features asr-vulkan`, 1 en command):
+  correct text, ready 253 s, end of speech → text **172.5 s** vs production
+  CPU 3.2–4.0 s. GPU busy 403 of 414 s; dominant: barrier kernels 64x2/512 B
+  shared and 32x2/4 KiB shared (q4_k matmul/matvec class), 0.3–1.8 s each.
+  Runs at the 850 MB cap with swap; first cold run raised the listener's
+  major faults by 12k.
+
+Next: cheap RBA lowering (one check per vector, CTS robustness re-run);
+deconvolution and 1x1 kernels; identify the ASR kernels by name and fix the
+slow ones; ASR memory (weights copied to GPU buffers) before any sustained
+ASR runs beside the service.
+
+Left on the device: `/var/tmp/radish-canon/` (lib: drivers 0f721436 and
+c1755aaf, loader, libsegv.so; bin: kokoro runtimes 52c9e565, c439b311; tts:
+hardlinks into /var/tmp/radish; cache; asr/wav cmd-en clips and pipeline
+cache; ubench/).
+
+
 ## Populated ASR cache export qualified — 2026-11-03
 
 Cold68562 passes the exact original English phrase, prefix regression, GPU
