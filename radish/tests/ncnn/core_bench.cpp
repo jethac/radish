@@ -4,6 +4,7 @@
 // the last output with DIR/out0.f32 when present.
 // usage: radish-core-bench [--cpu] [--threads N] PARAM BIN DIR REPEAT
 #include "runtime_helpers.h"
+#include "radish_ada_snake.h"
 #include <chrono>
 #include <cmath>
 #include <cstdio>
@@ -77,6 +78,7 @@ int main(int argc, char** argv) {
 #if NCNN_VULKAN
     if (vulkan) net.set_vulkan_device(ncnn::get_gpu_device(0));
 #endif
+    radish_ncnn::register_ada_snake(net);
     double t0 = now();
     if (net.load_param(args[0].c_str()) || net.load_model(args[1].c_str())) {
         fprintf(stderr, "load failed\n");

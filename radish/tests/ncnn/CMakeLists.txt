@@ -66,6 +66,6 @@ target_link_libraries(radish-gpu-packed-a PRIVATE ncnn)
 target_include_directories(radish-gpu-packed-a PRIVATE ${NCNN_SOURCE}/src/layer)
 target_compile_options(radish-gpu-packed-a PRIVATE -ffp-contract=off -Wall -Wextra -Werror)
 
-add_executable(radish-core-bench EXCLUDE_FROM_ALL core_bench.cpp)
+add_executable(radish-core-bench EXCLUDE_FROM_ALL core_bench.cpp radish_ada_snake.cpp)
 target_link_libraries(radish-core-bench PRIVATE ncnn)
 target_include_directories(radish-core-bench PRIVATE ${NCNN_SOURCE}/src/layer)
