@@ -1,0 +1,253 @@
+{
+  "status": "Source/build/payload reviewed; actual application populated save and fresh import pending",
+  "release": {
+    "status": "frozen source; counterpart/build/actual application save and fresh import pending",
+    "baseline": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/quant-mm-sequential-tiles/candidate/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+      "sha256": "90229c94de9e0959610dcc48b462914f08ed7960ae988637cd0e6fca78519510"
+    },
+    "candidate": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/pipeline-cache-backend-save/candidate/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+      "sha256": "b0c976f4cf47687be38885dac1bf9c63cda079a919f0758291c7a5dac85e95ce"
+    },
+    "patch_sha256": "798d5a505113ecee22b83e9b326a7f4ebd65b7941c4b0fb9c5fabf6cca064409",
+    "changes": [
+      "Extract existing mutex-protected cache export into non-destructive save; finish reuses save then destroys cache and closes directory under its own lock.",
+      "Call non-destructive save after ggml_vk_cleanup in backend free, before deleting context. Cleanup synchronizes submitted work and drops context-owned graph buffers."
+    ],
+    "preserved": [
+      "Export bytes/16MiB/header/UUID/atomic private path and optional I/O handling unchanged.",
+      "Device/cache/pipeline ownership, shared device self-reference, all compilers/shaders/model/numerical code unchanged.",
+      "All createComputePipeline uses same pipeline_cache_mutex; export acquires no compile_mutex and waits for no work under this lock.",
+      "Live shared device/cache remain available to other backend contexts; final destructor still has fallback save and destroy."
+    ],
+    "validation_scope": "Reuse18620 two-request exact numerics and corrected prefix rows. Actual current app one original request with cold populated save, then fresh-process accepted populated import and exact transcript; owner guards unchanged, no helper-only cache claim.",
+    "performance_collection": false
+  },
+  "reviews": {
+    "independent-source-review.json": {
+      "sha256": "8016ef2702115a2433622f7be24e8620a161e1a8220dc041d5ddbac3c1c9a8c8",
+      "review": {
+        "status": "passed independent cache lifecycle source counterpart; actual save/importpending",
+        "release": "deb5e63da405e0fc635b1d6fda5373a98332e83ec9506ba2691ccc45ed82bc8d",
+        "baseline": {
+          "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/quant-mm-sequential-tiles/candidate/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+          "sha256": "90229c94de9e0959610dcc48b462914f08ed7960ae988637cd0e6fca78519510"
+        },
+        "candidate": {
+          "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/pipeline-cache-backend-save/candidate/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+          "sha256": "b0c976f4cf47687be38885dac1bf9c63cda079a919f0758291c7a5dac85e95ce"
+        },
+        "patch": "798d5a505113ecee22b83e9b326a7f4ebd65b7941c4b0fb9c5fabf6cca064409",
+        "checks": [
+          "Exactfunction extraction plusonebackend-freecall reproducescandidate; entireexistingexporttry/body/header/UUID/16MiB/privatepath/nofollow/owner-mode/fsync+rename/errorfallbackbyteexact. No shader/math/graph/model/count orheaderABIchange.",
+          "backend_free calls cleanup first: discardsunsubmittedctx,synchronizespendingwork,graphcleanup/destroyscontextresources. ctx->device remainsstrongsharedreference untildeletectx; non-destructivesave thenleavescache/device/directoryhandle intact forothercontexts.",
+          "Saveonlyholds pipeline_cache_mutex, sameascreateComputePipeline; compiledcachehostaccess serialized. Createfunc releasescachelock beforeitslatercompile_mutexacquisition, andsaveacquiresnocompile_mutex/nofuture/waitso no addedlockcycle. Othercontexts cancontinueusingindependentlivepipelines; GPUexecutiondoesnotrequirecachehosthandleaccess.",
+          "Finalfinish invokes save (lockscope ends onreturn), thenreacquirescachemutex anddestroyscache/closesdir. No recursive-lockdeadlock; finaldestructorownership assumesexistingno-otherlive-deviceusers. Globalself-referencecycle notchangedorclaimedfixed.",
+          "backendfreeisanactualreachablemodelplanbackenddestructionpoint evenwhenvk_instance.devices/globalbuffer_type.context keepdevicealive. Thisaddsapplicationexportswithoutdependingonglobaldevicedestructor. Cachecanbesavedagainlaterwhenothercontextfrees; eachatomicwrite ismutex-serialized.",
+          "OptionalfailedI/O catchesandfallback behavior retained; cacheisnotdestroyedorclosedonsave. Exportfile/racevalidationremainsoriginalsafeprivate-directory code. No new GPUoperation,timingquery,globalallocator/lifetimecyclecleanup bundled."
+        ],
+        "numerical_carry": "18620originaltwoEnglishtranscripts/prefix9growthreuse/GPUplacement/resourceactual72577390 carries forarithmetic becauseonlypost-cleanuphostcacheI/Oadded. Driver/shaders/mathunaltered. Actualnewappcacheexportthenfresh-processacceptedimportwithexactoriginaltranscriptremainsrequired; nohelper-onlyclosure.",
+        "scope_condition": "Parentchoosesminimalrealapplicationrun underexistingapproved900/640M128swap/kernel500ms/faultcontrols; source-onlyreview isnotdeviceadmissionwithoutownerbuild/payloadgate. No fullnumericalscope repeatedunlessactualnewdifference requiresit.",
+        "timing_collected": false
+      }
+    },
+    "independent-build-review.json": {
+      "sha256": "a0235f0dadca01021677a989224ba18a03f4a9b822e924bd3b43bc5338234692",
+      "review": {
+        "status": "PASS finite isolated backend cache-save build pairing; actual application save/import required",
+        "build_result": {
+          "path": "/run/media/jethac/Shared/radish/optimization-five-asr-pipeline-cache-backend-save-build-0046/result.json",
+          "sha256": "cfedb532aff4582937fe9ed2e68361520bc0d56efab9548c53a38b4396b256cf"
+        },
+        "source_release": "deb5e63da405e0fc635b1d6fda5373a98332e83ec9506ba2691ccc45ed82bc8d",
+        "source": {
+          "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/pipeline-cache-backend-save/candidate/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+          "sha256": "b0c976f4cf47687be38885dac1bf9c63cda079a919f0758291c7a5dac85e95ce"
+        },
+        "listener": {
+          "path": "/run/media/jethac/Shared/radish/optimization-five-asr-pipeline-cache-backend-save-build-0046/cargo-target/aarch64-unknown-linux-gnu/debug/straylight-listen",
+          "sha256": "52e7df4c584aa867b074b0d76a4deb326181324d4be865d81060790e377ba7ad",
+          "ELF_machine": 183
+        },
+        "archive": {
+          "members_independently_parsed": 161,
+          "changes": [
+            {
+              "index": 2,
+              "name": "/0",
+              "before": "e7039c44368be873a81f175c3416d9aaf63927d0cc70c30d12cd87892d6a5b83",
+              "after": "e7c0a66f11a37e5e4bf312490b8a4a8af44acb5216e9c0de5e2896a90c103c7e"
+            }
+          ],
+          "five_other_libraries_byte_exact": [
+            "libstraylight_asr.a",
+            "libggml-cpu.a",
+            "libtranscribe.a",
+            "libggml-base.a",
+            "libggml.a"
+          ]
+        },
+        "checks": [
+          "Backend compile argv/cwd/env byte-exact current backend except source/output paths; all include roots unchanged.",
+          "Independent archive parsing confirms only current Vulkan backend member changed; all generated shaders and remaining members byte-exact.",
+          "Exact prior untimed Cargo/link command after isolated directories; Rust/model/bridge/shader/driver bodies unchanged.",
+          "Actual listener is ELF64 little-endian AArch64 and matches frozen build result."
+        ],
+        "references": {
+          "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/pipeline-cache-backend-save/independent-source-review.json": "8016ef2702115a2433622f7be24e8620a161e1a8220dc041d5ddbac3c1c9a8c8",
+          "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/pipeline-cache-backend-save/independent-cache-failure-18620-review.json": "11e23f5e16749c48ed26929d8575d0d7f8853fc0c7b948638fc7ddd175a2e731"
+        },
+        "performance_collection": false
+      }
+    },
+    "independent-filled-payload-review.json": {
+      "sha256": "440ff38bf0836a885f2d623e19ca927e4665c0d9dd649709cc02b0bac4cdb5a3",
+      "review": {
+        "status": "PASS finite actual-app cache-save/reload filled-payload pairing",
+        "checks": [
+          {
+            "mode": "cold",
+            "body_sha256": "27ebee176a5a9f7095f4985bbd4d62e339911f27b12fda0f2c10047508aedd76",
+            "argv_sha256": "750757981b2368d5b2c5c16b1d242a6eb443485fb33aff2e937a72d00cd5c9c8",
+            "hostcheck_sha256": "306c29b3c8dc117123a238a98ddb1601e97f45a0127715a7b19e06beacb9b3e7",
+            "label": "opt0046-asr-cache-save-cold-900",
+            "cache_expected": "missing",
+            "resources_reused": false,
+            "five_actual_assets_hash_and_size_pass": true
+          },
+          {
+            "mode": "import",
+            "body_sha256": "27ebee176a5a9f7095f4985bbd4d62e339911f27b12fda0f2c10047508aedd76",
+            "argv_sha256": "985b287935f7b760d0d5300474399712c0d15ec865184374a4c1b64bdd09bd79",
+            "hostcheck_sha256": "51b4d472280dbe43572867e1e7c3a3f2cd8923b5db9ed9f54516ad7dd0269ec1",
+            "label": "opt0046-asr-cache-save-import-900",
+            "cache_expected": "accepted",
+            "resources_reused": true,
+            "five_actual_assets_hash_and_size_pass": true
+          }
+        ],
+        "listener_sha256": "52e7df4c584aa867b074b0d76a4deb326181324d4be865d81060790e377ba7ad",
+        "driver_sha256": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
+        "references": {
+          "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/pipeline-cache-backend-save/independent-build-review.json": "a0235f0dadca01021677a989224ba18a03f4a9b822e924bd3b43bc5338234692",
+          "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/pipeline-cache-backend-save/independent-source-review.json": "8016ef2702115a2433622f7be24e8620a161e1a8220dc041d5ddbac3c1c9a8c8",
+          "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/runner/independent-source-review.json": "e1cb16f9b6c47f62af3012a23f7af6d57a4bf58935903eb69ef0ddc62aacb353",
+          "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/independent-cold-model-actual-review.json": "725773903e2c6e9965dfb387dbf651b0d3dd6e65b47e8155fb6a6aedf2de3df6"
+        },
+        "scope": "Identical reviewed one-request27eb bodies for both missing coldv20 and accepted fresh importv20. Cold uploads new52e7 actual app, import reuses only new cold resources. Original warm modes/full input/256budget/transcript/prefix/placement/populated-cache checks and approved900/935/memory/swap/disk/fault/service controls unchanged. Two-request model proof7257 carried; no helper-only save substitute.",
+        "execution_conditions": "Owner fresh guards then authorized one-clip cold. Import only after independent populated-save cold PASS. No device action by review.",
+        "performance_collection": false
+      }
+    }
+  },
+  "build": {
+    "status": "PASS isolated actual backend cache-save build; real app save/import pending",
+    "source_release": "deb5e63da405e0fc635b1d6fda5373a98332e83ec9506ba2691ccc45ed82bc8d",
+    "base_result": "a24ac2921a72937bbc8a13eb698dae9c491774cb6de4eef1ba53ec459b1ed23d",
+    "source": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/pipeline-cache-backend-save/candidate/ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+      "sha256": "b0c976f4cf47687be38885dac1bf9c63cda079a919f0758291c7a5dac85e95ce"
+    },
+    "commands": "f34df1f9fc8983e18ff9837c08105800362c309591ee4a7807535ad48e8a58c4",
+    "archive_members": "0d7dca89cb2ac7f3670c058975280bbf30d53fbc828e789b7c323d3aa5b5a9bf",
+    "listener": "52e7df4c584aa867b074b0d76a4deb326181324d4be865d81060790e377ba7ad",
+    "libraries": {
+      "libstraylight_asr.a": "f4f582c8dab2d774d9a99dd4d16a1a5756466dd099686ba8562fabe099794d73",
+      "libggml-cpu.a": "d995ee7629e69509970ad3fe687f8a77a469c419ba7cd91404ca8bb79f4e85da",
+      "libtranscribe.a": "561eac62337e24588d4b4019a172c397c6c04234780d58200ff7987e8a3bf852",
+      "libggml-base.a": "28ec1c9e67f976b670a074b310cb09389cddce48fc7cc42a9e7f06a9449b0fc1",
+      "libggml.a": "44072c75ec479e9e440cc8f9583c6d6250eab629a739c7ddf98bc70aefb8ba5d",
+      "libggml-vulkan.a": "a1cc9e1bbdc6adf31ba28d5b1633482210bebc3074648ea2cbe96f71a46c8d0e"
+    },
+    "scope": "Exactly one Vulkan backend object over564008; all shaders/model/bridge/header/driver bytes unchanged. Non-destructive cache export after synchronized backend cleanup."
+  },
+  "commands": [
+    {
+      "key": "backend",
+      "argv": [
+        "/usr/bin/clang++",
+        "-I/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/constrained-heap-release/candidate/ggml/src/ggml-vulkan",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-app-cache-build-0046/source",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-app-cache-build-0046/source",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-app-cache-build-0046/source",
+        "--target=aarch64-linux-gnu",
+        "--sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+        "-DGGML_SCHED_MAX_COPIES=4",
+        "-DGGML_VULKAN_BFLOAT16_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_DECODE_VECTOR_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT2_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_COOPMAT_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E2M1_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_FLOAT_E4M3_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_INTEGER_DOT_GLSLC_SUPPORT",
+        "-DGGML_VULKAN_KHR_PROFILE",
+        "-D_GNU_SOURCE",
+        "-D_XOPEN_SOURCE=600",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/ggml-vulkan/..",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build/transcribe/ggml/src/ggml-vulkan",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/../include",
+        "-isystem",
+        "/run/media/jethac/Shared/radish/vulkan-headers/include",
+        "-isystem",
+        "/run/media/jethac/Shared/radish/straylight-asr-vulkan-private-yukyx24q/deps/spirv-headers-install/include",
+        "--gcc-install-dir=/home/jethac/Projects/straylight-voice/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wmissing-declarations",
+        "-Wmissing-noreturn",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wcast-qual",
+        "-Wno-unused-function",
+        "-Wunreachable-code-break",
+        "-Wunreachable-code-return",
+        "-Wmissing-prototypes",
+        "-Wextra-semi",
+        "-o",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-pipeline-cache-backend-save-build-0046/backend.o",
+        "-c",
+        "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/pipeline-cache-backend-save/candidate/ggml/src/ggml-vulkan/ggml-vulkan.cpp"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build",
+      "env": {}
+    },
+    {
+      "argv": [
+        "cargo",
+        "build",
+        "--offline",
+        "--locked",
+        "--target",
+        "aarch64-unknown-linux-gnu",
+        "--features",
+        "asr-vulkan",
+        "-j3",
+        "--manifest-path",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-untimed-build-0046/rust-app/listen/Cargo.toml"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-pipeline-cache-backend-save-build-0046",
+      "env": {
+        "STRAYLIGHT_ASR_LIB": "/run/media/jethac/Shared/radish/optimization-five-asr-pipeline-cache-backend-save-build-0046/libs",
+        "STRAYLIGHT_SYSROOT": "/home/jethac/Projects/straylight-voice/sysroot",
+        "CARGO_TARGET_DIR": "/run/media/jethac/Shared/radish/optimization-five-asr-pipeline-cache-backend-save-build-0046/cargo-target",
+        "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER": "clang",
+        "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS": "-C link-arg=--target=aarch64-linux-gnu -C link-arg=-fuse-ld=lld -C link-arg=--sysroot=/home/jethac/Projects/straylight-voice/sysroot -C link-arg=-L/home/jethac/Projects/straylight-voice/sysroot/usr/lib -C link-arg=-L/home/jethac/Projects/straylight-voice/sysroot/usr/lib/aarch64-linux-gnu -C link-arg=-L/run/media/jethac/Shared/radish/build-loader/loader -C link-arg=-Wl,--allow-shlib-undefined -C link-arg=-Wno-unused-command-line-argument -C target-cpu=cortex-a53",
+        "CC_aarch64_unknown_linux_gnu": "clang",
+        "CFLAGS_aarch64_unknown_linux_gnu": "--target=aarch64-linux-gnu --sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+        "AR_aarch64_unknown_linux_gnu": "llvm-ar",
+        "PKG_CONFIG_SYSROOT_DIR": "/home/jethac/Projects/straylight-voice/sysroot",
+        "PKG_CONFIG_LIBDIR": "/home/jethac/Projects/straylight-voice/sysroot/usr/lib/pkgconfig:/home/jethac/Projects/straylight-voice/sysroot/usr/share/pkgconfig",
+        "PKG_CONFIG_ALLOW_CROSS": "1"
+      }
+    }
+  ],
+  "driver_unchanged": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
+  "model_actual_carried": "optimization-asr-prefix-model-actual-0046.json",
+  "qualification": "One original actual request cold save, then one fresh-process accepted-cache request, both warm modes/prefix/oracles/900s approved limits; no performance collection."
+}

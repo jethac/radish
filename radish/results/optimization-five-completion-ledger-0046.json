@@ -1,6 +1,6 @@
 {
   "status": "Five-area implementation ledger; milestone remains OPEN pending integrated ASR and fresh-process cache replay",
-  "as_of_utc": "2026-11-03T07:02:08.256031+00:00",
+  "as_of_utc": "2026-11-03T07:18:43.464715+00:00",
   "purpose": "Consolidation of existing accepted receipts only; no new execution, native review, or performance collection.",
   "source_documents": [
     {
@@ -17,10 +17,10 @@
     }
   ],
   "current_candidate": {
-    "listener_sha256": "56400857333cbd3c0f3129ae4435485e3c7ef0c26a86f48b59322ab38a8d93f1",
+    "listener_sha256": "52e7df4c584aa867b074b0d76a4deb326181324d4be865d81060790e377ba7ad",
     "driver_sha256": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
-    "cache": "fresh v19 missing for corrected cold; accepted replay conditional on independent cold PASS",
-    "active_scope": "Corrected prefix-valid-row source, one-object build and folded production regression payload reviewed; owner authorized corrected cold after fresh guards. Actual result pending."
+    "cache": "v20 planned actual app missing-cache save and accepted fresh-process replay; v19 empty failure preserved",
+    "active_scope": "18620 model numerical/placement/resource PASS with cache-save failure preserved. Cache-only source/build/payload fully reviewed; authorized one-clip actual cold on52e7/0f721/v20 pending owner fresh admission; accepted import conditional."
   },
   "areas": [
     {
@@ -67,7 +67,7 @@
     {
       "area": 4,
       "implementation": "Actual ASR GQA and quantized phase kernels, MM128/MV32 sequential work, compact softmax/RMS bodies, full-audio one-chunk subsampling, phase scratch/BO lifetime release, GPU handoff reuse, incremental KV growth, isolated one-step production warm sessions and constrained post-owner heap release. Successful prefix prefill now commits valid K/V row count and head before publishing cached IDs, so initial growth preserves written prefix.",
-      "actual_use": "Prior17350 exposed actual prefix growth with rows0/head0 despite completed prefix graph; reviewed fix and scalar regression markers now built in listener564008. Corrected real prefix-commit/growth/reuse and transcript result pending.",
+      "actual_use": "18620 completes both original warm modes and two requests of the same full pinned clip with exact original English text/language. Actual first-real prefix commits9/cap16, initialgrowth16-to-64 copies9, reuse9 valid9; second request correctly reuses9 with valid60.",
       "functional_resource_evidence": "Real F16/F32 KV 16-to-32-to-64 growth preserves K/V rows and fresh views. Source/actual ownership evidence establishes scratch release and 35 paired heap-release calls with allocator-used bytes unchanged and anonymous RSS reductions. All new grouped geometry has original CPU/full-buffer guards and native resource evidence. Existing actual K/V-copy value proof is composed with production publication source review and pending first-real COMMIT9cap16 -> grow16-to-64 rows9/head9 -> REUSE9 assertion; no manual counter seeding or separate heavyweight helper substitutes for real request evidence.",
       "receipts": [
         "grouped_geometry",
@@ -78,13 +78,14 @@
         "prefix_markers",
         "prefix_build",
         "prefix_runner",
-        "prefix_payload"
+        "prefix_payload",
+        "asr_model_actual"
       ],
-      "qualification": "OPEN: require actual two-request exact transcript/language, intended GPU placement, bounded memory and populated-cache export in current full application. Helper success and warmup progress do not establish completed real ASR."
+      "qualification": "Model numerical/prefix/placement/resource correctness CLOSED for pinned repeated clip on564008/0f721, carried to cache-lifecycle-only52e7 pending one-clip actual save/reload regression. No broader speech-quality claim."
     },
     {
       "area": 5,
-      "implementation": "Selective half-weight storage with two qualified operators and ten FP32 fallbacks, exhaustive correct half decode; real compiled Vulkan pipeline-cache serialization/keying/merge/import plus application-owned persistence.",
+      "implementation": "Selective half-weight storage with two qualified operators and ten FP32 fallbacks, exhaustive correct half decode; real compiled Vulkan pipeline-cache serialization/keying/merge/import plus application-owned persistence. Backend-free now reuses non-destructive cache export after synchronized cleanup; it does not depend on shared logical-device destructor reachability.",
       "actual_use": "T213 and T78 execute actual half2/FP32ten; TTS cold/export/fresh-import persists 48 SPIR-V and 178 compiled native objects. ASR uses an actual private cache path in the full runner.",
       "functional_resource_evidence": "All 65536 half patterns (including 2046 signed subnormals) satisfy exact finite-bit/NaN-class checks. T213 original core tolerance 0.002 + 0.002*abs(reference), waveform minimum 50 dB, actual 90.934 dB. TTS fresh process imports populated native entries, rejects old UUID safely, retains exact accepted outputs and bounded queue use.",
       "receipts": [
@@ -93,22 +94,27 @@
         "frontend",
         "compiled_cache",
         "tts_shared_queue",
-        "tts_carry"
+        "tts_carry",
+        "asr_model_actual",
+        "asr_cache_failure",
+        "cache_save_source",
+        "cache_save_build",
+        "app_close_reachability"
       ],
-      "qualification": "TTS precision/cache use closed for pinned fixtures. OPEN: ASR completed cold outputs/export and one-clip fresh-process accepted-cache replay."
+      "qualification": "TTS precision/cache use closed for pinned fixtures. ASR exact full outputs closed, but18620 cache-save gate failed and emptyv19 is preserved. OPEN: corrected actual-app populated cold save and fresh-process accepted replay onv20."
     }
   ],
   "remaining_milestone_gates": [
     {
-      "gate": "Integrated ASR cold",
-      "scope": "Corrected listener564008 cold: both original warm modes and two requests of the same pinned full clip; require production prefix/growth/reuse assertions, both original exact transcripts/language, GPU placement/resource controls and populated-cache export.",
-      "controls": "Explicit scoped user exception: RuntimeMaxSec900 and host observer935. Memory640MiB, swap128MiB, original disk/fault/service/ownership checks and kernel500ms hangcheck unchanged.",
-      "owner": "dispatch executes; packed independently reviews terminal PASS; batch diagnoses terminal failure."
+      "gate": "Actual ASR application populated cache persistence",
+      "scope": "One original full clip in actual52e7 application after both original warm modes, missingv20. Preserve original exact transcript/language, prefix regression, GPU/resource controls; require successful populated native cache save. Carry18620 fulltwo-request numerical proof.",
+      "controls": "Approved900s/935host;640MiB/128MiBswap, original disk/fault/services/ownership and500ms kernelhangcheck unchanged.",
+      "owner": "dispatch executes; packed independently reviews terminal actual; batch diagnoses failures."
     },
     {
       "gate": "ASR fresh-process populated-cache replay",
-      "scope": "Authorized conditional900s/host935 fresh process, one original clip, accepted v19 populated cache and identical output/placement/resource requirements.",
-      "condition": "Only after independent corrected cold PASS; no replay yet."
+      "scope": "One original full clip on52e7/0f721 with accepted populatedv20, original output/placement/resource/cache requirements.",
+      "condition": "Only after independent successful actual cold save; no replay yet."
     }
   ],
   "receipts": {
@@ -195,6 +201,30 @@
     "prefix_payload": {
       "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/runner/independent-filled-payload-review.json",
       "sha256": "e9e8c3a30b9148f3910b4d0852196d016955935f5a27016b304d32ab40b2b4d8"
+    },
+    "asr_model_actual": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/independent-cold-model-actual-review.json",
+      "sha256": "725773903e2c6e9965dfb387dbf651b0d3dd6e65b47e8155fb6a6aedf2de3df6"
+    },
+    "asr_cache_failure": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/pipeline-cache-backend-save/independent-cache-failure-18620-review.json",
+      "sha256": "11e23f5e16749c48ed26929d8575d0d7f8853fc0c7b948638fc7ddd175a2e731"
+    },
+    "cache_save_source": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/pipeline-cache-backend-save/independent-source-review.json",
+      "sha256": "8016ef2702115a2433622f7be24e8620a161e1a8220dc041d5ddbac3c1c9a8c8"
+    },
+    "cache_save_build": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/pipeline-cache-backend-save/independent-build-review.json",
+      "sha256": "a0235f0dadca01021677a989224ba18a03f4a9b822e924bd3b43bc5338234692"
+    },
+    "app_close_reachability": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/pipeline-cache-backend-save/app-close-reachability.json",
+      "sha256": "d612bf07f800717f2bf4c23f17d7520cd7735e4ad0646537751c967d0a0b7efc"
+    },
+    "cache_save_payload": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/pipeline-cache-backend-save/independent-filled-payload-review.json",
+      "sha256": "440ff38bf0836a885f2d623e19ca927e4665c0d9dd649709cc02b0bac4cdb5a3"
     }
   },
   "boundaries": [

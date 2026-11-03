@@ -162,13 +162,13 @@
   "runtime_cache": "Actual ncnn missing-cache cold process exports populated cache; second process accepts and re-exports identical178 keyed compiled objects and correct outputs. No hit-count or acceleration inference. On coherent91a1, copied old-UUID cache is rejected and repopulates48SPV/178native objects with the new build UUID; both complete T78 outputs remain byte-identical accepted baseline.",
   "full_model_fixture_scope": "Two requests of the same pinned 2.785-second English clip, exact transcript and language, explicit Vulkan placement and resource controls. Not two distinct clips or broad ASR accuracy.",
   "next_candidate": {
-    "listener": "56400857333cbd3c0f3129ae4435485e3c7ef0c26a86f48b59322ab38a8d93f1",
+    "listener": "52e7df4c584aa867b074b0d76a4deb326181324d4be865d81060790e377ba7ad",
     "driver": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
-    "receipt": "optimization-asr-prefix-kv-source-build-0046.json",
-    "target_status": "564008/0f721 passes scoped two-request model and prefix-state qualification. A cache-only backend lifecycle change is building; it must pass actual one-request cold save and fresh-process reload. All-five/performance gate remains closed.",
+    "receipt": "optimization-asr-backend-cache-save-source-build-0046.json",
+    "target_status": "Prior two-request model/prefix/runtime PASS carried. Source/build/payload-reviewed52e7 backend cache save is executing one-request cold68562; populated export and independent replay remain pending.",
     "performance_gate": "CLOSED"
   },
-  "device_execution_hold": "No live GPU job. Application18620 exited0 with both exact transcripts, but no populated cache save. Cache-only source correction/build and minimal actual-app save/reload remain; no performance collection.",
+  "device_execution_hold": "Only approved one-request cold68562 is active; fresh-process import requires independent populated-save PASS. Model/shaders/current0f721 unchanged; all guards retained and performance collection forbidden.",
   "approved_timeout_exception": {
     "status": "Existing explicit900s authorization carries to justified correctness fixes. Full model18620 passed its numerical/runtime scope; actual one-request cold cache save and conditional reload will use the same limits and retained guards.",
     "proposal": "optimization-asr-900s-proposal-0046.json",

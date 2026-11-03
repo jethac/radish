@@ -1,5 +1,5 @@
 {
-  "status": "Application564008 ondriver0f721 passes18620 scoped two-request exact transcript, prefix growth/reuse, placement and resource checks. Wrapper failed missing application cache save. A backend-only lifecycle correction is building; cache save/reload and all-five closure remain open, performance forbidden.",
+  "status": "Application52e7 adds explicit backend cleanup cache save over qualified564008. Exactly one backend object changes; model/shaders/driver unchanged. Cold68562 is active; actual populated export and accepted replay remain the open all-five integration gates. No performance collection.",
   "application": "Frozen ASR source with previously published GQA, quantized phase, memory-liveness and unit-axis overlays",
   "ordered_additive_patches": [
     {
@@ -155,6 +155,13 @@
       "strip": 1,
       "apply_root": "transcribe.cpp",
       "scope": "Two valid-row assignments after successful prefix compute; two optional untimed scalar diagnostic records."
+    },
+    {
+      "file": "0046-asr-backend-pipeline-cache-save.patch",
+      "sha256": "798d5a505113ecee22b83e9b326a7f4ebd65b7941c4b0fb9c5fabf6cca064409",
+      "strip": 1,
+      "apply_root": "transcribe.cpp",
+      "scope": "Backend-only non-destructive cache export after synchronized context cleanup; device-destructor fallback retained."
     }
   ],
   "cache_source_files": {
@@ -381,14 +388,14 @@
     "archive_members": "3ac3f2855cdfabfc691bdf82bf9d8d08d0e2de714d3d57fad97021ab4c291489",
     "build_result": "e71c72e97d3982b96af7b375c20dee5e8eb94dc62b584b651e04bec7e7c6905b"
   },
-  "current_listener": "56400857333cbd3c0f3129ae4435485e3c7ef0c26a86f48b59322ab38a8d93f1",
+  "current_listener": "52e7df4c584aa867b074b0d76a4deb326181324d4be865d81060790e377ba7ad",
   "current_libraries": {
     "libstraylight_asr.a": "f4f582c8dab2d774d9a99dd4d16a1a5756466dd099686ba8562fabe099794d73",
     "libggml-cpu.a": "d995ee7629e69509970ad3fe687f8a77a469c419ba7cd91404ca8bb79f4e85da",
     "libtranscribe.a": "561eac62337e24588d4b4019a172c397c6c04234780d58200ff7987e8a3bf852",
     "libggml-base.a": "28ec1c9e67f976b670a074b310cb09389cddce48fc7cc42a9e7f06a9449b0fc1",
     "libggml.a": "44072c75ec479e9e440cc8f9583c6d6250eab629a739c7ddf98bc70aefb8ba5d",
-    "libggml-vulkan.a": "42f8b488d56ae218f1854d97ca46052ff5dcf232956f9744082dc90d8c589870"
+    "libggml-vulkan.a": "a1cc9e1bbdc6adf31ba28d5b1633482210bebc3074648ea2cbe96f71a46c8d0e"
   },
   "phase_release_stage": {
     "build": {
@@ -1702,14 +1709,14 @@
     },
     "scope": "Only three MM and selected RMS shader bodies/backend row denominators plus narrow MM batching selector. Five unselected RMS and three MV32 payloads exact; no deferred lifetime/ABI/model/precision change."
   },
-  "prior_listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
+  "prior_listener": "56400857333cbd3c0f3129ae4435485e3c7ef0c26a86f48b59322ab38a8d93f1",
   "active_full_model": {
-    "status": "Terminal18620: process0/two exact transcripts/prefix and resource PASS, cache-save gateFAIL",
-    "listener": "56400857333cbd3c0f3129ae4435485e3c7ef0c26a86f48b59322ab38a8d93f1",
+    "handle": 68562,
+    "listener": "52e7df4c584aa867b074b0d76a4deb326181324d4be865d81060790e377ba7ad",
     "driver": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
-    "cache": "fresh missing v19",
-    "scope": "Both production warm modes/all40000samples, two identical pinned requests/full256,640MiB128swap and explicitly approved900s; no performance collection.",
-    "handle": 18620
+    "cache": "fresh missing v20",
+    "status": "Actual GPU execution confirmed; single-request application cache-save qualification pending",
+    "scope": "One original request, both production warm modes, prefix regression/full256, approved900s and unchanged640MiB128swap/fault/services/disk/kernel controls. Prior18620two-request numerical/runtime qualification carried."
   },
   "pending_grouped_work_candidate": {
     "driver": "11cf0aa23c785011262146e6ea2c8f71fa84cff3da92635495cc44fe3db05ac0",
@@ -1773,5 +1780,10 @@
     "listener": "56400857333cbd3c0f3129ae4435485e3c7ef0c26a86f48b59322ab38a8d93f1",
     "status": "Integrated production prefix and two-request model scope independentlyPASS72577390; actual cache save stillopen",
     "actual": "optimization-asr-prefix-model-actual-0046.json"
+  },
+  "backend_cache_save_stage": {
+    "source_build_receipt": "optimization-asr-backend-cache-save-source-build-0046.json",
+    "listener": "52e7df4c584aa867b074b0d76a4deb326181324d4be865d81060790e377ba7ad",
+    "status": "68562 actual one-request cold-save scope live; populated export and independent validation pending"
   }
 }

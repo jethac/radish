@@ -1,0 +1,33 @@
+--- a/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -133,7 +133,7 @@
+     }
+ }
+ 
+-static void ggml_vk_pipeline_cache_finish(vk_device_struct & device) {
++static void ggml_vk_pipeline_cache_save(vk_device_struct & device) {
+     std::lock_guard<std::mutex> lock(device.pipeline_cache_mutex);
+     if (device.pipeline_cache != VK_NULL_HANDLE) {
+         try {
+@@ -158,6 +158,13 @@
+         } catch (const std::exception & e) {
+             std::cerr << "ggml_vulkan: pipeline cache export skipped: " << e.what() << '\n';
+         }
++    }
++}
++
++static void ggml_vk_pipeline_cache_finish(vk_device_struct & device) {
++    ggml_vk_pipeline_cache_save(device);
++    std::lock_guard<std::mutex> lock(device.pipeline_cache_mutex);
++    if (device.pipeline_cache != VK_NULL_HANDLE) {
+         vkDestroyPipelineCache(device.device, device.pipeline_cache, nullptr);
+         device.pipeline_cache = VK_NULL_HANDLE;
+     }
+@@ -13649,6 +13656,7 @@
+     VK_LOG_DEBUG("ggml_backend_vk_free(" << ctx->name << ")");
+ 
+     ggml_vk_cleanup(ctx);
++    ggml_vk_pipeline_cache_save(*ctx->device);
+ 
+     delete ctx;
+     delete backend;

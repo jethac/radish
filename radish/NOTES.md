@@ -1,5 +1,23 @@
 # Radish status
 
+## Explicit backend pipeline-cache save — 2026-11-03
+
+The existing export logic is now reusable without destroying the live cache.
+Backend cleanup calls it after synchronizing and releasing its context-owned
+resources; final device teardown retains the save-and-destroy fallback. The
+cache mutex, opaque bytes,16MiB bound, private atomic file policy and optional
+I/O handling are unchanged. Only the Vulkan backend object changes over the
+qualified two-request application; shaders, model code and driver remain exact.
+
+Application52e7 on driver0f721 has started one original request with a fresh v20
+cache. A populated save is still required before the conditional fresh-process
+reload. Both scopes retain the reviewed one-request body, normal warm modes,
+prefix regression and exact transcript/resource oracles. The user-approved
+900-second process limit remains scoped to correctness; no performance is
+collected. [Source, build and payload evidence](results/optimization-asr-backend-cache-save-source-build-0046.json)
+separates this pending lifecycle result from the accepted model numerics.
+
+
 ## Scoped ASR model success; cache lifecycle remains open — 2026-11-03
 
 Corrected run18620 exited successfully and returned the exact expected English
