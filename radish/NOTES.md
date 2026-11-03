@@ -1,5 +1,22 @@
 # Radish status
 
+## Populated ASR cache export qualified — 2026-11-03
+
+Cold68562 passes the exact original English phrase, prefix regression, GPU
+placement, warm-up and resource checks. It saves a670,548-byte cache containing
+34 unique compiled records; independent parsing verifies every inner length and
+BLAKE3 checksum, the full file boundary, and the current driver UUID.
+[Independent cold-cache evidence](results/optimization-asr-cache-cold-actual-0046.json)
+keeps this actual application lifecycle result separate from performance claims.
+
+Fresh process24302 has accepted those exact bytes and begun GPU execution. Its
+final output, cache re-export and resource validation remain required. The shared
+device floor was restored with the existing immutable-loader deduplication
+procedure:11 paths retain exact bytes, modes and ownership, with two host restore
+copies;10 duplicate inodes were replaced. The application and cache were
+untouched. No timeout, memory, disk or kernel guard was lowered.
+
+
 ## Explicit backend pipeline-cache save — 2026-11-03
 
 The existing export logic is now reusable without destroying the live cache.

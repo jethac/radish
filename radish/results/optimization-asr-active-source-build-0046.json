@@ -1,5 +1,5 @@
 {
-  "status": "Application52e7 adds explicit backend cleanup cache save over qualified564008. Exactly one backend object changes; model/shaders/driver unchanged. Cold68562 is active; actual populated export and accepted replay remain the open all-five integration gates. No performance collection.",
+  "status": "Application52e7/driver0f721 has independently qualified the one-request populated-cache save, with prior two-request model numerics carried. Fresh-process import24302 is active; final accepted-cache transcript/resource/re-export check is the remaining five-area integration gate. No performance collection.",
   "application": "Frozen ASR source with previously published GQA, quantized phase, memory-liveness and unit-axis overlays",
   "ordered_additive_patches": [
     {
@@ -1711,11 +1711,11 @@
   },
   "prior_listener": "56400857333cbd3c0f3129ae4435485e3c7ef0c26a86f48b59322ab38a8d93f1",
   "active_full_model": {
-    "handle": 68562,
+    "handle": 24302,
     "listener": "52e7df4c584aa867b074b0d76a4deb326181324d4be865d81060790e377ba7ad",
     "driver": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
-    "cache": "fresh missing v20",
-    "status": "Actual GPU execution confirmed; single-request application cache-save qualification pending",
+    "cache": "accepted exact670548-byte v20 cache SHA083489dc9be7cbf087e63851fd3b6b54748e034c17e44a43dd4d8e3463b02f97",
+    "status": "Actual accepted-cache initialization and GPU execution confirmed; final transcript/re-export/resource checks pending",
     "scope": "One original request, both production warm modes, prefix regression/full256, approved900s and unchanged640MiB128swap/fault/services/disk/kernel controls. Prior18620two-request numerical/runtime qualification carried."
   },
   "pending_grouped_work_candidate": {
@@ -1784,6 +1784,7 @@
   "backend_cache_save_stage": {
     "source_build_receipt": "optimization-asr-backend-cache-save-source-build-0046.json",
     "listener": "52e7df4c584aa867b074b0d76a4deb326181324d4be865d81060790e377ba7ad",
-    "status": "68562 actual one-request cold-save scope live; populated export and independent validation pending"
+    "status": "Cold actual68562 independentlyPASS07b99; fresh-process import24302 initialized670548bytes and is active, actual output/re-export/resource validation pending.",
+    "cold_actual": "optimization-asr-cache-cold-actual-0046.json"
   }
 }

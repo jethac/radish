@@ -165,10 +165,10 @@
     "listener": "52e7df4c584aa867b074b0d76a4deb326181324d4be865d81060790e377ba7ad",
     "driver": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
     "receipt": "optimization-asr-backend-cache-save-source-build-0046.json",
-    "target_status": "Prior two-request model/prefix/runtime PASS carried. Source/build/payload-reviewed52e7 backend cache save is executing one-request cold68562; populated export and independent replay remain pending.",
+    "target_status": "Prior two-request model/prefix/runtime PASS carried. Cold68562 actual populated cache export independentlyPASS07b99. Fresh process24302 accepted exact670548-byte cache and is executing; output/re-export/resource qualification pending.",
     "performance_gate": "CLOSED"
   },
-  "device_execution_hold": "Only approved one-request cold68562 is active; fresh-process import requires independent populated-save PASS. Model/shaders/current0f721 unchanged; all guards retained and performance collection forbidden.",
+  "device_execution_hold": "Only approved fresh-process one-request import24302 is active. Same52e7/0f721/v20 and all original guards; exact083489 source bytes pinned. No performance collection before independent import/full-five closure.",
   "approved_timeout_exception": {
     "status": "Existing explicit900s authorization carries to justified correctness fixes. Full model18620 passed its numerical/runtime scope; actual one-request cold cache save and conditional reload will use the same limits and retained guards.",
     "proposal": "optimization-asr-900s-proposal-0046.json",
@@ -190,5 +190,10 @@
     "cache_failure": "optimization-asr-cache-save-failure-0046.json",
     "cache_failure_sha256": "11e23f5e16749c48ed26929d8575d0d7f8853fc0c7b948638fc7ddd175a2e731",
     "limits": "One clip requested twice; not broad ASR accuracy or performance. Populated application-cache save and fresh-process import remain open."
+  },
+  "asr_cache_cold_actual": {
+    "receipt": "optimization-asr-cache-cold-actual-0046.json",
+    "sha256": "07b99bd6f82391a8944768cd2b234416bf185b8b831dc2ba5e7844d3891f5759",
+    "status": "PASS exact one-request phrase/prefix/placement/resources and actual670548-byte export containing34 fully parsed/checksummed compiled records with currentdriverUUID."
   }
 }

@@ -6,9 +6,9 @@ The corrected ASR application now also passes two requests of the pinned English
 clip, with the exact expected transcript and language, validated prefix-cache
 growth/reuse, GPU placement and resource controls.
 
-The ASR application-cache integration remains open: the successful process did
-not save a populated cache. A backend cleanup change is building, followed by
-one actual request to save and one fresh-process request to reload it. Earlier
+The ASR application now saves a validated cache containing34 compiled pipeline
+records. A fresh process has accepted that cache and is running the final reload
+correctness check; its transcript, re-export and resource validation remain open. Earlier
 failures remain preserved. [Current evidence](radish/results/optimization-five-status-0046.json)
 and the [full goal](radish/GOAL.md) are authoritative.
 
