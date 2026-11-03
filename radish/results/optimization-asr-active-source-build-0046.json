@@ -1,5 +1,5 @@
 {
-  "status": "Qualification candidate d4d0/6f15 passes coherent source/build/ABI and all focused queue/local/TTS checks. Original full ASR78241 is running with unchanged workload/limits; latest completed full result remains42969 on prior4d20. All-five performance gate remains closed.",
+  "status": "Current d4d0/6f15 passes all focused queue/family/TTS checks. Full78241 reaches both completed warm modes and real request processing, then the original watchdog before a transcript. Cache replay remains held; no unchanged retry or performance release.",
   "application": "Frozen ASR source with previously published GQA, quantized phase, memory-liveness and unit-axis overlays",
   "ordered_additive_patches": [
     {
@@ -578,7 +578,7 @@
     "full": "f3763bf6c1c0d464369a099f3bbc96325b982941cc5336495c62386f79b9d208",
     "deployed_strip": "6f1551cc8ed772439d53157b50e518bef79b3a49f3144e058127faa8740a71ee",
     "source": "0046-bounded-deferred-submit.patch +0046-local-buffer-batching.patch over4d20; queue plus two DRM objects, existing ABI unchanged",
-    "target_status": "Dependency6d6b7931/local3272fdce/focusedTTS9f8bb8f7 independently pass; original ASR78241 is running, cache replay conditional"
+    "target_status": "Dependency6d6b/local3272/TTS9f8b pass. Original full78241 timed out: both warm decoder steps and synchronized cleanup completed, real request processing began, no transcript."
   },
   "incremental_source_review": "531fcaaa71331df51fca79dbd9c52e8664ae373cf76c9ec331b9eee2a25c3799",
   "incremental_build_runner_review": "d6930974ea4a41177dd4c46c34dc55cf96b1f58ffe327766190c245e02de7d01",
@@ -1089,8 +1089,10 @@
     "build_review": "8f30f8e3c82cd99e10117e3fafa0fc57481f592e8f63ab10451a64004da80098"
   },
   "latest_full_model_result": {
-    "file": "optimization-asr-mv32-timeout-0046.json",
-    "sha256": "e28721c49074556a29ea9ba8a360e5c11dacf4b2316000e27139fb7e2b19fce2"
+    "file": "optimization-asr-coherent-timeout-0046.json",
+    "sha256": "78bcb32665e2276e856dcf642125d2b9a05495af5a756e1d9a4eaec09c4254c1",
+    "status": "Original300-second timeout; exact phase source reconciliation pending",
+    "candidate": "d4d0/6f15"
   },
   "resource_diagnostic_stage": {
     "build": {
@@ -1485,7 +1487,7 @@
       "strip_sha256": "6f1551cc8ed772439d53157b50e518bef79b3a49f3144e058127faa8740a71ee",
       "scope": "Only reviewed queue composition and two DRM archive members; other fd_fence consumers require offset/sole-allocator source audit"
     },
-    "target_status": "Dependency6d6b7931/local3272fdce/focusedTTS9f8bb8f7 independently pass; original ASR78241 is running, cache replay conditional"
+    "target_status": "Dependency6d6b/local3272/TTS9f8b pass. Original full78241 timed out: both warm decoder steps and synchronized cleanup completed, real request processing began, no transcript."
   },
   "prior_driver": {
     "full": "0d5496a7528bddab3ac1ee6f1c75f5ba417d7deeba40bfbbd66eb844c48fe9ff",
