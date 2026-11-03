@@ -117,6 +117,10 @@ def cmd_cleanup(args):
 
 BEGIN = "#beginTestCaseResult "
 RESULT_RE = re.compile(r'<Result StatusCode="([A-Za-z]+)">(.*?)</Result>', re.S)
+TEXT_RE = re.compile(r"<Text>([^<]{1,200})", re.S)
+GFX_STAGE_RE = re.compile(r"<(VertexShader|FragmentShader|GeometryShader|TessControlShader|"
+                          r"TessEvaluationShader|MeshShader|TaskShader)\b|Section Name=\"[^\"]*"
+                          r"(vertex|fragment|geometry|tess)[^\"]*_shader\"")
 
 
 def parse_qpa(text):
@@ -130,8 +134,17 @@ def parse_qpa(text):
             body = []
         elif line.startswith("#endTestCaseResult"):
             if current:
-                m = RESULT_RE.search("\n".join(body))
+                text = "\n".join(body)
+                m = RESULT_RE.search(text)
                 status, detail = (m.group(1), m.group(2)) if m else ("InternalError", "no result")
+                if status not in ("Pass", "NotSupported"):
+                    # Terse results ("Fail"): add the first log message.
+                    t = TEXT_RE.search(text)
+                    if t and len(detail) < 20:
+                        detail = f"{detail}: {t.group(1)}"
+                    # Mark cases whose programs include graphics stages.
+                    if GFX_STAGE_RE.search(text):
+                        detail = "[gfx] " + detail
                 results[current] = (status, detail)
             current = None
         elif line.startswith("#terminateTestCaseResult"):
@@ -345,6 +358,92 @@ def cmd_summary(args):
     summarize(args.dirs, args.depth)
 
 
+GRAPHICS_DETAIL = re.compile(
+    r"createGraphicsPipelines|endCommandBuffer\(commandBuffer\): VK_ERROR_FEATURE_NOT_PRESENT|"
+    r"createRenderPass|createFramebuffer|Graphics queue|"
+    r"retcode: VK_ERROR_FEATURE_NOT_PRESENT at vkPipelineConstructionUtil")
+GRAPHICS_PATH = re.compile(
+    r"\.(vertex|fragment|geometry|tess_control|tess_eval|tessellation|vert|frag|geom|tesc|tese|"
+    r"graphics|draw|draw_indexed|render_pass|renderpass)(\.|_|$)|_(graphics|vertex|fragment|frag|vert)(\.|_|$)")
+CTS_QUEUE_DETAIL = re.compile(
+    r"createDeviceInternal\(.*VK_ERROR_INITIALIZATION_FAILED|Returned queue family count was 0")
+
+
+def classify(case, status, detail):
+    """Bucket for a result that is not Pass/NotSupported/Warning."""
+    if CTS_QUEUE_DETAIL.search(detail):
+        return "cts-queue"
+    if GRAPHICS_DETAIL.search(detail):
+        return "graphics-path"
+    compute_case = re.search(r"(\.|_)comp(ute)?(\.|_|$)", case)
+    if detail.startswith("[gfx]") and not compute_case:
+        return "graphics-path"
+    if compute_case:
+        return "other"
+    if GRAPHICS_PATH.search(case):
+        return "graphics-path"
+    return "other"
+
+
+def cmd_reparse(args):
+    """Rebuild results.tsv details from the kept qpa logs (statuses that came
+    from the runner itself, Crash/Timeout/Missing, are kept)."""
+    for run in args.runs:
+        for name in sorted(os.listdir(os.path.join(RUNS, run))):
+            d = os.path.join(RUNS, run, name)
+            path = os.path.join(d, "results.tsv")
+            if not os.path.exists(path):
+                continue
+            parsed = {}
+            for q in sorted(os.listdir(os.path.join(d, "qpa"))):
+                if q.endswith(".qpa.xz"):
+                    res, _ = parse_qpa(lzma.open(os.path.join(d, "qpa", q), "rt").read())
+                    parsed.update(res)
+            out = []
+            for line in open(path):
+                parts = line.rstrip("\n").split("\t")
+                if parts[0] in parsed and parsed[parts[0]][0] == parts[1]:
+                    parts = [parts[0], parts[1], clean_detail(parsed[parts[0]][1])]
+                out.append("\t".join(parts) + "\n")
+            open(path + ".tmp", "w").writelines(out)
+            os.replace(path + ".tmp", path)
+
+
+def cmd_classify(args):
+    """Per top-level group: non-pass results split into graphics-path (the
+    case needs a graphics queue or graphics pipeline), cts-queue (the CTS
+    asks for queue families a compute-only device cannot give) and other
+    (candidate driver failures). With --list, print the 'other' cases."""
+    buckets = collections.defaultdict(collections.Counter)
+    others = []
+    for run in args.runs:
+        for name in sorted(os.listdir(os.path.join(RUNS, run))):
+            path = os.path.join(RUNS, run, name, "results.tsv")
+            if not os.path.exists(path):
+                continue
+            for line in open(path):
+                parts = line.rstrip("\n").split("\t")
+                case, status = parts[0], parts[1]
+                detail = parts[2] if len(parts) > 2 else ""
+                if status in ("Pass", "NotSupported", "QualityWarning", "CompatibilityWarning"):
+                    continue
+                b = classify(case, status, detail)
+                buckets[".".join(case.split(".")[:args.depth])][b] += 1
+                if b == "other":
+                    others.append((case, status, detail))
+    if args.list:
+        for c, st, d in others:
+            print(f"{c}\t{st}\t{d}")
+        return
+    print("| group | graphics-path | cts-queue | other |")
+    print("|---|---|---|---|")
+    tot = collections.Counter()
+    for g, c in sorted(buckets.items()):
+        tot.update(c)
+        print(f"| {g} | {c['graphics-path']} | {c['cts-queue']} | {c['other']} |")
+    print(f"| **total** | {tot['graphics-path']} | {tot['cts-queue']} | {tot['other']} |")
+
+
 def cmd_ledger(args):
     """Markdown tables: top-level groups, then second-level groups, over every
     group directory of the given runs (later runs override earlier ones per case)."""
@@ -413,6 +512,12 @@ def main():
     s = sub.add_parser("summary")
     s.add_argument("--depth", type=int, default=3)
     s.add_argument("dirs", nargs="+")
+    rp = sub.add_parser("reparse")
+    rp.add_argument("runs", nargs="+")
+    c = sub.add_parser("classify")
+    c.add_argument("--depth", type=int, default=2)
+    c.add_argument("--list", action="store_true")
+    c.add_argument("runs", nargs="+")
     l = sub.add_parser("ledger")
     l.add_argument("--all-cases")
     l.add_argument("--skip-all-notsupported", action="store_true")
@@ -420,7 +525,7 @@ def main():
     args = p.parse_args()
     {"setup": lambda a: locked([sys.executable, __file__, "_setup"]),
      "cleanup": lambda a: locked([sys.executable, __file__, "_cleanup"]),
-     "run": cmd_run, "summary": cmd_summary, "ledger": cmd_ledger}[args.cmd](args)
+     "run": cmd_run, "summary": cmd_summary, "ledger": cmd_ledger, "classify": cmd_classify, "reparse": cmd_reparse}[args.cmd](args)
 
 
 if __name__ == "__main__":
