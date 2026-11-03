@@ -12,7 +12,7 @@ llvm-strip --strip-debug -o "$SRC/deploy/libvulkan_radish.so" "$SRC/build/src/fr
 SHA=$(sha256sum "$SRC/deploy/libvulkan_radish.so" | cut -c1-12)
 LIB=$PREFIX/lib/libvulkan_radish-$SHA.so
 ICD=$PREFIX/lib/icd-$SHA.json
-printf '{"file_format_version":"1.0.0","ICD":{"library_path":"%s","api_version":"1.0.0"}}\n' "$LIB" > "$SRC/deploy/icd.json"
+printf '{"file_format_version":"1.0.0","ICD":{"library_path":"%s","api_version":"1.1.0"}}\n' "$LIB" > "$SRC/deploy/icd.json"
 flock -w 1800 "$LOCK" bash -c "
     adb -s $SERIAL shell 'mkdir -p $PREFIX/lib && test -f $LIB' 2>/dev/null || {
         adb -s $SERIAL push -q '$SRC/deploy/libvulkan_radish.so' '$LIB.tmp' >&2 &&
