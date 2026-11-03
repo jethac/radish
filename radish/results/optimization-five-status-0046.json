@@ -26,7 +26,7 @@
     {
       "area": 4,
       "implementation": "Integrated GQA broadcast, phase-specific quantized kernels, encoder-to-prefill device-buffer reuse and reduced host staging; actual application pipeline cache and supported-kernel initialization correction are built. Constrained-profile subsampling reuses one independent chunk graph across the complete audio, lowering unnecessary live convolution intermediates. Scheduler scratch is released between subsampling and encoder; Vulkan-owned allocations leave the BO reuse cache on final unref. Incremental KV allocates actual prompt/draft demand and grows geometrically up to the unchanged full context ceiling. The constrained softmax shader uses one runtime-width body and preserves column loops instead of seven constant-width expansions, retaining numerical order and masks. Production constrained-profile warmup now uses fresh temporary borrowed-model sessions and one actual decoder step per mode; synthetic state is synchronized and freed before real requests. The original warm prompt now has owned string lifetime. Constrained-profile heap cleanup asks glibc to return unused pages after compilation and synchronized temporary-session destruction.",
-      "evidence": "The queue-only3a30 focused GQA54 and softmax8 numerical/full-partial checks independently pass. Original full8138/3a30 handle85294 completed offline one-step warmup and streaming encoder, then reached the unchanged300-second watchdog in streaming prefill. New attention/softmax batch8 selection is actual; no streaming warmup completion or real requested transcripts. Guardtelemetry reached640MiB memory/128MiBswap, outcome timeout/TERM rather than OOM. Original workload and controls retained. Fullmodel and ASR cache replay remain open; no unchanged retry. A separately built, reviewed read-only resource diagnostic candidate cdd557 now runs the same original workload as49065 to identify memory ownership; no behavioral fix or outcome is inferred. Independent49065 ownership review identifies55.08MiB allocator-free space retained after warm cleanup, while7MiB KV shared memory is released; rawdiagnostic fullrun still times out. Source-reviewed heap-release candidate43ecf594 now runs original fullscope62956. No actual released-byte amount or full-model success is inferred before that outcome."
+      "evidence": "Current listener43ecf594 and driver3a30 retain independently qualified quantized kernels, GQA, KV growth, compact softmax, full/partial batching and actual constrained heap release. The35 paired release calls preserve live allocations and return resident pages; their deltas are not summed into a peak or speedup. Latest original full62956 completes offline one-step warmup and streaming encoder, then reaches the unchanged300-second watchdog during streaming prefill before either requested transcript. Systemd reports640M memory/64.4M swap peak as guard telemetry. Two requests of the same pinned2.785s English clip, full warm audio/modes, real256-token budget and all limits remain unchanged. Full model and ASR application-cache replay are still open; no unchanged retry or performance release."
     },
     {
       "area": 5,
@@ -60,7 +60,7 @@
   },
   "existing_results": "Original743 CTS cases and modified132 robustness outcomes remain historical pinned evidence; no conformance count or selected performance change.",
   "completion_gate": "TTS side is qualified for the stated T213/T78 fixtures. All-five gate remains CLOSED on ASR full-model memory/placement/transcript and real application replay; full GOAL remains active.",
-  "as_of_utc": "2026-11-03 02:29:29 UTC",
+  "as_of_utc": "2026-11-03 02:37:10 UTC",
   "correctness_receipts": {
     "optimization-cache-correctness-0046.json": "0af98f899b26429971ef61df554e2cf4a4fe340019353f9ed7491869ab59b1f5",
     "optimization-queue-correctness-0046.json": "98c9f0d64a5ef1076462930effb6fd3e22c48de75cad78e87f7e68eaa6636b0e",
@@ -88,7 +88,9 @@
     "optimization-asr-attention-batch-timeout-0046.json": "9aa019759678c1a8b21d23fc157c206289eec2a154f547593aefab178ed793de",
     "optimization-asr-attention-batch-timeout-independent-0046.json": "e8e5641ac78ffd2653e137c8ce681eb09603464f4c701dcde17c0e34e1ebf144",
     "optimization-asr-memory-ownership-actual-0046.json": "1e6c4df8cfec9b6e34e6efa415f406c97e2c21d2a8016dc9ff21818f9992058d",
-    "optimization-asr-memory-diagnostic-timeout-0046.json": "9b35388cf932dc4af0e63cd7aee9d2d5dee78f10c27acfc3f190ed679dbf54d3"
+    "optimization-asr-memory-diagnostic-timeout-0046.json": "9b35388cf932dc4af0e63cd7aee9d2d5dee78f10c27acfc3f190ed679dbf54d3",
+    "optimization-asr-heap-release-timeout-0046.json": "abc7cf70a7bf084a11ec5e38387a7df8c193f66816a1b0ee32a8ec6bc5633578",
+    "optimization-asr-heap-release-actual-0046.json": "764010f401ab6e699601b5bff5697ed26a6b2fa1e90cea07b77962c7bdd7e7c9"
   },
   "drivers": {
     "bounded_cache_queue_half": "61e8/9f64 exact integrated cache+queue+corrected idiv",

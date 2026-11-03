@@ -1,5 +1,5 @@
 {
-  "status": "Current43ecf594/3a30 adds constrained free-heap release over diagnosticcdd557. Source/build qualified, full62956 running. Prior49065 timed out with usable ownership evidence; no fullmodel/cache/performance claim.",
+  "status": "Current43ecf594/3a30 source/build and actual free-page release qualified; original full62956 timed out during streaming prefill before requested transcripts. Full-model/cache/performance requirements remain open.",
   "application": "Frozen ASR source with previously published GQA, quantized phase, memory-liveness and unit-axis overlays",
   "ordered_additive_patches": [
     {
@@ -1058,9 +1058,8 @@
     "build_review": "8f30f8e3c82cd99e10117e3fafa0fc57481f592e8f63ab10451a64004da80098"
   },
   "latest_full_model_result": {
-    "file": "optimization-asr-attention-batch-timeout-0046.json",
-    "sha256": "9aa019759678c1a8b21d23fc157c206289eec2a154f547593aefab178ed793de",
-    "independent_review": "pending; owner terminal artifact verified"
+    "file": "optimization-asr-heap-release-timeout-0046.json",
+    "sha256": "abc7cf70a7bf084a11ec5e38387a7df8c193f66816a1b0ee32a8ec6bc5633578"
   },
   "resource_diagnostic_stage": {
     "build": {
@@ -1143,5 +1142,9 @@
     },
     "source_review": "789875a95753ba2c730eb3c6d0ed31c82d960d56a365acb862490490398a3eed",
     "build_runner_review": "7c762a0d03f457a24ca2ac7728ae954191e2b91e870a7de17ea8922f4c25d6c2"
+  },
+  "actual_heap_release": {
+    "file": "optimization-asr-heap-release-actual-0046.json",
+    "sha256": "764010f401ab6e699601b5bff5697ed26a6b2fa1e90cea07b77962c7bdd7e7c9"
   }
 }

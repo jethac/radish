@@ -1,0 +1,144 @@
+{
+  "status": "passed actual paired heap-release accounting; full model FAILED unchanged300s watchdog",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-full-heap-release/probe",
+  "evidence": {
+    "run.log": "a240f9de0af7a97616d4101d957691783e875929256e5e23bcc1b3f346d8b830",
+    "failure.json": "2c7757f46516c0756b963e870dbf7795eae3952b5660beed59b85b8016d9d001",
+    "service.txt": "ad1ea77e75d46cd29f9527878e9d583e841b2218b6980bd15fb151e86099913e",
+    "drain-000.txt": "899a8a5a73232d4a07b56824413da1c88dc2dc685e89886ca2bc05f89923b9f6",
+    "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+    "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+    "services-before.txt": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce",
+    "services-after.txt": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce",
+    "payload/payload.json": "a2aa7b32c1f26d3404dd1fe700aeaa13302233efbbdfc717fa49b2e0ec55ba46"
+  },
+  "source_counterpart": "789875a95753ba2c730eb3c6d0ed31c82d960d56a365acb862490490398a3eed",
+  "build_counterpart": "7c762a0d03f457a24ca2ac7728ae954191e2b91e870a7de17ea8922f4c25d6c2",
+  "detailed_pairs_sha256": "6fc8109a491a2660318093af0c39a9742cd7dc92fcd83622c5b9d35108407127",
+  "payload": {
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "input.wav": {
+      "bytes": 89164,
+      "sha256": "0a66f7817c57252c814b0ecb645c76fdb40a043d1d24ae8468f10c0342c60aee"
+    },
+    "libvulkan.so.1": {
+      "bytes": 703696,
+      "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 13632536,
+      "sha256": "3a300087ec25ded4226857735e5bb7c0353a1a9f74c04fa83d3a28bd70f68ed6"
+    },
+    "radish_icd.json": {
+      "bytes": 158,
+      "sha256": "553eeb470b63ae4d3dd15813e3c42c6611ac3c502dee5c78a31385f5409d6c4e"
+    },
+    "resources": {
+      "bytes": 103699688,
+      "sha256": "43ecf594ba21b5e6d7603a7a786eb72ca8958a2dceebb2b38c3ad4f101fdd4be"
+    }
+  },
+  "actual_samples": 128,
+  "release_calls": {
+    "compiled_pipeline_returns": 34,
+    "offline_temporary_cleanup": 1,
+    "raw_return1": 35,
+    "all_pairs_allocator_used_unchanged": true,
+    "all_pairs_proc_anon_RSS_decreased": true,
+    "all_pairs_mmap_reservation_unchanged": true
+  },
+  "first_example": {
+    "label": "im2col_f32_f16",
+    "anon_RSS_decrease_bytes": 7933952,
+    "cgroup_anon_decrease_bytes": 7933952,
+    "arena_extent_decrease": 4194304,
+    "swap_change_bytes": 0,
+    "shmem_change_bytes": 0
+  },
+  "offline_cleanup_trim": {
+    "before": {
+      "line": 4771,
+      "phase": "warm_cleanup_after",
+      "label": "offline",
+      "heap_arena_bytes": 102232064,
+      "heap_used_bytes": 49873664,
+      "heap_free_bytes": 52358400,
+      "heap_mmap_bytes": 397312,
+      "heap_mmap_regions": 1,
+      "heap_top_free_bytes": 1391408,
+      "rss_kib": 51944,
+      "anon_kib": 21588,
+      "file_kib": 30356,
+      "shmem_kib": 0,
+      "swap_kib": 52708,
+      "pss_kib": 49991,
+      "private_dirty_kib": 21588,
+      "anonymous_kib": 21588,
+      "available": 1,
+      "current_bytes": 611225600,
+      "swap_bytes": 54452224,
+      "anon_bytes": 22106112,
+      "file_bytes": 579706880,
+      "shmem_bytes": 572030976,
+      "kernel_bytes": 3436544,
+      "pagetables_bytes": 1601536,
+      "unevictable_bytes": 572030976
+    },
+    "after": {
+      "line": 4775,
+      "phase": "heap_release_after",
+      "label": "offline",
+      "heap_arena_bytes": 102232064,
+      "heap_used_bytes": 49873664,
+      "heap_free_bytes": 52358400,
+      "heap_mmap_bytes": 397312,
+      "heap_mmap_regions": 1,
+      "heap_top_free_bytes": 1391408,
+      "rss_kib": 41456,
+      "anon_kib": 11100,
+      "file_kib": 30356,
+      "shmem_kib": 0,
+      "swap_kib": 47744,
+      "pss_kib": 39503,
+      "private_dirty_kib": 11100,
+      "anonymous_kib": 11100,
+      "available": 1,
+      "current_bytes": 601890816,
+      "swap_bytes": 49369088,
+      "anon_bytes": 11366400,
+      "file_bytes": 579706880,
+      "shmem_bytes": 572030976,
+      "kernel_bytes": 3428352,
+      "pagetables_bytes": 1589248,
+      "unevictable_bytes": 572030976
+    },
+    "resident_anon_decrease_bytes": 10739712,
+    "cgroup_anon_decrease_bytes": 10739712,
+    "proc_swap_decrease_bytes": 5083136,
+    "cgroup_swap_decrease_bytes": 5083136,
+    "allocator_used_change": 0,
+    "arena_or_free_or_mmap_change": 0,
+    "GPU_shmem_change": 0
+  },
+  "interpretation": [
+    "Actual resident release is observed: first pair7.5664MiB processanonRSS andcgroupanon agree exactly with unchangedused/swap/shmem.",
+    "Offline post-destruction trim reducesanonRSS10.2422MiB andswap4.8477MiB; same cgroupanon/swap deltas, with unchangedarena/free/mmap/used andGPUshmem. Interior free-page discard is observable evenwhen allocator extent/free accounting unchanged.",
+    "All35 calls preserveallocator-used bytes across eachpair. Currentcgroup snapshots sometimes drift relativeto anon due asynchronousaccounting; do not demand exacttotalcurrent matching or addfile+shmem.",
+    "Do NOT sum per-call decreases into distinct freedbytes, a modelpeak reduction orspeedup: the allocator canreuse anddiscard pages repeatedly. No timing comparison or performance claim."
+  ],
+  "full_model": {
+    "status": "failed",
+    "reason": "Original300s timeout/TERM, noOOM indication; peak640MiB/swap64.4MiB underunchangedcaps",
+    "completed": "Offline oneactualdecoderstep andsynchronizedtempcleanup status0; streamingencoder completes, cached-prefixprefill791GPU/0rejected unfinished",
+    "real_transcripts": 0,
+    "streaming_warmup_done": false,
+    "cache_save_or_import_qualified": false,
+    "decode_budget": "Original256, prompt49/capacity64/ceiling320 explicitlylogged",
+    "note": "failure.json terminal=false is preserved wrapperexceptionstatus; service+inactive/dead/not-found drain independentlyestablish terminalscope. No livejob claimed."
+  },
+  "no_extra_execution": "No additional source/build/device/performance run by reviewer; only terminalcapture offline reconciliation. ExistingTTS/KV/GQA/quant/softmax qualification unaffected.",
+  "timing_collected": false
+}

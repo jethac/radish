@@ -1,5 +1,5 @@
 {
-  "status": "Source/lifetime and exact two-TU build qualified; full62956 running, released bytes and numerical completion pending",
+  "status": "Current43ecf594/3a30 source/build and actual free-page release qualified; original full62956 timed out during streaming prefill before requested transcripts. Full-model/cache/performance requirements remain open.",
   "source_release": {
     "status": "source frozen; independentreview/ownerbuild/actualrelease+fullmodel gates pending",
     "files": {
@@ -320,5 +320,13 @@
     "timing_collected": false
   },
   "policy": "Under existing Linux/glibc KHR profile, ask glibc to release unused pages after completed pipeline creation and synchronized temporary-session free. Per new compilation/cleanup, independent of diagnostic counters. Live allocations, caches, weights, pools, mathematical work and guards remain unchanged. Return1 is not a byte count.",
-  "performance_measurement": false
+  "performance_measurement": false,
+  "actual_heap_release": {
+    "file": "optimization-asr-heap-release-actual-0046.json",
+    "sha256": "764010f401ab6e699601b5bff5697ed26a6b2fa1e90cea07b77962c7bdd7e7c9"
+  },
+  "latest_full_model_result": {
+    "file": "optimization-asr-heap-release-timeout-0046.json",
+    "sha256": "abc7cf70a7bf084a11ec5e38387a7df8c193f66816a1b0ee32a8ec6bc5633578"
+  }
 }

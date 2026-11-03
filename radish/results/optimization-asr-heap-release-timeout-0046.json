@@ -1,0 +1,40 @@
+{
+  "status": "FAIL full model at unchanged watchdog; independent resource release passes separately",
+  "handle": 62956,
+  "listener": "43ecf594ba21b5e6d7603a7a786eb72ca8958a2dceebb2b38c3ad4f101fdd4be",
+  "driver": "3a300087ec25ded4226857735e5bb7c0353a1a9f74c04fa83d3a28bd70f68ed6",
+  "failure": {
+    "status": "failed",
+    "error": "probe/compile process returned 1",
+    "started": true,
+    "terminal": false,
+    "process_returncode": 1,
+    "remote": "/var/tmp/radish/core-compute-opt0046-asr-full-heap-release",
+    "unit": "radish-core-compute-probe-1793672904800167165"
+  },
+  "run_log_sha256": "a240f9de0af7a97616d4101d957691783e875929256e5e23bcc1b3f346d8b830",
+  "terminal_result": "original300s timeout/TERM; not systemd OOM result",
+  "guard_resource_peak": {
+    "memory_MiB": 640,
+    "systemd_swap_peak_text": "64.4M",
+    "performance_measurement": false
+  },
+  "warm_markers": [
+    "ASR_WARMUP_STEP mode=offline completed=1",
+    "ASR_WARMUP_DONE mode=offline steps=1 temporary_session=1 synchronized=1 status=0"
+  ],
+  "actual_requested_outputs": [],
+  "phase": "streaming encoder completed then cached-prefix streaming prefill791/0; no streamSTEP/DONE or requestedtranscript",
+  "resource_review_sha256": "764010f401ab6e699601b5bff5697ed26a6b2fa1e90cea07b77962c7bdd7e7c9",
+  "resource_scope": "35 paired calls preserve allocator-used and release resident free pages. Do not sum repeated deltas into a peak reduction or speedup.",
+  "collection": {
+    "passed": true,
+    "errors": []
+  },
+  "fault_check": "PASS: no new GPU fault/recovery messages\n",
+  "services": [
+    "active",
+    "active"
+  ],
+  "next": "source-backed structural diagnosis; no unchangedretry/import/performance"
+}

@@ -1,5 +1,17 @@
 # Radish status
 
+## 2026-11-03: verify free-page release and preserve the model timeout
+
+[Independent paired resource checks](results/optimization-asr-heap-release-actual-0046.json)
+confirm that the constrained cleanup releases resident pages without changing
+live heap allocations. The 35 paired calls include compilation and offline
+warm-up cleanup; their deltas are not added into a peak-memory or speedup claim.
+
+[The same full model still times out](results/optimization-asr-heap-release-timeout-0046.json)
+during streaming prefill under unchanged limits. Offline warm-up completes, but
+neither requested transcript is produced. The memory fix and failed full-model
+outcome remain separate. ASR cache replay and performance measurement stay held.
+
 ## 2026-11-03: release unused constrained-profile heap pages
 
 The diagnostic run confirms that offline warm-up frees its KV buffer while
