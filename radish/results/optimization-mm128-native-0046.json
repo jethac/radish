@@ -1,0 +1,123 @@
+{
+  "status": "passed native/resource-only; numerical and selector gate remain",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-quant-mm128-native/compile",
+  "runner_result": "4e7bfd50be15a78b6212c036f0fc57df2b185aa10685a975279c1c5efbe0c5a1",
+  "run_log": {
+    "bytes": 1014537,
+    "sha256": "712102a99417d9344aa70c230ae0048dd927fcb8f7098675466f3e24cef8a4ef"
+  },
+  "collection": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+  "payload": {
+    "radish_icd.json": {
+      "bytes": 155,
+      "sha256": "f74271ddf2fc71aeb0fa25188c2ac522b6ce1480325e3728b2934260d22d6f1a"
+    },
+    "resources": {
+      "bytes": 754408,
+      "sha256": "70360165c59f5282f0c9e0c2073e114d494beb8233b54ce30a71aa8745996fca"
+    },
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "khr_quant_q6_k_mm.spv": {
+      "bytes": 8740,
+      "sha256": "581c9f94a1587acc62dc5e67fbe58c355fda2d6a8129722dd42c4fc213351ff1"
+    },
+    "khr_quant_q8_0_mm.spv": {
+      "bytes": 7516,
+      "sha256": "5934d36543ecbb53aca4d0cf9e4c77fa3e796754abdb68c394c524f33b4983bf"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 13638392,
+      "sha256": "6f1551cc8ed772439d53157b50e518bef79b3a49f3144e058127faa8740a71ee"
+    },
+    "khr_quant_q4_k_mm.spv": {
+      "bytes": 9136,
+      "sha256": "bb761a8a5012934233d8b579e12e323c46249ccd4d0c0382baa236aa46c5a145"
+    },
+    "payload.json": {
+      "bytes": 1112,
+      "sha256": "cefaab1c75a8b6f91710b6903e47fe695c95d3a2a6cda247acf477ebb4305b5f"
+    }
+  },
+  "native": [
+    {
+      "type": 0,
+      "native": 54,
+      "full_count": 12,
+      "half_count": 12,
+      "halfreg_slots": 2304,
+      "loops": 4,
+      "private": 0,
+      "shared": 4096,
+      "logical": [
+        64,
+        1,
+        1
+      ],
+      "physical": [
+        32,
+        2,
+        1
+      ],
+      "code_bytes": 7040,
+      "code_BO_bytes": 8192,
+      "native_body_sha256": "d306d767a70b8ffa205a313416c12ad44f63171b91310762ac32f6cb01749aa7"
+    },
+    {
+      "type": 1,
+      "native": 53,
+      "full_count": 9,
+      "half_count": 11,
+      "halfreg_slots": 1856,
+      "loops": 4,
+      "private": 0,
+      "shared": 4096,
+      "logical": [
+        64,
+        1,
+        1
+      ],
+      "physical": [
+        32,
+        2,
+        1
+      ],
+      "code_bytes": 6912,
+      "code_BO_bytes": 8192,
+      "native_body_sha256": "95b0f855dd1538c17494b216dae2b4fb660e2ba3742881cd83d5d6b0a7e9c955"
+    },
+    {
+      "type": 2,
+      "native": 45,
+      "full_count": 9,
+      "half_count": 8,
+      "halfreg_slots": 1664,
+      "loops": 4,
+      "private": 0,
+      "shared": 4096,
+      "logical": [
+        64,
+        1,
+        1
+      ],
+      "physical": [
+        32,
+        2,
+        1
+      ],
+      "code_bytes": 5760,
+      "code_BO_bytes": 8192,
+      "native_body_sha256": "819814c535e5389b076442e4a81e1ef36452a764930ae534d50d2e2a5f6f13e8"
+    }
+  ],
+  "common": "Actualpacked1/local-memorysafety1/used7/3ordinalSSBO/push68/linear0/resident0/constdata0/preamble0. Flagsandresourcesprintedbeforedata; allthreeprogramswerecompile-only withzeroGPUdispatch.",
+  "admission": "Allthree<=64threads/4096shared/private0/4096combinedhalfregslots andcodebyteswithin8192BO, underoriginalunitcaps. No loops/register/nativecount inferredfrompriorcases.",
+  "selector_requirement": "ExistingMMshared4096 predicate loops3/native<=53 doesnotadmitnewprograms. Addonlysource-reviewed loops4/native<=54/count12F12H alternative retainingallotherNIRsafety/SSBO68/private/shared/4096/perWG/max8 policies. Numericalfixture mustproveactual8/fullpartialcounts.",
+  "source_review": "bfb920c933fc55703c44ba218956cb6a7e1fb3c6d7348255c43ed756540b15a4",
+  "helper_review": "89dfa423b3511358e43cc5fc668832a9fd8a102e5e9c8058197adf6faa50727f",
+  "fault_services": "clean collection/faultcheck/bothservicesactive/drained; nodeviceerror",
+  "scope_limits": "Notnumerical/fullmodel/performancequalification; oldMV32/MMother/TTSnativeevidence not rerun. CombinedRMSnative/numerical gatedseparately beforeoneoriginalmodel.",
+  "timing_collected": false
+}

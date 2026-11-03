@@ -1,0 +1,108 @@
+{
+  "status": "PASS two RMS native/resource admission; existing RMS queue selector already covers new body",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-rms-runtime-native/compile",
+  "pins": {
+    "run.log": "d4661033bce385ded2f3ce5f64188387e9bcd7c2d9d56158aab8c6dbdfee022f",
+    "runner-result.json": "45cfbc4c989072260b5bf35aacb6bfd3370da40f555c972cba05b120ec195162",
+    "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+    "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+    "service.txt": "fa0d75bcf71f4f57302e018da3528f5bb6c1930f1cc50ee13b6b018a192c35c8"
+  },
+  "payload": {
+    "radish_icd.json": {
+      "bytes": 155,
+      "sha256": "7520ae7f22290c30f0077286c2746ffa42fc440d60b76f783ab2758097bb3a24"
+    },
+    "resources": {
+      "bytes": 747496,
+      "sha256": "f30a00523f532a4aa969518427fee31ae1be560696228447b28046c1acc828db"
+    },
+    "new_rms_norm_f32.spv": {
+      "bytes": 8000,
+      "sha256": "58cde5ba19b9959da217cc319e7a4518c00e0b116ca42da7ac801f35b3b68721"
+    },
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 13638392,
+      "sha256": "6f1551cc8ed772439d53157b50e518bef79b3a49f3144e058127faa8740a71ee"
+    },
+    "old_rms_norm_f32.spv": {
+      "bytes": 67876,
+      "sha256": "36925402fb906d86c41ccfe80e9e828ef33121a4122faa9770ce42fe4db68250"
+    },
+    "payload.json": {
+      "bytes": 969,
+      "sha256": "452915b3d19cdbe321db0774a649267139be21846114d82af743d1460dda384b"
+    }
+  },
+  "source_review": "12e90ffd9c04fd8f40bd9a152c4394b5a565115f5216034d104ad40c87a70b0b",
+  "payload_review": "e91fed308cf8675fd79072dfca89e7229516061ac514ad166a6324dd4ea65523",
+  "native": [
+    {
+      "variant": 0,
+      "native": 477,
+      "full_count": 10,
+      "half_count": 12,
+      "loops": 2,
+      "private": 0,
+      "shared": 512,
+      "logical": "128,1,1",
+      "physical": "64,2,1",
+      "descriptors": 3,
+      "buffers": 3,
+      "num_ssbos": 3,
+      "used": 7,
+      "packed": 1,
+      "local_memory": 1,
+      "linear_subgroups": 0,
+      "linear_barriers": 0,
+      "resident_override": 0,
+      "push": 116,
+      "before_data": 1,
+      "halfregister_slots": 4096,
+      "native_body_sha256": "8884643fc9f6d8fde2e169afc52e38e158fd7f3abf1243c5c0a2f91caaed3fb6",
+      "blake3": "55de46ebb3a4bd3b3f6d719753d7cd37bea054d0b1dd41396daaa1fbe7edc9d2",
+      "declared_sizedwords": 15264
+    },
+    {
+      "variant": 1,
+      "native": 14,
+      "full_count": 8,
+      "half_count": 2,
+      "loops": 2,
+      "private": 0,
+      "shared": 512,
+      "logical": "128,1,1",
+      "physical": "64,2,1",
+      "descriptors": 3,
+      "buffers": 3,
+      "num_ssbos": 3,
+      "used": 7,
+      "packed": 1,
+      "local_memory": 1,
+      "linear_subgroups": 0,
+      "linear_barriers": 0,
+      "resident_override": 0,
+      "push": 116,
+      "before_data": 1,
+      "halfregister_slots": 2304,
+      "native_body_sha256": "cd0528057ff69e1c9422bbc9b0556bc543c41a7c6b854130c454f71bc9dfa43b",
+      "blake3": "4f0b347d9d5ad0aed30339769fa890d12f62b5310ab1a442ccee648e3be6d9c4",
+      "declared_sizedwords": 452
+    }
+  ],
+  "checks": [
+    "Old477 native body andstats byte-identical priorRMS actual after onlyprogramordinal normalization. New14 native body/labels pinned, all explicitbranch targets resolve. No data/dispatch.",
+    "New actual8full/2half counts (maxindices7/1),128logical/64x2physical/shared512/private0/safety1/mask7/2loops and2304slots satisfy unchanged rd_packed_rms_batch_resources: native<=477/count<=10/12/exactinterface and4096slot gate. No queue mutation needed for RMS.",
+    "New declared452dwords/1808bytes is below originalcode footprint; shaderinstrlen14 is a different size unit and is not substituted for raw codebytecount. Exact BO size not printed by this helper; unchanged allocator/BO-size sourceguard carries from driver qualification.",
+    "Original90s384MiB/cleanfault/services/collection; no performance collection. Both actual native modules now admitted for the frozen numerical helper."
+  ],
+  "remaining": [
+    "24 originalCPU/old-newbit/fullguard/structural numerical cases",
+    "Combined MM source/native/numerical/selector gates and original full model/cache"
+  ],
+  "timing_collected": false
+}

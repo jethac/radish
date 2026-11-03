@@ -1,0 +1,91 @@
+{
+  "status": "passed",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-mm128-functional/probe",
+  "runner_result": "4b844e0b47752650cb9dfb5fc23829da9b8eef44160ef37950cc45599ee495fd",
+  "run_log": {
+    "bytes": 1026096,
+    "sha256": "40eb053fedca6395ff184b51cd3ee3ae43761442db3457dd3d53f2573a9ac0e1"
+  },
+  "collection": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+  "payload": {
+    "radish_icd.json": {
+      "bytes": 153,
+      "sha256": "269ae530366967667ac00e6fb5b13b405abcaf314c7b987e3aab7d5a48edc759"
+    },
+    "resources": {
+      "bytes": 754408,
+      "sha256": "70360165c59f5282f0c9e0c2073e114d494beb8233b54ce30a71aa8745996fca"
+    },
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "khr_quant_q6_k_mm.spv": {
+      "bytes": 8740,
+      "sha256": "581c9f94a1587acc62dc5e67fbe58c355fda2d6a8129722dd42c4fc213351ff1"
+    },
+    "khr_quant_q8_0_mm.spv": {
+      "bytes": 7516,
+      "sha256": "5934d36543ecbb53aca4d0cf9e4c77fa3e796754abdb68c394c524f33b4983bf"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 13638392,
+      "sha256": "7575351e906ecae8f6ca3a8b57d860594521526383e62935058a9bfe7811afb5"
+    },
+    "khr_quant_q4_k_mm.spv": {
+      "bytes": 9136,
+      "sha256": "bb761a8a5012934233d8b579e12e323c46249ccd4d0c0382baa236aa46c5a145"
+    },
+    "payload.json": {
+      "bytes": 1110,
+      "sha256": "043c63b1994b6107f7759dd92493a9253c132389701a2879b35c85701ffd3d2e"
+    }
+  },
+  "native_identity": {
+    "prior_capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-quant-mm128-native/compile",
+    "prior_review": "b9158e8006fcbe2d116ad7adac8c70e9af4ecda87c212fb3f649af5d0a7beaa6",
+    "all3_bodies_byteidentical_after_CLordinal_normalization": true,
+    "native_body_sha256": [
+      "d306d767a70b8ffa205a313416c12ad44f63171b91310762ac32f6cb01749aa7",
+      "95b0f855dd1538c17494b216dae2b4fb660e2ba3742881cd83d5d6b0a7e9c955",
+      "819814c535e5389b076442e4a81e1ef36452a764930ae534d50d2e2a5f6f13e8"
+    ]
+  },
+  "actual": {
+    "types": [
+      "Q4_K",
+      "Q6_K",
+      "Q8_0"
+    ],
+    "rows": [
+      127,
+      128,
+      129,
+      257
+    ],
+    "N": 9,
+    "K": 512,
+    "B_batches": 4,
+    "A_batches": 2,
+    "GQA_ratio": 2,
+    "rounds": 24,
+    "outputs": 138456,
+    "bit_differences": 0,
+    "full_allocations_per_round": 3,
+    "descriptor_visible_tail_padding_elements": 133,
+    "GPU_dispatches": 36,
+    "FD_submissions_and_flushes": 39,
+    "batch8_uses": 36,
+    "full_partial_cases": "M129 full8chunks;M257 fullround12=8+4 andsplitround6+6. M127/128 partial4 or2+2. BaseZ0/2 used.",
+    "all_actual_dispatch_result_codes": 0
+  },
+  "meaning": "All outputs match independent byte-preserved quantdecode/CPUdyadicdot oracle exactly, including row127/128/129 boundaries, a second128rowgroup boundary257, partialN9,changingseedrounds,packedbatchholes andGQA2. CompleteA/Bimmutablepayload+all3allocationpoison checks passed. NewMMselector isactive inactualfull/partialsubmitcounts, notmerelycompiled.",
+  "source_reviews": {
+    "shader": "bfb920c933fc55703c44ba218956cb6a7e1fb3c6d7348255c43ed756540b15a4",
+    "helper": "89dfa423b3511358e43cc5fc668832a9fd8a102e5e9c8058197adf6faa50727f",
+    "selector": "24a4a4a6b4605e736dd3933aec06a89891b086cffdbff69f4b7f9a9c25775fb4"
+  },
+  "fault_services": "cleanfaultcheck/collection/services/drain; noAPI/GPU/numericalfailure",
+  "scope_limits": "Finite dyadic exactoperator/structural qualification, notfullFP32domain/fullmodel/performance. RMS numerical c66cc6ed separateclosedcounterpart. Onecombinedoriginalmodel remains. NoTTS/KV/MV32/unchangednative repeat.",
+  "timing_collected": false
+}

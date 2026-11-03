@@ -1,0 +1,20 @@
+--- a/src/freedreno/radish/rd_queue.c
++++ b/src/freedreno/radish/rd_queue.c
+@@ -805,7 +805,7 @@
+ {
+    const struct ir3_shader_variant *v = pipeline->variant;
+    const bool mm = pipeline->logical_local_size[0] == 64 &&
+-      v->local_size[0] == 32 && v->shared_size == 4096 && v->loops == 3;
++      v->local_size[0] == 32 && v->shared_size == 4096 && (v->loops == 3 || v->loops == 4);
+    const bool mv = pipeline->logical_local_size[0] == 128 &&
+       v->local_size[0] == 64 && v->shared_size == 512 && (v->loops == 2 || v->loops == 3);
+    if (fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) != 506 || (!mm && !mv) ||
+@@ -816,7 +816,7 @@
+        v->shader_options.workgroup_resident_threads ||
+        !v->shader_options.nir_options.a5xx_ssbo_size_consts ||
+        v->pvtmem_size || v->constant_data_size || v->info.double_threadsize ||
+-       v->info.preamble_instrs_count || v->instrlen > 53 ||
++       v->info.preamble_instrs_count || v->instrlen > (mm && v->loops == 4 ? 54 : 53) ||
+        v->info.max_reg + 1 > 12 || v->info.max_half_reg + 1 > 12 ||
+        pipeline->resource_count != 3 || pipeline->descriptor_count != 3 ||
+        pipeline->buffer_count != 3 || pipeline->used_descriptors != UINT64_C(7) ||

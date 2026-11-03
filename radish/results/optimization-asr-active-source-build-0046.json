@@ -1,5 +1,5 @@
 {
-  "status": "Current d4d0/6f15 passes all focused queue/family/TTS checks. Full78241 reaches both completed warm modes and real request processing, then the original watchdog before a transcript. Cache replay remains held; no unchanged retry or performance release.",
+  "status": "Qualification candidate db872/7575: all four changed native and focused numerical gates pass. Original full22258 active; prior78241 failure retained. Model/cache and all-five completion remain open; performance closed.",
   "application": "Frozen ASR source with previously published GQA, quantized phase, memory-liveness and unit-axis overlays",
   "ordered_additive_patches": [
     {
@@ -130,6 +130,24 @@
       "sha256": "0eb63e877f43086da423f668b80cd264b70d0871652f9b4df333503da8ae75ac",
       "strip": 1,
       "apply_root": "Mesa root after MV32 queue overlay; apply in listed order"
+    },
+    {
+      "file": "0046-asr-quantized-mm128.patch",
+      "sha256": "44d465ff3df86cd337b1929c1820bf8a5afb04787c4eca0269aab71c193156e8",
+      "strip": 1,
+      "apply_root": "ASR source root after MV32 application overlay"
+    },
+    {
+      "file": "0046-asr-rms-runtime-body.patch",
+      "sha256": "cb22a2827f70092c42a0d6ece95055bd5d213dfb806b3069c9747a359329bee1",
+      "strip": 1,
+      "apply_root": "ASR source root after compact-softmax and MV32 overlays"
+    },
+    {
+      "file": "0046-asr-mm128-batching.patch",
+      "sha256": "5ccd4f01a0b803bae8d9ac058ef437e1f8da6357ef8491aec327c744d0aca089",
+      "strip": 1,
+      "apply_root": "Mesa root after coherent deferred/local overlays"
     }
   ],
   "cache_source_files": {
@@ -356,14 +374,14 @@
     "archive_members": "3ac3f2855cdfabfc691bdf82bf9d8d08d0e2de714d3d57fad97021ab4c291489",
     "build_result": "e71c72e97d3982b96af7b375c20dee5e8eb94dc62b584b651e04bec7e7c6905b"
   },
-  "current_listener": "d4d0ec3aeb16a44e494e96891f75a40f04b8baab8b080a95bc7346e8179d4f30",
+  "current_listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
   "current_libraries": {
     "libstraylight_asr.a": "f4f582c8dab2d774d9a99dd4d16a1a5756466dd099686ba8562fabe099794d73",
     "libggml-cpu.a": "d995ee7629e69509970ad3fe687f8a77a469c419ba7cd91404ca8bb79f4e85da",
     "libtranscribe.a": "618736b85c8948c96735152434149ec911648e06eddee3a8e6d9e89aef6238ed",
     "libggml-base.a": "28ec1c9e67f976b670a074b310cb09389cddce48fc7cc42a9e7f06a9449b0fc1",
     "libggml.a": "44072c75ec479e9e440cc8f9583c6d6250eab629a739c7ddf98bc70aefb8ba5d",
-    "libggml-vulkan.a": "2805304fb324d31b15485e59448d5128e46a38e2fab58239acc743300d0dbb11"
+    "libggml-vulkan.a": "42f8b488d56ae218f1854d97ca46052ff5dcf232956f9744082dc90d8c589870"
   },
   "phase_release_stage": {
     "build": {
@@ -575,10 +593,10 @@
     "result_sha256": "56a897bb432a0d13a460277b80be1e014994af94a31a9f945512bac17dd7b7e7"
   },
   "current_driver": {
-    "full": "f3763bf6c1c0d464369a099f3bbc96325b982941cc5336495c62386f79b9d208",
-    "deployed_strip": "6f1551cc8ed772439d53157b50e518bef79b3a49f3144e058127faa8740a71ee",
-    "source": "0046-bounded-deferred-submit.patch +0046-local-buffer-batching.patch over4d20; queue plus two DRM objects, existing ABI unchanged",
-    "target_status": "Dependency6d6b/local3272/TTS9f8b pass. Original full78241 timed out: both warm decoder steps and synchronized cleanup completed, real request processing began, no transcript."
+    "full": "62d7b3b12fab5f83b68abfdebe0837118dc08e45c95571816fe281686a360cde",
+    "deployed_strip": "7575351e906ecae8f6ca3a8b57d860594521526383e62935058a9bfe7811afb5",
+    "source": "0046-asr-mm128-batching.patch over6f15; queue object only",
+    "target_status": "Focused MM numerical/full-partial native identity passes; TTS/deferred lifetime and prior paths unchanged. Original full22258 active."
   },
   "incremental_source_review": "531fcaaa71331df51fca79dbd9c52e8664ae373cf76c9ec331b9eee2a25c3799",
   "incremental_build_runner_review": "d6930974ea4a41177dd4c46c34dc55cf96b1f58ffe327766190c245e02de7d01",
@@ -1492,8 +1510,198 @@
     "target_status": "Dependency6d6b/local3272/TTS9f8b pass. Original full78241 timed out: both warm decoder steps and synchronized cleanup completed, real request processing began, no transcript."
   },
   "prior_driver": {
-    "full": "0d5496a7528bddab3ac1ee6f1c75f5ba417d7deeba40bfbbd66eb844c48fe9ff",
-    "deployed_strip": "4d2012f00c8f874649fab64d52f000b57c52236b87f1818173cc2e233d0f71af",
-    "source": "0046-asr-mv32-batching.patch overa6d65; queueobject only"
+    "full": "f3763bf6c1c0d464369a099f3bbc96325b982941cc5336495c62386f79b9d208",
+    "deployed_strip": "6f1551cc8ed772439d53157b50e518bef79b3a49f3144e058127faa8740a71ee",
+    "source": "0046-bounded-deferred-submit.patch +0046-local-buffer-batching.patch over4d20; queue plus two DRM objects, existing ABI unchanged",
+    "target_status": "Dependency6d6b/local3272/TTS9f8b pass. Original full78241 timed out: both warm decoder steps and synchronized cleanup completed, real request processing began, no transcript."
+  },
+  "mm128_rms_stage": {
+    "source_build_receipt": "03edbb82b57245846001dd9d9ebec0b221943bee4ffb434bcd3790c91c1f6749",
+    "application_build": {
+      "status": "PASS isolated combined MM128/RMS build; native and numerical gates pending",
+      "source_releases": {
+        "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/quant-mm-sequential-tiles": "60a0bc099c89a980027de9b4365603c95dd4d82524065d7414ffc2f464c6c589",
+        "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/rms-runtime-body": "286322b71c56670407008022b96045804f9896d7b4ac0efe1a88e56a365f0154"
+      },
+      "base_result": "97405ec9036f39039ed8368a8fad817af39c9d92675251d6ee9dea514173b765",
+      "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
+      "libraries": {
+        "libstraylight_asr.a": "f4f582c8dab2d774d9a99dd4d16a1a5756466dd099686ba8562fabe099794d73",
+        "libggml-cpu.a": "d995ee7629e69509970ad3fe687f8a77a469c419ba7cd91404ca8bb79f4e85da",
+        "libtranscribe.a": "618736b85c8948c96735152434149ec911648e06eddee3a8e6d9e89aef6238ed",
+        "libggml-base.a": "28ec1c9e67f976b670a074b310cb09389cddce48fc7cc42a9e7f06a9449b0fc1",
+        "libggml.a": "44072c75ec479e9e440cc8f9583c6d6250eab629a739c7ddf98bc70aefb8ba5d",
+        "libggml-vulkan.a": "42f8b488d56ae218f1854d97ca46052ff5dcf232956f9744082dc90d8c589870"
+      },
+      "modules": {
+        "khr_quant_q6_k_mv.spv": {
+          "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q6_k_mv.spv",
+          "sha256": "3700e0e16e1749360a57b4902092ee758e9da5a099fa422414576c72ee00f5c9",
+          "bytes": 6416
+        },
+        "khr_quant_q8_0_mv.spv": {
+          "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q8_0_mv.spv",
+          "sha256": "13aac3afc458dee6ccc0f96d6a5af9eee7cf167a3844946addab250288ebd3b4",
+          "bytes": 5192
+        },
+        "khr_quant_q6_k_mm.spv": {
+          "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q6_k_mm.spv",
+          "sha256": "581c9f94a1587acc62dc5e67fbe58c355fda2d6a8129722dd42c4fc213351ff1",
+          "bytes": 8740
+        },
+        "khr_quant_q8_0_mm.spv": {
+          "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q8_0_mm.spv",
+          "sha256": "5934d36543ecbb53aca4d0cf9e4c77fa3e796754abdb68c394c524f33b4983bf",
+          "bytes": 7516
+        },
+        "khr_quant_q4_k_mv.spv": {
+          "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q4_k_mv.spv",
+          "sha256": "a78d55ce6d90c9e34c29c7f7762e157642c9932f5497ccaaf69e07beb1c88cbe",
+          "bytes": 6812
+        },
+        "khr_quant_q4_k_mm.spv": {
+          "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/quant/candidate/spv/khr_quant_q4_k_mm.spv",
+          "sha256": "bb761a8a5012934233d8b579e12e323c46249ccd4d0c0382baa236aa46c5a145",
+          "bytes": 9136
+        },
+        "rms_norm_mul_add_f32.spv": {
+          "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/spv/rms_norm_mul_add_f32.spv",
+          "sha256": "e226950ba127f0eaa84b12990dc065badc9c69a0579f06b2a19de4f44978e929",
+          "bytes": 72216
+        },
+        "rms_norm_f32.spv": {
+          "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/spv/rms_norm_f32.spv",
+          "sha256": "58cde5ba19b9959da217cc319e7a4518c00e0b116ca42da7ac801f35b3b68721",
+          "bytes": 8000
+        },
+        "rms_norm_mul_rope_f32_f16.spv": {
+          "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/spv/rms_norm_mul_rope_f32_f16.spv",
+          "sha256": "f9b91302bcb10bac98a918aeafc1f4c6b29d6ddbf523fc8fe456c94e1dbe0bbe",
+          "bytes": 27784
+        },
+        "rms_norm_set_rows_f32_f16.spv": {
+          "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/spv/rms_norm_set_rows_f32_f16.spv",
+          "sha256": "c0892e90f980a581cdcab49d987db75fa8cbd496e3df93fe64a9e0ae10d0aaaf",
+          "bytes": 68228
+        },
+        "rms_norm_set_rows_f32_f32.spv": {
+          "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/spv/rms_norm_set_rows_f32_f32.spv",
+          "sha256": "5e7f51ccbc3c5938e7434c11b0804379870bcebcad6db43c19d389ed9d6656b5",
+          "bytes": 67712
+        },
+        "rms_norm_mul_rope_f32_f32.spv": {
+          "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/rms/candidate/spv/rms_norm_mul_rope_f32_f32.spv",
+          "sha256": "b22724714a13a6a5c769976b989fd7e280e6b5d0d0d8666438c301e37d495a7b",
+          "bytes": 27620
+        }
+      },
+      "header": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/constrained-heap-release/candidate/ggml/src/ggml-vulkan/asr_resource_snapshot.h",
+        "sha256": "0d2299a5bd63b1c6ecc93e066b36cf3812ec10b529d4b9b25f2c4c502a5922c2"
+      },
+      "commands": "b66e3155a13ba2ca6d6f17ff54800eeeddb89fc311742826f2ae01cbe25637ac",
+      "scope": "Only backend/generated quant/generated RMS objects over d4d0; all three MV32 modules byte-identical; model/bridge/driver/other modules unchanged; no timing"
+    },
+    "driver_build": {
+      "status": "PASS isolated host build; target qualification pending",
+      "source_release": "19e274041d9e9df0b7097d0dfc21ee7f28a3223d64bd1cfd41f1700d3bf75bc8",
+      "source": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/mm128-queue-admission/candidate/rd_queue.c",
+      "source_sha256": "fda2e76da679e616cf76c2e93a9dfcf22bbb7f0ca30427295537572afcb7ebec",
+      "object": "3add49b7fd89c577706cd2b2cbcf5575813305a74f4d16906e7304f33d9d41b0",
+      "commands": "072b47db59a4cb3ffe8a9debba4a765fd6362d69ad4d9eae792dc176bd69d011",
+      "argv": [
+        "clang++",
+        "--target=aarch64-linux-gnu",
+        "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+        "-mcpu=cortex-a53",
+        "-o",
+        "/run/media/jethac/Shared/radish/optimization-five-mm128-queue-driver-0046/libvulkan_radish.so",
+        "src/freedreno/radish/libvulkan_radish.so.p/meson-generated_.._rd_entrypoints.c.o",
+        "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/cache-build/rd_instance.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_device.c.o",
+        "/run/media/jethac/Shared/radish/optimization-five-phase-release-driver-0046/rd_memory.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_descriptor.c.o",
+        "/run/media/jethac/Shared/radish/optimization-five-quant-queue-driver-0046/rd_pipeline.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_command.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_sampling.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_nir_sampling.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_nir_resources.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_nir_robust.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_resources.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_transfer.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_image.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_event.c.o",
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_query.c.o",
+        "/run/media/jethac/Shared/radish/optimization-five-mm128-queue-driver-0046/rd_queue.c.o",
+        "-L/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib",
+        "-Wl,--as-needed",
+        "-Wl,--no-undefined",
+        "-shared",
+        "-fPIC",
+        "-Wl,-soname,libvulkan_radish.so",
+        "-Wl,--whole-archive",
+        "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/cache-build/rd_pipeline_cache.cpp.o",
+        "-Wl,--start-group",
+        "src/vulkan/runtime/libvulkan_lite_runtime.a",
+        "src/vulkan/runtime/libvulkan_runtime.a",
+        "src/vulkan/runtime/libvulkan_instance.a",
+        "-Wl,--no-whole-archive",
+        "-fuse-ld=lld",
+        "--rtlib=libgcc",
+        "-Wl,-rpath-link,/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib",
+        "/run/media/jethac/Shared/radish/optimization-five-coherent-queue-v2-driver-0046/libfreedreno_drm.a",
+        "src/util/libmesa_util.a",
+        "src/util/libmesa_util_simd.a",
+        "src/util/blake3/libblake3.a",
+        "src/c11/impl/libmesa_util_c11.a",
+        "src/freedreno/ir3/libfreedreno_ir3.a",
+        "src/freedreno/isa/libir3encode.a",
+        "/run/media/jethac/Shared/radish/compute11-idiv-isolated-build-0045/libnir.idiv.a",
+        "src/compiler/libcompiler.a",
+        "src/freedreno/common/libfreedreno_common.a",
+        "src/freedreno/isa/libir3decode.a",
+        "src/compiler/isaspec/libisaspec.a",
+        "src/freedreno/fdl/libfreedreno_layout.a",
+        "src/vulkan/util/libvulkan_util.a",
+        "src/compiler/spirv/libvtn.a",
+        "-Wl,--version-script",
+        "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/vulkan/vulkan.sym",
+        "-Wl,-Bsymbolic",
+        "-Wl,--gc-sections",
+        "/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/libz.so",
+        "-pthread",
+        "-lm",
+        "/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/libdrm.so",
+        "-Wl,--end-group"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build",
+      "strip_argv": [
+        "llvm-strip",
+        "--strip-debug",
+        "-o",
+        "/run/media/jethac/Shared/radish/optimization-five-mm128-queue-driver-0046/libvulkan_radish.stripped.so",
+        "/run/media/jethac/Shared/radish/optimization-five-mm128-queue-driver-0046/libvulkan_radish.so"
+      ],
+      "base_result": "a6d99987807932654e793e94b8c68d6ff1592bd68f78ea77485dbb96ec8134c6",
+      "sha256": "62d7b3b12fab5f83b68abfdebe0837118dc08e45c95571816fe281686a360cde",
+      "strip_sha256": "7575351e906ecae8f6ca3a8b57d860594521526383e62935058a9bfe7811afb5",
+      "scope": "Only rd_queue.c.o changes over6f15; two MM predicate lines only, unchanged ABI/DRM/deferred/pipeline/cache/compiler/memory/shaders"
+    },
+    "actual_receipts": {
+      "optimization-mm128-native-0046.json": "b9158e8006fcbe2d116ad7adac8c70e9af4ecda87c212fb3f649af5d0a7beaa6",
+      "optimization-rms-runtime-native-0046.json": "7d4c159d64f3459a8a76143a35fbde465865d42ed5857f6bb41d909d089f42be",
+      "optimization-mm128-actual-0046.json": "beadea9ce3d5b1f35f964614ac0088975ec3a5dcee16ab4a84bf7a13e4603951",
+      "optimization-rms-runtime-actual-0046.json": "c66cc6ed9944e645a5c7f73f83ccb88bc7d78bc0acfab1de09886db2229f9647"
+    },
+    "scope": "Only three MM and selected RMS shader bodies/backend row denominators plus narrow MM batching selector. Five unselected RMS and three MV32 payloads exact; no deferred lifetime/ABI/model/precision change."
+  },
+  "prior_listener": "d4d0ec3aeb16a44e494e96891f75a40f04b8baab8b080a95bc7346e8179d4f30",
+  "active_full_model": {
+    "handle": 22258,
+    "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
+    "driver": "7575351e906ecae8f6ca3a8b57d860594521526383e62935058a9bfe7811afb5",
+    "cache": "fresh missing v15",
+    "scope": "Both production warm modes/full audio, two requests of same pinned2.785s clip, real256 budget and original640MiB/128swap/300s controls",
+    "status": "live; no transcript result claimed"
   }
 }

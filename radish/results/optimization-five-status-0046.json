@@ -26,7 +26,7 @@
     {
       "area": 4,
       "implementation": "Integrated GQA broadcast, phase-specific quantized kernels, encoder-to-prefill device-buffer reuse and reduced host staging; actual application pipeline cache and supported-kernel initialization correction are built. Constrained-profile subsampling reuses one independent chunk graph across the complete audio, lowering unnecessary live convolution intermediates. Scheduler scratch is released between subsampling and encoder; Vulkan-owned allocations leave the BO reuse cache on final unref. Incremental KV allocates actual prompt/draft demand and grows geometrically up to the unchanged full context ceiling. The constrained softmax shader uses one runtime-width body and preserves column loops instead of seven constant-width expansions, retaining numerical order and masks. Production constrained-profile warmup now uses fresh temporary borrowed-model sessions and one actual decoder step per mode; synthetic state is synchronized and freed before real requests. The original warm prompt now has owned string lifetime. Constrained-profile heap cleanup asks glibc to return unused pages after compilation and synchronized temporary-session destruction. Quantized decoding now processes up to32 rows per workgroup in consecutive four-row blocks with uniform shared-memory reuse barriers and unchanged per-row arithmetic. Coherent host candidate db8725 adds sequential128-row quantized MM and one selected RMS runtime body; current d4d0/6f15 is preserved.",
-      "evidence": "Candidate d4d0/4d20 preserves all qualified operator/resource results, including exact6912 MV32 outputs and original fullallocation guards. Full42969 again reaches the original300-second watchdog during streaming prefill: offline one-step cleanup and streaming encoder complete, but no streaming decoder STEP/DONE or requested transcript. Actual Q6 vocabulary dispatches use4748 workgroups/594 submissions, confirming the new mapping without a timing claim. The full warm audio/modes, two same pinned2.785s requests, real256 budget and640MiB/128MiBswap/300s controls remain unchanged. Memory640M/swap64.7M are guard telemetry. Full model and ASR cache replay remain open; no unchanged retry or performance release. The coherent d4d0/6f15 candidate passes dependency/local-family/TTS qualification and is executing the original full model as78241; no completed full-model or ASR cache-replay result yet. Full78241 on coherent6f15 is terminal at the original watchdog: both warm actual decoder steps and synchronized cleanup pass; the real request prefix completes and audio subsampling begins, with no transcript. Original workload and limits remain; import is held. New four selected shader modules are host-validated; actual native/numerical/model gates remain pending. Latest full78241 completed both warmups and real prefix, then timed out before transcripts."
+      "evidence": "Candidate d4d0/4d20 preserves all qualified operator/resource results, including exact6912 MV32 outputs and original fullallocation guards. Full42969 again reaches the original300-second watchdog during streaming prefill: offline one-step cleanup and streaming encoder complete, but no streaming decoder STEP/DONE or requested transcript. Actual Q6 vocabulary dispatches use4748 workgroups/594 submissions, confirming the new mapping without a timing claim. The full warm audio/modes, two same pinned2.785s requests, real256 budget and640MiB/128MiBswap/300s controls remain unchanged. Memory640M/swap64.7M are guard telemetry. Full model and ASR cache replay remain open; no unchanged retry or performance release. The coherent d4d0/6f15 candidate passes dependency/local-family/TTS qualification and is executing the original full model as78241; no completed full-model or ASR cache-replay result yet. Full78241 on coherent6f15 is terminal at the original watchdog: both warm actual decoder steps and synchronized cleanup pass; the real request prefix completes and audio subsampling begins, with no transcript. Original workload and limits remain; import is held. New four selected shader modules are host-validated; actual native/numerical/model gates remain pending. Latest full78241 completed both warmups and real prefix, then timed out before transcripts. MM beadea9c checks138456 exact outputs/fullguards/36dispatches39submits; RMS c66cc6ed checks571680 CPU outputs and285840 exact old-new pairs. Original combined full22258 remains pending; these finite fixtures are not full-model completion."
     },
     {
       "area": 5,
@@ -63,7 +63,8 @@
     "0046-bounded-deferred-submit.patch": "2846df45ce9544c6b4a31a607f510769a4db5dd318cc10f700a9ed663b67f4db",
     "0046-local-buffer-batching.patch": "0eb63e877f43086da423f668b80cd264b70d0871652f9b4df333503da8ae75ac",
     "0046-asr-quantized-mm128.patch": "44d465ff3df86cd337b1929c1820bf8a5afb04787c4eca0269aab71c193156e8",
-    "0046-asr-rms-runtime-body.patch": "cb22a2827f70092c42a0d6ece95055bd5d213dfb806b3069c9747a359329bee1"
+    "0046-asr-rms-runtime-body.patch": "cb22a2827f70092c42a0d6ece95055bd5d213dfb806b3069c9747a359329bee1",
+    "0046-asr-mm128-batching.patch": "5ccd4f01a0b803bae8d9ac058ef437e1f8da6357ef8491aec327c744d0aca089"
   },
   "existing_results": "Original743 CTS cases and modified132 robustness outcomes remain historical pinned evidence; no conformance count or selected performance change.",
   "completion_gate": "TTS side is qualified for the stated T213/T78 fixtures. All-five gate remains CLOSED on ASR full-model memory/placement/transcript and real application replay; full GOAL remains active.",
@@ -108,7 +109,11 @@
     "optimization-deferred-queue-correctness-0046.json": "6d6b7931f20085b5f6705ca208455b33dd953b46ba4949dfb8b6135d3c979f7f",
     "optimization-local-family-correctness-0046.json": "3272fdcef22815d255c50ddf3401ab1713d667e705d21ff32591170900531d9f",
     "optimization-tts-deferred-queue-regression-0046.json": "9f8bb8f7a48edc9645a18b0e18c9f01d57008eb04de72f99b079deb164c38a80",
-    "optimization-asr-coherent-structural-0046.json": "f51ade4f6cb92e953d1bc759ed9318e1618c5ec022e312b18e373806667bc3a2"
+    "optimization-asr-coherent-structural-0046.json": "f51ade4f6cb92e953d1bc759ed9318e1618c5ec022e312b18e373806667bc3a2",
+    "optimization-mm128-native-0046.json": "b9158e8006fcbe2d116ad7adac8c70e9af4ecda87c212fb3f649af5d0a7beaa6",
+    "optimization-rms-runtime-native-0046.json": "7d4c159d64f3459a8a76143a35fbde465865d42ed5857f6bb41d909d089f42be",
+    "optimization-mm128-actual-0046.json": "beadea9ce3d5b1f35f964614ac0088975ec3a5dcee16ab4a84bf7a13e4603951",
+    "optimization-rms-runtime-actual-0046.json": "c66cc6ed9944e645a5c7f73f83ccb88bc7d78bc0acfab1de09886db2229f9647"
   },
   "drivers": {
     "bounded_cache_queue_half": "61e8/9f64 exact integrated cache+queue+corrected idiv",
@@ -137,9 +142,9 @@
   "full_model_fixture_scope": "Two requests of the same pinned 2.785-second English clip, exact transcript and language, explicit Vulkan placement and resource controls. Not two distinct clips or broad ASR accuracy.",
   "next_candidate": {
     "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
-    "driver": "6f1551cc8ed772439d53157b50e518bef79b3a49f3144e058127faa8740a71ee",
+    "driver": "7575351e906ecae8f6ca3a8b57d860594521526383e62935058a9bfe7811afb5",
     "receipt": "optimization-mm128-rms-source-build-0046.json",
-    "target_status": "not executed",
+    "target_status": "Changed-native and both focused numerical scopes pass; original full22258 live",
     "performance_gate": "CLOSED"
   }
 }

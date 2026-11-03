@@ -1,5 +1,20 @@
 # Radish status
 
+## 2026-11-03: matrix and RMS correctness gates pass
+
+The [matrix check](results/optimization-mm128-actual-0046.json) passes all138,456
+outputs and full-allocation guards, including full and partial batches. The
+[RMS check](results/optimization-rms-runtime-actual-0046.json) passes571,680 CPU
+comparisons and285,840 exact old/new pairs under the original tolerance.
+All four changed native programs fit the existing resource limits without
+private scratch memory. The narrow matrix batching selector and its source/build
+are recorded in the [combined receipt](results/optimization-mm128-rms-source-build-0046.json).
+
+The original full ASR workload is now running on db872/7575 with a fresh cache.
+No requested transcript or model completion is claimed yet. Prior failures remain
+preserved; actual cache replay follows only a full pass. No performance measurement
+has been collected or authorized.
+
 ## 2026-11-03: combined matrix and RMS candidate built
 
 The [combined candidate](results/optimization-mm128-rms-source-build-0046.json)
