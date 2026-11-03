@@ -1,5 +1,5 @@
 {
-  "status": "Source/host build and three native admissions closed; numerical/fullmodel/cache gates pending",
+  "status": "Source/build/three native resources and6912 exact numerical/fullpartial checks closed; original full42969 running, cache replay held",
   "source_release": {
     "status": "source ready; owner host generation/build then independent source/native/numerical qualification required; no performance measurement",
     "files": {
@@ -1111,5 +1111,9 @@
     "timing_collected": false
   },
   "scope": "Three quantized MV shaders process up to32 rows through sequential four-row blocks, preserving per-row FMA/reduction and adding a uniform shared-reuse barrier. Three MM modules and all other model/shader/lifetime policies are byte-identical. Existing queue predicate accepts the observed third loop within unchanged resource limits.",
-  "performance_measurement": false
+  "performance_measurement": false,
+  "actual_review": {
+    "file": "optimization-mv32-correctness-0046.json",
+    "sha256": "f19c69469efe16a54bb60fcb4ab75c4092b1f4b128380a366e51f6d7e4f17107"
+  }
 }

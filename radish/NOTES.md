@@ -1,5 +1,16 @@
 # Radish status
 
+## 2026-11-03: qualify sequential decoding rows
+
+[All 6,912 exact CPU comparisons pass](results/optimization-mv32-correctness-0046.json),
+including 31/32/33-row boundaries, complete allocation guards and actual full/partial
+batches. The three native bodies match resource admission, with no private memory.
+
+The original full model is now running on d4d0/4d20 with a fresh cache and unchanged
+warm-up work, two identical real requests, token budget and limits. This closes the
+bounded operator check; model transcripts and cache replay remain open. No
+performance measurement has been made.
+
 ## 2026-11-03: preserve the RMS-integrated model result
 
 [The original full run](results/optimization-asr-rms-batch-timeout-0046.json)

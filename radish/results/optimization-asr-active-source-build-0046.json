@@ -1,5 +1,5 @@
 {
-  "status": "Active qualification candidate d4d0/4d20: MV32 source/build and3native resource gates closed; functional/model/cache results pending. Prior43ec/a6d65 full29498 timeout preserved; no performance or all-five completion claim.",
+  "status": "Active qualification candidate d4d0/4d20: source/build,3native resource and6912 exact numerical/fullpartial gates closed. Original full42969 is running with freshv13 cache, unchanged workload/limits. Prior29498 timeout preserved; no performance or all-five completion claim.",
   "application": "Frozen ASR source with previously published GQA, quantized phase, memory-liveness and unit-axis overlays",
   "ordered_additive_patches": [
     {
