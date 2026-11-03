@@ -1,0 +1,37 @@
+{
+  "status": "passed host-only proposal counterpart; NOT AUTHORIZED FOR EXECUTION",
+  "proposal": "6a08d8e2748e7d70c6a306b1aedab49e272f089d2f6045d66bdc09329665ac00",
+  "scopes": [
+    {
+      "mode": "cold",
+      "runner": "6ec57c891cd16f2ea6c87afc70248724f693b7ab141aa56fa3d0fc8ebf089fff",
+      "hostcheck": "27e62e3cc58c68b1d9ea913d69bae13448d7fc14b921847e6f5650177d22902a",
+      "argv": "fd102787b0a399fa934f6d29cd30336c126d53a03fe9df09b94158d3f1e0f5f8",
+      "inverse_exact": true,
+      "all_asset_hashes_verified": true
+    },
+    {
+      "mode": "import",
+      "runner": "b9902a008ffc21d42d3923281a8f72c9a80ff0ac188525ae14f59c61fe9e14a1",
+      "hostcheck": "c7c922500beeddb3fc0a604ab2f17a5bb01cbd4148eaf258ce35b19911d9e560",
+      "argv": "03e33ec0b24698e98016aa93f1a28e974ef091b001398f1a5bd1e8c2af3e0d03",
+      "inverse_exact": true,
+      "all_asset_hashes_verified": true
+    }
+  ],
+  "checks": [
+    "Exactly2literalchanges ineachwrapper: RuntimeMaxSec300\u2192900 andhostADBtimeout335\u2192935. Existing35secondobservationmarginretained; originalwas335 not360. Byteexactinverse restoresreviewedcold6e2013/import4b9710.",
+    "Everyotherwrapperinstruction/oracle/control unchanged:640MiB128Mswap/TimeoutStop15/500mskernelhangcheck/Fencewait/originaldiskreserve/memoryheadroom/service/fault/drain/privateICD. No driver/model/audio/shader/math/decodebudgetchange.",
+    "Cold still2identicalpinnedclipsinoneprocess, importseparatefreshprocess1clip; warmboth40000audio/oneactualstep/synchronizedtempcleanup, full256requestbudget/originalexactEnglishlanguage/text/GPUplacement/populatedcache oracles retained.",
+    "Actualhostpayloadsourcefilehashes/sizes independentlyverified againstfrozenhostcheck:db872listener/0f721driver/currentloader/89164Baudio/checkerexact. Freshlabel/privatev18cache onlyargv/pathdelta. NoGPUactions/execution; noGOALedit.",
+    "Performancecollection remainsfalse; no latency/throughput/profiling runs. Proposedlimitisanorchestration/watchdogexceptionforcorrectnesscompletion, notaperformancebudgetacceptance.",
+    "ImportconditionalonindependentcoldPASSandactualpopulatedcache; readypinsalone do notauthorizeimport. Stoponanynewfault/error/preservefailedcapture, noautomaticretry."
+  ],
+  "permission_requirement": {
+    "source": "/home/jethac/Projects/lenovo-8/radish/GOAL.md:41",
+    "quote": "Existing timeout, memory, disk, fault, service and device-ownership controls remain unchanged.",
+    "application": "Thisproposal changesexistingwholeprocesswatchdog andmustwaitforexplicituserexception. ItdoesnotchangeGPUkernel500mshangcheckoranyotherlimit. Rootwillaskuseraboutconcretefrozencold+conditionalimportscopes."
+  },
+  "execution_hold": "Bothscopeshelduntiluserexplicitapprovalandfreshoriginalpreflight. No inferencefromhostcounterpartorpreviousengineeringauthorization.",
+  "timing_collected": false
+}

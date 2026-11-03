@@ -1,0 +1,20 @@
+--- /run/media/jethac/Shared/radish/optimization-five-asr-matrix-fence-import-runner-0046/device.py
++++ /run/media/jethac/Shared/radish/optimization-five-asr-correctness-900s-proposal-0046/import/device.py
+@@ -246,7 +246,7 @@
+         if args.mode == 'compile':
+             environment['IR3_SHADER_DEBUG'] = 'disasm'
+         command = ['systemd-run', '--unit=' + unit, '--wait', '--pipe', '--collect',
+-                   '-p', 'MemoryMax=640M', '-p', 'MemorySwapMax=128M', '-p', 'RuntimeMaxSec=300',
++                   '-p', 'MemoryMax=640M', '-p', 'MemorySwapMax=128M', '-p', 'RuntimeMaxSec=900',
+                    '-p', 'TimeoutStopSec=15', '-p', 'LimitCORE=0']
+         command += ['--setenv=' + key + '=' + value for key, value in environment.items()]
+         commands = ['set -eu', 'command -v awk', 'dmesg > ' + shlex.quote(remote + '/batch-dmesg-before.txt')]
+@@ -260,7 +260,7 @@
+         write_json(evidence / 'launch.json', dict(mode=args.mode, unit=unit, serial=args.serial,
+                    remote=remote, environment=environment, payload=assets))
+         started = True
+-        result_code = call(['shell', shell], 'run.log', check=False, timeout=335)
++        result_code = call(['shell', shell], 'run.log', check=False, timeout=935)
+         require(result_code == 0, 'probe/compile process returned ' + str(result_code))
+         terminal = True
+         call(['shell', 'sh -s'], 'assets-after.txt', input_text=verify)

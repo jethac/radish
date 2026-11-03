@@ -11,7 +11,8 @@ Guard telemetry recorded640 MiB memory and61.5 MiB swap, within the existing cap
 
 All [five-area evidence and remaining gates](results/optimization-five-completion-ledger-0046.json)
 remain explicit. TTS is qualified for its stated fixtures; full ASR output and
-fresh-process application-cache replay remain open. A host-only proposal would
+fresh-process application-cache replay remain open. A [host-only proposal](results/optimization-asr-900s-proposal-0046.json) with
+[independent review](results/optimization-asr-900s-proposal-review-0046.json) would
 change the whole-process deadline to900 seconds for the cold check and conditional
 cache replay, preserving the500 ms kernel hangcheck and every other workload,
 resource and correctness control. It has not run: explicit user authorization is
