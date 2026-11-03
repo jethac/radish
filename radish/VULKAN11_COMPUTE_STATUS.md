@@ -1,5 +1,10 @@
 # Vulkan 1.1 compute qualification
 
+> Superseded on 2026-11-04 by [VULKAN11_CTS_LEDGER.md](VULKAN11_CTS_LEDGER.md):
+> the full CTS 1.4.7.1 mustpass, run unmodified on the tablet, with per-group
+> counts and the compute-only qualification evidence. The text below is the
+> earlier partial record (older CTS revision), kept as history.
+
 Status: **incomplete**. Conformance and the applicable compute/shared feature set
 come before further performance experiments. The selected fcd/d332 inference
 stack is frozen. The intended GPU budget is entirely compute; CPU handles

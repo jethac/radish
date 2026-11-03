@@ -1,5 +1,26 @@
 # Radish status
 
+## Conformance — 2026-11-04
+
+Full CTS 1.4.7.1 mustpass (3,215,124 cases) run on the tablet in bounded
+batches: [ledger](VULKAN11_CTS_LEDGER.md). Runner: `scripts/tsv/cts.sh`
+(`setup`, `mustpass ICD RUN [STRIDE]`, `ledger`, `classify`). deqp-vk is
+built from `/run/media/jethac/Shared/radish-src/vk-gl-cts` into
+`../build-cts`; raw logs in `../cts-runs`.
+
+- Now (driver `6eba49b`/`4c51830` per group): 79,647 Pass, 127,014 Fail,
+  3,008,449 NotSupported, 7 Crash, 4 DeviceLost. Of the non-passes, 121,120
+  need graphics, 233 hit CTS queue-family assumptions, 5,672 are
+  compute-path: 4,493 workgroups over 128 invocations, 957 border colours
+  in compute, 164 small 3D mips, 29 UBO, 4 SSBO, 10 timeline-semaphore.
+- Compute-only cannot qualify as the spec and CTS stand (multiview and the
+  graphics format features are required for 1.1; the CTS compute-only mode
+  was removed before this tag). The user decides on a graphics path.
+- RBA per-access bounds check landed: Kokoro warm core 24.0 s with RBA on
+  (was 32.8 s), bit-identical.
+- `deploy-driver.sh` now writes `api_version` 1.1.0 in the ICD manifest; with
+  1.0.0 the loader dropped pNext feature structs.
+
 ## Current state — 2026-11-03 (rebuilt from the source branches)
 
 Everything below this section is the previous agent's log, kept for lookups.
@@ -67,8 +88,9 @@ in shared memory reused across taps); driver buffer copy as one compute
 dispatch; fuse the remaining 162/322-channel chains; Winograd GEMM load phase.
 Conformance: delegated CTS track running (ledger to follow).
 
-Left on the device: `/var/tmp/radish-canon/` (lib: drivers 0f721436 and
-c1755aaf, loader, libsegv.so; bin: kokoro runtimes 52c9e565, e37db9b1; tts:
+Left on the device: `/var/tmp/radish-canon/` (cts: deqp-vk 3cd8cd18 and
+CTS data, 95 MB, no results; lib: drivers 0f721436, c1755aaf, a7e796f6
+(3740401), 46ec36d1 (4c51830), 3c582180 (6eba49b), loader, libsegv.so; bin: kokoro runtimes 52c9e565, e37db9b1; tts:
 hardlinks into /var/tmp/radish; cache; asr/wav cmd-en clips and pipeline
 cache). Kokoro runtime now e37db9b1; ubench/ and runs/ removed.
 

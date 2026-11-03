@@ -440,6 +440,7 @@ def cmd_classify(args):
     (candidate driver failures). With --list, print the 'other' cases."""
     buckets = collections.defaultdict(collections.Counter)
     others = []
+    merged = {}  # later runs override earlier ones, case by case
     for run in args.runs:
         for name in sorted(os.listdir(os.path.join(RUNS, run))):
             path = os.path.join(RUNS, run, name, "results.tsv")
@@ -447,14 +448,14 @@ def cmd_classify(args):
                 continue
             for line in open(path):
                 parts = line.rstrip("\n").split("\t")
-                case, status = parts[0], parts[1]
-                detail = parts[2] if len(parts) > 2 else ""
-                if status in ("Pass", "NotSupported", "QualityWarning", "CompatibilityWarning"):
-                    continue
-                b = classify(case, status, detail)
-                buckets[".".join(case.split(".")[:args.depth])][b] += 1
-                if b == "other":
-                    others.append((case, status, detail))
+                merged[parts[0]] = (parts[1], parts[2] if len(parts) > 2 else "")
+    for case, (status, detail) in merged.items():
+        if status in ("Pass", "NotSupported", "QualityWarning", "CompatibilityWarning"):
+            continue
+        b = classify(case, status, detail)
+        buckets[".".join(case.split(".")[:args.depth])][b] += 1
+        if b == "other":
+            others.append((case, status, detail))
     if args.list:
         for c, st, d in others:
             print(f"{c}\t{st}\t{d}")

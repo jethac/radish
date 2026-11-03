@@ -131,19 +131,21 @@ is the user's call. Freedreno's a5xx Gallium driver is the hardware reference
 for that. Until then: advertise exactly what is implemented, and never invent a
 compute-only profile.
 
-Where conformance stands (2026-11-03):
+Where conformance stands (2026-11-04, [ledger](radish/VULKAN11_CTS_LEDGER.md)):
 
-- Reports API version 1.1.
-- `dEQP-VK.compute`: 93/93. Core format queries: 219/219. Both are in the
-  status ledger.
-- Reported without a ledger entry: floating-point precision 40/40, buffer
-  atomics 19/19, buffer robustness 132/132.
-- Known failure: ETC2/EAC sRGB precision.
-- Not yet run: the rest of the applicable mustpass (API, SPIR-V/shaders, memory
-  model, synchronization, descriptors, images, transfers, queries).
+- Reports API version 1.1. The full CTS 1.4.7.1 mustpass has run on the
+  tablet: 79,647 Pass, 127,014 Fail, 3,008,449 NotSupported, 7 Crash.
+- Of the failures, 121,120 need a graphics queue or pipeline, 233 come from
+  CTS queue-family assumptions, and 5,672 are compute-path driver work
+  (mostly workgroups over 128 invocations and border colours in compute).
+- The compute-only question is answered: as the 1.1 spec and the CTS
+  stand, a device without graphics cannot pass (multiview and the graphics
+  format features are required; the CTS compute-only mode was removed).
+  Whether to add a minimal graphics path, or to ask the working group
+  through the X.Org Foundation, is the user's decision.
 - Advertised optional features: `storageBuffer8BitAccess`,
-  `storageBuffer16BitAccess`, `shaderInt8`, `timelineSemaphore` and pipeline
-  statistics queries. Each carries its full conditional CTS obligations.
+  `storageBuffer16BitAccess`, `shaderInt8`, `timelineSemaphore`, pipeline
+  statistics queries, `VK_KHR_sampler_mirror_clamp_to_edge`.
 
 Conformance work order:
 
