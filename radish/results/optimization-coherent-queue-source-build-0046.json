@@ -1,5 +1,5 @@
 {
-  "status": "Source/build/ABI and focused dependency/local-family actuals pass; focused TTS and full ASR/cache remain pending",
+  "status": "Source/build/ABI, dependency/local-family and focused integrated TTS actuals pass; original full ASR/cache remain open",
   "scope": "Same-queue bounded deferred FD waits with explicit enqueue-error propagation, plus unchanged-math norm/transpose batching; no model, shader or per-execution GPU resource-limit change",
   "deferred_source": {
     "status": "source frozen for independent review and owner host compilation; no device admission yet",
@@ -1829,5 +1829,6 @@
       "Ten exact tuples and original numeric/exact/fullguards plus30 total submit/flush results required. Native body identity/resource verification remains independent actual counterpart."
     ],
     "timing_collected": false
-  }
+  },
+  "tts_actual": "optimization-tts-deferred-queue-regression-0046.json"
 }

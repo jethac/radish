@@ -1,0 +1,121 @@
+{
+  "status": "passed",
+  "scope": "Focused shared deferred-FDwait TTS regression; exact acceptedT78 outputs/sessionreuse/oldUUIDreject+populatednewcache, no timing collection",
+  "capture": "/run/media/jethac/Shared/radish/kokoro-runtime-short-single-vulkan-opt0046-deferred-regression-v2-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache",
+  "session_manifest": "68c559224ecb8426c867cb79475602d596d51e6e7831ec4fdfe45daa8c40e393",
+  "device_session_manifest": "c6b4d464a8461edf9aec71abec0f1885a213055a119e01f0c69f2eb416d3f0e3",
+  "run_log": "fdaa0b7c03ad7c1868e2c5d1a918438d8ccd9d265aea51e5f1bf178bf6d56e9b",
+  "launch": "fc78e6a7de2bec5fd3c9e65f0d45e4c9e13dc35188ff4f2424f172fb99f8e471",
+  "prior_wrapper_review": "9302a119580a0e599020c95349294b98ca58eb2c770407f8f42ed94663a174eb",
+  "fresh_label_review": "ff409f774d34bea7b0a74334fdd0941ade2a56614b2efffb84ddf8f934d6cd9c",
+  "requests": [
+    {
+      "request": 0,
+      "T": 78,
+      "sessions_reused": false,
+      "files": {
+        "boundary/ids.i64": "3c3bfd2e56f6f778a6082ee0b183a68d2053d36c4fd1f3ee12126dc3c9d68ae6",
+        "boundary/style.f32": "30a2c76520b76bce395b3e2c33592c56322dffb50d70f7f0f7aeaef968407d66",
+        "boundary/speed.f32": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c",
+        "boundary/asr.f32": "3a2f327d5dac194f2f9e6ad9972a061e752458da4e5473f183a3ea8e5e4482d8",
+        "boundary/f0.f32": "245f8f0c10792ef0d35b76bd113d790eaf170e01664282b632c64ee1ebfe72e5",
+        "boundary/n.f32": "a4b2b93b5d6f05dd6dafcae4ec930403f59422b52f24d4dfb1231b89c9aec63c",
+        "boundary/har.f32": "46362e2d815fc69e49486f998ed887c1ed7740dcfa40002e6033487e61fdf34e",
+        "boundary/durations.f32": "e87476ac494910e6963ec1254409c9356243070e7cd399b6d2a424fd1dfe67bd",
+        "core.f32": "eae4d4c0c3b5d259e1f36bac2ffb71a7d4b23898de9b0cb1baa4972a608160fe",
+        "waveform.f32": "a3ee5df6762bb5487a1196d277cf97ed739237ca58f3473c747aeebe48e9059c"
+      },
+      "core_values": 205942,
+      "waveform_values": 46800,
+      "bitwise_equal_to_accepted": true
+    },
+    {
+      "request": 1,
+      "T": 78,
+      "sessions_reused": true,
+      "files": {
+        "boundary/ids.i64": "3c3bfd2e56f6f778a6082ee0b183a68d2053d36c4fd1f3ee12126dc3c9d68ae6",
+        "boundary/style.f32": "30a2c76520b76bce395b3e2c33592c56322dffb50d70f7f0f7aeaef968407d66",
+        "boundary/speed.f32": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c",
+        "boundary/asr.f32": "3a2f327d5dac194f2f9e6ad9972a061e752458da4e5473f183a3ea8e5e4482d8",
+        "boundary/f0.f32": "245f8f0c10792ef0d35b76bd113d790eaf170e01664282b632c64ee1ebfe72e5",
+        "boundary/n.f32": "a4b2b93b5d6f05dd6dafcae4ec930403f59422b52f24d4dfb1231b89c9aec63c",
+        "boundary/har.f32": "46362e2d815fc69e49486f998ed887c1ed7740dcfa40002e6033487e61fdf34e",
+        "boundary/durations.f32": "e87476ac494910e6963ec1254409c9356243070e7cd399b6d2a424fd1dfe67bd",
+        "core.f32": "eae4d4c0c3b5d259e1f36bac2ffb71a7d4b23898de9b0cb1baa4972a608160fe",
+        "waveform.f32": "a3ee5df6762bb5487a1196d277cf97ed739237ca58f3473c747aeebe48e9059c"
+      },
+      "core_values": 205942,
+      "waveform_values": 46800,
+      "bitwise_equal_to_accepted": true
+    }
+  ],
+  "baseline_combined_receipt": "ac4ad9614166b557fee4acb2ea61c9d38ac4a1edc1a60aa38fe73bc253c73e9e",
+  "deferred_actual": {
+    "reports": 256,
+    "bounded_reporting_truncates_later_events": true,
+    "max_pending_slots": 8,
+    "max_queued_chunks": 64,
+    "max_logical_CS_bytes": 262144,
+    "max_actual_CS_backing_bytes": 262144,
+    "max_metadata_bytes": 52800,
+    "max_BO_references": 48,
+    "observed_drains": [
+      [
+        2,
+        "cpu"
+      ],
+      [
+        3,
+        "final"
+      ],
+      [
+        4,
+        "cpu"
+      ],
+      [
+        4,
+        "final"
+      ],
+      [
+        8,
+        "capacity"
+      ]
+    ],
+    "all_reported_results": 0,
+    "meaning": "Real model reaches full8slot window with batch8/64queuedchunks, all GPU flush/residency limits unchanged; no synchronous dormant-path credit."
+  },
+  "cache": {
+    "bytes": 2198316,
+    "sha256": "dd4c7a1b0b71c613858c88f4e3cdb493556c8fb29714672e6df78672e141fb40",
+    "pull": "077e15ca2a1505abbd2c6938d18513aa9647f789c5f3d1786b8786802f54890f",
+    "UUID": "04916ac0e1373c6c6e99e52674a73f11",
+    "UUID_matches_actual_ELF_build_id": true,
+    "spirv_entries": 48,
+    "SPIRV_sha256": "edee84aa2a7785b6ba033e94136e303d68852f1f11efaf97f602e3bb4ac11e78",
+    "native_objects": 178,
+    "all_record_lengths_complete": true,
+    "outer_and_all_SPIRV_FNV_valid": true,
+    "old_seed_unchanged": true,
+    "new_file_fresh_import": "not rerun/not claimed"
+  },
+  "resource": {
+    "cap_MiB": 640,
+    "swap_cap_MiB": 128,
+    "actual_systemd_memory_peak_MiB": 468.4,
+    "actual_swap_peak_bytes": 0
+  },
+  "checks": [
+    "Every boundary/core/waveform byteidentical acceptedcold for both requests; originalCPU reference tolerances inherited from accepted outputs without newCPUexecution.",
+    "Two frontend sessions retained, same-shape core miss\u2192hit,178shared+5device entries,1178GPUret0 and2half10F32 policy exact.",
+    "Graceful oldUUID rejection/repopulation, actual48SPV+178compiled objects/checksums/full parsed lengths; newUUID matchescurrent6f15 ELF.",
+    "All reported pending resourcebounds andsuccessresults hold; full outputs/fence/cleanup complete despite diagnosticlimit256.",
+    "Original memory/swap/watchdog/disk/asset/fault/service/drain guards retained; prior21508 preflight stop preserved andexcluded fromnumerical outcome."
+  ],
+  "limitations": [
+    "Only two repeatedT78 requests, not universalshape/voicequality qualification.",
+    "No speed/hitcount claim; no newnative/CPUreruns.",
+    "OriginalASRfullmodel+cache lifecycle andallfive performance gate remain separate."
+  ],
+  "timing_collected": false
+}

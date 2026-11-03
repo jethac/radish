@@ -12,7 +12,10 @@ field offset and its size; the new error status occupies padding.
 two changing GPU chains preserve all buffer bytes across eight-slot capacity,
 CPU-copy and final-fence drains. [Local-family checks also pass](results/optimization-local-family-correctness-0046.json)
 all 93,732 outputs with complete guards and unchanged shader bodies. One focused
-TTS regression and the original ASR workload remain required.
+[TTS regression also passes](results/optimization-tts-deferred-queue-regression-0046.json):
+all accepted T78 outputs and boundaries are byte-identical, and the real model
+uses the full eight-slot window within the original memory limits. The original
+ASR workload is now running; full-model and cache-replay gates remain open.
 The [last ASR capture](results/optimization-asr-mv32-holistic-0046.json) is preserved:
 streaming prefill timed out before requested outputs. Performance measurement
 remains forbidden until all five integrated areas pass.
