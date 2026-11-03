@@ -1,0 +1,71 @@
+{
+  "status": "PASS both isolated Q8 bands; originalcase09fault remainsunresolved/immutable",
+  "source_review_sha256": "ac71691bdcfd4f3fd00f1dc8f8928ec1569273a4c90b78c963f39e46749d0c9c",
+  "host_runner_review_sha256": "23553e321adb3c1f57c4410afc98962e781d747e4119e0ae3152651e45f25334",
+  "native_prior": "/run/media/jethac/Shared/radish/core-compute-opt0046-quant-mm128-native/compile/run.log",
+  "results": [
+    {
+      "band": 0,
+      "base": [
+        0,
+        0,
+        0
+      ],
+      "grid": [
+        4,
+        1,
+        1
+      ],
+      "outputs": 7680,
+      "full3allocations": true,
+      "all_unselected_output_poison_exact": true,
+      "FD": 1,
+      "EXEC": 1,
+      "slots": 1664,
+      "native_body_sha256": "a89f64bb6d144b02fa570c14a4c5a89ac9ecc338c4199f1540204884a4eaf80b",
+      "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-q8-band-diagnostic/band0",
+      "pins": {
+        "run.log": "878dda6e73420b6bc382a5f5152563f54579bb80b2b517b4e28564c03ae42370",
+        "runner-result.json": "cabd7afded5e4e2825d517ff6353830835142451070ac592feb3b56bebb6e036",
+        "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+        "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+        "service.txt": "8834df8fc5f2f0339be79a31efb3a193978174ebf8952bbba736e934f47eaf0c",
+        "services-after.txt": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+      }
+    },
+    {
+      "band": 16,
+      "base": [
+        0,
+        16,
+        0
+      ],
+      "grid": [
+        4,
+        1,
+        1
+      ],
+      "outputs": 480,
+      "full3allocations": true,
+      "all_unselected_output_poison_exact": true,
+      "FD": 1,
+      "EXEC": 1,
+      "slots": 1664,
+      "native_body_sha256": "a89f64bb6d144b02fa570c14a4c5a89ac9ecc338c4199f1540204884a4eaf80b",
+      "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-q8-band-diagnostic/band16",
+      "pins": {
+        "run.log": "4e29cc4c74cc096223c44a860a880dd49df94beed6f9048cde495e95cd65933c",
+        "runner-result.json": "ff8dc7fe2afecfd95b50a18cae8052f8c61838e80557eb92a9c84358fcc9ac87",
+        "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+        "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+        "service.txt": "577d28c683637cbb93ef412570adaa3ea2c0130c9074e6371f62451268ec2a22",
+        "services-after.txt": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+      }
+    }
+  ],
+  "total_selected_outputs": 8160,
+  "native": "Both fullnativebodytexts byteexact priorQ8MM45 afteronlyprogramordinalnormalization; currentpipelineDispatchBaseflag causesno nativebodychange. Shared4096/private0/1664slots/code5760within8192BO unchanged.",
+  "interpretation": "Both exactinput isolatedbaseY0 and16 bands pass. This excludes a deterministicisolatedtail failureundertheseconditions. Original64WGjob/interEXECstate-reuse/pendingwindow interaction remainconfounds; no unique watchdog orshaderinstructioncauseclaim.",
+  "limits": "No originalfullcase09 numericclosure andno model/cache closure. Original90s384MiB128swap/fault/service/fence/fullallocationcontrols remain. Repairexecutionrequiresseparaterootreview.",
+  "timing_collected": false
+}

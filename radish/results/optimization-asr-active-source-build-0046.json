@@ -1737,5 +1737,13 @@
       "optimization-long-binary-actual-0046.json": "89e0caeab613d6bf07ec3077b68094c5d4e91e28bb0e58157840a19cdecc6f9d"
     },
     "fault_diagnosis_receipt": "optimization-grouped-quant-fault-diagnosis-0046.json"
+  },
+  "matrix_execution_fence_candidate": {
+    "driver": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
+    "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
+    "source_build_receipt": "optimization-matrix-fence-source-build-0046.json",
+    "actual_union": "optimization-grouped-quant-actual-union-0046.json",
+    "active_full_model": "82231; originalfullwork/freshmissingv17; pending",
+    "scope": "Old11cfcase09GPUfault remains preserved/unqualified; revisedpolicy is source-backed bounded kernel-fence progress, not hangchecktimeout change."
   }
 }

@@ -1,0 +1,13 @@
+--- a/src/freedreno/radish/rd_queue.c
++++ b/src/freedreno/radish/rd_queue.c
+@@ -1074,6 +1074,10 @@
+       max_chunks = tiled_chunks;
+    if (tiled_x2)
+       max_chunks = MIN2(max_chunks, 4);
++   if (rd_packed_quant_batch_resources(device, dispatch->pipeline) ||
++       (rd_packed_attention_batch_resources(device, dispatch->pipeline) &&
++        (v->shared_size == 8704 || v->shared_size == 256)))
++      max_chunks = 1;
+    struct rd_gpu_elapsed storage = {0};
+    struct rd_gpu_elapsed *sample = NULL;
+    const bool zero_base = !dispatch->base[0] && !dispatch->base[1] && !dispatch->base[2];

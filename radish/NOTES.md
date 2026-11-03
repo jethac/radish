@@ -1,5 +1,26 @@
 # Radish status
 
+## 2026-11-03: matrix execution fences pass remaining Q8 checks
+
+The [revised matrix submission policy](results/optimization-matrix-fence-source-build-0046.json)
+gives each matrix execution its own kernel-visible fence while retaining up to
+eight workgroups per execution, the bounded deferred window, GPU flushes and
+original resource limits. Matrix work per submission falls from64 to8 workgroups.
+The kernel timeout is unchanged.
+
+Both [isolated Q8 bands](results/optimization-q8-band-diagnostic-0046.json) and
+[all three remaining Q8 units](results/optimization-grouped-quant-actual-union-0046.json)
+pass exact outputs and full allocation guards without new faults. The disjoint
+union is994,998 values across28 rounds;22 rounds carry prior11cf evidence and six
+run on revised0f721. This does not uniquely prove the original hang's cause.
+The original fault and its candidate remain preserved.
+
+The unchanged full ASR model is now running under its original inputs and limits.
+An earlier launch attempt stopped at disk preflight before GPU work; a verified
+archive of superseded driver staging restored headroom without lowering the
+reserve. Full requested transcripts and application-cache replay remain open.
+No performance measurement has run.
+
 ## 2026-11-03: saved GPU fault narrowed; cause still unresolved
 
 [Saved command and kernel analysis](results/optimization-grouped-quant-fault-diagnosis-0046.json)

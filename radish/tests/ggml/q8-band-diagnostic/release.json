@@ -1,0 +1,68 @@
+{
+  "status": "source frozen for independent review/ownerbuild; noGPUadmission",
+  "source": "012494b11b186c7430e7d454b8a5d35d924f2ca2e3b2b3a3e4faf5f645d1fcdf",
+  "preimage": {
+    "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/grouped-barrier-correctness/quant/grouped_quant.c",
+    "sha256": "7b82c78944c9eb6ae3464db952c47a256d16121bc5f88cf0e94b3aad7748fc7f",
+    "release": "98687075a98bd2ff5636bc5481765f34ef182ccc840e3bc409a42985f2d9b85f"
+  },
+  "utilities": {
+    "core_resources.c": "71f2a0403c4b51ceea5fce3a23bca6b8771ea70f712a2bf95f275f0980f0f122",
+    "test_common.h": "4b022481571560cd58577d1303955f8c96e72891a2647947daa607eb5fd93b2b"
+  },
+  "proposal": "f9c9c070e0133991256a5828011efe5e9cf5f116638689a43aade231dacce955",
+  "module": {
+    "path": "/run/media/jethac/Shared/radish/optimization-five-asr-mm128-rms-build-0046/candidate/spv/mul_mm_khr_q8_0.spv",
+    "sha256": "5934d36543ecbb53aca4d0cf9e4c77fa3e796754abdb68c394c524f33b4983bf",
+    "require": "Use exact existingadmittedmodule; path is advisory, hash authoritative."
+  },
+  "argv": "driver Q8module 2 mm --band=0 | --band=16; --compile-only stays no-data (not required repeat)",
+  "units": [
+    {
+      "argument": "--band=0",
+      "base": [
+        0,
+        0,
+        0
+      ],
+      "grid": [
+        4,
+        1,
+        1
+      ],
+      "outputs": 7680,
+      "valid_columns": [
+        0,
+        15
+      ]
+    },
+    {
+      "argument": "--band=16",
+      "base": [
+        0,
+        16,
+        0
+      ],
+      "grid": [
+        4,
+        1,
+        1
+      ],
+      "outputs": 480,
+      "valid_columns": [
+        256,
+        256
+      ]
+    }
+  ],
+  "source_scope": "Onlyfixed type2/MM/maxKcase1 andround0; exactpreviousinputbytes/pushN257/M480/K4320/basepush0 andalloriginalA/Bstrides/paddedfullDdescriptor. CmdDispatchBase changesactualworkgroupbaseY only; same4WG1EXEC/FD. UniformMtail8/8/8/6 retained. OriginalCPUdecoder/vector/cache512/doubleorder reused, writes saved expectedDonlyselectedband andfullremainingDpoison. All3fullallocations checked; no tolerances. Pipeline explicitlycreatedwithmandatorycore1.1DISPATCH_BASE flagfornonzerobase; nativeidentitystillmustmatchadmittedmodule.",
+  "native_and_queue": "Unchangedmodule/shader/resources/admitted Q8MM45/count9F8H/shared4096/private0/1664slots, same11cf. one4WGEXEC, oneFD/onepending maximum; sameoriginalGPUflush/WFI/fence5s andallhost90s384M/log/reserve/faultstop. No full8EXECFD/fullcase replay.",
+  "checks_required": [
+    "Independent source/publicCmdDispatchBase1.1 validity andexactmodule/driverpinhandoff.",
+    "Runtime exactnativebody identity/source flags; dispatch grid4,1,1 tile4,1,1 batch8 packed1 andoneFD/chunk/drain0.",
+    "Unit0beforeunit16; separatefreshprocesses/fences; stopentiresequence onanyerror/fault; no autonomousretry.",
+    "OriginalCPUexactselectedoutputs/full3immutability+poisonincludingallunselectedvalidcolumns; no actualtimingcollection."
+  ],
+  "limits": "Bothpassonlyexcludesisolateddeterministic tailfailure, notproveswatchdog. No causalpatch untilresultsandkernelchronology reconcile.",
+  "timing_collected": false
+}

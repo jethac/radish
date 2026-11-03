@@ -1,0 +1,95 @@
+{
+  "status": "all targeted changed-family finite numerical/resource gates closed; wholemodel stillpending",
+  "current_driver_policy": "matrixoneEXEC/FD0f721, unchangedshader/listenerdb872; finalcomposition/buildpins owner/batch",
+  "actuals": [
+    {
+      "family": "RMS",
+      "receipt": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/grouped-barrier-correctness/rms/independent-actual-review.json",
+      "sha256": "2a3bab8d6b316bf81266ecca3cd4514999bec0006f8552b2ad2ba323d1a6aa28",
+      "status": "PASS finite grouped rms numerical/nativeidentity/command/lifetime actual; fullmodel stillopen",
+      "finite_scope": {
+        "CPU_outputs": 169984,
+        "original_limit": 1e-07,
+        "geometry": "65WG=>8groupEXEC9chunks2FD +3Dtailtile3x2x1; width1024"
+      }
+    },
+    {
+      "family": "norm",
+      "receipt": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/grouped-barrier-correctness/norm/independent-actual-review.json",
+      "sha256": "40bac22a38c50ee5a2359effd7dd57607b83014ca0b99bb4dc9bea59e5188386",
+      "status": "PASS finite grouped norm numerical/nativeidentity/command/lifetime actual; fullmodel stillopen",
+      "finite_scope": {
+        "CPU_outputs": 149760,
+        "original_limit": 1e-07,
+        "geometry": "width128/1024,65WG first64+tail; selected896greaterworksourcecarry accepted"
+      }
+    },
+    {
+      "family": "quant6families",
+      "receipt": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/grouped-barrier-correctness/quant-matrix-fence-remaining/independent-actual-union-review.json",
+      "sha256": "3c7fd1e909a2aa94b651230f7e0d7698f34d1de5bae7f4d7847adbaf2fd79b4c",
+      "status": "PASS complete28round groupedquant numericalcoverage union; originalfaultpreserved",
+      "finite_scope": {
+        "CPU_outputs": 994998,
+        "rounds": 28,
+        "geometry": "MM/MV Q4/Q6/Q8 all28rounds, largestselectedK/Q6formatK1024, denseK512GQA2/baseZ+padding; mixedpolicy22rounds35FD plus6Q8rounds39FD"
+      }
+    },
+    {
+      "family": "floatingGQA",
+      "receipt": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/grouped-barrier-correctness/gqa/independent-actual-review.json",
+      "sha256": "15fc39d6809a4be95b6a21dcb3bf65208917ad107e91480ebd08d98362b51ec4",
+      "status": "PASS independent actual; original host assertion failure preserved and corrected without rerun",
+      "finite_scope": {
+        "CPU_outputs": 1590732,
+        "rounds": 12,
+        "geometry": "4F16/F32aligned/unalignedMMvariants+score/valueMV, sixheads/threeKV; K128/64/336,8groupfull/partial3D and78FD; hostexpectationcorrectedoffline noGPUreplay"
+      }
+    },
+    {
+      "family": "softmax",
+      "receipt": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/grouped-barrier-correctness/softmax/independent-actual-review.json",
+      "sha256": "d07a05051d17b8383bd2ecea8569ff32e6be6b4cc307a64dc5ab55b5d38d7bee",
+      "status": "PASS both grouped softmax families; fullmodel remainsopen",
+      "finite_scope": {
+        "CPU_comparisons": 354816,
+        "old_new_bit_pairs": 177408,
+        "cases": 8,
+        "original_limit": 1e-06,
+        "geometry": "selectedmaxwidth336/66validrows/67visibleguardrow,all4configs/bothmasktypes,full64WG+tail3, pairedold/new11FD"
+      }
+    },
+    {
+      "family": "longbinary",
+      "receipt": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/long-binary-correctness/independent-actual-review.json",
+      "sha256": "89e0caeab613d6bf07ec3077b68094c5d4e91e28bb0e58157840a19cdecc6f9d",
+      "status": "passed",
+      "finite_scope": {
+        "CPU_outputs": 2097160,
+        "rounds": 8,
+        "geometry": "add/mul spec0/1,64WG/EXEC*8EXECfirstFD+tail1,unchangednonbarrierbound,full3guards/visible511tail/pending2"
+      }
+    }
+  ],
+  "executionclass_carry": [
+    {
+      "family": "transpose32/02/16",
+      "receipt": "3272fdce",
+      "scope": "nonpacked128thread class excludedfromnewgroupbudget; identicaltile/batch/window/emit andresidentadmission.93732originaloutputs/fullguards carry."
+    },
+    {
+      "family": "dependentGPU/CPUtransfer/finalfence",
+      "receipt": "6d6b7931",
+      "scope": "Existingproducer32/copy128nonbarrier unaffectedselector/residency. PureGPUdependency/CPUbytecopy/drain8/2/6/finalfence/errorownership sourceunchanged; finiteactualcarry."
+    },
+    {
+      "family": "TTS",
+      "receipt": "87787e4091e1e1fb7cf17c1c1db591350b76fe25b929a8801419b907ae52472c",
+      "scope": "Both179inventorynecessaryinterfacezero;9f8actualcarry."
+    }
+  ],
+  "fault_preservation": "OriginalgroupedQ8MM8EXECFDfault21277 remainsfailure; twoisolated1EXECbands970834pass excludeisolatedtailonly. SuccessfulremainingQ8oneEXEC/FD doesnotprovewatchdogcausality. Mixedpolicyquantunion notfalselylabeledall28roundscurrentdriveractual.",
+  "job_scope": "Matrix8WG/job64WG/8FDwindow; packednonmatrixmax64WG/job512queued unchanged; preexistingnonbarrier64WG/EXEC8EXEC/FD uses512WG/job, separatefrompackedbound. PerresidentWGregister/private/sharedcaps andglobalCS/BO/ref/FDwindowcaps unchanged.",
+  "next_gate": "Oneoriginalfullmodelworkload under640MiB128swap300s/full256/allwarm40000audio/twoidenticalclips; fullPASS numerical/transcript/populatedcache thenacceptedcache replay stillrequired. No performancecollection.",
+  "timing_collected": false
+}

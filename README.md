@@ -6,11 +6,11 @@ Full ASR inference and its cache replay remain open. The latest full ASR run
 completed both warm modes, real-request prefix and first subsampling graph but
 reached the original timeout before any requested transcript.
 
-A subsequent grouped-work qualification encountered a Q8 GPU hangcheck. Passed
-cases and the fault are preserved. Saved commands and matched-kernel analysis
-show forward progress before recovery, but the cause remains unresolved. Only
-two bounded diagnostic controls are being prepared; the original faulting
-workload and full-model execution remain held. [Current evidence](radish/results/optimization-five-status-0046.json)
+A grouped-work qualification encountered a Q8 GPU hangcheck. The fault is
+preserved. A revised matrix policy exposes each execution through a kernel
+fence, retaining the same workgroups and limits. Both isolated diagnostic bands
+and the remaining full Q8 tests pass; the cause is not uniquely proved. The
+original full ASR model is being checked on that revision. [Current evidence](radish/results/optimization-five-status-0046.json)
 and the [full goal](radish/GOAL.md) are authoritative.
 
 No new performance measurement is permitted until all five areas pass. The

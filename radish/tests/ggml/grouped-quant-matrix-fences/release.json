@@ -1,0 +1,208 @@
+{
+  "status": "source frozen for independentcounterpart andownerbuild; broaderfullmodel remainsheld",
+  "source": "fd790c965952181efefcd2603303da6aa6152a7503d29e2b594f3b4ed3a97a8e",
+  "preimage": {
+    "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/grouped-barrier-correctness/quant/grouped_quant.c",
+    "sha256": "7b82c78944c9eb6ae3464db952c47a256d16121bc5f88cf0e94b3aad7748fc7f",
+    "release": "98687075a98bd2ff5636bc5481765f34ef182ccc840e3bc409a42985f2d9b85f"
+  },
+  "utilities": {
+    "core_resources.c": "71f2a0403c4b51ceea5fce3a23bca6b8771ea70f712a2bf95f275f0980f0f122",
+    "test_common.h": "4b022481571560cd58577d1303955f8c96e72891a2647947daa607eb5fd93b2b"
+  },
+  "diff": "68a57b274763daa9a9348f77c68dd0811ee727373915df30a68062b7bfaac283",
+  "policy": "CompletequantMM/MV matrixpredicate now1EXEC/FD, alltile/group/CPU/GPUwork unchanged. Exactlyexpected_submits andtruthfulprintedmax_chunks changed; no otherhelperbytechange. Deferredwindow still8FD; allflush/WFI/CPUdrain/error/resourcecaps unchanged.",
+  "units": [
+    {
+      "type": 2,
+      "mode": "mm",
+      "case": 1,
+      "argument": "--case=1",
+      "old_unit": 9
+    },
+    {
+      "type": 2,
+      "mode": "mv",
+      "case": 0,
+      "argument": "--case=0",
+      "old_unit": 10
+    },
+    {
+      "type": 2,
+      "mode": "mv",
+      "case": 1,
+      "argument": "--case=1",
+      "old_unit": 11
+    }
+  ],
+  "cases": [
+    {
+      "type": 2,
+      "mode": "mm",
+      "case": 1,
+      "round": 0,
+      "M": 480,
+      "N": 257,
+      "K": 4320,
+      "A": 1,
+      "B": 1,
+      "grid": [
+        4,
+        17,
+        1
+      ],
+      "tile": [
+        4,
+        2,
+        1
+      ],
+      "chunks_per_part": 9,
+      "parts": 1,
+      "FD_submits": 9,
+      "outputs": 123360
+    },
+    {
+      "type": 2,
+      "mode": "mm",
+      "case": 1,
+      "round": 1,
+      "M": 480,
+      "N": 257,
+      "K": 4320,
+      "A": 1,
+      "B": 1,
+      "grid": [
+        4,
+        17,
+        1
+      ],
+      "tile": [
+        4,
+        2,
+        1
+      ],
+      "chunks_per_part": 9,
+      "parts": 1,
+      "FD_submits": 9,
+      "outputs": 123360
+    },
+    {
+      "type": 2,
+      "mode": "mv",
+      "case": 0,
+      "round": 0,
+      "M": 33,
+      "N": 1,
+      "K": 512,
+      "A": 2,
+      "B": 4,
+      "grid": [
+        2,
+        1,
+        4
+      ],
+      "tile": [
+        2,
+        1,
+        4
+      ],
+      "chunks_per_part": 1,
+      "parts": 1,
+      "FD_submits": 1,
+      "outputs": 132
+    },
+    {
+      "type": 2,
+      "mode": "mv",
+      "case": 0,
+      "round": 1,
+      "M": 33,
+      "N": 1,
+      "K": 512,
+      "A": 2,
+      "B": 4,
+      "grid": [
+        2,
+        1,
+        2
+      ],
+      "tile": [
+        2,
+        1,
+        2
+      ],
+      "chunks_per_part": 1,
+      "parts": 2,
+      "FD_submits": 2,
+      "outputs": 132
+    },
+    {
+      "type": 2,
+      "mode": "mv",
+      "case": 1,
+      "round": 0,
+      "M": 2049,
+      "N": 1,
+      "K": 2048,
+      "A": 1,
+      "B": 1,
+      "grid": [
+        65,
+        1,
+        1
+      ],
+      "tile": [
+        8,
+        1,
+        1
+      ],
+      "chunks_per_part": 9,
+      "parts": 1,
+      "FD_submits": 9,
+      "outputs": 2049
+    },
+    {
+      "type": 2,
+      "mode": "mv",
+      "case": 1,
+      "round": 1,
+      "M": 2049,
+      "N": 1,
+      "K": 2048,
+      "A": 1,
+      "B": 1,
+      "grid": [
+        65,
+        1,
+        1
+      ],
+      "tile": [
+        8,
+        1,
+        1
+      ],
+      "chunks_per_part": 9,
+      "parts": 1,
+      "FD_submits": 9,
+      "outputs": 2049
+    }
+  ],
+  "expected": {
+    "rounds": 6,
+    "outputs": 251082,
+    "dispatches": 7,
+    "FD_submits": 39
+  },
+  "carry": {
+    "earliest_partial": "3f2fe913",
+    "latest_partial": "2cf180a2",
+    "rounds": 22,
+    "outputs": 743916,
+    "FD_submits": 35,
+    "scope": "Do notrunanyalreadycompletedcase; only3explicitunits listed. FaultedQ8MMhas0acceptedrounds; twoQ8MVcasesnotattempted."
+  },
+  "original_modules": "Q8MM5934d365/Q8MV13aac3af unchangedadmittednative; no shader/nativeinventory rebuild. Actualfunctionalnativebodyidentity stillchecked fromexistinglogs.",
+  "oracle": "Exactoriginal7b82decoder/vector/512ascendingedgecachedCPU/full3allocations/descriptor-visible133tail/changingseeds/splitZ; allocationguard4458786/delta<64/alignment64 unchanged. Alloriginal90s384M/faultstop/log/disk/fencewatchdog controls unchanged.",
+  "limits": "RepairedFDgranularitydiagnosis, notproofwatchdogcause/performance. Wholecase(original9EXEC)onlynowundernewoneEXEC/FDpolicy afterparentrelease; broadermodelhold. Stopallremaining onanynewerror/fault, noautomaticretry.",
+  "timing_collected": false
+}

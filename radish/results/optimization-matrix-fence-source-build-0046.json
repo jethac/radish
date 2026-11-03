@@ -1,0 +1,259 @@
+{
+  "status": "Matrix oneEXEC-perFD source/build and focused remainingQ8 actual pass; fullmodel pending",
+  "source": {
+    "status": "Private source frozen for independent review; not built or device-admitted",
+    "preimage": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/coherent-workgroup-composition/candidate/rd_queue.c",
+      "sha256": "795774d156d96ef3b055eff8703909777d2950ffcb1641eddd49714f5c825061",
+      "driver_strip": "11cf0aa23c785011262146e6ea2c8f71fa84cff3da92635495cc44fe3db05ac0"
+    },
+    "candidate": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/matrix-exec-fence/candidate/rd_queue.c",
+      "sha256": "b34dabdd14a26e894a9dab8827407cc5a901a06f77ab66cd631433574d6667d7"
+    },
+    "patch_sha256": "7918a937d6dedffc51ce227e11e02273ca95a62da9679b4f089a4e12822314eb",
+    "proposal_sha256": "38432e7811b1dd87302ab5130659667a6581f7f4a5db6f021141da062c615390",
+    "scope": "ReusecompleteexistingquantMM/MVandfloatingattentionMM/MVresource/interface/safety predicates;caponeEXECperFDforalldynamicloopshapes.NoK/model/fixtureinputselection. Excludesattentionsoftmaxshared128.",
+    "retained": "Grouped8WGperEXEC,8FDdeferredwindow,allWFI/rd_flush/cachewait/CPUdrain/error/fence/lifetimeandperWG4096/private/shared/codesize limits unchanged. No shader/header/appchange.",
+    "explicit_bounds": "Matrix64WGperFD\u21928;512WGqueuedwindow\u219264. CS/backing/metadata bounds unchanged. No simultaneousresident-group claim and no guaranteed arbitraryKwatchdogfit.",
+    "source_reason": "Matchedlivea5xxkernel observescompletedkernelFDfencesonly;onefenceperEXEC exposesprogresswithoutchanging500mswatchdog. Bothisolateddiagnosticpasseswouldnotuniquelyprovelongjobcausality.",
+    "execution_hold": "Rootauthorizedsource-only preparation;twoisolatedbandcontrols mustcompleteandrootreviewbeforeanyrepair/fullcaseexecution.",
+    "timing_collected": false
+  },
+  "source_review": {
+    "status": "passed source-only counterpart; not built or device-admitted",
+    "release": "94d1470d7d2675e5dd454346d0d89dde6dc7c512fb1899573701f467b4ab2aee",
+    "preimage": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/coherent-workgroup-composition/candidate/rd_queue.c",
+      "sha256": "795774d156d96ef3b055eff8703909777d2950ffcb1641eddd49714f5c825061",
+      "driver_strip": "11cf0aa23c785011262146e6ea2c8f71fa84cff3da92635495cc44fe3db05ac0"
+    },
+    "candidate": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/matrix-exec-fence/candidate/rd_queue.c",
+      "sha256": "b34dabdd14a26e894a9dab8827407cc5a901a06f77ab66cd631433574d6667d7"
+    },
+    "checks": [
+      "Exact4addedlines inverse reproducescurrent11cfsource795774d1 byte-for-byte; no otherfunction/selector/emit/window/header/shaderchange.",
+      "UsescompleteexistingquantMM/MVpredicate orcompleteattentionMM/MV predicateplusshared8704/256; shared128softmax excluded. No dimensions/K/inputspecialcase.",
+      "Overrideafterallbatch/tilemaxselection setsmax_chunks1. EveryexistingperEXECWFIandrd_flush stays; deferredwindow remains8FD, sameorderedfence/error/CPUdrain/resourceownership.",
+      "ExactgroupsperEXEC remains8 foradmittedmatrixclasses; matrixqueuedFDwork64WG\u21928,8FDwindow512\u219264. PerresidentWG4096/private0/sharedcaps andCS256KiB/metadata/backing/ref limits unchanged.",
+      "Existingcompiled-cache variant/NIRsafety metadata unchanged, no newfield serialization obligation. Samepredicates consumeexistingrestoredfields.",
+      "PriorfrozenTTS179zero completequant/attentionMM/MVmatches carry; overridecannotnewlyadmitanything andonlyreducesmax_chunks. ClosedTTS/no-newadmission proofretained, no rerun.",
+      "ExposingfenceperEXECisconservativejobgranularity, notproofeverydynamicKfits500mshangcheck. Rootdiagnosticresults/chronologyreview stillrequired beforebuild/execution. No arbitrarytimeout/clockguardchanges."
+    ],
+    "execution_hold": "Keepbothboundeddiagnostics first, no repair/fullcase/model build ordeviceuntilparentreview.",
+    "timing_collected": false
+  },
+  "build": {
+    "status": "PASS host-only matrix oneEXEC-perFD build; no device admission",
+    "source_release": "94d1470d7d2675e5dd454346d0d89dde6dc7c512fb1899573701f467b4ab2aee",
+    "source": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/matrix-exec-fence/candidate/rd_queue.c",
+    "source_sha256": "b34dabdd14a26e894a9dab8827407cc5a901a06f77ab66cd631433574d6667d7",
+    "object": "662880387e5b2068b0fef6e3cc8f1df10a6779f45b64336d9042b2b5b45c78e2",
+    "commands": "0c9602076f9f1f2d3dd9ab8d8667fc83757790233cb2d75c56637f16611593b6",
+    "argv": [
+      "clang++",
+      "--target=aarch64-linux-gnu",
+      "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+      "-mcpu=cortex-a53",
+      "-o",
+      "/run/media/jethac/Shared/radish/optimization-five-matrix-exec-fence-driver-0046/libvulkan_radish.so",
+      "src/freedreno/radish/libvulkan_radish.so.p/meson-generated_.._rd_entrypoints.c.o",
+      "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/cache-build/rd_instance.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_device.c.o",
+      "/run/media/jethac/Shared/radish/optimization-five-phase-release-driver-0046/rd_memory.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_descriptor.c.o",
+      "/run/media/jethac/Shared/radish/optimization-five-quant-queue-driver-0046/rd_pipeline.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_command.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_sampling.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_nir_sampling.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_nir_resources.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_nir_robust.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_resources.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_transfer.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_image.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_event.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_query.c.o",
+      "/run/media/jethac/Shared/radish/optimization-five-matrix-exec-fence-driver-0046/rd_queue.c.o",
+      "-L/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib",
+      "-Wl,--as-needed",
+      "-Wl,--no-undefined",
+      "-shared",
+      "-fPIC",
+      "-Wl,-soname,libvulkan_radish.so",
+      "-Wl,--whole-archive",
+      "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/cache-build/rd_pipeline_cache.cpp.o",
+      "-Wl,--start-group",
+      "src/vulkan/runtime/libvulkan_lite_runtime.a",
+      "src/vulkan/runtime/libvulkan_runtime.a",
+      "src/vulkan/runtime/libvulkan_instance.a",
+      "-Wl,--no-whole-archive",
+      "-fuse-ld=lld",
+      "--rtlib=libgcc",
+      "-Wl,-rpath-link,/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib",
+      "/run/media/jethac/Shared/radish/optimization-five-coherent-queue-v2-driver-0046/libfreedreno_drm.a",
+      "src/util/libmesa_util.a",
+      "src/util/libmesa_util_simd.a",
+      "src/util/blake3/libblake3.a",
+      "src/c11/impl/libmesa_util_c11.a",
+      "src/freedreno/ir3/libfreedreno_ir3.a",
+      "src/freedreno/isa/libir3encode.a",
+      "/run/media/jethac/Shared/radish/compute11-idiv-isolated-build-0045/libnir.idiv.a",
+      "src/compiler/libcompiler.a",
+      "src/freedreno/common/libfreedreno_common.a",
+      "src/freedreno/isa/libir3decode.a",
+      "src/compiler/isaspec/libisaspec.a",
+      "src/freedreno/fdl/libfreedreno_layout.a",
+      "src/vulkan/util/libvulkan_util.a",
+      "src/compiler/spirv/libvtn.a",
+      "-Wl,--version-script",
+      "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/vulkan/vulkan.sym",
+      "-Wl,-Bsymbolic",
+      "-Wl,--gc-sections",
+      "/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/libz.so",
+      "-pthread",
+      "-lm",
+      "/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/libdrm.so",
+      "-Wl,--end-group"
+    ],
+    "cwd": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build",
+    "strip_argv": [
+      "llvm-strip",
+      "--strip-debug",
+      "-o",
+      "/run/media/jethac/Shared/radish/optimization-five-matrix-exec-fence-driver-0046/libvulkan_radish.stripped.so",
+      "/run/media/jethac/Shared/radish/optimization-five-matrix-exec-fence-driver-0046/libvulkan_radish.so"
+    ],
+    "base_result": "5776adc89c21f36afd084dd13a6f6f07c3f1cfcc03bad512ac5b30416edfe06d",
+    "sha256": "5cf3e0b76f3aa3035af44a149b4dd0a7cc04e548abb4797bb7d539f6c7be8241",
+    "strip_sha256": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
+    "scope": "Only rd_queue object over11cf; all DRM/header/ABI/shader/model/compiler/cache/memory bytes unchanged. Existing11cf diagnostic remains immutable. No performance measurement"
+  },
+  "build_review": {
+    "status": "PASS host-only exact queue/source/build/strip pairing",
+    "source_review": "0ccec21766864e91dcbcb8269a3e92d05fbca51d362bcc03eb5224e52b22d58f",
+    "source_release": "94d1470d7d2675e5dd454346d0d89dde6dc7c512fb1899573701f467b4ab2aee",
+    "result": "704617994bddd3487fc4ceedbadbc55c75ea7711d89ed8e7e4a65afa59f2009e",
+    "source": "b34dabdd14a26e894a9dab8827407cc5a901a06f77ab66cd631433574d6667d7",
+    "object": "662880387e5b2068b0fef6e3cc8f1df10a6779f45b64336d9042b2b5b45c78e2",
+    "full": "5cf3e0b76f3aa3035af44a149b4dd0a7cc04e548abb4797bb7d539f6c7be8241",
+    "strip": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
+    "link_delta": [
+      [
+        "/run/media/jethac/Shared/radish/optimization-five-grouped-work-driver-0046/libvulkan_radish.so",
+        "/run/media/jethac/Shared/radish/optimization-five-matrix-exec-fence-driver-0046/libvulkan_radish.so"
+      ],
+      [
+        "/run/media/jethac/Shared/radish/optimization-five-grouped-work-driver-0046/rd_queue.c.o",
+        "/run/media/jethac/Shared/radish/optimization-five-matrix-exec-fence-driver-0046/rd_queue.c.o"
+      ]
+    ],
+    "checks": [
+      "Onlyqueueobject/outputpath differsover11cf; compilationargvunchangedexceptsource/artifactpaths",
+      "RetainedexplicitDRMheaderdependencyandpatchedarchivehash exact; no ABI/header/native/compiler/modelchange",
+      "AArch64full/stripallocatedsections andnormalizedPT_LOADs exact, onlydebugstripped",
+      "OneEXECperFDmatrixpolicyretains8WGtile/8FDwindow/allflushes/lifetimes/errorcontrols; source0ccec carries"
+    ],
+    "actual_authorization": "Root releasesonlyoriginalremainingQ8MMcase1 andQ8MVcases0/1 afterexpectation-onlyhelper/payloadpair andfreshguards; stoponanyfault. No fullmodelyet.",
+    "diagnostic_actual": "970834d985f57b128e363ad3c38a009e6a7359a44eb288c8d7e1e718b483ffc0",
+    "timing_collected": false
+  },
+  "patch": {
+    "path": "patches/0046-matrix-execution-fences.patch",
+    "sha256": "7918a937d6dedffc51ce227e11e02273ca95a62da9679b4f089a4e12822314eb"
+  },
+  "build_recipe": {
+    "path": "scripts/build-matrix-exec-fence-driver-0046.py",
+    "sha256": "b85c4f33598f6114003d060a5fc034a007ef44e534ebd9203e0f517a6c840ce9"
+  },
+  "model_runner": {
+    "status": "PASS finitefilledpins; rootreleasedONEoriginalfullmodelafterfreshguards",
+    "runner": "6e2013c65588c26c305d61bbb8097b7de8ee0c77ef8feadeb76df35382f3d020",
+    "pins": {
+      "probe-argv.json": "09b81819c58586832ff12e4b8d314b69aaab53a924724afeee3974452a229306",
+      "hostcheck.json": "b30ee873750b040d122aae9943c631bd6f3cffa75b56e26af745362d088533b5",
+      "source-plan.json": "6357aeb12e5be2d5544e83dc31994f1e03912ee35563b94ac9a34e9bf38849d8"
+    },
+    "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
+    "driver": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
+    "driver_build_review": "f5f2d3714c8ace4ca82713914621890514e35ba5cb39479bc4118d90f174b837",
+    "grouped_quant_actual_union": "3c7fd1e909a2aa94b651230f7e0d7698f34d1de5bae7f4d7847adbaf2fd79b4c",
+    "checks": [
+      "Bodybyteexactreviewed6e2013; alloriginalwarmtwo-modes/40000audio/twopinnedclips/full256decode/640MiB128swap300s/304MiBfloor/oracles/noCPUfallback/resourceassertions unchanged",
+      "Onlycurrent0f721driver,newlabel,freshmissingv17 andverifiedcompleteddriverreuse path differ; db872/input/loader bytesexact",
+      "Existinghardlinkreuse verifiesresourcesbeforeuse; no storageguardlowering ornewmodelbuild"
+    ],
+    "authorization": "Owner ONEoriginalfullmodel underfreshguards; source/primitive gatesclosed. Fault21277preserved, no uniquehangcause/performanceclaim. Acceptedpopulatedcache replaystillrequiresindependentcoldPASS.",
+    "timing_collected": false
+  },
+  "path_refresh": {
+    "status": "PASS narrow path refresh afterpreservedpreflight-onlydiskstop84704",
+    "prior_full_review": "d5338966972df49e821926d4db6c2d17a02d6a7ecd41bfd93590c8591d9660e2",
+    "prior_import_review": "9148878bca3c269ae48c3d2f6a47b705e56755e05e2c2bc9da1c64d60917deff",
+    "full_delta": [
+      [
+        1,
+        "/run/media/jethac/Shared/radish/optimization-five-asr-full-matrix-fence-runner-0046/device.py",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-full-matrix-fence-v2-runner-0046/device.py"
+      ],
+      [
+        3,
+        "opt0046-asr-full-matrix-fence",
+        "opt0046-asr-full-matrix-fence-v2"
+      ],
+      [
+        9,
+        "/run/media/jethac/Shared/radish/optimization-five-asr-full-matrix-fence-runner-0046/probe",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-full-matrix-fence-v2-runner-0046/probe"
+      ]
+    ],
+    "import_delta": [
+      [
+        17,
+        "/var/tmp/radish/core-compute-opt0046-asr-full-matrix-fence/resources",
+        "/var/tmp/radish/core-compute-opt0046-asr-full-matrix-fence-v2/resources"
+      ]
+    ],
+    "pins": {
+      "/run/media/jethac/Shared/radish/optimization-five-asr-full-matrix-fence-v2-runner-0046/device.py": "6e2013c65588c26c305d61bbb8097b7de8ee0c77ef8feadeb76df35382f3d020",
+      "/run/media/jethac/Shared/radish/optimization-five-asr-full-matrix-fence-v2-runner-0046/probe-argv.json": "d9a46335943abdda3ab3ada409a7bb7d40214fea5dad47f6bd821813c8a50470",
+      "/run/media/jethac/Shared/radish/optimization-five-asr-full-matrix-fence-v2-runner-0046/hostcheck.json": "c8f1fe2e58d6ebda11a47989fc7ed71e95e2c4e88fba2d68a3bb5a2d69dde5dc",
+      "/run/media/jethac/Shared/radish/optimization-five-asr-full-matrix-fence-v2-runner-0046/source-plan.json": "a526984c352c7e2cd6833a3557a2e2f08a2b3a361de91c6c90e83024f6e7a913",
+      "/run/media/jethac/Shared/radish/optimization-five-asr-matrix-fence-import-runner-0046/probe-argv.json": "fccd24de82993b07ae49e924b841cadd709629c9cf4c0ebb583e62b83a761fbc",
+      "/run/media/jethac/Shared/radish/optimization-five-asr-matrix-fence-import-runner-0046/hostcheck.json": "5c42fff50324251df7374e89180c2bf50b165a96a1734db0093360a5338f58a6",
+      "/run/media/jethac/Shared/radish/optimization-five-asr-matrix-fence-import-runner-0046/probe-argv-pre-disk-stop.json": "9a64cbc5e514112103cf1bba035568a300c30b38712b40733d450610c8d16f72"
+    },
+    "checks": [
+      "Fullbody/payload/input/loader/cachev17missing/guards unchanged; onlyfreshlabel/localrunner-probedir paths",
+      "Importbody/payloadv17accepted unchanged; onlyverifiedresource reuse nowfreshfull-v2 path",
+      "84704hadnoGPU/inferenceattempt; ownerarchival4976 restoresheadroomwithoutloweringdiskfloor, originalfault/capturesretained"
+    ],
+    "authorization": "Oneoriginalfullmodel remainsreleased underfreshguards; acceptedcacheimporthelduntilindependentcoldPASS. No otherGPU scope orperformancecollection."
+  },
+  "TTS_carry": {
+    "status": "passed TTS unchanged-selection/body/FD-semantics source confirmation",
+    "current_policy_source": "b34dabdd14a26e894a9dab8827407cc5a901a06f77ab66cd631433574d6667d7",
+    "policy_source_review": "0ccec21766864e91dcbcb8269a3e92d05fbca51d362bcc03eb5224e52b22d58f",
+    "inventories": [
+      {
+        "inventory": "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/fp32-v1/native-inventory-current.json",
+        "sha256": "81e6c7eac2442ad51a5f9b16596f80a177849727576d8cd7a78ff2f58501a8fb",
+        "records": 179,
+        "necessary_quant_interface_matches": [],
+        "necessary_attention_MM_MV_interface_matches": []
+      },
+      {
+        "inventory": "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/weights-v2/native-inventory-current.json",
+        "sha256": "11b19a275b0659b794b98c187badf83d115ed45ea1080ca1c0498550b453911f",
+        "records": 179,
+        "necessary_quant_interface_matches": [],
+        "necessary_attention_MM_MV_interface_matches": []
+      }
+    ],
+    "proof": "New4lineoverride onlyrunswhencompletequantMM/MV predicate orcompleteattentionMM/MVpredicate(shared8704/256) holds. Both179TTSinventories havezeroevennecessaryphysical-local/shared/SSBO/pushinterface matches, socompletepredicatesfalse independentlyofunrecordedflags. TTSmax_chunks selectionunchanged. Exactinverse restores7957; no emit/WFI/flush/window/fdstatus/ownership/signal/header/shader/appchange. No TTSnativebody/input/halfpolicyarithmetic change.",
+    "carried_actual": "9f8bb8f7 exactac4adoutputs/cache/session/deferredlifetime proof; previousnewgroupbudget/residency no-new-TTSadmission proofs retained. No extra TTSGPUrun justified.",
+    "matrix_carry_scope": "OtherASRmatrix originalCPUnumeric/groupisolationbody proofs carry withsame8WGEXEC. NewpolicyaddsFDflush/fenceboundaries (originalGPUWFI/flush stillpresent), samepipeordereddeferredwindow; it reducesmatrixperFDwork64\u21928WG andqueued8FDwindow512\u219264WG. This doesnotclaimallmatrixshapes havealreadybeenreexecutedonnewdriver orprovearbitraryKwatchdogfit. NewQ8actual coverschangedFDgranularity/windowtail. Nonmatrixsoftmax/RMS/norm/transpose/longbinaryFDselection unchanged.",
+    "timing_collected": false
+  },
+  "scope": "ExistingdynamicmatrixinterfacesnowoneEXECperFD;up to8WG/EXEC and8FDwindow. Matrixwork/job64\u21928andwindow512\u219264; perWGresources/flushes/CS/BO/fence/limits unchanged. Otherclasses/TTSunchanged. Failurecausalitynotuniquelyproved; kernel-visibleprogressgranularity repaired."
+}
