@@ -1,0 +1,27 @@
+{
+  "status": "FAIL overall helper setup bound; exact first4 Q4MM rounds independently PASS",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-grouped-quant/probe",
+  "handle": 63561,
+  "pins": {
+    "run.log": "2556213e3a19e37b45b3f25145e8420f5c2e596df59d74c5cfd567a26f798080",
+    "failure.json": "79df50dcda8269843a928cf806ae8823892e7967b8eadd212d31e05f771d53f4",
+    "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+    "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+    "services-after.txt": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce",
+    "drain-000.txt": "899a8a5a73232d4a07b56824413da1c88dc2dc685e89886ca2bc05f89923b9f6"
+  },
+  "passed_rows": [
+    "GROUPED_QUANT_ROUND_PASS type=0 mode=mm case=0 round=0 M=129 N=9 K=512 batches=4 gqa=2 outputs=4644 full3allocations=1 guards=exact zero_middle_checked=1 edge_terms=512 split_z=1",
+    "GROUPED_QUANT_ROUND_PASS type=0 mode=mm case=0 round=1 M=129 N=9 K=512 batches=4 gqa=2 outputs=4644 full3allocations=1 guards=exact zero_middle_checked=1 edge_terms=512 split_z=2",
+    "GROUPED_QUANT_ROUND_PASS type=0 mode=mm case=1 round=0 M=1024 N=129 K=1024 batches=1 gqa=1 outputs=132096 full3allocations=1 guards=exact zero_middle_checked=1 edge_terms=512 split_z=1",
+    "GROUPED_QUANT_ROUND_PASS type=0 mode=mm case=1 round=1 M=1024 N=129 K=1024 batches=1 gqa=1 outputs=132096 full3allocations=1 guards=exact zero_middle_checked=1 edge_terms=512 split_z=1"
+  ],
+  "passed_output_words": 273480,
+  "passed_dispatches": 5,
+  "passed_FD_submissions": 7,
+  "native_body_equal_to": "/run/media/jethac/Shared/radish/core-compute-opt0046-quant-mm128-native/compile/run.log",
+  "native_body_sha256": "af5cf27b7344c8bcff54b451cc9e9e6e38851d666c4f30096b100c54bc937ce6",
+  "failure": "Case2 before dispatch fails inherited storage utility requirement r.size<1MiB; descriptor dimensions already source-reviewed. No GPU numerical failure, devicefault, timeout or modelqualification.",
+  "scope": "Carry exact Q4MM case0 and1 eachtwo seeds, GQA/baseZ/full3allocation guards andfull64WG job+tail only. Remaining24rounds andallotherfamilies remain pending; correction must preservecases/oracles/caps.",
+  "timing_collected": false
+}

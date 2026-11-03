@@ -1,0 +1,170 @@
+{
+  "status": "PASS independent actual; original host assertion failure preserved and corrected without rerun",
+  "handle": 44367,
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-grouped-gqa/probe",
+  "pins": {
+    "run.log": "3dc5caef5bf3c30c65002981b8e206d99a801b72a763d4484b032e51e91bafcc",
+    "failure.json": "383a0745cb32d36015fee5568c38079a7fa8216b44f6231fe3c5657e28cbb61d",
+    "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+    "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+    "services-after.txt": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+  },
+  "source_review": "f70b81a5822892b98efd4d6a096ce61e4b31e6309d5949ec338f6aa19b764681",
+  "host_runner_review": "afc960ad8bff9ab8555526a5d6b773637387b8a5897a3c7172c8fdd63aac2aa0",
+  "checker_v2_review": "2f392df39a9b21a5f18e7f699134e8a0898e4fc7b5787cc0c45375bc7685dd70",
+  "retained_log_check": "b59d749a5d9dfe81acf371b5d0fa8e9625a41ad6a7e0ed9d338bc0f2a0c03008",
+  "native": {
+    "body_equal_to_prior": [
+      [
+        [
+          "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-native01-v2/compile/run.log",
+          2
+        ]
+      ],
+      [
+        [
+          "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-native00-v2/compile/run.log",
+          1
+        ]
+      ],
+      [
+        [
+          "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-native01-v2/compile/run.log",
+          6
+        ]
+      ],
+      [
+        [
+          "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-native01-v2/compile/run.log",
+          8
+        ]
+      ],
+      [
+        [
+          "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-native01-v2/compile/run.log",
+          13
+        ]
+      ],
+      [
+        [
+          "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-native01-v2/compile/run.log",
+          13
+        ]
+      ]
+    ],
+    "body_hashes": [
+      "31b1998529b7fded1f9192abc4e410a8b49733e60d025b4ab53294a1b1cdd277",
+      "56d7662bf8a625758bebd67a7aa39e16099bafdb68897da13003b983f598196f",
+      "4d13df8c4de0c1d96d3bb5ce86268105079e5358a6ab36f6bb61bd6797caa3e0",
+      "110d1fb6d434d9a810f495ab2f361624daf24a629bb9ce9bf78c6ca5c61649fe",
+      "4879a648bbec9cc3654d862713f9cef0bfc4f62f00f9e09984af8214b5bef21d",
+      "4879a648bbec9cc3654d862713f9cef0bfc4f62f00f9e09984af8214b5bef21d"
+    ],
+    "only_normalization": "programordinal",
+    "units": [
+      "225",
+      "358",
+      "222",
+      "344",
+      "536",
+      "536"
+    ],
+    "resident_halfreg_slots": [
+      3584,
+      4096,
+      3488,
+      4096,
+      2304,
+      2304
+    ],
+    "private_bytes": 0
+  },
+  "numerical": {
+    "rounds": 12,
+    "outputs": 1590732,
+    "oracle": "exact independent dyadic CPUdot/headfloor(h/2), full3allocation input/guard comparison, descriptor-visibletail",
+    "actual_grouped_FD_submissions": 78,
+    "first_full_job_workgroups": 64,
+    "actual_drain_tuples": [
+      [
+        "4",
+        "30",
+        "final"
+      ],
+      [
+        "4",
+        "30",
+        "final"
+      ],
+      [
+        "4",
+        "30",
+        "final"
+      ],
+      [
+        "4",
+        "30",
+        "final"
+      ],
+      [
+        "4",
+        "30",
+        "final"
+      ],
+      [
+        "4",
+        "30",
+        "final"
+      ],
+      [
+        "4",
+        "30",
+        "final"
+      ],
+      [
+        "4",
+        "30",
+        "final"
+      ],
+      [
+        "8",
+        "64",
+        "capacity"
+      ],
+      [
+        "8",
+        "62",
+        "capacity"
+      ],
+      [
+        "8",
+        "64",
+        "capacity"
+      ],
+      [
+        "8",
+        "62",
+        "capacity"
+      ],
+      [
+        "7",
+        "54",
+        "final"
+      ],
+      [
+        "7",
+        "54",
+        "final"
+      ]
+    ]
+  },
+  "max_window": {
+    "slots": 8,
+    "EXEC_chunks": 64,
+    "CS_bytes": 262144,
+    "metadata_bytes": 52800,
+    "backing_bytes": 262144
+  },
+  "limit": "Exact6 current floatingattention class/shape/tail/grouped qualification; fullmodel/transcript/cache replay stillrequired.512queuedWG ceiling is not concurrentresidency.",
+  "timing_collected": false
+}

@@ -70,7 +70,7 @@
   },
   "existing_results": "Original743 CTS cases and modified132 robustness outcomes remain historical pinned evidence; no conformance count or selected performance change.",
   "completion_gate": "TTS side is qualified for the stated T213/T78 fixtures. All-five gate remains CLOSED on ASR full-model memory/placement/transcript and real application replay; full GOAL remains active.",
-  "as_of_utc": "2026-11-03 05:52:49 UTC",
+  "as_of_utc": "2026-11-03 06:01:25 UTC",
   "correctness_receipts": {
     "optimization-cache-correctness-0046.json": "0af98f899b26429971ef61df554e2cf4a4fe340019353f9ed7491869ab59b1f5",
     "optimization-queue-correctness-0046.json": "98c9f0d64a5ef1076462930effb6fd3e22c48de75cad78e87f7e68eaa6636b0e",
@@ -120,7 +120,10 @@
     "optimization-asr-mm128-rms-structural-0046.json": "45326e582db3cfc0e3062107a7da91a70bc053f3d30fe95b9788e12ae73a8ef8",
     "optimization-grouped-rms-actual-0046.json": "2a3bab8d6b316bf81266ecca3cd4514999bec0006f8552b2ad2ba323d1a6aa28",
     "optimization-grouped-norm-actual-0046.json": "40bac22a38c50ee5a2359effd7dd57607b83014ca0b99bb4dc9bea59e5188386",
-    "optimization-long-binary-native-0046.json": "66ece4afe9afe14069ebc7cae18befd240d2609ac95aae5bc8f065fd9545ef7e"
+    "optimization-long-binary-native-0046.json": "66ece4afe9afe14069ebc7cae18befd240d2609ac95aae5bc8f065fd9545ef7e",
+    "optimization-grouped-gqa-actual-0046.json": "15fc39d6809a4be95b6a21dcb3bf65208917ad107e91480ebd08d98362b51ec4",
+    "optimization-grouped-softmax-actual-0046.json": "d07a05051d17b8383bd2ecea8569ff32e6be6b4cc307a64dc5ab55b5d38d7bee",
+    "optimization-grouped-quant-partial-0046.json": "3f2fe9136475a929e10b302bf585b7aa066c1deeaf37b3ba94b91e119985c0bc"
   },
   "drivers": {
     "bounded_cache_queue_half": "61e8/9f64 exact integrated cache+queue+corrected idiv",
@@ -151,7 +154,7 @@
     "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
     "driver": "11cf0aa23c785011262146e6ea2c8f71fa84cff3da92635495cc44fe3db05ac0",
     "receipt": "optimization-grouped-work-source-build-0046.json",
-    "target_status": "Grouped RMS/norm actuals and long-binary native admission pass; remaining affected-family numerical checks pending",
+    "target_status": "Grouped RMS/norm/GQA/softmax independently pass; final long review and remaining quant cases pending, original model not launched",
     "performance_gate": "CLOSED"
   }
 }

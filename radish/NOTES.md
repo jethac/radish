@@ -1,5 +1,21 @@
 # Radish status
 
+## 2026-11-03: grouped attention and softmax verified
+
+[Grouped attention](results/optimization-grouped-gqa-actual-0046.json) passes
+1,590,732 exact CPU-reference values and all allocation guards.
+[Grouped softmax](results/optimization-grouped-softmax-actual-0046.json) preserves
+177,408 old/new pairs exactly and passes the original CPU tolerance and guards.
+Both exercise actual full64-workgroup submissions and tails with unchanged native
+programs. The attention wrapper's two incorrect drain-reason expectations were
+corrected against the retained successful workload; no device replay was needed.
+
+The [first four quantized rounds](results/optimization-grouped-quant-partial-0046.json)
+pass273,480 exact values before an inherited helper allocation bound stops the
+next case. Those results remain valid; precise fixture bounds and remaining-only
+execution are being prepared. The original model and ASR cache replay remain
+unqualified. No performance measurements have run.
+
 ## 2026-11-03: first grouped-work correctness results
 
 The grouped [RMS](results/optimization-grouped-rms-actual-0046.json) and

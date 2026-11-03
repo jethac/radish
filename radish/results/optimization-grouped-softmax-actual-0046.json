@@ -1,0 +1,143 @@
+{
+  "status": "PASS both grouped softmax families; fullmodel remainsopen",
+  "results": [
+    {
+      "family": "f32",
+      "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-grouped-softmax-f32/probe",
+      "pins": {
+        "run.log": "a9a4fefd9f655b837d4a58debeb90d29b34096c72d0bfc52d61362e604cd7776",
+        "runner-result.json": "da7ae47b40ad3ebb013353e014af8f88ff8b3cc604c0a0980412a49e7160c6f8",
+        "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+        "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+        "service.txt": "a2dca24d55b8e50784ab20b5b9b7e3f73ce3815d9fb2e4dac23ed1b875dea931"
+      },
+      "native_body_prior": "/run/media/jethac/Shared/radish/core-compute-opt0046-softmax-batch-f32/probe/run.log",
+      "native_body_prior_sha256": "9c609c87be784c8ce3db59de08b7f72032daf95bf5deb904c837312d7fa50f5e",
+      "native_body_hashes": [
+        "35c0821c0f2b1136df8223e1bf418fe1505cd7326ad9555f11650de23c08ecd5",
+        "c3a25f11bf2cd73b90aaec83a3098f470860ce1d06ebd4d2a07252b05ebe3cd0"
+      ],
+      "only_body_normalization": "programordinal",
+      "cases": 4,
+      "exact_old_new_pairs": 88704,
+      "CPU_output_comparisons": 177408,
+      "max_CPU_NMSE": 6.86579093329e-15,
+      "FD_submissions": 44,
+      "all5fullallocation_guards_and_visible67th_row": true,
+      "drains": [
+        [
+          "8",
+          "8",
+          "capacity"
+        ],
+        [
+          "3",
+          "10",
+          "final"
+        ],
+        [
+          "8",
+          "8",
+          "capacity"
+        ],
+        [
+          "3",
+          "10",
+          "final"
+        ],
+        [
+          "8",
+          "8",
+          "capacity"
+        ],
+        [
+          "3",
+          "10",
+          "final"
+        ],
+        [
+          "8",
+          "8",
+          "capacity"
+        ],
+        [
+          "3",
+          "10",
+          "final"
+        ]
+      ],
+      "window_max_slots": 8
+    },
+    {
+      "family": "f16",
+      "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-grouped-softmax-f16/probe",
+      "pins": {
+        "run.log": "5d85be6da12726d2c5682000deb232fa2781408fcab1c2078d32728f26fcc4e3",
+        "runner-result.json": "a54b5b2aceb3de5adadfd77a442aa85bd930483408c5562d281327db47ddceec",
+        "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+        "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+        "service.txt": "563d407ccf2f0c4e3a822d218c8b7b2869cda1e23687d606dd5972d23ba49a08"
+      },
+      "native_body_prior": "/run/media/jethac/Shared/radish/core-compute-opt0046-softmax-batch-f16/probe/run.log",
+      "native_body_prior_sha256": "daaed3a808bfe16aed33b22f86fa8adca6e05c15daede2d1cad9791db0c38150",
+      "native_body_hashes": [
+        "8129e84b202b785d3667b48035115942a5fceb9c56f842ff9a326bf38f1ca865",
+        "76acbb726011919c5e81460571c1731e30940d60417d842709adfbbe2f1a12f7"
+      ],
+      "only_body_normalization": "programordinal",
+      "cases": 4,
+      "exact_old_new_pairs": 88704,
+      "CPU_output_comparisons": 177408,
+      "max_CPU_NMSE": 6.86579093329e-15,
+      "FD_submissions": 44,
+      "all5fullallocation_guards_and_visible67th_row": true,
+      "drains": [
+        [
+          "8",
+          "8",
+          "capacity"
+        ],
+        [
+          "3",
+          "10",
+          "final"
+        ],
+        [
+          "8",
+          "8",
+          "capacity"
+        ],
+        [
+          "3",
+          "10",
+          "final"
+        ],
+        [
+          "8",
+          "8",
+          "capacity"
+        ],
+        [
+          "3",
+          "10",
+          "final"
+        ],
+        [
+          "8",
+          "8",
+          "capacity"
+        ],
+        [
+          "3",
+          "10",
+          "final"
+        ]
+      ],
+      "window_max_slots": 8
+    }
+  ],
+  "source_review": "b43a08f2efcda8580280d95b0c55e430f7dbdd30e89a69d538a97990b4f834cc",
+  "host_runner_review": "3c08c18cebdcc850de88f023951c9414c8cc65377db0fc5f2e38701a34399ec5",
+  "scope": "Eightcases atlargestselectedwidth336,66validrows+67thvisibleguard,177408 exactoldnewpairs/354816originalCPUoutputcomparisons,original1e-6/full5guards. Actualgroup8 old9FD/new2FD,firstcompact64validWGjob+2valid/guardtail. Allfour nativebodies byteexact prior, noresourceceilingchange.",
+  "timing_collected": false
+}
