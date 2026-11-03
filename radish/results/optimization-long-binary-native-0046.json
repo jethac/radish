@@ -1,0 +1,112 @@
+{
+  "status": "passed native/resource-only; functional remains",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-long-binary/compile",
+  "runner_result": "fe78b9d2bf55f3406c5e6b3b6c9d1d26c1e50a42618fa8f8712948ca6dacdf68",
+  "run_log": {
+    "bytes": 2765199,
+    "sha256": "7c7e3162fb74b86366dd703585deef6cb868ae0054bc293e40d64e464eb614b9"
+  },
+  "payload": {
+    "radish_icd.json": {
+      "bytes": 148,
+      "sha256": "409660ba91d6ecb3886e4bbe99129109bf19a0cac216849f6d9e29e7f07cc4c4"
+    },
+    "resources": {
+      "bytes": 745176,
+      "sha256": "8e86cfdbe881161f7e5526c46005fd6038486e0b3d91d496ac2aabb6663df42b"
+    },
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "mul_f32_f32_f32.spv": {
+      "bytes": 5960,
+      "sha256": "e52b032a7cb770fad5f5eb3609798b426bcdae76abe1a3c081210db309333d23"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 13640248,
+      "sha256": "11cf0aa23c785011262146e6ea2c8f71fa84cff3da92635495cc44fe3db05ac0"
+    },
+    "add_f32_f32_f32.spv": {
+      "bytes": 5960,
+      "sha256": "68b98fdbaf36855a47f587db8da035d00b12c8ee0d1919f129cff82e6df8d166"
+    },
+    "payload.json": {
+      "bytes": 959,
+      "sha256": "0abf75c93959d0a0a79aa1fbf99b3f5c355f5ef23ac2d0c819e12ace8ca2436a"
+    }
+  },
+  "native": [
+    {
+      "kind": 0,
+      "operator": "add",
+      "norepeat": 0,
+      "native": 202,
+      "full_count": 16,
+      "half_count": 12,
+      "resident_wave": 32,
+      "resident_slots": 1408,
+      "whole_WG_slots_not_residency": 5632,
+      "declared_code_dwords": 6464,
+      "declared_code_bytes": 25856,
+      "native_body_sha256": "43019cebcf80342cf8d7f19369a7899aa2860998b88f977fef4e0980ce1ad80d",
+      "prior_body_equal": true
+    },
+    {
+      "kind": 1,
+      "operator": "add",
+      "norepeat": 1,
+      "native": 117,
+      "full_count": 9,
+      "half_count": 12,
+      "resident_wave": 32,
+      "resident_slots": 960,
+      "whole_WG_slots_not_residency": 3840,
+      "declared_code_dwords": 3746,
+      "declared_code_bytes": 14984,
+      "native_body_sha256": "1e113ae3652dd1964a2c025309866a11930e7ad79de5b97058a965ebe6f76912",
+      "prior_body_equal": false
+    },
+    {
+      "kind": 2,
+      "operator": "mul",
+      "norepeat": 0,
+      "native": 200,
+      "full_count": 16,
+      "half_count": 12,
+      "resident_wave": 32,
+      "resident_slots": 1408,
+      "whole_WG_slots_not_residency": 5632,
+      "declared_code_dwords": 6400,
+      "declared_code_bytes": 25600,
+      "native_body_sha256": "faeb023077ff21b4a44510bb9066c6ee05384a918528688c6f760b95cfdbe4a6",
+      "prior_body_equal": true
+    },
+    {
+      "kind": 3,
+      "operator": "mul",
+      "norepeat": 1,
+      "native": 115,
+      "full_count": 9,
+      "half_count": 12,
+      "resident_wave": 32,
+      "resident_slots": 960,
+      "whole_WG_slots_not_residency": 3840,
+      "declared_code_dwords": 3680,
+      "declared_code_bytes": 14720,
+      "native_body_sha256": "2166a66aca480f4b38e8035bd79b278825a6c68fa556c1351891ea087eb2fee4",
+      "prior_body_equal": false
+    }
+  ],
+  "common": "128physicalthreads/no barrier/no loops/shared0/private0/packed0/safety1/used7/3SSBO/push116; onehardwarewave32 resident accounting matchescompiledpipelineguard, notwholeWG. Fourprogramscompilebeforedata; noGPUdispatch/data recorded.",
+  "source_reviews": {
+    "helper": "5664c490da916b508b59dcbc9887fe87ac92acb3770141595ab343fb5781c986",
+    "residency": "49187234c466844628cd86797556522bf709626ec163a9c04531ff6334f10d3b",
+    "selector": "c71d3fb1e286f1ca493fb407a9e6fdc0880bc3e613b9a2a39c17e4f7eacb877e"
+  },
+  "native_identity": "Spec0add/mul fullbodytext equals priorselectedcase03/case13 afteronlyCLordinalnormalization. Spec1native117/115 isexplicitnewlyobservedidentity, notinferredfromoldunknownmodelrows.",
+  "code_bound": "Actualnative-disassembly declares6464/3746/6400/3680dwords; unchangedpipelinecode checksinfo.size overflow, allocatesalign(info.size,128) shaderBO andcopiesinfo.size. Priorselectedspec0BOlimitscarrywithidenticalbody. ThishelperdoesnotprintactualcodeBOsizeforspec1; no inventedactualBOsize isclaimed. Existingallocation/codebounds remain source-backed.",
+  "fault_services": "cleanfault/collection/services/drained",
+  "remaining": "Exact8rounds2097160CPUwords/full3visibleguards,actual64WG/EXEC9chunks2FD anddeferredpending>1; nofallthrough/fallbackcredit. Allgroupedfamilychecks precedeoneoriginalmodel.",
+  "timing_collected": false
+}

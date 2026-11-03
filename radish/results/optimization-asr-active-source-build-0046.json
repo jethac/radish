@@ -1709,7 +1709,7 @@
     "driver": "11cf0aa23c785011262146e6ea2c8f71fa84cff3da92635495cc44fe3db05ac0",
     "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
     "source_build_receipt": "optimization-grouped-work-source-build-0046.json",
-    "target_status": "Never executed; independent source and host build only",
+    "target_status": "Grouped RMS169984 and norm149760 original CPU/full-guard outputs pass with actual full64WG-job/tail behavior. Four long-binary specializations have native admission; remaining numerical families pending.",
     "patches": [
       {
         "file": "0046-coherent-workgroup-budget.patch",
@@ -1725,6 +1725,11 @@
       }
     ],
     "application_modules": "byte-identical db872",
-    "queued_work_expansion_explicit": true
+    "queued_work_expansion_explicit": true,
+    "partial_target_receipts": {
+      "optimization-grouped-rms-actual-0046.json": "2a3bab8d6b316bf81266ecca3cd4514999bec0006f8552b2ad2ba323d1a6aa28",
+      "optimization-grouped-norm-actual-0046.json": "40bac22a38c50ee5a2359effd7dd57607b83014ca0b99bb4dc9bea59e5188386",
+      "optimization-long-binary-native-0046.json": "66ece4afe9afe14069ebc7cae18befd240d2609ac95aae5bc8f065fd9545ef7e"
+    }
   }
 }

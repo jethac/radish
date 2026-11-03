@@ -1,0 +1,90 @@
+{
+  "status": "PASS finite grouped norm numerical/nativeidentity/command/lifetime actual; fullmodel stillopen",
+  "handle": 50182,
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-grouped-norm/probe",
+  "pins": {
+    "run.log": "9695321a67a0d2cc85020bbcd406e6a809e9978862e06780540222d28416e268",
+    "runner-result.json": "2da5bc22c3fc62290fd315c8c4b7ee27b32fd8ad6fc9fc996df6b70faba5970b",
+    "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+    "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+    "service.txt": "0e8bbe690fc496d5bf35179f6e1f42a38bcb6a911772f96f243637698089a453"
+  },
+  "source_review": "4b9b796cdfc221f416aafafff750b600cc253cdef9c592f6f3deb10c1c2aba9b",
+  "helper_review": "37a9535df4a72082bce9f0986adab19974ef6455b749a448b493642fa2ee2573",
+  "runner_review": "0dc72eb82aa351e96d0b5c13bad021c9a2030e546ccc07b98fb4aaef9071f886",
+  "native_identity": {
+    "prior": "/run/media/jethac/Shared/radish/core-compute-opt0046-local-family/probe/run.log",
+    "prior_sha256": "bdfe4eee107109c14bfcfb614bcea795455cd08c95781302da1c6c420016fdc8",
+    "normalized_body_sha256": "5d3b50df3c702ee9c4704fcf257f0709277fb10a1007ffdbabb46e4778acfb64",
+    "only_normalization": "program ordinal",
+    "native": 30,
+    "private": 0,
+    "shared": 1024,
+    "resident_halfregister_slots": 2304
+  },
+  "numerical": {
+    "rounds": 4,
+    "outputs": 149760,
+    "max_row_nmse": 4.55886747518e-15,
+    "original_limit": 1e-07,
+    "full_allocations": 2,
+    "zero_finite_and_descriptor_visible_guards": true
+  },
+  "commands": {
+    "actual_grid_tile_pairs": [
+      [
+        "65,1,1",
+        "8,1,1"
+      ],
+      [
+        "65,1,1",
+        "8,1,1"
+      ],
+      [
+        "65,1,1",
+        "8,1,1"
+      ],
+      [
+        "65,1,1",
+        "8,1,1"
+      ]
+    ],
+    "actual_submits": [
+      2,
+      2,
+      2,
+      2
+    ],
+    "actual_final_drains": [
+      [
+        "2",
+        "9"
+      ],
+      [
+        "2",
+        "9"
+      ],
+      [
+        "2",
+        "9"
+      ],
+      [
+        "2",
+        "9"
+      ]
+    ],
+    "firstFD_workgroups_for65shape": 64,
+    "actual_window_max_slots": 2,
+    "actual_window_max_chunks": 9,
+    "max_CS_bytes": 65536,
+    "max_backing_bytes": 65536,
+    "max_metadata_bytes": 13200,
+    "all_result_zero": true
+  },
+  "limits": [
+    "This qualifies exactgrouped unchangedkernel/shapes andboundedjobs, not all legalmultiWGprograms or a model transcript.",
+    "No simultaneousallgroupresidency orperformanceclaim; no timingcollected.",
+    "Otheraffectedfamilies andoriginal fullmodel/cache replayremainrequired."
+  ],
+  "timing_collected": false
+}

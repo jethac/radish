@@ -1,5 +1,18 @@
 # Radish status
 
+## 2026-11-03: first grouped-work correctness results
+
+The grouped [RMS](results/optimization-grouped-rms-actual-0046.json) and
+[norm](results/optimization-grouped-norm-actual-0046.json) checks pass169,984 and
+149,760 original CPU-reference outputs with complete allocation guards. Actual
+command traces confirm full64-workgroup submissions and partial tails; RMS also
+checks three-dimensional shared-memory isolation. Four unchanged add/multiply
+specializations have [native admission](results/optimization-long-binary-native-0046.json).
+Their numerical checks and the remaining grouped kernel families are pending.
+
+These are bounded correctness results. The original ASR model still has no
+qualified requested transcript or cache replay, and performance remains unmeasured.
+
 ## 2026-11-03: bounded grouped-work candidate built
 
 The [next queue candidate](results/optimization-grouped-work-source-build-0046.json)

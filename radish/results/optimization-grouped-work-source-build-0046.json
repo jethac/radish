@@ -1,5 +1,5 @@
 {
-  "status": "Coherent source and host build pass; all new grouped-work functional checks pending",
+  "status": "Source/build and grouped RMS/norm actuals pass; long-binary native admission passes; remaining affected-family actuals pending",
   "source": {
     "coherent-workgroup-budget": {
       "status": "source frozen; not device-admitted",
@@ -437,8 +437,8 @@
   "queued_work_distinction": "Barrier work/job can rise from8 to64 independent workgroups, with at most512 across8 queued FD slots. This is a real queued-work expansion, not unchangedwork/job and not simultaneous512WG residency. Per-resident-WG4096/shared/private, CS/BO/ref limits, watchdog/fault controls remain unchanged.",
   "TTS_scope": "Both frozen179-program inventories have zero new class or residency admissions; accepted focusedTTS9f8 remains applicable. No TTS timing or extra test claimed.",
   "remaining": [
-    "Largest-selected-work and full/partial grouped shared-memory numerical checks across affected families",
-    "Long nonbarrier add/mul actual deferred selection, dependency and full-allocation checks",
+    "Long add/multiply full numerical and deferred-use checks",
+    "Grouped quantized and floating attention/softmax numerical checks at largest selected K and full/partial geometry",
     "Original full ASR workload under unchanged controls",
     "Conditional actual application-cache replay"
   ],
@@ -477,5 +477,10 @@
       "Originalfullmodel+freshacceptedpopulatedcache replay afterallnewfocusedgates"
     ],
     "timing_collected": false
+  },
+  "partial_target_receipts": {
+    "optimization-grouped-rms-actual-0046.json": "2a3bab8d6b316bf81266ecca3cd4514999bec0006f8552b2ad2ba323d1a6aa28",
+    "optimization-grouped-norm-actual-0046.json": "40bac22a38c50ee5a2359effd7dd57607b83014ca0b99bb4dc9bea59e5188386",
+    "optimization-long-binary-native-0046.json": "66ece4afe9afe14069ebc7cae18befd240d2609ac95aae5bc8f065fd9545ef7e"
   }
 }

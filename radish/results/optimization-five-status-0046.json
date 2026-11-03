@@ -26,7 +26,7 @@
     {
       "area": 4,
       "implementation": "Integrated GQA broadcast, phase-specific quantized kernels, encoder-to-prefill device-buffer reuse and reduced host staging; actual application pipeline cache and supported-kernel initialization correction are built. Constrained-profile subsampling reuses one independent chunk graph across the complete audio, lowering unnecessary live convolution intermediates. Scheduler scratch is released between subsampling and encoder; Vulkan-owned allocations leave the BO reuse cache on final unref. Incremental KV allocates actual prompt/draft demand and grows geometrically up to the unchanged full context ceiling. The constrained softmax shader uses one runtime-width body and preserves column loops instead of seven constant-width expansions, retaining numerical order and masks. Production constrained-profile warmup now uses fresh temporary borrowed-model sessions and one actual decoder step per mode; synthetic state is synchronized and freed before real requests. The original warm prompt now has owned string lifetime. Constrained-profile heap cleanup asks glibc to return unused pages after compilation and synchronized temporary-session destruction. Quantized decoding now processes up to32 rows per workgroup in consecutive four-row blocks with uniform shared-memory reuse barriers and unchanged per-row arithmetic. Coherent host candidate db8725 adds sequential128-row quantized MM and one selected RMS runtime body; current d4d0/6f15 is preserved.",
-      "evidence": "Candidate d4d0/4d20 preserves all qualified operator/resource results, including exact6912 MV32 outputs and original fullallocation guards. Full42969 again reaches the original300-second watchdog during streaming prefill: offline one-step cleanup and streaming encoder complete, but no streaming decoder STEP/DONE or requested transcript. Actual Q6 vocabulary dispatches use4748 workgroups/594 submissions, confirming the new mapping without a timing claim. The full warm audio/modes, two same pinned2.785s requests, real256 budget and640MiB/128MiBswap/300s controls remain unchanged. Memory640M/swap64.7M are guard telemetry. Full model and ASR cache replay remain open; no unchanged retry or performance release. The coherent d4d0/6f15 candidate passes dependency/local-family/TTS qualification and is executing the original full model as78241; no completed full-model or ASR cache-replay result yet. Full78241 on coherent6f15 is terminal at the original watchdog: both warm actual decoder steps and synchronized cleanup pass; the real request prefix completes and audio subsampling begins, with no transcript. Original workload and limits remain; import is held. New four selected shader modules are host-validated; actual native/numerical/model gates remain pending. Latest full78241 completed both warmups and real prefix, then timed out before transcripts. MM beadea9c checks138456 exact outputs/fullguards/36dispatches39submits; RMS c66cc6ed checks571680 CPU outputs and285840 exact old-new pairs. Original combined full22258 remains pending; these finite fixtures are not full-model completion. Full22258 terminal watchdog: both warm steps and cleanup plus realprefix/firstsubsample complete, no transcript. This is incomplete model qualification, not a numerical mismatch."
+      "evidence": "Current db872 application retains all qualified phase-kernel/GQA/KV, memory-lifetime and bounded warmup changes. MM128 independently passes138456 exact outputs; compact RMS passes571680 CPU outputs and285840 old/new exact pairs. Full22258 with7575 timed out at the original300-second watchdog: both warm steps and synchronized cleanup, real prefix and first subsample complete, but no requested transcript. Current queue-only11cf has grouped RMS/norm partial qualification; remaining affected-family geometry, original full model and populated ASR cache replay remain open. No performance result."
     },
     {
       "area": 5,
@@ -70,7 +70,7 @@
   },
   "existing_results": "Original743 CTS cases and modified132 robustness outcomes remain historical pinned evidence; no conformance count or selected performance change.",
   "completion_gate": "TTS side is qualified for the stated T213/T78 fixtures. All-five gate remains CLOSED on ASR full-model memory/placement/transcript and real application replay; full GOAL remains active.",
-  "as_of_utc": "2026-11-03 04:21:54 UTC",
+  "as_of_utc": "2026-11-03 05:52:49 UTC",
   "correctness_receipts": {
     "optimization-cache-correctness-0046.json": "0af98f899b26429971ef61df554e2cf4a4fe340019353f9ed7491869ab59b1f5",
     "optimization-queue-correctness-0046.json": "98c9f0d64a5ef1076462930effb6fd3e22c48de75cad78e87f7e68eaa6636b0e",
@@ -117,7 +117,10 @@
     "optimization-mm128-actual-0046.json": "beadea9ce3d5b1f35f964614ac0088975ec3a5dcee16ab4a84bf7a13e4603951",
     "optimization-rms-runtime-actual-0046.json": "c66cc6ed9944e645a5c7f73f83ccb88bc7d78bc0acfab1de09886db2229f9647",
     "optimization-asr-mm128-rms-timeout-0046.json": "34f0f8d0ca3cb8f4879a514bad1291df43f57db04399f215ca0800d9f041a701",
-    "optimization-asr-mm128-rms-structural-0046.json": "45326e582db3cfc0e3062107a7da91a70bc053f3d30fe95b9788e12ae73a8ef8"
+    "optimization-asr-mm128-rms-structural-0046.json": "45326e582db3cfc0e3062107a7da91a70bc053f3d30fe95b9788e12ae73a8ef8",
+    "optimization-grouped-rms-actual-0046.json": "2a3bab8d6b316bf81266ecca3cd4514999bec0006f8552b2ad2ba323d1a6aa28",
+    "optimization-grouped-norm-actual-0046.json": "40bac22a38c50ee5a2359effd7dd57607b83014ca0b99bb4dc9bea59e5188386",
+    "optimization-long-binary-native-0046.json": "66ece4afe9afe14069ebc7cae18befd240d2609ac95aae5bc8f065fd9545ef7e"
   },
   "drivers": {
     "bounded_cache_queue_half": "61e8/9f64 exact integrated cache+queue+corrected idiv",
@@ -148,7 +151,7 @@
     "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
     "driver": "11cf0aa23c785011262146e6ea2c8f71fa84cff3da92635495cc44fe3db05ac0",
     "receipt": "optimization-grouped-work-source-build-0046.json",
-    "target_status": "source-reviewed/host-built; grouped-work target qualification pending",
+    "target_status": "Grouped RMS/norm actuals and long-binary native admission pass; remaining affected-family numerical checks pending",
     "performance_gate": "CLOSED"
   }
 }
