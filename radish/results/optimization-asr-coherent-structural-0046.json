@@ -1,0 +1,738 @@
+{
+  "status": "Original full-model FAIL retained; coherent queue paths exercised, both warm modes complete, requested transcript unavailable",
+  "handle": 78241,
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-full-coherent/probe",
+  "pins": {
+    "run.log": "acd34f6a529fe3b0ea931a76cfe8b8a44ff1b32d5b803d4ca048ea06c8662d26",
+    "failure.json": "e82d8f2063f19efd278ae69fd6d13e3c68db3e2e1d2e8f7349dbede2593fb2fe",
+    "service.txt": "ddd10683975770c94d736de03b972a1d73ca508f156c83625dcf4f7cd6476d6a",
+    "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+    "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+    "drain-000.txt": "899a8a5a73232d4a07b56824413da1c88dc2dc685e89886ca2bc05f89923b9f6",
+    "launch.json": "0c898edd15e773246f15981361b3307b452484fcdffaba0249ebebe7790aed2d"
+  },
+  "candidate": {
+    "listener": "d4d0ec3aeb16a44e494e96891f75a40f04b8baab8b080a95bc7346e8179d4f30",
+    "driver": "6f1551cc8ed772439d53157b50e518bef79b3a49f3144e058127faa8740a71ee",
+    "appcache": "freshmissingv14"
+  },
+  "terminal": "Original300s watchdog/TERM, systemd timeout rather than OOM. Guard telemetry peak640MiB/swap64.7M. No requested transcript or accepted-cache replay; all-five gate remains open.",
+  "phases": [
+    [
+      "begin",
+      "warm_offline",
+      "36"
+    ],
+    [
+      "end",
+      "warm_offline",
+      "36"
+    ],
+    [
+      "begin",
+      "warm_offline",
+      "36"
+    ],
+    [
+      "end",
+      "warm_offline",
+      "36"
+    ],
+    [
+      "begin",
+      "warm_offline",
+      "36"
+    ],
+    [
+      "end",
+      "warm_offline",
+      "36"
+    ],
+    [
+      "begin",
+      "warm_offline",
+      "697"
+    ],
+    [
+      "end",
+      "warm_offline",
+      "697"
+    ],
+    [
+      "begin",
+      "warm_offline",
+      "1105"
+    ],
+    [
+      "end",
+      "warm_offline",
+      "1105"
+    ],
+    [
+      "begin",
+      "warm_offline",
+      "1126"
+    ],
+    [
+      "end",
+      "warm_offline",
+      "1126"
+    ],
+    [
+      "begin",
+      "warm_streaming",
+      "1151"
+    ],
+    [
+      "end",
+      "warm_streaming",
+      "1151"
+    ],
+    [
+      "begin",
+      "warm_streaming",
+      "36"
+    ],
+    [
+      "end",
+      "warm_streaming",
+      "36"
+    ],
+    [
+      "begin",
+      "warm_streaming",
+      "36"
+    ],
+    [
+      "end",
+      "warm_streaming",
+      "36"
+    ],
+    [
+      "begin",
+      "warm_streaming",
+      "36"
+    ],
+    [
+      "end",
+      "warm_streaming",
+      "36"
+    ],
+    [
+      "begin",
+      "warm_streaming",
+      "697"
+    ],
+    [
+      "end",
+      "warm_streaming",
+      "697"
+    ],
+    [
+      "begin",
+      "warm_streaming",
+      "1157"
+    ],
+    [
+      "end",
+      "warm_streaming",
+      "1157"
+    ],
+    [
+      "begin",
+      "warm_streaming",
+      "1126"
+    ],
+    [
+      "end",
+      "warm_streaming",
+      "1126"
+    ],
+    [
+      "begin",
+      "request",
+      "1151"
+    ],
+    [
+      "end",
+      "request",
+      "1151"
+    ],
+    [
+      "begin",
+      "request",
+      "36"
+    ]
+  ],
+  "phase_meaning": "Both full40000sample warm modes finish encoder/prefill/actualN1 step and synchronized temporary cleanup status0. Real request decoder-prefix graph1151 completes; first real subsampling graph36 begins. Source audit6f6f confirms prefix-before-audio is legitimate stream setup and no duplicate audio intervals were found. No claim of completed requested encoder/transcript.",
+  "dispatch_prefix": {
+    "pairs": 4096,
+    "capped": true,
+    "groups": 1071090,
+    "submits": 63466,
+    "all_results": 0,
+    "same_mathematical_prefix_as_42969": true,
+    "prior_submits": 77376,
+    "local_selector_submit_difference": 13910,
+    "qualifier": "Exact structural count delta only. Prefix is capped, not whole-run work or timing attribution."
+  },
+  "deferred_prefix": {
+    "records": 256,
+    "capped": true,
+    "types": {
+      "ENQUEUE": 228,
+      "DRAIN": 28
+    },
+    "drain_reasons": {
+      "capacity": 28
+    },
+    "maxima": {
+      "slots": 8,
+      "chunks": 64,
+      "cs_bytes": 262144,
+      "backing_bytes": 262144,
+      "metadata_bytes": 52800,
+      "bo_refs": 48
+    },
+    "all_results": 0,
+    "qualifier": "Observed deferred pending>1 on real model, within existing per-slot/aggregate bounds.256-record cap may end inside a pending window; silence is not a stall or missing-drain proof."
+  },
+  "all_printed_classes": [
+    {
+      "native": 53,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 423,
+      "groups": 146160,
+      "submits": 18270
+    },
+    {
+      "native": 44,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 272,
+      "groups": 73244,
+      "submits": 9160
+    },
+    {
+      "native": 477,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 421,
+      "groups": 64889,
+      "submits": 8258
+    },
+    {
+      "native": 65,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 104,
+      "groups": 54080,
+      "submits": 6760
+    },
+    {
+      "native": 536,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 56,
+      "groups": 43008,
+      "submits": 5376
+    },
+    {
+      "native": 358,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 82,
+      "groups": 16936,
+      "submits": 2120
+    },
+    {
+      "native": 64,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 36,
+      "groups": 16632,
+      "submits": 2088
+    },
+    {
+      "native": 43,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 142,
+      "groups": 10080,
+      "submits": 1260
+    },
+    {
+      "native": 41,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 2,
+      "groups": 9496,
+      "submits": 1188
+    },
+    {
+      "native": 35,
+      "batch": 1,
+      "packed": 0,
+      "tile": "64,1,1",
+      "local_memory": 1,
+      "dispatches": 154,
+      "groups": 59304,
+      "submits": 1015
+    },
+    {
+      "native": 62,
+      "batch": 8,
+      "packed": 0,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 54,
+      "groups": 7776,
+      "submits": 978
+    },
+    {
+      "native": 110,
+      "batch": 1,
+      "packed": 0,
+      "tile": "8,8,1",
+      "local_memory": 1,
+      "dispatches": 12,
+      "groups": 48384,
+      "submits": 960
+    },
+    {
+      "native": 73,
+      "batch": 8,
+      "packed": 0,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 104,
+      "groups": 5760,
+      "submits": 720
+    },
+    {
+      "native": 202,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,64,1",
+      "local_memory": 1,
+      "dispatches": 58,
+      "groups": 34332,
+      "submits": 560
+    },
+    {
+      "native": 200,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,64,1",
+      "local_memory": 1,
+      "dispatches": 194,
+      "groups": 21734,
+      "submits": 465
+    },
+    {
+      "native": 225,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 76,
+      "groups": 3520,
+      "submits": 440
+    },
+    {
+      "native": 20,
+      "batch": 8,
+      "packed": 0,
+      "tile": "4,16,1",
+      "local_memory": 1,
+      "dispatches": 296,
+      "groups": 111232,
+      "submits": 392
+    },
+    {
+      "native": 121,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,50,1",
+      "local_memory": 1,
+      "dispatches": 6,
+      "groups": 19200,
+      "submits": 384
+    },
+    {
+      "native": 30,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 74,
+      "groups": 2442,
+      "submits": 370
+    },
+    {
+      "native": 41,
+      "batch": 1,
+      "packed": 0,
+      "tile": "64,1,1",
+      "local_memory": 1,
+      "dispatches": 98,
+      "groups": 17584,
+      "submits": 322
+    },
+    {
+      "native": 22,
+      "batch": 8,
+      "packed": 0,
+      "tile": "4,16,1",
+      "local_memory": 1,
+      "dispatches": 56,
+      "groups": 136712,
+      "submits": 278
+    },
+    {
+      "native": 202,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,58,1",
+      "local_memory": 1,
+      "dispatches": 256,
+      "groups": 14848,
+      "submits": 256
+    },
+    {
+      "native": 222,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 36,
+      "groups": 2016,
+      "submits": 252
+    },
+    {
+      "native": 344,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 36,
+      "groups": 2016,
+      "submits": 252
+    },
+    {
+      "native": 117,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,64,1",
+      "local_memory": 1,
+      "dispatches": 95,
+      "groups": 8510,
+      "submits": 190
+    },
+    {
+      "native": 24,
+      "batch": 8,
+      "packed": 0,
+      "tile": "4,16,1",
+      "local_memory": 1,
+      "dispatches": 75,
+      "groups": 57192,
+      "submits": 149
+    },
+    {
+      "native": 34,
+      "batch": 8,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 28,
+      "groups": 896,
+      "submits": 112
+    },
+    {
+      "native": 21,
+      "batch": 8,
+      "packed": 0,
+      "tile": "4,16,1",
+      "local_memory": 1,
+      "dispatches": 104,
+      "groups": 35392,
+      "submits": 104
+    },
+    {
+      "native": 200,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,20,1",
+      "local_memory": 1,
+      "dispatches": 84,
+      "groups": 1680,
+      "submits": 84
+    },
+    {
+      "native": 200,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,58,1",
+      "local_memory": 1,
+      "dispatches": 74,
+      "groups": 4292,
+      "submits": 74
+    },
+    {
+      "native": 117,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,58,1",
+      "local_memory": 1,
+      "dispatches": 72,
+      "groups": 4176,
+      "submits": 72
+    },
+    {
+      "native": 115,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,2,1",
+      "local_memory": 1,
+      "dispatches": 59,
+      "groups": 118,
+      "submits": 59
+    },
+    {
+      "native": 117,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,2,1",
+      "local_memory": 1,
+      "dispatches": 57,
+      "groups": 114,
+      "submits": 57
+    },
+    {
+      "native": 20,
+      "batch": 8,
+      "packed": 0,
+      "tile": "1,64,1",
+      "local_memory": 1,
+      "dispatches": 20,
+      "groups": 25884,
+      "submits": 56
+    },
+    {
+      "native": 26,
+      "batch": 8,
+      "packed": 0,
+      "tile": "1,64,1",
+      "local_memory": 1,
+      "dispatches": 56,
+      "groups": 5488,
+      "submits": 56
+    },
+    {
+      "native": 41,
+      "batch": 1,
+      "packed": 0,
+      "tile": "8,1,1",
+      "local_memory": 1,
+      "dispatches": 56,
+      "groups": 448,
+      "submits": 56
+    },
+    {
+      "native": 117,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,20,1",
+      "local_memory": 1,
+      "dispatches": 56,
+      "groups": 1120,
+      "submits": 56
+    },
+    {
+      "native": 24,
+      "batch": 8,
+      "packed": 0,
+      "tile": "4,6,1",
+      "local_memory": 1,
+      "dispatches": 29,
+      "groups": 696,
+      "submits": 29
+    },
+    {
+      "native": 200,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,2,1",
+      "local_memory": 1,
+      "dispatches": 28,
+      "groups": 56,
+      "submits": 28
+    },
+    {
+      "native": 35,
+      "batch": 1,
+      "packed": 0,
+      "tile": "8,1,1",
+      "local_memory": 1,
+      "dispatches": 28,
+      "groups": 224,
+      "submits": 28
+    },
+    {
+      "native": 200,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,4,1",
+      "local_memory": 1,
+      "dispatches": 28,
+      "groups": 112,
+      "submits": 28
+    },
+    {
+      "native": 35,
+      "batch": 1,
+      "packed": 0,
+      "tile": "16,1,1",
+      "local_memory": 1,
+      "dispatches": 28,
+      "groups": 448,
+      "submits": 28
+    },
+    {
+      "native": 20,
+      "batch": 8,
+      "packed": 0,
+      "tile": "1,4,1",
+      "local_memory": 1,
+      "dispatches": 28,
+      "groups": 112,
+      "submits": 28
+    },
+    {
+      "native": 200,
+      "batch": 1,
+      "packed": 0,
+      "tile": "1,40,1",
+      "local_memory": 1,
+      "dispatches": 28,
+      "groups": 1120,
+      "submits": 28
+    },
+    {
+      "native": 29,
+      "batch": 1,
+      "packed": 0,
+      "tile": "4,16,1",
+      "local_memory": 1,
+      "dispatches": 2,
+      "groups": 352,
+      "submits": 7
+    },
+    {
+      "native": 31,
+      "batch": 8,
+      "packed": 0,
+      "tile": "4,16,1",
+      "local_memory": 1,
+      "dispatches": 3,
+      "groups": 1048,
+      "submits": 3
+    },
+    {
+      "native": 20,
+      "batch": 8,
+      "packed": 0,
+      "tile": "1,58,1",
+      "local_memory": 1,
+      "dispatches": 2,
+      "groups": 116,
+      "submits": 2
+    },
+    {
+      "native": 20,
+      "batch": 8,
+      "packed": 0,
+      "tile": "1,20,1",
+      "local_memory": 1,
+      "dispatches": 2,
+      "groups": 40,
+      "submits": 2
+    },
+    {
+      "native": 20,
+      "batch": 8,
+      "packed": 0,
+      "tile": "1,12,1",
+      "local_memory": 1,
+      "dispatches": 2,
+      "groups": 24,
+      "submits": 2
+    },
+    {
+      "native": 20,
+      "batch": 8,
+      "packed": 0,
+      "tile": "1,2,1",
+      "local_memory": 1,
+      "dispatches": 1,
+      "groups": 2,
+      "submits": 1
+    },
+    {
+      "native": 29,
+      "batch": 1,
+      "packed": 0,
+      "tile": "4,1,1",
+      "local_memory": 1,
+      "dispatches": 1,
+      "groups": 4,
+      "submits": 1
+    },
+    {
+      "native": 14,
+      "batch": 1,
+      "packed": 1,
+      "tile": "1,1,1",
+      "local_memory": 1,
+      "dispatches": 1,
+      "groups": 1,
+      "submits": 1
+    },
+    {
+      "native": 29,
+      "batch": 1,
+      "packed": 0,
+      "tile": "4,10,1",
+      "local_memory": 1,
+      "dispatches": 1,
+      "groups": 40,
+      "submits": 1
+    }
+  ],
+  "last_resource_samples": [
+    "ASR_OWNERSHIP_PROC phase=graph_begin rss_kib=63864 anon_kib=45460 file_kib=18404 shmem_kib=0 swap_kib=42124 pss_kib=61911 private_dirty_kib=45460 anonymous_kib=45460",
+    "ASR_OWNERSHIP_CGROUP phase=graph_begin available=1 current_bytes=645275648 swap_bytes=43610112 anon_bytes=46551040 file_bytes=594284544 shmem_bytes=574091264 kernel_bytes=3567616 pagetables_bytes=1626112 unevictable_bytes=574091264"
+  ],
+  "remaining": "Actual full requested outputs/resource fit and populated appcache replay. No unchanged retry or cap/work reduction. Assess remaining bulk kernel and allocator/graph source together; do not infer a last-logged-pipeline stall.",
+  "timing_collected": false
+}

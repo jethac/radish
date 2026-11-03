@@ -105,7 +105,8 @@
     "optimization-asr-mv32-holistic-0046.json": "3b4d6d57d7a8180662b77f8f704bdb9d322c8ab7fd2620a6bd9cc31a59a11c2d",
     "optimization-deferred-queue-correctness-0046.json": "6d6b7931f20085b5f6705ca208455b33dd953b46ba4949dfb8b6135d3c979f7f",
     "optimization-local-family-correctness-0046.json": "3272fdcef22815d255c50ddf3401ab1713d667e705d21ff32591170900531d9f",
-    "optimization-tts-deferred-queue-regression-0046.json": "9f8bb8f7a48edc9645a18b0e18c9f01d57008eb04de72f99b079deb164c38a80"
+    "optimization-tts-deferred-queue-regression-0046.json": "9f8bb8f7a48edc9645a18b0e18c9f01d57008eb04de72f99b079deb164c38a80",
+    "optimization-asr-coherent-structural-0046.json": "f51ade4f6cb92e953d1bc759ed9318e1618c5ec022e312b18e373806667bc3a2"
   },
   "drivers": {
     "bounded_cache_queue_half": "61e8/9f64 exact integrated cache+queue+corrected idiv",

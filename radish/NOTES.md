@@ -9,8 +9,9 @@ the original watchdog stops the run before a transcript. The original audio,
 two requests, token budget and resource limits are unchanged.
 
 All focused queue, local-family and TTS checks remain valid. The failure is
-preserved for exact structural reconciliation; cache replay and performance
-measurement remain held.
+preserved with [independent structural reconciliation](results/optimization-asr-coherent-structural-0046.json).
+The same captured math prefix uses fewer submissions; this is structural evidence,
+not timing attribution. Cache replay and performance measurement remain held.
 
 ## 2026-11-03: build coherent queue overhead changes
 

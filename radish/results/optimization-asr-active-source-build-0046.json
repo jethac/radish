@@ -1091,8 +1091,10 @@
   "latest_full_model_result": {
     "file": "optimization-asr-coherent-timeout-0046.json",
     "sha256": "78bcb32665e2276e856dcf642125d2b9a05495af5a756e1d9a4eaec09c4254c1",
-    "status": "Original300-second timeout; exact phase source reconciliation pending",
-    "candidate": "d4d0/6f15"
+    "status": "Independently confirmed original watchdog: both warm modes complete; actual request prefix ends, audio subsampling begins, no transcript",
+    "candidate": "d4d0/6f15",
+    "independent_file": "optimization-asr-coherent-structural-0046.json",
+    "independent_sha256": "f51ade4f6cb92e953d1bc759ed9318e1618c5ec022e312b18e373806667bc3a2"
   },
   "resource_diagnostic_stage": {
     "build": {
