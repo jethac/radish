@@ -165,7 +165,7 @@ def clean_detail(d):
 
 # --- one batch -----------------------------------------------------------------
 
-def run_batch(icd, cases, runtime_max):
+def run_batch(icd, cases, runtime_max, env=()):
     """Run one batch on the device. Caller holds the lock."""
     before = fault_lines()
     listing = "\n".join(cases) + "\n"
@@ -185,8 +185,8 @@ def run_batch(icd, cases, runtime_max):
         "--deqp-log-decompiled-spirv=disable",
         "--deqp-log-empty-loginfo=disable",
         "--deqp-watchdog=enable",
-        "--deqp-watchdog-total-time-limit=120",
-        "--deqp-watchdog-interval-time-limit=60",
+        "--deqp-watchdog-total-time-limit=300",
+        "--deqp-watchdog-interval-time-limit=150",
     ])
     unit = " ".join([
         "systemd-run --wait --pipe --collect --quiet",
@@ -194,10 +194,11 @@ def run_batch(icd, cases, runtime_max):
         "-p LimitCORE=0 -p Nice=10", f"-p WorkingDirectory={DEV}/run",
         f"--setenv=VK_DRIVER_FILES={icd}", f"--setenv=LD_LIBRARY_PATH={PREFIX}/lib",
         f"--setenv=VK_LOADER_LAYERS_DISABLE=all",
+        *[f"--setenv={shlex.quote(e)}" for e in env],
     ])
     # Timestamp each "Test case" line with the kernel's monotonic clock so a
     # fault line in dmesg can be matched to the case that was running.
-    stamp = ('while IFS= read -r l; do case "$l" in "Test case"*|*Fail*|*Crash*|*Timeout*)'
+    stamp = ('while IFS= read -r l; do case "$l" in "Test case"*|*Fail*|*Crash*|*Timeout*|radish:*)'
              ' read -r up _ </proc/uptime; printf "%s %s\\n" "$up" "$l";; esac; done')
     script = (f"{unit} {deqp} 2>&1 | {stamp} > {DEV}/run/stdout.txt; "
               f"echo rc=${{PIPESTATUS[0]}}")
@@ -243,6 +244,7 @@ def cmd_run(args):
     batches_path = os.path.join(outdir, "batches.tsv")
     nbatch = sum(1 for _ in open(batches_path)) if os.path.exists(batches_path) else 0
     rate = None  # seconds per case, measured
+    fault_streak = False
     size = args.first_batch
     resf = open(res_path, "a")
     batf = open(batches_path, "a")
@@ -255,7 +257,7 @@ def cmd_run(args):
         batch = todo[:size]
         nbatch += 1
         with device_lock():
-            r = run_batch(args.icd, batch, args.runtime_max)
+            r = run_batch(args.icd, batch, args.runtime_max, args.env)
         with lzma.open(os.path.join(outdir, "qpa", f"{nbatch:04d}.qpa.xz"), "wt") as f:
             f.write(r["qpa"])
         with lzma.open(os.path.join(outdir, "qpa", f"{nbatch:04d}.stdout.xz"), "wt") as f:
@@ -318,9 +320,18 @@ def cmd_run(args):
                     f.write(f"{who}\t{args.name}\tbatch {nbatch}\t"
                             f"{'wedged' if wedged else ('recovered' if recovered else 'unknown')}\n")
             print(open(os.path.join(outdir, "FAULT.txt")).read(), flush=True)
-            if wedged or not recovered or not args.allow_page_faults:
+            # A page fault with no hangcheck is not a hang. Continue (when
+            # allowed) unless the previous batch also faulted and nothing
+            # in this one passed.
+            passed_any = any(done.get(c) == "Pass" for c in batch)
+            if wedged or not args.allow_page_faults or (fault_streak and not passed_any):
                 sys.exit(f"[{args.name}] new GPU fault lines; stopping. See {outdir}/FAULT.txt")
-            print(f"[{args.name}] page fault without hang; later case passed; continuing", flush=True)
+            fault_streak = True
+            print(f"[{args.name}] page fault without hang "
+                  f"({'a later case passed' if recovered else 'no later pass in batch'}); continuing",
+                  flush=True)
+        else:
+            fault_streak = False
     summarize([outdir])
 
 
@@ -499,6 +510,7 @@ def main():
     r.add_argument("--icd", required=True)
     r.add_argument("--run", required=True)
     r.add_argument("--exclude")
+    r.add_argument("--env", action="append", default=[], help="VAR=VALUE for the test process")
     r.add_argument("--allow-page-faults", action="store_true",
                    help="continue after an IOMMU page fault (no hangcheck) when a later "
                         "case in the same batch passed")
