@@ -19,9 +19,10 @@
     "handle": 49945,
     "status": "CLI rejection before GPU inference; no performance sample",
     "reason": "Normal runtime does not accept wrapper-generated --vulkan-loader or --robust-buffer-access options",
-    "correction": "Use accepted existing normal-runtime default robustness=true path. simplevk resolves private VK_DRIVER_FILES ICD library_path directly; staged loader is fallback and not claimed used. No binary, math, shader or CPU remeasurement needed.",
+    "correction": "Use accepted existing normal-runtime default robustness=true/privateICDselection; primary loader file not observed. No binary or math change.",
     "reviewed_old_plan": "812af verified requested argv/assets but missed unsupported GPU runtime flags; old attempt preserved."
   },
   "baseline_status": "COMPLETE initial sequential samples, all original numerical checks passed; GPU warm slower, continue optimization",
-  "baseline_receipt": "optimization-current-matched-baseline-0046.json"
+  "baseline_receipt": "optimization-current-matched-baseline-0046.json",
+  "loading_route_correction": "optimization-current-loader-clarification-0046.json"
 }

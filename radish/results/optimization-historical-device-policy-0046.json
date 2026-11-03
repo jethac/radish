@@ -1,0 +1,48 @@
+{
+  "status": "verified historical explicitRBAfalse actual",
+  "historical": {
+    "runtime": {
+      "path": "/run/media/jethac/Shared/radish/kokoro-runtime-ja-greet-single-vulkan-core0045-ja-resident-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache/request-001/runtime.json",
+      "sha256": "58d204ba4a90eede053ffaab065a593b69435968aa5010fccd7f989c0ba5ab8d"
+    },
+    "actual_log": {
+      "path": "/run/media/jethac/Shared/radish/evidence/runtime-runtime-ja-greet-vulkan-core0045-ja-resident-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache.txt",
+      "sha256": "c603a654d9efe0aaf6dbd80a51bfa40987728138e05762c7fa7ed79d39ed56ff"
+    },
+    "source": {
+      "path": "/run/media/jethac/Shared/radish/runtime-fdinfo-build-0045/source/tests/ncnn/kokoro_runtime.cpp",
+      "sha256": "fc9edcfb32618fd82da3024e7fe97479bcfc24ef51dc7d7f2459031828dc773d"
+    },
+    "build": {
+      "path": "/run/media/jethac/Shared/radish/runtime-fdinfo-build-0045/result.json",
+      "sha256": "acabfe3a10cbb5b00dee9262dfeb91c5e724cfe7392b8cac20b6cc5bfbb12e53"
+    },
+    "plan": {
+      "path": "/run/media/jethac/Shared/radish/japanese-resident-0045/paired-result-draft.json",
+      "sha256": "91eb6b1232805a20aff47bad6b98fe2ff2c86154d8540422e12170e85a1c255c"
+    },
+    "binary": "33cd9f3c",
+    "driver": "fcd47b1f",
+    "actual_policy_marker": "requested=0 enabled=0 owned_device=1",
+    "explicit_pinned_loader_used": true,
+    "PROFILE": "1",
+    "warm_extraction_seconds": 27.461864090000745
+  },
+  "current": {
+    "runtime": "52c9e565",
+    "driver": "0f721436",
+    "robustBufferAccess": true,
+    "PROFILE": "0",
+    "loader": "simplevk direct privateICD; stagedloaderfallback only",
+    "warm_extraction_seconds": [
+      34.38227459701011,
+      34.389624440984335
+    ]
+  },
+  "conclusion": "Historical27.461864 indeed used application RBAfalse, unlike currenttrue. Driver, convolution/mixed precision/compiler/queue paths, PROFILE/scheduling and frontend lifecycle also differ. Difference is not an isolated source regression or measured RBAcost; no causal attribution without same-current-source pairedpolicy result.",
+  "primary_spec": [
+    "https://docs.vulkan.org/refpages/latest/refpages/source/VkDeviceCreateInfo.html",
+    "https://docs.vulkan.org/spec/latest/chapters/shaders.html#shaders-robust-buffer-access"
+  ],
+  "device_actions": 0
+}

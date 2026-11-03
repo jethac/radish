@@ -1,0 +1,11 @@
+{
+  "status": "CORRECTION of source-derived primary-loader claim in339fab; accepted execution unchanged",
+  "prior_review_sha256": "339fabd1d9d697bd23484f54af20ec7f25ca4e9859e6be472329673f570a1fe4",
+  "facts": [
+    "capture generator writes compact one-line JSON beginning openbrace. simplevk get_driver_path_from_icd uses sscanf expecting optionalwhitespace then literal library_path at start; doesnot find nested key inthisline.",
+    "With noexplicitdriverpath it therefore consults NCNN_VULKAN_DRIVER then load_vulkan_linux normal libvulkan.so/.so.1 lookup. Loader consults exact privateVK_DRIVER_FILES to load pinneddriver.",
+    "Pinned private libvulkan.so.1 anddriver/ICD assets remainverified. Source alone doesnot establish which defaultloaderfilename resolved ondevice; no processmap/newlookup probe performed.",
+    "PrivateICDisolation/defaultRBAtrue/allcorrectness andtimings remainvalid. DirectICDprimary wording in339fab andderiveddata must be replaced by privateICDselection via existing loaderresolution; no transportbehavior change."
+  ],
+  "scope": "No additional execution gate, newenv, source, binary, or math change. Original49945 failure andoldreceipts preserved."
+}

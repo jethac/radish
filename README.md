@@ -26,7 +26,7 @@ audio are fully validated on the corrected common runtime with four CPU workers:
 
 GPU warm synthesis is **17.56% slower than CPU** in this initial pair. Disk cache
 reduces startup, with no steady-state gain in these samples. The GPU uses the
-qualified default robustness=true and direct private ICD path. All 589 layers
+qualified default robustness=true and private ICD selection. All 589 layers
 run on GPU; every output passes the original numerical checks.
 [Phase timings, cache and counter evidence](radish/results/optimization-current-matched-baseline-0046.json)
 keep app submissions distinct from driver submissions. Thermal/frequency data

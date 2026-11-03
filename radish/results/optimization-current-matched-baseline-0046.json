@@ -59,7 +59,7 @@
     "handle": 49945,
     "status": "CLI rejection before GPU inference; no performance sample",
     "reason": "Normal runtime does not accept wrapper-generated --vulkan-loader or --robust-buffer-access options",
-    "correction": "Use accepted existing normal-runtime default robustness=true path. simplevk resolves private VK_DRIVER_FILES ICD library_path directly; staged loader is fallback and not claimed used. No binary, math, shader or CPU remeasurement needed.",
+    "correction": "Use accepted existing normal-runtime default robustness=true path and exact privateICDselection; source direct-dlopen claim corrected separately, no runtime change.",
     "reviewed_old_plan": "812af verified requested argv/assets but missed unsupported GPU runtime flags; old attempt preserved."
   },
   "remaining": "Continue optimizing measured losses. Next isolated candidate explicitly requests optional robustBufferAccess=false on the same current driver, then scheduling-preserving loss accounting with read-only thermal/devfreq observations. No conformance/deployment completion or CPU-win stopping criterion.",
@@ -250,7 +250,12 @@
     "full_record_bounds_and_FNV_checksums": true,
     "canonical_identical_to_cold": true
   },
-  "GPU_device_policy": "Default RBA=true, simplevk direct private ICD via VK_DRIVER_FILES; staged loader is fallback only, not claimed used. Source/interface339fabd1 matches accepted9f8; no binary/math change.",
+  "GPU_device_policy": "Default robustness=true; exact private VK_DRIVER_FILES selects the pinned Radish driver. Compact ICD JSON does not match simplevk direct-scanner; source proceeds to normal loader lookup. Actual primary loader file not yet observed; staging its hash is not proof of loading.",
   "precision": "CPU core FP32; GPU accepted selective policy uses two FP16-weight operators and ten FP32 fallbacks with FP32 activations/accumulation/output, all original end-to-end numerical limits retained.",
-  "thermal_frequency": "Not sampled in this baseline. No thermal stability, frequency matching, GPU utilization or saturation claim."
+  "thermal_frequency": "Not sampled in this baseline. No thermal stability, frequency matching, GPU utilization or saturation claim.",
+  "loading_route_correction": "optimization-current-loader-clarification-0046.json",
+  "historical_policy_caveat": {
+    "receipt": "optimization-historical-device-policy-0046.json",
+    "distinction": "Historical27.461864s extraction used explicit robustness=false and PROFILE1; current completed baseline uses robustness=true/PROFILE0. No isolated regression or RBA speed claim from that historical comparison."
+  }
 }
