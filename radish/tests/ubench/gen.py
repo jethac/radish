@@ -21,7 +21,13 @@ def alu(prec, width, chains, mode='const'):
     T = {('f32',1):'float',('f32',4):'vec4',('f16',1):'float16_t',('f16',2):'f16vec2',('f16',4):'f16vec4'}[(prec,width)]
     S = 'float' if prec == 'f32' else 'float16_t'
     init = '\n'.join(f'    {T} x{c} = {T}({S}(gid & 255u) * {S}(0.001) + {S}({c}.0 * 0.01));' for c in range(chains))
-    if mode == 'muladd':
+    if mode == 'add':
+        body = '\n'.join(f'        x{c} = x{c} + b;' for _ in range(UNROLL) for c in range(chains))
+    elif mode == 'mul':
+        body = '\n'.join(f'        x{c} = x{c} * a;' for _ in range(UNROLL) for c in range(chains))
+    elif mode == 'madaa':
+        body = '\n'.join(f'        x{c} = fma(x{c}, a, a);' for _ in range(UNROLL) for c in range(chains))
+    elif mode == 'muladd':
         body = '\n'.join(f'        {{ precise {T} t{c} = x{c} * a; x{c} = t{c} + b; }}' for _ in range(UNROLL) for c in range(chains))
     else:
         body = '\n'.join(f'        x{c} = fma(x{c}, a, b);' for _ in range(UNROLL) for c in range(chains))
@@ -49,6 +55,11 @@ for prec, widths in (('f32', (1, 4)), ('f16', (1, 2, 4))):
             name = f'alu_{prec}_w{w}_c{c}'
             for local in (64, 128):
                 emit(name, alu(prec, w, c), local, G, 'alu', UNROLL * c * w * 2)
+# 2-source ops count 1 op per lane; reported GFLOP/s = G lane-ops/s
+for mode in ('add', 'mul', 'madaa'):
+    for c in (4, 8, 12):
+        name = f'ops_{mode}_f32_w4_c{c}'
+        emit(name, alu('f32', 4, c, mode), 128, 64, 'alu', UNROLL * c * 4 * (2 if mode == 'madaa' else 1))
 for mode in ('reg', 'muladd'):
     for prec, w in (('f32', 1), ('f32', 4), ('f16', 4), ('f16', 2)):
         for c in (2, 4, 8):

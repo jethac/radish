@@ -34,17 +34,27 @@ unmodified. It is a way in, not a promise of more FLOPs.
 | SoC | Qualcomm APQ8053-Lite, marketed as Snapdragon 624 (MSM8953 family, no modem). Same CPU and GPU as the Pro part; the Lite codec is limited to 1080p. |
 | CPU | 8 × Cortex-A53 at up to 1.8048 GHz, in-order; ~57.8 GFLOP/s FP32 nominal |
 | GPU | Adreno 506, a5xx generation, up to 650 MHz; mainline `msm` DRM, no KGSL |
-| GPU nominal | 124.8 GFLOP/s FP32 (assumes 96 ALU lanes × 650 MHz × 2; not a Qualcomm-verified figure). FP16 nominally 2×. |
+| GPU ALU | Measured: about 15 lane-instructions per clock (16 FP32 lanes at ~93%), so **19.4 GFLOP/s FP32 MAD** at 650 MHz, ~20.8 theoretical. FP16 (`mad.f16`) issues at the same rate: no 2× FP16. Mesa lists the A505–A509 with one SP (`num_sp_cores = 1`). The once-quoted 124.8 GFLOP/s (96 lanes) is not supported by measurement, nor is 83 GFLOP/s (64 lanes per SP as on the A530). |
 | Memory | 2 GB LPDDR3, single channel, shared by CPU and GPU |
 | Thermal | GPU trip at 80 °C; CPU capped at 1420.8 MHz from 75 °C |
 | Kernel | mainline Linux, Arch Linux ARM |
 
 Measured so far, on Radish:
 
-- MAD-loop calibration: **21.3–22.5 GFLOP/s** FP32 (GPU timestamps). That is
-  18% of nominal. Either the nominal figure is wrong or the kernel is not
-  saturating the ALUs. **The real ALU ceiling is still unknown, and finding it
-  is the first performance task.**
+- ALU ceiling (`radish/tests/ubench`, 2026-11-03, GPU at 650 MHz, services
+  running): **19.4 GFLOP/s FP32 MAD**, register operands, vec4 × 12
+  independent chains, 128 threads. Loop body ISA: 384 `mad.f32` (128 with
+  `(rpt1)`), 6 nop cycles, 11 other instructions, no `(ss)`. The rate is
+  the same for 1 to 256 workgroups, 4 to 16 full registers (8 to 16 max
+  waves), single or double thread size, scalar or vec4, and FP16. A
+  2-source `mul.f` loop issues at the same instruction rate as `mad.f32`
+  (9.3 vs 9.7 G lane-ops/s), so the limit is issue width, not register
+  reads. MAD with two const-file operands: 12–13 GFLOP/s. The earlier
+  21–22 GFLOP/s "mul + add" calibration compiled to `mad.f32` too
+  (`precise` did not stop fusion).
+- Bandwidth: SSBO vec4 read 2.9 GB/s (cache-resident and 4 MiB), 1.9 GB/s
+  at 32 MiB; texel buffer RGBA32F 4.9 GB/s, RGBA16F 6.3 GB/s; UBO dynamic
+  index 2.9 GB/s; SSBO copy 3.0 GB/s read+write.
 - vec4 copy: **4.3 GB/s** logical read+write.
 - Earlier GLES work: GEMM 14.4 GFLOP/s in compute, **16.7 GFLOP/s in FP16
   fragment shaders over RGBA16F textures**. That suggests the texture path
