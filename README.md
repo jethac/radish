@@ -1,52 +1,20 @@
 # Radish
 
-Current checkpoint (2026-11-03): all five optimization areas have concrete
-implementations and passing functional/resource evidence for the pinned fixtures.
-Retained TTS sessions, convolution, selective precision and pipeline-cache reuse
-pass their T213/T78 scopes. The corrected ASR application passes two requests of
-the same 2.785-second English clip with the exact expected transcript and
-language, production prefix-cache growth/reuse, GPU placement and resource controls.
-
-The actual ASR application also saves and reloads a populated Vulkan pipeline
-cache. A fresh process accepts all 34 compiled records, produces the original
-transcript, and re-exports identical canonical records; only file order differs.
-Earlier failures remain preserved. [Current evidence](radish/results/optimization-five-status-0046.json)
-and the [five-area ledger](radish/results/optimization-five-completion-ledger-0046.json)
-describe the qualified scope.
-
-This completes the implementation prerequisite milestone, not the
-[full goal](radish/GOAL.md). The initial matched T168 results for 4.2 seconds of
-audio are fully validated on the corrected common runtime with four CPU workers:
-
-| Backend / startup regime | First request | Warm request | Peak memory / swap |
-| --- | ---: | ---: | ---: |
-| CPU | 37.734 s | 30.923 s | 451.1 MiB / 0 |
-| GPU, missing disk cache | 62.345 s | 36.354 s | 554.7 MiB / 0 |
-| GPU, imported disk cache | 44.680 s | 36.350 s | 540.6 MiB / 0 |
-
-GPU warm synthesis is **17.56% slower than CPU** in this initial pair. Disk cache
-reduces startup, with no steady-state gain in these samples. The GPU uses the
-qualified default robustness=true and private ICD selection. All 589 layers
-run on GPU; every output passes the original numerical checks.
-[Phase timings, cache and counter evidence](radish/results/optimization-current-matched-baseline-0046.json)
-keep app submissions distinct from driver submissions. Thermal/frequency data
-were not sampled, so these are not sustained-performance results.
-
-The earlier requested-four-thread run was serial and remains excluded. Its
-replacement has verified concurrent workers. The failed GPU CLI launch also
-remains preserved and excluded. The 32.835-second result below belongs to the
-frozen earlier build. Optimization continues against measured losses; broader
-accuracy, conformance, deployment and GPU efficiency remain active.
+Status (2026-11-03): Radish reports Vulkan 1.1 and passes the `dEQP-VK.compute`
+group (93/93). The full applicable 1.1 compute CTS has not been run yet. Kokoro
+TTS runs all 589 core layers on the A506, matching the CPU reference. On 4.2 s
+of Japanese audio it takes 36.35 s warm, against 30.92 s on four CPU threads
+(17.6% slower). Qwen3-ASR transcribes correctly on the GPU; latency is not yet
+measured. Both are far from real time. Profiling is next; see
+[GOAL.md](radish/GOAL.md).
 
 ## TL;DR
 
 Radish is an experimental, compute-first Vulkan driver for Adreno 5xx, built
-inside Mesa's Freedreno project. It currently runs the Kokoro neural decoder
-through ncnn on the Adreno 506 in a Lenovo ThinkSmart View. FP32 output checks
-pass. A historical matched Japanese runtime beat four-thread ncnn CPU; the current
-default-device baseline is slower and optimization continues. Synthesis remains far
-from realtime. The goal
-is fast speech inference that makes full use of attainable GPU performance.
+inside Mesa's Freedreno project. It runs Kokoro TTS (through ncnn) and
+Qwen3-ASR (through transcribe.cpp/ggml) on the Adreno 506 in a Lenovo
+ThinkSmart View. The goal is fast speech inference that makes full use of
+attainable GPU performance.
 
 ## Purpose
 
@@ -59,145 +27,18 @@ The first target is the Adreno 506 / APQ8053 on Linux with the `msm` DRM driver.
 Radish shares Mesa's Vulkan infrastructure and Freedreno's ir3 compiler. It is
 a separate driver, with its own a5xx resource bindings and command emission.
 
-## Historical selected baseline
+## Source
 
-Separate [public 8-bit storage and timeline semaphore checks](radish/CORE_API_0044.md) now pass, including neighboring byte writes and a host-released queued 64-bit value dependency around real compute. These are bounded prerequisites; API remains 1.0, and ASR inference is not yet qualified.
+| Component | Repository and branch |
+| --- | --- |
+| Driver | [`jethac/turnip-rt` `radish/main`](https://github.com/jethac/turnip-rt/tree/radish/main) (`src/freedreno/radish/`) |
+| ncnn | [`jethac/ncnn` `radish/main`](https://github.com/jethac/ncnn/tree/radish/main) |
+| transcribe.cpp / ggml | [`jethac/transcribe.cpp` `radish/main`](https://github.com/jethac/transcribe.cpp/tree/radish/main) |
+| ASR app glue | `jethac/straylight-voice` `radish/asr` |
+| TTS app and tests | this repository, `radish/tests/` |
 
-A separate [storage-only16-bit buffer checkpoint](radish/CORE_API_0044.md) now passes public feature query/enablement and a validated500-word/full-allocation consumer. Current inference comparisons retain frozen fcd; this storage prerequisite alone does not make ASR runnable or raise the API version.
-
-The matched Japanese resident request now takes **32.835 seconds on Vulkan versus 37.262 seconds on four-thread ncnn CPU (11.88% lower)**, with all boundaries and complete outputs validated. The GPU first request remains slower, memory use is higher, and 4.2 seconds of audio still takes 7.82 times realtime to synthesize. [Exact engine, cold/resident, memory and sequential-pair limits](radish/RUNTIME_INTEGRATION.md) keep this milestone distinct from campaign completion.
-
-The first intended Japanese request now passes complete core and waveform validation on its exact tablet frontend/source boundary: 47.314 seconds first synthesis for 4.2 seconds of audio, with all 589 core layers on Vulkan. [The scoped runtime result](radish/RUNTIME_INTEGRATION.md) keeps resident and matched Japanese CPU measurements separate; no end-to-end speedup is claimed.
-
-**Historical priority:** the concrete compute/shared implementation and unchanged
-full-model correctness gates pass. Work now targets end-to-end Straylight GPU performance, with correctness guards preserved. [Batching recovery](radish/BATCHING_RECOVERY.md) first lowers resident fixed-core time by 22.00%, from 67.63 to 52.75 seconds; the separately paired normalization change reaches 51.44 seconds, with exact outputs. The subsequent [explicit app robustness pair](radish/EXPLICIT_ROBUSTNESS.md), after four shader-tail fixes, reaches 34.33 seconds on the same driver while retaining requested robustness support and application defaults. The latest
-[0044 checkpoint](radish/CORE_API_0044.md) has representative valid-use evidence
-for the original40 command paths, alongside focused BASIC, private/constant,
-normal/noopt and historical32/64 barrier-reduction checks. A descriptor-order
-mistake in earlier resource/RBA probes is documented; corrected update-before-record
-runs now pass unchanged resource, depth, array-fetch, robustness and allocation
-guard checks. The bounded private array path also passes filtered sampling, gradient LOD,
-wrap/border and gather checks. Four-sample color clear/copy/fetch and
-depth/stencil size/count consumers also pass with explicit coverage limits;
-corrected cube and subword consumers now pass their full outputs and guards after rebuilding the child native texture inventory. Earlier faulting candidates are preserved. The separate sixteen-sampled-texture/four-storage-resource consumer now passes through descriptor-size constants, with existing cube/subword/public robustness checks requalified. Earlier native-query faults remain preserved; high-index S2EN support is not claimed. Focused irregular-workgroup barrier checks and a real128MiB two-layer image now pass. The expanded driver now passes the unchanged full fixed-core model twice: all 589 GPU layers execute and all output bytes match the accepted baseline. The robust-mode recovery takes 51.440 s; the separately audited explicit app-feature pair reaches 34.333 s, approximately the historical 34.304 s fixed-core time under different conditions. Both sequential pairs record their swap differences; no CPU or end-to-end win follows. Exact descriptor-size constants repair the aligned-buffer/first-convolution failure. A separate invalid-SPIR-V error in historical RBA probes is documented and corrected, with all original robustness cases passing a validated replacement module.
-A locally corrected CTS initialization harness runs five information cases:
-four pass and the full property-limit test still fails; six corrected fields
-reduce its failure messages from37 to31. The40-path count is not complete
-semantic coverage or conformance. Graphics is outside scope; remaining compute
-limits, sampled-image behavior and legal workgroups are active work. Storage-Cube and public128MiB multisample-array checks also pass with scoped
-output/guard evidence. No full Vulkan/CTS conformance or graphics support is
-claimed; the inference results below remain the prior performance baseline.
-
-Radish runs every core layer of Kokoro's neural decoder on the GPU through ncnn.
-The latest opt-in graph fuses 42 normalization/AffineSnake chains and executes
-**589 core layers through Vulkan**, with no CPU fallback. Frontend/source and
-waveform generation still run on the CPU in one private tablet executable.
-
-Full core and waveform references pass at both input lengths. All boundary and
-output bytes match the previous accepted GPU result; full waveform SNR is
-**97.91 dB**. No GPU faults occurred, and both live services remained active.
-
-| Measurement | Latest GPU path | Packed six-thread CPU reference |
-| --- | ---: | ---: |
-| Neural core, full resident request | **35.322 s** | **30.703 s** |
-| Complete short synthesis, resident core | **17.297 s** | **15.411 s** |
-| Complete full synthesis, resident core | **41.226 s** | **36.803 s** |
-
-The [packed-weight experiment](radish/GPU_PACKED_A.md) improves the same-binary
-fixed warm core **35.806 → 34.304 s (4.20%)**, with all 562,342 outputs byte-identical.
-All 58 affected convolutions retain the same batching. A balanced representative
-convolution measures **7.171 → 6.518 ms GPU elapsed (9.10%)**. Fixed cold load rises
-**9.030 →11.427 s**, making load plus first inference **0.712 s slower** in that pair.
-
-The actual 0042 short/short/full/full synthesis loop is **28.953 /17.297 /46.216 /
-41.226 s**, versus 0035 **27.428 /18.163 /45.677 /42.819 s**. Resident hits improve;
-initial/shape-load misses regress. Loads are **11.629 /0 /5.929 /0 s**. All four
-original-ORT core/waveform references pass; every boundary/output byte matches 0035.
-Session peak is **512.8 MiB plus 74.3 MiB swap** (prior 531.4/57.2). Summed synthesis
-improves only **0.394555 s**; the larger session reduction includes unrelated
-pre-request/publication/cleanup differences and cannot be assigned wholly to GPU.
-
-Packed A remains **default off**, exposed through the standard build and device
-wrappers. Select it explicitly for this resident-hit/cold-miss tradeoff. The
-current table records the new opt-in GPU path; CPU references use the earlier
-equivalent graph and still win. Single observations, different driver builds,
-cache/clock histories and memory pressure limit attribution. Sustained behavior
-and live application integration remain unmeasured. The prior 0035 fixed warm
-result was 35.731 s after normalization fusion; its runtime values remain in
-[RUNTIME_INTEGRATION.md](radish/RUNTIME_INTEGRATION.md#optional-normalizationaffinesnake-fusion-0035).
-
-GPU saturation remains unproven. At 0035, the dominant 58 tiled convolutions delivered
-**10.9 useful GFLOP/s on command wall time**, with only 1.2% padding overhead.
-The qualified timer measures one unchanged convolution at **7.161 ms GPU queued
-elapsed**. The [0040 paired calibration](radish/GPU_MAD_UNROLL.md) raises the
-achieved arithmetic lower bound to **22.53 GFLOP/s**: fourfold loop unrolling
-reduces mean GPU time **12.597682 → 11.916471 ms (5.41%)**, with exact outputs.
-Its 17.86% reduction in expanded instruction slots does not imply an equivalent
-timing gain or a hardware ceiling. The earlier copy calibration achieves
-**4.30 GB/s logical read+write**, not measured physical DRAM bandwidth. Workload
-and packet geometry differ from convolution; model performance is unchanged.
-See [GPU_TIMING.md](radish/GPU_TIMING.md) and
-[GPU_CALIBRATION.md](radish/GPU_CALIBRATION.md) for the earlier measurements.
-
-The per-group register guard does not establish total physical capacity, and
-compiler wave estimates do not establish occupancy. The
-[state-reuse experiment](radish/GPU_STATE_REUSE.md) preserved every output but
-reduced GPU time only **0.42%**, below its planned 5% criterion. A separate
-[compiler experiment](radish/GPU_REPEAT_COALESCING.md) formed repeat MAD
-instructions but added moves inside the reduction loop and was rejected before
-tensor execution. Both remain excluded. The current default-off diagnostic
-driver is **0041**; 0042 adds an incremental timer for the packed-weight
-experiment. The 0042 measurements use private driver a9be6b5c…12a4e. The rebuilt canonical
-ICD 6ae15421…7813f is separately linked; the global device ICD remains**0032**.
-
-Counter programming is deferred: the inspected A506 sources do not establish
-exclusive counter ownership while other services remain active. No new counter
-code is implemented. The [shared-hot diagnostic](radish/GPU_SHARED_HOT.md)
-now measures **7.213085 → 5.417721 ms (24.89% less GPU time)** at equal issued
-arithmetic work, with all exact references passing. Both source variants failed
-the original no-hot-MOV gate; before timing, the scope was revised to compare
-the original complete implementation including its extra register moves. The
-result does not isolate memory or barrier cost, establish a conservative bound,
-or improve a production model. It guides the next kernel investigation. A CPU
-win alone will not close the goal.
-
-A tablet cancellation probe preserves the completed request and discards the
-second request after its active GPU core finishes. Exit follows the cancel marker
-by about 15.8 s in this observation; it does not interrupt GPU work promptly.
-The probe reports 485.7 MiB/zero swap, no faults and both services active.
-Restart after cancellation, the new fused graph and broader cancellation
-coverage remain untested.
-
-Select the measured graph with `--norm-affine-snake-deconv2d`,
-`RADISH_NCNN_PLANAR=1`, `RADISH_NCNN_PLANAR_PACKED_A=1` and
-`RADISH_BATCH_CHUNKS=8`, with one X workgroup.
-The latest measurements additionally enable `RADISH_NCNN_NORM_SUM4=1` and
-`RADISH_NCNN_PAD_CHANNELS=1`, plus `RADISH_NCNN_NORM_OUTPLACE=1` with
-`RADISH_NCNN_RESHAPE_ALIAS=1`; these optimizations remain default-off except the
-runtime wrapper's existing reshape-alias default. The exact
-graph preserves every model weight and expresses
-three 1D deconvolutions as stock height-one 2D Vulkan operators with reshapes.
-The preparation/validation tools require completed full CPU reference evidence.
-Existing graph defaults remain unchanged. See
-[RUNTIME_INTEGRATION.md](radish/RUNTIME_INTEGRATION.md) for preparation and use.
-
-Earlier normalization, activation, layout and submission changes brought warm
-GPU time down from 101.275 s. The earlier K2 convolution-loop unrolling candidate was
-correct but 7–9% slower in paired operator measurements and remains excluded.
-Optional X pairing has no established overall performance win. The normalization
-optimization has passing fixed-core and fresh full results; sustained behavior
-with the combined graph remains unmeasured.
-Mixed FP16 storage still fails full-model accuracy gates, so FP32 remains the
-validated path. Detailed results and failed experiments are in
-[NOTES.md](radish/NOTES.md).
-
-This is an experimental compute-only ICD. It provides no graphics or presentation
-and has no Vulkan 1.0 or 1.1 conformance claim. Core indirect dispatch now reads
-arguments at execution time and passes 36 device checks, including host changes
-after recording and arguments written by a GPU transfer. Additional resource
-types, public dispatch bases, secondary command buffers, events and subgroup
-support remain among the API gaps. CTS is built but has not run on the device. See
-[VULKAN_AUDIT.md](radish/VULKAN_AUDIT.md).
+The numbered files in `radish/patches/` are earlier checkpoints, kept for
+history. Build from the branches above.
 
 ## Repository contents
 
@@ -208,7 +49,7 @@ build and test scripts retain their relative paths.
 | --- | --- |
 | [radish/GOAL.md](radish/GOAL.md) | Purpose, scope, milestones and completion criteria |
 | [radish/NOTES.md](radish/NOTES.md) | Measurements, failures, current work and reproduction details |
-| [radish/patches/](radish/patches/README.md) | Complete driver source as cumulative Mesa patches, plus ordered ncnn adaptations |
+| [radish/patches/](radish/patches/README.md) | Historical checkpoints; superseded by the branches above |
 | [radish/scripts/](radish/scripts/) | Cross-build, model preparation and isolated device runners |
 | [radish/tests/](radish/tests/) | Compute checks, ncnn operator/model runners and waveform validation |
 | [radish/ABI.md](radish/ABI.md) | Shader ABI and a5xx dispatch mapping |
@@ -229,18 +70,16 @@ This is a development checkpoint. The scripts require external source trees,
 an aarch64 sysroot and host build tools; model weights and device captures are
 kept outside the repository.
 
-1. Check out Mesa at `ddabdd0e36bd2f5e0c8e6bd21c3d1da7e34c1230` in a
-   separate worktree. Apply
-   `radish/patches/0041-radish-shared-hot-calibration-cumulative.patch` to that base.
-   Earlier cumulative Mesa patches are historical alternatives, not a series.
-2. Set `RADISH_WORK` to the scratch/build directory, `RADISH_MESA` to the Mesa
-   checkout, `RADISH_SYSROOT` to the aarch64 sysroot and `RADISH_VENV` to the
-   host build environment. Run `radish/scripts/build.sh`.
-3. For ncnn, use revision `f18f3ffc94dbc76a277e94556c588ab2c2d0e1d9` with
-   glslang `780b6a209132dc74e99458f62ebe5fa7e57c41cf`. Set `RADISH_NCNN` to
-   that checkout. `build-loader.sh` prepares the loader/toolchain and
-   `build-ncnn.sh` applies or verifies the supported patch stack, including0042.
-   Do not manually apply0042 again; its runtime selector defaults to0.
+1. Check out `jethac/turnip-rt` branch `radish/main` and configure a cross
+   build with `-Dvulkan-drivers=radish -Dgallium-drivers= -Dfreedreno-kmds=msm
+   -Dbuildtype=debugoptimized` and an aarch64 cross file, then
+   `ninja src/freedreno/radish/libvulkan_radish.so`.
+2. Check out `jethac/ncnn` branch `radish/main` (glslang
+   `780b6a209132dc74e99458f62ebe5fa7e57c41cf`) and set `RADISH_NCNN` to it.
+   `build-loader.sh` prepares the loader/toolchain.
+3. For ASR, check out `jethac/transcribe.cpp` `radish/main` and
+   `jethac/straylight-voice` `radish/asr`, then run
+   `listen/asr/build.sh aarch64 vulkan -DGGML_VULKAN_KHR_PROFILE=ON`.
 4. For the private Kokoro runtime, `radish/scripts/build-runtime.sh` builds the
    combined executable. The required private model exports, device runner and
    exact-boundary validation commands are in
@@ -279,8 +118,6 @@ manifest records ordering, reuse and terminal status. Run the unchanged
 same-boundary reference importer and full validator separately for each request
 after capture. Generation alone does not establish accuracy. One-shot defaults
 and `--repeat N` semantics remain unchanged.
-
-The separate ASR profile now has a complete host backend/catalog/listener link with 50 required Vulkan1.0 modules, nine placement checks and lazy KV. Full-model memory and device execution remain unadmitted; see [the handoff](radish/ASR_VULKAN_HANDOFF.txt) and [pinned host result](radish/results/asr-profile-complete-host-link-0045.json).
 
 ## License
 
