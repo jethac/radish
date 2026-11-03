@@ -25,12 +25,12 @@
     },
     {
       "area": 4,
-      "implementation": "Integrated GQA broadcast, phase-specific quantized kernels, encoder-to-prefill device-buffer reuse and reduced host staging; actual application pipeline cache and supported-kernel initialization correction are built. Constrained-profile subsampling reuses one independent chunk graph across the complete audio, lowering unnecessary live convolution intermediates.",
-      "evidence": "Six quantized kernels, floating GQA and all32 native classes pass. Actual93589 completes three serial GPU subsample graphs, then reaches encoder placement533/0 before unchanged640MiB OOM. Full model output, placement completion, fit and cache replay remain open."
+      "implementation": "Integrated GQA broadcast, phase-specific quantized kernels, encoder-to-prefill device-buffer reuse and reduced host staging; actual application pipeline cache and supported-kernel initialization correction are built. Constrained-profile subsampling reuses one independent chunk graph across the complete audio, lowering unnecessary live convolution intermediates. Scheduler scratch is released between subsampling and encoder; Vulkan-owned allocations leave the BO reuse cache on final unref. Incremental KV allocates actual prompt/draft demand and grows geometrically up to the unchanged full context ceiling.",
+      "evidence": "Six quantized kernels, floating GQA and all32 native classes pass. Phase release3f5/91a1 completes encoder then fails prefill at the unchanged640MiB/128MiB limits. Incremental KV ab5 is source/build reviewed; original full model and focused actual growth qualification remain pending."
     },
     {
       "area": 5,
-      "implementation": "Real compiled Vulkan cache entries using Mesa cache import/export/merge and IR3 native serializer, including sampling NIR and resource metadata; selective weight-only precision source is being integrated",
+      "implementation": "Real compiled Vulkan cache entries using Mesa cache import/export/merge and IR3 native serializer, including sampling NIR and resource metadata; selective weight-only precision actively uses two qualified operators with ten FP32 fallbacks",
       "evidence": "Selective half2/FP32ten passes fixedT213 and integratedT78 original outputs. Real ncnn export/import contains48SPV/178compiled objects, all178 keyed native payloads unchanged after replay. Five custom/device-cache entries stay in-process. ASR cache lifecycle is built but full model qualification remains open."
     }
   ],
@@ -48,11 +48,13 @@
     "0046-ncnn-absolute-weight-budget.patch": "602c133670191527f51d066848277b7efbde65d5ef45a82e856bb87cc3646897",
     "0046-asr-application-pipeline-cache.patch": "7766b6ca5ba5c2acc431b92ebc66288211a026b96c40ea4617884822bb79abdc",
     "0046-asr-profile-matrix-init.patch": "4652afd06124dd0832efb85159e3d0d2b5699aedef971c7a1ddc891ba864903c",
-    "0046-asr-subsample-liveness.patch": "0295e09fd7ddcf116d1f1675b91dc5fa7a51052e7d767461e0a6cc9d56c7f58f"
+    "0046-asr-subsample-liveness.patch": "0295e09fd7ddcf116d1f1675b91dc5fa7a51052e7d767461e0a6cc9d56c7f58f",
+    "0046-asr-phase-scratch-release.patch": "0c5c0f16803a7787cc1b1c9fd1a1dd002b1e65d7ec6138192bd4b89a3b1fc87d",
+    "0046-asr-incremental-kv.patch": "47c7b982904508cdb473342c006213bffa300905f7bb92d60bfaf00d16cbaca3"
   },
   "existing_results": "Original743 CTS cases and modified132 robustness outcomes remain historical pinned evidence; no conformance count or selected performance change.",
   "completion_gate": "TTS side is qualified for the stated T213/T78 fixtures. All-five gate remains CLOSED on ASR full-model memory/placement/transcript and real application replay; full GOAL remains active.",
-  "as_of_utc": "2026-11-03 00:36 UTC",
+  "as_of_utc": "2026-11-03 00:56 UTC",
   "correctness_receipts": {
     "optimization-cache-correctness-0046.json": "0af98f899b26429971ef61df554e2cf4a4fe340019353f9ed7491869ab59b1f5",
     "optimization-queue-correctness-0046.json": "98c9f0d64a5ef1076462930effb6fd3e22c48de75cad78e87f7e68eaa6636b0e",
@@ -65,11 +67,13 @@
     "optimization-retained-runtime-cold-0046.json": "7a02642de6d6ad46577223a94945481ef1e40bfabddd34032c0cac86023d32d9",
     "optimization-retained-runtime-import-0046.json": "08c8e3fee4052ad817137c76374af8384c8c0962c905d4b5cf37147267c1c780",
     "optimization-application-cache-payloads-0046.json": "d15d3fc92d9fac98f663b26b8c1196835c9e49c06f26dce3c611df4e112c42d2",
-    "optimization-retained-runtime-combined-0046.json": "ac4ad9614166b557fee4acb2ea61c9d38ac4a1edc1a60aa38fe73bc253c73e9e"
+    "optimization-retained-runtime-combined-0046.json": "ac4ad9614166b557fee4acb2ea61c9d38ac4a1edc1a60aa38fe73bc253c73e9e",
+    "optimization-tts-allocator-regression-0046.json": "554b9aea07bdbe42dbd1064f34993b9fdd79a85c02ac5102cd935228a1e7f596"
   },
   "drivers": {
     "bounded_cache_queue_half": "61e8/9f64 exact integrated cache+queue+corrected idiv",
-    "tts_candidate": "1ed3/5eed direct-window batching; T213 and T78 full core/waveform correctness passed with selective half2/FP32ten"
+    "tts_candidate": "1ed3/5eed direct-window batching; T213 and T78 full core/waveform correctness passed with selective half2/FP32ten",
+    "current_coherent_candidate": "63b4/91a1 exact memory-policy-only overlay over1ed3/5eed; focused T78 retained runtime/cache regression passes554b9aea"
   },
   "preserved_failure": "First quantized native helper compared logical64/128 against physical32x2/64x2 and failed before data. V2 checks exact existing logical and physical mappings; no shader, oracle or guard changed.",
   "preserved_failures": [
@@ -77,7 +81,8 @@
     "Quant first helper logical/physical assertion and native32 exactAPI1.0 assertion were setup failures; minimal harness corrections preserve modules/oracles.",
     "First full ASR cold25335: generic shared-memory matrix initialization rejected backend before model execution.",
     "Corrected ASR89794: Vulkan backend initializes, then unchanged640MiB cgroup cap OOM-kills process before transcript/placement completion; no memory-limit waiver.",
-    "Serial-subsample53764: all3 GPU subsample graphs complete; encoder placement533/0 then OOM at640MiB/swap85.1MiB. Diagnostic ownership investigation continues; original caps and full model retained."
+    "Serial-subsample53764: all3 GPU subsample graphs complete; encoder placement533/0 then OOM at640MiB/swap85.1MiB. Diagnostic ownership investigation continues; original caps and full model retained.",
+    "Phase-release84990: all3 subsample graphs and encoder complete; prefill793/0 then OOM640MiB/swap128MiB. Full model outputs remain unqualified; original inputs/budget/caps unchanged."
   ],
-  "runtime_cache": "Actual ncnn missing-cache cold process exports populated cache; second process accepts and re-exports identical178 keyed compiled objects and correct outputs. No hit-count or acceleration inference."
+  "runtime_cache": "Actual ncnn missing-cache cold process exports populated cache; second process accepts and re-exports identical178 keyed compiled objects and correct outputs. No hit-count or acceleration inference. On coherent91a1, copied old-UUID cache is rejected and repopulates48SPV/178native objects with the new build UUID; both complete T78 outputs remain byte-identical accepted baseline."
 }

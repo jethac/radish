@@ -1,0 +1,45 @@
+{
+  "status": "FAIL full-model fit after encoder completion; prefill memory remains open",
+  "listener": "3f5a655cd38818d61bd4f9bf4cd011f6cc8052982ebcc297bdef3e3f0855f9bf",
+  "driver": "91a1a98e7c8e5b004895f0bc0dbb24c434f2caa4e5c224a8399026f09b48db80",
+  "source_patch": "0c5c0f16803a7787cc1b1c9fd1a1dd002b1e65d7ec6138192bd4b89a3b1fc87d",
+  "source_review": "123760d24c0c5c25e4a37a144c84d5091157a02b1e43f371d2751d48b157658c",
+  "driver_review": "24584e14d4377a6e033b7640802376a732f5821181503d4d2e06fd0d61014241",
+  "model_review": "7eda22fecb2e63a095fec5ba70a685e8b7e51158df2a614191dd1c8f8032eeb3",
+  "actual_phase": {
+    "subsample_graphs_completed": 3,
+    "subsample_scratch_released_bytes": 26238080,
+    "new_encoder_scratch_bytes": 709632,
+    "encoder_completed": true,
+    "prefill_placement_compute_gpu": 793,
+    "rejected_compute_nodes": 0,
+    "prompt_rows": 49,
+    "full_decode_budget": 256,
+    "reserved_KV_rows": 320,
+    "KV_bytes": 36700160,
+    "prefill_scratch_bytes": 2278512,
+    "transcripts": 0
+  },
+  "resource_evidence": {
+    "memory_cap_MiB": 640,
+    "swap_cap_MiB": 128,
+    "memory_peak_MiB": 640,
+    "swap_peak_MiB": 128,
+    "oom_shmem_bytes": 616730624,
+    "oom_anon_bytes": 50655232
+  },
+  "run_log": "7b453a4a2071c2b2e41642e6037d3ff9955540e1dead94f79eb66716fd61f790",
+  "kernel_log": "b38c7d4a0b2ebebc038ea56ba82a276b3924613d47642c123090da3914b97401",
+  "collection": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+  "fault_check": "PASS: no new GPU fault/recovery messages",
+  "services_after": [
+    "active",
+    "active"
+  ],
+  "performance_measurement": false,
+  "limits": [
+    "Original warmup, full audio, model, output oracle and caps retained. No CPU compute fallback.",
+    "This run progressed through the encoder; it is not a before-inference failure. Prefill and final transcripts remain unqualified.",
+    "Incremental KV is a new source candidate retaining the original full prompt/decode ceiling; no unchanged retry."
+  ]
+}

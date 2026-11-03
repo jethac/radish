@@ -1,0 +1,119 @@
+{
+  "status": "passed",
+  "scope": "Focused allocator91a1 regression, exact accepted T78 outputs plus graceful oldUUID rejection/repopulation; no performance collection",
+  "capture": "/run/media/jethac/Shared/radish/kokoro-runtime-short-single-vulkan-opt0046-allocator-regression-norm-affine-snake-deconv2d-planar-packed-a-norm-sum4-norm-outplace-pad-channels-loop-pipeline-cache",
+  "session_manifest": "b1440a402a173258682ee44e468a6da11d32832855a531dba7e11dd5da49a89a",
+  "run_log": "c04eb11b9f9e87056c5e33d03eb685f8681ec56c9cbba82eedbb67e9be4f217f",
+  "assets": {
+    "RADISH_RUNTIME_BINARY": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/persistent-app-cache/untimed-v3-build/radish-kokoro-runtime",
+      "sha256": "e26cde2e906d7ca36f6f0240afc1ba769e7b81f9ef6b791efeb3ac6d9f48fd16",
+      "bytes": 11303904
+    },
+    "RADISH_RUNTIME_DRIVER": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-phase-release-driver-0046/libvulkan_radish.stripped.so",
+      "sha256": "91a1a98e7c8e5b004895f0bc0dbb24c434f2caa4e5c224a8399026f09b48db80",
+      "bytes": 13629824
+    },
+    "RADISH_RUNTIME_LOADER": {
+      "path": "/run/media/jethac/Shared/radish/build-loader/loader/libvulkan.so",
+      "sha256": "75699a38b1f26c1e8bfa2062e6593177bb07d4e3e346486d117fab8a0de0104a",
+      "bytes": 703696
+    }
+  },
+  "requests": [
+    {
+      "request": 0,
+      "T": 78,
+      "session_reused": false,
+      "files": {
+        "boundary/ids.i64": "3c3bfd2e56f6f778a6082ee0b183a68d2053d36c4fd1f3ee12126dc3c9d68ae6",
+        "boundary/style.f32": "30a2c76520b76bce395b3e2c33592c56322dffb50d70f7f0f7aeaef968407d66",
+        "boundary/speed.f32": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c",
+        "boundary/asr.f32": "3a2f327d5dac194f2f9e6ad9972a061e752458da4e5473f183a3ea8e5e4482d8",
+        "boundary/f0.f32": "245f8f0c10792ef0d35b76bd113d790eaf170e01664282b632c64ee1ebfe72e5",
+        "boundary/n.f32": "a4b2b93b5d6f05dd6dafcae4ec930403f59422b52f24d4dfb1231b89c9aec63c",
+        "boundary/har.f32": "46362e2d815fc69e49486f998ed887c1ed7740dcfa40002e6033487e61fdf34e",
+        "boundary/durations.f32": "e87476ac494910e6963ec1254409c9356243070e7cd399b6d2a424fd1dfe67bd",
+        "core.f32": {
+          "values": 205942,
+          "sha256": "eae4d4c0c3b5d259e1f36bac2ffb71a7d4b23898de9b0cb1baa4972a608160fe",
+          "bitwise_equal_to_accepted": true
+        },
+        "waveform.f32": {
+          "values": 46800,
+          "sha256": "a3ee5df6762bb5487a1196d277cf97ed739237ca58f3473c747aeebe48e9059c",
+          "bitwise_equal_to_accepted": true
+        }
+      }
+    },
+    {
+      "request": 1,
+      "T": 78,
+      "session_reused": true,
+      "files": {
+        "boundary/ids.i64": "3c3bfd2e56f6f778a6082ee0b183a68d2053d36c4fd1f3ee12126dc3c9d68ae6",
+        "boundary/style.f32": "30a2c76520b76bce395b3e2c33592c56322dffb50d70f7f0f7aeaef968407d66",
+        "boundary/speed.f32": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c",
+        "boundary/asr.f32": "3a2f327d5dac194f2f9e6ad9972a061e752458da4e5473f183a3ea8e5e4482d8",
+        "boundary/f0.f32": "245f8f0c10792ef0d35b76bd113d790eaf170e01664282b632c64ee1ebfe72e5",
+        "boundary/n.f32": "a4b2b93b5d6f05dd6dafcae4ec930403f59422b52f24d4dfb1231b89c9aec63c",
+        "boundary/har.f32": "46362e2d815fc69e49486f998ed887c1ed7740dcfa40002e6033487e61fdf34e",
+        "boundary/durations.f32": "e87476ac494910e6963ec1254409c9356243070e7cd399b6d2a424fd1dfe67bd",
+        "core.f32": {
+          "values": 205942,
+          "sha256": "eae4d4c0c3b5d259e1f36bac2ffb71a7d4b23898de9b0cb1baa4972a608160fe",
+          "bitwise_equal_to_accepted": true
+        },
+        "waveform.f32": {
+          "values": 46800,
+          "sha256": "a3ee5df6762bb5487a1196d277cf97ed739237ca58f3473c747aeebe48e9059c",
+          "bitwise_equal_to_accepted": true
+        }
+      }
+    }
+  ],
+  "baseline_combined_receipt": "ac4ad9614166b557fee4acb2ea61c9d38ac4a1edc1a60aa38fe73bc253c73e9e",
+  "cache": {
+    "old_seed": {
+      "bytes": 2198316,
+      "sha256": "ddfbffa063344e514ba7a246d57fd1ee443e74604343594baadda1205d4126d6",
+      "UUID": "9bd2166a5492c51377bee26b2241832c",
+      "spirv_entries": 48,
+      "SPIRV_sha256": "edee84aa2a7785b6ba033e94136e303d68852f1f11efaf97f602e3bb4ac11e78",
+      "native_objects": 178,
+      "complete_object_lengths": true,
+      "FNV_valid": true
+    },
+    "new_export": {
+      "bytes": 2198316,
+      "sha256": "30b6312850dda52acf938200690fdf1787aa8f3eb26e3c6e6e9433fb709ed84e",
+      "UUID": "c7f6a0c37fb6f522d5077c9b498e9adc",
+      "spirv_entries": 48,
+      "SPIRV_sha256": "edee84aa2a7785b6ba033e94136e303d68852f1f11efaf97f602e3bb4ac11e78",
+      "native_objects": 178,
+      "complete_object_lengths": true,
+      "FNV_valid": true
+    },
+    "new_UUID_equals_actual_ELF_build_id_prefix": true,
+    "old_seed_and_evidence_unchanged": true,
+    "fresh_import_of_new_file": "not run/not claimed"
+  },
+  "resource": {
+    "memory_cap_MiB": 640,
+    "swap_cap_MiB": 128,
+    "actual_memory_peak_MiB": 462.7,
+    "actual_swap_peak_MiB": 0
+  },
+  "checks": [
+    "All two-request core/waveform and8boundary files byte-identical acceptedcold, inheriting exact original CPU-boundary oracle qualification without new CPUexecution.",
+    "Two ORT sessions retained; core miss/hit,178shared+5device cache entries,1178GPUret0,2half/10F32.",
+    "Strict oldUUID rejected rather than accepted/missing; full replacement cache parsed48SPV+178native records/FNV; newUUIDmatchesactualdriverbuildid.",
+    "Original caps/watchdog/disk/asset/fault/postflight preserved. No new faults in retained kernel snapshots."
+  ],
+  "limitations": [
+    "Only repeatedT78 scope, no performance/hitcount claim.",
+    "Newcache freshprocess acceptance not rerun; prior5eed freshimport correctness preserved separately.",
+    "ASR fullmodel and all-five release remain open."
+  ]
+}

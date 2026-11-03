@@ -1,5 +1,5 @@
 {
-  "status": "Built source overlay; all three GPU subsample graphs complete, full model still fails memory cap at encoder stage",
+  "status": "Incremental KV ab5 built and paired; full-model actual and focused growth qualification pending. Prior3f5 completes encoder then fails prefill memory.",
   "application": "Frozen ASR source with previously published GQA, quantized phase, memory-liveness and unit-axis overlays",
   "ordered_additive_patches": [
     {
@@ -21,6 +21,45 @@
       "normalization": "Only two source path headers gain transcribe.cpp prefix; patched file bytes verified exact",
       "strip": 1,
       "apply_root": "ASR source root containing transcribe.cpp and app-asr"
+    },
+    {
+      "file": "0046-asr-phase-scratch-release.patch",
+      "sha256": "0c5c0f16803a7787cc1b1c9fd1a1dd002b1e65d7ec6138192bd4b89a3b1fc87d",
+      "strip": 1,
+      "apply_root": "root containing transcribe.cpp and mesa; same ordered source overlays as prior active manifest",
+      "sources": [
+        {
+          "path": "transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+          "source": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/subsample-liveness/candidate/src/arch/qwen3_asr/model.cpp",
+          "preimage": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/phase-scratch-release/preimage/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+          "preimage_sha256": "51007da3e5106bd52a6de7a6e084d462586d1ed1309e6d61db4ab42ab2907193",
+          "candidate": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/phase-scratch-release/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+          "candidate_sha256": "f864f03f20eb7c092fae146d9913a6b472e3cfc2be1321a1f20678a567da7fb2"
+        },
+        {
+          "path": "mesa/src/freedreno/radish/rd_memory.c",
+          "source": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_memory.c",
+          "preimage": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/phase-scratch-release/preimage/mesa/src/freedreno/radish/rd_memory.c",
+          "preimage_sha256": "210d76aecc691fefb8765c60fa677f273a4c4d8f6aac4aa2239ed0f78b8cc9f8",
+          "candidate": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/phase-scratch-release/candidate/mesa/src/freedreno/radish/rd_memory.c",
+          "candidate_sha256": "bbfccee8bffc59cd105805a8e0d79ad8ff35f014cae2b79a4ac3fb4619d6ace3"
+        }
+      ]
+    },
+    {
+      "file": "0046-asr-incremental-kv.patch",
+      "sha256": "47c7b982904508cdb473342c006213bffa300905f7bb92d60bfaf00d16cbaca3",
+      "strip": 1,
+      "apply_root": "root containing transcribe.cpp and mesa; same ordered source overlays as prior active manifest",
+      "sources": [
+        {
+          "path": "transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+          "preimage": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/incremental-kv/preimage/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+          "preimage_sha256": "f864f03f20eb7c092fae146d9913a6b472e3cfc2be1321a1f20678a567da7fb2",
+          "candidate": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/incremental-kv/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+          "candidate_sha256": "62450f603141ed2572c6ebde05375593ca8c49b6f1f5984166c995b4d13aec3a"
+        }
+      ]
     }
   ],
   "cache_source_files": {
@@ -44,7 +83,7 @@
   ],
   "source_review": "c7ef69075c2fd4632b3ecb2a411db022d84de7684d71a60ad30cc346b503ed6d",
   "build_runner_review": "74e67652eb7a62720d2b5b9bce6b13677d8342fe8cda948ed93842b2a0b9ce3e",
-  "actual_result": "optimization-asr-subsample-memory-failure-0046.json",
+  "actual_result": "optimization-asr-prefill-memory-failure-0046.json",
   "limits": "Opaque app-cache use is implemented, but full ASR saved-populated-cache/import/transcript and resource fit are not qualified.",
   "init_stage_listener": "92209fe64db13b4be25951839ad86ed7de6f0b20cec2af521418e0a7365176fc",
   "init_stage_libraries": {
@@ -247,13 +286,225 @@
     "archive_members": "3ac3f2855cdfabfc691bdf82bf9d8d08d0e2de714d3d57fad97021ab4c291489",
     "build_result": "e71c72e97d3982b96af7b375c20dee5e8eb94dc62b584b651e04bec7e7c6905b"
   },
-  "current_listener": "93589c2c539ba4867dbbfd3adea654bbfd59f6c1b8cc514442c4201e71a5b57d",
+  "current_listener": "ab5b3dbd494c5efdeafb57038f8e2f358716a9bcfb066b898e546e96012394aa",
   "current_libraries": {
     "libstraylight_asr.a": "a5b65664178c9f447cb8e9bbc887c4eb0906116e044f45bfaec417cbe6a333d0",
     "libggml-cpu.a": "d995ee7629e69509970ad3fe687f8a77a469c419ba7cd91404ca8bb79f4e85da",
-    "libtranscribe.a": "508ff81258206c28f92c54d6ccc0c0de59956e8386fc6fdc121e5d5c9226babc",
+    "libtranscribe.a": "0b443bf5f92a7b5a7485025374397fd2a91137e8f95c7d76ca26d2dc58875166",
     "libggml-base.a": "28ec1c9e67f976b670a074b310cb09389cddce48fc7cc42a9e7f06a9449b0fc1",
     "libggml.a": "44072c75ec479e9e440cc8f9583c6d6250eab629a739c7ddf98bc70aefb8ba5d",
     "libggml-vulkan.a": "74f5a24147fe1b132067a20255999decb621499e0c7e28e5bbd6db6f25aef0ac"
-  }
+  },
+  "phase_release_stage": {
+    "build": {
+      "status": "PASS host build, full model qualification pending",
+      "source_release": "ec4413e5b8bc95934b00f66a616126ac8f2177763949c8c926944e4611462368",
+      "base_result": "e71c72e97d3982b96af7b375c20dee5e8eb94dc62b584b651e04bec7e7c6905b",
+      "sources": [
+        {
+          "path": "transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+          "source": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/subsample-liveness/candidate/src/arch/qwen3_asr/model.cpp",
+          "preimage": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/phase-scratch-release/preimage/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+          "preimage_sha256": "51007da3e5106bd52a6de7a6e084d462586d1ed1309e6d61db4ab42ab2907193",
+          "candidate": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/phase-scratch-release/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+          "candidate_sha256": "f864f03f20eb7c092fae146d9913a6b472e3cfc2be1321a1f20678a567da7fb2"
+        },
+        {
+          "path": "mesa/src/freedreno/radish/rd_memory.c",
+          "source": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_memory.c",
+          "preimage": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/phase-scratch-release/preimage/mesa/src/freedreno/radish/rd_memory.c",
+          "preimage_sha256": "210d76aecc691fefb8765c60fa677f273a4c4d8f6aac4aa2239ed0f78b8cc9f8",
+          "candidate": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/phase-scratch-release/candidate/mesa/src/freedreno/radish/rd_memory.c",
+          "candidate_sha256": "bbfccee8bffc59cd105805a8e0d79ad8ff35f014cae2b79a4ac3fb4619d6ace3"
+        }
+      ],
+      "commands": "d1f9747c6dd31f200585cbcea033c8660130e5aac6193c9ee3ecd2a499808415",
+      "archive_members": "42c78e4d9735398e9a3ef54c91700ceb0e231d675ee6ed5278a70678557b9aa5",
+      "listener": "3f5a655cd38818d61bd4f9bf4cd011f6cc8052982ebcc297bdef3e3f0855f9bf",
+      "libraries": {
+        "libstraylight_asr.a": "a5b65664178c9f447cb8e9bbc887c4eb0906116e044f45bfaec417cbe6a333d0",
+        "libggml-cpu.a": "d995ee7629e69509970ad3fe687f8a77a469c419ba7cd91404ca8bb79f4e85da",
+        "libtranscribe.a": "4cef5f37126215e0b8d460be5e5318f7ae55a9847091e1fc79f35de58e20492b",
+        "libggml-base.a": "28ec1c9e67f976b670a074b310cb09389cddce48fc7cc42a9e7f06a9449b0fc1",
+        "libggml.a": "44072c75ec479e9e440cc8f9583c6d6250eab629a739c7ddf98bc70aefb8ba5d",
+        "libggml-vulkan.a": "74f5a24147fe1b132067a20255999decb621499e0c7e28e5bbd6db6f25aef0ac"
+      },
+      "scope": "Exact one Qwen model object replacement over9358; backend/shaders/features unchanged; untimed source retained"
+    },
+    "commands": [
+      {
+        "argv": [
+          "/usr/bin/clang++",
+          "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/src/arch/qwen3_asr",
+          "--target=aarch64-linux-gnu",
+          "--sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+          "-DGGML_USE_CPU",
+          "-DGGML_USE_VULKAN",
+          "-DMINIZ_NO_INFLATE_APIS",
+          "-DMINIZ_NO_STDIO",
+          "-DMINIZ_NO_TIME",
+          "-DMINIZ_NO_ZLIB_COMPATIBLE_NAMES",
+          "-DTRANSCRIBE_BUILD",
+          "-DTRANSCRIBE_COMMIT=\"unknown\"",
+          "-DTRANSCRIBE_STATIC",
+          "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/app-asr/include",
+          "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/src",
+          "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/include",
+          "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/../include",
+          "--gcc-install-dir=/home/jethac/Projects/straylight-voice/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+          "-O3",
+          "-DNDEBUG",
+          "-std=c++17",
+          "-fPIC",
+          "-fvisibility=hidden",
+          "-fvisibility-inlines-hidden",
+          "-Wall",
+          "-Wextra",
+          "-Wshadow",
+          "-Wpedantic",
+          "-Wno-unused-parameter",
+          "-Wno-missing-field-initializers",
+          "-o",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-phase-scratch-build-0046/object-0/model.cpp.o",
+          "-c",
+          "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/phase-scratch-release/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build",
+        "env": {}
+      },
+      {
+        "argv": [
+          "cargo",
+          "build",
+          "--offline",
+          "--locked",
+          "--target",
+          "aarch64-unknown-linux-gnu",
+          "--features",
+          "asr-vulkan",
+          "-j3",
+          "--manifest-path",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-untimed-build-0046/rust-app/listen/Cargo.toml"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-phase-scratch-build-0046",
+        "env": {
+          "STRAYLIGHT_ASR_LIB": "/run/media/jethac/Shared/radish/optimization-five-asr-phase-scratch-build-0046/libs",
+          "STRAYLIGHT_SYSROOT": "/home/jethac/Projects/straylight-voice/sysroot",
+          "CARGO_TARGET_DIR": "/run/media/jethac/Shared/radish/optimization-five-asr-phase-scratch-build-0046/cargo-target",
+          "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER": "clang",
+          "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS": "-C link-arg=--target=aarch64-linux-gnu -C link-arg=-fuse-ld=lld -C link-arg=--sysroot=/home/jethac/Projects/straylight-voice/sysroot -C link-arg=-L/home/jethac/Projects/straylight-voice/sysroot/usr/lib -C link-arg=-L/home/jethac/Projects/straylight-voice/sysroot/usr/lib/aarch64-linux-gnu -C link-arg=-L/run/media/jethac/Shared/radish/build-loader/loader -C link-arg=-Wl,--allow-shlib-undefined -C link-arg=-Wno-unused-command-line-argument -C target-cpu=cortex-a53",
+          "CC_aarch64_unknown_linux_gnu": "clang",
+          "CFLAGS_aarch64_unknown_linux_gnu": "--target=aarch64-linux-gnu --sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+          "AR_aarch64_unknown_linux_gnu": "llvm-ar",
+          "PKG_CONFIG_SYSROOT_DIR": "/home/jethac/Projects/straylight-voice/sysroot",
+          "PKG_CONFIG_LIBDIR": "/home/jethac/Projects/straylight-voice/sysroot/usr/lib/pkgconfig:/home/jethac/Projects/straylight-voice/sysroot/usr/share/pkgconfig",
+          "PKG_CONFIG_ALLOW_CROSS": "1"
+        }
+      }
+    ],
+    "result_sha256": "83403a265ffbf84e35809d1b83f353454bf8a2fb08bd9cdb83a52e9d8b6b74ff"
+  },
+  "incremental_KV_stage": {
+    "build": {
+      "status": "PASS host build, full model qualification pending",
+      "source_release": "7df1976f7eb973ad798fced40c1e6441992d1eb75891ec558910256353e13a1e",
+      "base_result": "83403a265ffbf84e35809d1b83f353454bf8a2fb08bd9cdb83a52e9d8b6b74ff",
+      "sources": [
+        {
+          "path": "transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+          "preimage": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/incremental-kv/preimage/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+          "preimage_sha256": "f864f03f20eb7c092fae146d9913a6b472e3cfc2be1321a1f20678a567da7fb2",
+          "candidate": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/incremental-kv/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+          "candidate_sha256": "62450f603141ed2572c6ebde05375593ca8c49b6f1f5984166c995b4d13aec3a"
+        }
+      ],
+      "commands": "4b2e5e0f06782daf2a0f450e228240bd09c094708b361cd69216a94190c35ee8",
+      "archive_members": "a7f561761442cb2068e721ff874d112c9ad13a0c9489cda892c74472eacacbb5",
+      "listener": "ab5b3dbd494c5efdeafb57038f8e2f358716a9bcfb066b898e546e96012394aa",
+      "libraries": {
+        "libstraylight_asr.a": "a5b65664178c9f447cb8e9bbc887c4eb0906116e044f45bfaec417cbe6a333d0",
+        "libggml-cpu.a": "d995ee7629e69509970ad3fe687f8a77a469c419ba7cd91404ca8bb79f4e85da",
+        "libtranscribe.a": "0b443bf5f92a7b5a7485025374397fd2a91137e8f95c7d76ca26d2dc58875166",
+        "libggml-base.a": "28ec1c9e67f976b670a074b310cb09389cddce48fc7cc42a9e7f06a9449b0fc1",
+        "libggml.a": "44072c75ec479e9e440cc8f9583c6d6250eab629a739c7ddf98bc70aefb8ba5d",
+        "libggml-vulkan.a": "74f5a24147fe1b132067a20255999decb621499e0c7e28e5bbd6db6f25aef0ac"
+      },
+      "scope": "Exact one Qwen model object replacement over3f5a; backend/shaders/features unchanged; untimed source retained"
+    },
+    "commands": [
+      {
+        "argv": [
+          "/usr/bin/clang++",
+          "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/src/arch/qwen3_asr",
+          "--target=aarch64-linux-gnu",
+          "--sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+          "-DGGML_USE_CPU",
+          "-DGGML_USE_VULKAN",
+          "-DMINIZ_NO_INFLATE_APIS",
+          "-DMINIZ_NO_STDIO",
+          "-DMINIZ_NO_TIME",
+          "-DMINIZ_NO_ZLIB_COMPATIBLE_NAMES",
+          "-DTRANSCRIBE_BUILD",
+          "-DTRANSCRIBE_COMMIT=\"unknown\"",
+          "-DTRANSCRIBE_STATIC",
+          "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/app-asr/include",
+          "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/src",
+          "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/include",
+          "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/../include",
+          "--gcc-install-dir=/home/jethac/Projects/straylight-voice/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+          "-O3",
+          "-DNDEBUG",
+          "-std=c++17",
+          "-fPIC",
+          "-fvisibility=hidden",
+          "-fvisibility-inlines-hidden",
+          "-Wall",
+          "-Wextra",
+          "-Wshadow",
+          "-Wpedantic",
+          "-Wno-unused-parameter",
+          "-Wno-missing-field-initializers",
+          "-o",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-incremental-kv-build-0046/object-0/model.cpp.o",
+          "-c",
+          "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/incremental-kv/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build",
+        "env": {}
+      },
+      {
+        "argv": [
+          "cargo",
+          "build",
+          "--offline",
+          "--locked",
+          "--target",
+          "aarch64-unknown-linux-gnu",
+          "--features",
+          "asr-vulkan",
+          "-j3",
+          "--manifest-path",
+          "/run/media/jethac/Shared/radish/optimization-five-asr-untimed-build-0046/rust-app/listen/Cargo.toml"
+        ],
+        "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-incremental-kv-build-0046",
+        "env": {
+          "STRAYLIGHT_ASR_LIB": "/run/media/jethac/Shared/radish/optimization-five-asr-incremental-kv-build-0046/libs",
+          "STRAYLIGHT_SYSROOT": "/home/jethac/Projects/straylight-voice/sysroot",
+          "CARGO_TARGET_DIR": "/run/media/jethac/Shared/radish/optimization-five-asr-incremental-kv-build-0046/cargo-target",
+          "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER": "clang",
+          "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS": "-C link-arg=--target=aarch64-linux-gnu -C link-arg=-fuse-ld=lld -C link-arg=--sysroot=/home/jethac/Projects/straylight-voice/sysroot -C link-arg=-L/home/jethac/Projects/straylight-voice/sysroot/usr/lib -C link-arg=-L/home/jethac/Projects/straylight-voice/sysroot/usr/lib/aarch64-linux-gnu -C link-arg=-L/run/media/jethac/Shared/radish/build-loader/loader -C link-arg=-Wl,--allow-shlib-undefined -C link-arg=-Wno-unused-command-line-argument -C target-cpu=cortex-a53",
+          "CC_aarch64_unknown_linux_gnu": "clang",
+          "CFLAGS_aarch64_unknown_linux_gnu": "--target=aarch64-linux-gnu --sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+          "AR_aarch64_unknown_linux_gnu": "llvm-ar",
+          "PKG_CONFIG_SYSROOT_DIR": "/home/jethac/Projects/straylight-voice/sysroot",
+          "PKG_CONFIG_LIBDIR": "/home/jethac/Projects/straylight-voice/sysroot/usr/lib/pkgconfig:/home/jethac/Projects/straylight-voice/sysroot/usr/share/pkgconfig",
+          "PKG_CONFIG_ALLOW_CROSS": "1"
+        }
+      }
+    ],
+    "result_sha256": "56a897bb432a0d13a460277b80be1e014994af94a31a9f945512bac17dd7b7e7"
+  },
+  "current_driver": "91a1a98e7c8e5b004895f0bc0dbb24c434f2caa4e5c224a8399026f09b48db80",
+  "incremental_source_review": "531fcaaa71331df51fca79dbd9c52e8664ae373cf76c9ec331b9eee2a25c3799",
+  "incremental_build_runner_review": "d6930974ea4a41177dd4c46c34dc55cf96b1f58ffe327766190c245e02de7d01"
 }

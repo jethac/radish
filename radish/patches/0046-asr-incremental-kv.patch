@@ -1,0 +1,191 @@
+--- a/transcribe.cpp/src/arch/qwen3_asr/model.cpp
++++ b/transcribe.cpp/src/arch/qwen3_asr/model.cpp
+@@ -48,6 +48,31 @@
+ 
+ static bool khr_gpu_graph_policy(const QwenAsrSession * cc) {
+     return khr_gpu_model_policy(static_cast<const QwenAsrModel *>(cc->model));
++}
++
++static int initial_khr_kv_capacity(int64_t needed, int limit) {
++    int64_t capacity = 16;
++    while (capacity < needed && capacity < limit) capacity *= 2;
++    return static_cast<int>(std::min<int64_t>(capacity, limit));
++}
++
++static transcribe_status grow_khr_kv(QwenAsrSession * cc, int capacity) {
++    auto * cm = static_cast<QwenAsrModel *>(cc->model);
++    if (cc->sched) {
++        ggml_backend_sched_synchronize(cc->sched);
++        ggml_backend_sched_reset(cc->sched);
++    }
++    const int old_capacity = cc->kv_cache.n_ctx;
++    if (!transcribe::causal_lm::kv_grow(cc->kv_cache, cm->plan.primary, capacity,
++                                     cm->hparams.dec_n_kv_heads, cm->hparams.dec_head_dim,
++                                     cm->hparams.dec_n_layers)) {
++        log_msg(TRANSCRIBE_LOG_LEVEL_ERROR, "qwen3_asr: KV growth failed (%d -> %d)", old_capacity, capacity);
++        return TRANSCRIBE_ERR_OOM;
++    }
++    log_msg(TRANSCRIBE_LOG_LEVEL_INFO,
++            "qwen3_asr KHR KV grow: old_capacity=%d capacity=%d rows=%d head=%d",
++            old_capacity, cc->kv_cache.n_ctx, cc->kv_cache.n, cc->kv_cache.head);
++    return TRANSCRIBE_OK;
+ }
+ 
+ static transcribe_status release_subsample_scratch(QwenAsrSession * cc) {
+@@ -1121,10 +1146,13 @@
+     if (want_n_ctx > ceiling) {
+         want_n_ctx = ceiling;
+     }
++    const int kv_capacity_limit = want_n_ctx;
+     if (khr_gpu_graph_policy(cc)) {
++        const int64_t draft_room = std::min<int64_t>(max_new, std::max<size_t>(1, cc->header_draft.size()));
++        want_n_ctx = initial_khr_kv_capacity(static_cast<int64_t>(T_prompt) + draft_room, kv_capacity_limit);
+         log_msg(TRANSCRIBE_LOG_LEVEL_INFO,
+-                "qwen3_asr KHR KV request: prompt=%d decode_budget=%d capacity=%d retained=%d",
+-                T_prompt, max_new, want_n_ctx, cc->kv_cache.n_ctx);
++                "qwen3_asr KHR KV request: prompt=%d decode_budget=%d capacity=%d limit=%d retained=%d",
++                T_prompt, max_new, want_n_ctx, kv_capacity_limit, cc->kv_cache.n_ctx);
+     }
+     // Prompt-prefix cache: rows [0, n_past) of the KV cache already hold this
+     // prompt's first n_past tokens from an earlier run (the chat frame and
+@@ -1132,7 +1160,11 @@
+     // prefilled. The audio and everything after it are always new.
+     const bool reuse = prefix_cache_enabled();
+     if (cc->kv_cache.ctx != nullptr && cc->kv_cache.n_ctx < want_n_ctx) {
+-        cc->kv_cache.free();
++        if (khr_gpu_graph_policy(cc)) {
++            if (const auto st = grow_khr_kv(cc, want_n_ctx); st != TRANSCRIBE_OK) return st;
++        } else {
++            cc->kv_cache.free();
++        }
+     }
+     if (cc->kv_cache.ctx == nullptr) {
+         clear_prefix_cache(cc);
+@@ -1369,7 +1401,6 @@
+     // Step loop.
+     const int32_t eos_id   = cm->hparams.eos_token_id;
+     int           cur_past = T_prompt + n_accepted;
+-    const int     first_past = cur_past;
+ 
+     // Build the step graph ONCE and reuse every step, sized for the actual
+     // workload (T_prompt written + up to max_new generated). Metal's flash-attn
+@@ -1382,44 +1413,37 @@
+     if (max_n_kv > cc->kv_cache.n_ctx) {
+         max_n_kv = cc->kv_cache.n_ctx;
+     }
++    if (khr_gpu_graph_policy(cc)) max_n_kv = std::min(cc->kv_cache.n_ctx, kv_capacity_limit);
++    const int step_capacity_limit = khr_gpu_graph_policy(cc) ? kv_capacity_limit : max_n_kv;
+     const int64_t t_step_build_start = INT64_C(0);
+-    if (cc->compute_ctx != nullptr) {
+-        ggml_free(cc->compute_ctx);
+-        cc->compute_ctx = nullptr;
+-    }
+-    {
++    const ggml_fp16_t mask_zero = ggml_fp32_to_fp16(0.0f);
++    const ggml_fp16_t mask_neg_inf = ggml_fp32_to_fp16(-INFINITY);
++    StepBuild sb{};
++    std::vector<ggml_fp16_t> step_mask;
++    bool mask_needs_prefix = true;
++    auto rebuild_step_graph = [&]() -> transcribe_status {
++        if (cc->compute_ctx != nullptr) {
++            ggml_free(cc->compute_ctx);
++            cc->compute_ctx = nullptr;
++        }
+         ggml_init_params ip{};
+-        ip.mem_size     = compute_metadata_bytes(cc, 8 * 1024 * 1024, 0, false, 8192);
++        ip.mem_size = compute_metadata_bytes(cc, 8 * 1024 * 1024, 0, false, 8192);
+         if (!ip.mem_size) return TRANSCRIBE_ERR_OOM;
+-        ip.mem_buffer   = nullptr;
+-        ip.no_alloc     = true;
++        ip.mem_buffer = nullptr;
++        ip.no_alloc = true;
+         cc->compute_ctx = ggml_init(ip);
+-        if (cc->compute_ctx == nullptr) {
+-            transcribe::log_msg(TRANSCRIBE_LOG_LEVEL_ERROR,
+-                                "qwen3_asr step: compute context allocation failed — "
+-                                "out of memory.");
+-            return TRANSCRIBE_ERR_OOM;
+-        }
+-    }
+-    StepBuild sb = build_step_graph(cc->compute_ctx, cm->weights, cm->hparams, cc->kv_cache, max_n_kv,
+-                                    /*use_flash=*/cc->decoder_use_flash);
+-    if (sb.graph == nullptr || sb.out == nullptr) {
+-        return TRANSCRIBE_ERR_GGUF;
+-    }
+-    ggml_backend_sched_reset(cc->sched);
+-    if (!TRANSCRIBE_ALLOC_SCHED_GRAPH(cc->sched, sb.graph, "qwen3_asr")) {
+-        transcribe::log_msg(TRANSCRIBE_LOG_LEVEL_ERROR,
+-                            "qwen3_asr step: decode graph allocation failed — out of memory. "
+-                            "Lower transcribe_session_params.n_ctx or shorten the audio.");
+-        return TRANSCRIBE_ERR_OOM;
+-    }
++        if (!cc->compute_ctx) return TRANSCRIBE_ERR_OOM;
++        sb = build_step_graph(cc->compute_ctx, cm->weights, cm->hparams, cc->kv_cache, max_n_kv,
++                              /*use_flash=*/cc->decoder_use_flash);
++        if (!sb.graph || !sb.out) return TRANSCRIBE_ERR_GGUF;
++        ggml_backend_sched_reset(cc->sched);
++        if (!TRANSCRIBE_ALLOC_SCHED_GRAPH(cc->sched, sb.graph, "qwen3_asr")) return TRANSCRIBE_ERR_OOM;
++        step_mask.assign(max_n_kv, mask_neg_inf);
++        mask_needs_prefix = true;
++        return TRANSCRIBE_OK;
++    };
++    if (const auto st = rebuild_step_graph(); st != TRANSCRIBE_OK) return st;
+     const int64_t t_step_build_once_us = INT64_C(0) - t_step_build_start;
+-
+-    // Mask buffer reused host-side across steps. Starts all -inf; per step we
+-    // zero positions [0, cur_past] (attend) and leave the rest -inf.
+-    const ggml_fp16_t        mask_zero    = ggml_fp32_to_fp16(0.0f);
+-    const ggml_fp16_t        mask_neg_inf = ggml_fp32_to_fp16(-INFINITY);
+-    std::vector<ggml_fp16_t> step_mask(max_n_kv, mask_neg_inf);
+ 
+     // Per-step timers.
+     int64_t       t_step_set_us     = 0;
+@@ -1427,7 +1451,21 @@
+     int64_t       t_step_get_us     = 0;
+     const int64_t t_step_loop_start = INT64_C(0);
+     bool          repeating         = false;
+-    while (next_tok != eos_id && static_cast<int32_t>(generated_ids.size()) < max_new && cur_past + 1 <= max_n_kv) {
++    while (next_tok != eos_id && static_cast<int32_t>(generated_ids.size()) < max_new &&
++           cur_past + 1 <= step_capacity_limit) {
++        if (cur_past >= max_n_kv) {
++            ggml_backend_sched_synchronize(cc->sched);
++            ggml_backend_sched_reset(cc->sched);
++            sb = {};
++            ggml_free(cc->compute_ctx);
++            cc->compute_ctx = nullptr;
++            const int capacity = static_cast<int>(std::min<int64_t>(step_capacity_limit,
++                std::max<int64_t>(static_cast<int64_t>(cur_past) + 1,
++                                  static_cast<int64_t>(cc->kv_cache.n_ctx) * 2)));
++            if (const auto st = grow_khr_kv(cc, capacity); st != TRANSCRIBE_OK) return st;
++            max_n_kv = cc->kv_cache.n_ctx;
++            if (const auto st = rebuild_step_graph(); st != TRANSCRIBE_OK) return st;
++        }
+         const int64_t t_set0 = INT64_C(0);
+ 
+         ggml_backend_tensor_set(sb.input_id_in, &next_tok, 0, sizeof(int32_t));
+@@ -1439,8 +1477,9 @@
+         // Mask: mark the newly-added position as attendable. Positions
+         // [0, cur_past) were zeroed in prior iterations; just set the
+         // new one. (On iter 0, zero everything in [0, cur_past].)
+-        if (cur_past == first_past) {
++        if (mask_needs_prefix) {
+             std::fill(step_mask.begin(), step_mask.begin() + cur_past + 1, mask_zero);
++            mask_needs_prefix = false;
+         } else {
+             step_mask[cur_past] = mask_zero;
+         }
+@@ -2490,12 +2529,9 @@
+     if (cc->kv_cache.ctx == nullptr) {
+         int n_ctx = std::min(1024, ceiling);
+         if (khr_gpu_graph_policy(cc)) {
+-            const int needed = static_cast<int>(std::min<int64_t>(ceiling,
+-                static_cast<int64_t>(ids.size()) + T_enc_min + k_gen_reserve));
+-            n_ctx = static_cast<int>(std::min<int64_t>(ceiling,
+-                ((static_cast<int64_t>(needed) + 15) / 16) * 16));
++            n_ctx = initial_khr_kv_capacity(prefix_len, ceiling);
+             log_msg(TRANSCRIBE_LOG_LEVEL_INFO,
+-                    "qwen3_asr KHR KV prefix: prompt=%zu audio_min=%d reserve=%d capacity=%d",
++                    "qwen3_asr KHR KV prefix: prompt=%zu audio_min=%d generation_budget=%d capacity=%d",
+                     ids.size(), T_enc_min, k_gen_reserve, n_ctx);
+         }
+         if (prefix_len > n_ctx) {

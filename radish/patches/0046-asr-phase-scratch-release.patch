@@ -1,0 +1,60 @@
+--- a/transcribe.cpp/src/arch/qwen3_asr/model.cpp
++++ b/transcribe.cpp/src/arch/qwen3_asr/model.cpp
+@@ -48,6 +48,27 @@
+ 
+ static bool khr_gpu_graph_policy(const QwenAsrSession * cc) {
+     return khr_gpu_model_policy(static_cast<const QwenAsrModel *>(cc->model));
++}
++
++static transcribe_status release_subsample_scratch(QwenAsrSession * cc) {
++    if (!khr_gpu_graph_policy(cc) || !cc->sched) return TRANSCRIBE_OK;
++    auto * cm = static_cast<QwenAsrModel *>(cc->model);
++    ggml_backend_sched_synchronize(cc->sched);
++    for (int i = 0; i < ggml_backend_sched_get_n_backends(cc->sched); ++i) {
++        const auto backend = ggml_backend_sched_get_backend(cc->sched, i);
++        log_msg(TRANSCRIBE_LOG_LEVEL_INFO,
++                "qwen3_asr KHR phase release: phase=subsample backend=%s scratch_bytes=%zu",
++                ggml_backend_name(backend), ggml_backend_sched_get_buffer_size(cc->sched, backend));
++    }
++    transcribe::safe_sched_free(cc->sched);
++    cc->sched = nullptr;
++    cc->sched = ggml_backend_sched_new(cm->plan.scheduler_list.data(), nullptr,
++                                      static_cast<int>(cm->plan.scheduler_list.size()), 16384, false, true);
++    if (!cc->sched) {
++        log_msg(TRANSCRIBE_LOG_LEVEL_ERROR, "qwen3_asr: encoder scheduler recreation failed");
++        return TRANSCRIBE_ERR_BACKEND;
++    }
++    return TRANSCRIBE_OK;
+ }
+ 
+ static size_t compute_metadata_bytes(QwenAsrSession * cc, size_t default_bytes, int n_conv_chunks,
+@@ -958,6 +979,9 @@
+         }
+         t_subsample_us = INT64_C(0) - t_sub0;
+     }
++
++    // Subsample outputs are complete in host storage; no later graph uses its arena.
++    if (const auto st = release_subsample_scratch(cc); st != TRANSCRIBE_OK) return st;
+ 
+     // Build encoder graph.
+     EncoderBuild eb = build_encoder_graph(cc->compute_ctx, cm->weights, cm->hparams, timing, cc->encoder_use_flash);
+@@ -1743,6 +1767,9 @@
+         enc_us += INT64_C(0) - t_sub0;
+     }
+ 
++    // Subsample outputs are complete in host storage; no later graph uses its arena.
++    if (const auto st = release_subsample_scratch(cc); st != TRANSCRIBE_OK) return st;
++
+     // Build batched encoder graph.
+     EncoderBuildBatched eb =
+         build_encoder_graph_batched(cc->compute_ctx, cm->weights, cm->hparams, n_chunks_max, n, cc->encoder_use_flash);
+--- a/mesa/src/freedreno/radish/rd_memory.c
++++ b/mesa/src/freedreno/radish/rd_memory.c
+@@ -26,6 +26,7 @@
+       vk_device_memory_destroy(&device->vk, allocator, &memory->vk);
+       return VK_ERROR_OUT_OF_DEVICE_MEMORY;
+    }
++   memory->bo->bo_reuse = NO_CACHE;
+    *out = rd_memory_to_handle(memory);
+    return VK_SUCCESS;
+ }

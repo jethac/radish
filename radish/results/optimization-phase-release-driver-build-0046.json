@@ -1,0 +1,463 @@
+{
+  "status": "Built coherent overlay; focused integrated TTS correctness passed; ASR model fit remains open",
+  "patch": {
+    "file": "0046-asr-phase-scratch-release.patch",
+    "sha256": "0c5c0f16803a7787cc1b1c9fd1a1dd002b1e65d7ec6138192bd4b89a3b1fc87d",
+    "strip": 1,
+    "apply_root": "root containing transcribe.cpp and mesa; same ordered source overlays as prior active manifest",
+    "sources": [
+      {
+        "path": "transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+        "source": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/subsample-liveness/candidate/src/arch/qwen3_asr/model.cpp",
+        "preimage": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/phase-scratch-release/preimage/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+        "preimage_sha256": "51007da3e5106bd52a6de7a6e084d462586d1ed1309e6d61db4ab42ab2907193",
+        "candidate": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/phase-scratch-release/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+        "candidate_sha256": "f864f03f20eb7c092fae146d9913a6b472e3cfc2be1321a1f20678a567da7fb2"
+      },
+      {
+        "path": "mesa/src/freedreno/radish/rd_memory.c",
+        "source": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/freedreno/radish/rd_memory.c",
+        "preimage": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/phase-scratch-release/preimage/mesa/src/freedreno/radish/rd_memory.c",
+        "preimage_sha256": "210d76aecc691fefb8765c60fa677f273a4c4d8f6aac4aa2239ed0f78b8cc9f8",
+        "candidate": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/phase-scratch-release/candidate/mesa/src/freedreno/radish/rd_memory.c",
+        "candidate_sha256": "bbfccee8bffc59cd105805a8e0d79ad8ff35f014cae2b79a4ac3fb4619d6ace3"
+      }
+    ]
+  },
+  "exact_build": {
+    "status": "PASS host build, allocation lifetime target pending",
+    "compile": [
+      "clang",
+      "-I/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/mesa/src/freedreno/radish",
+      "--target=aarch64-linux-gnu",
+      "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+      "-mcpu=cortex-a53",
+      "-Isrc/freedreno/radish/libvulkan_radish.so.p",
+      "-Isrc/freedreno/radish",
+      "-I../mesa/src/freedreno/radish",
+      "-Isrc/freedreno",
+      "-I../mesa/src/freedreno",
+      "-Isrc/freedreno/registers",
+      "-I../mesa/src/freedreno/registers",
+      "-Isrc/freedreno/registers/adreno",
+      "-I../mesa/src/freedreno/registers/adreno",
+      "-Isrc/freedreno/common",
+      "-I../mesa/src/freedreno/common",
+      "-Iinclude",
+      "-I../mesa/include",
+      "-Isrc",
+      "-I../mesa/src",
+      "-Isrc/vulkan/util",
+      "-I../mesa/src/vulkan/util",
+      "-Isrc/vulkan/runtime",
+      "-I../mesa/src/vulkan/runtime",
+      "-I../mesa/src/vulkan/runtime/bvh",
+      "-Isrc/compiler/nir",
+      "-I../mesa/src/compiler/nir",
+      "-Isrc/compiler",
+      "-I../mesa/src/compiler",
+      "-Isrc/util",
+      "-Isrc/util/format",
+      "-Isrc/compiler/spirv",
+      "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include",
+      "-I/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/include/libdrm",
+      "-fvisibility=hidden",
+      "-fdiagnostics-color=always",
+      "-D_FILE_OFFSET_BITS=64",
+      "-Wall",
+      "-Winvalid-pch",
+      "-std=c11",
+      "-O2",
+      "-g",
+      "-D__STDC_CONSTANT_MACROS",
+      "-D__STDC_FORMAT_MACROS",
+      "-D__STDC_LIMIT_MACROS",
+      "-DPACKAGE_VERSION=\"27.0.0-devel\"",
+      "-DHAVE_OPENGL=0",
+      "-DHAVE_OPENGL_ES_1=0",
+      "-DHAVE_OPENGL_ES_2=0",
+      "-DMESA_SYSTEM_HAS_KMS_DRM=1",
+      "-DVIDEO_CODEC_VC1DEC=0",
+      "-DVIDEO_CODEC_H264DEC=0",
+      "-DVIDEO_CODEC_H264ENC=0",
+      "-DVIDEO_CODEC_H265DEC=0",
+      "-DVIDEO_CODEC_H265ENC=0",
+      "-DVIDEO_CODEC_AV1DEC=0",
+      "-DVIDEO_CODEC_AV1ENC=0",
+      "-DVIDEO_CODEC_VP9DEC=0",
+      "-DVIDEO_CODEC_MPEG12DEC=0",
+      "-DVIDEO_CODEC_JPEGDEC=0",
+      "-DUSE_LIBGLVND=0",
+      "-DHAVE_LIBDRM",
+      "-DHAVE_GFX_COMPUTE",
+      "-DGLAPI_EXPORT_PROTO_ENTRY_POINTS=1",
+      "-DALLOW_KCMP",
+      "-DMESA_DEBUG=0",
+      "-DENABLE_SHADER_CACHE",
+      "-DHAVE___BUILTIN_BSWAP32",
+      "-DHAVE___BUILTIN_BSWAP64",
+      "-DHAVE___BUILTIN_CLZ",
+      "-DHAVE___BUILTIN_CLZLL",
+      "-DHAVE___BUILTIN_CTZ",
+      "-DHAVE___BUILTIN_EXPECT",
+      "-DHAVE___BUILTIN_FFS",
+      "-DHAVE___BUILTIN_FFSLL",
+      "-DHAVE___BUILTIN_POPCOUNT",
+      "-DHAVE___BUILTIN_POPCOUNTLL",
+      "-DHAVE___BUILTIN_UNREACHABLE",
+      "-DHAVE___BUILTIN_TYPES_COMPATIBLE_P",
+      "-DHAVE___BUILTIN_ADD_OVERFLOW",
+      "-DHAVE_FUNC_ATTRIBUTE_CONST",
+      "-DHAVE_FUNC_ATTRIBUTE_FLATTEN",
+      "-DHAVE_FUNC_ATTRIBUTE_MALLOC",
+      "-DHAVE_FUNC_ATTRIBUTE_PURE",
+      "-DHAVE_FUNC_ATTRIBUTE_UNUSED",
+      "-DHAVE_FUNC_ATTRIBUTE_WARN_UNUSED_RESULT",
+      "-DHAVE_FUNC_ATTRIBUTE_WEAK",
+      "-DHAVE_FUNC_ATTRIBUTE_FORMAT",
+      "-DHAVE_FUNC_ATTRIBUTE_PACKED",
+      "-DHAVE_FUNC_ATTRIBUTE_RETURNS_NONNULL",
+      "-DHAVE_FUNC_ATTRIBUTE_ALIAS",
+      "-DHAVE_FUNC_ATTRIBUTE_NORETURN",
+      "-DHAVE_FUNC_ATTRIBUTE_COLD",
+      "-DHAVE_FUNC_ATTRIBUTE_VISIBILITY",
+      "-DHAVE_UINT128",
+      "-DHAVE_REALLOCARRAY",
+      "-DHAVE_FMEMOPEN",
+      "-DHAVE_MALLINFO2",
+      "-D_GNU_SOURCE",
+      "-DUSE_GCC_ATOMIC_BUILTINS",
+      "-DMAJOR_IN_SYSMACROS",
+      "-DHAS_SCHED_H",
+      "-DHAS_SCHED_GETAFFINITY",
+      "-DHAVE_LINUX_FUTEX_H",
+      "-DHAVE_ENDIAN_H",
+      "-DHAVE_DLFCN_H",
+      "-DHAVE_SYS_SHM_H",
+      "-DHAVE_CET_H",
+      "-DHAVE_POLL_H",
+      "-DHAVE_SYS_INOTIFY_H",
+      "-DHAVE_LINUX_UDMABUF_H",
+      "-DHAVE_STRTOF",
+      "-DHAVE_MKOSTEMP",
+      "-DHAVE_MEMFD_CREATE",
+      "-DHAVE_RANDOM_R",
+      "-DHAVE_FLOCK",
+      "-DHAVE_STRTOK_R",
+      "-DHAVE_GETRANDOM",
+      "-DHAVE_POSIX_FALLOCATE",
+      "-DHAVE_SECURE_GETENV",
+      "-DHAVE_SYSCONF",
+      "-DHAVE_SC_PHYS_PAGES",
+      "-DHAVE_GNU_QSORT_R",
+      "-DHAVE_STRUCT_TIMESPEC",
+      "-DHAVE_PROGRAM_INVOCATION_NAME",
+      "-DHAVE_ISSIGNALING",
+      "-DHAVE_POSIX_MEMALIGN",
+      "-DHAVE_DIRENT_D_TYPE",
+      "-DHAVE_STRTOD_L",
+      "-DHAVE_DLADDR",
+      "-DHAVE_DL_ITERATE_PHDR",
+      "-DHAVE_ZLIB",
+      "-DHAVE_COMPRESSION",
+      "-DHAVE_PTHREAD",
+      "-DHAVE_PTHREAD_SETAFFINITY",
+      "-DDRAW_LLVM_AVAILABLE=0",
+      "-DAMD_LLVM_AVAILABLE=0",
+      "-DGALLIVM_USE_ORCJIT=0",
+      "-DTHREAD_SANITIZER=0",
+      "-DHAVE_DRI2",
+      "-DHAVE_RENDERDOC_INTEGRATION=1",
+      "-Werror=implicit-function-declaration",
+      "-Werror=missing-prototypes",
+      "-Werror=return-type",
+      "-Werror=empty-body",
+      "-Werror=incompatible-pointer-types",
+      "-Werror=int-conversion",
+      "-Wimplicit-fallthrough",
+      "-Wmisleading-indentation",
+      "-Wno-missing-field-initializers",
+      "-Wno-format-truncation",
+      "-fno-math-errno",
+      "-fno-trapping-math",
+      "-Qunused-arguments",
+      "-fno-common",
+      "-Wno-unknown-pragmas",
+      "-Wno-microsoft-enum-value",
+      "-Wno-unused-function",
+      "-Werror=format",
+      "-Wformat-security",
+      "-Werror=thread-safety",
+      "-ffunction-sections",
+      "-fdata-sections",
+      "-Wno-unused-command-line-argument",
+      "-fPIC",
+      "-DVK_USE_PLATFORM_DISPLAY_KHR",
+      "-pthread",
+      "-DXXH_FORCE_ALIGN_CHECK=0",
+      "-DXXH_FORCE_MEMORY_ACCESS=0",
+      "-Wno-override-init",
+      "-Wno-initializer-overrides",
+      "-MD",
+      "-MQ",
+      "/run/media/jethac/Shared/radish/optimization-five-phase-release-driver-0046/rd_memory.c.o",
+      "-MF",
+      "/run/media/jethac/Shared/radish/optimization-five-phase-release-driver-0046/rd_memory.c.d",
+      "-o",
+      "/run/media/jethac/Shared/radish/optimization-five-phase-release-driver-0046/rd_memory.c.o",
+      "-c",
+      "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/phase-scratch-release/candidate/mesa/src/freedreno/radish/rd_memory.c"
+    ],
+    "compile_cwd": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build",
+    "argv": [
+      "clang++",
+      "--target=aarch64-linux-gnu",
+      "--sysroot=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot",
+      "-mcpu=cortex-a53",
+      "-o",
+      "/run/media/jethac/Shared/radish/optimization-five-phase-release-driver-0046/libvulkan_radish.so",
+      "src/freedreno/radish/libvulkan_radish.so.p/meson-generated_.._rd_entrypoints.c.o",
+      "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/cache-build/rd_instance.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_device.c.o",
+      "/run/media/jethac/Shared/radish/optimization-five-phase-release-driver-0046/rd_memory.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_descriptor.c.o",
+      "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/cache-build/rd_pipeline.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_command.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_sampling.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_nir_sampling.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_nir_resources.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_nir_robust.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_resources.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_transfer.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_image.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_event.c.o",
+      "src/freedreno/radish/libvulkan_radish.so.p/rd_query.c.o",
+      "/run/media/jethac/Shared/radish/optimization-five-direct-queue-build-0046/rd_queue.c.o",
+      "-L/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib",
+      "-Wl,--as-needed",
+      "-Wl,--no-undefined",
+      "-shared",
+      "-fPIC",
+      "-Wl,-soname,libvulkan_radish.so",
+      "-Wl,--whole-archive",
+      "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/cache-build/rd_pipeline_cache.cpp.o",
+      "-Wl,--start-group",
+      "src/vulkan/runtime/libvulkan_lite_runtime.a",
+      "src/vulkan/runtime/libvulkan_runtime.a",
+      "src/vulkan/runtime/libvulkan_instance.a",
+      "-Wl,--no-whole-archive",
+      "-fuse-ld=lld",
+      "--rtlib=libgcc",
+      "-Wl,-rpath-link,/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib",
+      "src/freedreno/drm/libfreedreno_drm.a",
+      "src/util/libmesa_util.a",
+      "src/util/libmesa_util_simd.a",
+      "src/util/blake3/libblake3.a",
+      "src/c11/impl/libmesa_util_c11.a",
+      "src/freedreno/ir3/libfreedreno_ir3.a",
+      "src/freedreno/isa/libir3encode.a",
+      "/run/media/jethac/Shared/radish/compute11-idiv-isolated-build-0045/libnir.idiv.a",
+      "src/compiler/libcompiler.a",
+      "src/freedreno/common/libfreedreno_common.a",
+      "src/freedreno/isa/libir3decode.a",
+      "src/compiler/isaspec/libisaspec.a",
+      "src/freedreno/fdl/libfreedreno_layout.a",
+      "src/vulkan/util/libvulkan_util.a",
+      "src/compiler/spirv/libvtn.a",
+      "-Wl,--version-script",
+      "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/mesa/src/vulkan/vulkan.sym",
+      "-Wl,-Bsymbolic",
+      "-Wl,--gc-sections",
+      "/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/libz.so",
+      "-pthread",
+      "-lm",
+      "/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot/usr/lib/libdrm.so",
+      "-Wl,--end-group"
+    ],
+    "cwd": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build",
+    "strip_argv": [
+      "llvm-strip",
+      "--strip-debug",
+      "-o",
+      "/run/media/jethac/Shared/radish/optimization-five-phase-release-driver-0046/libvulkan_radish.stripped.so",
+      "/run/media/jethac/Shared/radish/optimization-five-phase-release-driver-0046/libvulkan_radish.so"
+    ],
+    "source_release": "ec4413e5b8bc95934b00f66a616126ac8f2177763949c8c926944e4611462368",
+    "source": "bbfccee8bffc59cd105805a8e0d79ad8ff35f014cae2b79a4ac3fb4619d6ace3",
+    "object": "6eb26002ab3e3a519de398f577d2e3b525ec6ebc2cd9862186ca0160fce0a7ca",
+    "base_result": "7ef5f62fca81b0cb52a87699eee78aa9cb6c9ec8534a1283cb647b5301cf6c47",
+    "sha256": "63b4f1f82f8ed1f5b2d75b122050d4936ea16159372813ad8b10c4cfefa7bf97",
+    "strip_sha256": "91a1a98e7c8e5b004895f0bc0dbb24c434f2caa4e5c224a8399026f09b48db80",
+    "scope": "Only rd_memory object differs over coherent1ed3/5eed; all compiler/queue/pipeline/cache/shader code unchanged"
+  },
+  "source_review": "123760d24c0c5c25e4a37a144c84d5091157a02b1e43f371d2751d48b157658c",
+  "build_strip_review": "24584e14d4377a6e033b7640802376a732f5821181503d4d2e06fd0d61014241",
+  "actual_TTS_review": "554b9aea07bdbe42dbd1064f34993b9fdd79a85c02ac5102cd935228a1e7f596",
+  "scope": "Only Vulkan-owned memory BO final-unref reuse policy changes over1ed3/5eed; compiler, queue, pipeline/cache and shader bytes unchanged. Prior sources remain preserved.",
+  "independent_build_details": {
+    "status": "PASS finite driver source/build/strip pairing; target resource effect remains pending",
+    "source_review": "123760d24c0c5c25e4a37a144c84d5091157a02b1e43f371d2751d48b157658c",
+    "build_result": "aaba345c309ef842cf4982f17f901b2f5fd1af06b66a7fe7ee4a54d305945af8",
+    "driver": "63b4f1f82f8ed1f5b2d75b122050d4936ea16159372813ad8b10c4cfefa7bf97",
+    "strip": "91a1a98e7c8e5b004895f0bc0dbb24c434f2caa4e5c224a8399026f09b48db80",
+    "link_delta": [
+      [
+        "/run/media/jethac/Shared/radish/optimization-five-tts-driver-0046/libvulkan_radish.so",
+        "/run/media/jethac/Shared/radish/optimization-five-phase-release-driver-0046/libvulkan_radish.so"
+      ],
+      [
+        "src/freedreno/radish/libvulkan_radish.so.p/rd_memory.c.o",
+        "/run/media/jethac/Shared/radish/optimization-five-phase-release-driver-0046/rd_memory.c.o"
+      ]
+    ],
+    "link_inputs": [
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/meson-generated_.._rd_entrypoints.c.o",
+        "sha256": "7af87ca59925cf281a41ffbd0942c8e3d72ae968024a09d404b078303f259b81"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/cache-build/rd_instance.c.o",
+        "sha256": "b3a085119336afbdc66c9c466d27f071ea6385052a46d162936493cc5cbe5bd5"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_device.c.o",
+        "sha256": "d934729230947f99837d24be73705756a639c57b0f1acc2681391fcc4d0a8741"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-phase-release-driver-0046/rd_memory.c.o",
+        "sha256": "6eb26002ab3e3a519de398f577d2e3b525ec6ebc2cd9862186ca0160fce0a7ca"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_descriptor.c.o",
+        "sha256": "3b47786c8d4e23b850479655a3ee75cec3e963fa8b4a83fc4e0ff3a20936992f"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/cache-build/rd_pipeline.c.o",
+        "sha256": "bb17576509cbc2420c0c1829bc8ec50912f6de4506d8dd1bff3f944caee57ffa"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_command.c.o",
+        "sha256": "7605bf9736b3e8049c1e453dcb072088f5feb973420ace3065fb600dfd79ea66"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_sampling.c.o",
+        "sha256": "7c4cc23140331089e4875c0156cde20c58e5b1909e2581ff3b688a73217fa2b7"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_nir_sampling.c.o",
+        "sha256": "f2822d98eabf16403fc5bf3bf2ee483e25e02e88b82980948d2ee9274ccdb57b"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_nir_resources.c.o",
+        "sha256": "7803bef847199704d3197fb386ce78a6d5ad6bee05712417f9ccda3ad91df3d8"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_nir_robust.c.o",
+        "sha256": "ccff7715a8919e739a579e91d75791752e82ddd800dd44df911d81af0cdc7655"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_resources.c.o",
+        "sha256": "bdc2b62f55854fab2ee226f3ce40868389c95f44bb90b25c97b602934e7d01a1"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_transfer.c.o",
+        "sha256": "2fd3f3fcf16fa39e2877c2f345c2cebbc560af778ac155436b48a6440e7f3ecc"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_image.c.o",
+        "sha256": "32ffa0ab116dc52823ede0141db831c07b59ed9fedfe376d9079ea8a1edc7208"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_event.c.o",
+        "sha256": "d4740d71392e303abcfa1372f828bc9946ba53485f6b90cdb0166fb14ff9a00c"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/radish/libvulkan_radish.so.p/rd_query.c.o",
+        "sha256": "5fa697ca900332cc5a53fce54e91ca1229f90ffd6ca206ecc7e0bd04ea89dee5"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-direct-queue-build-0046/rd_queue.c.o",
+        "sha256": "6e42b38372c40f9c1dcab932b9ebd040473d7d9deb473c145c3d9a83854c541a"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-frontend-cache-0046/cache-build/rd_pipeline_cache.cpp.o",
+        "sha256": "4350a52e9f298078c6acafd909bf9357722fe6cac56d8b194a5378d004e74192"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/vulkan/runtime/libvulkan_lite_runtime.a",
+        "sha256": "72857d03da8ebe299147ef8c0c535d6bb4afe09fac97c401704fdec703c15b29"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/vulkan/runtime/libvulkan_runtime.a",
+        "sha256": "ea8e988689581f3272940a6a6e07f9eb72092c0c4b99dffe83c391d33ff0de54"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/vulkan/runtime/libvulkan_instance.a",
+        "sha256": "e2ab58d74cb2945ef367855f9b68fdfced87d0eb869a17a63008cdf2347ed69e"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/drm/libfreedreno_drm.a",
+        "sha256": "8eaa794b66525b3ce4b637131dfb549ea7ab5ddd4883a0cd7ed96ae052d07642"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/util/libmesa_util.a",
+        "sha256": "8057fd5f2ba559d82c35891e13ef64892f288eb6f6c52f46f435d4671137864f"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/util/libmesa_util_simd.a",
+        "sha256": "17aceba849bf8bf1389c2a0fb6db54843310467b6e038788d16f931e987aa8a7"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/util/blake3/libblake3.a",
+        "sha256": "6c9f100652cfd5917ecbc3c577e64e6579dbfe21d7505b6ec4b77c633f608aad"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/c11/impl/libmesa_util_c11.a",
+        "sha256": "8d1a8495e9ccdb9de7fab5768b97f45e470c824fe11b113677934d89f233ce41"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/ir3/libfreedreno_ir3.a",
+        "sha256": "7122b60175750aca8f5e4f80a9b9a0376cb2fb6b32797a87178e30ae31c5ca16"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/isa/libir3encode.a",
+        "sha256": "3c4363047a7cfdbbe8503c9a8f8829746fdeafe54bb2f8665720d301e79e9ccf"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/compute11-idiv-isolated-build-0045/libnir.idiv.a",
+        "sha256": "5f428db8643a05c46521ae5dafa087a80f7ddc131610bdfb02f1110799db21c9"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/compiler/libcompiler.a",
+        "sha256": "b6c6552a7d1d34fbcc66291db91b562746d969da085bb7e128a21ef0f0fe7f9d"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/common/libfreedreno_common.a",
+        "sha256": "6e12b1b1b17035bd6f5c1396a3f7247f639bcefc1ba958311ffaccaf9616afc6"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/isa/libir3decode.a",
+        "sha256": "751a446d9a040591aab305fc25b48ce5a7f4b60587bda453bc915362b2e34a8d"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/compiler/isaspec/libisaspec.a",
+        "sha256": "99e4cc2f96d2273429c5109675165616bc8ed6c914d6b6d97a334ba6144f4ee2"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/fdl/libfreedreno_layout.a",
+        "sha256": "571168cf6c3ea9af38f74b1a3ff9cde65735e4e7e7d11f7aa9498581711a0423"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/vulkan/util/libvulkan_util.a",
+        "sha256": "c2bc2d32536fa508afec6c1ad0258a2c6639c0055e76f1ea2ee5f65c4852f1e9"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/compiler/spirv/libvtn.a",
+        "sha256": "63ffa8ff7e81e57a3ad463ea6d643edb3030d49003d37ddcf11253f82a028e95"
+      }
+    ],
+    "allocated_sections_equal": 26,
+    "program_headers_and_load_payload_equal": true,
+    "scope": "Only memory allocation BO reuse policy changes over latest coherent direct-window/cache/queue/idiv driver. Unchanged shaders and native pipeline contents do not require replay here; next full-model run must establish actual memory lifetime and numerical result."
+  }
+}
