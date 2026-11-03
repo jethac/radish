@@ -1,5 +1,21 @@
 # Radish status
 
+## Approved untimed ASR watchdog exception — 2026-11-03
+
+The user approved the reviewed two-scope correctness proposal. Only the process
+watchdog changes from 300 to 900 seconds, with the host observer changing from
+335 to 935 seconds. The kernel hangcheck remains 500ms. Model, driver, workload,
+value oracles, memory, swap, disk, service and fault controls are unchanged.
+
+Cold run17350 passed fresh admission and entered the original warm-up. It retains
+both production warm modes and two requests of the same pinned English clip.
+The fresh-process one-request cache import remains conditional on independent
+cold transcript, cache and resource validation. No performance collection is
+permitted. The original proposal and review remain immutable historical records;
+[explicit authorization](results/optimization-asr-900s-authorization-0046.json)
+supersedes their pending-approval status.
+
+
 ## 2026-11-03: full ASR reaches the retained process deadline
 
 The [revised-driver full run](results/optimization-asr-matrix-fence-timeout-0046.json)

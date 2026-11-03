@@ -1,5 +1,5 @@
 {
-  "status": "Current db872/7575 focused MM/RMS native and numerical gates pass. Full22258 completes both warm modes and begins real audio processing but reaches original300s watchdog before a transcript. FullASR/cache and all-five remain open; performance forbidden; no unchanged retry.",
+  "status": "Current application db872 and revised matrix-fence driver0f721 retain the qualified primitive evidence. Full82231 ended at the original300s watchdog without transcript. The user approved two scoped900s untimed correctness runs; cold17350 is running, and cache replay remains conditional on its independent PASS. FullASR/cache and all-five closure remain open; performance collection is forbidden.",
   "application": "Frozen ASR source with previously published GQA, quantized phase, memory-liveness and unit-axis overlays",
   "ordered_additive_patches": [
     {

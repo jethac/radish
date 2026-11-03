@@ -165,12 +165,12 @@
     "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
     "driver": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
     "receipt": "optimization-matrix-fence-source-build-0046.json",
-    "target_status": "Focusedgeometrypasses withexplicitmixed-policyunion. Originalfull82231 timedoutafterbothwarmsteps,realprefix,andtwosubsamplegraphs; thirdbegan.No transcript/cachequalification. Revisedprocess-timeout proposalrequiresuserauthorization; performanceCLOSED.",
+    "target_status": "Focused geometry passes with the explicit mixed-policy union. The user approved two scoped 900-second untimed correctness runs. Cold full-model handle17350 has passed fresh admission and started actual warm-up on db872/0f721; no transcript or cache qualification yet.",
     "performance_gate": "CLOSED"
   },
-  "device_execution_hold": "No liveGPUjob. Full82231 endedatunchanged300sprocesswatchdog withoutrequestedtranscript; no newGPUfault/OOMreported. No unchangedretry/import. Isolated900s cold+conditionalimport proposal ishost-only, NOTAUTHORIZEDFOREXECUTION pendingexplicitusersteering underGOAL41\u201342.",
-  "pending_timeout_proposal": {
-    "status": "NOTAUTHORIZEDFOREXECUTION; explicituserresponsepending",
+  "device_execution_hold": "Only the explicitly approved cold full-model and conditional cache import may run with 900-second process limits. Original kernel 500ms, memory, swap, disk, fault, services and ownership controls remain unchanged. Old11cf fault candidate remains held. Performance collection remains forbidden.",
+  "approved_timeout_exception": {
+    "status": "Explicit user approval received: \"you may\". Cold full scope running; import requires independent cold PASS.",
     "proposal": "optimization-asr-900s-proposal-0046.json",
     "proposal_sha256": "6a08d8e2748e7d70c6a306b1aedab49e272f089d2f6045d66bdc09329665ac00",
     "review": "optimization-asr-900s-proposal-review-0046.json",
@@ -179,6 +179,8 @@
       "proposals/asr-correctness-900s/cold-watchdog-only.diff",
       "proposals/asr-correctness-900s/import-watchdog-only.diff"
     ],
-    "scope": "Onlywholeprocess300\u2192900andhost335\u2192935; allothercontrols/workunchanged.NoGOALedit orGPUexecution."
+    "scope": "Only whole-process300\u2192900 and host335\u2192935 for these two correctness scopes; all other controls and workload unchanged. No GOAL edit or performance authorization.",
+    "authorization": "optimization-asr-900s-authorization-0046.json",
+    "authorization_sha256": "9757cffe4c7f152296f24a95621671dacea09e3792210c61ab97beb9be140532"
   }
 }

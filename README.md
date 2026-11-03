@@ -2,18 +2,15 @@
 
 Current checkpoint (2026-11-03): retained TTS sessions, convolution, selective
 precision and real pipeline-cache export/import pass their stated model fixtures.
-Full ASR inference and its cache replay remain open. The latest full ASR run
-completed both warm modes, real-request prefix and first subsampling graph but
-reached the original timeout before any requested transcript.
+Full ASR inference and its cache replay remain open. The latest completed ASR
+run reached the original 300-second process watchdog after both warm modes and
+part of the real request, without a requested transcript.
 
-A grouped-work qualification encountered a Q8 GPU hangcheck. The fault is
-preserved. A revised matrix policy exposes each execution through a kernel
-fence, retaining the same workgroups and limits. Both isolated diagnostic bands
-and the remaining full Q8 tests pass; the cause is not uniquely proved. The
-original full ASR model completed both warm modes and part of the real request,
-then reached the retained300-second process watchdog before a transcript. A
-host-only900-second correctness proposal awaits explicit authorization; no kernel
-hangcheck or other resource limit change is proposed. [Current evidence](radish/results/optimization-five-status-0046.json)
+The user approved a scoped 900-second process limit for the full untimed STT
+correctness check and its conditional cache reload. The full check has started;
+all memory, swap, disk, fault, service and kernel hangcheck controls are unchanged.
+The earlier Q8 GPU fault remains preserved; the revised matrix submission policy
+passes the bounded Q8 qualification. [Current evidence](radish/results/optimization-five-status-0046.json)
 and the [full goal](radish/GOAL.md) are authoritative.
 
 No new performance measurement is permitted until all five areas pass. The

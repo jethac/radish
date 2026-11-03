@@ -1,0 +1,11 @@
+{
+  "status": "authorized for two scoped untimed correctness runs",
+  "user_reply": "you may",
+  "authority": "Root forwarded explicit user reply to the reviewed 900-second cold full STT and conditional cache-reload proposal.",
+  "proposal_sha256": "6a08d8e2748e7d70c6a306b1aedab49e272f089d2f6045d66bdc09329665ac00",
+  "review_sha256": "2866d91f817dbbd988d8f52851a13bb7e06c8491790a76fca367511a8af5dc69",
+  "exception": "Only whole-process RuntimeMaxSec 300 to 900 and host observer 335 to 935 for these two scopes; no blanket timeout change.",
+  "unchanged": "GOAL file, kernel 500ms hangcheck, memory640M/swap128M, disk/fault/services/privateICD/ownership, original warmup and real workload, all value oracles; no performance collection.",
+  "import_condition": "Independent cold full transcript/cache/resource PASS and fresh original guards.",
+  "recorded_utc": "2026-11-03T06:37:54.086410+00:00"
+}
