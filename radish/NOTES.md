@@ -48,9 +48,24 @@ Winograd weights (304 MB vs 105 MB; swap, net 21.11 s at best).
 Known: RADISH_TRACE tick span is wrong when submits wrap the slot ring
 (busy sums are fine).
 
-Next: Winograd GEMM load phase (vec4-aligned V per chunk offset, ~12 ->
-~17 GFLOP/s would cut ~3 s); conv1d_23/83 (strided/22-channel, 0.42 s);
-GPU decoder overlapped with CPU work; full applicable 1.1 CTS.
+Narrow student (oddadmix/Kokoro-7M-Distill config and its Apache-2.0 en
+weights; decoder core 4.06M params, ~9.8 GFLOP per 4.2 s of audio, T=168):
+`scripts/export-student-core.py` -> pnnx -> `fuse-student-adasnake.py`;
+run with `scripts/tsv/core-bench.sh` (assets in /var/tmp/radish-canon/student).
+- ncnn CPU 4 threads: 1.91 s (RTF 0.45)
+- GPU, plain pnnx graph: 5.46 s; Winograd gated to >= 128 channels: 5.04 s
+- + RadishAdaSnake fusion (37 AdaIN+Snake chains -> 1 dispatch each,
+  0.06 s GPU total): **3.46 s (RTF 0.82)**, rel RMS 2.8e-4 vs PyTorch.
+Remaining GPU: Conv1D 1.83 s of 2.63 s busy, 1.3 s of it in the 32-channel
+k=3/7/11 generator convs at W=25561 (~6 GFLOP/s on ncnn's packed GEMM);
+~0.9 s idle at copy/sync points (vkCmdCopyBuffer is CP_MEM_TO_MEM per dword,
+4 KiB per synchronous submit: 987 submits per extraction).
+Rejected: implicit-GEMM radish shader for k > 1 at 32/64 channels (4.56 s).
+
+Next (perf): sliding-window direct conv for 32/64-channel layers (input strip
+in shared memory reused across taps); driver buffer copy as one compute
+dispatch; fuse the remaining 162/322-channel chains; Winograd GEMM load phase.
+Conformance: delegated CTS track running (ledger to follow).
 
 Left on the device: `/var/tmp/radish-canon/` (lib: drivers 0f721436 and
 c1755aaf, loader, libsegv.so; bin: kokoro runtimes 52c9e565, e37db9b1; tts:
