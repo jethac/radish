@@ -1,0 +1,97 @@
+{
+  "status": "passed finite GQA full and partial batching numerical/native/structural counterpart",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-gqa-batch/probe",
+  "run_log": "ea1051c7e7416bd3445f0d29f8d88412d06872775f836bf40fe2193f2b1b874d",
+  "runner_result": "171bb167dc0db0ec3ebfabf6f246ec158bda9159a584ef2770054b17445b97b9",
+  "source_release": "29d9feeebc24eea5f2186056e8eaf76abb91acb16df884d4061d291fca4ed2c0",
+  "payload": {
+    "radish_icd.json": {
+      "bytes": 146,
+      "sha256": "e36ed55c1da4aa87c36316e6b3f1b13dc03b6333bdde1c48213ecc424e44f971"
+    },
+    "resources": {
+      "bytes": 755160,
+      "sha256": "a6ca46a1a34f50f54ea2a7cb410db940389b9ded049819e3b1c0cac2138c5a09"
+    },
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "matmul_f16_f32_fp32.spv": {
+      "bytes": 14152,
+      "sha256": "2e58a7f8ee00179fc38c674cdcf101c50e470642e7160c8bfd711ba15028a63d"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 13632536,
+      "sha256": "3a300087ec25ded4226857735e5bb7c0353a1a9f74c04fa83d3a28bd70f68ed6"
+    },
+    "mul_mat_vec_f16_f32_f32.spv": {
+      "bytes": 34080,
+      "sha256": "a56a29e3eecbf410d1811d08229fc1cb0de4ab9c9a0ba3789c608ca7b50823bd"
+    },
+    "payload.json": {
+      "bytes": 971,
+      "sha256": "4702500742d15591061d496de917bd05baae32580164b6f07d8d1498a4655616"
+    }
+  },
+  "native_identity": [
+    {
+      "case": 0,
+      "original_gqa_case": 2,
+      "native_assembly_text_sha256": "4b037ebd00451a455297974fc56b3109fc463ab12734b11e7c95edfb41e5ce96",
+      "native_body_byteexact": true,
+      "private": 0,
+      "shared": 8704,
+      "halfreg_budget": 3584
+    },
+    {
+      "case": 1,
+      "original_gqa_case": 6,
+      "native_assembly_text_sha256": "0ff81b917549085ae1df4becac9637e619f6a2116c4a4a8450515d6c58f72f62",
+      "native_body_byteexact": true,
+      "private": 0,
+      "shared": 256,
+      "halfreg_budget": 2304
+    }
+  ],
+  "rounds": [
+    {
+      "case": 0,
+      "round": 0,
+      "outputs": 34656,
+      "actual_submits": 7,
+      "actual_flushes": 7
+    },
+    {
+      "case": 0,
+      "round": 1,
+      "outputs": 34656,
+      "actual_submits": 7,
+      "actual_flushes": 7
+    },
+    {
+      "case": 1,
+      "round": 0,
+      "outputs": 102,
+      "actual_submits": 7,
+      "actual_flushes": 7
+    },
+    {
+      "case": 1,
+      "round": 1,
+      "outputs": 102,
+      "actual_submits": 7,
+      "actual_flushes": 7
+    }
+  ],
+  "total_exact_outputs": 69516,
+  "checks": [
+    "Both six-query/three-KV-head cases preserve exact floor(head/2) independent CPU dyadic dot oracle in two changing rounds; all three complete allocations match saved expected data including source immutability and poison guards.",
+    "All four actual dispatch begin/end pairs are tile1/packed/local-memory/batch8 with54 groups and7 submits; helper device submit_count and seqno both7 after fence. Existing chunk loop produces six full8 plus partial6; no simultaneous residency claim.",
+    "Full emitted native assembly text is byte-exact to prior admitted GQA case2MM andcase6MV, beyond native hash/name; private0/shared/register bounds unchanged. No32-native or TTS repeat.",
+    "Exact payload driver3a30/helpera6ca/modules match frozen runner assets; clean collection, fault, successful drained service, before/after active application services equal.",
+    "No clocks/profiling/performance claim. Scope is two fixed GQA shapes, not whole-model correctness or new head-ratio support."
+  ],
+  "resource_guard": "58.4MiB peak reported under original384MiB/90s; wall time not treated as measurement",
+  "timing_collected": false
+}

@@ -1,5 +1,5 @@
 {
-  "status": "Source/lifetime and exact two-object build/runner qualified; original fullmodel50572 running, outputs not claimed",
+  "status": "Source/lifetime and two-object build/runner qualified; full50572 timeout preserved in optimization-asr-stream-prefill-timeout-0046.json. Offline warmup one-step cleanup completes; streaming encoder completes, cached-prefix prefill remains unqualified.",
   "source_release": {
     "status": "source-ready private production warmup; no build/device action by author",
     "files": {

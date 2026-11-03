@@ -1,0 +1,144 @@
+{
+  "status": "retained full-model timeout; no numerical completion claim",
+  "scope": "exact terminal50572; no timing/profiling analysis",
+  "evidence": {
+    "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-full-bounded-warmup/probe/run.log": "8638c37a76bb8158d9040b9a8dddeb7f1c7e083a06cf6702b5f7ec96dfea1240",
+    "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-full-bounded-warmup/probe/failure.json": "b0ffcb402c6f9dba4a4f242ce086ba59cad85f454843bd4761caf3812588d4bd",
+    "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-full-bounded-warmup/probe/collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+    "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-full-bounded-warmup/probe/fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+    "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-full-bounded-warmup/probe/drain-000.txt": "899a8a5a73232d4a07b56824413da1c88dc2dc685e89886ca2bc05f89923b9f6"
+  },
+  "model": {
+    "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/bounded-production-warmup/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+    "sha256": "920420c4283b40b6cd334a4aca0f4290165ec743b4d191a445bf63d6fc3a4e2e",
+    "final_graph_source_line": 1348,
+    "final_graph": "run_impl cached-prefix PrefillChunkBuild after completed encoder"
+  },
+  "warm_markers": [
+    {
+      "line": 9,
+      "text": "ASR_MEMORY phase=warm_offline_begin samples=40000"
+    },
+    {
+      "line": 4387,
+      "text": "ASR_WARMUP_STEP mode=offline completed=1"
+    },
+    {
+      "line": 4392,
+      "text": "ASR_WARMUP_DONE mode=offline steps=1 temporary_session=1 synchronized=1 status=0"
+    },
+    {
+      "line": 4393,
+      "text": "ASR_MEMORY phase=warm_offline_end status=0"
+    },
+    {
+      "line": 4394,
+      "text": "ASR_MEMORY phase=warm_stream_begin"
+    }
+  ],
+  "completed_dispatches": 3835,
+  "all_completed_results_zero": true,
+  "unmatched_begin": {
+    "line": 7799,
+    "phase": "stream_warm",
+    "native": 53,
+    "grid": [
+      128,
+      3,
+      1
+    ],
+    "tile": [
+      1,
+      1,
+      1
+    ],
+    "batch": 8,
+    "packed": 1,
+    "local_memory": 1
+  },
+  "candidate_family_batch1_counts": [
+    {
+      "phase": "offline_warm",
+      "native": 64,
+      "dispatches": 18,
+      "submits": 8316
+    },
+    {
+      "phase": "offline_warm",
+      "native": 65,
+      "dispatches": 56,
+      "submits": 29120
+    },
+    {
+      "phase": "offline_warm",
+      "native": 222,
+      "dispatches": 18,
+      "submits": 1008
+    },
+    {
+      "phase": "offline_warm",
+      "native": 225,
+      "dispatches": 28,
+      "submits": 1792
+    },
+    {
+      "phase": "offline_warm",
+      "native": 344,
+      "dispatches": 18,
+      "submits": 1008
+    },
+    {
+      "phase": "offline_warm",
+      "native": 358,
+      "dispatches": 31,
+      "submits": 8084
+    },
+    {
+      "phase": "offline_warm",
+      "native": 536,
+      "dispatches": 56,
+      "submits": 43008
+    },
+    {
+      "phase": "stream_warm",
+      "native": 64,
+      "dispatches": 18,
+      "submits": 8316
+    },
+    {
+      "phase": "stream_warm",
+      "native": 65,
+      "dispatches": 39,
+      "submits": 15744
+    },
+    {
+      "phase": "stream_warm",
+      "native": 222,
+      "dispatches": 18,
+      "submits": 1008
+    },
+    {
+      "phase": "stream_warm",
+      "native": 225,
+      "dispatches": 39,
+      "submits": 1152
+    },
+    {
+      "phase": "stream_warm",
+      "native": 344,
+      "dispatches": 18,
+      "submits": 1008
+    },
+    {
+      "phase": "stream_warm",
+      "native": 358,
+      "dispatches": 42,
+      "submits": 7700
+    }
+  ],
+  "count_scope": "native instruction lengths plus printed packed/local flags correlate frozen selected families; final source predicate also checks exact interface/resources and NIR safety",
+  "result": "offline one-step warmup and synchronized cleanup completed; streaming prefix initialization and encoder completed; cached-prefix prefill interrupted by unchanged300s watchdog; no real user clip started",
+  "fault": "clean; collectionPASS; inactive/dead/not-found afterdrain",
+  "no_unchanged_retry": true,
+  "performance_measurement": false
+}

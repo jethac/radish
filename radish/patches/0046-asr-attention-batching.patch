@@ -1,0 +1,62 @@
+--- a/src/freedreno/radish/rd_queue.c
++++ b/src/freedreno/radish/rd_queue.c
+@@ -666,6 +666,49 @@
+       ir3_shader_halfregs(v) <= 4096;
+ }
+ 
++static bool
++rd_packed_attention_batch_resources(struct rd_device *device,
++                                    const struct rd_pipeline *pipeline)
++{
++   const struct ir3_shader_variant *v = pipeline->variant;
++   const bool mm = v->shared_size == 8704 && v->instrlen <= 358 &&
++      v->info.max_reg + 1 <= 48 && v->info.max_half_reg + 1 <= 48;
++   const bool mv = v->shared_size == 256 && v->instrlen <= 536 &&
++      v->info.max_reg + 1 <= 12 && v->info.max_half_reg + 1 <= 48;
++   const bool softmax = v->shared_size == 128 && v->instrlen <= 65 &&
++      v->loops == 3 && v->info.max_reg + 1 <= 10 && v->info.max_half_reg + 1 <= 9;
++   const unsigned buffers = mm ? 3 : mv ? 5 : 4;
++   const unsigned push_size = mv ? 52 : 68;
++   if (fd_dev_gpu_id(fd_pipe_dev_id(device->pipe)) != 506 || (!mm && !mv && !softmax) ||
++       pipeline->logical_local_size[0] != 32 || pipeline->logical_local_size[1] != 1 ||
++       pipeline->logical_local_size[2] != 1 || v->local_size[0] != 16 ||
++       v->local_size[1] != 2 || v->local_size[2] != 1 || !v->has_barrier ||
++       !pipeline->packed_1d_barrier || !pipeline->batch_local_memory ||
++       pipeline->linear_subgroups || pipeline->linear_barriers ||
++       v->shader_options.workgroup_resident_threads ||
++       !v->shader_options.nir_options.a5xx_ssbo_size_consts ||
++       v->pvtmem_size || v->constant_data_size || v->info.double_threadsize ||
++       v->info.preamble_instrs_count ||
++       pipeline->resource_count != buffers || pipeline->descriptor_count != buffers ||
++       pipeline->buffer_count != buffers ||
++       (pipeline->used_descriptors & UINT64_C(7)) != UINT64_C(7) ||
++       (pipeline->used_descriptors & ~((UINT64_C(1) << buffers) - 1)) ||
++       pipeline->resource_usage.texture_count || pipeline->resource_usage.sampler_count ||
++       pipeline->resource_usage.image_count || pipeline->sampling_mask ||
++       v->image_mapping.num_tex || v->num_ssbos != buffers ||
++       pipeline->layout->push_range_count != 1 ||
++       pipeline->layout->push_ranges[0].offset != 0 ||
++       pipeline->layout->push_ranges[0].size != push_size ||
++       pipeline->layout->push_ranges[0].stageFlags != VK_SHADER_STAGE_COMPUTE_BIT)
++      return false;
++   for (unsigned i = 0; i < buffers; i++) {
++      if (pipeline->resources[i].type != VK_DESCRIPTOR_TYPE_STORAGE_BUFFER ||
++          pipeline->resources[i].buffer_slot != i || pipeline->buffer_descriptors[i] != i)
++         return false;
++   }
++   return UINT64_C(32) * ir3_shader_halfregs(v) <= 4096;
++}
++
+ static VkResult
+ rd_execute_dispatch(struct rd_device *device, const struct rd_dispatch *dispatch,
+                     struct rd_submit_profile *profile)
+@@ -709,7 +752,8 @@
+        ((requested_chunks >= 1 && requested_chunks <= 4) || requested_chunks == 8))
+       max_chunks = requested_chunks;
+    if ((requested_chunks == 2 || requested_chunks == 4 || requested_chunks == 8) &&
+-       rd_packed_quant_batch_resources(device, dispatch->pipeline))
++       (rd_packed_quant_batch_resources(device, dispatch->pipeline) ||
++        rd_packed_attention_batch_resources(device, dispatch->pipeline)))
+       max_chunks = requested_chunks;
+    int64_t tiled_chunks = debug_get_num_option("RADISH_TILED_BATCH_CHUNKS", 1);
+    if ((tiled_chunks == 2 || tiled_chunks == 4 || tiled_chunks == 8) &&

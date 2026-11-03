@@ -1,5 +1,19 @@
 # Radish status
 
+## 2026-11-03: bounded attention batching
+
+The current ASR listener remains8138. A queue-only driver change extends the
+existing sequential batch policy to qualified floating attention and compact
+softmax kernels. It keeps one workgroup per chunk, at most eight chunks, the
+memory-safety exclusions, resource limits and dependency handling.
+
+[Source and reproducible build](results/optimization-attention-batching-source-build-0046.json)
+are qualified. [The previous full-model result](results/optimization-asr-stream-prefill-timeout-0046.json)
+completed offline warmup and the streaming encoder, then reached the unchanged
+watchdog in cached-prefix streaming prefill. No real clip transcript was produced.
+Focused GQA and softmax numerical/full-partial submission checks now pass
+without changing shader bodies. The next unchanged model run remains open. The all-five performance gate remains closed.
+
 ## 2026-11-03: isolate production warmup session state
 
 The constrained ASR startup now runs both original full-audio warmup modes in

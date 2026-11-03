@@ -1,0 +1,57 @@
+{
+  "status": "PASS narrow changed-batching softmax actual; full-model run remains separate",
+  "source_gate": "cf65058f83d9214870b45fd47c2572ab426a710b266997afe744c3d967930699",
+  "driver_gate": "8f30f8e3c82cd99e10117e3fafa0fc57481f592e8f63ab10451a64004da80098",
+  "families": [
+    {
+      "family": "f32",
+      "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-softmax-batch-f32/probe",
+      "runner_result": "847ea1fc70eb338f16423a9fc289fea4e9cac9af052929b76b885feee6197ef2",
+      "run_log": "9c609c87be784c8ce3db59de08b7f72032daf95bf5deb904c837312d7fa50f5e",
+      "run_log_bytes": 9140950,
+      "cases": 4,
+      "old_new_output_pairs": 3648,
+      "max_cpu_nmse": 7.92248113339e-15,
+      "native_blake3": [
+        "673d10e6f83986b291a01f1057be7d2e461ec598c4b81508548f1916c47daa41",
+        "a58853608335ec590df46e2c1bca884efc9b715032489b64ad730ec5e2054b60"
+      ],
+      "native_bodies_exact_prior": true,
+      "dispatches": 8,
+      "workgroups": 104,
+      "submits": 60,
+      "device_disk_after_kib": 297388
+    },
+    {
+      "family": "f16",
+      "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-softmax-batch-f16/probe",
+      "runner_result": "3f248a732d6828d9fbef5c1bfc7b4aa2354368bb2deb37bc457184703775be8d",
+      "run_log": "daaed3a808bfe16aed33b22f86fa8adca6e05c15daede2d1cad9791db0c38150",
+      "run_log_bytes": 9587052,
+      "cases": 4,
+      "old_new_output_pairs": 3648,
+      "max_cpu_nmse": 7.92248113339e-15,
+      "native_blake3": [
+        "34249e0777b93c6bd43c02e8619987832b1bf5fa9f34ef18a341f76f82dfca19",
+        "40d413efd2181b6a065bd5a1fa2c9e47b42d6c5ec03b30413d0d1c8809c340d5"
+      ],
+      "native_bodies_exact_prior": true,
+      "dispatches": 8,
+      "workgroups": 104,
+      "submits": 60,
+      "device_disk_after_kib": 296284
+    }
+  ],
+  "total_cases": 8,
+  "total_old_new_pairs": 7296,
+  "total_individual_words": 14592,
+  "total_dispatches": 16,
+  "total_submits": 120,
+  "checks": [
+    "Everyold/new nativebody andblake3 exact toprior104case evidence; no shader/precision changes.",
+    "Each new13-workgroup dispatch usesfull8+partial5 in2submits; old13 remains13; pairedseqno/submit15 requiredineachcase.",
+    "Exactoldnewbits+independentCPU NMSE1e-6 andall5allocation/visibleguardrow checks pass.",
+    "Originalcaps/fault/services/collection/assets preserved; no timings or speedup inference."
+  ],
+  "timing_collected": false
+}

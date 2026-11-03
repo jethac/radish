@@ -20,13 +20,13 @@
     },
     {
       "area": 3,
-      "implementation": "Reuse invariant program/resource/static state within bounded chunks of one dispatch; keep per-chunk base/NDRANGE and WFI, flush/wait at existing batch end; direct-window graph intermediate elimination Narrow qualified quantized-kernel batching now retains state across up to8 sequential one-workgroup chunks, excluding unsafe global memory behavior.",
-      "evidence": "Queue full/partial-batch correctness passes 66,688 exact values. Direct-window graph elimination is exercised by fixed T213 and integrated retained T78 models, all required GPU traces return zero. No performance claim. Expanded six-kernel M33 fixture verifies17,424 exact outputs/full3allocation guards and all real full/partial batch counts; no performance measurement."
+      "implementation": "Reuse invariant program/resource/static state within bounded chunks of one dispatch; keep per-chunk base/NDRANGE and WFI, flush/wait at existing batch end; direct-window graph intermediate elimination Narrow qualified quantized-kernel batching now retains state across up to8 sequential one-workgroup chunks, excluding unsafe global memory behavior. Exact qualified floating attention and compact softmax families now use the same dependency-safe one-workgroup batch policy.",
+      "evidence": "Queue full/partial-batch correctness passes 66,688 exact values. Direct-window graph elimination is exercised by fixed T213 and integrated retained T78 models, all required GPU traces return zero. No performance claim. Expanded six-kernel M33 fixture verifies17,424 exact outputs/full3allocation guards and all real full/partial batch counts; no performance measurement. New attention class independently passes69,516 exact GQA outputs and7 submits per54-workgroup dispatch; narrow softmax8 preserves7296 old/new values and CPU/full-allocation oracles with2 submits per13-workgroup new shader. Both full and partial batches are exercised."
     },
     {
       "area": 4,
       "implementation": "Integrated GQA broadcast, phase-specific quantized kernels, encoder-to-prefill device-buffer reuse and reduced host staging; actual application pipeline cache and supported-kernel initialization correction are built. Constrained-profile subsampling reuses one independent chunk graph across the complete audio, lowering unnecessary live convolution intermediates. Scheduler scratch is released between subsampling and encoder; Vulkan-owned allocations leave the BO reuse cache on final unref. Incremental KV allocates actual prompt/draft demand and grows geometrically up to the unchanged full context ceiling. The constrained softmax shader uses one runtime-width body and preserves column loops instead of seven constant-width expansions, retaining numerical order and masks. Production constrained-profile warmup now uses fresh temporary borrowed-model sessions and one actual decoder step per mode; synthetic state is synchronized and freed before real requests. The original warm prompt now has owned string lifetime.",
-      "evidence": "All prior TTS/GQA/quant/KV/softmax scoped checks remain valid. 47504 completed offline warmup and timed out during streaming warmup before real clips. New warm-only source7898 has independent lifetime/build/runner qualification; original full50572 is running on8138/4923 with both40000-audio warmups and unchanged realtwo clips/256budget/limits. Actual transcripts/cache replay remain open."
+      "evidence": "50572 independently completed offline one-step warmup and streaming encoder, then timed out in cached-prefix streaming prefill placement791/0 before any real clip. All completed dispatches returned0; floating attention/softmax were batch1 while quantized batching was active. Queue-only3a30 is built/reviewed; focused full/partial numerical checks independently pass. Original two requests of the same pinned2.785s English clip, real256 budget, full warm audio/modes and controls remain unchanged. Full model and ASR cache replay remain open. Exact fullmodel85294 is running on unchanged8138 with queue3a30 and fresh missingv9 cache; no outcome yet."
     },
     {
       "area": 5,
@@ -53,11 +53,12 @@
     "0046-asr-incremental-kv.patch": "47c7b982904508cdb473342c006213bffa300905f7bb92d60bfaf00d16cbaca3",
     "0046-asr-quantized-batching.patch": "527d36a900a20dd4605ba3a5c2195aa89d10530788171896ec0da47694a107e6",
     "0046-asr-softmax-compiler-footprint.patch": "21b5bf1e2f1b223c8d38d85403da422304029cc710a2369074a51f3545982662",
-    "0046-asr-bounded-production-warmup.patch": "7898ee829fab47935a16b9c2f8f508e8f36e04a7f50834261f665fc6805c5886"
+    "0046-asr-bounded-production-warmup.patch": "7898ee829fab47935a16b9c2f8f508e8f36e04a7f50834261f665fc6805c5886",
+    "0046-asr-attention-batching.patch": "17afafe7fc6617fa57b6fc63350fd041ddb3297dc49490d174d6c5873d3bdadd"
   },
   "existing_results": "Original743 CTS cases and modified132 robustness outcomes remain historical pinned evidence; no conformance count or selected performance change.",
   "completion_gate": "TTS side is qualified for the stated T213/T78 fixtures. All-five gate remains CLOSED on ASR full-model memory/placement/transcript and real application replay; full GOAL remains active.",
-  "as_of_utc": "2026-11-03 01:47:17 UTC",
+  "as_of_utc": "2026-11-03 02:01:23 UTC",
   "correctness_receipts": {
     "optimization-cache-correctness-0046.json": "0af98f899b26429971ef61df554e2cf4a4fe340019353f9ed7491869ab59b1f5",
     "optimization-queue-correctness-0046.json": "98c9f0d64a5ef1076462930effb6fd3e22c48de75cad78e87f7e68eaa6636b0e",
@@ -78,7 +79,10 @@
     "optimization-asr-softmax-init-memory-failure-0046.json": "e58dd1144e001ea4107da4eb240eaa2e672ab9798198e19e62cd801d8eb838c0",
     "optimization-softmax-numerical-0046.json": "87288f9c381a6ea66b6ef15a2b15b5ed06bc06dba0df8611e504f167d6c4fd74",
     "optimization-asr-stream-warmup-timeout-0046.json": "451bcbad7facc0f9da6dae867abac558e1870f84b1bc5537319a48bd637b3613",
-    "optimization-asr-stream-warmup-timeout-independent-0046.json": "608555829c979816b438ec55b6ac4ba6b8d5a4924c22cec1edd584c36aed43fd"
+    "optimization-asr-stream-warmup-timeout-independent-0046.json": "608555829c979816b438ec55b6ac4ba6b8d5a4924c22cec1edd584c36aed43fd",
+    "optimization-asr-stream-prefill-timeout-0046.json": "0e8e2b0cbcccf2a49f0f8b3c008ae9174053d174f72c2efab59b24d7883d1d4b",
+    "optimization-attention-batching-gqa-actual-0046.json": "ea1a64af900cfe61ae0135878b48208a3ac756bd567d88c0eb4435c32caae724",
+    "optimization-attention-batching-softmax-actual-0046.json": "a76dd7b0c307c083f3c79ec03cc2fb0990617fe5c87f3caccd0147d88d4c53f4"
   },
   "drivers": {
     "bounded_cache_queue_half": "61e8/9f64 exact integrated cache+queue+corrected idiv",
