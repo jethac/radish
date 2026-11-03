@@ -1,0 +1,369 @@
+{
+  "status": "Source and isolated host build pass; integrated production regression and transcript qualification pending",
+  "release": {
+    "status": "Frozen production correctness correction; source/build/actual counterpart required before execution",
+    "base": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/constrained-heap-release/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+      "sha256": "3a1ce3338f235a1dbf2790e90b85add07d2e25fc868d9bd313f8f8cabe8e52c4"
+    },
+    "candidate": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+      "sha256": "ebafd5e28660f59b60f7a0621f4553b394cd836c70d8091e2b969b0a68d961b3"
+    },
+    "patch": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/prefix-kv-valid-rows.patch",
+      "sha256": "e08f2f0fc8ce377086111a006fb52c25f71dabc705956ee3aaacb5a220ee144f"
+    },
+    "cause": "Fresh streaming prefix computation wrote9 prefix K/V rows and published9 cached IDs without updating cache.n/head from0. Initial capacity16->64 called kv_grow, copied min(n,oldcapacity)=0 rows into zeroed backing, retained IDs and reused the zero prefix. Actual17350 confirms prefix graph success, grow rows0/head0, then chunked prefill. This is a source-backed corruption path, not proof of every later generated token or sole timeout cause.",
+    "fix": "After successful synchronous prefix graph compute, set cache.n and cache.head to prefix_len before publishing prefix IDs/path tags. This records the number of actually written valid prefix rows, matching full-prefill convention; normal decoder one-ahead counter behavior is unchanged.",
+    "failure_consistency": "Existing precompute truncation reduces cached IDs/path tags to already-matching n_past. Failed compute returns before new n/head/ID publication. Successful commit has no cancellation poll between graph success and publication. Matching-full-prefix early return keeps already valid prior counters; growth preserves K/V for any counter>=prefix_len. No old generated tail becomes reusable prompt data.",
+    "unchanged": [
+      "Original model/weights/tokenizer/EOS/audio math and256-token decode ceiling",
+      "All shaders/driver/native resource and queue policies",
+      "Memory/swap/kernelhangcheck/disk/fault controls and untimed status",
+      "Warmup actual-step semantics and temporary cleanup",
+      "kv_grow implementation and generated-step counter convention"
+    ],
+    "evidence": {
+      "terminal": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/matrix-exec-fence/independent-terminal-17350-review.json",
+        "sha256": "ddb01a35494ad1c401b54b1029151ae852d318a8c691605741216b673ca86ec5"
+      },
+      "EOS_source": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/token-stop-source-audit/review.json",
+        "sha256": "f55db0edb063670664a61fb34a7a0d5d70f8a2d81b5170579c49d24acc434602"
+      }
+    },
+    "validation_plan": "Fold actual production prefix commit/growth/reuse assertions into original authorized900s full workload and conditional import. Existing7d074 real K/V preservation values carry; no separate heavyweight helper or manual n/head setup.",
+    "performance_collection": false,
+    "version": 2,
+    "preserved_v1": {
+      "release": "bfbca80211cf0294c75e832100aff4ffb65d500fdf7fd0a6903113a2d3ff3545",
+      "source": "5846e307d4cabde6886ca31575ea38c6118c5753401eb48c9e2a4dd6508e719a",
+      "status": "Two-assignment fix alone; owner built fa0e, never executed."
+    },
+    "diagnostics": {
+      "diff": "e637dc3eed2605c8e74e48739168ae230ee1e191866a9dcd291c89d6fd33598f",
+      "scope": "Two optional KHR/resource-diagnostics scalar records only, after successful prefix commit and after existing common-prefix selection. No extra GPU/host tensor readback, clock, assertion, graph or control change.",
+      "bounds": "One record per actual prefix commit and one per run prefill; original finite workload emits only a few lines.",
+      "regression_expectations": [
+        "First real fresh prefix9 commit has n=head=9 and capacity16.",
+        "Existing initial16to64 growth marker preserves rows9/head9.",
+        "First real reuse records requested9/reused9/valid9/head9/capacity64.",
+        "Every reuse must be nonnegative and <=requested,valid,capacity; later n/head may legitimately exceed prefix length under inherited generated-step convention.",
+        "Original exact two transcripts/language/GPU placement/full controls remain required."
+      ]
+    }
+  },
+  "source_reviews": {
+    "independent-source-review.json": {
+      "sha256": "563e4f36f1b87ef7ffeceb30ae769feaa51203aea491bbeb22b0005d223e99ad",
+      "review": {
+        "status": "passed independent production correctness source counterpart; actual markers/build/runner pending",
+        "release": "bfbca80211cf0294c75e832100aff4ffb65d500fdf7fd0a6903113a2d3ff3545",
+        "base": {
+          "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/constrained-heap-release/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+          "sha256": "3a1ce3338f235a1dbf2790e90b85add07d2e25fc868d9bd313f8f8cabe8e52c4"
+        },
+        "candidate": {
+          "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+          "sha256": "5846e307d4cabde6886ca31575ea38c6118c5753401eb48c9e2a4dd6508e719a"
+        },
+        "patch": {
+          "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/prefix-kv-valid-rows.patch",
+          "sha256": "8916db599852cff4a6026263603b4b5c38f506a6b585cecdfc394c5c5e1c1b0d"
+        },
+        "independent_defect_review": "f0743592d49c8957f30be24c1188fc54ff9c7830605b4cb7a9ae1b4e40441db9",
+        "checks": [
+          "Exact2assignment inverse recoverscurrent3a1c sourcebyteforbyte. PrefixKVgraphsuccess/schedulersynchronouscompletion occursbeforecommit; cachedID/tiledpublication occursaftercommit. Actualwrittenrows prefix_len becomesn/head copyhighwater.",
+          "Realrun growsbeforecomputingIDcommonprefix; kv_grow copiesmin(n,n_ctx) allK/Vrows perlayer thenpreservesn/head. Correctprefix9nowcopies9, fixingretainedIDs/newzerobacking mismatch.",
+          "Failure/cancel/backendcomputeerrorreturnsbeforeNEWcounter/IDpublication; existingprecomputecachedIDs truncateton_past, sofuturecommonprefixcannottrustuncomputednewrows. No newerror/cancel poll between synchronoussuccessandcommit; no partialGPUvalueclaimfromfailedstatus.",
+          "Matchingfullprefixearlyreturnretainsalready-validcounters byinductioninfreshfixedprocess; settingprefix_lencantruncateoldunneededgeneratedtail, whileIDclaims remainprefixonly andtailmask/overwrite semantics unchanged.",
+          "Fullprefilln/head=T_prompt andchunkedprefill=T_prompt+n_accepted alreadyusethisvalidrowconvention. Generatedsteponeaheadcur_past+1countisunchanged; no EOS/tokenbudget/attention/mask/shaderchange.",
+          "No model/driver/shader/nativecompileorTTS/arithmetic qualificationrepeat required. Earlier7d07actualK/Vgrowthcopy+freshviews proof carries; productionprefixcounterpublication wasmissingcase."
+        ],
+        "updated_validation_scope": "Parentdirectsproductionprefixcommit/grow/reusemarkers/assertions foldedintooriginalapproved900sfullworkload, bothwarm/fullaudio/twoexactoriginaltranscripts. No separateheavypublicmodelhelper/no newGPUbeforemarker/source/build/runnergates. Existingreleasevalidation_plan mentionsoldhelperproposal andwillbeupdatedauthorv2; notexecutionadmission.",
+        "limits": "Thisconfirmeddefectcreatesincorrectprefixattentionstate. Correctingitdoesnotguaranteeallotherlogits/EOS/fullmodelaccuracyorproveeverytimeoutcause; originaltranscriptandcacheactualstillmandatory.",
+        "timing_collected": false
+      }
+    },
+    "independent-diagnostic-v2-review.json": {
+      "sha256": "a2694825b4eb07cae1c7e7b78538e516d77ace6eaa7dd57c7a8c4756bae124ca",
+      "review": {
+        "status": "passed narrow optional resource-marker source delta; production fix563e carries",
+        "release": "c8c8f47d116d8c1467f1b53fe6724094f62951ed6ef4e0958d87a7fe40aa2fee",
+        "candidate": {
+          "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+          "sha256": "ebafd5e28660f59b60f7a0621f4553b394cd836c70d8091e2b969b0a68d961b3"
+        },
+        "preserved_v1": {
+          "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/preserved-no-markers-v1/model.cpp",
+          "sha256": "5846e307d4cabde6886ca31575ea38c6118c5753401eb48c9e2a4dd6508e719a",
+          "independent_review": "563e4f36f1b87ef7ffeceb30ae769feaa51203aea491bbeb22b0005d223e99ad"
+        },
+        "checks": [
+          "ExactlytwoKHR+existingresource-diagnostics gatedfprintfsites inverse restores5846sourcebyteexact. No additionalreadback/tensor/graph/allocator/counter/control/cancellation/shader/math/clockchange.",
+          "COMMIT printedafteractualsynchronouscompute,n/headcommit andID/tiledpublish; fieldsactualprefix_len/n/head/capacity. Failedcompute cannotprintsuccessfulcommit.",
+          "REUSE printedafterinitialgrow andactualcommon_prefixselection, beforeheaderdraft/prefill. requested/reused/valid/head/capacity aredirectactualstate fields, notcomputedexpectedproof.",
+          "Generatedoneaheadcounts canexceedprefix rows afterpreviousrun; wrappermustboundreused<=requested,valid,capacity ratherthandemandn=head9 onalllaterrequests."
+        ],
+        "actual_gate": "Parse actualfirstrealrequest segment AFTER streaming ASR_WARMUP_DONE, notonlymatchingwarmupprefixmarkers. Require realCOMMIT rows=n=head9/capacity16 theninitialgrow16\u219264rows9/head9 followedrequested9/reused9/valid9/head9/capacity64 beforefulloriginaltranscripts; everyreused countbounded. Existing7d07K/Vcopy-value proof/sourcekv_grow carries, notnewliteralKVdatareadback.",
+        "limits": "Markersverifyproductionstatecallpath; no standaloneheavyhelper, noassert/controlchangeinmodel. Ownerwrapperactualassertions/sourcebuildpair stillrequiredbeforeGPU. Originalapproved900/allothercaps andperformancefalse retained.",
+        "timing_collected": false
+      }
+    }
+  },
+  "build_review": {
+    "sha256": "59c8aded816a7e7c994cd73171b1fbf64d16d8222719c517e294c81d9622ded1",
+    "review": {
+      "status": "PASS finite isolated prefix-valid-row model build pairing; actual production regression still required",
+      "build_result": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-prefix-kv-valid-rows-v2-build-0046/result.json",
+        "sha256": "a24ac2921a72937bbc8a13eb698dae9c491774cb6de4eef1ba53ec459b1ed23d"
+      },
+      "source_release": "c8c8f47d116d8c1467f1b53fe6724094f62951ed6ef4e0958d87a7fe40aa2fee",
+      "source": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+        "sha256": "ebafd5e28660f59b60f7a0621f4553b394cd836c70d8091e2b969b0a68d961b3"
+      },
+      "matched_header": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/constrained-heap-release/candidate/transcribe.cpp/src/arch/qwen3_asr/asr_resource_snapshot.h",
+        "sha256": "0d2299a5bd63b1c6ecc93e066b36cf3812ec10b529d4b9b25f2c4c502a5922c2"
+      },
+      "listener": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-asr-prefix-kv-valid-rows-v2-build-0046/cargo-target/aarch64-unknown-linux-gnu/debug/straylight-listen",
+        "sha256": "56400857333cbd3c0f3129ae4435485e3c7ef0c26a86f48b59322ab38a8d93f1",
+        "ELF_machine": 183
+      },
+      "archive": {
+        "members_independently_parsed": 139,
+        "changes": [
+          {
+            "index": 47,
+            "name": "model.cpp.o/",
+            "before": "967e8e07e7b81cd397187b04c4ed1c1d7cc185ce343a1eaae1779182d2bc8616",
+            "after": "76a8460d5999cc17b317444910cdfe5b74990885c2093de48e876d551c362979"
+          }
+        ],
+        "five_other_libraries_byte_exact": [
+          "libstraylight_asr.a",
+          "libggml-cpu.a",
+          "libggml-base.a",
+          "libggml.a",
+          "libggml-vulkan.a"
+        ]
+      },
+      "checks": [
+        "Compile command byte-exact prior current Qwen model after source/output replacements and one explicit existing resource-header include; header0d229 exact.",
+        "Independent archive occurrence parsing confirms only correct Qwen model payload changed; duplicate model.cpp.o basenames retained and all other members exact.",
+        "Exact prior untimed Cargo/link command after isolated output/lib/target directory substitution; Rust/bridge/backend/shader/driver bodies unchanged.",
+        "Actual listener is ELF64 little-endian AArch64 and matches frozen56400857; priorfa0e remains unexecuted."
+      ],
+      "references": {
+        "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/independent-source-review.json": "563e4f36f1b87ef7ffeceb30ae769feaa51203aea491bbeb22b0005d223e99ad",
+        "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/independent-diagnostic-v2-review.json": "a2694825b4eb07cae1c7e7b78538e516d77ace6eaa7dd57c7a8c4756bae124ca"
+      },
+      "performance_collection": false
+    }
+  },
+  "build": {
+    "status": "PASS isolated production prefix KV bookkeeping build; focused actual and full-model qualification pending",
+    "source_release": "c8c8f47d116d8c1467f1b53fe6724094f62951ed6ef4e0958d87a7fe40aa2fee",
+    "base_result": "5226e033302c0733688b744727d2e3dcd623a502a370b09a33deba34825a7d8c",
+    "source": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp",
+      "sha256": "ebafd5e28660f59b60f7a0621f4553b394cd836c70d8091e2b969b0a68d961b3"
+    },
+    "matched_header": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/constrained-heap-release/candidate/transcribe.cpp/src/arch/qwen3_asr/asr_resource_snapshot.h",
+      "sha256": "0d2299a5bd63b1c6ecc93e066b36cf3812ec10b529d4b9b25f2c4c502a5922c2"
+    },
+    "commands": "fecd7454adceb53ac4f90f962eafafd0ae5967fd4fe21ae007fd5b1be0576b39",
+    "archive_members": "dc763b727267bc5d314ddee48e71f76f4bda566e7018c816c2cd218d3c16b18d",
+    "listener": "56400857333cbd3c0f3129ae4435485e3c7ef0c26a86f48b59322ab38a8d93f1",
+    "libraries": {
+      "libstraylight_asr.a": "f4f582c8dab2d774d9a99dd4d16a1a5756466dd099686ba8562fabe099794d73",
+      "libggml-cpu.a": "d995ee7629e69509970ad3fe687f8a77a469c419ba7cd91404ca8bb79f4e85da",
+      "libtranscribe.a": "561eac62337e24588d4b4019a172c397c6c04234780d58200ff7987e8a3bf852",
+      "libggml-base.a": "28ec1c9e67f976b670a074b310cb09389cddce48fc7cc42a9e7f06a9449b0fc1",
+      "libggml.a": "44072c75ec479e9e440cc8f9583c6d6250eab629a739c7ddf98bc70aefb8ba5d",
+      "libggml-vulkan.a": "42f8b488d56ae218f1854d97ca46052ff5dcf232956f9744082dc90d8c589870"
+    },
+    "scope": "Exactly one current Qwen model object changed overdb872. All backend/shader/bridge/Cargo source and driver bytes unchanged."
+  },
+  "compile_link_commands": [
+    {
+      "key": "model",
+      "argv": [
+        "/usr/bin/clang++",
+        "-I/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/constrained-heap-release/candidate/transcribe.cpp/src/arch/qwen3_asr",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/src/arch/qwen3_asr",
+        "--target=aarch64-linux-gnu",
+        "--sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+        "-DGGML_USE_CPU",
+        "-DGGML_USE_VULKAN",
+        "-DMINIZ_NO_INFLATE_APIS",
+        "-DMINIZ_NO_STDIO",
+        "-DMINIZ_NO_TIME",
+        "-DMINIZ_NO_ZLIB_COMPATIBLE_NAMES",
+        "-DTRANSCRIBE_BUILD",
+        "-DTRANSCRIBE_COMMIT=\"unknown\"",
+        "-DTRANSCRIBE_STATIC",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/app-asr/include",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/src",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/include",
+        "-I/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/../include",
+        "--gcc-install-dir=/home/jethac/Projects/straylight-voice/sysroot/usr/lib/gcc/aarch64-linux-gnu/16",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wall",
+        "-Wextra",
+        "-Wshadow",
+        "-Wpedantic",
+        "-Wno-unused-parameter",
+        "-Wno-missing-field-initializers",
+        "-o",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-prefix-kv-valid-rows-v2-build-0046/model.o",
+        "-c",
+        "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/candidate/transcribe.cpp/src/arch/qwen3_asr/model.cpp"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/build",
+      "env": {},
+      "matched_colocated_header": {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/constrained-heap-release/candidate/transcribe.cpp/src/arch/qwen3_asr/asr_resource_snapshot.h",
+        "sha256": "0d2299a5bd63b1c6ecc93e066b36cf3812ec10b529d4b9b25f2c4c502a5922c2"
+      }
+    },
+    {
+      "argv": [
+        "cargo",
+        "build",
+        "--offline",
+        "--locked",
+        "--target",
+        "aarch64-unknown-linux-gnu",
+        "--features",
+        "asr-vulkan",
+        "-j3",
+        "--manifest-path",
+        "/run/media/jethac/Shared/radish/optimization-five-asr-untimed-build-0046/rust-app/listen/Cargo.toml"
+      ],
+      "cwd": "/run/media/jethac/Shared/radish/optimization-five-asr-prefix-kv-valid-rows-v2-build-0046",
+      "env": {
+        "STRAYLIGHT_ASR_LIB": "/run/media/jethac/Shared/radish/optimization-five-asr-prefix-kv-valid-rows-v2-build-0046/libs",
+        "STRAYLIGHT_SYSROOT": "/home/jethac/Projects/straylight-voice/sysroot",
+        "CARGO_TARGET_DIR": "/run/media/jethac/Shared/radish/optimization-five-asr-prefix-kv-valid-rows-v2-build-0046/cargo-target",
+        "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER": "clang",
+        "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS": "-C link-arg=--target=aarch64-linux-gnu -C link-arg=-fuse-ld=lld -C link-arg=--sysroot=/home/jethac/Projects/straylight-voice/sysroot -C link-arg=-L/home/jethac/Projects/straylight-voice/sysroot/usr/lib -C link-arg=-L/home/jethac/Projects/straylight-voice/sysroot/usr/lib/aarch64-linux-gnu -C link-arg=-L/run/media/jethac/Shared/radish/build-loader/loader -C link-arg=-Wl,--allow-shlib-undefined -C link-arg=-Wno-unused-command-line-argument -C target-cpu=cortex-a53",
+        "CC_aarch64_unknown_linux_gnu": "clang",
+        "CFLAGS_aarch64_unknown_linux_gnu": "--target=aarch64-linux-gnu --sysroot=/home/jethac/Projects/straylight-voice/sysroot",
+        "AR_aarch64_unknown_linux_gnu": "llvm-ar",
+        "PKG_CONFIG_SYSROOT_DIR": "/home/jethac/Projects/straylight-voice/sysroot",
+        "PKG_CONFIG_LIBDIR": "/home/jethac/Projects/straylight-voice/sysroot/usr/lib/pkgconfig:/home/jethac/Projects/straylight-voice/sysroot/usr/share/pkgconfig",
+        "PKG_CONFIG_ALLOW_CROSS": "1"
+      }
+    }
+  ],
+  "prior_build": "fa0e2a65 without optional markers was host-built and never executed; preserved separately.",
+  "driver_unchanged": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
+  "performance_collected": false,
+  "runner_release": {
+    "status": "Frozen source-only additive regression assertions; filled payload/host gates and actual still required",
+    "source_release": "c8c8f47d116d8c1467f1b53fe6724094f62951ed6ef4e0958d87a7fe40aa2fee",
+    "runners": [
+      {
+        "mode": "cold",
+        "base": "/run/media/jethac/Shared/radish/optimization-five-asr-correctness-900s-proposal-0046/cold/device.py",
+        "base_sha256": "6ec57c891cd16f2ea6c87afc70248724f693b7ab141aa56fa3d0fc8ebf089fff",
+        "runner": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/runner/cold-device.py",
+        "sha256": "7fac2db953734bdea7db652b1d6b936ffdbc13cdf0392021534dd382dd44b7f2",
+        "diff": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/runner/cold-prefix-only.diff",
+        "diff_sha256": "10b47ae30bc667e228199d3bf6a049972d5f84bf3b13f16eb811bbb88ffebee6"
+      },
+      {
+        "mode": "import",
+        "base": "/run/media/jethac/Shared/radish/optimization-five-asr-correctness-900s-proposal-0046/import/device.py",
+        "base_sha256": "b9902a008ffc21d42d3923281a8f72c9a80ff0ac188525ae14f59c61fe9e14a1",
+        "runner": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/runner/import-device.py",
+        "sha256": "27ebee176a5a9f7095f4985bbd4d62e339911f27b12fda0f2c10047508aedd76",
+        "diff": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/runner/import-prefix-only.diff",
+        "diff_sha256": "7c0b7dcfd5e7564d7b35ebc1060130aba9408f27868eef8ed9523e88a389eee0"
+      }
+    ],
+    "delta": "Six additive Python lines only after existing warmup checks. All original900s/host935/work/640MiB128swap/disk/kernel500ms/fault/services/cache/timingfalse and transcript oracles byte-identical.",
+    "regression": "All successful commits publish n=head=rows<=capacity. Every prefix reuse is nonnegative and<=requested,valid,capacity; later one-ahead n/head is not forced to9. Exact first real COMMIT9/cap16\u2192growrows9/cap64\u2192REUSE9/valid9/head9/cap64 must occur after streaming warm DONE. Existing7d074 copies realK/V andviews; full two original transcripts remain mandatory.",
+    "execution": "Owner alone stages current fixedlistener/current0f721/fresh private cache; no device action by source author."
+  },
+  "runner_reviews": {
+    "independent-source-review.json": {
+      "sha256": "e1cb16f9b6c47f62af3012a23f7af6d57a4bf58935903eb69ef0ddc62aacb353",
+      "review": {
+        "status": "passed finite additive production regression runner source counterpart; filledpayloadgate/actualpending",
+        "release": "d75cf9ec1ee8376260e8849ea32c28cc2e01305b82e5cc32fb526650e085d951",
+        "runners": [
+          {
+            "mode": "cold",
+            "runner": "7fac2db953734bdea7db652b1d6b936ffdbc13cdf0392021534dd382dd44b7f2",
+            "base": "6ec57c891cd16f2ea6c87afc70248724f693b7ab141aa56fa3d0fc8ebf089fff",
+            "six_line_inverse_exact": true
+          },
+          {
+            "mode": "import",
+            "runner": "27ebee176a5a9f7095f4985bbd4d62e339911f27b12fda0f2c10047508aedd76",
+            "base": "b9902a008ffc21d42d3923281a8f72c9a80ff0ac188525ae14f59c61fe9e14a1",
+            "six_line_inverse_exact": true
+          }
+        ],
+        "production_source_review": "a2694825b4eb07cae1c7e7b78538e516d77ace6eaa7dd57c7a8c4756bae124ca",
+        "checks": [
+          "Exact6addedassertionlines perrunner inverse restoresalreadyapproved900/935cold6ec5/importb990. No launch/env/payload/work/transcript/cache/timing/memory/disk/fault/service/ownership controls changed.",
+          "Commitlistmustexist andallactualcounts0<rows<=capacity/n=head=rows. Reuselistmustexist andallreusednonnegative<=requested,valid,capacity; latergeneratedn/headnotfalselyforced9.",
+          "PriororderedwarmSTEP/DONEchecksremainmandatory. SplitanchoredafterstreamingwarmDONE restricts productionsequence torealrequestphase: actualCOMMIT9cap16 beforegrow16\u219264rows9head9 beforereuse9valid9head9cap64. Freshsame-sessionfirstactualallocation makes thisinitialgrowthsequenceunique; no warmonlyevidenceacceptance.",
+          "Original2coldtranscripts or1conditionalfreshimporttranscript andallGPUplacement/populatedcompiledcache/resourcegates remainunchanged; statechecks donotreplace numericaloracle.",
+          "Existing7d074actualK/Vcopy/wholeguards/freshviews evidence+sourcekv_grow unchangedcarry; foldedregressiontargetsrealproductionprefixcountpublication missingfrommanualhelper."
+        ],
+        "execution_conditions": "Ownerfilledcurrentfixedlistener/0f721/freshcachepins then parentrelease underuserapproved900sexception. No separatediagnosticGPUfixture/no repetitionnative/TTS/operatorgates; stopnewfault.",
+        "timing_collected": false
+      }
+    },
+    "independent-filled-payload-review.json": {
+      "sha256": "e9e8c3a30b9148f3910b4d0852196d016955935f5a27016b304d32ab40b2b4d8",
+      "review": {
+        "status": "PASS finite corrected prefix-KV cold/import payload pairing",
+        "checks": [
+          {
+            "mode": "cold",
+            "body_sha256": "7fac2db953734bdea7db652b1d6b936ffdbc13cdf0392021534dd382dd44b7f2",
+            "argv_sha256": "8ec80e035a0f00a16af8c32c28500378fdbc7e31ed598a1264b2c3536e7642a1",
+            "hostcheck_sha256": "12af0b72a8fdcae23fa6986fdbfe20f69b28581c60ca766e5b95417c8889cbe4",
+            "label": "opt0046-asr-prefix-kv-cold-900",
+            "cache_expected": "missing",
+            "cold_resources_reused": false,
+            "all_five_staged_assets_hash_and_size_verified": true
+          },
+          {
+            "mode": "import",
+            "body_sha256": "27ebee176a5a9f7095f4985bbd4d62e339911f27b12fda0f2c10047508aedd76",
+            "argv_sha256": "ec20d2f9a61da5b7ee2aa02d1479643fda5b854c29a493b93a2a69bc7227551d",
+            "hostcheck_sha256": "5b6581965bfaaaeded8fb8e62ff078978e5fad2f68eb111e8b5e5fb4b89ef67a",
+            "label": "opt0046-asr-prefix-kv-import-900",
+            "cache_expected": "accepted",
+            "cold_resources_reused": true,
+            "all_five_staged_assets_hash_and_size_verified": true
+          }
+        ],
+        "source_runner_review": "e1cb16f9b6c47f62af3012a23f7af6d57a4bf58935903eb69ef0ddc62aacb353",
+        "build_review": "59c8aded816a7e7c994cd73171b1fbf64d16d8222719c517e294c81d9622ded1",
+        "listener_sha256": "56400857333cbd3c0f3129ae4435485e3c7ef0c26a86f48b59322ab38a8d93f1",
+        "driver_sha256": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
+        "cache_file": "/var/tmp/radish/asr-app-cache-opt0046-v19/model.cache",
+        "scope": "Cold uploads newly built corrected listener. Import reuses only that cold listener and requires accepted cache. Bodies byte-exact reviewed sevenfac/two7eb sources; original workload and approved 900/935 controls carry. Fresh device guards remain owner responsibility; import requires independent cold PASS. No device action in this review.",
+        "performance_collection": false
+      }
+    }
+  }
+}

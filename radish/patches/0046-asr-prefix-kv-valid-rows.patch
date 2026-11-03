@@ -1,0 +1,28 @@
+--- a/src/arch/qwen3_asr/model.cpp
++++ b/src/arch/qwen3_asr/model.cpp
+@@ -1220,6 +1220,10 @@
+     // rows came from the cache.
+     const bool ref_tiled = T_prompt >= k_fa_tile_rows;
+     const int  n_past    = reuse ? common_prefix(cc, prompt_ids.data(), prefix_len, ref_tiled) : 0;
++    if (khr_gpu_graph_policy(cc) && transcribe::env::flag("TRANSCRIBE_RESOURCE_DIAGNOSTICS")) {
++        std::fprintf(stderr, "ASR_PREFIX_REUSE requested=%d reused=%d valid=%d head=%d capacity=%d\n",
++                     prefix_len, n_past, cc->kv_cache.n, cc->kv_cache.head, cc->kv_cache.n_ctx);
++    }
+     // Header draft: the previous auto-detect run's "language X<asr_text>" ids,
+     // appended to the prompt; the prefill's logits at those positions show
+     // how many of them the model predicts itself (greedy), and those are
+@@ -2615,8 +2619,14 @@
+     if (compute_qwen_graph(cc, pb.graph) != GGML_STATUS_SUCCESS) {
+         return TRANSCRIBE_ERR_BACKEND;
+     }
++    cc->kv_cache.n = prefix_len;
++    cc->kv_cache.head = prefix_len;
+     cc->kv_ids.assign(ids.begin(), ids.begin() + prefix_len);
+     cc->kv_tiled.assign(static_cast<size_t>(prefix_len), tiled ? 1 : 0);
++    if (khr_gpu_graph_policy(cc) && transcribe::env::flag("TRANSCRIBE_RESOURCE_DIAGNOSTICS")) {
++        std::fprintf(stderr, "ASR_PREFIX_COMMIT rows=%d n=%d head=%d capacity=%d\n",
++                     prefix_len, cc->kv_cache.n, cc->kv_cache.head, cc->kv_cache.n_ctx);
++    }
+     const int64_t dt = INT64_C(0) - t0;
+     cc->begin_prefilled += T_chunk;
+     cc->t_begin_prefill_us += dt;

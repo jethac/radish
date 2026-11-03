@@ -7,7 +7,9 @@ untimed correctness run completed both warm modes and progressed into real
 request decoding, then reached the process watchdog without a transcript.
 
 Postflight found no new GPU fault or reported OOM; both appliance services remain
-active. The conditional cache replay has not run. The earlier Q8 GPU fault and
+active. The conditional cache replay has not run. A reviewed prefix KV valid-row fix is
+now undergoing the same full correctness check, with added commit/growth/reuse
+assertions and the original transcript oracle. The earlier Q8 GPU fault and
 all failed full-model attempts remain preserved. [Current evidence](radish/results/optimization-five-status-0046.json)
 and the [full goal](radish/GOAL.md) are authoritative.
 

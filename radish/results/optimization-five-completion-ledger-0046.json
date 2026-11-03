@@ -1,6 +1,6 @@
 {
   "status": "Five-area implementation ledger; milestone remains OPEN pending integrated ASR and fresh-process cache replay",
-  "as_of_utc": "2026-11-03T06:54:40.185473+00:00",
+  "as_of_utc": "2026-11-03T07:02:08.256031+00:00",
   "purpose": "Consolidation of existing accepted receipts only; no new execution, native review, or performance collection.",
   "source_documents": [
     {
@@ -17,10 +17,10 @@
     }
   ],
   "current_candidate": {
-    "listener_sha256": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
+    "listener_sha256": "56400857333cbd3c0f3129ae4435485e3c7ef0c26a86f48b59322ab38a8d93f1",
     "driver_sha256": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
-    "cache": "v18 cold attempted; successful full-output/export/import qualification not established",
-    "active_scope": "17350 terminal authorized900s watchdog failure; both warm modes and real encoder/prefill complete; decoder progresses beyond45 sampled steps; no transcript"
+    "cache": "fresh v19 missing for corrected cold; accepted replay conditional on independent cold PASS",
+    "active_scope": "Corrected prefix-valid-row source, one-object build and folded production regression payload reviewed; owner authorized corrected cold after fresh guards. Actual result pending."
   },
   "areas": [
     {
@@ -66,14 +66,19 @@
     },
     {
       "area": 4,
-      "implementation": "Actual ASR GQA and quantized phase kernels, MM128/MV32 sequential work, compact softmax/RMS bodies, full-audio one-chunk subsampling, phase scratch/BO lifetime release, GPU handoff reuse, incremental KV growth, isolated one-step production warm sessions and constrained post-owner heap release.",
-      "actual_use": "17350 executes both warm modes, real prefix/subsample/encoder/prefill and at least45 explicitly completed decoder graph samples, but reaches authorized900s watchdog without requested transcript. Focused actuals remain accepted; a prefix K/V liveness defect is now under independent source review.",
-      "functional_resource_evidence": "Real F16/F32 KV 16-to-32-to-64 growth preserves K/V rows and fresh views. Source/actual ownership evidence establishes scratch release and 35 paired heap-release calls with allocator-used bytes unchanged and anonymous RSS reductions. All new grouped geometry has original CPU/full-buffer guards and native resource evidence.",
+      "implementation": "Actual ASR GQA and quantized phase kernels, MM128/MV32 sequential work, compact softmax/RMS bodies, full-audio one-chunk subsampling, phase scratch/BO lifetime release, GPU handoff reuse, incremental KV growth, isolated one-step production warm sessions and constrained post-owner heap release. Successful prefix prefill now commits valid K/V row count and head before publishing cached IDs, so initial growth preserves written prefix.",
+      "actual_use": "Prior17350 exposed actual prefix growth with rows0/head0 despite completed prefix graph; reviewed fix and scalar regression markers now built in listener564008. Corrected real prefix-commit/growth/reuse and transcript result pending.",
+      "functional_resource_evidence": "Real F16/F32 KV 16-to-32-to-64 growth preserves K/V rows and fresh views. Source/actual ownership evidence establishes scratch release and 35 paired heap-release calls with allocator-used bytes unchanged and anonymous RSS reductions. All new grouped geometry has original CPU/full-buffer guards and native resource evidence. Existing actual K/V-copy value proof is composed with production publication source review and pending first-real COMMIT9cap16 -> grow16-to-64 rows9/head9 -> REUSE9 assertion; no manual counter seeding or separate heavyweight helper substitutes for real request evidence.",
       "receipts": [
         "grouped_geometry",
         "quant_union",
         "kv_growth",
-        "heap_release"
+        "heap_release",
+        "prefix_source",
+        "prefix_markers",
+        "prefix_build",
+        "prefix_runner",
+        "prefix_payload"
       ],
       "qualification": "OPEN: require actual two-request exact transcript/language, intended GPU placement, bounded memory and populated-cache export in current full application. Helper success and warmup progress do not establish completed real ASR."
     },
@@ -96,14 +101,14 @@
   "remaining_milestone_gates": [
     {
       "gate": "Integrated ASR cold",
-      "scope": "Completed current-candidate or reviewed corrected full ASR remains required;17350 failed authorized900s cold scope. No automatic retry or altered acceptance.",
+      "scope": "Corrected listener564008 cold: both original warm modes and two requests of the same pinned full clip; require production prefix/growth/reuse assertions, both original exact transcripts/language, GPU placement/resource controls and populated-cache export.",
       "controls": "Explicit scoped user exception: RuntimeMaxSec900 and host observer935. Memory640MiB, swap128MiB, original disk/fault/service/ownership checks and kernel500ms hangcheck unchanged.",
       "owner": "dispatch executes; packed independently reviews terminal PASS; batch diagnoses terminal failure."
     },
     {
       "gate": "ASR fresh-process populated-cache replay",
-      "scope": "Authorized conditional900s/host935 fresh-process one-clip accepted-v18-cache replay; same output/placement/resource requirements.",
-      "condition": "Held after17350 cold failure; require independent completed cold transcript/cache/resource PASS."
+      "scope": "Authorized conditional900s/host935 fresh process, one original clip, accepted v19 populated cache and identical output/placement/resource requirements.",
+      "condition": "Only after independent corrected cold PASS; no replay yet."
     }
   ],
   "receipts": {
@@ -170,6 +175,26 @@
     "asr_900_terminal": {
       "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/matrix-exec-fence/independent-terminal-17350-review.json",
       "sha256": "ddb01a35494ad1c401b54b1029151ae852d318a8c691605741216b673ca86ec5"
+    },
+    "prefix_source": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/independent-source-review.json",
+      "sha256": "563e4f36f1b87ef7ffeceb30ae769feaa51203aea491bbeb22b0005d223e99ad"
+    },
+    "prefix_markers": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/independent-diagnostic-v2-review.json",
+      "sha256": "a2694825b4eb07cae1c7e7b78538e516d77ace6eaa7dd57c7a8c4756bae124ca"
+    },
+    "prefix_build": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/independent-build-review.json",
+      "sha256": "59c8aded816a7e7c994cd73171b1fbf64d16d8222719c517e294c81d9622ded1"
+    },
+    "prefix_runner": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/runner/independent-source-review.json",
+      "sha256": "e1cb16f9b6c47f62af3012a23f7af6d57a4bf58935903eb69ef0ddc62aacb353"
+    },
+    "prefix_payload": {
+      "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/prefix-kv-valid-rows/runner/independent-filled-payload-review.json",
+      "sha256": "e9e8c3a30b9148f3910b4d0852196d016955935f5a27016b304d32ab40b2b4d8"
     }
   },
   "boundaries": [

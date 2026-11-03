@@ -162,15 +162,15 @@
   "runtime_cache": "Actual ncnn missing-cache cold process exports populated cache; second process accepts and re-exports identical178 keyed compiled objects and correct outputs. No hit-count or acceleration inference. On coherent91a1, copied old-UUID cache is rejected and repopulates48SPV/178native objects with the new build UUID; both complete T78 outputs remain byte-identical accepted baseline.",
   "full_model_fixture_scope": "Two requests of the same pinned 2.785-second English clip, exact transcript and language, explicit Vulkan placement and resource controls. Not two distinct clips or broad ASR accuracy.",
   "next_candidate": {
-    "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
+    "listener": "56400857333cbd3c0f3129ae4435485e3c7ef0c26a86f48b59322ab38a8d93f1",
     "driver": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
-    "receipt": "optimization-matrix-fence-source-build-0046.json",
-    "target_status": "The approved900s cold17350 ended at the process watchdog without a requested transcript. Both warm modes and real prefill completed, and decoding progressed through the logged KV90/capacity128 before the64-pair diagnostic cap. No new GPU fault/recovery or reported OOM. FullASR/cache and all-five remain open.",
+    "receipt": "optimization-asr-prefix-kv-source-build-0046.json",
+    "target_status": "Production prefix valid-row correction and folded commit/growth/reuse assertions are source/build/payload reviewed. Corrected cold18620 passed fresh admission and started the application; full transcript/cache/resource validation is pending.",
     "performance_gate": "CLOSED"
   },
-  "device_execution_hold": "No live device/build job. Cold17350 ended at its approved900s watchdog. Conditional import remains held because cold transcript/cache/resource validation did not pass. No unchanged retry or new GPU scope follows this failure. Old11cf fault candidate remains held. Performance collection remains forbidden.",
+  "device_execution_hold": "Only the corrected approved900s cold18620 scope is active. Conditional import requires independent cold PASS. Driver0f721 and all non-timeout controls remain unchanged; old11cf fault candidate stays held. No performance collection.",
   "approved_timeout_exception": {
-    "status": "Explicit user approval received and cold scope executed once: terminal17350 watchdog failure. Import remains authorized only conditionally and has not run because cold did not pass.",
+    "status": "Explicit user approval covers original cold and conditional import correctness scopes. Original17350 timeout is preserved; corrected prefix-KV cold18620 is active after concrete source fix. Import has not run.",
     "proposal": "optimization-asr-900s-proposal-0046.json",
     "proposal_sha256": "6a08d8e2748e7d70c6a306b1aedab49e272f089d2f6045d66bdc09329665ac00",
     "review": "optimization-asr-900s-proposal-review-0046.json",

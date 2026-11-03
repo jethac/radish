@@ -1,5 +1,5 @@
 {
-  "status": "Current db872 application and0f721 matrix-fence driver retain the qualified primitive evidence. Approved900s cold17350 completed both warm modes and progressed into real decoding but ended at the process watchdog without a transcript. FullASR/cache remain unqualified; conditional import is held and performance collection forbidden.",
+  "status": "Current564008 application corrects production prefix KV valid-row bookkeeping overdb872. Driver0f721 and all shaders unchanged. Source/isolated build pass; folded production regression plus full transcript and cache qualification remain required. No performance collection.",
   "application": "Frozen ASR source with previously published GQA, quantized phase, memory-liveness and unit-axis overlays",
   "ordered_additive_patches": [
     {
@@ -148,6 +148,13 @@
       "sha256": "5ccd4f01a0b803bae8d9ac058ef437e1f8da6357ef8491aec327c744d0aca089",
       "strip": 1,
       "apply_root": "Mesa root after coherent deferred/local overlays"
+    },
+    {
+      "file": "0046-asr-prefix-kv-valid-rows.patch",
+      "sha256": "e08f2f0fc8ce377086111a006fb52c25f71dabc705956ee3aaacb5a220ee144f",
+      "strip": 1,
+      "apply_root": "transcribe.cpp",
+      "scope": "Two valid-row assignments after successful prefix compute; two optional untimed scalar diagnostic records."
     }
   ],
   "cache_source_files": {
@@ -374,11 +381,11 @@
     "archive_members": "3ac3f2855cdfabfc691bdf82bf9d8d08d0e2de714d3d57fad97021ab4c291489",
     "build_result": "e71c72e97d3982b96af7b375c20dee5e8eb94dc62b584b651e04bec7e7c6905b"
   },
-  "current_listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
+  "current_listener": "56400857333cbd3c0f3129ae4435485e3c7ef0c26a86f48b59322ab38a8d93f1",
   "current_libraries": {
     "libstraylight_asr.a": "f4f582c8dab2d774d9a99dd4d16a1a5756466dd099686ba8562fabe099794d73",
     "libggml-cpu.a": "d995ee7629e69509970ad3fe687f8a77a469c419ba7cd91404ca8bb79f4e85da",
-    "libtranscribe.a": "618736b85c8948c96735152434149ec911648e06eddee3a8e6d9e89aef6238ed",
+    "libtranscribe.a": "561eac62337e24588d4b4019a172c397c6c04234780d58200ff7987e8a3bf852",
     "libggml-base.a": "28ec1c9e67f976b670a074b310cb09389cddce48fc7cc42a9e7f06a9449b0fc1",
     "libggml.a": "44072c75ec479e9e440cc8f9583c6d6250eab629a739c7ddf98bc70aefb8ba5d",
     "libggml-vulkan.a": "42f8b488d56ae218f1854d97ca46052ff5dcf232956f9744082dc90d8c589870"
@@ -593,10 +600,10 @@
     "result_sha256": "56a897bb432a0d13a460277b80be1e014994af94a31a9f945512bac17dd7b7e7"
   },
   "current_driver": {
-    "full": "62d7b3b12fab5f83b68abfdebe0837118dc08e45c95571816fe281686a360cde",
-    "deployed_strip": "7575351e906ecae8f6ca3a8b57d860594521526383e62935058a9bfe7811afb5",
-    "source": "0046-asr-mm128-batching.patch over6f15; queue object only",
-    "target_status": "MM primitive passes; unchanged shared lifetime/TTS evidence carries forward. Original full22258 timed out before requested output."
+    "full": "5cf3e0b76f3aa3035af44a149b4dd0a7cc04e548abb4797bb7d539f6c7be8241",
+    "deployed_strip": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
+    "source": "0046-matrix-execution-fences.patch over11cf; unchanged by prefix KV fix",
+    "target_status": "Qualified finite matrix policy and carried unaffected geometry/TTS evidence. Full transcript qualification remains open."
   },
   "incremental_source_review": "531fcaaa71331df51fca79dbd9c52e8664ae373cf76c9ec331b9eee2a25c3799",
   "incremental_build_runner_review": "d6930974ea4a41177dd4c46c34dc55cf96b1f58ffe327766190c245e02de7d01",
@@ -1695,14 +1702,14 @@
     },
     "scope": "Only three MM and selected RMS shader bodies/backend row denominators plus narrow MM batching selector. Five unselected RMS and three MV32 payloads exact; no deferred lifetime/ABI/model/precision change."
   },
-  "prior_listener": "d4d0ec3aeb16a44e494e96891f75a40f04b8baab8b080a95bc7346e8179d4f30",
+  "prior_listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
   "active_full_model": {
-    "handle": 22258,
-    "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
-    "driver": "7575351e906ecae8f6ca3a8b57d860594521526383e62935058a9bfe7811afb5",
-    "cache": "fresh missing v15",
-    "scope": "Both production warm modes/full audio, two requests of same pinned2.785s clip, real256 budget and original640MiB/128swap/300s controls",
-    "status": "terminal watchdog failure; no requested transcript"
+    "status": "Corrected cold18620 passed fresh admission and application startup; integrated prefix regression, transcript and cache qualification pending.",
+    "listener": "56400857333cbd3c0f3129ae4435485e3c7ef0c26a86f48b59322ab38a8d93f1",
+    "driver": "0f72143652a44eb54aa321bdbb68b238d67f1a09690ff9e30c420a493ed50b7e",
+    "cache": "fresh missing v19",
+    "scope": "Both production warm modes/all40000samples, two identical pinned requests/full256,640MiB128swap and explicitly approved900s; no performance collection.",
+    "handle": 18620
   },
   "pending_grouped_work_candidate": {
     "driver": "11cf0aa23c785011262146e6ea2c8f71fa84cff3da92635495cc44fe3db05ac0",
@@ -1742,9 +1749,28 @@
     "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
     "source_build_receipt": "optimization-matrix-fence-source-build-0046.json",
     "actual_union": "optimization-grouped-quant-actual-union-0046.json",
-    "active_full_model": "82231 terminal300sprocess-timeout; bothwarmmodes/realprefix/two36nodegraphs complete,thirdbegan,no transcript. No newGPUfault,cleanservice/drain.",
+    "active_full_model": "17350 terminal approved900s process timeout without transcript; independent ddb01a. No GPU fault or reported OOM; services/drain clean.",
     "scope": "Old11cfcase09GPUfault remains preserved/unqualified; revisedpolicy is source-backed bounded kernel-fence progress, not hangchecktimeout change.",
-    "terminal_receipt": "optimization-asr-matrix-fence-timeout-0046.json",
-    "next_scope": "Host-only900sprocess-watchdogproposal;notauthorizedpendingexplicitusersteering.NoGOALedit orGPUexecution."
+    "terminal_receipt": "optimization-asr-900s-terminal-17350-0046.json",
+    "next_scope": "Correct production prefix KV valid-row bookkeeping; folded actual commit/growth/reuse plus original full transcript oracles in approved900s scope."
+  },
+  "historical_mm128_driver": {
+    "full": "62d7b3b12fab5f83b68abfdebe0837118dc08e45c95571816fe281686a360cde",
+    "deployed_strip": "7575351e906ecae8f6ca3a8b57d860594521526383e62935058a9bfe7811afb5",
+    "source": "0046-asr-mm128-batching.patch over6f15; queue object only",
+    "target_status": "MM primitive passes; unchanged shared lifetime/TTS evidence carries forward. Original full22258 timed out before requested output."
+  },
+  "historical_full_22258": {
+    "handle": 22258,
+    "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
+    "driver": "7575351e906ecae8f6ca3a8b57d860594521526383e62935058a9bfe7811afb5",
+    "cache": "fresh missing v15",
+    "scope": "Both production warm modes/full audio, two requests of same pinned2.785s clip, real256 budget and original640MiB/128swap/300s controls",
+    "status": "terminal watchdog failure; no requested transcript"
+  },
+  "prefix_kv_stage": {
+    "source_build_receipt": "optimization-asr-prefix-kv-source-build-0046.json",
+    "listener": "56400857333cbd3c0f3129ae4435485e3c7ef0c26a86f48b59322ab38a8d93f1",
+    "status": "Integrated actual pending"
   }
 }

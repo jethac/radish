@@ -1,5 +1,27 @@
 # Radish status
 
+## Prefix KV valid-row correction — 2026-11-03
+
+Successful prefix computation now publishes its valid KV-row count and head
+before cached prefix IDs become reusable. This lets capacity growth preserve
+the written prefix rows. Two optional untimed scalar records expose the prefix
+commit and reuse state. Only the Qwen model object changes; the driver, shaders,
+model data, decode budget and numerical oracles are unchanged.
+
+The original full correctness run now also requires an ordered first-real-request
+prefix commit of nine rows,16-to-64 growth preserving those rows, and nine-row
+reuse. Existing focused K/V preservation evidence carries forward. The corrected
+application is564008 on driver0f721. Cold18620 has passed fresh admission and
+started; full-model and cache qualification remain pending. The user-approved
+900-second process limit and all other controls remain intact.
+
+[Source, isolated build and runner evidence](results/optimization-asr-prefix-kv-source-build-0046.json)
+retain the previous unexecuted marker-free build and the original17350 failure.
+The three completed db872 device aliases were archived with two verified host
+restore copies; their captures, caches, source and model files remain. Historical
+reexecution requires restoring those exact application bytes.
+
+
 ## Approved 900-second ASR result — 2026-11-03
 
 The cold correctness run17350 reached the approved process watchdog without a
