@@ -1,0 +1,64 @@
+{
+  "status": "Initial corrected four-thread CPU baseline validated; matched GPU arms pending interface correction",
+  "runtime_sha256": "52c9e56579c80f948f5a3d4b0e79f100de9f0fddffc1dfc54a4d7e3409ec8dee",
+  "archive_sha256": "4c58c62ea071ce1b50ea4a65d33be3c5a1c1b7e8760c0d3025680508a63cbe1d",
+  "source_change": "Only NCNN_OPENMP and NCNN_SIMPLEOMP ON, retaining current source plus11 accepted overlays. Same common runtime for CPU/GPU; actual worker probe proves four concurrent threads, operator code calls that runtime.",
+  "receipts": {
+    "optimization-current-simpleomp-build-0046.json": "81030cf4ac47b4495916b452a309597d717462ad0aaa8e34815cfcfd3e03891b",
+    "optimization-current-simpleomp-workers-0046.json": "139ebf4389150bb880cfbe8c66ae4238662042084e5d1c36b0811d854f1aab7e",
+    "optimization-current-cpu-actual-0046.json": "e759723102700b585c6f2cf60e4df28f945ed55ce1575c8a26ca53ae19771275"
+  },
+  "fixture": "Same Japanese T168 /100800 samples at24000Hz =4.2 seconds;4ncnn+4ORT, retained frontend and same-shape core, PROFILE0",
+  "requests": [
+    {
+      "index": 0,
+      "regime": "first process/frontend/core request",
+      "phases": {
+        "frontend_wall_seconds": 5.246972301974893,
+        "shape_seconds": 0.017423126031644642,
+        "core_load_seconds": 1.3403453100472689,
+        "core_scope_seconds": 32.29555417597294,
+        "extraction_seconds": [
+          29.74528494599508
+        ],
+        "tail_seconds": 0.07977446302538738,
+        "synthesis_seconds": 37.73395993001759,
+        "core_cache_hit": false
+      },
+      "synthesis_rtf": 8.984276173813711
+    },
+    {
+      "index": 1,
+      "regime": "same-process warm request",
+      "phases": {
+        "frontend_wall_seconds": 1.620809954998549,
+        "shape_seconds": 0.017558751977048814,
+        "core_load_seconds": 0,
+        "core_scope_seconds": 29.116244701028336,
+        "extraction_seconds": [
+          29.063414488045964
+        ],
+        "tail_seconds": 0.07969159696949646,
+        "synthesis_seconds": 30.923339025990572,
+        "core_cache_hit": true
+      },
+      "synthesis_rtf": 7.362699768092993
+    }
+  ],
+  "timing_scope": "Complete synthesis includes fresh frontend/source, shape metadata, core load or retained extraction, and tail. Output publication and final session teardown are outside per-request synthesis. Page-cache coldness uncontrolled. Initial sequential pair, not a statistical distribution.",
+  "resources": {
+    "peak_MiB": 451.1,
+    "swap_MiB": 0,
+    "caps": "640MiB/128MiB/300s, original disk/lock/fault/services"
+  },
+  "accuracy": "Both443542 core values and100800 waveform samples pass original tolerances, finite and zero mismatches; waveform SNR87.301dB.",
+  "failed_gpu_start": {
+    "handle": 49945,
+    "status": "CLI rejection before GPU inference; no performance sample",
+    "reason": "Normal runtime does not accept wrapper-generated --vulkan-loader or --robust-buffer-access options",
+    "correction": "Use accepted existing normal-runtime default robustness=true path. simplevk resolves private VK_DRIVER_FILES ICD library_path directly; staged loader is fallback and not claimed used. No binary, math, shader or CPU remeasurement needed.",
+    "reviewed_old_plan": "812af verified requested argv/assets but missed unsupported GPU runtime flags; old attempt preserved."
+  },
+  "remaining": "GPU missing-cache first/warm and fresh imported-cache first/warm under original controls, followed by actual-boundary accuracy; no GPU speed claim. Broader GOAL remains active.",
+  "excluded_history": "43a/97720 ncnn core was serial despite requested4; preserved but excluded from four-thread comparison. Historical32.835/37.262 belongs earlier build."
+}

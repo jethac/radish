@@ -92,7 +92,7 @@
       "qualification": "CLOSED for pinned precision and actual TTS/ASR persistent compiled-cache lifecycle, including fresh-process accepted import and original outputs. No cache-hit count, speedup or broader accuracy claim."
     }
   ],
-  "measurement_policy": "Five-area milestone is closed and matched timing authorized. Initial43a CPU run was discovered to be serial despite requested4threads; preserved/excluded from fairCPU4 comparison. GPU timing held until source-identical ON/ON current build is paired. No GPU speedup claim.",
+  "measurement_policy": "All five functional prerequisites closed and root released matched measurements. Corrected ON/ON CPU52c9 baseline validated; GPU startup49945 rejected unsupported CLI before inference and is excluded. Next uses qualified default robustness=true/private ICD path. Full GOAL active.",
   "patches": {
     "0046-radish-compiled-pipeline-cache.patch": "3676b04a9f71b2f0ac676bb327693059193797218621e141706f91b09bf754af",
     "0046-radish-queue-state-reuse.patch": "e2df8c5915b011b20d67b41352f4d126be922d0bfbf0989d9d3b0bc43e7fc728",
@@ -261,5 +261,6 @@
   },
   "timing_release": "optimization-matched-t168-timing-release-0046.json",
   "cpu_parallelism_erratum": "optimization-cpu-parallelism-erratum-0046.json",
-  "serial_cpu_observation": "optimization-serial-cpu-observation-0046.json"
+  "serial_cpu_observation": "optimization-serial-cpu-observation-0046.json",
+  "matched_t168_baseline": "optimization-current-matched-baseline-0046.json"
 }

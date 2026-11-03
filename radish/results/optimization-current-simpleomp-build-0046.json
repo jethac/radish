@@ -1,0 +1,36 @@
+{
+  "status": "PASS current ON/ON archive/common normal runtime and worker build counterpart",
+  "recipe_review_sha256": "98f0c1e27ebf3250332e08c1f5b37e8267000ea459ce2893bf598df0fb8754c1",
+  "build_result_sha256": "7f7e34f480ba3280b36765b80b145e74dd397bbd67bd14cb34030a8a42e3af7f",
+  "archive": {
+    "path": "/run/media/jethac/Shared/radish/tts-current-simpleomp-build-0046/build/radish_helpers/ncnn/src/libncnn.a",
+    "sha256": "4c58c62ea071ce1b50ea4a65d33be3c5a1c1b7e8760c0d3025680508a63cbe1d",
+    "bytes": 12332778
+  },
+  "common_CPU_GPU_runtime": {
+    "path": "/run/media/jethac/Shared/radish/tts-current-simpleomp-build-0046/radish-kokoro-runtime",
+    "sha256": "52c9e56579c80f948f5a3d4b0e79f100de9f0fddffc1dfc54a4d7e3409ec8dee",
+    "bytes": 11580376
+  },
+  "checks": [
+    "Actual CMake ON/ON; inspected CPU/runtime compile rules contain -fopenmp. Conv1D/Conv/Deconv and cpu.cpp reference real fork; internal SIMPLEOMP defines it and pthread machinery. Final ncnn getter/setter branch real omp functions; no external OpenMP dependency.",
+    "All11 accepted GPU overlays and every declared link input hash verified. Same current source/options except reviewed ON/ON; recipe98f0 and lineage ca593 carry.",
+    "New public net/option/mat/cpu/simpleomp headers exact baseline; GPU header exact accepted overlay. Platform diff only SIMPLEOMP and version date. Actual normal TU dep selects new source/generated roots; object8a0b69 exact prior normal object, custom frontend/math inputs unchanged. No public class layout source change.",
+    "Fresh archive and registry built together. Direct-window FP32/FP16 generated text independently reconstructed from exact generator, enum indexes288/289 and registry entries match, text found inside final ELF. No GPU native or model algorithm revision.",
+    "Probe1a6 links this archive; c77ecc pairing and independent actual139ebf43 prove two concurrent four-worker regions. Same52c9 required both matched routes."
+  ],
+  "evidence": {
+    "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/current-simpleomp-rebuild/build-review/actual-omp-compile-rules.txt": "fde7b9162e244459a3cc04ec3844e476b4aaf09e1a1afc3e5cc7b96c4a9818ee",
+    "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/current-simpleomp-rebuild/build-review/archive-omp-symbols.txt": "09ce34c07a84c6aec09ee354b77af3b34c1fef2971afab855749d039242d3c1b",
+    "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/current-simpleomp-rebuild/build-review/platform.diff": "a72efd48922ffc816160fc8a928b39492982ad418646e72bc535ee1b9510a9b1",
+    "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/current-simpleomp-rebuild/build-review/runtime-elf-needed.txt": "2fe062472be90e75108a1f86e704ac5b8514d57147e732873807a59721cb3bd8",
+    "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/current-simpleomp-rebuild/build-review/runtime-getter-setter.txt": "b660ce39b5ce4775e17b93a66d10068e87570ec109001a377bcb389b0ba6e2b4",
+    "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/current-simpleomp-rebuild/build-review/runtime-omp-symbols.txt": "9b327ad0a2baeda61c152005760ab9c5e80809edf158089a99700c619f53704b",
+    "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/current-simpleomp-rebuild/build-review/selected-generator-check.json": "09c2753576a4c37b09807848f38284e0a51363017ce0ffcc0637e84072408786"
+  },
+  "limits": [
+    "Actual parallel capability does not mean all model operations keep four workers busy.",
+    "Matched T168 accuracy and performance actual remain separate; serial43a excluded as optimized baseline."
+  ],
+  "reviewer_device_actions": 0
+}

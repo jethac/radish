@@ -12,5 +12,14 @@
   "prepared_plan_sha256": "a359ec11d43dc5241091ebae7c1c3afbb85253c54d3028dadf1092ad490b518e",
   "performance_collected": false,
   "broader_GOAL": "active; milestone and CPU win alone do not close full requirements",
-  "current_build_hold": "Specific43a/8df paired CPU4 assumption invalidated by independent-effective-parallelism review. Root authorizes corrected ON/ON source-identical common build, source/build pairing and effective thread proof before new measurement. All-five functional milestone remains valid."
+  "current_build_hold": "Specific43a/8df paired CPU4 assumption invalidated by independent-effective-parallelism review. Root authorizes corrected ON/ON source-identical common build, source/build pairing and effective thread proof before new measurement. All-five functional milestone remains valid.",
+  "current_baseline": "optimization-current-matched-baseline-0046.json",
+  "threading_correction": "Actual52c9/4c58 ON/ON with four concurrent workers and CPU output checks closes serial43a defect; original43a evidence excluded.",
+  "gpu_interface_correction": {
+    "handle": 49945,
+    "status": "CLI rejection before GPU inference; no performance sample",
+    "reason": "Normal runtime does not accept wrapper-generated --vulkan-loader or --robust-buffer-access options",
+    "correction": "Use accepted existing normal-runtime default robustness=true path. simplevk resolves private VK_DRIVER_FILES ICD library_path directly; staged loader is fallback and not claimed used. No binary, math, shader or CPU remeasurement needed.",
+    "reviewed_old_plan": "812af verified requested argv/assets but missed unsupported GPU runtime flags; old attempt preserved."
+  }
 }

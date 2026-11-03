@@ -1,0 +1,139 @@
+{
+  "status": "passed",
+  "mode": "cpu",
+  "capture": "/run/media/jethac/Shared/radish/kokoro-runtime-ja-greet-single-cpu-packed-opt0046-omp-cpu-norm-affine-snake-deconv2d-loop",
+  "validation_aggregate": {
+    "path": "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/prepared-t168-performance/simpleomp-matched-plan/cpu-validated.json",
+    "bytes": 3315,
+    "sha256": "a44418d538f0ca0f0abe18d5b2a55aa3e99730e40973cf97351483f568a17609"
+  },
+  "same_effective_thread_provenance": {
+    "archive": "4c58c62e",
+    "runtime": "52c9e565",
+    "build_review": "81030cf4",
+    "four_worker_actual": "139ebf43",
+    "filled_plan": "812af844"
+  },
+  "rounds": [
+    {
+      "index": 0,
+      "runtime": {
+        "path": "/run/media/jethac/Shared/radish/kokoro-runtime-ja-greet-single-cpu-packed-opt0046-omp-cpu-norm-affine-snake-deconv2d-loop/request-000/runtime.json",
+        "bytes": 1781,
+        "sha256": "2acbfb3168c859dc76a5f44d3d4c256b6c755d698af16bb953b59c7cdc84c6e1"
+      },
+      "validation": {
+        "path": "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/prepared-t168-performance/simpleomp-matched-plan/cpu-validation-00.json",
+        "bytes": 2144,
+        "sha256": "301cd0839bc39b4eb354f98f855c6e8be3ec69e33ea60b2225777f2b4a5e1be8"
+      },
+      "accuracy": {
+        "core": {
+          "values": 443542,
+          "mismatches": 0,
+          "max_abs_error": 0.000293731689453125,
+          "snr_db": 113.3219198284609,
+          "atol": 0.002,
+          "rtol": 0.002,
+          "minimum_snr_db": null,
+          "actual_sha256": "b3c94e2daca2fb2a64157744933f0a3e2d85d05c56ac76b63a1c3c34d6809a43",
+          "reference_sha256": "ef963ac988d0b81f476d407e0f0512d455ad1c7ce749e4267f43af8ceae09de9"
+        },
+        "waveform": {
+          "values": 100800,
+          "mismatches": 0,
+          "max_abs_error": 6.639212369918823e-05,
+          "snr_db": 87.30133353462944,
+          "atol": 0.0002,
+          "rtol": 0.002,
+          "minimum_snr_db": 50.0,
+          "actual_sha256": "610e5eb71c64e04a67835ef25da0ea97882c43da48e9a19711722d14c436bb1c",
+          "reference_sha256": "26b5910c6ed2dc0f80cc042e46fae1fbdd3c390a3c13c42098dcea2d34060efb"
+        }
+      },
+      "timing": {
+        "frontend_wall_seconds": 5.246972301974893,
+        "shape_seconds": 0.017423126031644642,
+        "core_load_seconds": 1.3403453100472689,
+        "core_scope_seconds": 32.29555417597294,
+        "extraction_seconds": [
+          29.74528494599508
+        ],
+        "tail_seconds": 0.07977446302538738,
+        "synthesis_seconds": 37.73395993001759,
+        "core_cache_hit": false
+      },
+      "audio_seconds": 4.2
+    },
+    {
+      "index": 1,
+      "runtime": {
+        "path": "/run/media/jethac/Shared/radish/kokoro-runtime-ja-greet-single-cpu-packed-opt0046-omp-cpu-norm-affine-snake-deconv2d-loop/request-001/runtime.json",
+        "bytes": 1763,
+        "sha256": "75d89eba347eb11b3b95678dc305726c51cf339185ac99ddff303ba6303289c5"
+      },
+      "validation": {
+        "path": "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/prepared-t168-performance/simpleomp-matched-plan/cpu-validation-01.json",
+        "bytes": 2144,
+        "sha256": "016dd9de47a15f4820dd03887c89eaa8532e276179902356bc85cc1900a26ba1"
+      },
+      "accuracy": {
+        "core": {
+          "values": 443542,
+          "mismatches": 0,
+          "max_abs_error": 0.000293731689453125,
+          "snr_db": 113.3219198284609,
+          "atol": 0.002,
+          "rtol": 0.002,
+          "minimum_snr_db": null,
+          "actual_sha256": "b3c94e2daca2fb2a64157744933f0a3e2d85d05c56ac76b63a1c3c34d6809a43",
+          "reference_sha256": "ef963ac988d0b81f476d407e0f0512d455ad1c7ce749e4267f43af8ceae09de9"
+        },
+        "waveform": {
+          "values": 100800,
+          "mismatches": 0,
+          "max_abs_error": 6.639212369918823e-05,
+          "snr_db": 87.30133353462944,
+          "atol": 0.0002,
+          "rtol": 0.002,
+          "minimum_snr_db": 50.0,
+          "actual_sha256": "610e5eb71c64e04a67835ef25da0ea97882c43da48e9a19711722d14c436bb1c",
+          "reference_sha256": "26b5910c6ed2dc0f80cc042e46fae1fbdd3c390a3c13c42098dcea2d34060efb"
+        }
+      },
+      "timing": {
+        "frontend_wall_seconds": 1.620809954998549,
+        "shape_seconds": 0.017558751977048814,
+        "core_load_seconds": 0,
+        "core_scope_seconds": 29.116244701028336,
+        "extraction_seconds": [
+          29.063414488045964
+        ],
+        "tail_seconds": 0.07969159696949646,
+        "synthesis_seconds": 30.923339025990572,
+        "core_cache_hit": true
+      },
+      "audio_seconds": 4.2
+    }
+  ],
+  "session": {
+    "seconds": 68.8420379050076,
+    "timing_scope": "Each request regenerates frontend/source and one tail. A same-shape core remains resident; per-request extraction includes GPU allocator trimming. Request timing excludes publication and final session teardown; session timing includes completed captures and final teardown. Memory samples are phase observations, not isolated peaks. Accuracy requires separate same-boundary references for every completed request.",
+    "core_cache_hit_sequence": [
+      false,
+      true
+    ]
+  },
+  "controls": {
+    "process": "successful collection/exit, services/fault controls retained",
+    "immutable_assets": "before/after asset and graph hashes identical",
+    "new_dmesg_lines": [
+      "[308666.004544] audit: type=1130 audit(1793692758.737:6766): pid=1 uid=0 auid=4294967295 ses=4294967295 msg='unit=radish-runtime-runtime-ja-greet-cpu-packed-opt0046-omp-cpu-norm-affine-snake-deconv2d-loop comm=\"systemd\" exe=\"/usr/lib/systemd/systemd\" hostname=? addr=? terminal=? res=success'",
+      "[308735.011982] audit: type=1131 audit(1793692827.741:6767): pid=1 uid=0 auid=4294967295 ses=4294967295 msg='unit=radish-runtime-runtime-ja-greet-cpu-packed-opt0046-omp-cpu-norm-affine-snake-deconv2d-loop comm=\"systemd\" exe=\"/usr/lib/systemd/systemd\" hostname=? addr=? terminal=? res=success'"
+    ],
+    "resource_service": "Nov 03 16:59:18 thinksmart systemd[1]: Started [systemd-run] /var/tmp/radish/runtime-runtime-ja-greet-cpu-packed-opt0046-omp-cpu-norm-affine-snake-deconv2d-loop/radish-kokoro-runtime --norm-affine-snake --deconv2d --request-loop --next-input /var/tmp/radish/runtime-runtime-ja-greet-cpu-packed-opt0046-omp-cpu-norm-affine-snake-deconv2d-loop/input-runtime-ja-greet --cpu-packed --threads 4 --ort-threads 4 --max-frames 512 --repeat 1 /var/tmp/radish/runtime-runtime-ja-greet-cpu-packed-opt0046-omp-cpu-norm-affine-snake-deconv2d-loop/models /var/tmp/radish/runtime-runtime-ja-greet-cpu-packed-opt0046-omp-cpu-norm-affine-snake-deconv2d-loop/input-runtime-ja-greet /var/tmp/radish/runtime-runtime-ja-greet-cpu-packed-opt0046-omp-cpu-norm-affine-snake-deconv2d-loop/decoder.ncnn.param /var/tmp/radish/kokoro-core-shapes-instancenorm/decoder.ncnn.bin /var/tmp/radish/runtime-runtime-ja-greet-cpu-packed-opt0046-omp-cpu-norm-affine-snake-deconv2d-loop/kokoro-tail.bin /var/tmp/radish/runtime-runtime-ja-greet-cpu-packed-opt0046-omp-cpu-norm-affine-snake-deconv2d-loop/output.\nNov 03 17:00:27 thinksmart systemd[1]: radish-runtime-runtime-ja-greet-cpu-packed-opt0046-omp-cpu-norm-affine-snake-deconv2d-loop.service: Deactivated successfully.\nNov 03 17:00:27 thinksmart systemd[1]: radish-runtime-runtime-ja-greet-cpu-packed-opt0046-omp-cpu-norm-affine-snake-deconv2d-loop.service: Consumed 3min 47.763s CPU time over 1min 9.007s wall clock time, 451.1M memory peak.\n",
+    "limits": "original640MiB/128MiB/300seconds scope, original disk/headroom/lock/service/fault/collection guards"
+  },
+  "scope": "One pinned Japanese T168 input repeated twice. Request0 process/frontend/core cold, request1 same-process warm. Filesystem/page-cache coldness is uncontrolled. All original core/waveform outputs and exact captured-boundary reference identity rechecked. No current CPU/GPU winner claim before remaining validated arms; serial43a97720 and historical0971 excluded.",
+  "timing_collected": true
+}

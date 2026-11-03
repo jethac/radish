@@ -15,20 +15,28 @@ and the [five-area ledger](radish/results/optimization-five-completion-ledger-00
 describe the qualified scope.
 
 This completes the implementation prerequisite milestone, not the
-[full goal](radish/GOAL.md). An initial CPU run exposed disabled ncnn parallelism
-despite a four-thread request; its correct outputs and serial timing are preserved,
-and it is excluded from the four-thread comparison while the common build is corrected.
-The 32.835-second Japanese result below is from the frozen earlier build. Matched
-performance, broader accuracy, conformance, deployment and GPU-efficiency work
-remain active; cache acceptance alone establishes no speedup or native hit count.
+[full goal](radish/GOAL.md). The corrected four-thread CPU baseline takes
+**37.734 seconds first / 30.923 seconds warm** for 4.2 seconds of audio, with
+complete output validation and 451.1 MiB peak memory. The common build now has
+verified parallel workers. The earlier requested-four-thread run was serial and
+remains excluded. [Current baseline and phase timings](radish/results/optimization-current-matched-baseline-0046.json)
+record the limits of this initial pair.
+
+The GPU launch stopped before inference on unsupported wrapper options; it is
+not a timing sample. Corrected GPU plans use the existing qualified default
+robustness and private ICD path. No current GPU comparison is available yet.
+The 32.835-second Japanese result below belongs to the frozen earlier build.
+Performance optimization, broader accuracy, conformance, deployment and GPU
+efficiency remain active.
 
 ## TL;DR
 
 Radish is an experimental, compute-first Vulkan driver for Adreno 5xx, built
 inside Mesa's Freedreno project. It currently runs the Kokoro neural decoder
 through ncnn on the Adreno 506 in a Lenovo ThinkSmart View. FP32 output checks
-pass. The matched Japanese resident runtime now beats four-thread ncnn CPU,
-while cold startup regresses and synthesis remains far from realtime. The goal
+pass. A historical matched Japanese runtime beat four-thread ncnn CPU; the new
+implementation is undergoing a fresh matched comparison. Synthesis remains far
+from realtime. The goal
 is fast speech inference that makes full use of attainable GPU performance.
 
 ## Purpose

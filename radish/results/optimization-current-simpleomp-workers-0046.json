@@ -1,0 +1,113 @@
+{
+  "status": "passed",
+  "scope": "Actual same-archive SimpleOMP worker behavior; no model/GPU/performance claim",
+  "source_counterpart": {
+    "path": "/run/media/jethac/Shared/radish/tts-direct-window-precision-0045/current-simpleomp-rebuild/worker-probe/independent-source-review.json",
+    "bytes": 1579,
+    "sha256": "f9243667e225e87144271d3c33308d1cb911ddaf2149ed16bf4e1293ed4eee0b"
+  },
+  "actual_result": {
+    "path": "/run/media/jethac/Shared/radish/tts-current-simpleomp-build-0046/worker-probe/actual/result.json",
+    "bytes": 573,
+    "sha256": "54944afe0105ef6156ffa90c84410bfc63dd0657ba48411677ba3be77bbf37a0"
+  },
+  "actual_log": {
+    "path": "/run/media/jethac/Shared/radish/tts-current-simpleomp-build-0046/worker-probe/actual/run.log",
+    "bytes": 528,
+    "sha256": "c112de8f0832e5358d96515dab38b835f0a085d3d8037c2f7e29c9c846c1494d"
+  },
+  "probe_binary": {
+    "path": "/run/media/jethac/Shared/radish/tts-current-simpleomp-build-0046/worker-probe/simpleomp-workers",
+    "bytes": 51808,
+    "sha256": "1a6dd4e6c6123c9884486d94815c8035fa6e4f3cc21bc3055a32311f29a31fce"
+  },
+  "same_archive": {
+    "path": "/run/media/jethac/Shared/radish/tts-current-simpleomp-build-0046/build/radish_helpers/ncnn/src/libncnn.a",
+    "bytes": 12332778,
+    "sha256": "4c58c62ea071ce1b50ea4a65d33be3c5a1c1b7e8760c0d3025680508a63cbe1d"
+  },
+  "rounds": [
+    {
+      "round": 0,
+      "team": 4,
+      "logical_id_mask": 15,
+      "distinct_pthreads": 4,
+      "kernel_TIDs": [
+        565357,
+        565365,
+        565366,
+        565360
+      ]
+    },
+    {
+      "round": 1,
+      "team": 4,
+      "logical_id_mask": 15,
+      "distinct_pthreads": 4,
+      "kernel_TIDs": [
+        565357,
+        565364,
+        565360,
+        565362
+      ]
+    }
+  ],
+  "controls": {
+    "process": "exit0/success, no watchdog",
+    "memory": "64MiB with no swap; observed3.2MiB peak is resource admission only",
+    "timeout": "10seconds, stop5seconds",
+    "services": "same active states before/after",
+    "faults": "no new GPU fault/recovery",
+    "drain": "unit collected/not-found/inactive",
+    "device_probe_hash": "same before/after as admitted local ELF"
+  },
+  "meaning": "Paired with actual CPU-operator fork references from independent build review, this closes real4-worker configuration qualification. It does not prove arbitrary operator parallelism or model output; matched T168 CPU/GPU output validators remain required.",
+  "timing_collected": false,
+  "evidence": {
+    "command.json": {
+      "path": "/run/media/jethac/Shared/radish/tts-current-simpleomp-build-0046/worker-probe/actual/command.json",
+      "bytes": 348,
+      "sha256": "d209a82016f159ab796cf8f5460a86828822fdc8189a8e2cc9cbab8eb2679d93"
+    },
+    "hash-before.txt": {
+      "path": "/run/media/jethac/Shared/radish/tts-current-simpleomp-build-0046/worker-probe/actual/hash-before.txt",
+      "bytes": 114,
+      "sha256": "e5cffcbabe3e65dbf5cfdb7ab8998f64fdc4d11fd3988e34a41bf7b3592df700"
+    },
+    "hash-after.txt": {
+      "path": "/run/media/jethac/Shared/radish/tts-current-simpleomp-build-0046/worker-probe/actual/hash-after.txt",
+      "bytes": 114,
+      "sha256": "e5cffcbabe3e65dbf5cfdb7ab8998f64fdc4d11fd3988e34a41bf7b3592df700"
+    },
+    "services-before.txt": {
+      "path": "/run/media/jethac/Shared/radish/tts-current-simpleomp-build-0046/worker-probe/actual/services-before.txt",
+      "bytes": 14,
+      "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+    },
+    "services-after.txt": {
+      "path": "/run/media/jethac/Shared/radish/tts-current-simpleomp-build-0046/worker-probe/actual/services-after.txt",
+      "bytes": 14,
+      "sha256": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+    },
+    "fault-check.txt": {
+      "path": "/run/media/jethac/Shared/radish/tts-current-simpleomp-build-0046/worker-probe/actual/fault-check.txt",
+      "bytes": 41,
+      "sha256": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c"
+    },
+    "drain.txt": {
+      "path": "/run/media/jethac/Shared/radish/tts-current-simpleomp-build-0046/worker-probe/actual/drain.txt",
+      "bytes": 55,
+      "sha256": "899a8a5a73232d4a07b56824413da1c88dc2dc685e89886ca2bc05f89923b9f6"
+    },
+    "disk-before.txt": {
+      "path": "/run/media/jethac/Shared/radish/tts-current-simpleomp-build-0046/worker-probe/actual/disk-before.txt",
+      "bytes": 121,
+      "sha256": "3e7156724b137f97755655aaa74a8a1d6c13e51b940494fe2e3a60a576a6a2a2"
+    },
+    "disk-after.txt": {
+      "path": "/run/media/jethac/Shared/radish/tts-current-simpleomp-build-0046/worker-probe/actual/disk-after.txt",
+      "bytes": 121,
+      "sha256": "99d9f3b2a074db063f628708836523c57d56abc9f500350498c3f44810a0b6fb"
+    }
+  }
+}
