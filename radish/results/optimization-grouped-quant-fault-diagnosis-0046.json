@@ -1,0 +1,512 @@
+{
+  "status": "Saved-dump and matched-kernel diagnosis; original fault remains unresolved",
+  "register_and_kernel_provenance": {
+    "status": "host register and matched-kernel provenance diagnosis; fault cause unresolved; all new GPU work held",
+    "gpu_commands": 0,
+    "device_mutations": 0,
+    "kernel": {
+      "source_commit": "755ffc44d5d8442adeec8bbaa02108478089c4d7",
+      "relevant_sources_equal_commit": true,
+      "sources": [
+        {
+          "path": "/home/jethac/Projects/lenovo-8/kernel/linux-7.3/drivers/gpu/drm/msm/msm_gpu.c",
+          "bytes": 25216,
+          "sha256": "d6730df914b208b494cacf36865dba8b030681b99026e7ffe3c379e8b9569d09"
+        },
+        {
+          "path": "/home/jethac/Projects/lenovo-8/kernel/linux-7.3/drivers/gpu/drm/msm/msm_gpu.h",
+          "bytes": 22883,
+          "sha256": "25f31845895f7bb186eeecb9dada6c83568cca7d14fcef0546de89ea99cc85a1"
+        },
+        {
+          "path": "/home/jethac/Projects/lenovo-8/kernel/linux-7.3/drivers/gpu/drm/msm/msm_debugfs.c",
+          "bytes": 9040,
+          "sha256": "2a55b58b105b5dd9301181a7bfe5272215ab5ab7f458de2ce411e3d9541df1d3"
+        },
+        {
+          "path": "/home/jethac/Projects/lenovo-8/kernel/linux-7.3/drivers/gpu/drm/msm/adreno/a5xx_gpu.c",
+          "bytes": 56981,
+          "sha256": "ab116f0da706930fa4289126967fc1f2731432f38aca1049d8c64965e63c78e2"
+        },
+        {
+          "path": "/home/jethac/Projects/lenovo-8/kernel/linux-7.3/drivers/gpu/drm/msm/adreno/adreno_gpu.c",
+          "bytes": 33836,
+          "sha256": "ed4c302b6116c00eceb47ecb8016aba02e4f7b6bb345ab53c77eebc34e8bff98"
+        }
+      ],
+      "active_note": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-opt0046-grouped-quant-v2/case09/fault-preservation/kernel-identity/msm-build-id.note",
+        "bytes": 36,
+        "sha256": "78b219b377e60d488dd9b88ee3a52e4e060ffb36768c4826d913c1c7f37fe820"
+      },
+      "build_note": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-opt0046-grouped-quant-v2/case09/fault-preservation/kernel-identity/local-msm-build-id.note",
+        "bytes": 36,
+        "sha256": "78b219b377e60d488dd9b88ee3a52e4e060ffb36768c4826d913c1c7f37fe820"
+      },
+      "active_and_local_msm_build_id": "b828032b4e96ad339480562f89fd165db2a19cb5",
+      "note_bytes_equal": true,
+      "module": {
+        "path": "/home/jethac/Projects/lenovo-8/kernel/build-7.3/drivers/gpu/drm/msm/msm.ko",
+        "bytes": 30001696,
+        "sha256": "470032aad7d6b6a4eb1f2805a04351ee2e4a02b42d13591d65982dfb10d47b7f"
+      },
+      "build_source_operand": {
+        "path": "/home/jethac/Projects/lenovo-8/kernel/build-7.3/drivers/gpu/drm/msm/.msm_gpu.o.cmd",
+        "bytes": 106224,
+        "sha256": "8fbd17166ec9a7432d6231c14197f63c87e875f692696f291c4da617d09cf3f0"
+      },
+      "build_source_symlink": "/home/jethac/Projects/lenovo-8/kernel/linux-7.3",
+      "release_header": {
+        "path": "/home/jethac/Projects/lenovo-8/kernel/build-7.3/include/generated/utsrelease.h",
+        "bytes": 48,
+        "sha256": "c7ec6b35d93f1946d39b2cf862731b10a5cfb8c2070db17022cbcd5e4a202f62"
+      },
+      "current_parameter": {
+        "path": "/run/media/jethac/Shared/radish/core-compute-opt0046-grouped-quant-v2/case09/fault-preservation/kernel-identity/hangcheck.txt",
+        "bytes": 171,
+        "sha256": "50e48be29f3285136ca5e3073be78142484bee945d057436bc6bf073b1a2da92"
+      },
+      "current_parameter_ms": 500,
+      "qualification": "Active module build-ID matches retained compiled module, release and base commit. Read-only current parameter is500ms; no historical parameter trace was captured. No timeout write or kernel build/deploy occurred."
+    },
+    "raw_dump": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-opt0046-grouped-quant-v2/case09/fault-preservation/devcd24-data.bin",
+      "bytes": 195895,
+      "sha256": "a3684f1d26a609163ff2c8abf6d6608c8c1a87946eeecf1d6da6b4ae69a38cee"
+    },
+    "register_map": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-opt0046-grouped-quant-v2/case09/fault-preservation/register-map.json",
+      "bytes": 42113,
+      "sha256": "8649da8c5312ce44cb603681a0209f1f92e19ee966381f1e45faf5a18ef47254"
+    },
+    "decoder": {
+      "path": "/run/media/jethac/Shared/radish/core-compute-opt0046-grouped-quant-v2/case09/fault-preservation/register-decode-v2.py",
+      "bytes": 3306,
+      "sha256": "9938544cba1c14f7252128e3ad2ef7046c80ce81695a96794a1901e1646a03d2"
+    },
+    "register_facts": [
+      "No per-wave SP shader-PC or execution-state section in captured dump; CP_ME_STAT_DATA absent. CP control/IB values are not shader PCs.",
+      "SP_CS_OBJ_START=0x1029000 points to saved8192-byte shader BO. SP_CS_CTRL_REG0 fullfootprint9/halffootprint8/threadsize0/branchstack6.",
+      "HLSQ local sizes encode32x2x1; global128x2x1, consistent with four-WG tail saved by PM4 counterpart.",
+      "RBBM_STATUS snapshot has SP/HLSQ/CP busy; named SMMU_STALLED_ON_FAULT is0. Neither fact proves cause."
+    ],
+    "source_facts": [
+      "A5xx funcs has no progress callback. hangcheck checks raw memory completed fence; lack of fence change with pending submission queues recovery. Default500ms is rounded up in jiffies and reset on every hardware submission.",
+      "Recovery selects current completed fence+1 when worker runs, then captures crash state before artificially advancing fence and resetting GPU. It does not compare that fence with original sampled stalled fence.",
+      "Consequently captured retirement6159018 after initial sampled6159017 is real observed progress before recovery software advance. Tail6159019 may be capture target without being initial trigger."
+    ],
+    "limitations": [
+      "No previous hangcheck sample, exact hardware submission timestamp, or per-wavePC exists in retained evidence. A long first FD job triggering fence-only watchdog then progressing during recovery is compatible, not proved. A shader stall is not established or excluded.",
+      "No numerical comparison was reached for case09; no memory corruption claim follows. Cases10/11 unexecuted.",
+      "No runtime fault-injection, reset, clock change, GPU retry, or timing experiment was performed."
+    ],
+    "related_receipts": [
+      {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/grouped-barrier-correctness/quant/fault-case09-pm4/review.json",
+        "bytes": 2450,
+        "sha256": "0e4e217cbfe803bd640f6e448675d0e971a4f71869ff6f38ff88dc7535e847b9"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/grouped-barrier-correctness/quant/independent-partial-21277-review.json",
+        "bytes": 12348,
+        "sha256": "2cf180a200cc668fb113549085dc9e933762de73558ad9d1cc11e311656fff66"
+      },
+      {
+        "path": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/grouped-barrier-correctness/quant/q8-case09-source-audit.json",
+        "bytes": 5493,
+        "sha256": "3cc23d06b5e42b2a81c1d47ef9370e6a3b8ed911efee08a227988de60a054d0e"
+      }
+    ],
+    "policy": {
+      "goal": "/home/jethac/Projects/lenovo-8/radish/GOAL.md",
+      "quote": "Check reset, fault and hangcheck logs before and after GPU tests; stop after a reset or hang to inspect it rather than retrying a faulting workload in a loop. Keep dispatches bounded; raising the hangcheck timeout is not a performance fix.",
+      "current_release": "No automatic GPU release from these observations. Root reviews a concrete bounded next proposal; all original limits and the all-five-before-measurement gate remain."
+    }
+  },
+  "pm4_review": {
+    "status": "Read-only saved packet decode PASS; fault cause unresolved",
+    "manifest_sha256": "9294dfd3337a4b6825cbbc06988b64652eb75d9bb3bf340bce27ba0e9736b347",
+    "decoder_sha256": "a7c349a7a017c09e40b224e197d8b88e66cb4060b83f5fa5d5ea695bdab1f059",
+    "queue_source": "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/coherent-workgroup-composition/candidate/rd_queue.c",
+    "queue_sha256": "795774d156d96ef3b055eff8703909777d2950ffcb1641eddd49714f5c825061",
+    "first_ring_submission": {
+      "IB_iova": "0x102b000",
+      "dwords": 398,
+      "fence": 6159018,
+      "body_saved": false
+    },
+    "second_ring_submission": {
+      "IB_iova": "0x1033000",
+      "dwords": 188,
+      "fence": 6159019,
+      "body_saved": true
+    },
+    "tail_decoded": {
+      "original_grid": [
+        4,
+        17,
+        1
+      ],
+      "base_group": [
+        0,
+        16,
+        0
+      ],
+      "physical_local": [
+        32,
+        2,
+        1
+      ],
+      "NDRANGE_global": [
+        128,
+        2,
+        1
+      ],
+      "NDRANGE_offset": [
+        0,
+        0,
+        0
+      ],
+      "kernel_group": [
+        1,
+        1,
+        1
+      ],
+      "EXEC_grid": [
+        4,
+        1,
+        1
+      ],
+      "push_MNK": [
+        480,
+        257,
+        4320
+      ],
+      "SSBO_ranges": [
+        2203234,
+        4441088,
+        493972
+      ],
+      "SSBO_bases": [
+        "0x1074080",
+        "0x12f4080",
+        "0x17f4080"
+      ],
+      "shader_iova": "0x1029000",
+      "pipeline_controlseq": 2,
+      "fd_pipe_sequence": 2,
+      "commands_after_EXEC": [
+        "WAIT_FOR_IDLE",
+        "CACHE_FLUSH_TS controlseq2",
+        "WAIT_REG_MEM controlseq2",
+        "CACHE_FLUSH_TS FD pipe sequence2"
+      ]
+    },
+    "checks": [
+      "Every saved ring-prefix and commandstream packet count and type4/type7 parity valid",
+      "Saved188dwords exactly equal second IB size",
+      "Physical local/global dimensions and zero hardware offsets agree with source; logical group base enters driver constants",
+      "Tail base y16 selects logical final N257 column tile",
+      "No omitted source-required final WFI/cacheflush/wait event found"
+    ],
+    "chronology_limit": "Hangcheck initially completed6159017; later dump retired6159018 and scratch6159018. This shows first submission retirement by snapshot. It does not locate the initial cause in the tail submission or establish GPU instruction PC. rptr=wptr85 means ring fetched/advanced, not all GPU work retired. Only second IB body is available.",
+    "timing_collected": false,
+    "device_actions": false
+  },
+  "kernel_chronology": {
+    "status": "Read-only matched-local-source chronology established; active loaded module binary identity is not asserted",
+    "kernel_source": "/home/jethac/Projects/lenovo-8/kernel/linux-7.3",
+    "HEAD": "755ffc44d5d8442adeec8bbaa02108478089c4d7",
+    "selected_files_match_HEAD": true,
+    "source_hashes": {
+      "drivers/gpu/drm/msm/msm_gpu.c": "d6730df914b208b494cacf36865dba8b030681b99026e7ffe3c379e8b9569d09",
+      "drivers/gpu/drm/msm/msm_gpu.h": "25f31845895f7bb186eeecb9dada6c83568cca7d14fcef0546de89ea99cc85a1",
+      "drivers/gpu/drm/msm/msm_fence.c": "881e41c975f8cca2f269aebbece739d192c4bb791be171fd1667ef17e89ececa",
+      "drivers/gpu/drm/msm/msm_debugfs.c": "2a55b58b105b5dd9301181a7bfe5272215ab5ab7f458de2ce411e3d9541df1d3",
+      "drivers/gpu/drm/msm/adreno/a5xx_gpu.c": "ab116f0da706930fa4289126967fc1f2731432f38aca1049d8c64965e63c78e2",
+      "drivers/gpu/drm/msm/adreno/adreno_gpu.c": "ed4c302b6116c00eceb47ecb8016aba02e4f7b6bb345ab53c77eebc34e8bff98",
+      "include/linux/ascii85.h": "9e1651aad54e936fcb049cc4bc199cb3c456a6a9e4d1ec5c6ef12f2f29a99035"
+    },
+    "provenance_limit": "Owner matched captured utsrelease/build command and local module build ID; live loaded module ID not yet captured. Treat this as exact matching local source provenance, not binary attestation.",
+    "timer": {
+      "default_ms": 500,
+      "active_value": "Not in reviewed artifacts; debugfs permits override. Owner requested read-only current value.",
+      "scheduling": "round_jiffies_up(jiffies+msecs_to_jiffies(period)); reset after each msm_gpu_submit; no reset on inner userspace EXEC/WFI/control event",
+      "a5xx_progress_callback": false,
+      "hang_condition": "raw ring->memptrs->fence equals prior hangcheck_fence, remains before last_fence, and made_progress returns false. The first changed sample updates remembered fence instead. No interior shader/IB progress inspection occurs for a5xx."
+    },
+    "chronology": [
+      {
+        "step": 1,
+        "fact": "hangcheck_handler samples raw GPU-written memptr once; records completed6159017 and submitted6159019, queues recover_work then calls msm_gpu_retire."
+      },
+      {
+        "step": 2,
+        "fact": "recover_worker executes later on gpu worker under gpu->lock and independently finds CURRENT memptr fence+1. It does not compare against original sampled6159017 or cancel solely because that fence advanced."
+      },
+      {
+        "step": 3,
+        "fact": "It counts queue/VM fault, obtains selected submit identity, and calls crashstate capture. adreno_gpu_state_get copies raw ring memptr fence and ring position; a5xx then obtains additional registers. These are sequential samples, not atomic shader-PC state."
+      },
+      {
+        "step": 4,
+        "fact": "Only after capture does recover_worker increment current ring memptr once, update software completion, recover/reset GPU and retire/replay remaining submits."
+      }
+    ],
+    "fence_order": {
+      "a5xx_submit": "Each kernel IB list is followed by CP_SCRATCH_REG2=seqno and CACHE_FLUSH_TS|IRQ writing ring memptr fence=seqno, then yield. Inner driver controlseq and FD pipe-control sequence address different BOs and are not watchdog ring progress.",
+      "retire_worker": "msm_gpu_retire updates software fence context from raw memptr and queues BO/list retirement. Delayed retire_worker bookkeeping does not itself explain stale raw6159017 versus later raw6159018.",
+      "snapshot": "retired6159018 precedes current recovery artificial increment; first kernel submission completed by that snapshot. It may have progressed during time between timer decision and worker/capture. Tail6159019 present at capture does not prove the tail caused initial hangcheck."
+    },
+    "supported_inference": "Fixed command-count batching can create a long interval with no kernel fence visibility even while inner EXECs advance. The observed raw fence progress after detection is consistent with that watchdog-granularity issue. This does not independently prove a duration or eliminate transient shader/hardware stalls.",
+    "unresolved": [
+      "No per-wave PC or original first-IB body in saved dump",
+      "No completed numerical output for failed case",
+      "Active hangcheck period and live kernel module identity pending owner evidence"
+    ],
+    "safety": "All GPU execution remains held; no kernel timeout/reset/policy modification.",
+    "timing_collected": false
+  },
+  "active_identity_addendum": {
+    "status": "PASS identity/active-parameter addendum to kernel chronology",
+    "prior_review_sha256": "45c628d5cc2993b375e95565dd59d2e55116ddec2906d29d643a0e1535483a4e",
+    "captured_active_build_id": "b828032b4e96ad339480562f89fd165db2a19cb5",
+    "matching_local_module": "/home/jethac/Projects/lenovo-8/kernel/build-7.3/drivers/gpu/drm/msm/msm.ko",
+    "module_sha256": "8ce466d8f716e2379b84e9b5e09d63ef45c1560860ecb7d4e61aa762252f4342",
+    "active_hangcheck_period_ms": 500,
+    "aliases": 3,
+    "boot_id": "5df68c6b-5d8a-4c67-a382-65f2b214f854",
+    "source_HEAD": "755ffc44d5d8442adeec8bbaa02108478089c4d7",
+    "evidence": {
+      "msm-build-id.note": "78b219b377e60d488dd9b88ee3a52e4e060ffb36768c4826d913c1c7f37fe820",
+      "hangcheck.txt": "50e48be29f3285136ca5e3073be78142484bee945d057436bc6bf073b1a2da92",
+      "kernel.txt": "359a304d641886e95896e1c293328b8b4a6ce59f9d5c1c4fb3e5f55dc7eb9808",
+      "result.json": "a04d90e400165ec5168a9e6c4f7ffd626d1921f88d976bf6acdfb4d23adbdac9",
+      "admitted-services.txt": "54233fea09439225592caba48eaef86204f35acbd98a0a8b8672f03f9ddc8cce"
+    },
+    "clarification": "This closes prior live module build-ID and current parameter gaps.500ms is configured period, scheduling still rounds timer expiry; no exact workload duration inferred. Captured sources match selected HEAD files. Extra inactive panel query was unrelated and is not the admitted service oracle.",
+    "GPU_execution": false,
+    "policy_changes": false,
+    "timing_collection": false
+  },
+  "source_audit": {
+    "status": "read-only source assessment; no new GPU admission or causal defect claim",
+    "fault_case": "remaining unit09 Q8MM M480 N257 K4320, originalgrouped candidate11cf. Actualfaultdecode belongs batch_review.",
+    "source_pins": {
+      "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/quant-mm-sequential-tiles/candidate/ggml/src/ggml-vulkan/vulkan-shaders/mul_mm_khr_quant.comp": "63855778ee217997b5e728834e9a416c252e90790b03aa3f49d96058ef754a01",
+      "/run/media/jethac/Shared/radish/optimization-five-asr-integrated-build-0046/transcribe.cpp/ggml/src/ggml-vulkan/vulkan-shaders/dequant_funcs.glsl": "3b7a5edf6072ee8e44b4a9ddeb89b099d1fb64901d9be419c8ed9701d2f1d68b",
+      "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/coherent-workgroup-budget/candidate/rd_queue.c": "5faea86b0962780655803ae910b8b1fa7cd5b3ed2d517f9bf44595f8acf5c301",
+      "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/grouped-barrier-correctness/quant/grouped_quant.c": "7b82c78944c9eb6ae3464db952c47a256d16121bc5f88cf0e94b3aad7748fc7f",
+      "/run/media/jethac/Shared/radish/optimization-five-queue-asr-0046/grouped-barrier-correctness/quant/core_resources.c": "71f2a0403c4b51ceea5fce3a23bca6b8771ea70f712a2bf95f275f0980f0f122"
+    },
+    "bounds": {
+      "quant_block": 32,
+      "block_bytes": 34,
+      "K32_iterations": 135,
+      "pair_first_indices": [
+        0,
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16,
+        18,
+        20,
+        22,
+        24,
+        26,
+        28,
+        30
+      ],
+      "max_pair_second_index": 31,
+      "A_valid_byte_range": [
+        0,
+        2203199
+      ],
+      "A_descriptor_stride_bytes": 2203234,
+      "B_valid_float_range": [
+        0,
+        1110239
+      ],
+      "B_descriptor_stride_floats": 1110272,
+      "D_valid_float_range": [
+        0,
+        123359
+      ],
+      "D_descriptor_stride_floats": 123493,
+      "shared_arrays": "two16x32float arrays, byteoffsets0..2047 and2048..4095; every lane-owned load/store local index remains0..511",
+      "all_index_products_below_uint32": true
+    },
+    "control": {
+      "physical_local": [
+        32,
+        2,
+        1
+      ],
+      "logical_local": [
+        64,
+        1,
+        1
+      ],
+      "row_tiles_per_xWG": [
+        8,
+        8,
+        8,
+        6
+      ],
+      "uniformity": "Outerconditiondepends onlyWorkGroupID.x/M/tile. Every64lane within aWG takes same outer/K loop counts; no earlyreturn or lane-dependentbreak. Ntail predicates zeroB/skipsD only, not barriers.",
+      "barriers_per_outer_tile": 270,
+      "barriers_per_xWG": [
+        2160,
+        2160,
+        2160,
+        1620
+      ],
+      "legal_scope": "NIR execution_scope WORKGROUP/memory_scope WORKGROUP; shared arrays workgroup-local. Different WG loop/barrier counts legal at source level. MatchedIR3gen5 emits bar.g.l and native has2static bar.g.l sites.",
+      "comparison": "Priorpassed denseM129/GQA2 group8fixture has xWG0 eightrowtiles and xWG1 onerowtile in sameEXEC, so perWG unequal loopcount not unique to fault. It does not establish every largerK/geometry scheduler behavior.",
+      "lastNtail": "yWG16 col0=256,1validcol/15zero columns. Allworkgroups stillrun135Kloops perouterrowtile."
+    },
+    "commands": {
+      "grid": [
+        4,
+        17,
+        1
+      ],
+      "tile": [
+        4,
+        2,
+        1
+      ],
+      "execs": [
+        {
+          "base": [
+            0,
+            0,
+            0
+          ],
+          "grid": [
+            4,
+            2,
+            1
+          ]
+        },
+        {
+          "base": [
+            0,
+            2,
+            0
+          ],
+          "grid": [
+            4,
+            2,
+            1
+          ]
+        },
+        {
+          "base": [
+            0,
+            4,
+            0
+          ],
+          "grid": [
+            4,
+            2,
+            1
+          ]
+        },
+        {
+          "base": [
+            0,
+            6,
+            0
+          ],
+          "grid": [
+            4,
+            2,
+            1
+          ]
+        },
+        {
+          "base": [
+            0,
+            8,
+            0
+          ],
+          "grid": [
+            4,
+            2,
+            1
+          ]
+        },
+        {
+          "base": [
+            0,
+            10,
+            0
+          ],
+          "grid": [
+            4,
+            2,
+            1
+          ]
+        },
+        {
+          "base": [
+            0,
+            12,
+            0
+          ],
+          "grid": [
+            4,
+            2,
+            1
+          ]
+        },
+        {
+          "base": [
+            0,
+            14,
+            0
+          ],
+          "grid": [
+            4,
+            2,
+            1
+          ]
+        },
+        {
+          "base": [
+            0,
+            16,
+            0
+          ],
+          "grid": [
+            4,
+            1,
+            1
+          ]
+        }
+      ],
+      "firstFD": {
+        "EXEC": 8,
+        "WG": 64
+      },
+      "secondFD": {
+        "EXEC": 1,
+        "WG": 4
+      },
+      "structural_scalar_FMA_per_y_workgroup_rowband": 33177600,
+      "firstFD_scalar_FMA_including_paddedcols": 530841600,
+      "tailFD_scalar_FMA_including_paddedcols": 33177600,
+      "limit": "Structuralworkcount only; no duration/throughput/watchdog causality inferred."
+    },
+    "hardware_limit": "Queueemits sameGalliumA5XXNDRANGE/global-local sizes/KERNEL_GROUP1/1/1 andCP_EXECgrid. No explicitsharedsize/alternatebarrier mask inmatchedcs_program_emit. This sourceparallel does not proveactualfailedscheduler state; rawdumpPC/commandmapping isrequired.",
+    "next": "No speculative shader,guard,batch ormodel change. Preservefault/dump/passed00..08,hold10/11 andallGPUwork; coordinatebatchactualdecode.",
+    "timing_collected": false
+  },
+  "diagnostic_release": "Root reviewed only two forthcoming independently fenced four-workgroup controls at baseY0 and16, exact Q8M480/N257/K4320. Source/build counterpart and fresh original guards remain prerequisites. Original failing68WG dispatch, unrun cases10/11, fullmodel and cache replay remain held. No timeout/clock/reset/configuration change or measurement."
+}

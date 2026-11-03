@@ -1,0 +1,293 @@
+{
+  "status": "PARTIAL PASS cases00\u201308; case09 GPU hangcheck FAIL; all GPU work held",
+  "source_review": "b8d63b8532249eb81770492d20284ed75117dac10fe4e2236f07bbc3408805df",
+  "build_runner_review": "40459a2ecb23b6509f5d2df777fd33d71f5ab690fdf7b63cba039ea821d65787",
+  "passed_results": [
+    {
+      "unit": "case00",
+      "type": 0,
+      "mode": "mm",
+      "case": 2,
+      "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-grouped-quant-v2/case00",
+      "pins": {
+        "run.log": "d4d58359ea0af32453d3e2d20153fa721e007158d6d77c269d2be8c1d5a6136c",
+        "runner-result.json": "14411223b428845e133af51b17545f70e51415010de7cff325b94acaa8d61b11",
+        "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+        "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+        "service.txt": "71a35a08a030defb282f2ed3d9366c71b9ee3b8d6b4f1dbe265a6f3e6074aadf"
+      },
+      "native_prior": "/run/media/jethac/Shared/radish/core-compute-opt0046-quant-mm128-native/compile/run.log",
+      "body_sha256": "af5cf27b7344c8bcff54b451cc9e9e6e38851d666c4f30096b100c54bc937ce6",
+      "outputs": 155648,
+      "dispatches": 2,
+      "FD_submits": 2,
+      "max_window_slots": 1,
+      "full3allocation_and_visible133tail_guards": true
+    },
+    {
+      "unit": "case01",
+      "type": 0,
+      "mode": "mm",
+      "case": 3,
+      "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-grouped-quant-v2/case01",
+      "pins": {
+        "run.log": "27ce6c7273570c72ee37d37fe5a094c2bffb13cfad5dcd139014f78856bea8bc",
+        "runner-result.json": "e1b609f44f663b2a148be7baf083e4aca98a5f98115d5af3a4cb40da5db52c3d",
+        "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+        "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+        "service.txt": "6f6f5c6cbea14cd135327e66497d2c3e16d9d68352ed547d824f220e1e93be9f"
+      },
+      "native_prior": "/run/media/jethac/Shared/radish/core-compute-opt0046-quant-mm128-native/compile/run.log",
+      "body_sha256": "af5cf27b7344c8bcff54b451cc9e9e6e38851d666c4f30096b100c54bc937ce6",
+      "outputs": 23296,
+      "dispatches": 2,
+      "FD_submits": 2,
+      "max_window_slots": 1,
+      "full3allocation_and_visible133tail_guards": true
+    },
+    {
+      "unit": "case02",
+      "type": 0,
+      "mode": "mv",
+      "case": 0,
+      "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-grouped-quant-v2/case02",
+      "pins": {
+        "run.log": "6fd613e18e1735518507ae2adc1b0ad13abe26a26b4c58b1615eb9ab777791db",
+        "runner-result.json": "14d76a08de8e39e069e314ca853907c69e5fc9e0c80855fb89eaad8e8b780a53",
+        "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+        "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+        "service.txt": "e5221df2025fcf2eafe3b26e005b4dd088d272c75888be130c8dd01056e3025e"
+      },
+      "native_prior": "/run/media/jethac/Shared/radish/core-compute-opt0046-mv32-native/compile/run.log",
+      "body_sha256": "9be88d1acac7ccb45a8e78758f1e4ac2c8980fe364b1f9efd18bb0d404e96093",
+      "outputs": 264,
+      "dispatches": 3,
+      "FD_submits": 3,
+      "max_window_slots": 2,
+      "full3allocation_and_visible133tail_guards": true
+    },
+    {
+      "unit": "case03",
+      "type": 0,
+      "mode": "mv",
+      "case": 1,
+      "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-grouped-quant-v2/case03",
+      "pins": {
+        "run.log": "2e101e415b8d58df9b50b3e1f433beef82c00404a7164175040a8428491c4368",
+        "runner-result.json": "b9a6ad2f892255336a20f9809853d791ba57573f2f0a973443d759ebdd561db2",
+        "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+        "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+        "service.txt": "ef56eacb995bd64a53ccdce03107d83d02d650637fea7efb23096dfdb68999c1"
+      },
+      "native_prior": "/run/media/jethac/Shared/radish/core-compute-opt0046-mv32-native/compile/run.log",
+      "body_sha256": "9be88d1acac7ccb45a8e78758f1e4ac2c8980fe364b1f9efd18bb0d404e96093",
+      "outputs": 4098,
+      "dispatches": 2,
+      "FD_submits": 4,
+      "max_window_slots": 2,
+      "full3allocation_and_visible133tail_guards": true
+    },
+    {
+      "unit": "case04",
+      "type": 1,
+      "mode": "mm",
+      "case": 0,
+      "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-grouped-quant-v2/case04",
+      "pins": {
+        "run.log": "f28675b685a9c5403ba9e00736d7b6c862d0150eaa324127dea4ef47bc09399f",
+        "runner-result.json": "ebd273294713388abcb0b5a10625f6407e4ec9145c579f57fc3cd76bf41cd8b2",
+        "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+        "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+        "service.txt": "02ced6b0adf96232152e34aa7a518615c14dc1e756fc8588c38b890630bc5fc1"
+      },
+      "native_prior": "/run/media/jethac/Shared/radish/core-compute-opt0046-quant-mm128-native/compile/run.log",
+      "body_sha256": "263594a5cb34317fd30c379cb5db42d81e04fff8d5ef6257d363346c055746bc",
+      "outputs": 9288,
+      "dispatches": 3,
+      "FD_submits": 3,
+      "max_window_slots": 2,
+      "full3allocation_and_visible133tail_guards": true
+    },
+    {
+      "unit": "case05",
+      "type": 1,
+      "mode": "mm",
+      "case": 1,
+      "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-grouped-quant-v2/case05",
+      "pins": {
+        "run.log": "eecbf5a6b71b0e397df07a09e930c7fe5cefe803368f33cd1c4490bd79fad96d",
+        "runner-result.json": "015f152d8e0832480ac84eefb62cae2f568f0bd586edf878fbcc5b5e67c23793",
+        "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+        "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+        "service.txt": "09754123c677ab0bc14055887b713994481c26978d4cb4c6b3e36598ef1c6cb8"
+      },
+      "native_prior": "/run/media/jethac/Shared/radish/core-compute-opt0046-quant-mm128-native/compile/run.log",
+      "body_sha256": "263594a5cb34317fd30c379cb5db42d81e04fff8d5ef6257d363346c055746bc",
+      "outputs": 264192,
+      "dispatches": 2,
+      "FD_submits": 4,
+      "max_window_slots": 2,
+      "full3allocation_and_visible133tail_guards": true
+    },
+    {
+      "unit": "case06",
+      "type": 1,
+      "mode": "mv",
+      "case": 0,
+      "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-grouped-quant-v2/case06",
+      "pins": {
+        "run.log": "d537969c42137922863cf63e30e884bc0d8059317ce6336e8fa580bd5d2962f8",
+        "runner-result.json": "81017d947075ad2d7ece5519fe5ca390cb0ece2d6f59f04878e68a9571b10918",
+        "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+        "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+        "service.txt": "b77e508c0f286ae6bb4e274275a40f12e011af8c5ce6e5fda63b3a372f72a4c2"
+      },
+      "native_prior": "/run/media/jethac/Shared/radish/core-compute-opt0046-mv32-native/compile/run.log",
+      "body_sha256": "bbe8e13cb85feae912280b82f27f027562e5f565825dec4d297558d972bcd960",
+      "outputs": 264,
+      "dispatches": 3,
+      "FD_submits": 3,
+      "max_window_slots": 2,
+      "full3allocation_and_visible133tail_guards": true
+    },
+    {
+      "unit": "case07",
+      "type": 1,
+      "mode": "mv",
+      "case": 1,
+      "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-grouped-quant-v2/case07",
+      "pins": {
+        "run.log": "9b9fd984e38850639831a365a9e52d6f1a59c11654d70be4e8f42fefa7bbd2b8",
+        "runner-result.json": "b65f9ea8845026d83de803ea098bc3b56ab158de44c7d441544ed8451b95a459",
+        "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+        "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+        "service.txt": "f927de6401d7acddec98fcb31f5e021246ae01e79287b34fb1adbea120d1d310"
+      },
+      "native_prior": "/run/media/jethac/Shared/radish/core-compute-opt0046-mv32-native/compile/run.log",
+      "body_sha256": "bbe8e13cb85feae912280b82f27f027562e5f565825dec4d297558d972bcd960",
+      "outputs": 4098,
+      "dispatches": 2,
+      "FD_submits": 4,
+      "max_window_slots": 2,
+      "full3allocation_and_visible133tail_guards": true
+    },
+    {
+      "unit": "case08",
+      "type": 2,
+      "mode": "mm",
+      "case": 0,
+      "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-grouped-quant-v2/case08",
+      "pins": {
+        "run.log": "5d5e037488c73e287da2758072b846d3491f04f5639ce9da88e8e5efb2cdeb6b",
+        "runner-result.json": "a573bbe2dd93a09dc8eaf575e19971ba0ec43679ae7fdf88865271689abe408f",
+        "collection.json": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+        "fault-check.txt": "1596d27723b321e6eff18dd64bb68ea5075ee976bf92298e8fff6f2eab1ec57c",
+        "service.txt": "9632ffa0ceb72768e14c5ae2b27ed00e61df811360710653ccffd6340208205d"
+      },
+      "native_prior": "/run/media/jethac/Shared/radish/core-compute-opt0046-quant-mm128-native/compile/run.log",
+      "body_sha256": "a89f64bb6d144b02fa570c14a4c5a89ac9ecc338c4199f1540204884a4eaf80b",
+      "outputs": 9288,
+      "dispatches": 3,
+      "FD_submits": 3,
+      "max_window_slots": 2,
+      "full3allocation_and_visible133tail_guards": true
+    }
+  ],
+  "carried_partial": "3f2fe9136475a929e10b302bf585b7aa066c1deeaf37b3ba94b91e119985c0bc",
+  "coverage": {
+    "new_rounds": 18,
+    "new_outputs": 470436,
+    "new_dispatches": 22,
+    "new_FD_submits": 28,
+    "carried_rounds": 4,
+    "carried_outputs": 273480,
+    "carried_dispatches": 5,
+    "carried_FD_submits": 7,
+    "union_rounds": 22,
+    "union_outputs": 743916,
+    "union_dispatches": 27,
+    "union_FD_submits": 35,
+    "overlap": false,
+    "missing": [
+      [
+        "2",
+        "mm",
+        "1",
+        "0"
+      ],
+      [
+        "2",
+        "mm",
+        "1",
+        "1"
+      ],
+      [
+        "2",
+        "mv",
+        "0",
+        "0"
+      ],
+      [
+        "2",
+        "mv",
+        "0",
+        "1"
+      ],
+      [
+        "2",
+        "mv",
+        "1",
+        "0"
+      ],
+      [
+        "2",
+        "mv",
+        "1",
+        "1"
+      ]
+    ]
+  },
+  "failure": {
+    "unit": "case09",
+    "type": "Q8_0",
+    "mode": "MM128",
+    "M": 480,
+    "N": 257,
+    "K": 4320,
+    "seed": 0,
+    "grid": [
+      4,
+      17,
+      1
+    ],
+    "tile": [
+      4,
+      2,
+      1
+    ],
+    "enqueued_FD_jobs": 2,
+    "executions": 9,
+    "final_drain_result": -4,
+    "passed_output_rounds": 0,
+    "native_body_matches_prior": true,
+    "pins": {
+      "run.log": "72422dc51c7e9b1b765b9249266c15b93adbf6443c6dda5c055e2914b12026e2",
+      "failure.json": "7470d9ce4d262102a4e022c5c293ac351e2acd7eec797272337e5e40a8a79e39",
+      "collection.json": "be400cd7e1278531d1d27fe09a238615e57dfa843df419395e9540020cc10779",
+      "fault-check.txt": "2a3fce579294b125cddee395f2cbfbeb1620a5a7b38d78cefabebbca672f45c8",
+      "service.txt": "10038f63a7eabbfd82c215a50ce3656c0edd6f62c8a5939c32c1bf4652157089"
+    },
+    "dump_sha256": "a3684f1d26a609163ff2c8abf6d6608c8c1a87946eeecf1d6da6b4ae69a38cee",
+    "initial_hangcheck_fence_completed": 6159017,
+    "submitted": 6159019,
+    "snapshot_retired_fence": 6159018,
+    "interpretation": "Initial hangcheck and later snapshot differ; first FD retired by snapshot. Ring and saved tail command decode recorded separately. No MMU fault-address evidence, no source OOB/barrier-divergence finding, and no causal performance or deadlock attribution."
+  },
+  "not_started": [
+    "case10",
+    "case11"
+  ],
+  "proof": "Passed native body text equals admitted MM128/MV32 modules after only ordinal normalization. Passed cases preserve independent CPU exact outputs, full allocations/visible tails and declared group/FD/deferred counters. Sparse edge-window reference scope remains explicit; no full dense-largeK equivalence claim. Failed case has no numerical result.",
+  "timing_collected": false,
+  "next": "Read-only fault diagnosis only; no retry, other GPU execution, model or cache replay."
+}

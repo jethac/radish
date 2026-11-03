@@ -1,20 +1,22 @@
 # Radish
 
-Current checkpoint (2026-11-03): the five-area optimization implementation is
-under untimed correctness validation. Retained TTS sessions, convolution and
-selective precision, queue reuse, and real TTS pipeline-cache export/import
-pass their stated model fixtures. Full ASR inference and its cache replay remain
-open. The corrected softmax modules fit the existing resource limits and pass focused
-old/new and CPU numerical checks. The latest full ASR run completes offline
-warmup and the streaming encoder, then reaches the unchanged timeout during
-streaming prefill before the requested transcripts. Queue-only attention, softmax and RMS
-batching changes now pass focused numerical and full/partial submission checks. Full-model and cache-replay checks remain required. [Current implementation and evidence](radish/results/optimization-five-status-0046.json)
+Current checkpoint (2026-11-03): retained TTS sessions, convolution, selective
+precision and real pipeline-cache export/import pass their stated model fixtures.
+Full ASR inference and its cache replay remain open. The latest full ASR run
+completed both warm modes, real-request prefix and first subsampling graph but
+reached the original timeout before any requested transcript.
+
+A subsequent grouped-work qualification encountered a Q8 GPU hangcheck. Passed
+cases and the fault are preserved. Saved commands and matched-kernel analysis
+show forward progress before recovery, but the cause remains unresolved. Only
+two bounded diagnostic controls are being prepared; the original faulting
+workload and full-model execution remain held. [Current evidence](radish/results/optimization-five-status-0046.json)
 and the [full goal](radish/GOAL.md) are authoritative.
 
 No new performance measurement is permitted until all five areas pass. The
 32.835-second Japanese result below belongs to the frozen earlier build; it is
-not a measurement of the new candidate. All Vulkan conformance claims remain
-limited to the exact recorded test scopes.
+not a measurement of the new candidate. Conformance claims remain limited to
+the exact recorded scopes.
 
 ## TL;DR
 

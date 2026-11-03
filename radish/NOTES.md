@@ -1,5 +1,24 @@
 # Radish status
 
+## 2026-11-03: saved GPU fault narrowed; cause still unresolved
+
+[Saved command and kernel analysis](results/optimization-grouped-quant-fault-diagnosis-0046.json)
+shows that the first submission retired between the hangcheck sample and recovery
+snapshot. The captured command buffer is the four-workgroup tail. The active
+kernel matches the retained build and has a 500 ms fence-based hangcheck; it does
+not inspect interior shader progress on A5xx. No shader program counter was
+captured. A long first batch triggering recovery during the tail is consistent
+with the evidence, but neither a watchdog false positive nor a shader stall is
+proved.
+
+[Independent partial coverage](results/optimization-grouped-quant-partial-fault-0046.json)
+closes 743,916 exact output values across 22 rounds, including the four previously
+passed Q4 rounds. The failed Q8 round has no output comparison; two units remain
+unrun. Only two reviewed, independently fenced four-workgroup diagnostic controls
+are being prepared. Their source/build gates and original controls still apply;
+the original faulting workload, full model and cache replay remain held. No
+performance measurement or timeout change is authorized.
+
 ## 2026-11-03: grouped Q8 matrix fault stops execution
 
 The remaining quantized sequence stopped on a [GPU hangcheck](results/optimization-grouped-quant-gpu-fault-0046.json)

@@ -1709,7 +1709,7 @@
     "driver": "11cf0aa23c785011262146e6ea2c8f71fa84cff3da92635495cc44fe3db05ac0",
     "listener": "db87254146037708672f236ccb4735fa078d99de2fdf5c1431d24244ba0876d6",
     "source_build_receipt": "optimization-grouped-work-source-build-0046.json",
-    "target_status": "GPU hangcheck/recovery in case09 Q8MM480x257x4320; all new GPU scopes held. Full db872/11cf model never launched. Earlier finite passed scopes remain retained.",
+    "target_status": "Fault unresolved; saved tail/kernel chronology and independent partial coverage published. Only two bounded4WG diagnostic controls conditionally released, not original fullmodel.",
     "patches": [
       {
         "file": "0046-coherent-workgroup-budget.patch",
@@ -1735,6 +1735,7 @@
       "optimization-grouped-quant-partial-0046.json": "3f2fe9136475a929e10b302bf585b7aa066c1deeaf37b3ba94b91e119985c0bc",
       "optimization-grouped-quant-gpu-fault-0046.json": "4ed63aa608b233c7eb3b1b0c885b3aef907452d8e5b490a1b3284a4a8507684e",
       "optimization-long-binary-actual-0046.json": "89e0caeab613d6bf07ec3077b68094c5d4e91e28bb0e58157840a19cdecc6f9d"
-    }
+    },
+    "fault_diagnosis_receipt": "optimization-grouped-quant-fault-diagnosis-0046.json"
   }
 }
