@@ -1,0 +1,126 @@
+{
+  "status": "passed",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-deferred-queue/probe",
+  "runner_result": "fbeb73e73e12a17544398514db8a725f4513d2c4aed7f7078adb9aae5ba15cb5",
+  "run_log": {
+    "bytes": 124646,
+    "sha256": "148417bdfc4164510d456caed9ed6fc5001f0d4e52ea54ed6e0f46569bf91b5f"
+  },
+  "collection": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+  "payload": {
+    "radish_icd.json": {
+      "bytes": 151,
+      "sha256": "7c8acab84217937ba6f67382b84266a3bd13ed7ad8f9a0e4e3ea4619da7508d7"
+    },
+    "cpy_f32_f32.spv": {
+      "bytes": 4724,
+      "sha256": "d16b90705ce66386f9b1ab24d14ace9424f08e4625c4f0e1c2664631246cc364"
+    },
+    "resources": {
+      "bytes": 741400,
+      "sha256": "e5ca9fe0b735064c76c4dbb69cd05e45afc4ba260631189acefa5fb706505473"
+    },
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "queue_reuse.spv": {
+      "bytes": 1072,
+      "sha256": "b24abc64579f58ba8838922d69c862cf19436b3ca15d013f6ce09b4190c706a7"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 13638392,
+      "sha256": "6f1551cc8ed772439d53157b50e518bef79b3a49f3144e058127faa8740a71ee"
+    },
+    "payload.json": {
+      "bytes": 954,
+      "sha256": "9524dfdda182d5a5f98491639f8debc8034af8f858772bb24c552d988350502a"
+    }
+  },
+  "native_identity": [
+    {
+      "kind": 0,
+      "source": "/run/media/jethac/Shared/radish/core-compute-opt0046-queue-reuse/probe/run.log",
+      "body_sha256": "02073b7cbad56b2dc60469af2947db3e5944580e153d77f26f4769c5f5921141",
+      "native": 2,
+      "full_count": 2,
+      "half_count": 1,
+      "private": 0,
+      "shared": 0,
+      "local": [
+        32,
+        1,
+        1
+      ]
+    },
+    {
+      "kind": 1,
+      "source": "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-native00-v2/compile/run.log",
+      "case": "case02",
+      "body_sha256": "8241ef0a2033980c455d1f9db220c3824cf712382e0d487d27f759fec7b2926c",
+      "native": 20,
+      "full_count": 8,
+      "half_count": 1,
+      "private": 0,
+      "shared": 0,
+      "local": [
+        128,
+        1,
+        1
+      ]
+    }
+  ],
+  "actual": {
+    "rounds": 2,
+    "producer_dispatches": 4,
+    "consumer_dispatches": 8,
+    "fd_submissions": 32,
+    "internal_chunks_per_round": 100,
+    "capacity_cpu_final_drains": [
+      [
+        8,
+        50,
+        "capacity"
+      ],
+      [
+        2,
+        9,
+        "cpu"
+      ],
+      [
+        6,
+        41,
+        "final"
+      ],
+      [
+        8,
+        50,
+        "capacity"
+      ],
+      [
+        2,
+        9,
+        "cpu"
+      ],
+      [
+        6,
+        41,
+        "final"
+      ]
+    ],
+    "max_pending_slots": 8,
+    "max_pending_chunks_observed": 50,
+    "max_logical_CS_bytes": 262144,
+    "max_backing_bytes": 262144,
+    "max_metadata_bytes": 52640,
+    "max_BO_refs": 44,
+    "CPU_copy_bytes_per_round": 262131,
+    "final_data_words_per_round": 196608,
+    "full_allocations_per_round": 4,
+    "visible_guard_lanes": 128
+  },
+  "meaning": "Actual deferred window crosses dispatch boundaries, holds eight submissions and drains capacity8/CPUtail2/finaltail6. Exact producer/consumer chain+unaligned CPU transfer+complete expected allocations survive two changing rounds and public final fence. No fallback or synchronous dormant-path credit. All prior native bodies byte-identical after only CL program ordinal normalization.",
+  "limits": "Success-path lifetime/order evidence plus independent source enqueue-error propagation review6cae; no injectedfault/general conformance/performance claim. CS parent physical backing observed standalone32KiB each, not universal pool allocation claim.",
+  "faults_services": "clean collection, no new GPU fault/recovery, both services active, unit successfully deactivated",
+  "timing_collected": false
+}

@@ -8,8 +8,11 @@ checking each enqueue result. Existing norm and transpose shaders also use the
 bounded batching policy. AArch64 layout checks preserve every existing fence
 field offset and its size; the new error status occupies padding.
 
-This candidate has not run on the target. Dependency and local-family checks,
-one focused TTS regression, and the original ASR workload remain required.
+[The dependency check now passes](results/optimization-deferred-queue-correctness-0046.json):
+two changing GPU chains preserve all buffer bytes across eight-slot capacity,
+CPU-copy and final-fence drains. [Local-family checks also pass](results/optimization-local-family-correctness-0046.json)
+all 93,732 outputs with complete guards and unchanged shader bodies. One focused
+TTS regression and the original ASR workload remain required.
 The [last ASR capture](results/optimization-asr-mv32-holistic-0046.json) is preserved:
 streaming prefill timed out before requested outputs. Performance measurement
 remains forbidden until all five integrated areas pass.

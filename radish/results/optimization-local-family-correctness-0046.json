@@ -1,0 +1,191 @@
+{
+  "status": "passed",
+  "capture": "/run/media/jethac/Shared/radish/core-compute-opt0046-local-family/probe",
+  "runner_result": "9da26cc40876210c51a95f5dc2515e9a2f21c458e4516aa5e48d3910daeaac5b",
+  "run_log": {
+    "bytes": 1906884,
+    "sha256": "bdfe4eee107109c14bfcfb614bcea795455cd08c95781302da1c6c420016fdc8"
+  },
+  "collection": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+  "payload": {
+    "radish_icd.json": {
+      "bytes": 149,
+      "sha256": "f1e3bfd9fa008ffd71e3060c3b2a927962306412d05f94c4b478a77079bc9448"
+    },
+    "norm_f32.spv": {
+      "bytes": 6188,
+      "sha256": "8827a4391c8200111df80dc0aabfacc72ed7cfddfa8ec8fceda5e01cde47b189"
+    },
+    "resources": {
+      "bytes": 754336,
+      "sha256": "b31e2ab95a5a77eca6f99ed3dac6933f4cb2cb0d12d1c691a1019d6f2639e343"
+    },
+    "cpy_transpose_02_32.spv": {
+      "bytes": 17796,
+      "sha256": "bcf9fb981a1fb1831c9f682dbbb980d4c4038adb40c718f996f11c9968258be2"
+    },
+    "cpy_transpose_32.spv": {
+      "bytes": 17796,
+      "sha256": "adf59e2d94aba1c34203f4d95dab63db6972072396fe31288141295b53c53c85"
+    },
+    "check-gpu-log.py": {
+      "bytes": 1004,
+      "sha256": "36b93491c0b6e4fb52845aa59eb46a550d07ca6476c48169b95c5fcc7389077d"
+    },
+    "cpy_transpose_16.spv": {
+      "bytes": 18104,
+      "sha256": "331b1047ee7a3584c3a968dfc61ab7e61a438edeb2be35d03bb58165aeaa1346"
+    },
+    "libvulkan_radish.so": {
+      "bytes": 13638392,
+      "sha256": "6f1551cc8ed772439d53157b50e518bef79b3a49f3144e058127faa8740a71ee"
+    },
+    "payload.json": {
+      "bytes": 1242,
+      "sha256": "506adf118051f27b2b2e47677347e7c83547cb2719823cfd30530073b542931b"
+    }
+  },
+  "native_identity": [
+    {
+      "kind": 0,
+      "case": "case21",
+      "prior": "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-native01-v2/compile/run.log",
+      "body_sha256": "1d0d1330a8307a0ad38feca83bb4691365b828a6530d97488234e92c6dd7ed8d"
+    },
+    {
+      "kind": 1,
+      "case": "case07",
+      "prior": "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-native00-v2/compile/run.log",
+      "body_sha256": "2bcb937e97c534af8058d706e6d5bfe446f9c1d7c15268005906d8bf8f537955"
+    },
+    {
+      "kind": 2,
+      "case": "case08",
+      "prior": "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-native00-v2/compile/run.log",
+      "body_sha256": "e9b2836cfb9943d493a7d638d61f4274ea8266a1c26fedef0c67fd371bcf8272"
+    },
+    {
+      "kind": 3,
+      "case": "case16",
+      "prior": "/run/media/jethac/Shared/radish/core-compute-opt0046-asr-native01-v2/compile/run.log",
+      "body_sha256": "e563f57c7b5c429f03f42db66623dafd0d4df31637de3e5773ce4e5644d21b92"
+    }
+  ],
+  "native_resources": [
+    {
+      "kind": 0,
+      "native": 30,
+      "full_count": 8,
+      "half_count": 2,
+      "slots": 2304,
+      "shared": 1024,
+      "loops": 2,
+      "logical": [
+        128,
+        1,
+        1
+      ],
+      "physical": [
+        64,
+        2,
+        1
+      ],
+      "packed": 1
+    },
+    {
+      "kind": 1,
+      "native": 62,
+      "full_count": 8,
+      "half_count": 15,
+      "slots": 3968,
+      "shared": 4224,
+      "loops": 3,
+      "logical": [
+        32,
+        4,
+        1
+      ],
+      "physical": [
+        32,
+        4,
+        1
+      ],
+      "packed": 0
+    },
+    {
+      "kind": 2,
+      "native": 62,
+      "full_count": 8,
+      "half_count": 15,
+      "slots": 3968,
+      "shared": 4224,
+      "loops": 3,
+      "logical": [
+        32,
+        4,
+        1
+      ],
+      "physical": [
+        32,
+        4,
+        1
+      ],
+      "packed": 0
+    },
+    {
+      "kind": 3,
+      "native": 73,
+      "full_count": 8,
+      "half_count": 16,
+      "slots": 4096,
+      "shared": 4224,
+      "loops": 3,
+      "logical": [
+        32,
+        4,
+        1
+      ],
+      "physical": [
+        32,
+        4,
+        1
+      ],
+      "packed": 0
+    }
+  ],
+  "shared_flags": "Allprivate0/safety1/usedmask3/2ordinalSSBO/push120/linearflags0/residentoverride0 printed and required beforedata. FullCOUNT usesmaxindex+1. Four body texts byte-identical selected32 after only CL ordinal normalization.",
+  "actual": {
+    "rounds": 10,
+    "outputs": 93732,
+    "norm_outputs": 41472,
+    "transpose_outputs": 52260,
+    "norm_max_row_NMSE": 4.55886747518e-15,
+    "original_norm_NMSE_limit": 1e-07,
+    "transpose_bit_differences": 0,
+    "groups_per_round": 18,
+    "grid_norm": [
+      18,
+      1,
+      1
+    ],
+    "grid_transpose": [
+      3,
+      3,
+      2
+    ],
+    "FD_submissions_per_round": 3,
+    "chunks": "8+8+2",
+    "total_FD_submissions": 30,
+    "deferred_final_drains": 10,
+    "pending_slots_per_drain": 3,
+    "max_logical_CS_and_backing_bytes": 98304,
+    "max_metadata_bytes": 19800,
+    "max_BO_refs": 18,
+    "full_allocations_per_round": 2,
+    "visible_output_poison": true
+  },
+  "coverage": "Two changing rounds each: normwidth128/1024 withzero/tinynormal/DC rows+offsets/paddedstrides; transpose32/02/16 dimensions67x65x2 or67x2x65, tile-tailrows/cols andGZ2, rawbits exact incluint16. Both allocations checked completely outside intendedoutput; descriptor-visible padding/remainingnormrows/128tailelements remainpoison.",
+  "faults_services": "clean collection/fault checks, bothservicesactive; no numerical/device/APIerrors",
+  "scope_limits": "Representativeunchangednativefamilies underneweligibility and deferredwindow; no universalshape/conformance/speedclaim. OnefocusedTTS sharedwait regression remains next; originalASRmodel separate.",
+  "timing_collected": false
+}

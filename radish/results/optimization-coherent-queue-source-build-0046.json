@@ -1,5 +1,5 @@
 {
-  "status": "Source and host build complete; independent final build/payload and all target checks pending",
+  "status": "Source/build/ABI and focused dependency/local-family actuals pass; focused TTS and full ASR/cache remain pending",
   "scope": "Same-queue bounded deferred FD waits with explicit enqueue-error propagation, plus unchanged-math norm/transpose batching; no model, shader or per-execution GPU resource-limit change",
   "deferred_source": {
     "status": "source frozen for independent review and owner host compilation; no device admission yet",
@@ -1585,10 +1585,249 @@
     "reason": "Review found a later successful fence could hide an earlier submit ioctl error. V2 records status before readiness and rejects failure before window admission."
   },
   "remaining": [
-    "Dependent GPU chain, capacity/CPU/final-fence drain correctness",
-    "Local-family full/partial numerical checks",
     "One focused TTS shared-queue regression",
     "Original ASR full model, then conditional actual application-cache replay"
   ],
-  "performance_measurement": false
+  "performance_measurement": false,
+  "build_review": {
+    "status": "PASS coherent v2 source/build/archive/ABI/strip and dependency-helper pairing; runner/actual gates remain",
+    "source_release": "64377b635976e753fb29a792684bf53602bbae726b97f382acf2e179d24dd2ef",
+    "driver_result": "a6d99987807932654e793e94b8c68d6ff1592bd68f78ea77485dbb96ec8134c6",
+    "full": "f3763bf6c1c0d464369a099f3bbc96325b982941cc5336495c62386f79b9d208",
+    "strip": "6f1551cc8ed772439d53157b50e518bef79b3a49f3144e058127faa8740a71ee",
+    "source_reviews": {
+      "deferred_v2": "6caef6259837e58875c6b4b0f9bde593fab7d6f95cb9f1197445068558ee1661",
+      "local_selector": "5f637079e86b1d0d25a6a55793b06fcd801d29a3abd3c4ce19a94726bbe0118a",
+      "dependency_helper": "eb7ecaee6c112304c90e9be02e3efdd61401162604e55447b4d985a85e6ef116"
+    },
+    "link_delta": [
+      [
+        "/run/media/jethac/Shared/radish/optimization-five-mv32-queue-driver-0046/libvulkan_radish.so",
+        "/run/media/jethac/Shared/radish/optimization-five-coherent-queue-v2-driver-0046/libvulkan_radish.so"
+      ],
+      [
+        "/run/media/jethac/Shared/radish/optimization-five-mv32-queue-driver-0046/rd_queue.c.o",
+        "/run/media/jethac/Shared/radish/optimization-five-coherent-queue-v2-driver-0046/rd_queue.c.o"
+      ],
+      [
+        "src/freedreno/drm/libfreedreno_drm.a",
+        "/run/media/jethac/Shared/radish/optimization-five-coherent-queue-v2-driver-0046/libfreedreno_drm.a"
+      ]
+    ],
+    "archive_members": [
+      {
+        "member": "freedreno_bo.c.o",
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/drm/libfreedreno_drm.a.p/freedreno_bo.c.o",
+        "sha256": "0fd789b0bd47cf9df7a2785a0d32ca626e375e3b18bbf6d6e39e3f830fc66b3f"
+      },
+      {
+        "member": "freedreno_bo_heap.c.o",
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/drm/libfreedreno_drm.a.p/freedreno_bo_heap.c.o",
+        "sha256": "ce736d09ac0a74317d3c3dc279d5c022f350b0c3871a7f5a922e97c6f7f9d6d0"
+      },
+      {
+        "member": "freedreno_bo_cache.c.o",
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/drm/libfreedreno_drm.a.p/freedreno_bo_cache.c.o",
+        "sha256": "0348c2158a0a6bf68f48ae674f7bbc5ff146a07621e525e5074aace9a3069a6e"
+      },
+      {
+        "member": "freedreno_device.c.o",
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/drm/libfreedreno_drm.a.p/freedreno_device.c.o",
+        "sha256": "dd28946faeaf04d912e97dc3ce2fe30219d9efde8abf252dfc173a0cc39072e8"
+      },
+      {
+        "member": "freedreno_pipe.c.o",
+        "path": "/run/media/jethac/Shared/radish/optimization-five-coherent-queue-v2-driver-0046/freedreno_pipe.c.o",
+        "sha256": "a035e451e5e1e250c14751a121e4f1ba934b9d4e67b24bd7f4dc5b4639ce326c"
+      },
+      {
+        "member": "freedreno_ringbuffer.c.o",
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/drm/libfreedreno_drm.a.p/freedreno_ringbuffer.c.o",
+        "sha256": "a952dc2ceeb11e87222c300a87991ce393b23be5d01ed7cf48716e11052e9f8e"
+      },
+      {
+        "member": "freedreno_ringbuffer_sp.c.o",
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/drm/libfreedreno_drm.a.p/freedreno_ringbuffer_sp.c.o",
+        "sha256": "ec3708127bab47afd694d9c2017343aaee0d433c4aba1791e509e5abb73c1248"
+      },
+      {
+        "member": "msm_msm_bo.c.o",
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/drm/libfreedreno_drm.a.p/msm_msm_bo.c.o",
+        "sha256": "11b38373aaabe40c46fdfee8e67ee10fbdaaaa4490f2ed0f60c3e117af5c7b50"
+      },
+      {
+        "member": "msm_msm_device.c.o",
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/drm/libfreedreno_drm.a.p/msm_msm_device.c.o",
+        "sha256": "af8869a7029231f1c857fa64213cd6f4bc0403d9912384782dea3d2e6b2a9f22"
+      },
+      {
+        "member": "msm_msm_pipe.c.o",
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/drm/libfreedreno_drm.a.p/msm_msm_pipe.c.o",
+        "sha256": "85ce33df12295bd1e170a013277cede840f95925a1ac2ffa9c61230e8cef57dd"
+      },
+      {
+        "member": "msm_msm_ringbuffer.c.o",
+        "path": "/run/media/jethac/Shared/radish/core-api-0044-ulrh8m0m/build/src/freedreno/drm/libfreedreno_drm.a.p/msm_msm_ringbuffer.c.o",
+        "sha256": "6b0fde3990b823e7b8a6fdcef03051539f66865f7179dd74fd6e0e684516f39d"
+      },
+      {
+        "member": "msm_msm_ringbuffer_sp.c.o",
+        "path": "/run/media/jethac/Shared/radish/optimization-five-coherent-queue-v2-driver-0046/msm_msm_ringbuffer_sp.c.o",
+        "sha256": "70d169251513cd9bc91d8664798b4b77fbf169f5b8aec4fab540ef712dd592e9"
+      }
+    ],
+    "layout": {
+      "old": {
+        "fd_fence_size": 40,
+        "fd_fence_offset_refcnt": 0,
+        "fd_fence_offset_pipe": 8,
+        "fd_fence_offset_ready": 16,
+        "fd_fence_offset_kfence": 20,
+        "fd_fence_offset_ufence": 24,
+        "fd_fence_offset_fence_fd": 28,
+        "fd_fence_offset_use_fence_fd": 32,
+        "size_fd_submit_sp": 208,
+        "size_fd_ringbuffer_sp": 112,
+        "size_hash_table": 536,
+        "size_hash_entry": 24,
+        "size_fd_bo": 112,
+        "size_slab_parent_pool": 16,
+        "size_slab_child_pool": 32,
+        "size_slab_element_header": 24,
+        "size_slab_page_header": 8,
+        "ring_pool_element_size": 136,
+        "ring_pool_num_elements": 16
+      },
+      "new": {
+        "fd_fence_size": 40,
+        "fd_fence_offset_refcnt": 0,
+        "fd_fence_offset_pipe": 8,
+        "fd_fence_offset_ready": 16,
+        "fd_fence_offset_kfence": 20,
+        "fd_fence_offset_ufence": 24,
+        "fd_fence_offset_fence_fd": 28,
+        "fd_fence_offset_use_fence_fd": 32,
+        "size_fd_submit_sp": 208,
+        "size_fd_ringbuffer_sp": 112,
+        "size_hash_table": 536,
+        "size_hash_entry": 24,
+        "size_fd_bo": 112,
+        "size_slab_parent_pool": 16,
+        "size_slab_child_pool": 32,
+        "size_slab_element_header": 24,
+        "size_slab_page_header": 8,
+        "ring_pool_element_size": 136,
+        "ring_pool_num_elements": 16,
+        "fd_fence_offset_submit_error": 36
+      }
+    },
+    "layout_sha256": "f777fa14e8d0a75de5d9f79d86daf3525484bbd2bef53f0fec3680281f405d76",
+    "metadata_bound": {
+      "checked_formula_max_per_slot": 7992,
+      "per_slot_ceiling": 16384,
+      "slot_count": 8,
+      "logical_CS": 262144,
+      "unique_CS_parent_backing": 4194304,
+      "note": "Diagnostic formula counts submit/ring/fence/slab/arrays/hash tables, not total process memory or existing data/code BO payload. Fixed bound leaves8392B per slot above maximum formula for small CS BO wrapper/allocator bookkeeping; existing common heap objects are retained device infrastructure. Original full-process guard remains."
+    },
+    "strip_equal_allocated_sections": 26,
+    "helper_result": "a0e3dfff3dcbc44246c566b54e32372d50ac5b33e58832c7daad86ea396a2367",
+    "helper": "e5ca9fe0b735064c76c4dbb69cd05e45afc4ba260631189acefa5fb706505473",
+    "checks": [
+      "Both zero-fuzz source patch orders independently reproduced exact four-file composition.",
+      "All12 DRM regular-archive members rehashed; exactly two replacement members, other10 exact baseline. Queue is sole other changed link input.",
+      "All three compile dependency files name new private DRM header and exclude old header. Target fd_fence remains40 bytes and every old field offset exact; new status occupies former padding36. No other typed by-value/size consumer found in source review.",
+      "Same shader/compiler/application libraries; source-declared pending resource bounds and final signal/error ordering retained.",
+      "Two helper modules/utilities/source byte-identical to independent source gate, exact AArch64 ELF183. No new native compiler or shader scope."
+    ],
+    "remaining": [
+      "Dependency actual pending8/capacityCPUfinal drains/full4allocation values",
+      "Local transpose/norm fullpartial numerical checks",
+      "One focused TTS shared-wait regression",
+      "Original two-clip full ASR and accepted populated-cache replay"
+    ],
+    "performance_measurement": false
+  },
+  "dependency_runner_review": {
+    "status": "PASS finite dependent functional runner/payload pairing; ready owner fresh admission and actual",
+    "runner_sha256": "6d2d03793645fbee01962265e535db0b66d02ac76d2bf951a915a86b5010000d",
+    "argv": "422dfb04c5b409357339bd20843fb754d0836e7382b27283343228b602a5176d",
+    "hostcheck": "659c11a178093380e7d7fed7ee3031c1f3651b00f7217d9e052e4e442d40b4e9",
+    "coherent_build_review": "c724030ef5b00c958ce25d51e5b23ddc2146684e4f7796710dd15017a87db126",
+    "helper_source_review": "eb7ecaee6c112304c90e9be02e3efdd61401162604e55447b4d985a85e6ef116",
+    "driver": "6f1551cc8ed772439d53157b50e518bef79b3a49f3144e058127faa8740a71ee",
+    "helper": "e5ca9fe0b735064c76c4dbb69cd05e45afc4ba260631189acefa5fb706505473",
+    "changes": "Exact asset/argv/result-specific derivative of previously reviewed RMS transport plus untimed resource diagnostics; original caps, log reservation, lock, service/fault/terminal/collection controls remain.",
+    "actual_requirements": "32 enqueues, capacity8/cpu2/final6 repeated twice,16 submits+flushes per round,12 GPU dispatches/full4allocation byte oracles/visible tail128/final fence. New source status/error path independently reviewed, not fault-injected.",
+    "timing_collected": false
+  },
+  "local_helper_source_review": {
+    "status": "PASS finite local norm/three-transpose source/oracle counterpart",
+    "release": "271c39d4cbae4655645b9d53425237b71784358d800c3b1748e9295c787cd64f",
+    "source": "3e314e7af39973c3b3240001034407df81fa1816abde1dcce194650e6d8e44ff",
+    "modules": {
+      "norm_f32": {
+        "path": "/run/media/jethac/Shared/radish/asr-graph-bounded-build-0045/modules/norm_f32/norm_f32.spv",
+        "bytes": 6188,
+        "sha256": "8827a4391c8200111df80dc0aabfacc72ed7cfddfa8ec8fceda5e01cde47b189",
+        "capability_numbers": [
+          1
+        ]
+      },
+      "cpy_transpose_32": {
+        "path": "/run/media/jethac/Shared/radish/asr-graph-bounded-build-0045/modules/cpy_transpose_32/cpy_transpose_32.spv",
+        "bytes": 17796,
+        "sha256": "adf59e2d94aba1c34203f4d95dab63db6972072396fe31288141295b53c53c85",
+        "capability_numbers": [
+          1
+        ]
+      },
+      "cpy_transpose_02_32": {
+        "path": "/run/media/jethac/Shared/radish/asr-graph-bounded-build-0045/modules/cpy_transpose_02_32/cpy_transpose_02_32.spv",
+        "bytes": 17796,
+        "sha256": "bcf9fb981a1fb1831c9f682dbbb980d4c4038adb40c718f996f11c9968258be2",
+        "capability_numbers": [
+          1
+        ]
+      },
+      "cpy_transpose_16": {
+        "path": "/run/media/jethac/Shared/radish/asr-graph-bounded-build-0045/modules/cpy_transpose_16/cpy_transpose_16.spv",
+        "bytes": 18104,
+        "sha256": "331b1047ee7a3584c3a968dfc61ab7e61a438edeb2be35d03bb58165aeaa1346",
+        "capability_numbers": [
+          1,
+          4433
+        ]
+      }
+    },
+    "checks": [
+      "All four modules/utilities byte-identical to prior selected native source. No shader or arithmetic change. Exact2SSBO/push120/native/local/packed/safety/count assertions before data; same <=4096slots/private0.",
+      "Norm32declared rows/18dispatched widths128 and1024 use exact power-of-two fastdiv metadata (mp0,Lshift+5/shift). Padded strides and element offsets3/5 map each row correctly; remaining14rows and final padding are addressable poison. CPU centered-variance reference per-row original1e-7 bound; exactzero row, tinyzero-DC row, and normal nonzero-mean dyadic rows. No nonfinite values accepted.",
+      "All three transpose input/output coordinate maps independently enumerate8710 unique elements and correct 3x3x2 tile coordinates. copy_transpose_02 swaps tiled axes0/2 with middle2batch dimension; regular transpose tiles0/1 with third2batch dimension. UINT32/UINT16 exact payload; truncated16bit value matches original shader typed loads/stores. Tile tails67x65, padded strides/offsets and descriptor-visible padding remain fully checked.",
+      "Ten changed-seed rounds,93732 validoutputs; each18WG yields8+8+2 chunks/3submits. Complete both allocations checked outside norm numeric payload; no RBA-hidden guard region. All lifetimes persist through final Vk fence/invalidate before reuse/free.",
+      "Declared input values are finite dyadics with small squares/sums, avoiding a different cancellation-stress question while still exercising means/variance and tiny input. This is focused batching correctness, not full numerical operator coverage."
+    ],
+    "remaining": [
+      "Actual native identities/flags and3-submit traces",
+      "Original model outputs/cache lifecycle"
+    ],
+    "timing_collected": false
+  },
+  "local_runner_review": {
+    "status": "PASS finite local-family helper/build/runner pairing; ready after clean dependency drain",
+    "source_review": "45a860f184cdf2f6a08b1ff6699e603c241cfc80e38fee5331f130fe006357c8",
+    "build": "276e6804cc5ad508f13c91f5897dae00e92ca055893fd9b70f9215d183157407",
+    "helper": "b31e2ab95a5a77eca6f99ed3dac6933f4cb2cb0d12d1c691a1019d6f2639e343",
+    "runner": "d896e2bf7e0ce9f7404ab3f551cb351f873a308db9fa3e65906e0f0996939133",
+    "hostcheck": "13e64919ce0c31eccb59f698a021dcd3c0fb6096e0ec4f5ee24ef10fe5f86d57",
+    "argv": "71d204af98693803969f96820dbc36b9b36bf0191ef1d06b27b9186126c009f8",
+    "driver": "6f1551cc8ed772439d53157b50e518bef79b3a49f3144e058127faa8740a71ee",
+    "coherent_review": "c724030ef5b00c958ce25d51e5b23ddc2146684e4f7796710dd15017a87db126",
+    "checks": [
+      "Exact final3e31 helper source and four old modules; AArch64ELF183, original setup/utilities.",
+      "Original RMS transport caps/disk/log/lock/fault/services/collection retained; only assets/CLI/result assertions +untimed resource diagnostics differ.",
+      "Ten exact tuples and original numeric/exact/fullguards plus30 total submit/flush results required. Native body identity/resource verification remains independent actual counterpart."
+    ],
+    "timing_collected": false
+  }
 }

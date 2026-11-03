@@ -1,5 +1,5 @@
 {
-  "status": "Host qualification candidate d4d0/6f15: coherent deferred waits and local-family batching source/build complete, target checks pending. Latest model result remains42969 on prior4d20; full model/cache and all-five performance gate remain open/closed respectively.",
+  "status": "Qualification candidate d4d0/6f15: coherent source/build/ABI and both focused queue/family actuals pass. Focused TTS and full ASR/cache remain pending; latest full result42969 is on prior4d20. All-five performance gate remains closed.",
   "application": "Frozen ASR source with previously published GQA, quantized phase, memory-liveness and unit-axis overlays",
   "ordered_additive_patches": [
     {
@@ -578,7 +578,7 @@
     "full": "f3763bf6c1c0d464369a099f3bbc96325b982941cc5336495c62386f79b9d208",
     "deployed_strip": "6f1551cc8ed772439d53157b50e518bef79b3a49f3144e058127faa8740a71ee",
     "source": "0046-bounded-deferred-submit.patch +0046-local-buffer-batching.patch over4d20; queue plus two DRM objects, existing ABI unchanged",
-    "target_status": "not yet executed"
+    "target_status": "Dependency6d6b7931 and local-family3272fdce independently pass; focused TTS and full ASR/cache gates remain"
   },
   "incremental_source_review": "531fcaaa71331df51fca79dbd9c52e8664ae373cf76c9ec331b9eee2a25c3799",
   "incremental_build_runner_review": "d6930974ea4a41177dd4c46c34dc55cf96b1f58ffe327766190c245e02de7d01",
@@ -1388,7 +1388,7 @@
   },
   "historical_warmup_result": "optimization-asr-stream-warmup-timeout-0046.json",
   "coherent_queue_stage": {
-    "source_build_receipt": "5c975036e9b5f893fd869180c81a9e71ef3a757a0d453d5e4e8e14f22952a348",
+    "source_build_receipt": "d93c86666b13eaf758e7398d67f3013a52161b4cf761ac4960eaf265eb767e75",
     "build": {
       "status": "PASS isolated coherent v2 host build; source/header/target counterpart pending",
       "source_release": "64377b635976e753fb29a792684bf53602bbae726b97f382acf2e179d24dd2ef",
@@ -1485,7 +1485,7 @@
       "strip_sha256": "6f1551cc8ed772439d53157b50e518bef79b3a49f3144e058127faa8740a71ee",
       "scope": "Only reviewed queue composition and two DRM archive members; other fd_fence consumers require offset/sole-allocator source audit"
     },
-    "target_status": "Pending focused and integrated checks; never measured"
+    "target_status": "Dependency6d6b7931 and local-family3272fdce independently pass; focused TTS and full ASR/cache gates remain"
   },
   "prior_driver": {
     "full": "0d5496a7528bddab3ac1ee6f1c75f5ba417d7deeba40bfbbd66eb844c48fe9ff",
