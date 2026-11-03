@@ -1,0 +1,69 @@
+--- a/transcribe.cpp/src/arch/qwen3_asr/model.cpp
++++ b/transcribe.cpp/src/arch/qwen3_asr/model.cpp
+@@ -768,9 +768,17 @@
+         return TRANSCRIBE_OK;
+     };
+ 
+-    const int n_full = n_chunks - n_chunks % kConvPassChunks;
++    // Chunks have independent convolution inputs and padding. Bound the live
++    // im2col/activation arena on the constrained profile while preserving every
++    // chunk and the original output order; one graph is reused across passes.
++    const int pass_chunks = khr_gpu_graph_policy(cc) ? 1 : kConvPassChunks;
++    if (khr_gpu_graph_policy(cc)) {
++        log_msg(TRANSCRIBE_LOG_LEVEL_INFO, "qwen3_asr KHR subsample: chunks=%d pass_chunks=%d",
++                n_chunks, pass_chunks);
++    }
++    const int n_full = n_chunks - n_chunks % pass_chunks;
+     if (n_full > 0) {
+-        if (const transcribe_status st = run_passes(kConvPassChunks, 0, n_full); st != TRANSCRIBE_OK) {
++        if (const transcribe_status st = run_passes(pass_chunks, 0, n_full); st != TRANSCRIBE_OK) {
+             return st;
+         }
+     }
+--- a/app-asr/straylight_asr.cpp
++++ b/app-asr/straylight_asr.cpp
+@@ -50,6 +50,7 @@
+ #include <cmath>
+ #include <condition_variable>
+ #include <cstdio>
++#include <cstdlib>
+ #include <cstring>
+ #include <deque>
+ #include <mutex>
+@@ -242,8 +243,16 @@
+     int64_t            seg_start_ = 0, speech_on_ = 0, sil_start_ = -1, speech_smp_ = 0, last_end_ = 0;
+ };
+ 
++bool resource_diagnostics() {
++    const char * value = std::getenv("TRANSCRIBE_RESOURCE_DIAGNOSTICS");
++    return value && std::strcmp(value, "1") == 0;
++}
++
+ void log_cb(transcribe_log_level level, const char * msg, void *) {
+-    if (level == TRANSCRIBE_LOG_LEVEL_WARN || level == TRANSCRIBE_LOG_LEVEL_ERROR)
++    const bool resource = resource_diagnostics() && msg &&
++        (std::strstr(msg, "qwen3_asr KHR ") || std::strstr(msg, ": sched buffer ") ||
++         std::strstr(msg, ": gate+up ") || std::strstr(msg, ": weights "));
++    if (level == TRANSCRIBE_LOG_LEVEL_WARN || level == TRANSCRIBE_LOG_LEVEL_ERROR || resource)
+         std::fprintf(stderr, "straylight-listen: asr: %s", msg);
+ }
+ 
+@@ -525,11 +534,15 @@
+         transcribe_run_params rp;
+         sla_engine::run_params(rp, "warm");
+         e->run_gen = e->gen.load();
+-        transcribe_run(e->asr, warm.data(), (int) warm.size(), &rp);
++        if (resource_diagnostics()) std::fprintf(stderr, "ASR_MEMORY phase=warm_offline_begin samples=%zu\n", warm.size());
++        const int warm_status = transcribe_run(e->asr, warm.data(), (int) warm.size(), &rp);
++        if (resource_diagnostics()) std::fprintf(stderr, "ASR_MEMORY phase=warm_offline_end status=%d\n", warm_status);
+         if (e->cfg.streaming) {
++            if (resource_diagnostics()) std::fprintf(stderr, "ASR_MEMORY phase=warm_stream_begin\n");
+             if (transcribe_stream_begin(e->asr, &rp, nullptr) == TRANSCRIBE_OK) {
+-                transcribe_stream_feed(e->asr, warm.data(), (int) warm.size(), nullptr);
+-                transcribe_stream_finalize(e->asr, nullptr);
++                const int feed_status = transcribe_stream_feed(e->asr, warm.data(), (int) warm.size(), nullptr);
++                const int final_status = transcribe_stream_finalize(e->asr, nullptr);
++                if (resource_diagnostics()) std::fprintf(stderr, "ASR_MEMORY phase=warm_stream_end feed_status=%d final_status=%d\n", feed_status, final_status);
+             } else {
+                 std::fprintf(stderr, "straylight-listen: asr: no streaming support in this build; streaming off\n");
+                 e->cfg.streaming = 0;

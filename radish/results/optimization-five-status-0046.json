@@ -25,8 +25,8 @@
     },
     {
       "area": 4,
-      "implementation": "Integrated GQA broadcast, phase-specific quantized kernels, encoder-to-prefill device-buffer reuse and reduced host staging; actual application pipeline cache and supported-kernel initialization correction are built.",
-      "evidence": "Six quantized kernels, floating GQA and all32 native classes pass. Corrected full ASR92209 initializes Vulkan0, then is OOM-killed at unchanged640MiB cap before output. Full model fit, transcript, placement and fresh-process replay remain open."
+      "implementation": "Integrated GQA broadcast, phase-specific quantized kernels, encoder-to-prefill device-buffer reuse and reduced host staging; actual application pipeline cache and supported-kernel initialization correction are built. Constrained-profile subsampling reuses one independent chunk graph across the complete audio, lowering unnecessary live convolution intermediates.",
+      "evidence": "Six quantized kernels, floating GQA and all32 native classes pass. Actual93589 completes three serial GPU subsample graphs, then reaches encoder placement533/0 before unchanged640MiB OOM. Full model output, placement completion, fit and cache replay remain open."
     },
     {
       "area": 5,
@@ -47,11 +47,12 @@
     "0046-ncnn-weight-only-precision.patch": "4578d54d34c41374ec92f697393448c67c72af134ea7b6bb65a84f8ed58bafb1",
     "0046-ncnn-absolute-weight-budget.patch": "602c133670191527f51d066848277b7efbde65d5ef45a82e856bb87cc3646897",
     "0046-asr-application-pipeline-cache.patch": "7766b6ca5ba5c2acc431b92ebc66288211a026b96c40ea4617884822bb79abdc",
-    "0046-asr-profile-matrix-init.patch": "4652afd06124dd0832efb85159e3d0d2b5699aedef971c7a1ddc891ba864903c"
+    "0046-asr-profile-matrix-init.patch": "4652afd06124dd0832efb85159e3d0d2b5699aedef971c7a1ddc891ba864903c",
+    "0046-asr-subsample-liveness.patch": "0295e09fd7ddcf116d1f1675b91dc5fa7a51052e7d767461e0a6cc9d56c7f58f"
   },
   "existing_results": "Original743 CTS cases and modified132 robustness outcomes remain historical pinned evidence; no conformance count or selected performance change.",
   "completion_gate": "TTS side is qualified for the stated T213/T78 fixtures. All-five gate remains CLOSED on ASR full-model memory/placement/transcript and real application replay; full GOAL remains active.",
-  "as_of_utc": "2026-11-03 00:26 UTC",
+  "as_of_utc": "2026-11-03 00:36 UTC",
   "correctness_receipts": {
     "optimization-cache-correctness-0046.json": "0af98f899b26429971ef61df554e2cf4a4fe340019353f9ed7491869ab59b1f5",
     "optimization-queue-correctness-0046.json": "98c9f0d64a5ef1076462930effb6fd3e22c48de75cad78e87f7e68eaa6636b0e",
@@ -75,7 +76,8 @@
     "Half full48210:2/562342 numerical mismatches under original tolerance; no second extraction/waveform.",
     "Quant first helper logical/physical assertion and native32 exactAPI1.0 assertion were setup failures; minimal harness corrections preserve modules/oracles.",
     "First full ASR cold25335: generic shared-memory matrix initialization rejected backend before model execution.",
-    "Corrected ASR89794: Vulkan backend initializes, then unchanged640MiB cgroup cap OOM-kills process before transcript/placement completion; no memory-limit waiver."
+    "Corrected ASR89794: Vulkan backend initializes, then unchanged640MiB cgroup cap OOM-kills process before transcript/placement completion; no memory-limit waiver.",
+    "Serial-subsample53764: all3 GPU subsample graphs complete; encoder placement533/0 then OOM at640MiB/swap85.1MiB. Diagnostic ownership investigation continues; original caps and full model retained."
   ],
   "runtime_cache": "Actual ncnn missing-cache cold process exports populated cache; second process accepts and re-exports identical178 keyed compiled objects and correct outputs. No hit-count or acceleration inference."
 }

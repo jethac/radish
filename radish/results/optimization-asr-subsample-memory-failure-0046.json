@@ -1,0 +1,46 @@
+{
+  "status": "FAIL full-model fit; all three serial GPU subsample graphs completed before encoder-stage OOM",
+  "binary": "93589c2c539ba4867dbbfd3adea654bbfd59f6c1b8cc514442c4201e71a5b57d",
+  "driver": "9f640904b0f4399cf0a034020d6c1e7f0041e7ce60db481b1c8255d855e59954",
+  "source_patch": "7e0a7032bd671d43ed9d0b6ea78aec2432a7abaa6487d66cbac65da84a83254a",
+  "published_patch": "0295e09fd7ddcf116d1f1675b91dc5fa7a51052e7d767461e0a6cc9d56c7f58f",
+  "source_review": "437344ecd98e46928b5a0e842abb0d41e0037c794e9a0cc462a0963f99c64891",
+  "host_runner_review": "01cdd69d5ba0dec816ea3975b8edc92d071afa5f24773ce3a4e237ad5d9595db",
+  "actual_phase": {
+    "warmup_samples": 40000,
+    "all_chunks": 3,
+    "chunks_per_graph": 1,
+    "completed_subsample_graphs": 3,
+    "subsample_compute_gpu_per_graph": 19,
+    "encoder_placement_compute_gpu": 533,
+    "rejected_compute_nodes": 0,
+    "encoder_completion": "not established",
+    "transcripts": 0
+  },
+  "resource_evidence": {
+    "memory_cap_MiB": 640,
+    "swap_cap_MiB": 128,
+    "memory_peak_MiB": 640,
+    "swap_peak_MiB": 85.1,
+    "weight_buffer_bytes": 571405504,
+    "subsample_scheduler_buffer_bytes": 26238080,
+    "encoder_handoff_bytes": 135168,
+    "oom_cgroup_shmem_bytes": 601030656,
+    "oom_cgroup_anon_bytes": 66527232
+  },
+  "run_log": "7b1cb8aca3e18d967df69cd5368577f033168014819fd06c53875231e4e48525",
+  "kernel_log": "642a7230541d83ff33a24171e685074340816d26d2ac70f5404deb567b77e7d6",
+  "collection": "76aa3b58148d89cc797ae408eba304f008308b708476e2db124fcf4e5d1c7a2e",
+  "fault_check": "PASS: no new GPU fault/recovery messages",
+  "services_after": [
+    "active",
+    "active"
+  ],
+  "terminal": "unit inactive/dead; complete collection; staged executable archived with two exact host restore copies",
+  "performance_measurement": false,
+  "limits": [
+    "Original full audio, chunks, warm-up calls and transcript oracle remain unchanged; no smaller fixture or CPU fallback.",
+    "Memory figures occur at different phases from the earlier failure; no matched memory-improvement or performance claim.",
+    "The full model has not passed output, final placement, memory fit or populated cache replay. No unchanged retry."
+  ]
+}
