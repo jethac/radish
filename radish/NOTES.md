@@ -1,5 +1,16 @@
 # Radish status
 
+## 2026-11-03: preserve the attention-batched model result
+
+The new batching paths execute in the original model, but the full run still
+reaches the unchanged watchdog during streaming prefill. Offline warmup completes
+its decoder step and synchronized cleanup; the streaming encoder also completes.
+Neither requested transcript is produced. The terminal result is timeout/TERM,
+with 640 MiB memory and 128 MiB swap guard telemetry, not an OOM classification.
+[Exact owner capture](results/optimization-asr-attention-batch-timeout-0046.json)
+remains separate from the independently passing attention/softmax fixtures.
+Cache replay is held pending a passing full model. No performance was measured.
+
 ## 2026-11-03: bounded attention batching
 
 The current ASR listener remains8138. A queue-only driver change extends the

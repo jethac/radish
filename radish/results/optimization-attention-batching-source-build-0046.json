@@ -1,5 +1,5 @@
 {
-  "status": "Source/build and focused GQA54/softmax8 numerical/structural checks qualified; original full model pending",
+  "status": "Source/build and focused GQA54/softmax8 correctness qualified. Full8138/3a30 handle85294 timed out in streaming prefill under original300s/640MiB/128MiB controls; offline one-step cleanup passed, no requested transcripts. No full-model/cache/performance claim.",
   "source_release": {
     "status": "frozen implementation source; device qualification pending",
     "files": {
@@ -422,5 +422,10 @@
   "actual_receipts": {
     "optimization-attention-batching-gqa-actual-0046.json": "ea1a64af900cfe61ae0135878b48208a3ac756bd567d88c0eb4435c32caae724",
     "optimization-attention-batching-softmax-actual-0046.json": "a76dd7b0c307c083f3c79ec03cc2fb0990617fe5c87f3caccd0147d88d4c53f4"
+  },
+  "latest_full_model_result": {
+    "file": "optimization-asr-attention-batch-timeout-0046.json",
+    "sha256": "9aa019759678c1a8b21d23fc157c206289eec2a154f547593aefab178ed793de",
+    "independent_review": "pending; owner terminal artifact verified"
   }
 }

@@ -1,0 +1,83 @@
+{
+  "status": "FAIL original full-model watchdog; no transcript claim",
+  "handle": 85294,
+  "source_candidate": "listener8138 unchanged plus queue-only3a30",
+  "failure": {
+    "status": "failed",
+    "error": "probe/compile process returned 1",
+    "started": true,
+    "terminal": false,
+    "process_returncode": 1,
+    "remote": "/var/tmp/radish/core-compute-opt0046-asr-full-attention-batch",
+    "unit": "radish-core-compute-probe-1793671350259731494"
+  },
+  "run_log_sha256": "3cc1427184ad4d6a549eeae3762fb60d6e2a0e8ed1791c9a96e59cf2bea82858",
+  "terminal_result": "timeout/TERM, not systemd OOM result",
+  "guard_resource_peak": {
+    "memory_MiB": 640,
+    "swap_MiB": 128,
+    "is_performance_measurement": false
+  },
+  "warm_markers": [
+    "ASR_WARMUP_STEP mode=offline completed=1",
+    "ASR_WARMUP_DONE mode=offline steps=1 temporary_session=1 synchronized=1 status=0"
+  ],
+  "phase": "streaming encoder completed; last placement791/0 is cached-prefix streaming prefill; no streaming warm STEP/DONE or real requested transcripts",
+  "actual_requested_outputs": [],
+  "bounded_diagnostic_counts": {
+    "dispatch_begin": 4096,
+    "dispatch_end": 4096,
+    "pipeline_begin": 34,
+    "pipeline_end": 34
+  },
+  "actual_attention_softmax_native_batch_packed_localmemory_counts": [
+    {
+      "native": "358",
+      "batch": "8",
+      "packed": "1",
+      "local_memory": "1",
+      "count": 82
+    },
+    {
+      "native": "64",
+      "batch": "8",
+      "packed": "1",
+      "local_memory": "1",
+      "count": 36
+    },
+    {
+      "native": "225",
+      "batch": "8",
+      "packed": "1",
+      "local_memory": "1",
+      "count": 76
+    },
+    {
+      "native": "65",
+      "batch": "8",
+      "packed": "1",
+      "local_memory": "1",
+      "count": 104
+    },
+    {
+      "native": "536",
+      "batch": "8",
+      "packed": "1",
+      "local_memory": "1",
+      "count": 56
+    }
+  ],
+  "drains": {
+    "drain-000.txt": "LoadState=not-found\nActiveState=inactive\nSubState=dead\n"
+  },
+  "collection": {
+    "passed": true,
+    "errors": []
+  },
+  "services": [
+    "active",
+    "active"
+  ],
+  "fault_check": "PASS: no new GPU fault/recovery messages\n",
+  "next": "Independent phase/memory diagnosis; no unchangedretry or conditionalimport; no performance release"
+}

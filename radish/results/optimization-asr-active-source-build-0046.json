@@ -1,5 +1,5 @@
 {
-  "status": "Listener8138 unchanged; driver3a30 adds reviewed floating-attention/softmax batching. Prior50572 completed streaming encoder and timed out in cached-prefix streaming prefill, before real requests. Focused numerical/structural checks independently pass, original model and cache replay remain open.",
+  "status": "Source/build and focused GQA54/softmax8 correctness qualified. Full8138/3a30 handle85294 timed out in streaming prefill under original300s/640MiB/128MiB controls; offline one-step cleanup passed, no requested transcripts. No full-model/cache/performance claim.",
   "application": "Frozen ASR source with previously published GQA, quantized phase, memory-liveness and unit-axis overlays",
   "ordered_additive_patches": [
     {
@@ -1042,5 +1042,10 @@
     },
     "source_review": "47055777af68011840c1b454f8158906c3cd0f07a6d24fb8348ef11636f49435",
     "build_review": "8f30f8e3c82cd99e10117e3fafa0fc57481f592e8f63ab10451a64004da80098"
+  },
+  "latest_full_model_result": {
+    "file": "optimization-asr-attention-batch-timeout-0046.json",
+    "sha256": "9aa019759678c1a8b21d23fc157c206289eec2a154f547593aefab178ed793de",
+    "independent_review": "pending; owner terminal artifact verified"
   }
 }
