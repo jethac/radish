@@ -88,6 +88,9 @@ in shared memory reused across taps); driver buffer copy as one compute
 dispatch; fuse the remaining 162/322-channel chains; Winograd GEMM load phase.
 Conformance: delegated CTS track running (ledger to follow).
 
+No audible tests: nothing plays through the tablet speaker. `tts.sh` and
+`core-bench.sh` write waveforms to files under the run directory only.
+
 Left on the device: `/var/tmp/radish-canon/` — `cts/` (deqp-vk and data,
 run output removed after each batch), `lib/` (drivers and ICDs; the
 baseline `3c58218041a4` and the graphics-default `3390289bfab6` matter,
