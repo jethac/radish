@@ -68,7 +68,8 @@ static const uint32_t push_fs_spv[] =
    X(vkCreateDescriptorPool) X(vkAllocateDescriptorSets)                       \
    X(vkUpdateDescriptorSets) X(vkCmdBindDescriptorSets) X(vkCmdPushConstants)  \
    X(vkCmdBindVertexBuffers) X(vkCmdBindIndexBuffer) X(vkCmdDrawIndexed)      \
-   X(vkCmdCopyBufferToImage) X(vkCmdClearAttachments)
+   X(vkCmdCopyBufferToImage) X(vkCmdClearAttachments) X(vkCmdBlitImage)      \
+   X(vkCmdClearDepthStencilImage)
 #define FN(name) static PFN_##name name;
 FUNCS(FN)
 
@@ -81,8 +82,12 @@ FUNCS(FN)
       }                                                                        \
    } while (0)
 
+#ifndef W
 #define W 64
+#endif
+#ifndef H
 #define H 64
+#endif
 
 static VkDevice dev;
 static VkPhysicalDeviceMemoryProperties memprops;
@@ -140,10 +145,23 @@ int
 main(int argc, char **argv)
 {
    int vbo = argc > 1 && !strcmp(argv[1], "vbo");
-   int dclear = argc > 1 && !strcmp(argv[1], "dclear");
-   int depth = dclear || (argc > 1 && !strcmp(argv[1], "depth"));
+   int dclear = argc > 1 && (!strcmp(argv[1], "dclear") || !strcmp(argv[1], "dmap") ||
+                             !strcmp(argv[1], "dsamp"));
+   int depth = dclear || (argc > 1 && (!strcmp(argv[1], "depth") || !strcmp(argv[1], "dsimg")));
    int clear = argc > 1 && !strcmp(argv[1], "clear");
    int blend = argc > 1 && !strcmp(argv[1], "blend");
+   /* msaa: flat triangle into a 4-sample attachment cleared to blue, resolved
+    * into the single-sample image by the render pass */
+   int msaa = argc > 1 && !strcmp(argv[1], "msaa");
+   /* blit: render into a second image, blit it back mirrored in x (the
+    * triangle is symmetric about x = 32) */
+   int blit = argc > 1 && !strcmp(argv[1], "blit");
+   /* dsimg: depth mode with the depth image set by vkCmdClearDepthStencilImage */
+   int dsimg = argc > 1 && !strcmp(argv[1], "dsimg");
+   /* dmap: dclear, then every pixel cleared to its own depth (index / 2^20)
+    * with vkCmdClearAttachments; prints where each landed in memory */
+   int dsamp = argc > 1 && !strcmp(argv[1], "dsamp");
+   int dmap = dsamp || (argc > 1 && !strcmp(argv[1], "dmap"));
    int push_mode = depth || blend;
    int color = vbo || (argc > 1 && !strcmp(argv[1], "color"));
    void *lib = dlopen("libvulkan.so.1", RTLD_NOW);
@@ -195,12 +213,37 @@ main(int argc, char **argv)
    VkImageView view;
    CHECK(vkCreateImageView(dev, &vci, NULL, &view));
 
+   VkImage bimage = VK_NULL_HANDLE;
+   if (blit) {
+      CHECK(vkCreateImage(dev, &imci, NULL, &bimage));
+      vkGetImageMemoryRequirements(dev, bimage, &req);
+      CHECK(vkBindImageMemory(dev, bimage, alloc(req), 0));
+      VkImage t = image;
+      image = bimage;
+      bimage = t; /* render into the new image, blit into the read-back one */
+      vci.image = image;
+      CHECK(vkCreateImageView(dev, &vci, NULL, &view));
+   }
+   VkImage msimage = VK_NULL_HANDLE;
+   VkImageView msview = VK_NULL_HANDLE;
+   if (msaa) {
+      VkImageCreateInfo mci = imci;
+      mci.samples = VK_SAMPLE_COUNT_4_BIT;
+      mci.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+      CHECK(vkCreateImage(dev, &mci, NULL, &msimage));
+      vkGetImageMemoryRequirements(dev, msimage, &req);
+      CHECK(vkBindImageMemory(dev, msimage, alloc(req), 0));
+      VkImageViewCreateInfo mvci = vci;
+      mvci.image = msimage;
+      CHECK(vkCreateImageView(dev, &mvci, NULL, &msview));
+   }
    VkImage dimage = VK_NULL_HANDLE;
    VkImageView dview = VK_NULL_HANDLE;
    if (depth) {
       VkImageCreateInfo dci2 = imci;
       dci2.format = VK_FORMAT_D32_SFLOAT;
-      dci2.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+      dci2.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT |
+                   VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
       CHECK(vkCreateImage(dev, &dci2, NULL, &dimage));
       vkGetImageMemoryRequirements(dev, dimage, &req);
       CHECK(vkBindImageMemory(dev, dimage, alloc(req), 0));
@@ -236,18 +279,32 @@ main(int argc, char **argv)
    if (dclear)
       atts[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
    atts[1].initialLayout = atts[1].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+   if (msaa) {
+      atts[1] = atts[0];
+      atts[0].samples = VK_SAMPLE_COUNT_4_BIT;
+      atts[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+      atts[0].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+      atts[0].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+      atts[1].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+   }
    VkAttachmentReference ref = { 0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL };
+   VkAttachmentReference rref = { 1, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL };
    VkAttachmentReference dref = { 1, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL };
    VkSubpassDescription sub = { .pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS,
                                 .colorAttachmentCount = 1, .pColorAttachments = &ref,
+                                .pResolveAttachments = msaa ? &rref : NULL,
                                 .pDepthStencilAttachment = depth ? &dref : NULL };
    VkRenderPassCreateInfo rpci = { VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
-      .attachmentCount = depth ? 2 : 1, .pAttachments = atts, .subpassCount = 1, .pSubpasses = &sub };
+      .attachmentCount = depth || msaa ? 2 : 1, .pAttachments = atts, .subpassCount = 1, .pSubpasses = &sub };
    VkRenderPass pass;
    CHECK(vkCreateRenderPass(dev, &rpci, NULL, &pass));
    VkImageView views[2] = { view, dview };
+   if (msaa) {
+      views[0] = msview;
+      views[1] = view;
+   }
    VkFramebufferCreateInfo fci = { VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO, .renderPass = pass,
-      .attachmentCount = depth ? 2 : 1, .pAttachments = views, .width = W, .height = H, .layers = 1 };
+      .attachmentCount = depth || msaa ? 2 : 1, .pAttachments = views, .width = W, .height = H, .layers = 1 };
    VkFramebuffer fb;
    CHECK(vkCreateFramebuffer(dev, &fci, NULL, &fb));
 
@@ -316,7 +373,7 @@ main(int argc, char **argv)
       .polygonMode = VK_POLYGON_MODE_FILL, .cullMode = VK_CULL_MODE_NONE,
       .frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE, .lineWidth = 1.0f };
    VkPipelineMultisampleStateCreateInfo ms = { VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
-      .rasterizationSamples = VK_SAMPLE_COUNT_1_BIT };
+      .rasterizationSamples = msaa ? VK_SAMPLE_COUNT_4_BIT : VK_SAMPLE_COUNT_1_BIT };
    VkPipelineColorBlendAttachmentState cba = { .colorWriteMask = 0xf };
    if (blend)
       cba = (VkPipelineColorBlendAttachmentState) { .blendEnable = VK_TRUE,
@@ -355,7 +412,7 @@ main(int argc, char **argv)
    vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
                         0, 0, NULL, 0, NULL, 1, &b);
    /* in clear mode the render pass load op must replace this white */
-   VkClearColorValue blue = { .float32 = { clear, clear, 1, 1 } };
+   VkClearColorValue blue = { .float32 = { clear || msaa, clear || msaa, 1, 1 } };
    vkCmdClearColorImage(cmd, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, &blue, 1, &range);
    b.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
    b.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
@@ -363,7 +420,26 @@ main(int argc, char **argv)
    b.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
    vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT,
                         VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, 0, 0, NULL, 0, NULL, 1, &b);
-   if (depth && !dclear) {
+   if (dsimg) {
+      VkImageMemoryBarrier db0 = b;
+      db0.srcAccessMask = 0;
+      db0.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+      db0.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+      db0.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+      db0.image = dimage;
+      db0.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+      vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
+                           0, 0, NULL, 0, NULL, 1, &db0);
+      VkClearDepthStencilValue one = { 1.0f, 0 };
+      vkCmdClearDepthStencilImage(cmd, dimage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, &one, 1,
+                                  &db0.subresourceRange);
+      db0.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+      db0.dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+      db0.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+      db0.newLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+      vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT,
+                           VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT, 0, 0, NULL, 0, NULL, 1, &db0);
+   } else if (depth && !dclear) {
       static float ones[W * H];
       for (unsigned i = 0; i < W * H; i++)
          ones[i] = 1.0f;
@@ -428,6 +504,15 @@ main(int argc, char **argv)
    } else {
       vkCmdDraw(cmd, 3, 1, 0, 0);
    }
+   if (dmap) {
+      for (int y = 0; y < H; y++)
+         for (int x = 0; x < W; x++) {
+            VkClearAttachment ca = { VK_IMAGE_ASPECT_DEPTH_BIT, 0,
+               { .depthStencil = { (y * W + x + 1) / 1048576.0f, 0 } } };
+            VkClearRect cr = { { { x, y }, { 1, 1 } }, 0, 1 };
+            vkCmdClearAttachments(cmd, 1, &ca, 1, &cr);
+         }
+   }
    if (clear) {
       VkClearAttachment ca = { VK_IMAGE_ASPECT_COLOR_BIT, 0, { .color = { .float32 = { 0, 1, 0, 1 } } } };
       VkClearRect cr = { { { 0, 0 }, { 8, 8 } }, 0, 1 };
@@ -440,18 +525,97 @@ main(int argc, char **argv)
    b.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
    vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                         VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, NULL, 0, NULL, 1, &b);
+   if (blit) {
+      VkImageMemoryBarrier bb = b;
+      bb.srcAccessMask = 0;
+      bb.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+      bb.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+      bb.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+      bb.image = bimage;
+      vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
+                           0, 0, NULL, 0, NULL, 1, &bb);
+      VkImageBlit region = { .srcSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 },
+         .srcOffsets = { { 0, 0, 0 }, { W, H, 1 } },
+         .dstSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 },
+         .dstOffsets = { { W, 0, 0 }, { 0, H, 1 } } };
+      vkCmdBlitImage(cmd, image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, bimage,
+                     VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region, VK_FILTER_NEAREST);
+      bb.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+      bb.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+      bb.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+      bb.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+      vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
+                           0, 0, NULL, 0, NULL, 1, &bb);
+      image = bimage;
+   }
    VkBufferImageCopy copy = { .imageSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 },
                               .imageExtent = { W, H, 1 } };
    vkCmdCopyImageToBuffer(cmd, image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, buffer, 1, &copy);
+   VkBuffer dbuf = VK_NULL_HANDLE;
+   float *dpixels = NULL;
+   if (depth) {
+      /* read the depth back too: 0.25 inside, 1 outside */
+      VkBufferCreateInfo dbci = bci;
+      CHECK(vkCreateBuffer(dev, &dbci, NULL, &dbuf));
+      vkGetBufferMemoryRequirements(dev, dbuf, &req);
+      VkDeviceMemory dmem = alloc(req);
+      CHECK(vkBindBufferMemory(dev, dbuf, dmem, 0));
+      CHECK(vkMapMemory(dev, dmem, 0, W * H * 4, 0, (void **)&dpixels));
+      memset(dpixels, 0x55, W * H * 4);
+      VkImageMemoryBarrier db1 = b;
+      db1.srcAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+      db1.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+      db1.oldLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+      db1.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+      db1.image = dimage;
+      db1.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+      vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
+                           VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, NULL, 0, NULL, 1, &db1);
+      VkBufferImageCopy dcopy = { .imageSubresource = { VK_IMAGE_ASPECT_DEPTH_BIT, 0, 0, 1 },
+                                  .imageExtent = { W, H, 1 } };
+      if (dsamp) {
+         /* sample the depth image (experiment: RADISH_EXP_DEPTH_TILE) into R32F */
+         VkImageCreateInfo fci2 = imci;
+         fci2.format = VK_FORMAT_R32_SFLOAT;
+         VkImage fimage;
+         CHECK(vkCreateImage(dev, &fci2, NULL, &fimage));
+         vkGetImageMemoryRequirements(dev, fimage, &req);
+         CHECK(vkBindImageMemory(dev, fimage, alloc(req), 0));
+         VkImageMemoryBarrier fb = b;
+         fb.srcAccessMask = 0;
+         fb.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+         fb.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+         fb.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+         fb.image = fimage;
+         vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
+                              0, 0, NULL, 0, NULL, 1, &fb);
+         VkImageBlit region = { .srcSubresource = { VK_IMAGE_ASPECT_DEPTH_BIT, 0, 0, 1 },
+            .srcOffsets = { { 0, 0, 0 }, { W, H, 1 } },
+            .dstSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 },
+            .dstOffsets = { { 0, 0, 0 }, { W, H, 1 } } };
+         vkCmdBlitImage(cmd, dimage, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, fimage,
+                        VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region, VK_FILTER_NEAREST);
+         fb.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+         fb.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+         fb.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+         fb.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+         vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
+                              0, 0, NULL, 0, NULL, 1, &fb);
+         dcopy.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+         vkCmdCopyImageToBuffer(cmd, fimage, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, dbuf, 1, &dcopy);
+      } else {
+         vkCmdCopyImageToBuffer(cmd, dimage, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, dbuf, 1, &dcopy);
+      }
+   }
    CHECK(vkEndCommandBuffer(cmd));
    VkSubmitInfo si = { VK_STRUCTURE_TYPE_SUBMIT_INFO, .commandBufferCount = 1, .pCommandBuffers = &cmd };
    CHECK(vkQueueSubmit(queue, 1, &si, VK_NULL_HANDLE));
    CHECK(vkQueueWaitIdle(queue));
 
    /* CPU reference: NDC (-0.5,-0.5) (0.5,-0.5) (0,0.5) -> framebuffer. */
-   const double vx[3] = { 16, 48, 32 }, vy[3] = { 16, 16, 48 };
+   const double vx[3] = { W / 4.0, W * 3 / 4.0, W / 2.0 }, vy[3] = { H / 4.0, H / 4.0, H * 3 / 4.0 };
    double area = edge(vx[0], vy[0], vx[1], vy[1], vx[2], vy[2]);
-   unsigned checked = 0, bad = 0, inside_n = 0;
+   unsigned checked = 0, bad = 0, inside_n = 0, mixed = 0;
    for (int y = 0; y < H; y++) {
       for (int x = 0; x < W; x++) {
          double px = x + 0.5, py = y + 0.5;
@@ -462,8 +626,12 @@ main(int argc, char **argv)
          double d0 = fabs(edge(vx[1], vy[1], vx[2], vy[2], px, py)) / hypot(vx[2] - vx[1], vy[2] - vy[1]);
          double d1 = fabs(edge(vx[2], vy[2], vx[0], vy[0], px, py)) / hypot(vx[0] - vx[2], vy[0] - vy[2]);
          double d2 = fabs(edge(vx[0], vy[0], vx[1], vy[1], px, py)) / hypot(vx[1] - vx[0], vy[1] - vy[0]);
-         if (d0 < 0.75 || d1 < 0.75 || d2 < 0.75)
+         if (d0 < 0.75 || d1 < 0.75 || d2 < 0.75) {
+            const uint8_t *p = pixels + 4 * (y * W + x);
+            if (p[0] > 20 && p[0] < 235 && p[2] > 20 && p[2] < 235)
+               mixed++;
             continue;
+         }
          int inside = w0 > 0 && w1 > 0 && w2 > 0;
          double want[4];
          if (clear && x < 8 && y < 8) {
@@ -484,6 +652,14 @@ main(int argc, char **argv)
             }
          }
          inside_n += inside;
+         if (dpixels) {
+            float dw = inside ? 0.25f : 1.0f, dg = dpixels[y * W + x];
+            if (fabsf(dg - dw) > 1e-4f) {
+               if (bad < 8)
+                  fprintf(stderr, "depth %d,%d got %f want %f\n", x, y, dg, dw);
+               bad++;
+            }
+         }
          const uint8_t *p = pixels + 4 * (y * W + x);
          int ok = 1;
          for (int c = 0; c < 4; c++)
@@ -498,15 +674,35 @@ main(int argc, char **argv)
          }
       }
    }
-   printf("triangle %s: %u pixels checked (%u inside), %u mismatches\n",
-          dclear ? "dclear" : depth ? "depth" : clear ? "clear" : blend ? "blend" : vbo ? "vbo" : color ? "color" : "flat",
-          checked, inside_n, bad);
-   for (int y = 0; y < H; y += 4) {
-      for (int x = 0; x < W; x += 2) {
+   printf("triangle %s: %u pixels checked (%u inside), %u mismatches, %u mixed edge pixels\n",
+          blit ? "blit" : dsimg ? "dsimg" : msaa ? "msaa" : dclear ? "dclear" : depth ? "depth" : clear ? "clear" : blend ? "blend" : vbo ? "vbo" : color ? "color" : "flat",
+          checked, inside_n, bad, mixed);
+   if (msaa && mixed < 20) {
+      fprintf(stderr, "msaa: too few mixed edge pixels\n");
+      bad++;
+   }
+   for (int y = 0; y < H; y += 4 * (H / 64)) {
+      for (int x = 0; x < W; x += 2 * (W / 64)) {
          const uint8_t *p = pixels + 4 * (y * W + x);
          putchar(p[0] > 128 ? 'R' : p[1] > 128 ? 'G' : p[2] > 128 ? '.' : p[0] == 0x55 ? '?' : '#');
       }
       putchar('\n');
+   }
+   if (dmap) {
+      for (int i = 0; i < W * H; i++) {
+         int id = (int)(dpixels[i] * 1048576.0f + 0.5f) - 1;
+         printf("M %d %d\n", i, id);
+      }
+      return 0;
+   }
+   if (dpixels && getenv("DEPTH_MAP")) {
+      for (int y = 0; y < H; y++) {
+         for (int x = 0; x < W; x++) {
+            float d = dpixels[y * W + x];
+            putchar(d == 1.0f ? '.' : d == 0.25f ? '#' : d == 0.0f ? '0' : '?');
+         }
+         putchar('\n');
+      }
    }
    return bad ? 1 : 0;
 }

@@ -189,7 +189,7 @@ def run_batch(icd, cases, runtime_max, env=()):
         "--deqp-watchdog-interval-time-limit=150",
     ])
     unit = " ".join([
-        "systemd-run --wait --pipe --collect --quiet",
+        "systemd-run --wait --pipe --collect",
         "-p MemoryMax=400M -p MemorySwapMax=64M", f"-p RuntimeMaxSec={runtime_max}",
         "-p LimitCORE=0 -p Nice=10", f"-p WorkingDirectory={DEV}/run",
         f"--setenv=VK_DRIVER_FILES={icd}", f"--setenv=LD_LIBRARY_PATH={PREFIX}/lib",
@@ -198,7 +198,7 @@ def run_batch(icd, cases, runtime_max, env=()):
     ])
     # Timestamp each "Test case" line with the kernel's monotonic clock so a
     # fault line in dmesg can be matched to the case that was running.
-    stamp = ('while IFS= read -r l; do case "$l" in "Test case"*|*Fail*|*Crash*|*Timeout*|radish:*)'
+    stamp = ('while IFS= read -r l; do case "$l" in "Test case"*|*Fail*|*Crash*|*Timeout*|radish:*|*"Finished with result"*|*"Main processes terminated"*|*"Memory peak"*|*"Service runtime"*)'
              ' read -r up _ </proc/uptime; printf "%s %s\\n" "$up" "$l";; esac; done')
     script = (f"{unit} {deqp} 2>&1 | {stamp} > {DEV}/run/stdout.txt; "
               f"echo rc=${{PIPESTATUS[0]}}")

@@ -9,7 +9,7 @@ NAME=$1 SHA=$2; shift 2
 OUT=$SRC/gfx; mkdir -p "$OUT"
 SYSROOT=/home/jethac/Projects/lenovo-8/streams/gpu-mesa16/work/sysroot
 clang --target=aarch64-linux-gnu --sysroot=$SYSROOT --gcc-install-dir=$(realpath $SYSROOT/usr/lib/gcc/aarch64-linux-gnu/16) \
-    -mcpu=cortex-a53 -O2 -Wall -Werror -fuse-ld=lld --rtlib=libgcc -L$SYSROOT/usr/lib \
+    -mcpu=cortex-a53 -O2 -Wall -Werror ${GFX_CFLAGS:-} -fuse-ld=lld --rtlib=libgcc -L$SYSROOT/usr/lib \
     -I"$SRC/mesa/include" -I"$TOP/tests/gfx" "$TOP/tests/gfx/$NAME.c" -ldl -lm -o "$OUT/$NAME"
 flock -w 1800 "$LOCK" bash -c '
     . "'"$(dirname "$0")"'/common.sh"
@@ -17,7 +17,7 @@ flock -w 1800 "$LOCK" bash -c '
     adb -s $SERIAL push -q '"$OUT/$NAME"' '"$PREFIX"'/gfx/
     before=$(adbsh "dmesg | grep -v audit | grep -iE \"hangcheck|gpu fault|iommu fault|recover\"" || true)
     adbsh "systemd-run --wait --pipe --collect -p MemoryMax=200M -p RuntimeMaxSec=60 -p LimitCORE=0 \
-      --setenv=RADISH_GRAPHICS=1 --setenv=LD_LIBRARY_PATH='"$PREFIX"'/lib --setenv=VK_DRIVER_FILES='"$PREFIX"'/lib/icd-'"$SHA"'.json \
+      --setenv=RADISH_GRAPHICS=1 ${GFX_ENV:-} --setenv=LD_LIBRARY_PATH='"$PREFIX"'/lib --setenv=VK_DRIVER_FILES='"$PREFIX"'/lib/icd-'"$SHA"'.json \
       '"$PREFIX"'/gfx/'"$NAME"' '"$*"' 2>&1" || true
     after=$(adbsh "dmesg | grep -v audit | grep -iE \"hangcheck|gpu fault|iommu fault|recover\"" || true)
     diff <(echo "$before") <(echo "$after") | grep "^>" && echo "NEW GPU FAULT/HANG LINES ABOVE" || echo "no new GPU fault lines"
