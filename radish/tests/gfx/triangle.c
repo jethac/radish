@@ -57,6 +57,8 @@ static const uint32_t push_fs_spv[] =
 #include "push.frag.inc"
 ;
 
+static VkQueryPool stats_pool;
+
 static float
 depth_at(const void *p, int i)
 {
@@ -87,7 +89,8 @@ depth_at(const void *p, int i)
    X(vkUpdateDescriptorSets) X(vkCmdBindDescriptorSets) X(vkCmdPushConstants)  \
    X(vkCmdBindVertexBuffers) X(vkCmdBindIndexBuffer) X(vkCmdDrawIndexed)      \
    X(vkCmdCopyBufferToImage) X(vkCmdClearAttachments) X(vkCmdBlitImage)      \
-   X(vkCmdClearDepthStencilImage)
+   X(vkCmdClearDepthStencilImage) X(vkCreateQueryPool) X(vkCmdBeginQuery)       \
+   X(vkCmdEndQuery) X(vkCmdResetQueryPool) X(vkGetQueryPoolResults)
 #define FN(name) static PFN_##name name;
 FUNCS(FN)
 
@@ -229,8 +232,10 @@ main(int argc, char **argv)
    float prio = 1.0f;
    VkDeviceQueueCreateInfo qci = { VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
                                    .queueCount = 1, .pQueuePriorities = &prio };
+   VkPhysicalDeviceFeatures features = { .pipelineStatisticsQuery = VK_TRUE };
    VkDeviceCreateInfo dci = { VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-                              .queueCreateInfoCount = 1, .pQueueCreateInfos = &qci };
+                              .queueCreateInfoCount = 1, .pQueueCreateInfos = &qci,
+                              .pEnabledFeatures = &features };
    CHECK(vkCreateDevice(phys, &dci, NULL, &dev));
    VkQueue queue;
    vkGetDeviceQueue(dev, 0, 0, &queue);
@@ -308,7 +313,7 @@ main(int argc, char **argv)
       .stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
       .initialLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
       .finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL };
-   if (clear) {
+   if (clear || getenv("TRI_CLEAR")) {
       att.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
       att.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
    }
@@ -559,6 +564,13 @@ main(int argc, char **argv)
                               { .depthStencil = { 1.0f, 0 } } };
    VkRenderPassBeginInfo rpbi = { VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO, .renderPass = pass,
       .framebuffer = fb, .renderArea = sc, .clearValueCount = 2, .pClearValues = clears };
+   if (getenv("TRI_QUADS") && getenv("TRI_STATS")) {
+      VkQueryPoolCreateInfo qpci = { VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO,
+         .queryType = VK_QUERY_TYPE_PIPELINE_STATISTICS, .queryCount = 1,
+         .pipelineStatistics = VK_QUERY_PIPELINE_STATISTIC_FRAGMENT_SHADER_INVOCATIONS_BIT };
+      CHECK(vkCreateQueryPool(dev, &qpci, NULL, &stats_pool));
+      vkCmdResetQueryPool(cmd, stats_pool, 0, 1);
+   }
    vkCmdBeginRenderPass(cmd, &rpbi, VK_SUBPASS_CONTENTS_INLINE);
    vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
    if (push_mode) {
@@ -581,7 +593,18 @@ main(int argc, char **argv)
       vkCmdPushConstants(cmd, layout, VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(push), push);
       vkCmdBindVertexBuffers(cmd, 0, 1, &vb, &zero);
       vkCmdBindIndexBuffer(cmd, ib, 0, VK_INDEX_TYPE_UINT16);
-      if (getenv("TRI_QUADS"))
+      if (getenv("TRI_QUADS") && getenv("TRI_STATS")) {
+         /* probe: the same draw inside a pipeline-statistics query */
+         if (!stats_pool) {
+            VkQueryPoolCreateInfo qpci = { VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO,
+               .queryType = VK_QUERY_TYPE_PIPELINE_STATISTICS, .queryCount = 1,
+               .pipelineStatistics = VK_QUERY_PIPELINE_STATISTIC_FRAGMENT_SHADER_INVOCATIONS_BIT };
+            CHECK(vkCreateQueryPool(dev, &qpci, NULL, &stats_pool));
+         }
+         vkCmdBeginQuery(cmd, stats_pool, 0, 0);
+         vkCmdDraw(cmd, 24, 1, 0, 0);
+         vkCmdEndQuery(cmd, stats_pool, 0);
+      } else if (getenv("TRI_QUADS"))
          vkCmdDraw(cmd, 24, 1, 0, 0);
       else
          vkCmdDrawIndexed(cmd, 3, 1, 0, 0, 0);
@@ -696,6 +719,12 @@ main(int argc, char **argv)
    CHECK(vkQueueSubmit(queue, 1, &si, VK_NULL_HANDLE));
    CHECK(vkQueueWaitIdle(queue));
 
+   if (stats_pool) {
+      uint64_t v = 0;
+      CHECK(vkGetQueryPoolResults(dev, stats_pool, 0, 1, sizeof(v), &v, sizeof(v),
+                                  VK_QUERY_RESULT_64_BIT | VK_QUERY_RESULT_WAIT_BIT));
+      printf("fragment shader invocations %llu\n", (unsigned long long)v);
+   }
    /* CPU reference: NDC (-0.5,-0.5) (0.5,-0.5) (0,0.5) -> framebuffer. */
    const double vx[3] = { W / 4.0, W * 3 / 4.0, W / 2.0 }, vy[3] = { H / 4.0, H / 4.0, H * 3 / 4.0 };
    double area = edge(vx[0], vy[0], vx[1], vy[1], vx[2], vy[2]);
