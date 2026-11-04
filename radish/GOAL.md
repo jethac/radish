@@ -9,14 +9,15 @@ transcribe.cpp/ggml) run fast on the GPU, and to keep optimizing until the
 remaining gap to the hardware's attainable limits is measured and explained.
 
 Radish is a separate hardware driver sharing Mesa's Vulkan runtime and the ir3
-compiler. It is not a GLES wrapper and not a renamed Turnip. Graphics, ray
-tracing and presentation are out of scope; the CPU handles graphics, so the GPU
-budget belongs entirely to compute.
+compiler. It is not a GLES wrapper and not a renamed Turnip. The target is
+full Vulkan 1.1 conformance, with graphics included only as far as
+conformance needs; the GPU budget at run time is still compute, and the
+screen keeps its own renderer. Ray tracing and presentation are out of scope.
 
 ## Done means
 
-- Applicable Vulkan 1.1 compute behaviour is implemented, and the applicable
-  CTS groups pass unmodified. Feature advertisement follows implementation; no
+- Full Vulkan 1.1 is implemented (graphics only as far as conformance needs)
+  and the CTS 1.4.7.1 mustpass passes unmodified, without waivers. Feature advertisement follows implementation; no
   conformance claim without CTS evidence.
 - Kokoro TTS and Qwen3-ASR run end to end on the GPU, beside the live appliance
   services, within the device's memory budget, matching CPU references within

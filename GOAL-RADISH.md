@@ -1,12 +1,14 @@
 # Radish: goal
 
-Radish is a compute-only Vulkan driver for the Adreno 506 in the Lenovo
+Radish is a compute-first Vulkan driver for the Adreno 506 in the Lenovo
 ThinkSmart View. It is built inside Mesa's Freedreno tree and shares Mesa's
 Vulkan runtime and the ir3 shader compiler. The goal has two halves:
 
-1. **Conformance.** A Vulkan 1.1 driver that is conformant for compute, with
-   evidence from the unmodified Khronos CTS, and with nothing advertised that
-   is not implemented.
+1. **Conformance.** Full Vulkan 1.1 conformance: the unmodified Khronos CTS
+   mustpass (vulkan-cts-1.4.7.1) passed without waivers, and a
+   submission-ready result. Graphics is implemented only as far as
+   conformance needs; at run time the GPU budget is still compute. Nothing
+   is advertised that does not pass.
 2. **Performance.** Tuned to get as close as the hardware allows to the
    APQ8053's real limits, on the workloads the appliance actually runs: speech
    synthesis and recognition for Straylight.
@@ -86,50 +88,32 @@ Known hardware and compiler constraints (keep validating; don't assume):
 
 ## Conformance target
 
-**Vulkan 1.1, compute.** The device exposes one queue family with
-`COMPUTE | TRANSFER` and no graphics queue. The spec allows a device without a
-graphics queue. Its rule ("if any queue family supports graphics, one must
-support graphics and compute") only applies when graphics exists.
+**Full Vulkan 1.1, graphics included only as far as conformance needs.**
+The compute-only route is closed (see the [ledger](radish/VULKAN11_CTS_LEDGER.md)):
+`VK_VERSION_1_1` depends on the graphics layer in `vk.xml`, `multiview` is
+mandatory, the required format tables include colour-attachment, blend and
+blit features, and CTS 1.4.7.1 has no compute-only mode
+(`--deqp-compute-only` survives only in `external/vulkancts/README.md`;
+`framework/common/tcuCommandLine.cpp` has no such option). So Radish gains a
+graphics path:
 
-What 1.1 requires that matters here:
+- One queue family with `GRAPHICS | COMPUTE | TRANSFER`.
+- Render passes and framebuffers (GMEM or bypass, multiview), graphics
+  pipelines with ir3 vertex and fragment shaders (geometry and tessellation
+  stay off: optional in 1.1), vertex input, rasterisation, depth/stencil,
+  blending, clears, blits and resolves, and the required colour-attachment
+  and blit format features.
+- The hardware reference is Freedreno's a5xx Gallium driver
+  (`src/gallium/drivers/freedreno/a5xx/`) and the a5xx register XML;
+  Turnip's structure where it fits.
+- Graphics is for conformance, not the screen: the UI keeps its own
+  renderer, and graphics must not regress compute performance (Kokoro and
+  the students' GPU RTF are measured before and after).
 
-- All 1.0 core commands present and correct for every valid use reachable
-  without a graphics queue. Commands that only make sense with graphics still
-  exist as entrypoints.
-- Required features: `robustBufferAccess`. In 1.1, also `multiview`.
-- Subgroups: `supportedStages` includes compute, and `supportedOperations`
-  includes `BASIC`.
-- 1.1 promoted functionality: device groups (single-device), descriptor update
-  templates, `vkGetDescriptorSetLayoutSupport`, `vkCmdDispatchBase`,
-  maintenance1–3, external memory/fence/semaphore capability queries, the
-  `*2` query entrypoints, 16-bit storage queries (the feature itself is
-  optional), variable-pointer queries, protected-memory queries (feature
-  optional), and SPIR-V 1.3.
-- Every limit at or above the spec minimum and truthful.
-- The required format support tables.
-
-**Open question: does a compute-only device qualify?** This has to be settled
-before claiming any path to conformance, because two requirements reach into
-graphics:
-
-- `multiview` is a render-pass feature that 1.1 requires.
-- The required format tables include colour-attachment and blit features,
-  which can only be exercised with a graphics queue.
-
-To settle it:
-
-1. Read the 1.1 spec's feature and format requirements line by line against a
-   device with no graphics queue.
-2. Run the full 1.1 mustpass and sort non-passes into three groups: genuine
-   failures, valid `NotSupported`, and tests that assume a graphics queue.
-3. Ask through the route Mesa drivers use for conformance. Open-source Mesa
-   submissions have gone through the X.Org Foundation's Khronos membership;
-   confirm the current process and any fee before relying on it.
-
-If compute-only can't qualify, deciding whether to add a minimal graphics path
-is the user's call. Freedreno's a5xx Gallium driver is the hardware reference
-for that. Until then: advertise exactly what is implemented, and never invent a
-compute-only profile.
+The compute bugs found by the full run are part of the same target:
+workgroups over 128 invocations (the multi-wave barrier bug), border colours
+in compute, small mipmapped 3D images, UBO/SSBO layouts and timeline
+semaphores.
 
 Where conformance stands (2026-11-04, [ledger](radish/VULKAN11_CTS_LEDGER.md)):
 
@@ -152,8 +136,9 @@ Conformance work order:
 1. Get the full CTS running on the tablet in bounded batches, in a way that
    leaves the appliance usable. Record per-group pass, fail and unsupported
    counts in one ledger.
-2. Settle the compute-only question above.
-3. Fix failures by group, largest first. Re-run whole groups, not single cases.
+2. Settle the compute-only question (done: it cannot qualify).
+3. Add the graphics path and fix failures by group, largest first. Re-run
+   whole groups, not single cases.
 4. Formal submission once the mustpass is clean.
 
 ## Performance target
@@ -274,9 +259,8 @@ Working practice:
 
 ## Done
 
-- The applicable Vulkan 1.1 mustpass is clean on the A506 with no graphics
-  queue, or the compute-only question is settled and the agreed scope is
-  clean. A submission is ready.
+- The Vulkan 1.1 mustpass (CTS 1.4.7.1, unmodified, no waivers) is clean on
+  the A506. A submission is ready.
 - Kokoro TTS and the shipped ASR model run end to end on the GPU beside the
   live services, within memory, matching CPU references.
 - Both beat the best shipped CPU path on warm, sustained end-to-end latency,
