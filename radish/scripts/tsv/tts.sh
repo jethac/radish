@@ -42,6 +42,7 @@ CMD="systemd-run --unit=radish-tts-$LABEL --wait --pipe --collect -p MemoryMax=6
 OUT=$SRC/runs/$LABEL; mkdir -p "$OUT"
 flock -w 1800 "$LOCK" bash -c '
     . "'"$(dirname "$0")"'/common.sh"
+    on_baseline || exit 75
     before=$(gpu_fault_count)
     adbsh "rm -rf '"$R"'; mkdir -p '"$R"' '"$PREFIX"'/cache; free -m; cat /sys/class/thermal/thermal_zone8/temp" > "'"$OUT"'/pre.txt"
     adbsh "'"$CMD"'" > "'"$OUT"'/log.txt" 2> "'"$OUT"'/stderr.txt" || echo "exit $?" >> "'"$OUT"'/log.txt"

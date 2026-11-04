@@ -13,6 +13,7 @@ clang --target=aarch64-linux-gnu --sysroot=$SYSROOT --gcc-install-dir=$(realpath
     -I"$SRC/mesa/include" -I"$TOP/tests/gfx" "$TOP/tests/gfx/$NAME.c" -ldl -lm -o "$OUT/$NAME"
 flock -w 1800 "$LOCK" bash -c '
     . "'"$(dirname "$0")"'/common.sh"
+    on_baseline || exit 75
     adbsh "mkdir -p '"$PREFIX"'/gfx"
     adb -s $SERIAL push -q '"$OUT/$NAME"' '"$PREFIX"'/gfx/
     before=$(adbsh "dmesg | grep -v audit | grep -iE \"hangcheck|gpu fault|iommu fault|recover\"" || true)

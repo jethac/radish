@@ -62,20 +62,50 @@ def fault_lines():
     return [l for l in out.splitlines() if l.strip()]
 
 
+# The device is shared with kernel work: batches run only on the baseline
+# kernel. If another kernel is booted, the lock is released and taken again
+# later instead of running.
+BASELINE_KERNEL = os.environ.get(
+    "RADISH_BASELINE_KERNEL",
+    "Linux version 7.3.0-g755ffc44d5d8-dirty (jethac@xps17-9700) (clang version 23.1.3, "
+    "LLD 23.1.3) #7 SMP PREEMPT Tue Nov  3 19:34:20 JST 2026")
+
+
+def device_state():
+    out = adbsh("cat /proc/version; cut -d' ' -f1 /proc/uptime", check=False).splitlines()
+    version = out[0].strip() if out else ""
+    uptime = float(out[1]) if len(out) > 1 and out[1].strip() else -1.0
+    return version, uptime
+
+
 @contextlib.contextmanager
-def device_lock(timeout=1800):
-    """flock(2) on the shared lock file, the same lock flock(1) takes."""
+def device_lock(timeout=1800, wait_baseline=4 * 3600):
+    """flock(2) on the shared lock file, the same lock flock(1) takes, held
+    only while the baseline kernel is running."""
     fd = os.open(LOCK, os.O_RDWR | os.O_CREAT, 0o666)
     t0 = time.time()
     while True:
         try:
             fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            break
         except BlockingIOError:
-            if time.time() - t0 > timeout:
+            if time.time() - t0 > timeout + wait_baseline:
                 os.close(fd)
                 sys.exit("could not take the device lock")
             time.sleep(1)
+            continue
+        try:
+            version, uptime = device_state()
+        except Exception:
+            version, uptime = "", -1.0
+        if version == BASELINE_KERNEL and uptime >= 0:
+            break
+        fcntl.flock(fd, fcntl.LOCK_UN)
+        print(f"device not on the baseline kernel ({version[:90]!r}, uptime {uptime}); waiting",
+              file=sys.stderr, flush=True)
+        if time.time() - t0 > timeout + wait_baseline:
+            os.close(fd)
+            sys.exit("device not on the baseline kernel")
+        time.sleep(60)
     try:
         yield
     finally:

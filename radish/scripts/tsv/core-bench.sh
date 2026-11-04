@@ -12,6 +12,7 @@ BASE=(--setenv=RADISH_NCNN_TILED=1 --setenv=RADISH_NCNN_PLANAR=1 --setenv=RADISH
       --setenv=LD_LIBRARY_PATH=$PREFIX/lib --setenv=VK_DRIVER_FILES=$PREFIX/lib/icd-$SHA.json)
 flock -w 1800 "$LOCK" bash -c '
     . "'"$(dirname "$0")"'/common.sh"
+    on_baseline || exit 75
     before=$(gpu_fault_count)
     adbsh "systemd-run --unit=radish-core-'"$LABEL"' --wait --pipe --collect -p MemoryMax=400M -p MemorySwapMax=64M -p RuntimeMaxSec=300 -p LimitCORE=0 '"${BASE[*]} ${ENVS[*]}"' '"$PREFIX"'/bin/'"$BIN"' '"$CPU"' '"$PREFIX/$M"'/core.ncnn.param '"$PREFIX/$M"'/core.ncnn.bin '"$PREFIX/$M"' '"$REPEAT"'" > "'"$OUT"'/log.txt" 2>&1 || echo "exit $?" >> "'"$OUT"'/log.txt"
     echo "gpu_fault_lines before=$before after=$(gpu_fault_count)" >> "'"$OUT"'/log.txt"
