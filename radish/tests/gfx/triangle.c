@@ -60,7 +60,9 @@ static const uint32_t push_fs_spv[] =
 static float
 depth_at(const void *p, int i)
 {
-#ifdef D16
+#if defined(S8)
+   return ((const uint8_t *)p)[i];
+#elif defined(D16)
    return ((const uint16_t *)p)[i] / 65535.0f;
 #else
    return ((const float *)p)[i];
@@ -98,12 +100,19 @@ FUNCS(FN)
       }                                                                        \
    } while (0)
 
-#ifdef D16
+#if defined(S8)
+#define DFMT VK_FORMAT_S8_UINT
+#define DSCALE 1.0f
+#define DASPECT VK_IMAGE_ASPECT_STENCIL_BIT
+#elif defined(D16)
 #define DFMT VK_FORMAT_D16_UNORM
 #define DSCALE 65535.0f
 #else
 #define DFMT VK_FORMAT_D32_SFLOAT
 #define DSCALE 1048576.0f
+#endif
+#ifndef DASPECT
+#define DASPECT VK_IMAGE_ASPECT_DEPTH_BIT
 #endif
 #ifndef W
 #define W 64
@@ -279,7 +288,7 @@ main(int argc, char **argv)
       VkImageViewCreateInfo dvci = vci;
       dvci.image = dimage;
       dvci.format = DFMT;
-      dvci.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+      dvci.subresourceRange.aspectMask = DASPECT;
       CHECK(vkCreateImageView(dev, &dvci, NULL, &dview));
    }
    VkBufferCreateInfo bci = { VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO, .size = W * H * 4,
@@ -307,6 +316,10 @@ main(int argc, char **argv)
    atts[1].format = DFMT;
    if (dclear)
       atts[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+#ifdef S8
+   atts[1].stencilLoadOp = atts[1].loadOp;
+   atts[1].stencilStoreOp = VK_ATTACHMENT_STORE_OP_STORE;
+#endif
    atts[1].initialLayout = atts[1].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
    if (msaa) {
       atts[1] = atts[0];
@@ -495,7 +508,7 @@ main(int argc, char **argv)
       db0.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
       db0.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
       db0.image = dimage;
-      db0.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+      db0.subresourceRange.aspectMask = DASPECT;
       vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
                            0, 0, NULL, 0, NULL, 1, &db0);
       VkClearDepthStencilValue one = { 1.0f, 0 };
@@ -518,10 +531,10 @@ main(int argc, char **argv)
       db0.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
       db0.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
       db0.image = dimage;
-      db0.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+      db0.subresourceRange.aspectMask = DASPECT;
       vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
                            0, 0, NULL, 0, NULL, 1, &db0);
-      VkBufferImageCopy dcopy = { .imageSubresource = { VK_IMAGE_ASPECT_DEPTH_BIT, 0, 0, 1 },
+      VkBufferImageCopy dcopy = { .imageSubresource = { DASPECT, 0, 0, 1 },
                                   .imageExtent = { W, H, 1 } };
       vkCmdCopyBufferToImage(cmd, db, dimage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &dcopy);
       db0.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
@@ -538,7 +551,7 @@ main(int argc, char **argv)
       db0.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
       db0.newLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
       db0.image = dimage;
-      db0.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+      db0.subresourceRange.aspectMask = DASPECT;
       vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
                            VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT, 0, 0, NULL, 0, NULL, 1, &db0);
    }
@@ -578,8 +591,8 @@ main(int argc, char **argv)
    if (dmap) {
       for (int y = 0; y < H; y++)
          for (int x = 0; x < W; x++) {
-            VkClearAttachment ca = { VK_IMAGE_ASPECT_DEPTH_BIT, 0,
-               { .depthStencil = { (y * W + x + 1) / DSCALE, 0 } } };
+            VkClearAttachment ca = { DASPECT, 0,
+               { .depthStencil = { (y * W + x + 1) / DSCALE, (uint32_t)(y * W + x + 1) } } };
             VkClearRect cr = { { { x, y }, { 1, 1 } }, 0, 1 };
             vkCmdClearAttachments(cmd, 1, &ca, 1, &cr);
          }
@@ -639,10 +652,10 @@ main(int argc, char **argv)
       db1.oldLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
       db1.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
       db1.image = dimage;
-      db1.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+      db1.subresourceRange.aspectMask = DASPECT;
       vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
                            VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, NULL, 0, NULL, 1, &db1);
-      VkBufferImageCopy dcopy = { .imageSubresource = { VK_IMAGE_ASPECT_DEPTH_BIT, 0, 0, 1 },
+      VkBufferImageCopy dcopy = { .imageSubresource = { DASPECT, 0, 0, 1 },
                                   .imageExtent = { W, H, 1 } };
       if (dsamp) {
          /* sample the depth image (experiment: RADISH_EXP_DEPTH_TILE) into R32F */
@@ -660,7 +673,7 @@ main(int argc, char **argv)
          fb.image = fimage;
          vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
                               0, 0, NULL, 0, NULL, 1, &fb);
-         VkImageBlit region = { .srcSubresource = { VK_IMAGE_ASPECT_DEPTH_BIT, 0, 0, 1 },
+         VkImageBlit region = { .srcSubresource = { DASPECT, 0, 0, 1 },
             .srcOffsets = { { 0, 0, 0 }, { W, H, 1 } },
             .dstSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 },
             .dstOffsets = { { 0, 0, 0 }, { W, H, 1 } } };
