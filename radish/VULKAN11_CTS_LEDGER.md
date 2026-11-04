@@ -40,6 +40,7 @@ only in `dim_in` (160).
 
 | date | driver | change | groups re-run | effect |
 |---|---|---|---|---|
+| 2026-11-04 | `856b198` | VK_EXT_host_query_reset; graphics pipeline statistics; fragment-shader IBOs (storage buffers/images, stores, atomics); depth/stencil feedback by splitting renders at barriers; atomic image loads/stores as atomics; native layout for all sampleable transfer-only images; S8_UINT attachments; barriers with aspect subsets | query_pool, memory_model, api.copy_and_blit, fragment_operations, rasterization feedback cases | query_pool **5,531 Pass / 119 Fail / 0 Crash** (was 34 Crash); memory_model **109 / 0** (the 5 workgroup/device image-guard failures fixed); api.copy_and_blit **22,128 / 0** (no fault after the compressed-source layout fix); fragment_operations previously failing 7 now pass; rasterization_order_attachment_access 6 / 6 |
 | 2026-11-04 | `c342576` | **graphics on by default** (`RADISH_GRAPHICS=0` turns it off); multiview by per-view replay; tiled depth scratch padded to 16 texels; render-pass self-dependency barriers; sample shading with 1 sample accepted | default driver (`3390289bfab6`): clipping, draw, dynamic_state, fragment_operations, info, multiview; query_pool partly | draw **491 Pass, 0 Fail**; dynamic_state 62 / 0; clipping 12 / 0; multiview 218 / 1; info 20 / 0 (multiview now advertised); fragment_operations 71 / 7 (6 S8_UINT, 1 refused command); query_pool partial: 165 Pass, 10 Fail, 34 Crash (SEGV in occlusion `get_reset_results_*`, run stopped, see below); no GPU fault or hang. **Kokoro warm synth 26.24 s / core 24.14 s, output bit-identical; x25k2 student core 3.30–3.57 s** (baseline 26.45 / 24.30 s and 3.52–3.67 s) |
 | 2026-11-04 | `6e65263` | 4-sample rendering; render-pass resolves, vkCmdResolveImage, vkCmdBlitImage, vkCmdClearDepthStencilImage as internal draws; depth/stencil through a TILE5_3 scratch (bypass-mode depth is written tiled whatever the pitch says); occlusion queries; input attachments; depth-only pipelines; barriers check only the subresource range | with `RADISH_GRAPHICS=1`: draw, dynamic_state, fragment_operations, rasterization, pipeline.monolithic.depth/blend, multiview | draw 467 / 0 (was 389 / 76 / 2 DeviceLost); fragment_operations 43 / 3 → 47 with input attachments; pipeline.monolithic.depth 1,355 / 0 after the 16-texel fix; blend 1,002 / 0; rasterization 96 / 3 (1 FS storage image, 2 depth/stencil feedback); multiview 218 / 1 |
 | 2026-11-04 | `72c0204` | graphics: vertex/index/indirect draws, graphics descriptors and push constants, depth/stencil, blending, load-op clears and ClearAttachments (still behind `RADISH_GRAPHICS=1`) | with `RADISH_GRAPHICS=1`: info, clipping, dynamic_state, fragment_operations, draw, api.version_check | **first passing graphics group: dEQP-VK.clipping 12 Pass, 0 Fail** (296 NotSupported); api.version_check 2 Pass (was 1 Fail); dynamic_state 52 Pass / 10 Fail; fragment_operations 11 / 35; draw 389 Pass / 76 Fail / 2 DeviceLost (4-sample renders); info: only multiview missing; no hang or new fault |
@@ -1285,29 +1286,19 @@ In order of size:
    robustness queue duplication (232), and the 121,120 graphics-path
    results.
 
-### Graphics, after `c342576`
+### Graphics, open items (after `856b198`)
 
-Graphics is on by default. Known open items, largest first as far as the
-partial runs show them:
-
-- `query_pool.occlusion_query.get_reset_results_*`: deqp-vk SEGV (34 so
-  far, every one in a row). Not yet reproduced alone.
-- Pipeline statistics are still counted for compute only, so the graphics
-  statistics cases will fail until IA/VS/clip/FS counts are done (or the
-  feature is withdrawn).
-- Fragment-shader storage images (refused at pipeline creation:
-  `rasterization.line_continuity`, likely more in `glsl`/`image`).
-- Depth/stencil input-attachment feedback inside one render (the depth
-  lives in the tiled scratch during the render).
-- `fragment_operations`: 6 S8_UINT failures; `multiview.stencil` 1.
-- Not run yet with graphics on: api (copy_and_blit), renderpasses,
-  pipeline.*, glsl, texture graphics variants, image, robustness.
-
-The full graphics run was stopped on 2026-11-04 at 13:54 because the
-tablet was being rebooted over adb by other work (`systemctl reboot` from
-tsv-adbd, four times between 13:27 and 13:53; camera/ffmpeg units in the
-journal). The query_pool crashes are real (core dumps, status 11) and
-independent of those reboots.
+- query_pool: 119 fragment-shader-invocation cases. In those draws (a
+  single 24-vertex triangle list, or a line list, in a 64×3584 target
+  with clears and a push-constant offset) only the first 12 vertices'
+  primitives are rasterized; the image check fails too. Not reproduced by
+  `tests/gfx` probes with the same vertex layout, size, clears and depth
+  attachment.
+- `multiview.stencil` 1.
+- Groups being run now with graphics on: glsl, image, pipeline.monolithic,
+  renderpasses, robustness.
+- The tablet is shared with kernel testing; the runner only takes a batch
+  when /proc/version is the baseline kernel (`#7 … Tue Nov  3 19:34:20`).
 
 What is on the tablet after this pass: driver `3c58218041a4` (`6eba49b`)
 and its ICD manifest in `/var/tmp/radish-canon/lib/`. The CTS
