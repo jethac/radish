@@ -88,11 +88,11 @@ in shared memory reused across taps); driver buffer copy as one compute
 dispatch; fuse the remaining 162/322-channel chains; Winograd GEMM load phase.
 Conformance: delegated CTS track running (ledger to follow).
 
-Left on the device: `/var/tmp/radish-canon/` (the CTS was removed after
-the run, `cts.sh setup` pushes it again; lib: drivers 0f721436, c1755aaf,
-3c582180 (6eba49b), loader, libsegv.so; bin: kokoro runtimes 52c9e565, e37db9b1; tts:
-hardlinks into /var/tmp/radish; cache; asr/wav cmd-en clips and pipeline
-cache). Kokoro runtime now e37db9b1; ubench/ and runs/ removed.
+Left on the device: `/var/tmp/radish-canon/` — `cts/` (deqp-vk and data,
+run output removed after each batch), `lib/` (drivers and ICDs; the
+baseline `3c58218041a4` and the graphics-default `3390289bfab6` matter,
+the rest are test builds of 2026-11-04 to clean up), `student/`
+(x25k2-fused, x25k2-plain), `bin/`. Free space on / was 2.0 GB.
 
 
 ## Populated ASR cache export qualified — 2026-11-03
