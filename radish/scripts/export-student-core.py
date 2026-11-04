@@ -6,6 +6,10 @@ Kokoro-82M Radish graph: inputs asr [1,C,T], F0 [1,2T], N [1,2T], style
 result [1,22,frames] before exp/sin and the inverse STFT (those stay on CPU).
 
 usage: export-student-core.py KOKORO_PATCHED_DIR CONFIG [WEIGHTS|--random] OUT_DIR [--T 168]
+       export-student-core.py KOKORO_PATCHED_DIR paradee:PRESET[@SCRIPTS_DIR] [CKPT|--random] OUT_DIR
+The paradee: form builds the narrow student decoder (e.g. nx25k2: AdaIN 256,
+upsample_initial_channel 128, resblock kernels [3, 7], dim_in 512, style 128)
+from Paradee's student_decoder.py and loads a training checkpoint ('model').
 Writes OUT_DIR/core.pt (TorchScript for pnnx), inputs in*.f32, reference out0.f32.
 """
 import argparse, json, sys
@@ -13,25 +17,52 @@ from pathlib import Path
 
 ap = argparse.ArgumentParser()
 ap.add_argument('kokoro_dir', type=Path)
-ap.add_argument('config', type=Path)
+ap.add_argument('config')
 ap.add_argument('weights')
 ap.add_argument('out', type=Path)
 ap.add_argument('--T', type=int, default=168)
 ap.add_argument('--seed', type=int, default=0)
 a = ap.parse_args()
 sys.path.insert(0, str(a.kokoro_dir))
+import types
+# Import kokoro.istftnet without kokoro/__init__ (which pulls in the text side,
+# transformers and huggingface_hub): the decoder needs none of it.
+_pkg = types.ModuleType('kokoro')
+_pkg.__path__ = [str(a.kokoro_dir / 'kokoro')]
+sys.modules['kokoro'] = _pkg
 import torch
 import torch.nn.functional as F
 from torch.nn.utils import parametrize
 from kokoro.istftnet import Decoder
 
-cfg = json.loads(a.config.read_text())
-dec = Decoder(dim_in=cfg['hidden_dim'], style_dim=cfg['style_dim'], dim_out=cfg['n_mels'], **cfg['istftnet'])
-if a.weights != '--random':
-    sd = torch.load(a.weights, map_location='cpu', weights_only=True)['decoder']
-    sd = {k[7:] if k.startswith('module.') else k: v for k, v in sd.items()}
-    missing, unexpected = dec.load_state_dict(sd, strict=False)
-    print('missing', len(missing), 'unexpected', len(unexpected))
+if str(a.config).startswith('paradee:'):
+    preset, _, scripts = str(a.config)[8:].partition('@')
+    sys.path.insert(0, scripts or '/home/jethac/Projects/lenovo-8/streams/tts-distil/downloads/paradee/src/training/scripts')
+    import student_decoder as sd_mod
+    # Narrow presets as in tts-distil's narrow.py: (AdaIN width, upsample_initial_channel, kernels)
+    for k, (w, u) in {'x20': (192, 96), 'x25': (256, 128), 'x30': (320, 160), 'x35': (352, 176)}.items():
+        sd_mod.DEC_PRESETS.setdefault(f'n{k}k2', (w, u, [3, 7]))
+    dec = sd_mod.StudentDecoder(preset, dim_in=512, style_dim=128)
+    del dec.style
+    cfg = {'hidden_dim': 512, 'style_dim': 128}
+    if a.weights != '--random':
+        sd = torch.load(a.weights, map_location='cpu', weights_only=True)['model']
+        missing, unexpected = dec.load_state_dict(sd, strict=False)
+        print('missing', len(missing), 'unexpected', len(unexpected))
+    from torch.nn.utils import remove_weight_norm
+    for m in dec.modules():
+        try:
+            remove_weight_norm(m)
+        except Exception:
+            pass
+else:
+    cfg = json.loads(Path(a.config).read_text())
+    dec = Decoder(dim_in=cfg['hidden_dim'], style_dim=cfg['style_dim'], dim_out=cfg['n_mels'], **cfg['istftnet'])
+    if a.weights != '--random':
+        sd = torch.load(a.weights, map_location='cpu', weights_only=True)['decoder']
+        sd = {k[7:] if k.startswith('module.') else k: v for k, v in sd.items()}
+        missing, unexpected = dec.load_state_dict(sd, strict=False)
+        print('missing', len(missing), 'unexpected', len(unexpected))
 dec.eval()
 for m in dec.modules():
     if parametrize.is_parametrized(m):

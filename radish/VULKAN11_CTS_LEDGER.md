@@ -20,6 +20,22 @@ every second-level group (`second-level-*.md`) and the non-passing cases of
 the current results, one per line with status and message
 (`nonpass-current.tsv.xz`).
 
+## Compute performance baseline before graphics work
+
+Measured on driver `6eba49b` (`3c58218041a4`), 2026-11-04, services up,
+before any graphics code. Every graphics step is re-measured against these.
+
+| workload | GPU (Radish) | CPU reference |
+|---|---|---|
+| Kokoro-82M decoder, 4.2 s ja audio, warm request (`tts.sh`) | synth 26.45 s, core 24.30 s | ncnn 4 threads 30.92 s (earlier) |
+| Shipped en student x25k2 (step 28,000 weights), decoder core, 4.2 s audio (T=168), `core-bench.sh`, fused AdaSnake graph | 3.52–3.67 s (core RTF 0.84–0.87), rel RMS 3.0e-4 vs PyTorch | ncnn CPU 4 threads, unfused graph: 2.03–2.11 s (core RTF 0.48–0.50) |
+
+The student core is exported with the trained weights (not a random
+graph) by `scripts/export-student-core.py … paradee:nx25k2` (AdaIN width
+256, upsample_initial_channel 128, resblock kernels [3, 7], dim_in 512).
+The earlier student on the tablet (`student/en`, Kokoro-7M-Distill) differs
+only in `dim_in` (160).
+
 ## How it was run
 
 `cts.sh mustpass ICD RUN` runs every mustpass file in `vk-default.txt` order
