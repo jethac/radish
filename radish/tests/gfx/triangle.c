@@ -1,9 +1,12 @@
 /* First graphics test for Radish: one triangle into a 64x64 RGBA8 image,
  * read back and compared with a CPU reference.
  *
- * usage: triangle [flat|color]
+ * usage: triangle [flat|color|vbo]
  *   flat   fragment shader writes constant red
  *   color  per-vertex colours, interpolated (checked with a tolerance)
+ *   vbo    positions and colours from a vertex buffer, an indexed draw
+ *          (uint16 indices), colour scaled by a uniform buffer (1, .5, 1, 1)
+ *          and a push constant (1, 1, .5, 1)
  * The image is cleared to blue with vkCmdClearColorImage, drawn through a
  * render pass with LOAD_OP_LOAD, copied to a buffer. Pixels whose centre is
  * within 0.75 px of an edge are skipped (rasterisation rules differ there);
@@ -28,6 +31,12 @@ static const uint32_t flat_spv[] =
 static const uint32_t color_spv[] =
 #include "color.frag.inc"
 ;
+static const uint32_t vbo_vs_spv[] =
+#include "vbo.vert.inc"
+;
+static const uint32_t vbo_fs_spv[] =
+#include "vbo.frag.inc"
+;
 
 #define FUNCS(X)                                                               \
    X(vkCreateInstance) X(vkEnumeratePhysicalDevices) X(vkCreateDevice)         \
@@ -42,7 +51,10 @@ static const uint32_t color_spv[] =
    X(vkBeginCommandBuffer) X(vkEndCommandBuffer) X(vkCmdBindPipeline)          \
    X(vkCmdBeginRenderPass) X(vkCmdEndRenderPass) X(vkCmdDraw)                  \
    X(vkCmdClearColorImage) X(vkCmdPipelineBarrier) X(vkCmdCopyImageToBuffer)   \
-   X(vkQueueSubmit) X(vkQueueWaitIdle)
+   X(vkQueueSubmit) X(vkQueueWaitIdle) X(vkCreateDescriptorSetLayout)          \
+   X(vkCreateDescriptorPool) X(vkAllocateDescriptorSets)                       \
+   X(vkUpdateDescriptorSets) X(vkCmdBindDescriptorSets) X(vkCmdPushConstants)  \
+   X(vkCmdBindVertexBuffers) X(vkCmdBindIndexBuffer) X(vkCmdDrawIndexed)
 #define FN(name) static PFN_##name name;
 FUNCS(FN)
 
@@ -88,6 +100,22 @@ module(const uint32_t *code, size_t size)
    return m;
 }
 
+static VkBuffer
+host_buffer(VkDeviceSize size, VkBufferUsageFlags usage, const void *data)
+{
+   VkBufferCreateInfo bci = { VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO, .size = size, .usage = usage };
+   VkBuffer b;
+   CHECK(vkCreateBuffer(dev, &bci, NULL, &b));
+   VkMemoryRequirements req;
+   vkGetBufferMemoryRequirements(dev, b, &req);
+   VkDeviceMemory m = alloc(req);
+   CHECK(vkBindBufferMemory(dev, b, m, 0));
+   void *map;
+   CHECK(vkMapMemory(dev, m, 0, size, 0, &map));
+   memcpy(map, data, size);
+   return b;
+}
+
 static double
 edge(double ax, double ay, double bx, double by, double px, double py)
 {
@@ -97,7 +125,8 @@ edge(double ax, double ay, double bx, double by, double px, double py)
 int
 main(int argc, char **argv)
 {
-   int color = argc > 1 && !strcmp(argv[1], "color");
+   int vbo = argc > 1 && !strcmp(argv[1], "vbo");
+   int color = vbo || (argc > 1 && !strcmp(argv[1], "color"));
    void *lib = dlopen("libvulkan.so.1", RTLD_NOW);
    if (!lib) {
       fprintf(stderr, "no loader\n");
@@ -176,17 +205,57 @@ main(int argc, char **argv)
    VkFramebuffer fb;
    CHECK(vkCreateFramebuffer(dev, &fci, NULL, &fb));
 
-   VkPipelineLayoutCreateInfo plci = { VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO };
+   VkDescriptorSetLayoutBinding dslb = { 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1,
+                                         VK_SHADER_STAGE_FRAGMENT_BIT };
+   VkDescriptorSetLayoutCreateInfo dslci = { VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
+                                             .bindingCount = 1, .pBindings = &dslb };
+   VkDescriptorSetLayout dsl;
+   CHECK(vkCreateDescriptorSetLayout(dev, &dslci, NULL, &dsl));
+   VkPushConstantRange pcr = { VK_SHADER_STAGE_FRAGMENT_BIT, 0, 16 };
+   VkPipelineLayoutCreateInfo plci = { VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
+      .setLayoutCount = vbo ? 1 : 0, .pSetLayouts = &dsl,
+      .pushConstantRangeCount = vbo ? 1 : 0, .pPushConstantRanges = &pcr };
    VkPipelineLayout layout;
    CHECK(vkCreatePipelineLayout(dev, &plci, NULL, &layout));
+   VkDescriptorSet set = VK_NULL_HANDLE;
+   VkBuffer vb = VK_NULL_HANDLE, ib = VK_NULL_HANDLE;
+   if (vbo) {
+      const float ubo_data[4] = { 1, 0.5f, 1, 1 };
+      VkBuffer ub = host_buffer(sizeof(ubo_data), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, ubo_data);
+      VkDescriptorPoolSize ps = { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1 };
+      VkDescriptorPoolCreateInfo dpci = { VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
+                                          .maxSets = 1, .poolSizeCount = 1, .pPoolSizes = &ps };
+      VkDescriptorPool dp;
+      CHECK(vkCreateDescriptorPool(dev, &dpci, NULL, &dp));
+      VkDescriptorSetAllocateInfo dsai = { VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
+                                           .descriptorPool = dp, .descriptorSetCount = 1, .pSetLayouts = &dsl };
+      CHECK(vkAllocateDescriptorSets(dev, &dsai, &set));
+      VkDescriptorBufferInfo dbi = { ub, 0, VK_WHOLE_SIZE };
+      VkWriteDescriptorSet w = { VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET, .dstSet = set,
+                                 .descriptorCount = 1, .descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                                 .pBufferInfo = &dbi };
+      vkUpdateDescriptorSets(dev, 1, &w, 0, NULL);
+      /* vertices in the order 2, 0, 1 so the indices matter */
+      const float vertices[] = { 0.0f, 0.5f, 0, 0, 1,   -0.5f, -0.5f, 1, 0, 0,   0.5f, -0.5f, 0, 1, 0 };
+      const uint16_t indices[] = { 1, 2, 0, 0 };
+      vb = host_buffer(sizeof(vertices), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, vertices);
+      ib = host_buffer(sizeof(indices), VK_BUFFER_USAGE_INDEX_BUFFER_BIT, indices);
+   }
    VkPipelineShaderStageCreateInfo stages[2] = {
       { VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO, .stage = VK_SHADER_STAGE_VERTEX_BIT,
-        .module = module(vs_spv, sizeof(vs_spv)), .pName = "main" },
+        .module = vbo ? module(vbo_vs_spv, sizeof(vbo_vs_spv)) : module(vs_spv, sizeof(vs_spv)),
+        .pName = "main" },
       { VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO, .stage = VK_SHADER_STAGE_FRAGMENT_BIT,
-        .module = color ? module(color_spv, sizeof(color_spv)) : module(flat_spv, sizeof(flat_spv)),
+        .module = vbo ? module(vbo_fs_spv, sizeof(vbo_fs_spv)) :
+                  color ? module(color_spv, sizeof(color_spv)) : module(flat_spv, sizeof(flat_spv)),
         .pName = "main" },
    };
-   VkPipelineVertexInputStateCreateInfo vi = { VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO };
+   VkVertexInputBindingDescription vib = { 0, 5 * sizeof(float), VK_VERTEX_INPUT_RATE_VERTEX };
+   VkVertexInputAttributeDescription via[2] = {
+      { 0, 0, VK_FORMAT_R32G32_SFLOAT, 0 }, { 1, 0, VK_FORMAT_R32G32B32_SFLOAT, 2 * sizeof(float) } };
+   VkPipelineVertexInputStateCreateInfo vi = { VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
+      .vertexBindingDescriptionCount = vbo ? 1 : 0, .pVertexBindingDescriptions = &vib,
+      .vertexAttributeDescriptionCount = vbo ? 2 : 0, .pVertexAttributeDescriptions = via };
    VkPipelineInputAssemblyStateCreateInfo ia = { VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
       .topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST };
    VkViewport vp = { 0, 0, W, H, 0, 1 };
@@ -237,7 +306,17 @@ main(int argc, char **argv)
       .framebuffer = fb, .renderArea = sc };
    vkCmdBeginRenderPass(cmd, &rpbi, VK_SUBPASS_CONTENTS_INLINE);
    vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
-   vkCmdDraw(cmd, 3, 1, 0, 0);
+   if (vbo) {
+      const float push[4] = { 1, 1, 0.5f, 1 };
+      VkDeviceSize zero = 0;
+      vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 0, 1, &set, 0, NULL);
+      vkCmdPushConstants(cmd, layout, VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(push), push);
+      vkCmdBindVertexBuffers(cmd, 0, 1, &vb, &zero);
+      vkCmdBindIndexBuffer(cmd, ib, 0, VK_INDEX_TYPE_UINT16);
+      vkCmdDrawIndexed(cmd, 3, 1, 0, 0, 0);
+   } else {
+      vkCmdDraw(cmd, 3, 1, 0, 0);
+   }
    vkCmdEndRenderPass(cmd);
    b.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
    b.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
@@ -277,6 +356,10 @@ main(int argc, char **argv)
             want[0] = 1; want[1] = 0; want[2] = 0; want[3] = 1;
          } else {
             want[0] = w0; want[1] = w1; want[2] = w2; want[3] = 1;
+            if (vbo) {
+               want[1] *= 0.5;
+               want[2] *= 0.5;
+            }
          }
          inside_n += inside;
          const uint8_t *p = pixels + 4 * (y * W + x);
@@ -294,7 +377,7 @@ main(int argc, char **argv)
       }
    }
    printf("triangle %s: %u pixels checked (%u inside), %u mismatches\n",
-          color ? "color" : "flat", checked, inside_n, bad);
+          vbo ? "vbo" : color ? "color" : "flat", checked, inside_n, bad);
    for (int y = 0; y < H; y += 4) {
       for (int x = 0; x < W; x += 2) {
          const uint8_t *p = pixels + 4 * (y * W + x);
