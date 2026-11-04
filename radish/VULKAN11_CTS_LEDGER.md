@@ -40,6 +40,7 @@ only in `dim_in` (160).
 
 | date | driver | change | groups re-run | effect |
 |---|---|---|---|---|
+| 2026-11-04 | `c15f2e0` | first graphics path behind `RADISH_GRAPHICS=1` (bypass rendering, VS/FS pipelines, non-indexed draws) | compute | first triangle correct: `tests/gfx/triangle` flat and interpolated, 3,724 pixels each, 0 mismatches vs a CPU reference; no fault; compute unchanged (default device has no GRAPHICS bit yet) |
 | 2026-11-04 | `f6f4ba9` | 256 invocations per workgroup | compute, info, texture, memory, device_group, ssbo, ubo, memory_model, spirv_assembly, subgroups, synchronization | texture 180 → 4,442 Pass; memory +31; device_group +4; memory_model +1 net (3 newly supported pass, 2 workgroup-scope image-guard cases now fail at invocation 128/496); others unchanged; no hang. Kokoro 25.86 s, student core 3.55–3.64 s |
 
 ## How it was run
