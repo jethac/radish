@@ -7,6 +7,10 @@
  *   vbo    positions and colours from a vertex buffer, an indexed draw
  *          (uint16 indices), colour scaled by a uniform buffer (1, .5, 1, 1)
  *          and a push constant (1, 1, .5, 1)
+ *   depth  D32F depth attachment (set to 1.0 by a buffer copy), test LESS
+ *          with writes: green at z=.25 then red at z=.5 -> green
+ *   blend  colour (1, 0, 0, .5) blended SRC_ALPHA / ONE_MINUS_SRC_ALPHA
+ *          over the blue background -> (.5, 0, .5, .75)
  * The image is cleared to blue with vkCmdClearColorImage, drawn through a
  * render pass with LOAD_OP_LOAD, copied to a buffer. Pixels whose centre is
  * within 0.75 px of an edge are skipped (rasterisation rules differ there);
@@ -37,6 +41,12 @@ static const uint32_t vbo_vs_spv[] =
 static const uint32_t vbo_fs_spv[] =
 #include "vbo.frag.inc"
 ;
+static const uint32_t push_vs_spv[] =
+#include "push.vert.inc"
+;
+static const uint32_t push_fs_spv[] =
+#include "push.frag.inc"
+;
 
 #define FUNCS(X)                                                               \
    X(vkCreateInstance) X(vkEnumeratePhysicalDevices) X(vkCreateDevice)         \
@@ -54,7 +64,8 @@ static const uint32_t vbo_fs_spv[] =
    X(vkQueueSubmit) X(vkQueueWaitIdle) X(vkCreateDescriptorSetLayout)          \
    X(vkCreateDescriptorPool) X(vkAllocateDescriptorSets)                       \
    X(vkUpdateDescriptorSets) X(vkCmdBindDescriptorSets) X(vkCmdPushConstants)  \
-   X(vkCmdBindVertexBuffers) X(vkCmdBindIndexBuffer) X(vkCmdDrawIndexed)
+   X(vkCmdBindVertexBuffers) X(vkCmdBindIndexBuffer) X(vkCmdDrawIndexed)      \
+   X(vkCmdCopyBufferToImage)
 #define FN(name) static PFN_##name name;
 FUNCS(FN)
 
@@ -126,6 +137,9 @@ int
 main(int argc, char **argv)
 {
    int vbo = argc > 1 && !strcmp(argv[1], "vbo");
+   int depth = argc > 1 && !strcmp(argv[1], "depth");
+   int blend = argc > 1 && !strcmp(argv[1], "blend");
+   int push_mode = depth || blend;
    int color = vbo || (argc > 1 && !strcmp(argv[1], "color"));
    void *lib = dlopen("libvulkan.so.1", RTLD_NOW);
    if (!lib) {
@@ -176,6 +190,21 @@ main(int argc, char **argv)
    VkImageView view;
    CHECK(vkCreateImageView(dev, &vci, NULL, &view));
 
+   VkImage dimage = VK_NULL_HANDLE;
+   VkImageView dview = VK_NULL_HANDLE;
+   if (depth) {
+      VkImageCreateInfo dci2 = imci;
+      dci2.format = VK_FORMAT_D32_SFLOAT;
+      dci2.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+      CHECK(vkCreateImage(dev, &dci2, NULL, &dimage));
+      vkGetImageMemoryRequirements(dev, dimage, &req);
+      CHECK(vkBindImageMemory(dev, dimage, alloc(req), 0));
+      VkImageViewCreateInfo dvci = vci;
+      dvci.image = dimage;
+      dvci.format = VK_FORMAT_D32_SFLOAT;
+      dvci.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+      CHECK(vkCreateImageView(dev, &dvci, NULL, &dview));
+   }
    VkBufferCreateInfo bci = { VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO, .size = W * H * 4,
                               .usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT };
    VkBuffer buffer;
@@ -193,15 +222,21 @@ main(int argc, char **argv)
       .stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
       .initialLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
       .finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL };
+   VkAttachmentDescription atts[2] = { att, att };
+   atts[1].format = VK_FORMAT_D32_SFLOAT;
+   atts[1].initialLayout = atts[1].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
    VkAttachmentReference ref = { 0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL };
+   VkAttachmentReference dref = { 1, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL };
    VkSubpassDescription sub = { .pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                .colorAttachmentCount = 1, .pColorAttachments = &ref };
+                                .colorAttachmentCount = 1, .pColorAttachments = &ref,
+                                .pDepthStencilAttachment = depth ? &dref : NULL };
    VkRenderPassCreateInfo rpci = { VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
-      .attachmentCount = 1, .pAttachments = &att, .subpassCount = 1, .pSubpasses = &sub };
+      .attachmentCount = depth ? 2 : 1, .pAttachments = atts, .subpassCount = 1, .pSubpasses = &sub };
    VkRenderPass pass;
    CHECK(vkCreateRenderPass(dev, &rpci, NULL, &pass));
+   VkImageView views[2] = { view, dview };
    VkFramebufferCreateInfo fci = { VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO, .renderPass = pass,
-      .attachmentCount = 1, .pAttachments = &view, .width = W, .height = H, .layers = 1 };
+      .attachmentCount = depth ? 2 : 1, .pAttachments = views, .width = W, .height = H, .layers = 1 };
    VkFramebuffer fb;
    CHECK(vkCreateFramebuffer(dev, &fci, NULL, &fb));
 
@@ -212,9 +247,11 @@ main(int argc, char **argv)
    VkDescriptorSetLayout dsl;
    CHECK(vkCreateDescriptorSetLayout(dev, &dslci, NULL, &dsl));
    VkPushConstantRange pcr = { VK_SHADER_STAGE_FRAGMENT_BIT, 0, 16 };
+   if (push_mode)
+      pcr = (VkPushConstantRange) { VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, 20 };
    VkPipelineLayoutCreateInfo plci = { VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
       .setLayoutCount = vbo ? 1 : 0, .pSetLayouts = &dsl,
-      .pushConstantRangeCount = vbo ? 1 : 0, .pPushConstantRanges = &pcr };
+      .pushConstantRangeCount = vbo || push_mode ? 1 : 0, .pPushConstantRanges = &pcr };
    VkPipelineLayout layout;
    CHECK(vkCreatePipelineLayout(dev, &plci, NULL, &layout));
    VkDescriptorSet set = VK_NULL_HANDLE;
@@ -243,10 +280,12 @@ main(int argc, char **argv)
    }
    VkPipelineShaderStageCreateInfo stages[2] = {
       { VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO, .stage = VK_SHADER_STAGE_VERTEX_BIT,
-        .module = vbo ? module(vbo_vs_spv, sizeof(vbo_vs_spv)) : module(vs_spv, sizeof(vs_spv)),
+        .module = push_mode ? module(push_vs_spv, sizeof(push_vs_spv)) :
+                  vbo ? module(vbo_vs_spv, sizeof(vbo_vs_spv)) : module(vs_spv, sizeof(vs_spv)),
         .pName = "main" },
       { VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO, .stage = VK_SHADER_STAGE_FRAGMENT_BIT,
-        .module = vbo ? module(vbo_fs_spv, sizeof(vbo_fs_spv)) :
+        .module = push_mode ? module(push_fs_spv, sizeof(push_fs_spv)) :
+                  vbo ? module(vbo_fs_spv, sizeof(vbo_fs_spv)) :
                   color ? module(color_spv, sizeof(color_spv)) : module(flat_spv, sizeof(flat_spv)),
         .pName = "main" },
    };
@@ -268,12 +307,22 @@ main(int argc, char **argv)
    VkPipelineMultisampleStateCreateInfo ms = { VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
       .rasterizationSamples = VK_SAMPLE_COUNT_1_BIT };
    VkPipelineColorBlendAttachmentState cba = { .colorWriteMask = 0xf };
+   if (blend)
+      cba = (VkPipelineColorBlendAttachmentState) { .blendEnable = VK_TRUE,
+         .srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA,
+         .dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA, .colorBlendOp = VK_BLEND_OP_ADD,
+         .srcAlphaBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA,
+         .dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA, .alphaBlendOp = VK_BLEND_OP_ADD,
+         .colorWriteMask = 0xf };
+   VkPipelineDepthStencilStateCreateInfo dss = { VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
+      .depthTestEnable = VK_TRUE, .depthWriteEnable = VK_TRUE, .depthCompareOp = VK_COMPARE_OP_LESS };
    VkPipelineColorBlendStateCreateInfo cb = { VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
       .attachmentCount = 1, .pAttachments = &cba };
    VkGraphicsPipelineCreateInfo gci = { VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
       .stageCount = 2, .pStages = stages, .pVertexInputState = &vi, .pInputAssemblyState = &ia,
       .pViewportState = &vps, .pRasterizationState = &rs, .pMultisampleState = &ms,
-      .pColorBlendState = &cb, .layout = layout, .renderPass = pass };
+      .pColorBlendState = &cb, .pDepthStencilState = depth ? &dss : NULL,
+      .layout = layout, .renderPass = pass };
    VkPipeline pipeline;
    CHECK(vkCreateGraphicsPipelines(dev, VK_NULL_HANDLE, 1, &gci, NULL, &pipeline));
 
@@ -302,11 +351,48 @@ main(int argc, char **argv)
    b.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
    vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT,
                         VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, 0, 0, NULL, 0, NULL, 1, &b);
+   if (depth) {
+      static float ones[W * H];
+      for (unsigned i = 0; i < W * H; i++)
+         ones[i] = 1.0f;
+      VkBuffer db = host_buffer(sizeof(ones), VK_BUFFER_USAGE_TRANSFER_SRC_BIT, ones);
+      VkImageMemoryBarrier db0 = b;
+      db0.srcAccessMask = 0;
+      db0.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+      db0.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+      db0.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+      db0.image = dimage;
+      db0.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+      vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
+                           0, 0, NULL, 0, NULL, 1, &db0);
+      VkBufferImageCopy dcopy = { .imageSubresource = { VK_IMAGE_ASPECT_DEPTH_BIT, 0, 0, 1 },
+                                  .imageExtent = { W, H, 1 } };
+      vkCmdCopyBufferToImage(cmd, db, dimage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &dcopy);
+      db0.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+      db0.dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+      db0.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+      db0.newLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+      vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT,
+                           VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT, 0, 0, NULL, 0, NULL, 1, &db0);
+   }
    VkRenderPassBeginInfo rpbi = { VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO, .renderPass = pass,
       .framebuffer = fb, .renderArea = sc };
    vkCmdBeginRenderPass(cmd, &rpbi, VK_SUBPASS_CONTENTS_INLINE);
    vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
-   if (vbo) {
+   if (push_mode) {
+      VkShaderStageFlags st = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+      if (depth) {
+         const float green[5] = { 0, 1, 0, 1, 0.25f }, red[5] = { 1, 0, 0, 1, 0.5f };
+         vkCmdPushConstants(cmd, layout, st, 0, sizeof(green), green);
+         vkCmdDraw(cmd, 3, 1, 0, 0);
+         vkCmdPushConstants(cmd, layout, st, 0, sizeof(red), red);
+         vkCmdDraw(cmd, 3, 1, 0, 0);
+      } else {
+         const float half_red[5] = { 1, 0, 0, 0.5f, 0 };
+         vkCmdPushConstants(cmd, layout, st, 0, sizeof(half_red), half_red);
+         vkCmdDraw(cmd, 3, 1, 0, 0);
+      }
+   } else if (vbo) {
       const float push[4] = { 1, 1, 0.5f, 1 };
       VkDeviceSize zero = 0;
       vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 0, 1, &set, 0, NULL);
@@ -352,6 +438,10 @@ main(int argc, char **argv)
          double want[4];
          if (!inside) {
             want[0] = 0; want[1] = 0; want[2] = 1; want[3] = 1;
+         } else if (depth) {
+            want[0] = 0; want[1] = 1; want[2] = 0; want[3] = 1;
+         } else if (blend) {
+            want[0] = 0.5; want[1] = 0; want[2] = 0.5; want[3] = 0.75;
          } else if (!color) {
             want[0] = 1; want[1] = 0; want[2] = 0; want[3] = 1;
          } else {
@@ -365,7 +455,7 @@ main(int argc, char **argv)
          const uint8_t *p = pixels + 4 * (y * W + x);
          int ok = 1;
          for (int c = 0; c < 4; c++)
-            if (fabs(p[c] / 255.0 - want[c]) > (color ? 3.0 / 255 : 0.5 / 255))
+            if (fabs(p[c] / 255.0 - want[c]) > (color || blend ? 3.0 / 255 : 0.5 / 255))
                ok = 0;
          checked++;
          if (!ok) {
@@ -377,7 +467,8 @@ main(int argc, char **argv)
       }
    }
    printf("triangle %s: %u pixels checked (%u inside), %u mismatches\n",
-          vbo ? "vbo" : color ? "color" : "flat", checked, inside_n, bad);
+          depth ? "depth" : blend ? "blend" : vbo ? "vbo" : color ? "color" : "flat",
+          checked, inside_n, bad);
    for (int y = 0; y < H; y += 4) {
       for (int x = 0; x < W; x += 2) {
          const uint8_t *p = pixels + 4 * (y * W + x);
