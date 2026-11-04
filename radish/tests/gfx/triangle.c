@@ -9,6 +9,9 @@
  *          and a push constant (1, 1, .5, 1)
  *   depth  D32F depth attachment (set to 1.0 by a buffer copy), test LESS
  *          with writes: green at z=.25 then red at z=.5 -> green
+ *   clear  load-op clear to blue (no vkCmdClearColorImage), red triangle,
+ *          then vkCmdClearAttachments of the 8x8 top-left corner to green
+ *   dclear like depth, with the depth attachment cleared by its load op
  *   blend  colour (1, 0, 0, .5) blended SRC_ALPHA / ONE_MINUS_SRC_ALPHA
  *          over the blue background -> (.5, 0, .5, .75)
  * The image is cleared to blue with vkCmdClearColorImage, drawn through a
@@ -65,7 +68,7 @@ static const uint32_t push_fs_spv[] =
    X(vkCreateDescriptorPool) X(vkAllocateDescriptorSets)                       \
    X(vkUpdateDescriptorSets) X(vkCmdBindDescriptorSets) X(vkCmdPushConstants)  \
    X(vkCmdBindVertexBuffers) X(vkCmdBindIndexBuffer) X(vkCmdDrawIndexed)      \
-   X(vkCmdCopyBufferToImage)
+   X(vkCmdCopyBufferToImage) X(vkCmdClearAttachments)
 #define FN(name) static PFN_##name name;
 FUNCS(FN)
 
@@ -137,7 +140,9 @@ int
 main(int argc, char **argv)
 {
    int vbo = argc > 1 && !strcmp(argv[1], "vbo");
-   int depth = argc > 1 && !strcmp(argv[1], "depth");
+   int dclear = argc > 1 && !strcmp(argv[1], "dclear");
+   int depth = dclear || (argc > 1 && !strcmp(argv[1], "depth"));
+   int clear = argc > 1 && !strcmp(argv[1], "clear");
    int blend = argc > 1 && !strcmp(argv[1], "blend");
    int push_mode = depth || blend;
    int color = vbo || (argc > 1 && !strcmp(argv[1], "color"));
@@ -222,8 +227,14 @@ main(int argc, char **argv)
       .stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
       .initialLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
       .finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL };
+   if (clear) {
+      att.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+      att.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+   }
    VkAttachmentDescription atts[2] = { att, att };
    atts[1].format = VK_FORMAT_D32_SFLOAT;
+   if (dclear)
+      atts[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
    atts[1].initialLayout = atts[1].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
    VkAttachmentReference ref = { 0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL };
    VkAttachmentReference dref = { 1, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL };
@@ -343,7 +354,8 @@ main(int argc, char **argv)
       .image = image, .subresourceRange = range };
    vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
                         0, 0, NULL, 0, NULL, 1, &b);
-   VkClearColorValue blue = { .float32 = { 0, 0, 1, 1 } };
+   /* in clear mode the render pass load op must replace this white */
+   VkClearColorValue blue = { .float32 = { clear, clear, 1, 1 } };
    vkCmdClearColorImage(cmd, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, &blue, 1, &range);
    b.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
    b.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
@@ -351,7 +363,7 @@ main(int argc, char **argv)
    b.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
    vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT,
                         VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, 0, 0, NULL, 0, NULL, 1, &b);
-   if (depth) {
+   if (depth && !dclear) {
       static float ones[W * H];
       for (unsigned i = 0; i < W * H; i++)
          ones[i] = 1.0f;
@@ -375,8 +387,21 @@ main(int argc, char **argv)
       vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT,
                            VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT, 0, 0, NULL, 0, NULL, 1, &db0);
    }
+   if (dclear) {
+      VkImageMemoryBarrier db0 = b;
+      db0.srcAccessMask = 0;
+      db0.dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+      db0.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+      db0.newLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+      db0.image = dimage;
+      db0.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+      vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                           VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT, 0, 0, NULL, 0, NULL, 1, &db0);
+   }
+   VkClearValue clears[2] = { { .color = { .float32 = { 0, 0, 1, 1 } } },
+                              { .depthStencil = { 1.0f, 0 } } };
    VkRenderPassBeginInfo rpbi = { VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO, .renderPass = pass,
-      .framebuffer = fb, .renderArea = sc };
+      .framebuffer = fb, .renderArea = sc, .clearValueCount = 2, .pClearValues = clears };
    vkCmdBeginRenderPass(cmd, &rpbi, VK_SUBPASS_CONTENTS_INLINE);
    vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
    if (push_mode) {
@@ -402,6 +427,11 @@ main(int argc, char **argv)
       vkCmdDrawIndexed(cmd, 3, 1, 0, 0, 0);
    } else {
       vkCmdDraw(cmd, 3, 1, 0, 0);
+   }
+   if (clear) {
+      VkClearAttachment ca = { VK_IMAGE_ASPECT_COLOR_BIT, 0, { .color = { .float32 = { 0, 1, 0, 1 } } } };
+      VkClearRect cr = { { { 0, 0 }, { 8, 8 } }, 0, 1 };
+      vkCmdClearAttachments(cmd, 1, &ca, 1, &cr);
    }
    vkCmdEndRenderPass(cmd);
    b.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
@@ -436,7 +466,9 @@ main(int argc, char **argv)
             continue;
          int inside = w0 > 0 && w1 > 0 && w2 > 0;
          double want[4];
-         if (!inside) {
+         if (clear && x < 8 && y < 8) {
+            want[0] = 0; want[1] = 1; want[2] = 0; want[3] = 1;
+         } else if (!inside) {
             want[0] = 0; want[1] = 0; want[2] = 1; want[3] = 1;
          } else if (depth) {
             want[0] = 0; want[1] = 1; want[2] = 0; want[3] = 1;
@@ -467,7 +499,7 @@ main(int argc, char **argv)
       }
    }
    printf("triangle %s: %u pixels checked (%u inside), %u mismatches\n",
-          depth ? "depth" : blend ? "blend" : vbo ? "vbo" : color ? "color" : "flat",
+          dclear ? "dclear" : depth ? "depth" : clear ? "clear" : blend ? "blend" : vbo ? "vbo" : color ? "color" : "flat",
           checked, inside_n, bad);
    for (int y = 0; y < H; y += 4) {
       for (int x = 0; x < W; x += 2) {
