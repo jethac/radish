@@ -11,10 +11,16 @@ gpu_fault_count() {
 
 # Batches run only on the baseline kernel (the device is shared with kernel
 # work). Call inside the lock; non-zero means release the lock and retry later.
-BASELINE_KERNEL=${RADISH_BASELINE_KERNEL:-'Linux version 7.3.0-g755ffc44d5d8-dirty (jethac@xps17-9700) (clang version 23.1.3, LLD 23.1.3) #7 SMP PREEMPT Tue Nov  3 19:34:20 JST 2026'}
+# Baseline = the version string of the accepted build on the laptop.
+BASELINE_IMAGE=${RADISH_BASELINE_IMAGE:-/home/jethac/Projects/lenovo-8/kernel/build-7.3/arch/arm64/boot/Image}
+baseline_kernel() {
+    if [[ -n ${RADISH_BASELINE_KERNEL:-} ]]; then echo "$RADISH_BASELINE_KERNEL"; return; fi
+    strings "$BASELINE_IMAGE" 2>/dev/null | grep -m1 -E '^Linux version .*#[0-9]+ SMP PREEMPT'
+}
 on_baseline() {
     local v; v=$(adbsh 'cat /proc/version' 2>/dev/null | tr -d '\r')
-    if [[ "$v" != "$BASELINE_KERNEL" ]]; then
+    local want; want=$(baseline_kernel)
+    if [[ -z "$want" || "$v" != "$want" ]]; then
         echo "device not on the baseline kernel: $v ($(adbsh 'cut -d" " -f1 /proc/uptime' 2>/dev/null))" >&2
         return 1
     fi

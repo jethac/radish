@@ -65,10 +65,23 @@ def fault_lines():
 # The device is shared with kernel work: batches run only on the baseline
 # kernel. If another kernel is booted, the lock is released and taken again
 # later instead of running.
-BASELINE_KERNEL = os.environ.get(
-    "RADISH_BASELINE_KERNEL",
-    "Linux version 7.3.0-g755ffc44d5d8-dirty (jethac@xps17-9700) (clang version 23.1.3, "
-    "LLD 23.1.3) #7 SMP PREEMPT Tue Nov  3 19:34:20 JST 2026")
+BASELINE_IMAGE = os.environ.get(
+    "RADISH_BASELINE_IMAGE", "/home/jethac/Projects/lenovo-8/kernel/build-7.3/arch/arm64/boot/Image")
+
+
+def baseline_kernel():
+    """The version string of the accepted kernel build on the laptop, read
+    from its Image each time (so a new baseline is picked up), or
+    RADISH_BASELINE_KERNEL if set."""
+    if os.environ.get("RADISH_BASELINE_KERNEL"):
+        return os.environ["RADISH_BASELINE_KERNEL"]
+    try:
+        with open(BASELINE_IMAGE, "rb") as f:
+            data = f.read()
+    except OSError:
+        return None
+    m = re.search(rb"Linux version [^\0\n]*#[0-9]+ SMP PREEMPT[^\0\n]*", data)
+    return m.group(0).decode(errors="replace").strip() if m else None
 
 
 def device_state():
@@ -97,7 +110,7 @@ def device_lock(timeout=1800, wait_baseline=4 * 3600):
             version, uptime = device_state()
         except Exception:
             version, uptime = "", -1.0
-        if version == BASELINE_KERNEL and uptime >= 0:
+        if version and version == baseline_kernel() and uptime >= 0:
             break
         fcntl.flock(fd, fcntl.LOCK_UN)
         print(f"device not on the baseline kernel ({version[:90]!r}, uptime {uptime}); waiting",
