@@ -35,6 +35,8 @@ import time
 
 SERIAL = os.environ.get("RADISH_SERIAL", "feb0bd1f028e4cb0")
 LOCK = os.environ.get("RADISH_DEVICE_LOCK", "/home/jethac/Projects/lenovo-8/.device.lock")
+LIVE_LOG = os.environ.get("RADISH_LIVE_LOG",
+    os.path.join(os.environ.get("RADISH_SRC", "/run/media/jethac/Shared/radish-src"), "cts-runs", "live.log"))
 SRC = os.environ.get("RADISH_SRC", "/run/media/jethac/Shared/radish-src")
 PREFIX = "/var/tmp/radish-canon"
 DEV = PREFIX + "/cts"
@@ -243,10 +245,34 @@ def run_batch(icd, cases, runtime_max, env=()):
     # fault line in dmesg can be matched to the case that was running.
     stamp = ('while IFS= read -r l; do case "$l" in "Test case"*|*Fail*|*Crash*|*Timeout*|radish:*|*"Finished with result"*|*"Main processes terminated"*|*"Memory peak"*|*"Service runtime"*)'
              ' read -r up _ </proc/uptime; printf "%s %s\\n" "$up" "$l";; esac; done')
-    script = (f"{unit} {deqp} 2>&1 | {stamp} > {DEV}/run/stdout.txt; "
+    # The stamped lines are also streamed to the host while the batch runs
+    # (LIVE_LOG), so a device wedge leaves the last case on the host.
+    script = (f"{unit} {deqp} 2>&1 | {stamp} | tee {DEV}/run/stdout.txt; "
               f"echo rc=${{PIPESTATUS[0]}}")
     t0 = time.time()
-    out = adbsh(f"bash -c {shlex.quote(script)}", check=False, timeout=runtime_max + 120)
+    live = open(LIVE_LOG, "a") if LIVE_LOG else None
+    if live:
+        live.write(f"=== batch start {time.strftime('%F %T')} ({len(cases)} cases)\n")
+        live.flush()
+    proc = subprocess.Popen(["adb", "-s", SERIAL, "shell", f"bash -c {shlex.quote(script)}"],
+                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    chunks = []
+    try:
+        for line in proc.stdout:
+            chunks.append(line)
+            if live:
+                live.write(line)
+                live.flush()
+            if time.time() - t0 > runtime_max + 120:
+                proc.kill()
+                break
+        proc.wait(timeout=30)
+    except subprocess.TimeoutExpired:
+        proc.kill()
+    if live:
+        live.write(f"=== batch end {time.strftime('%F %T')}\n")
+        live.close()
+    out = "".join(chunks)
     seconds = time.time() - t0
     rc = re.search(r"rc=(\d+)", out)
     rc = int(rc.group(1)) if rc else -1
