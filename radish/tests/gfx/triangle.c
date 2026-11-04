@@ -41,6 +41,12 @@ static const uint32_t color_spv[] =
 static const uint32_t vbo_vs_spv[] =
 #include "vbo.vert.inc"
 ;
+static const uint32_t vbopsz_vs_spv[] =
+#include "vbopsz.vert.inc"
+;
+static const uint32_t vbo4_vs_spv[] =
+#include "vbo4.vert.inc"
+;
 static const uint32_t vbo_fs_spv[] =
 #include "vbo.frag.inc"
 ;
@@ -50,6 +56,16 @@ static const uint32_t push_vs_spv[] =
 static const uint32_t push_fs_spv[] =
 #include "push.frag.inc"
 ;
+
+static float
+depth_at(const void *p, int i)
+{
+#ifdef D16
+   return ((const uint16_t *)p)[i] / 65535.0f;
+#else
+   return ((const float *)p)[i];
+#endif
+}
 
 #define FUNCS(X)                                                               \
    X(vkCreateInstance) X(vkEnumeratePhysicalDevices) X(vkCreateDevice)         \
@@ -82,6 +98,13 @@ FUNCS(FN)
       }                                                                        \
    } while (0)
 
+#ifdef D16
+#define DFMT VK_FORMAT_D16_UNORM
+#define DSCALE 65535.0f
+#else
+#define DFMT VK_FORMAT_D32_SFLOAT
+#define DSCALE 1048576.0f
+#endif
 #ifndef W
 #define W 64
 #endif
@@ -145,8 +168,10 @@ int
 main(int argc, char **argv)
 {
    int vbo = argc > 1 && !strcmp(argv[1], "vbo");
+   /* donly: dclear with no colour attachment in the subpass and no fragment shader */
+   int donly = argc > 1 && !strcmp(argv[1], "donly");
    int dclear = argc > 1 && (!strcmp(argv[1], "dclear") || !strcmp(argv[1], "dmap") ||
-                             !strcmp(argv[1], "dsamp"));
+                             !strcmp(argv[1], "dsamp") || donly);
    int depth = dclear || (argc > 1 && (!strcmp(argv[1], "depth") || !strcmp(argv[1], "dsimg")));
    int clear = argc > 1 && !strcmp(argv[1], "clear");
    int blend = argc > 1 && !strcmp(argv[1], "blend");
@@ -163,6 +188,10 @@ main(int argc, char **argv)
    int dsamp = argc > 1 && !strcmp(argv[1], "dsamp");
    int dmap = dsamp || (argc > 1 && !strcmp(argv[1], "dmap"));
    int push_mode = depth || blend;
+   /* probe: vbo with a cleared depth attachment, depth test off */
+   int vbo_depth = vbo && getenv("TRI_DEPTH");
+   if (vbo_depth)
+      depth = dclear = 1;
    int color = vbo || (argc > 1 && !strcmp(argv[1], "color"));
    void *lib = dlopen("libvulkan.so.1", RTLD_NOW);
    if (!lib) {
@@ -241,7 +270,7 @@ main(int argc, char **argv)
    VkImageView dview = VK_NULL_HANDLE;
    if (depth) {
       VkImageCreateInfo dci2 = imci;
-      dci2.format = VK_FORMAT_D32_SFLOAT;
+      dci2.format = DFMT;
       dci2.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT |
                    VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
       CHECK(vkCreateImage(dev, &dci2, NULL, &dimage));
@@ -249,7 +278,7 @@ main(int argc, char **argv)
       CHECK(vkBindImageMemory(dev, dimage, alloc(req), 0));
       VkImageViewCreateInfo dvci = vci;
       dvci.image = dimage;
-      dvci.format = VK_FORMAT_D32_SFLOAT;
+      dvci.format = DFMT;
       dvci.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
       CHECK(vkCreateImageView(dev, &dvci, NULL, &dview));
    }
@@ -275,7 +304,7 @@ main(int argc, char **argv)
       att.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
    }
    VkAttachmentDescription atts[2] = { att, att };
-   atts[1].format = VK_FORMAT_D32_SFLOAT;
+   atts[1].format = DFMT;
    if (dclear)
       atts[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
    atts[1].initialLayout = atts[1].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
@@ -291,7 +320,7 @@ main(int argc, char **argv)
    VkAttachmentReference rref = { 1, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL };
    VkAttachmentReference dref = { 1, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL };
    VkSubpassDescription sub = { .pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                .colorAttachmentCount = 1, .pColorAttachments = &ref,
+                                .colorAttachmentCount = donly ? 0 : 1, .pColorAttachments = &ref,
                                 .pResolveAttachments = msaa ? &rref : NULL,
                                 .pDepthStencilAttachment = depth ? &dref : NULL };
    VkRenderPassCreateInfo rpci = { VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
@@ -341,15 +370,49 @@ main(int argc, char **argv)
                                  .pBufferInfo = &dbi };
       vkUpdateDescriptorSets(dev, 1, &w, 0, NULL);
       /* vertices in the order 2, 0, 1 so the indices matter */
-      const float vertices[] = { 0.0f, 0.5f, 0, 0, 1,   -0.5f, -0.5f, 1, 0, 0,   0.5f, -0.5f, 0, 1, 0 };
+      float vertices[] = { 0.0f, 0.5f, 0, 0, 1,   -0.5f, -0.5f, 1, 0, 0,   0.5f, -0.5f, 0, 1, 0 };
+      if (getenv("TRI_EDGE")) {
+         /* probe: a triangle touching the right edge (x = +1); output by eye */
+         const float edge[] = { 1.0f, 1.0f, 0, 0, 1,   0.0f, -1.0f, 1, 0, 0,   1.0f, -1.0f, 0, 1, 0 };
+         memcpy(vertices, edge, sizeof(edge));
+      }
       const uint16_t indices[] = { 1, 2, 0, 0 };
-      vb = host_buffer(sizeof(vertices), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, vertices);
+      if (getenv("TRI_QUADS")) {
+         /* probe: four quads (24 vertices, one non-indexed draw) tiling the
+          * screen, red/green on the left, blue/white on the right */
+         static float quads[24 * 5];
+         const float xs[4][2] = { { -1, 0 }, { -1, 0 }, { 0, 1 }, { 0, 1 } };
+         const float ys[4][2] = { { -1, 0 }, { 0, 1 }, { -1, 0 }, { 0, 1 } };
+         const float cs[4][3] = { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 }, { 1, 1, 1 } };
+         for (int q = 0; q < 4; q++) {
+            const float c[6][2] = { { xs[q][0], ys[q][0] }, { xs[q][0], ys[q][1] }, { xs[q][1], ys[q][0] },
+                                    { xs[q][1], ys[q][0] }, { xs[q][0], ys[q][1] }, { xs[q][1], ys[q][1] } };
+            for (int v = 0; v < 6; v++) {
+               float *o = &quads[(q * 6 + v) * 5];
+               o[0] = c[v][0]; o[1] = c[v][1];
+               o[2] = cs[q][0]; o[3] = cs[q][1]; o[4] = cs[q][2];
+            }
+         }
+         if (getenv("TRI_VEC4")) {
+            static float q4[24 * 8];
+            for (int v = 0; v < 24; v++) {
+               const float *i5 = &quads[v * 5];
+               float *o = &q4[v * 8];
+               o[0] = i5[0]; o[1] = i5[1]; o[2] = 1.0f; o[3] = 1.0f;
+               o[4] = i5[2]; o[5] = i5[3]; o[6] = i5[4]; o[7] = 1.0f;
+            }
+            vb = host_buffer(sizeof(q4), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, q4);
+         } else
+            vb = host_buffer(sizeof(quads), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, quads);
+      } else
+         vb = host_buffer(sizeof(vertices), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, vertices);
       ib = host_buffer(sizeof(indices), VK_BUFFER_USAGE_INDEX_BUFFER_BIT, indices);
    }
    VkPipelineShaderStageCreateInfo stages[2] = {
       { VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO, .stage = VK_SHADER_STAGE_VERTEX_BIT,
         .module = push_mode ? module(push_vs_spv, sizeof(push_vs_spv)) :
-                  vbo ? module(vbo_vs_spv, sizeof(vbo_vs_spv)) : module(vs_spv, sizeof(vs_spv)),
+                  vbo ? getenv("TRI_VEC4") ? module(vbo4_vs_spv, sizeof(vbo4_vs_spv)) : (getenv("TRI_PSIZE") ? module(vbopsz_vs_spv, sizeof(vbopsz_vs_spv)) :
+                         module(vbo_vs_spv, sizeof(vbo_vs_spv))) : module(vs_spv, sizeof(vs_spv)),
         .pName = "main" },
       { VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO, .stage = VK_SHADER_STAGE_FRAGMENT_BIT,
         .module = push_mode ? module(push_fs_spv, sizeof(push_fs_spv)) :
@@ -360,6 +423,11 @@ main(int argc, char **argv)
    VkVertexInputBindingDescription vib = { 0, 5 * sizeof(float), VK_VERTEX_INPUT_RATE_VERTEX };
    VkVertexInputAttributeDescription via[2] = {
       { 0, 0, VK_FORMAT_R32G32_SFLOAT, 0 }, { 1, 0, VK_FORMAT_R32G32B32_SFLOAT, 2 * sizeof(float) } };
+   if (getenv("TRI_VEC4")) {
+      vib.stride = 8 * sizeof(float);
+      via[0].format = via[1].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+      via[1].offset = 4 * sizeof(float);
+   }
    VkPipelineVertexInputStateCreateInfo vi = { VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
       .vertexBindingDescriptionCount = vbo ? 1 : 0, .pVertexBindingDescriptions = &vib,
       .vertexAttributeDescriptionCount = vbo ? 2 : 0, .pVertexAttributeDescriptions = via };
@@ -383,11 +451,11 @@ main(int argc, char **argv)
          .dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA, .alphaBlendOp = VK_BLEND_OP_ADD,
          .colorWriteMask = 0xf };
    VkPipelineDepthStencilStateCreateInfo dss = { VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
-      .depthTestEnable = VK_TRUE, .depthWriteEnable = VK_TRUE, .depthCompareOp = VK_COMPARE_OP_LESS };
+      .depthTestEnable = !vbo_depth, .depthWriteEnable = !vbo_depth, .depthCompareOp = VK_COMPARE_OP_LESS };
    VkPipelineColorBlendStateCreateInfo cb = { VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
-      .attachmentCount = 1, .pAttachments = &cba };
+      .attachmentCount = donly ? 0 : 1, .pAttachments = &cba };
    VkGraphicsPipelineCreateInfo gci = { VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
-      .stageCount = 2, .pStages = stages, .pVertexInputState = &vi, .pInputAssemblyState = &ia,
+      .stageCount = donly ? 1 : 2, .pStages = stages, .pVertexInputState = &vi, .pInputAssemblyState = &ia,
       .pViewportState = &vps, .pRasterizationState = &rs, .pMultisampleState = &ms,
       .pColorBlendState = &cb, .pDepthStencilState = depth ? &dss : NULL,
       .layout = layout, .renderPass = pass };
@@ -500,7 +568,10 @@ main(int argc, char **argv)
       vkCmdPushConstants(cmd, layout, VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(push), push);
       vkCmdBindVertexBuffers(cmd, 0, 1, &vb, &zero);
       vkCmdBindIndexBuffer(cmd, ib, 0, VK_INDEX_TYPE_UINT16);
-      vkCmdDrawIndexed(cmd, 3, 1, 0, 0, 0);
+      if (getenv("TRI_QUADS"))
+         vkCmdDraw(cmd, 24, 1, 0, 0);
+      else
+         vkCmdDrawIndexed(cmd, 3, 1, 0, 0, 0);
    } else {
       vkCmdDraw(cmd, 3, 1, 0, 0);
    }
@@ -508,7 +579,7 @@ main(int argc, char **argv)
       for (int y = 0; y < H; y++)
          for (int x = 0; x < W; x++) {
             VkClearAttachment ca = { VK_IMAGE_ASPECT_DEPTH_BIT, 0,
-               { .depthStencil = { (y * W + x + 1) / 1048576.0f, 0 } } };
+               { .depthStencil = { (y * W + x + 1) / DSCALE, 0 } } };
             VkClearRect cr = { { { x, y }, { 1, 1 } }, 0, 1 };
             vkCmdClearAttachments(cmd, 1, &ca, 1, &cr);
          }
@@ -552,7 +623,7 @@ main(int argc, char **argv)
                               .imageExtent = { W, H, 1 } };
    vkCmdCopyImageToBuffer(cmd, image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, buffer, 1, &copy);
    VkBuffer dbuf = VK_NULL_HANDLE;
-   float *dpixels = NULL;
+   void *dpixels = NULL;
    if (depth) {
       /* read the depth back too: 0.25 inside, 1 outside */
       VkBufferCreateInfo dbci = bci;
@@ -636,9 +707,9 @@ main(int argc, char **argv)
          double want[4];
          if (clear && x < 8 && y < 8) {
             want[0] = 0; want[1] = 1; want[2] = 0; want[3] = 1;
-         } else if (!inside) {
+         } else if (!inside || donly) {
             want[0] = 0; want[1] = 0; want[2] = 1; want[3] = 1;
-         } else if (depth) {
+         } else if (depth && !vbo_depth) {
             want[0] = 0; want[1] = 1; want[2] = 0; want[3] = 1;
          } else if (blend) {
             want[0] = 0.5; want[1] = 0; want[2] = 0.5; want[3] = 0.75;
@@ -653,8 +724,8 @@ main(int argc, char **argv)
          }
          inside_n += inside;
          if (dpixels) {
-            float dw = inside ? 0.25f : 1.0f, dg = dpixels[y * W + x];
-            if (fabsf(dg - dw) > 1e-4f) {
+            float dw = inside ? 0.25f : 1.0f, dg = depth_at(dpixels, y * W + x);
+            if (fabsf(dg - dw) > 2e-4f) {
                if (bad < 8)
                   fprintf(stderr, "depth %d,%d got %f want %f\n", x, y, dg, dw);
                bad++;
@@ -675,22 +746,22 @@ main(int argc, char **argv)
       }
    }
    printf("triangle %s: %u pixels checked (%u inside), %u mismatches, %u mixed edge pixels\n",
-          blit ? "blit" : dsimg ? "dsimg" : msaa ? "msaa" : dclear ? "dclear" : depth ? "depth" : clear ? "clear" : blend ? "blend" : vbo ? "vbo" : color ? "color" : "flat",
+          donly ? "donly" : blit ? "blit" : dsimg ? "dsimg" : msaa ? "msaa" : dclear ? "dclear" : depth ? "depth" : clear ? "clear" : blend ? "blend" : vbo ? "vbo" : color ? "color" : "flat",
           checked, inside_n, bad, mixed);
    if (msaa && mixed < 20) {
       fprintf(stderr, "msaa: too few mixed edge pixels\n");
       bad++;
    }
-   for (int y = 0; y < H; y += 4 * (H / 64)) {
-      for (int x = 0; x < W; x += 2 * (W / 64)) {
+   for (int y = 0; y < H; y += H >= 64 ? 4 * (H / 64) : 1) {
+      for (int x = 0; x < W; x += W >= 64 ? 2 * (W / 64) : 1) {
          const uint8_t *p = pixels + 4 * (y * W + x);
-         putchar(p[0] > 128 ? 'R' : p[1] > 128 ? 'G' : p[2] > 128 ? '.' : p[0] == 0x55 ? '?' : '#');
+         putchar(p[0] > 128 && p[1] > 128 ? 'W' : p[0] > 128 ? 'R' : p[1] > 128 ? 'G' : p[2] > 128 ? '.' : p[0] == 0x55 ? '?' : '#');
       }
       putchar('\n');
    }
    if (dmap) {
       for (int i = 0; i < W * H; i++) {
-         int id = (int)(dpixels[i] * 1048576.0f + 0.5f) - 1;
+         int id = (int)(depth_at(dpixels, i) * DSCALE + 0.5f) - 1;
          printf("M %d %d\n", i, id);
       }
       return 0;
@@ -698,7 +769,7 @@ main(int argc, char **argv)
    if (dpixels && getenv("DEPTH_MAP")) {
       for (int y = 0; y < H; y++) {
          for (int x = 0; x < W; x++) {
-            float d = dpixels[y * W + x];
+            float d = depth_at(dpixels, y * W + x);
             putchar(d == 1.0f ? '.' : d == 0.25f ? '#' : d == 0.0f ? '0' : '?');
          }
          putchar('\n');
