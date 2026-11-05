@@ -212,6 +212,7 @@ def clean_detail(d):
 
 def run_batch(icd, cases, runtime_max, env=()):
     """Run one batch on the device. Caller holds the lock."""
+    boot_id = adbsh("cat /proc/sys/kernel/random/boot_id", check=False).strip()
     before = fault_lines()
     listing = "\n".join(cases) + "\n"
     local = os.path.join(SRC, "cts-deploy", "batch-cases.txt")
@@ -273,6 +274,21 @@ def run_batch(icd, cases, runtime_max, env=()):
         live.write(f"=== batch end {time.strftime('%F %T')}\n")
         live.close()
     out = "".join(chunks)
+    # A new boot ID (the hardware watchdog rebooted a wedged kernel) or a
+    # lost device mid-batch is a wedge: report and stop, never retry.
+    for _ in range(30):
+        now_id = adbsh("cat /proc/sys/kernel/random/boot_id", check=False).strip()
+        if now_id and "error" not in now_id:
+            break
+        time.sleep(10)
+    if not now_id or now_id != boot_id:
+        last = [l for l in chunks if "Test case" in l][-1:] or ["(no case line)"]
+        msg = (f"WEDGE: boot id {boot_id} -> {now_id or 'device gone'} during a batch; "
+               f"last case: {last[0].strip()}; see {LIVE_LOG} and the dmesg-follow log")
+        print(msg, flush=True)
+        with open(os.path.join(SRC, "cts-runs", "WEDGE.txt"), "a") as f:
+            f.write(time.strftime("%F %T ") + msg + "\n")
+        sys.exit(3)
     seconds = time.time() - t0
     rc = re.search(r"rc=(\d+)", out)
     rc = int(rc.group(1)) if rc else -1
